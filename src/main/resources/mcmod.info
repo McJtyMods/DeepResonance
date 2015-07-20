@@ -1,0 +1,16 @@
+[
+{
+  "modid": "deepresonance",
+  "name": "DeepResonance",
+  "description": "Power generation based on resonanting crystals",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["McJty"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
