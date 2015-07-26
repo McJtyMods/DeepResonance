@@ -67,7 +67,7 @@ public class DeepResonance implements ModBase {
         this.proxy.postInit(e);
 
         if (Loader.isModLoaded("ComputerCraft")) {
-            Logging.log("RFTools Detected ComputerCraft: enabling support");
+            Logging.log("Deep Resonance Detected ComputerCraft: enabling support");
 //            ComputerCraftHelper.register();
         }
     }
