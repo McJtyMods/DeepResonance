@@ -12,6 +12,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.base.ModBase;
 import mcjty.base.ModBaseRef;
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.worldgen.WorldGen;
 import mcjty.gui.GuiStyle;
 import mcjty.network.PacketHandler;
 import mcjty.varia.Logging;
@@ -67,7 +68,7 @@ public class DeepResonance implements ModBase {
 //        ModItems.init();
         ModBlocks.init();
 //        ModCrafting.init();
-//        ModDimensions.init();
+        WorldGen.init();
     }
 
 
