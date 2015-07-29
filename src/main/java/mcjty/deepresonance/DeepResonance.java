@@ -7,12 +7,22 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.base.ModBase;
 import mcjty.base.ModBaseRef;
+import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.gui.GuiStyle;
+import mcjty.network.PacketHandler;
 import mcjty.varia.Logging;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraftforge.common.config.Configuration;
+
+import java.io.File;
 
 @Mod(modid = DeepResonance.MODID, name="DeepResonance", dependencies = "required-after:Forge@["+DeepResonance.MIN_FORGE_VER+",);required-after:CoFHCore@["+DeepResonance.MIN_COFHCORE_VER+",)", version = DeepResonance.VERSION)
 public class DeepResonance implements ModBase {
@@ -27,13 +37,14 @@ public class DeepResonance implements ModBase {
     @Mod.Instance("deepresonance")
     public static DeepResonance instance;
 
-//    public static CreativeTabs tabDeepResonance = new CreativeTabs("DeepResonance") {
-//        @Override
-//        @SideOnly(Side.CLIENT)
-//        public Item getTabIconItem() {
+    public static CreativeTabs tabDeepResonance = new CreativeTabs("DeepResonance") {
+        @Override
+        @SideOnly(Side.CLIENT)
+        public Item getTabIconItem() {
+            return Items.item_frame;
 //            return ModItems.rfToolsManualItem;
-//        }
-//    };
+        }
+    };
 
     /**
      * Run before anything else. Read your config, create blocks, items, etc, and
@@ -45,7 +56,22 @@ public class DeepResonance implements ModBase {
         ModBaseRef.MODID = MODID;
 
         this.proxy.preInit(e);
+//        modConfigDir = e.getModConfigurationDirectory();
+//        mainConfig = new Configuration(new File(modConfigDir.getPath() + File.separator + "rftools", "main.cfg"));
+//
+//        readMainConfig();
+//
+//        PacketHandler.registerMessages("rftools");
+//        RFToolsMessages.registerNetworkMessages();
+//
+//        ModItems.init();
+        ModBlocks.init();
+//        ModCrafting.init();
+//        ModDimensions.init();
     }
+
+
+
     /**
      * Do your mod setup. Build whatever data structures you care about. Register recipes.
      */
