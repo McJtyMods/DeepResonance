@@ -12,6 +12,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.base.ModBase;
 import mcjty.base.ModBaseRef;
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.crafting.ModCrafting;
+import mcjty.deepresonance.items.ModItems;
 import mcjty.deepresonance.worldgen.WorldGen;
 import mcjty.gui.GuiStyle;
 import mcjty.network.PacketHandler;
@@ -38,12 +40,16 @@ public class DeepResonance implements ModBase {
     @Mod.Instance("deepresonance")
     public static DeepResonance instance;
 
+    /** This is used to keep track of GUIs that we make*/
+    private static int modGuiIndex = 0;
+
+    public static final int GUI_MANUAL_MAIN = modGuiIndex++;
+
     public static CreativeTabs tabDeepResonance = new CreativeTabs("DeepResonance") {
         @Override
         @SideOnly(Side.CLIENT)
         public Item getTabIconItem() {
-            return Items.item_frame;
-//            return ModItems.rfToolsManualItem;
+            return ModItems.deepResonanceManualItem;
         }
     };
 
@@ -65,9 +71,9 @@ public class DeepResonance implements ModBase {
 //        PacketHandler.registerMessages("rftools");
 //        RFToolsMessages.registerNetworkMessages();
 //
-//        ModItems.init();
+        ModItems.init();
         ModBlocks.init();
-//        ModCrafting.init();
+        ModCrafting.init();
         WorldGen.init();
     }
 

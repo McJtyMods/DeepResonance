@@ -1,0 +1,12 @@
+{b}Deep Resonance Manual
+
+Table of contents:
+{l:ore}Ore
+{/}
+{-------------------------------------------------------------}
+{b}Ore
+{n:ore}
+Low in the ground a good miner can occasionally find
+resonating ore. If you do then this can be your start
+to a big adventure.
+{-------------------------------------------------------------}

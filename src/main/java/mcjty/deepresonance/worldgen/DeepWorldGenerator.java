@@ -14,7 +14,6 @@ public class DeepWorldGenerator implements IWorldGenerator {
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
         addOreSpawn(ModBlocks.resonatingOreBlock, (byte) 0, Blocks.stone, world, random, chunkX * 16, chunkZ * 16, 5, 8, 3, 2, 30);
-
     }
 
     public void addOreSpawn(Block block, byte blockMeta, Block targetBlock,
