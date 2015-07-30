@@ -5,7 +5,11 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.crafting.ModCrafting;
 import mcjty.deepresonance.gui.GuiProxy;
+import mcjty.deepresonance.items.ModItems;
+import mcjty.deepresonance.worldgen.WorldGen;
 import mcjty.deepresonance.worldgen.WorldGenConfiguration;
 import mcjty.network.PacketHandler;
 import mcjty.varia.WrenchChecker;
@@ -28,10 +32,10 @@ public abstract class CommonProxy {
         PacketHandler.registerMessages("deepresonance");
 //        RFToolsMessages.registerNetworkMessages();
 
-//        ModItems.init();
-//        ModBlocks.init();
-//        ModCrafting.init();
-//        ModDimensions.init();
+        ModItems.init();
+        ModBlocks.init();
+        ModCrafting.init();
+        WorldGen.init();
     }
 
     private void readMainConfig() {

@@ -2,8 +2,10 @@ package mcjty.deepresonance.worldgen;
 
 import cpw.mods.fml.common.IWorldGenerator;
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
@@ -46,7 +48,14 @@ public class DeepWorldGenerator implements IWorldGenerator {
                 if (!air) {
                     if (world.getBlock(x, y, z) == Blocks.stone) {
                         System.out.println("Found a good spot at: " + x + "," + y + "," + z);
-                        world.setBlock(x, y+1, z, ModBlocks.resonatingCrystalBlock, 0, 3);
+                        world.setBlock(x, y + 1, z, ModBlocks.resonatingCrystalBlock, 0, 3);
+                        TileEntity te = world.getTileEntity(x, y+1, z);
+                        if (te instanceof ResonatingCrystalTileEntity) {
+                            ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
+                            resonatingCrystalTileEntity.setPower(random.nextFloat() * 3.0f + 0.01f);
+                            resonatingCrystalTileEntity.setEfficiency(random.nextFloat() * 3.0f + 0.1f);
+                            resonatingCrystalTileEntity.setPurity(random.nextFloat() * 10.0f + 5.0f);
+                        }
                         return;
                     }
                 }

@@ -3,10 +3,7 @@ package mcjty.deepresonance;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStoppedEvent;
+import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.base.ModBase;
@@ -40,6 +37,8 @@ public class DeepResonance implements ModBase {
     @Mod.Instance("deepresonance")
     public static DeepResonance instance;
 
+    public static final String SHIFT_MESSAGE = "<Press Shift>";
+
     /** This is used to keep track of GUIs that we make*/
     private static int modGuiIndex = 0;
 
@@ -63,6 +62,8 @@ public class DeepResonance implements ModBase {
         ModBaseRef.MODID = MODID;
 
         this.proxy.preInit(e);
+
+        FMLInterModComms.sendMessage("Waila", "register", "mcjty.wailasupport.WailaCompatibility.load");
 //        modConfigDir = e.getModConfigurationDirectory();
 //        mainConfig = new Configuration(new File(modConfigDir.getPath() + File.separator + "rftools", "main.cfg"));
 //
@@ -71,10 +72,6 @@ public class DeepResonance implements ModBase {
 //        PacketHandler.registerMessages("rftools");
 //        RFToolsMessages.registerNetworkMessages();
 //
-        ModItems.init();
-        ModBlocks.init();
-        ModCrafting.init();
-        WorldGen.init();
     }
 
 
