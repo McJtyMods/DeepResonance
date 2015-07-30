@@ -1,13 +1,12 @@
 package mcjty.deepresonance.render;
 
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import mcjty.deepresonance.blocks.crystals.ResonatingCrystalBlock;
-import mcjty.deepresonance.blocks.crystals.ResonatingCrystalRenderer;
+import cpw.mods.fml.client.registry.ClientRegistry;
+import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTESR;
+import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 
 public final class ModRenderers {
 
     public static void init() {
-        ResonatingCrystalBlock.RENDERID_RESONATINGCRYSTAL = RenderingRegistry.getNextAvailableRenderId();
-        RenderingRegistry.registerBlockHandler(ResonatingCrystalBlock.RENDERID_RESONATINGCRYSTAL, new ResonatingCrystalRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(ResonatingCrystalTileEntity.class, new ResonatingCrystalTESR());
     }
 }

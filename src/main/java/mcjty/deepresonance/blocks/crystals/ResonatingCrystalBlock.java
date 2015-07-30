@@ -3,10 +3,9 @@ package mcjty.deepresonance.blocks.crystals;
 import mcjty.container.GenericBlock;
 import mcjty.deepresonance.DeepResonance;
 import net.minecraft.block.material.Material;
+import net.minecraft.world.IBlockAccess;
 
 public class ResonatingCrystalBlock extends GenericBlock {
-
-    public static int RENDERID_RESONATINGCRYSTAL;
 
     public ResonatingCrystalBlock() {
         super(Material.glass, ResonatingCrystalTileEntity.class, false);
@@ -25,13 +24,13 @@ public class ResonatingCrystalBlock extends GenericBlock {
     }
 
     @Override
-    public boolean renderAsNormalBlock() {
+    public boolean shouldSideBeRendered(IBlockAccess blockAccess, int x, int y, int z, int side) {
         return false;
     }
 
     @Override
-    public int getRenderType() {
-        return RENDERID_RESONATINGCRYSTAL;
+    public boolean renderAsNormalBlock() {
+        return false;
     }
 
     @Override
