@@ -49,7 +49,7 @@ public class DeepResonance implements ModBase {
         @Override
         @SideOnly(Side.CLIENT)
         public Item getTabIconItem() {
-            return ModItems.deepResonanceManualItem;
+            return Item.getItemFromBlock(ModBlocks.resonatingCrystalBlock);
         }
     };
 
