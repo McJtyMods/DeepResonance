@@ -15,6 +15,43 @@ public class DeepWorldGenerator implements IWorldGenerator {
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
         addOreSpawn(ModBlocks.resonatingOreBlock, (byte) 0, Blocks.stone, world, random, chunkX * 16, chunkZ * 16,
                 WorldGenConfiguration.minVeinSize, WorldGenConfiguration.maxVeinSize, WorldGenConfiguration.chancesToSpawn, WorldGenConfiguration.minY, WorldGenConfiguration.maxY);
+
+
+        if (WorldGenConfiguration.crystalSpawnChance > 0 && random.nextInt(WorldGenConfiguration.crystalSpawnChance) == 0) {
+            attemptSpawnCrystal(random, chunkX, chunkZ, world);
+        }
+    }
+
+    private void attemptSpawnCrystal(Random random, int chunkX, int chunkZ, World world) {
+        System.out.println("Crystal Spawn attempt at: " + chunkX+","+chunkZ);
+        for (int i = 0 ; i < WorldGenConfiguration.crystalSpawnTries ; i++) {
+            int x = chunkX * 16 + random.nextInt(16);
+            int z = chunkZ * 16 + random.nextInt(16);
+            int y = world.getTopSolidOrLiquidBlock(x, z)-1;
+            boolean air = false;
+            while (y > 1 && !air) {
+                if (world.isAirBlock(x, y, z)) {
+                    air = true;
+                }
+                y--;
+            }
+            if (air) {
+                while (y > 1 && air) {
+                    if (!world.isAirBlock(x, y, z)) {
+                        air = false;
+                    } else {
+                        y--;
+                    }
+                }
+                if (!air) {
+                    if (world.getBlock(x, y, z) == Blocks.stone) {
+                        System.out.println("Found a good spot at: " + x + "," + y + "," + z);
+                        world.setBlock(x, y+1, z, ModBlocks.resonatingCrystalBlock, 0, 3);
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     public void addOreSpawn(Block block, byte blockMeta, Block targetBlock,
