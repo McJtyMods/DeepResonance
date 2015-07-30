@@ -37,6 +37,7 @@ public class ResonatingCrystalItemRenderer implements IItemRenderer {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
         GL11.glTranslatef((float) 0.5F, (float) 0.0F, (float) 0.5F);
+        GL11.glScalef(1.4F, 1.4F, 1.4F);
 //        GL11.glScalef(0.09375F, 0.09375F, 0.09375F);
 
         model.renderAll();
