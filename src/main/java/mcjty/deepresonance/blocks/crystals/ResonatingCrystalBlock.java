@@ -18,6 +18,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.IBlockAccess;
 import org.lwjgl.input.Keyboard;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class ResonatingCrystalBlock extends GenericBlock {
@@ -25,6 +26,9 @@ public class ResonatingCrystalBlock extends GenericBlock {
     public ResonatingCrystalBlock() {
         super(Material.glass, ResonatingCrystalTileEntity.class, false);
         setBlockName("resonatingCrystalBlock");
+        setHardness(3.0f);
+        setResistance(5.0f);
+        setHarvestLevel("pickaxe", 2);
         setCreativeTab(DeepResonance.tabDeepResonance);
     }
 
@@ -32,12 +36,13 @@ public class ResonatingCrystalBlock extends GenericBlock {
     @Override
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
         super.addInformation(itemStack, player, list, whatIsThis);
-        list.add("With this crystal you can generate power.");
+        list.add("You can feel the latent power present in this crystal.");
         NBTTagCompound tagCompound = itemStack.getTagCompound();
         if (tagCompound != null) {
-            list.add(EnumChatFormatting.GREEN + "Power: " + tagCompound.getFloat("power") + "%");
-            list.add(EnumChatFormatting.GREEN + "Efficiency: " + tagCompound.getFloat("efficiency") + "%");
-            list.add(EnumChatFormatting.GREEN + "Purity: " + tagCompound.getFloat("purity") + "%");
+
+            list.add(EnumChatFormatting.GREEN + "Power: " + new DecimalFormat("#.##").format(tagCompound.getFloat("power")) + "%");
+            list.add(EnumChatFormatting.GREEN + "Efficiency: " + new DecimalFormat("#.##").format(tagCompound.getFloat("efficiency")) + "%");
+            list.add(EnumChatFormatting.GREEN + "Purity: " + new DecimalFormat("#.##").format(tagCompound.getFloat("purity")) + "%");
         }
     }
 
@@ -47,9 +52,9 @@ public class ResonatingCrystalBlock extends GenericBlock {
         TileEntity tileEntity = accessor.getTileEntity();
         if (tileEntity instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
-            currenttip.add(EnumChatFormatting.GREEN + "Power: " + resonatingCrystalTileEntity.getPower() + "%");
-            currenttip.add(EnumChatFormatting.GREEN + "Efficiency: " + resonatingCrystalTileEntity.getEfficiency() + "%");
-            currenttip.add(EnumChatFormatting.GREEN + "Purity: " + resonatingCrystalTileEntity.getPurity() + "%");
+            currenttip.add(EnumChatFormatting.GREEN + "Power: " + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getPower()) + "%");
+            currenttip.add(EnumChatFormatting.GREEN + "Efficiency: " + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getEfficiency()) + "%");
+            currenttip.add(EnumChatFormatting.GREEN + "Purity: " + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getPurity()) + "%");
         }
         return currenttip;
     }

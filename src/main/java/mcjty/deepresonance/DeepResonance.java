@@ -64,6 +64,7 @@ public class DeepResonance implements ModBase {
         this.proxy.preInit(e);
 
         FMLInterModComms.sendMessage("Waila", "register", "mcjty.wailasupport.WailaCompatibility.load");
+        FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
 //        modConfigDir = e.getModConfigurationDirectory();
 //        mainConfig = new Configuration(new File(modConfigDir.getPath() + File.separator + "rftools", "main.cfg"));
 //

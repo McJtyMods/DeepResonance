@@ -15,7 +15,7 @@ public class ResonatingOreBlock extends Block {
         setHardness(3.0f);
         setResistance(5.0f);
         setHarvestLevel("pickaxe", 2);
-        setBlockName("resonatingOre");
+        setBlockName("oreResonating");
         setCreativeTab(DeepResonance.tabDeepResonance);
     }
 

@@ -5,6 +5,7 @@ import mcjty.container.GenericItemBlock;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalBlock;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.blocks.ore.ResonatingOreBlock;
+import net.minecraftforge.oredict.OreDictionary;
 
 public final class ModBlocks {
     public static ResonatingOreBlock resonatingOreBlock;
@@ -12,7 +13,8 @@ public final class ModBlocks {
 
     public static void init() {
         resonatingOreBlock = new ResonatingOreBlock();
-        GameRegistry.registerBlock(resonatingOreBlock, "resonatingOreBlock");
+        GameRegistry.registerBlock(resonatingOreBlock, "oreResonating");
+        OreDictionary.registerOre("oreResonating", resonatingOreBlock);
 
         resonatingCrystalBlock = new ResonatingCrystalBlock();
         GameRegistry.registerBlock(resonatingCrystalBlock, GenericItemBlock.class, "resonatingCrystalBlock");

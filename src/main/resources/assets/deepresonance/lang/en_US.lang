@@ -1,6 +1,6 @@
 item.DeepResonanceManual.name=Deep Resonance Manual
 
-tile.resonatingOre.name=Resonating Ore
+tile.oreResonating.name=Resonating Ore
 tile.resonatingCrystalBlock.name=Resonating Crystal
 
 itemGroup.DeepResonance=Deep Resonance
