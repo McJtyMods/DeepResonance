@@ -40,9 +40,10 @@ public class ResonatingCrystalBlock extends GenericBlock {
         NBTTagCompound tagCompound = itemStack.getTagCompound();
         if (tagCompound != null) {
 
-            list.add(EnumChatFormatting.GREEN + "Power: " + new DecimalFormat("#.##").format(tagCompound.getFloat("power")) + "%");
+            list.add(EnumChatFormatting.GREEN + "Strength: " + new DecimalFormat("#.##").format(tagCompound.getFloat("strength")) + "%");
             list.add(EnumChatFormatting.GREEN + "Efficiency: " + new DecimalFormat("#.##").format(tagCompound.getFloat("efficiency")) + "%");
             list.add(EnumChatFormatting.GREEN + "Purity: " + new DecimalFormat("#.##").format(tagCompound.getFloat("purity")) + "%");
+            list.add(EnumChatFormatting.YELLOW + "Power left: " + new DecimalFormat("#.##").format(tagCompound.getFloat("power")) + "%");
         }
     }
 
@@ -52,9 +53,10 @@ public class ResonatingCrystalBlock extends GenericBlock {
         TileEntity tileEntity = accessor.getTileEntity();
         if (tileEntity instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
-            currenttip.add(EnumChatFormatting.GREEN + "Power: " + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getPower()) + "%");
+            currenttip.add(EnumChatFormatting.GREEN + "Strength: " + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getStrength()) + "%");
             currenttip.add(EnumChatFormatting.GREEN + "Efficiency: " + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getEfficiency()) + "%");
             currenttip.add(EnumChatFormatting.GREEN + "Purity: " + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getPurity()) + "%");
+            currenttip.add(EnumChatFormatting.YELLOW + "Power left: " + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getPower()) + "%");
         }
         return currenttip;
     }

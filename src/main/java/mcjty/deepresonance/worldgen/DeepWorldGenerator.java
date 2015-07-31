@@ -52,6 +52,7 @@ public class DeepWorldGenerator implements IWorldGenerator {
                         TileEntity te = world.getTileEntity(x, y+1, z);
                         if (te instanceof ResonatingCrystalTileEntity) {
                             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
+                            resonatingCrystalTileEntity.setStrength(random.nextFloat() * 3.0f + 0.01f);
                             resonatingCrystalTileEntity.setPower(random.nextFloat() * 3.0f + 0.01f);
                             resonatingCrystalTileEntity.setEfficiency(random.nextFloat() * 3.0f + 0.1f);
                             resonatingCrystalTileEntity.setPurity(random.nextFloat() * 10.0f + 5.0f);
