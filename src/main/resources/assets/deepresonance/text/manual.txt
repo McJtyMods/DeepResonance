@@ -1,12 +1,23 @@
 {b}Deep Resonance Manual
 
 Table of contents:
-{l:ore}Ore
+{l:ore}Resonating Ore
+{l:crystals}Crystals
 {/}
 {-------------------------------------------------------------}
-{b}Ore
+{b}Resonating Ore
 {n:ore}
-Low in the ground a good miner can occasionally find
-resonating ore. If you do then this can be your start
-to a big adventure.
+Deep under the ground a good miner can occasionally find resonating
+ore. If you do then this can be your start to a big adventure.
+
+Note that this version of Deep Resonance is not ready yet. For now
+you cannot use this ore for anything. Keep it for later.
+{-------------------------------------------------------------}
+{b}Resonating Crystals
+{n:crystals}
+Very rarely you can find a resonating crystal in a deep cave. Collect these
+crystals. They will come in very handy later.
+
+Note that this version of Deep Resonance is not ready yet. For now
+you cannot use these crystals for anything. Keep it for later.
 {-------------------------------------------------------------}
