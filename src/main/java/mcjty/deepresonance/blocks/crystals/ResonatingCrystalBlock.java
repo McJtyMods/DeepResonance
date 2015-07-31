@@ -2,13 +2,10 @@ package mcjty.deepresonance.blocks.crystals;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mcjty.base.GeneralConfig;
 import mcjty.container.GenericBlock;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.entity.GenericTileEntity;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -16,7 +13,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.IBlockAccess;
-import org.lwjgl.input.Keyboard;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -24,7 +20,7 @@ import java.util.List;
 public class ResonatingCrystalBlock extends GenericBlock {
 
     public ResonatingCrystalBlock() {
-        super(Material.glass, ResonatingCrystalTileEntity.class, false);
+        super(DeepResonance.instance, Material.glass, ResonatingCrystalTileEntity.class, false);
         setBlockName("resonatingCrystalBlock");
         setHardness(3.0f);
         setResistance(5.0f);

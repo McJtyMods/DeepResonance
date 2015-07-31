@@ -7,29 +7,25 @@ import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.base.ModBase;
-import mcjty.base.ModBaseRef;
 import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.deepresonance.crafting.ModCrafting;
-import mcjty.deepresonance.items.ModItems;
-import mcjty.deepresonance.worldgen.WorldGen;
 import mcjty.gui.GuiStyle;
-import mcjty.network.PacketHandler;
 import mcjty.varia.Logging;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraftforge.common.config.Configuration;
 
-import java.io.File;
-
-@Mod(modid = DeepResonance.MODID, name="DeepResonance", dependencies = "required-after:Forge@["+DeepResonance.MIN_FORGE_VER+",);required-after:CoFHCore@["+DeepResonance.MIN_COFHCORE_VER+",)", version = DeepResonance.VERSION)
+@Mod(modid = DeepResonance.MODID, name="DeepResonance", dependencies =
+        "required-after:Forge@["+DeepResonance.MIN_FORGE_VER+
+        ",);required-after:CoFHCore@["+DeepResonance.MIN_COFHCORE_VER+
+        ",);required-after:McJtyLib@["+DeepResonance.MIN_MCJTYLIB_VER+",)",
+        version = DeepResonance.VERSION)
 public class DeepResonance implements ModBase {
     public static final String MODID = "deepresonance";
     public static final String VERSION = "0.01alpha1";
     public static final String MIN_FORGE_VER = "10.13.2.1291";
     public static final String MIN_COFHCORE_VER = "1.7.10R3.0.0B9";
+    public static final String MIN_MCJTYLIB_VER = "1.1.0";
 
     @SidedProxy(clientSide="mcjty.deepresonance.ClientProxy", serverSide="mcjty.deepresonance.ServerProxy")
     public static CommonProxy proxy;
@@ -58,9 +54,6 @@ public class DeepResonance implements ModBase {
      */
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
-        ModBaseRef.INSTANCE = this;
-        ModBaseRef.MODID = MODID;
-
         this.proxy.preInit(e);
 
         FMLInterModComms.sendMessage("Waila", "register", "mcjty.wailasupport.WailaCompatibility.load");
@@ -103,6 +96,10 @@ public class DeepResonance implements ModBase {
         }
     }
 
+    @Override
+    public String getModId() {
+        return MODID;
+    }
 
     @Override
     public void setGuiStyle(EntityPlayerMP entityPlayerMP, GuiStyle guiStyle) {
