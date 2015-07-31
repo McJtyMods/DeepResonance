@@ -6,6 +6,9 @@ public class WorldGenConfiguration {
 
     public static final String CATEGORY_WORLDGEN = "worldgen";
 
+    public static boolean retrogen = false;
+    public static boolean verboseSpawn = false;
+
     public static int minVeinSize = 5;
     public static int maxVeinSize = 8;
     public static int chancesToSpawn = 3;
@@ -16,6 +19,9 @@ public class WorldGenConfiguration {
     public static int crystalSpawnTries = 10;
 
     public static void init(Configuration cfg) {
+        retrogen = cfg.get(CATEGORY_WORLDGEN, "retrogen", retrogen, "Enable this if you want to get retrogen (generation of ores/crystals) for already existing chunks").getBoolean();
+        verboseSpawn = cfg.get(CATEGORY_WORLDGEN, "verboseSpawn", verboseSpawn, "Enable this if you want to see in the log where crystals are spawned").getBoolean();
+
         minVeinSize = cfg.get(CATEGORY_WORLDGEN, "minVeinSize", minVeinSize, "Minimum size of the ore veines").getInt();
         maxVeinSize = cfg.get(CATEGORY_WORLDGEN, "maxVeinSize", maxVeinSize, "Maximum size of the ore veines").getInt();
         chancesToSpawn = cfg.get(CATEGORY_WORLDGEN, "chancesToSpawn", chancesToSpawn, "Chances for the ore to spawn in a chunk").getInt();

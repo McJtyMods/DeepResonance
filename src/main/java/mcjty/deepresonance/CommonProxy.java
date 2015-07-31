@@ -1,5 +1,6 @@
 package mcjty.deepresonance;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -11,6 +12,7 @@ import mcjty.deepresonance.gui.GuiProxy;
 import mcjty.deepresonance.items.ModItems;
 import mcjty.deepresonance.worldgen.WorldGen;
 import mcjty.deepresonance.worldgen.WorldGenConfiguration;
+import mcjty.deepresonance.worldgen.WorldTickHandler;
 import mcjty.network.PacketHandler;
 import mcjty.varia.WrenchChecker;
 import net.minecraftforge.common.config.Configuration;
@@ -55,6 +57,7 @@ public abstract class CommonProxy {
 
     public void init(FMLInitializationEvent e) {
         NetworkRegistry.INSTANCE.registerGuiHandler(DeepResonance.instance, new GuiProxy());
+        FMLCommonHandler.instance().bus().register(WorldTickHandler.instance);
     }
 
     public void postInit(FMLPostInitializationEvent e) {
