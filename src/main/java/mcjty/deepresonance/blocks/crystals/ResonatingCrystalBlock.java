@@ -68,7 +68,7 @@ public class ResonatingCrystalBlock extends GenericBlock {
 
     @Override
     public String getSideIconName() {
-        return "resonatingOre";
+        return "crystal";
     }
 
     @Override
