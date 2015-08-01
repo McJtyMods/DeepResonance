@@ -7,6 +7,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.crafting.ModCrafting;
 import mcjty.deepresonance.gui.GuiProxy;
 import mcjty.deepresonance.items.ModItems;
@@ -45,7 +46,9 @@ public abstract class CommonProxy {
         try {
             cfg.load();
             cfg.addCustomCategoryComment(WorldGenConfiguration.CATEGORY_WORLDGEN, "Worldgen");
+            cfg.addCustomCategoryComment(GeneratorConfiguration.CATEGORY_GENERATOR, "Generator");
             WorldGenConfiguration.init(cfg);
+            GeneratorConfiguration.init(cfg);
         } catch (Exception e1) {
             FMLLog.log(Level.ERROR, e1, "Problem loading config file!");
         } finally {
