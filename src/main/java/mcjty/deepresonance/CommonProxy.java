@@ -9,6 +9,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.crafting.ModCrafting;
+import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.gui.GuiProxy;
 import mcjty.deepresonance.items.ModItems;
 import mcjty.deepresonance.worldgen.WorldGen;
@@ -34,7 +35,7 @@ public abstract class CommonProxy {
 
         PacketHandler.registerMessages("deepresonance");
 //        RFToolsMessages.registerNetworkMessages();
-
+        DRFluidRegistry.preInitFluids();
         ModItems.init();
         ModBlocks.init();
         ModCrafting.init();
