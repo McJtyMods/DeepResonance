@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -89,6 +90,10 @@ public class GeneratorBlock extends GenericBlock {
             if (world.getBlock(x, y-1, z) == GeneratorSetup.generatorBlock) {
                 updateMeta(world, x, y-1, z);
             }
+            TileEntity te = world.getTileEntity(x, y, z);
+            if (te instanceof GeneratorTileEntity) {
+                ((GeneratorTileEntity) te).addBlockToNetwork();
+            }
         }
     }
 
@@ -101,6 +106,10 @@ public class GeneratorBlock extends GenericBlock {
             }
             if (world.getBlock(x, y-1, z) == GeneratorSetup.generatorBlock) {
                 updateMeta(world, x, y-1, z);
+            }
+            TileEntity te = world.getTileEntity(x, y, z);
+            if (te instanceof GeneratorTileEntity) {
+                ((GeneratorTileEntity) te).removeBlockFromNetwork();
             }
         }
     }
