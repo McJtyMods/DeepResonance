@@ -2,6 +2,7 @@ package mcjty.deepresonance.blocks.generator;
 
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.entity.GenericEnergyProviderTileEntity;
+import mcjty.varia.Coordinate;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -47,15 +48,88 @@ public class GeneratorTileEntity extends GenericEnergyProviderTileEntity {
         } else {
             // We need to merge networks. The first network will be the master.
             networkId = adjacentGeneratorIds.iterator().next();
-            //@@todoo
+            DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(networkId);
+            network.incRefCount();
+            Set<Coordinate> done = new HashSet<Coordinate>();
+            setBlocksToNetwork(new Coordinate(xCoord, yCoord, zCoord), done, networkId);
         }
 
         generatorNetwork.markDirty();
         generatorNetwork.save(worldObj);
     }
 
+    private void setBlocksToNetwork(Coordinate c, Set<Coordinate> done, int newId) {
+        done.add(c);
+        for (ForgeDirection direction : ForgeDirection.values()) {
+            if (!direction.equals(ForgeDirection.UNKNOWN)) {
+                Coordinate newC = c.addDirection(direction);
+                if (!done.contains(newC)) {
+                    Block block = worldObj.getBlock(newC.getX(), newC.getY(), newC.getZ());
+                    if (block == GeneratorSetup.generatorBlock) {
+                        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
+                        GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) worldObj.getTileEntity(newC.getX(), newC.getY(), newC.getZ());
+                        int oldNetworkId = generatorTileEntity.getNetworkId();
+                        if (oldNetworkId != newId) {
+                            if (oldNetworkId != -1) {
+                                generatorNetwork.getOrCreateNetwork(oldNetworkId).decRefCount();
+                            }
+                            generatorTileEntity.setNetworkId(newId);
+                            if (newId != -1) {
+                                generatorNetwork.getOrCreateNetwork(newId).incRefCount();
+                            }
+                        }
+                        setBlocksToNetwork(newC, done, newId);
+                    }
+                }
+            }
+        }
+    }
+
+    public void removeBlockFromNetwork() {
+        Coordinate thisCoord = new Coordinate(xCoord, yCoord, zCoord);
+
+        // Clear all networks adjacent to this one.
+        for (ForgeDirection direction : ForgeDirection.values()) {
+            if (!direction.equals(ForgeDirection.UNKNOWN)) {
+                Coordinate newC = thisCoord.addDirection(direction);
+                Block block = worldObj.getBlock(newC.getX(), newC.getY(), newC.getZ());
+                if (block == GeneratorSetup.generatorBlock) {
+                    Set<Coordinate> done = new HashSet<Coordinate>();
+                    done.add(thisCoord);
+                    setBlocksToNetwork(newC, done, -1);
+                }
+            }
+        }
+
+        // Now assign new ones.
+        int idToUse = networkId;
+        System.out.println("1: idToUse = " + idToUse);
+        for (ForgeDirection direction : ForgeDirection.values()) {
+            if (!direction.equals(ForgeDirection.UNKNOWN)) {
+                Coordinate newC = thisCoord.addDirection(direction);
+                System.out.println("newC = " + newC);
+                Block block = worldObj.getBlock(newC.getX(), newC.getY(), newC.getZ());
+                if (block == GeneratorSetup.generatorBlock) {
+                    GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) worldObj.getTileEntity(newC.getX(), newC.getY(), newC.getZ());
+                    if (generatorTileEntity.getNetworkId() == -1) {
+                        if (idToUse == -1) {
+                            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
+                            idToUse = generatorNetwork.newChannel();
+                            System.out.println("2: idToUse = " + idToUse);
+                        }
+                        Set<Coordinate> done = new HashSet<Coordinate>();
+                        done.add(thisCoord);
+                        setBlocksToNetwork(newC, done, idToUse);
+                        idToUse = -1;
+                    }
+                }
+            }
+        }
+
+    }
+
     // Move this tile entity to another network.
-    public void moveToNetwork(int newId) {
+    public void setNetworkId(int newId) {
         networkId = newId;
         markDirty();
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -63,10 +137,6 @@ public class GeneratorTileEntity extends GenericEnergyProviderTileEntity {
 
     public int getNetworkId() {
         return networkId;
-    }
-
-    public void removeBlockFromNetwork() {
-
     }
 
     @Override
