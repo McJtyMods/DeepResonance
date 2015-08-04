@@ -19,7 +19,7 @@ public class GeneratorTileEntity extends GenericEnergyProviderTileEntity {
     }
 
     public void addBlockToNetwork() {
-        Set<Integer> adjacentGeneratorIds = new HashSet<>();
+        Set<Integer> adjacentGeneratorIds = new HashSet<Integer>();
         for (ForgeDirection direction : ForgeDirection.values()) {
             if (!direction.equals(ForgeDirection.UNKNOWN)) {
                 int ox = xCoord + direction.offsetX;
