@@ -18,7 +18,9 @@ import net.minecraft.item.Item;
 @Mod(modid = DeepResonance.MODID, name="DeepResonance", dependencies =
         "required-after:Forge@["+DeepResonance.MIN_FORGE_VER+
         ",);required-after:CoFHCore@["+DeepResonance.MIN_COFHCORE_VER+
-        ",);required-after:McJtyLib@["+DeepResonance.MIN_MCJTYLIB_VER+",)",
+        ",);required-after:McJtyLib@["+DeepResonance.MIN_MCJTYLIB_VER+
+        ",);required-after:ElecCore@["+DeepResonance.MIN_ELECCORE_VER+
+        ",)",
         version = DeepResonance.VERSION)
 public class DeepResonance implements ModBase {
     public static final String MODID = "deepresonance";
@@ -26,6 +28,7 @@ public class DeepResonance implements ModBase {
     public static final String MIN_FORGE_VER = "10.13.2.1291";
     public static final String MIN_COFHCORE_VER = "1.7.10R3.0.0B9";
     public static final String MIN_MCJTYLIB_VER = "1.2.0";
+    public static final String MIN_ELECCORE_VER = "1.4.116";
 
     @SidedProxy(clientSide="mcjty.deepresonance.ClientProxy", serverSide="mcjty.deepresonance.ServerProxy")
     public static CommonProxy proxy;
@@ -54,7 +57,7 @@ public class DeepResonance implements ModBase {
      */
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
-        this.proxy.preInit(e);
+        proxy.preInit(e);
 
         FMLInterModComms.sendMessage("Waila", "register", "mcjty.wailasupport.WailaCompatibility.load");
         FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
@@ -75,7 +78,7 @@ public class DeepResonance implements ModBase {
      */
     @Mod.EventHandler
     public void init(FMLInitializationEvent e) {
-        this.proxy.init(e);
+        proxy.init(e);
     }
 
     @Mod.EventHandler
@@ -88,7 +91,7 @@ public class DeepResonance implements ModBase {
      */
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent e) {
-        this.proxy.postInit(e);
+        proxy.postInit(e);
 
         if (Loader.isModLoaded("ComputerCraft")) {
             Logging.log("Deep Resonance Detected ComputerCraft: enabling support");
