@@ -22,10 +22,10 @@ import net.minecraft.item.Item;
         version = DeepResonance.VERSION)
 public class DeepResonance implements ModBase {
     public static final String MODID = "deepresonance";
-    public static final String VERSION = "0.1.0";
+    public static final String VERSION = "0.1.1";
     public static final String MIN_FORGE_VER = "10.13.2.1291";
     public static final String MIN_COFHCORE_VER = "1.7.10R3.0.0B9";
-    public static final String MIN_MCJTYLIB_VER = "1.1.0";
+    public static final String MIN_MCJTYLIB_VER = "1.2.0";
 
     @SidedProxy(clientSide="mcjty.deepresonance.ClientProxy", serverSide="mcjty.deepresonance.ServerProxy")
     public static CommonProxy proxy;

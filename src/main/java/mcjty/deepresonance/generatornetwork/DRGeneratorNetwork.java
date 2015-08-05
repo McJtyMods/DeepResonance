@@ -1,0 +1,125 @@
+package mcjty.deepresonance.generatornetwork;
+
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldSavedData;
+import net.minecraftforge.common.util.Constants;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class DRGeneratorNetwork extends WorldSavedData {
+
+    public static final String GENERATOR_NETWORK_NAME = "DRGeneratorNetwork";
+    private static DRGeneratorNetwork instance = null;
+
+    private int lastId = 0;
+
+    private final Map<Integer,Network> networks = new HashMap<Integer,Network>();
+
+    public DRGeneratorNetwork(String identifier) {
+        super(identifier);
+    }
+
+    public void save(World world) {
+        world.mapStorage.setData(GENERATOR_NETWORK_NAME, this);
+        markDirty();
+    }
+
+    public static void clearInstance() {
+        if (instance != null) {
+            instance.networks.clear();
+            instance = null;
+        }
+    }
+
+    public static DRGeneratorNetwork getChannels() {
+        return instance;
+    }
+
+    public static DRGeneratorNetwork getChannels(World world) {
+        if (world.isRemote) {
+            return null;
+        }
+        if (instance != null) {
+            return instance;
+        }
+        instance = (DRGeneratorNetwork) world.mapStorage.loadData(DRGeneratorNetwork.class, GENERATOR_NETWORK_NAME);
+        if (instance == null) {
+            instance = new DRGeneratorNetwork(GENERATOR_NETWORK_NAME);
+        }
+        return instance;
+    }
+
+    public Network getOrCreateNetwork(int id) {
+        Network channel = networks.get(id);
+        if (channel == null) {
+            channel = new Network();
+            networks.put(id, channel);
+        }
+        return channel;
+    }
+
+    public Network getChannel(int id) {
+        return networks.get(id);
+    }
+
+    public void deleteChannel(int id) {
+        networks.remove(id);
+    }
+
+    public int newChannel() {
+        lastId++;
+        return lastId;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tagCompound) {
+        networks.clear();
+        NBTTagList lst = tagCompound.getTagList("networks", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0 ; i < lst.tagCount() ; i++) {
+            NBTTagCompound tc = lst.getCompoundTagAt(i);
+            int channel = tc.getInteger("channel");
+            int v = tc.getInteger("refcount");
+
+            Network value = new Network();
+            value.refcount = v;
+            networks.put(channel, value);
+        }
+        lastId = tagCompound.getInteger("lastId");
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound tagCompound) {
+        NBTTagList lst = new NBTTagList();
+        for (Map.Entry<Integer, Network> entry : networks.entrySet()) {
+            NBTTagCompound tc = new NBTTagCompound();
+            tc.setInteger("channel", entry.getKey());
+            tc.setInteger("refcount", entry.getValue().getRefcount());
+            lst.appendTag(tc);
+        }
+        tagCompound.setTag("networks", lst);
+        tagCompound.setInteger("lastId", lastId);
+    }
+
+    public static class Network {
+        private int refcount = 0;
+
+        public int getRefcount() {
+            return refcount;
+        }
+
+        public void setRefcount(int refcount) {
+            this.refcount = refcount;
+        }
+
+        public void incRefCount() {
+            this.refcount++;
+        }
+
+        public void decRefCount() {
+            this.refcount--;
+        }
+    }
+}

@@ -5,17 +5,22 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.container.GenericBlock;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.varia.BlockTools;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class GeneratorBlock extends GenericBlock {
@@ -58,6 +63,17 @@ public class GeneratorBlock extends GenericBlock {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
+    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        TileEntity tileEntity = accessor.getTileEntity();
+        if (tileEntity instanceof GeneratorTileEntity) {
+            GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) tileEntity;
+            currenttip.add(EnumChatFormatting.GREEN + "ID: " + new DecimalFormat("#.##").format(generatorTileEntity.getNetworkId()));
+        }
+        return currenttip;
+    }
+
+    @Override
     public String getSideIconName() {
         return "machineGenerator";
     }
@@ -89,18 +105,28 @@ public class GeneratorBlock extends GenericBlock {
             if (world.getBlock(x, y-1, z) == GeneratorSetup.generatorBlock) {
                 updateMeta(world, x, y-1, z);
             }
+            TileEntity te = world.getTileEntity(x, y, z);
+            if (te instanceof GeneratorTileEntity) {
+                ((GeneratorTileEntity) te).addBlockToNetwork();
+            }
         }
     }
 
     @Override
     public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
+        if (!world.isRemote) {
+            TileEntity te = world.getTileEntity(x, y, z);
+            if (te instanceof GeneratorTileEntity) {
+                ((GeneratorTileEntity) te).removeBlockFromNetwork();
+            }
+        }
         super.breakBlock(world, x, y, z, block, meta);
         if (!world.isRemote) {
             if (world.getBlock(x, y+1, z) == GeneratorSetup.generatorBlock) {
                 updateMeta(world, x, y+1, z);
             }
             if (world.getBlock(x, y-1, z) == GeneratorSetup.generatorBlock) {
-                updateMeta(world, x, y-1, z);
+                updateMeta(world, x, y - 1, z);
             }
         }
     }
