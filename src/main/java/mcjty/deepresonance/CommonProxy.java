@@ -24,13 +24,14 @@ import java.io.File;
 
 public abstract class CommonProxy {
 
+    public static File mainConfigDir;
     public static File modConfigDir;
-    private Configuration mainConfig;
+    protected Configuration mainConfig;
 
     public void preInit(FMLPreInitializationEvent e) {
-        modConfigDir = e.getModConfigurationDirectory();
-        mainConfig = new Configuration(new File(modConfigDir.getPath() + File.separator + "deepresonance", "main.cfg"));
-
+        mainConfigDir = e.getModConfigurationDirectory();
+        modConfigDir = new File(mainConfigDir.getPath() + File.separator + "deepresonance");
+        mainConfig = new Configuration(new File(modConfigDir, "main.cfg"));
         readMainConfig();
 
         PacketHandler.registerMessages("deepresonance");
