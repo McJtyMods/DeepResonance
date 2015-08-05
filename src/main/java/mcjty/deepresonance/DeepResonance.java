@@ -36,6 +36,7 @@ public class DeepResonance implements ModBase {
 
     @Mod.Instance("deepresonance")
     public static DeepResonance instance;
+    public static WorldGridRegistry worldGridRegistry;
 
     public static final String SHIFT_MESSAGE = "<Press Shift>";
 
@@ -59,6 +60,7 @@ public class DeepResonance implements ModBase {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
         proxy.preInit(e);
+        worldGridRegistry = new WorldGridRegistry();
         FMLInterModComms.sendMessage("Waila", "register", "mcjty.wailasupport.WailaCompatibility.load");
         FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
 //        modConfigDir = e.getModConfigurationDirectory();
