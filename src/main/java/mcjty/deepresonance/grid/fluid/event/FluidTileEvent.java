@@ -1,6 +1,6 @@
 package mcjty.deepresonance.grid.fluid.event;
 
-import mcjty.deepresonance.grid.fluid.DRWiringTypeHelper;
+import mcjty.deepresonance.grid.fluid.DRGridTypeHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.world.WorldEvent;
 
@@ -13,7 +13,7 @@ public class FluidTileEvent extends WorldEvent {
         super(tile.getWorldObj());
         if (tile.getWorldObj() == null)
             throw new IllegalStateException("Tile tried to fire event but has a null world!?!?");
-        if (!DRWiringTypeHelper.instance.isTileValid(tile))
+        if (!DRGridTypeHelper.instance.isTileValid(tile))
             throw new IllegalArgumentException("Invalid tile: "+tile.getClass().getName());
         this.tile = tile;
     }

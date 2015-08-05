@@ -10,9 +10,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 /**
  * Created by Elec332 on 3-8-2015.
  */
-public class DRFluidCableGrid extends AbstractCableGrid<DRFluidCableGrid, DRFluidTile, DRWiringTypeHelper, DRFluidWorldGridHolder> {
-    public DRFluidCableGrid(World world, DRFluidTile p, ForgeDirection direction) {
-        super(world, p, direction, DRWiringTypeHelper.instance, DeepResonance.worldGridRegistry);
+public class DRFluidDuctGrid extends AbstractCableGrid<DRFluidDuctGrid, DRFluidTile, DRGridTypeHelper, DRFluidWorldGridHolder> {
+    public DRFluidDuctGrid(World world, DRFluidTile p, ForgeDirection direction) {
+        super(world, p, direction, DRGridTypeHelper.instance, DeepResonance.worldGridRegistry);
     }
 
     @Override

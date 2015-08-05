@@ -3,8 +3,8 @@ package mcjty.deepresonance.blocks;
 import cpw.mods.fml.common.registry.GameRegistry;
 import elec332.core.main.ElecCore;
 import mcjty.container.GenericItemBlock;
-import mcjty.deepresonance.blocks.cable.BlockCable;
-import mcjty.deepresonance.blocks.cable.TileBasicFluidDuct;
+import mcjty.deepresonance.blocks.duct.BlockDuct;
+import mcjty.deepresonance.blocks.duct.TileBasicFluidDuct;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalBlock;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
@@ -27,7 +27,7 @@ public final class ModBlocks {
         GameRegistry.registerBlock(resonatingCrystalBlock, GenericItemBlock.class, "resonatingCrystalBlock");
         GameRegistry.registerTileEntity(ResonatingCrystalTileEntity.class, "ResonatingCrystalTileEntity");
 
-        cable = new BlockCable(TileBasicFluidDuct.class, "basicFluidDuct").registerTile().register();
+        cable = new BlockDuct(TileBasicFluidDuct.class, "basicFluidDuct").registerTile().register();
 
         GeneratorSetup.setupBlocks();
     }

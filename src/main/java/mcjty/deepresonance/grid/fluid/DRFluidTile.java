@@ -8,14 +8,14 @@ import net.minecraftforge.common.util.ForgeDirection;
 /**
  * Created by Elec332 on 3-8-2015.
  */
-public class DRFluidTile extends AbstractGridTile<DRFluidCableGrid, DRFluidTile, DRWiringTypeHelper, DRFluidWorldGridHolder>{
+public class DRFluidTile extends AbstractGridTile<DRFluidDuctGrid, DRFluidTile, DRGridTypeHelper, DRFluidWorldGridHolder>{
 
     public DRFluidTile(TileEntity tileEntity) {
-        super(tileEntity, DRWiringTypeHelper.instance, DeepResonance.worldGridRegistry);
+        super(tileEntity, DRGridTypeHelper.instance, DeepResonance.worldGridRegistry);
     }
 
     @Override
-    protected DRFluidCableGrid newGrid(ForgeDirection direction) {
-        return new DRFluidCableGrid(getTile().getWorldObj(), this, direction);
+    protected DRFluidDuctGrid newGrid(ForgeDirection direction) {
+        return new DRFluidDuctGrid(getTile().getWorldObj(), this, direction);
     }
 }

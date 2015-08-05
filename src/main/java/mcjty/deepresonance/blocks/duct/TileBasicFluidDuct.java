@@ -1,4 +1,4 @@
-package mcjty.deepresonance.blocks.cable;
+package mcjty.deepresonance.blocks.duct;
 
 import elec332.core.baseclasses.tileentity.TileBase;
 import elec332.core.main.ElecCore;

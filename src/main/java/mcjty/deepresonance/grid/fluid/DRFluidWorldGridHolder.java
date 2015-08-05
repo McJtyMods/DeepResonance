@@ -7,10 +7,10 @@ import net.minecraft.world.World;
 /**
  * Created by Elec332 on 3-8-2015.
  */
-public class DRFluidWorldGridHolder extends AbstractWorldGridHolder<DRFluidWorldGridHolder, DRFluidCableGrid, DRFluidTile, DRWiringTypeHelper> {
+public class DRFluidWorldGridHolder extends AbstractWorldGridHolder<DRFluidWorldGridHolder, DRFluidDuctGrid, DRFluidTile, DRGridTypeHelper> {
 
     public DRFluidWorldGridHolder(World world) {
-        super(world, DRWiringTypeHelper.instance);
+        super(world, DRGridTypeHelper.instance);
     }
 
     @Override
