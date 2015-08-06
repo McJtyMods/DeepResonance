@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.container.GenericBlock;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.network.DRMessages;
 import mcjty.deepresonance.network.PacketGetGeneratorInfo;
 import mcjty.varia.BlockTools;
@@ -15,6 +16,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
@@ -24,6 +26,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Keyboard;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GeneratorBlock extends GenericBlock {
@@ -58,6 +61,11 @@ public class GeneratorBlock extends GenericBlock {
     @Override
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
         super.addInformation(itemStack, player, list, whatIsThis);
+
+        NBTTagCompound tagCompound = itemStack.getTagCompound();
+        if (tagCompound != null) {
+            list.add(EnumChatFormatting.YELLOW + "Energy: " + tagCompound.getInteger("energy"));
+        }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
             list.add(EnumChatFormatting.WHITE + "Part of a generator multi-block.");
@@ -119,8 +127,39 @@ public class GeneratorBlock extends GenericBlock {
             TileEntity te = world.getTileEntity(x, y, z);
             if (te instanceof GeneratorTileEntity) {
                 ((GeneratorTileEntity) te).addBlockToNetwork();
+                DRGeneratorNetwork.Network network = ((GeneratorTileEntity) te).getNetwork();
+                if (network != null) {
+                    NBTTagCompound tagCompound = itemStack.getTagCompound();
+                    network.setEnergy(network.getEnergy() + (tagCompound == null ? 0 : tagCompound.getInteger("energy")));
+                    DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(world);
+                    generatorNetwork.markDirty();
+                    generatorNetwork.save(world);
+                }
             }
         }
+    }
+
+    @Override
+    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
+        ArrayList<ItemStack> drops = super.getDrops(world, x, y, z, metadata, fortune);
+        if (!world.isRemote) {
+            TileEntity te = world.getTileEntity(x, y, z);
+            if (te instanceof GeneratorTileEntity) {
+                DRGeneratorNetwork.Network network = ((GeneratorTileEntity) te).getNetwork();
+                if (network != null) {
+                    int energy = network.getEnergy() / network.getRefcount();
+                    if (!drops.isEmpty()) {
+                        NBTTagCompound tagCompound = drops.get(0).getTagCompound();
+                        if (tagCompound == null) {
+                            tagCompound = new NBTTagCompound();
+                            drops.get(0).setTagCompound(tagCompound);
+                        }
+                        tagCompound.setInteger("energy", energy);
+                    }
+                }
+            }
+        }
+        return drops;
     }
 
     @Override
@@ -128,6 +167,12 @@ public class GeneratorBlock extends GenericBlock {
         if (!world.isRemote) {
             TileEntity te = world.getTileEntity(x, y, z);
             if (te instanceof GeneratorTileEntity) {
+                DRGeneratorNetwork.Network network = ((GeneratorTileEntity) te).getNetwork();
+                if (network != null) {
+                    int energy = network.getEnergy() / network.getRefcount();
+                    network.setEnergy(network.getEnergy() - energy);
+                }
+
                 ((GeneratorTileEntity) te).removeBlockFromNetwork();
             }
         }

@@ -144,6 +144,14 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         return networkId;
     }
 
+    public DRGeneratorNetwork.Network getNetwork() {
+        if (networkId == -1) {
+            return null;
+        }
+        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
+        return generatorNetwork.getChannel(networkId);
+    }
+
     @Override
     protected void checkStateServer() {
         super.checkStateServer();
