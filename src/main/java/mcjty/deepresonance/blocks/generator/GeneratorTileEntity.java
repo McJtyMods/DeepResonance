@@ -49,10 +49,9 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
             network.incRefCount();
         } else {
             // We need to merge networks. The first network will be the master.
-            networkId = adjacentGeneratorIds.iterator().next();
-            generatorNetwork.getOrCreateNetwork(networkId);
+            int id = adjacentGeneratorIds.iterator().next();
             Set<Coordinate> done = new HashSet<Coordinate>();
-            setBlocksToNetwork(new Coordinate(xCoord, yCoord, zCoord), done, networkId);
+            setBlocksToNetwork(new Coordinate(xCoord, yCoord, zCoord), done, id);
         }
 
         generatorNetwork.markDirty();
@@ -90,6 +89,12 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
 
     public void removeBlockFromNetwork() {
         Coordinate thisCoord = new Coordinate(xCoord, yCoord, zCoord);
+
+        if (networkId != -1) {
+            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
+            generatorNetwork.getOrCreateNetwork(networkId).decRefCount();
+            setNetworkId(-1);
+        }
 
         // Clear all networks adjacent to this one.
         for (ForgeDirection direction : ForgeDirection.values()) {
