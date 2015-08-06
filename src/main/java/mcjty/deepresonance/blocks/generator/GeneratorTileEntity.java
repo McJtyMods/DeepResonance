@@ -48,8 +48,7 @@ public class GeneratorTileEntity extends GenericEnergyProviderTileEntity {
         } else {
             // We need to merge networks. The first network will be the master.
             networkId = adjacentGeneratorIds.iterator().next();
-            DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(networkId);
-            network.incRefCount();
+            generatorNetwork.getOrCreateNetwork(networkId);
             Set<Coordinate> done = new HashSet<Coordinate>();
             setBlocksToNetwork(new Coordinate(xCoord, yCoord, zCoord), done, networkId);
         }
@@ -60,24 +59,26 @@ public class GeneratorTileEntity extends GenericEnergyProviderTileEntity {
 
     private void setBlocksToNetwork(Coordinate c, Set<Coordinate> done, int newId) {
         done.add(c);
+
+        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
+        GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) worldObj.getTileEntity(c.getX(), c.getY(), c.getZ());
+        int oldNetworkId = generatorTileEntity.getNetworkId();
+        if (oldNetworkId != newId) {
+            if (oldNetworkId != -1) {
+                generatorNetwork.getOrCreateNetwork(oldNetworkId).decRefCount();
+            }
+            generatorTileEntity.setNetworkId(newId);
+            if (newId != -1) {
+                generatorNetwork.getOrCreateNetwork(newId).incRefCount();
+            }
+        }
+
         for (ForgeDirection direction : ForgeDirection.values()) {
             if (!direction.equals(ForgeDirection.UNKNOWN)) {
                 Coordinate newC = c.addDirection(direction);
                 if (!done.contains(newC)) {
                     Block block = worldObj.getBlock(newC.getX(), newC.getY(), newC.getZ());
                     if (block == GeneratorSetup.generatorBlock) {
-                        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
-                        GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) worldObj.getTileEntity(newC.getX(), newC.getY(), newC.getZ());
-                        int oldNetworkId = generatorTileEntity.getNetworkId();
-                        if (oldNetworkId != newId) {
-                            if (oldNetworkId != -1) {
-                                generatorNetwork.getOrCreateNetwork(oldNetworkId).decRefCount();
-                            }
-                            generatorTileEntity.setNetworkId(newId);
-                            if (newId != -1) {
-                                generatorNetwork.getOrCreateNetwork(newId).incRefCount();
-                            }
-                        }
                         setBlocksToNetwork(newC, done, newId);
                     }
                 }
@@ -103,11 +104,9 @@ public class GeneratorTileEntity extends GenericEnergyProviderTileEntity {
 
         // Now assign new ones.
         int idToUse = networkId;
-        System.out.println("1: idToUse = " + idToUse);
         for (ForgeDirection direction : ForgeDirection.values()) {
             if (!direction.equals(ForgeDirection.UNKNOWN)) {
                 Coordinate newC = thisCoord.addDirection(direction);
-                System.out.println("newC = " + newC);
                 Block block = worldObj.getBlock(newC.getX(), newC.getY(), newC.getZ());
                 if (block == GeneratorSetup.generatorBlock) {
                     GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) worldObj.getTileEntity(newC.getX(), newC.getY(), newC.getZ());
@@ -115,7 +114,6 @@ public class GeneratorTileEntity extends GenericEnergyProviderTileEntity {
                         if (idToUse == -1) {
                             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
                             idToUse = generatorNetwork.newChannel();
-                            System.out.println("2: idToUse = " + idToUse);
                         }
                         Set<Coordinate> done = new HashSet<Coordinate>();
                         done.add(thisCoord);
