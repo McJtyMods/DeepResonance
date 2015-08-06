@@ -4,6 +4,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.container.GenericBlock;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.network.DRMessages;
+import mcjty.deepresonance.network.PacketGetGeneratorInfo;
 import mcjty.varia.BlockTools;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -19,6 +21,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import org.lwjgl.input.Keyboard;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -32,6 +35,11 @@ public class GeneratorBlock extends GenericBlock {
     public static final int META_OFF = 0;
     public static final int META_HASUPPER = 2;
     public static final int META_HASLOWER = 4;
+
+    public static int tooltipEnergy = 0;
+    public static int tooltipRefCount = 0;
+
+    private static long lastTime = 0;
 
     public GeneratorBlock() {
         super(DeepResonance.instance, Material.iron, GeneratorTileEntity.class, true);
@@ -50,16 +58,13 @@ public class GeneratorBlock extends GenericBlock {
     @Override
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
         super.addInformation(itemStack, player, list, whatIsThis);
-//
-//        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-//            list.add(EnumChatFormatting.WHITE + "Generate power out of ender pearls. You need at");
-//            list.add(EnumChatFormatting.WHITE + "least two generators for this to work and the setup");
-//            list.add(EnumChatFormatting.WHITE + "is relatively complicated. Timing is crucial.");
-//            list.add(EnumChatFormatting.YELLOW + "Infusing bonus: increased power generation and");
-//            list.add(EnumChatFormatting.YELLOW + "reduced powerloss for holding pearls.");
-//        } else {
-//            list.add(EnumChatFormatting.WHITE + RFTools.SHIFT_MESSAGE);
-//        }
+
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+            list.add(EnumChatFormatting.WHITE + "Part of a generator multi-block.");
+            list.add(EnumChatFormatting.WHITE + "You can place these in any configuration.");
+        } else {
+            list.add(EnumChatFormatting.WHITE + DeepResonance.SHIFT_MESSAGE);
+        }
     }
 
     @Override
@@ -69,6 +74,12 @@ public class GeneratorBlock extends GenericBlock {
         if (tileEntity instanceof GeneratorTileEntity) {
             GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) tileEntity;
             currenttip.add(EnumChatFormatting.GREEN + "ID: " + new DecimalFormat("#.##").format(generatorTileEntity.getNetworkId()));
+            if (System.currentTimeMillis() - lastTime > 500) {
+                lastTime = System.currentTimeMillis();
+                DRMessages.INSTANCE.sendToServer(new PacketGetGeneratorInfo(generatorTileEntity.getNetworkId()));
+            }
+            currenttip.add(EnumChatFormatting.GREEN + "Energy: " + tooltipEnergy + " RF");
+            currenttip.add(EnumChatFormatting.GREEN + "Blocks: " + tooltipRefCount);
         }
         return currenttip;
     }

@@ -1,7 +1,9 @@
 package mcjty.deepresonance.blocks.generator;
 
+import cofh.api.energy.IEnergyProvider;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.entity.GenericEnergyProviderTileEntity;
+import mcjty.entity.GenericTileEntity;
 import mcjty.varia.Coordinate;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,12 +12,12 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class GeneratorTileEntity extends GenericEnergyProviderTileEntity {
+public class GeneratorTileEntity extends GenericTileEntity implements IEnergyProvider {
 
     private int networkId = -1;
 
     public GeneratorTileEntity() {
-        super(5000000, 20000);
+        super();
     }
 
     public void addBlockToNetwork() {
@@ -154,4 +156,24 @@ public class GeneratorTileEntity extends GenericEnergyProviderTileEntity {
         tagCompound.setInteger("networkId", networkId);
     }
 
+    @Override
+    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
+
+        return 0;
+    }
+
+    @Override
+    public int getEnergyStored(ForgeDirection from) {
+        return 0;
+    }
+
+    @Override
+    public int getMaxEnergyStored(ForgeDirection from) {
+        return 0;
+    }
+
+    @Override
+    public boolean canConnectEnergy(ForgeDirection from) {
+        return true;
+    }
 }
