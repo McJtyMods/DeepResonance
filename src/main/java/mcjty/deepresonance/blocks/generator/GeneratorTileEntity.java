@@ -47,10 +47,20 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
             DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(networkId);
             network.incRefCount();
         } else {
-            // We need to merge networks. The first network will be the master.
+            // We need to merge networks. The first network will be the master. First we
+            // calculate the total amount of energy in all the networks that are merged this way.
+            int energy = 0;
+            for (Integer netId : adjacentGeneratorIds) {
+                DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(netId);
+                energy += network.getEnergy();
+            }
+
             int id = adjacentGeneratorIds.iterator().next();
             Set<Coordinate> done = new HashSet<Coordinate>();
             setBlocksToNetwork(new Coordinate(xCoord, yCoord, zCoord), done, id);
+
+            DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(networkId);
+            network.setEnergy(energy);
         }
 
         generatorNetwork.save(worldObj);
@@ -88,11 +98,22 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
     public void removeBlockFromNetwork() {
         Coordinate thisCoord = new Coordinate(xCoord, yCoord, zCoord);
 
+        int totalEnergy = 0;
+        int totalBlocks = 0;
         if (networkId != -1) {
             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
-            generatorNetwork.getOrCreateNetwork(networkId).decRefCount();
+            DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(networkId);
+            network.decRefCount();
+            totalEnergy = network.getEnergy();
+            totalBlocks = network.getRefcount();
             setNetworkId(-1);
         }
+        // Safety:
+        if (totalBlocks < 1) {
+            totalBlocks = 1;
+        }
+
+        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
 
         // Clear all networks adjacent to this one.
         for (ForgeDirection direction : ForgeDirection.values()) {
@@ -117,20 +138,48 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
                     GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) worldObj.getTileEntity(newC.getX(), newC.getY(), newC.getZ());
                     if (generatorTileEntity.getNetworkId() == -1) {
                         if (idToUse == -1) {
-                            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
                             idToUse = generatorNetwork.newChannel();
                         }
                         Set<Coordinate> done = new HashSet<Coordinate>();
                         done.add(thisCoord);
                         setBlocksToNetwork(newC, done, idToUse);
+                        generatorNetwork.getOrCreateNetwork(idToUse).setEnergy(-1);      // Marker so we know what energy to set later.
+
                         idToUse = -1;
                     }
                 }
             }
         }
 
+        // Now we need to redistribute the total energy based on the size of the adjacent networks.
+        int energy = totalEnergy / totalBlocks;
+        int remainder = totalEnergy % totalBlocks;
+        for (ForgeDirection direction : ForgeDirection.values()) {
+            if (!direction.equals(ForgeDirection.UNKNOWN)) {
+                Coordinate newC = thisCoord.addDirection(direction);
+                Block block = worldObj.getBlock(newC.getX(), newC.getY(), newC.getZ());
+                if (block == GeneratorSetup.generatorBlock) {
+                    GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) worldObj.getTileEntity(newC.getX(), newC.getY(), newC.getZ());
+                    DRGeneratorNetwork.Network network = generatorTileEntity.getNetwork();
+                    if (network.getEnergy() == -1) {
+                        network.setEnergy(energy * network.getRefcount() + remainder);
+                        remainder = 0;  // Only the first network gets the remainder.
+                    }
+                }
+            }
+        }
+        generatorNetwork.save(worldObj);
     }
 
+//    // Move block from one network (possibly unset) to another (possibly unset)
+//    public void moveNetwork(int newId) {
+//        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
+//        if (networkId != -1) {
+//            DRGeneratorNetwork.Network sourceNetwork = generatorNetwork.getOrCreateNetwork(networkId);
+//            sou
+//        }
+//    }
+//
     // Move this tile entity to another network.
     public void setNetworkId(int newId) {
         networkId = newId;
@@ -147,7 +196,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
             return null;
         }
         DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
-        return generatorNetwork.getChannel(networkId);
+        return generatorNetwork.getOrCreateNetwork(networkId);
     }
 
     @Override
