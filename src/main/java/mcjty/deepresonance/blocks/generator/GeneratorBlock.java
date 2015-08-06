@@ -45,7 +45,7 @@ public class GeneratorBlock extends GenericBlock {
     private static long lastTime = 0;
 
     public GeneratorBlock() {
-        super(DeepResonance.instance, Material.iron, GeneratorTileEntity.class, true);
+        super(DeepResonance.instance, Material.iron, GeneratorTileEntity.class, false);
         setBlockName("generatorBlock");
         setHorizRotation(true);
         setCreativeTab(DeepResonance.tabDeepResonance);
@@ -132,7 +132,6 @@ public class GeneratorBlock extends GenericBlock {
                     NBTTagCompound tagCompound = itemStack.getTagCompound();
                     network.setEnergy(network.getEnergy() + (tagCompound == null ? 0 : tagCompound.getInteger("energy")));
                     DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(world);
-                    generatorNetwork.markDirty();
                     generatorNetwork.save(world);
                 }
             }

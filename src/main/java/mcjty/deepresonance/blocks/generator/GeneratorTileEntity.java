@@ -2,7 +2,6 @@ package mcjty.deepresonance.blocks.generator;
 
 import cofh.api.energy.IEnergyProvider;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
-import mcjty.entity.GenericEnergyProviderTileEntity;
 import mcjty.entity.GenericTileEntity;
 import mcjty.varia.Coordinate;
 import net.minecraft.block.Block;
@@ -54,7 +53,6 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
             setBlocksToNetwork(new Coordinate(xCoord, yCoord, zCoord), done, id);
         }
 
-        generatorNetwork.markDirty();
         generatorNetwork.save(worldObj);
     }
 
@@ -153,8 +151,8 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
     }
 
     @Override
-    protected void checkStateServer() {
-        super.checkStateServer();
+    public boolean canUpdate() {
+        return false;
     }
 
     @Override

@@ -2,6 +2,7 @@ package mcjty.deepresonance.blocks;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import mcjty.container.GenericItemBlock;
+import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalBlock;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
@@ -22,5 +23,6 @@ public final class ModBlocks {
         GameRegistry.registerTileEntity(ResonatingCrystalTileEntity.class, "ResonatingCrystalTileEntity");
 
         GeneratorSetup.setupBlocks();
+        EnergyCollectorSetup.setupBlocks();
     }
 }
