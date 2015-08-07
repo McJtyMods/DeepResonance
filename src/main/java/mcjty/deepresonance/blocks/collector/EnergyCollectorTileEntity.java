@@ -18,7 +18,7 @@ import java.util.Set;
 public class EnergyCollectorTileEntity extends GenericTileEntity {
 
     // Relative coordinates of crystals.
-    private Set<Coordinate> crystals = new HashSet<>();
+    private Set<Coordinate> crystals = new HashSet<Coordinate>();
     private int crystalTimeout = 20;
 
     public EnergyCollectorTileEntity() {
@@ -49,7 +49,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
     }
 
     private void findCrystals() {
-        Set<Coordinate> newCrystals = new HashSet<>();
+        Set<Coordinate> newCrystals = new HashSet<Coordinate>();
 
         for (int y = yCoord - 1 ; y <= yCoord + 1 ; y++) {
             if (y >= 0 && y < worldObj.getHeight()) {
