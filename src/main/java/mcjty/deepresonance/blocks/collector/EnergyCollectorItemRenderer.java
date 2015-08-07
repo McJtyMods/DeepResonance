@@ -1,4 +1,4 @@
-package mcjty.deepresonance.blocks.crystals;
+package mcjty.deepresonance.blocks.collector;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import mcjty.deepresonance.DeepResonance;
@@ -10,9 +10,9 @@ import net.minecraftforge.client.model.IModelCustom;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-public class ResonatingCrystalItemRenderer implements IItemRenderer {
-    IModelCustom model = AdvancedModelLoader.loadModel(new ResourceLocation(DeepResonance.MODID, "obj/crystal.obj"));
-    ResourceLocation texture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/crystal.png");
+public class EnergyCollectorItemRenderer implements IItemRenderer {
+    IModelCustom model = AdvancedModelLoader.loadModel(new ResourceLocation(DeepResonance.MODID, "obj/collector.obj"));
+    ResourceLocation texture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/energyCollector.png");
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
@@ -37,8 +37,7 @@ public class ResonatingCrystalItemRenderer implements IItemRenderer {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
         GL11.glTranslatef(0.5F, 0.0F, 0.5F);
-        GL11.glScalef(1.4F, 1.4F, 1.4F);
-//        GL11.glScalef(0.09375F, 0.09375F, 0.09375F);
+//        GL11.glScalef(1.4F, 1.4F, 1.4F);
 
         model.renderAll();
         GL11.glPopMatrix();

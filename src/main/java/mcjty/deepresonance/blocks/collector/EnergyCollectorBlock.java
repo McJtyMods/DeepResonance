@@ -8,6 +8,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.IBlockAccess;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
@@ -43,6 +44,21 @@ public class EnergyCollectorBlock extends GenericBlock {
 
     @Override
     public String getSideIconName() {
-        return "machineEnergyCollector";
+        return "energyCollector";
+    }
+
+    @Override
+    public boolean shouldSideBeRendered(IBlockAccess blockAccess, int x, int y, int z, int side) {
+        return false;
+    }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    public boolean isOpaqueCube() {
+        return false;
     }
 }
