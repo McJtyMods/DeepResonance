@@ -15,11 +15,22 @@ import net.minecraftforge.client.model.IModelCustom;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import java.util.Random;
+
 @SideOnly(Side.CLIENT)
 public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
     IModelCustom model = AdvancedModelLoader.loadModel(new ResourceLocation(DeepResonance.MODID, "obj/collector.obj"));
     ResourceLocation blockTexture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/energyCollector.png");
     ResourceLocation laserbeam = new ResourceLocation(DeepResonance.MODID, "textures/effects/laserbeam.png");
+    ResourceLocation laserbeams[] = new ResourceLocation[4];
+    Random random = new Random();
+
+    public EnergyCollectorTESR() {
+        laserbeams[0] = new ResourceLocation(DeepResonance.MODID, "textures/effects/laserbeam1.png");
+        laserbeams[1] = new ResourceLocation(DeepResonance.MODID, "textures/effects/laserbeam2.png");
+        laserbeams[2] = new ResourceLocation(DeepResonance.MODID, "textures/effects/laserbeam3.png");
+        laserbeams[3] = new ResourceLocation(DeepResonance.MODID, "textures/effects/laserbeam4.png");
+    }
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float time) {
@@ -42,7 +53,7 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
 
-            this.bindTexture(laserbeam);
+            this.bindTexture(laserbeams[random.nextInt(4)]);
 
             Minecraft mc = Minecraft.getMinecraft();
             EntityClientPlayerMP p = mc.thePlayer;
@@ -56,7 +67,7 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
             Tessellator tessellator = Tessellator.instance;
 
             tessellator.startDrawingQuads();
-            tessellator.setColorRGBA(255, 0, 0, 180);
+//            tessellator.setColorRGBA(255, 0, 0, 180);
             tessellator.setBrightness(240);
 
             Coordinate thisLocation = new Coordinate(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
@@ -78,7 +89,7 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
     private void drawLine(Coordinate c1, Coordinate c2, double playerX, double playerY, double playerZ) {
         // Calculate the start point of the laser
         float mx1 = c1.getX() + .5f;
-        float my1 = c1.getY() + .5f;
+        float my1 = c1.getY() + .5f + .3f;
         float mz1 = c1.getZ() + .5f;
         Vector S = new Vector(mx1, my1, mz1);
 
