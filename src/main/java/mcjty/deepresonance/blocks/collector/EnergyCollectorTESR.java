@@ -3,8 +3,6 @@ package mcjty.deepresonance.blocks.collector;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.render.DefaultISBRH;
-import mcjty.varia.BlockTools;
 import mcjty.varia.Coordinate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -14,7 +12,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
-import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -42,46 +39,46 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
 
         EnergyCollectorTileEntity energyCollectorTileEntity = (EnergyCollectorTileEntity) tileEntity;
-        Coordinate thisLocation = new Coordinate(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
-//        Coordinate destination = energyCollectorTileEntity.getDestination();
-        Coordinate destination = thisLocation.addDirection(ForgeDirection.UP).addDirection(ForgeDirection.UP).addDirection(ForgeDirection.WEST);
-        if (destination != null) {
-            drawBeam(time, thisLocation, destination);
+
+        if (!energyCollectorTileEntity.getCrystals().isEmpty()) {
+            boolean blending = GL11.glIsEnabled(GL11.GL_BLEND);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+
+            this.bindTexture(texture);
+
+            Minecraft mc = Minecraft.getMinecraft();
+            EntityClientPlayerMP p = mc.thePlayer;
+            double doubleX = p.lastTickPosX + (p.posX - p.lastTickPosX) * time;
+            double doubleY = p.lastTickPosY + (p.posY - p.lastTickPosY) * time;
+            double doubleZ = p.lastTickPosZ + (p.posZ - p.lastTickPosZ) * time;
+
+            GL11.glPushMatrix();
+            GL11.glTranslated(-doubleX, -doubleY, -doubleZ);
+
+            Tessellator tessellator = Tessellator.instance;
+
+            tessellator.startDrawingQuads();
+            tessellator.setColorRGBA(255, 255, 255, 128);
+            tessellator.setBrightness(240);
+
+            Coordinate thisLocation = new Coordinate(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+            for (Coordinate relative : energyCollectorTileEntity.getCrystals()) {
+                Coordinate destination = new Coordinate(relative.getX() + tileEntity.xCoord, relative.getY() + tileEntity.yCoord, relative.getZ() + tileEntity.zCoord);
+                drawLine(thisLocation, destination, .2f);
+            }
+
+            tessellator.draw();
+
+            GL11.glPopMatrix();
+
+            if (!blending) {
+                GL11.glDisable(GL11.GL_BLEND);
+            }
         }
-    }
-
-    private void drawBeam(float partialTicks, Coordinate c1, Coordinate c2) {
-        Minecraft mc = Minecraft.getMinecraft();
-        EntityClientPlayerMP p = mc.thePlayer;
-        double doubleX = p.lastTickPosX + (p.posX - p.lastTickPosX) * partialTicks;
-        double doubleY = p.lastTickPosY + (p.posY - p.lastTickPosY) * partialTicks;
-        double doubleZ = p.lastTickPosZ + (p.posZ - p.lastTickPosZ) * partialTicks;
-
-        GL11.glPushMatrix();
-        GL11.glTranslated(-doubleX, -doubleY, -doubleZ);
-
-        boolean blending = GL11.glIsEnabled(GL11.GL_BLEND);
-
-        this.bindTexture(texture);
-        drawLine(c1, c2, .2f);
-
-        if (!blending) {
-            GL11.glDisable(GL11.GL_BLEND);
-        }
-
-        GL11.glPopMatrix();
     }
 
     private void drawLine(Coordinate c1, Coordinate c2, float width) {
-        Tessellator tessellator = Tessellator.instance;
-
-        tessellator.startDrawingQuads();
-        tessellator.setColorRGBA(255, 255, 255, 128);
-        tessellator.setBrightness(240);
-
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
-
         // Calculate the start point of the laser
         float mx1 = c1.getX() + .5f;
         float my1 = c1.getY() + .5f;
@@ -116,12 +113,11 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
         Vector p7 = Add(end, oside2);
         Vector p8 = Sub(end, oside2);
 
+        Tessellator tessellator = Tessellator.instance;
         drawQuad(tessellator, p1, p2, p5, p6);
         drawQuad(tessellator, p2, p1, p6, p5);
         drawQuad(tessellator, p8, p7, p4, p3);
         drawQuad(tessellator, p7, p8, p3, p4);
-
-        tessellator.draw();
     }
 
     private void drawQuad(Tessellator tessellator, Vector p1, Vector p2, Vector p3, Vector p4) {
