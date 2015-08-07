@@ -81,9 +81,8 @@ public class DRGeneratorNetwork extends WorldSavedData {
         for (int i = 0 ; i < lst.tagCount() ; i++) {
             NBTTagCompound tc = lst.getCompoundTagAt(i);
             int channel = tc.getInteger("channel");
-            NBTTagCompound networkTag = tc.getCompoundTag("networkData");
             Network value = new Network();
-            value.readFromNBT(networkTag);
+            value.readFromNBT(tc);
             networks.put(channel, value);
         }
         lastId = tagCompound.getInteger("lastId");
@@ -95,9 +94,7 @@ public class DRGeneratorNetwork extends WorldSavedData {
         for (Map.Entry<Integer, Network> entry : networks.entrySet()) {
             NBTTagCompound tc = new NBTTagCompound();
             tc.setInteger("channel", entry.getKey());
-            NBTTagCompound networkTag = new NBTTagCompound();
-            entry.getValue().writeToNBT(networkTag);
-            tc.setTag("networkData", networkTag);
+            entry.getValue().writeToNBT(tc);
             lst.appendTag(tc);
         }
         tagCompound.setTag("networks", lst);
