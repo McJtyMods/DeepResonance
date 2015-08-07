@@ -18,15 +18,12 @@ import org.lwjgl.opengl.GL12;
 @SideOnly(Side.CLIENT)
 public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
     IModelCustom model = AdvancedModelLoader.loadModel(new ResourceLocation(DeepResonance.MODID, "obj/collector.obj"));
-    ResourceLocation texture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/energyCollector.png");
-
-    public static double distance(double dx, double dz) {
-        return Math.sqrt(dx * dx + dz * dz);
-    }
+    ResourceLocation blockTexture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/energyCollector.png");
+    ResourceLocation laserbeam = new ResourceLocation(DeepResonance.MODID, "textures/effects/laserbeam.png");
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float time) {
-        bindTexture(texture);
+        bindTexture(blockTexture);
 
         GL11.glPushMatrix();
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -45,7 +42,7 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
 
-            this.bindTexture(texture);
+            this.bindTexture(laserbeam);
 
             Minecraft mc = Minecraft.getMinecraft();
             EntityClientPlayerMP p = mc.thePlayer;
@@ -59,13 +56,13 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
             Tessellator tessellator = Tessellator.instance;
 
             tessellator.startDrawingQuads();
-            tessellator.setColorRGBA(255, 255, 255, 128);
+            tessellator.setColorRGBA(255, 0, 0, 180);
             tessellator.setBrightness(240);
 
             Coordinate thisLocation = new Coordinate(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
             for (Coordinate relative : energyCollectorTileEntity.getCrystals()) {
                 Coordinate destination = new Coordinate(relative.getX() + tileEntity.xCoord, relative.getY() + tileEntity.yCoord, relative.getZ() + tileEntity.zCoord);
-                drawLine(thisLocation, destination, .2f);
+                drawLine(thisLocation, destination, doubleX, doubleY, doubleZ);
             }
 
             tessellator.draw();
@@ -78,53 +75,42 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
         }
     }
 
-    private void drawLine(Coordinate c1, Coordinate c2, float width) {
+    private void drawLine(Coordinate c1, Coordinate c2, double playerX, double playerY, double playerZ) {
         // Calculate the start point of the laser
         float mx1 = c1.getX() + .5f;
         float my1 = c1.getY() + .5f;
         float mz1 = c1.getZ() + .5f;
-        Vector start = new Vector(mx1, my1, mz1);
+        Vector S = new Vector(mx1, my1, mz1);
 
         // Calculate the end point of the laser
         float mx2 = c2.getX() + .5f;
         float my2 = c2.getY() + .5f;
         float mz2 = c2.getZ() + .5f;
-        Vector end = new Vector(mx2, my2, mz2);
+        Vector E = new Vector(mx2, my2, mz2);
 
-        // Given the two points above I would like to render a quad that
-        // always faces the camera
+        // Player position.
+        Vector P = new Vector((float) playerX, (float) playerY, (float) playerZ);
 
-        Vector normal = Cross(start, end);
+        Vector PS = Sub(S, P);
+        Vector SE = Sub(E, S);
+
+        Vector normal = Cross(PS, SE);
         normal = normal.normalize();
-        Vector side = Cross(normal, Sub(end, start));
-        side = side.normalize();
-        Vector side2 = Mul(side, width / 2.0f);
 
-        Vector oside = Cross(side, normal);
-        Vector oside2 = Mul(oside, width / 2.0f);
+        Vector half = Mul(normal, .1f);
+        Vector p1 = Add(S, half);
+        Vector p2 = Sub(S, half);
+        Vector p3 = Add(E, half);
+        Vector p4 = Sub(E, half);
 
-        Vector p1 = Add(start, side2);
-        Vector p2 = Sub(start, side2);
-        Vector p3 = Add(start, oside2);
-        Vector p4 = Sub(start, oside2);
-
-        Vector p5 = Add(end, side2);
-        Vector p6 = Sub(end, side2);
-        Vector p7 = Add(end, oside2);
-        Vector p8 = Sub(end, oside2);
-
-        Tessellator tessellator = Tessellator.instance;
-        drawQuad(tessellator, p1, p2, p5, p6);
-        drawQuad(tessellator, p2, p1, p6, p5);
-        drawQuad(tessellator, p8, p7, p4, p3);
-        drawQuad(tessellator, p7, p8, p3, p4);
+        drawQuad(Tessellator.instance, p1, p3, p4, p2);
     }
 
     private void drawQuad(Tessellator tessellator, Vector p1, Vector p2, Vector p3, Vector p4) {
-        tessellator.addVertex(p1.getX(), p1.getY(), p1.getZ());
-        tessellator.addVertex(p2.getX(), p2.getY(), p2.getZ());
-        tessellator.addVertex(p3.getX(), p3.getY(), p3.getZ());
-        tessellator.addVertex(p4.getX(), p4.getY(), p4.getZ());
+        tessellator.addVertexWithUV(p1.getX(), p1.getY(), p1.getZ(), 0, 0);
+        tessellator.addVertexWithUV(p2.getX(), p2.getY(), p2.getZ(), 1, 0);
+        tessellator.addVertexWithUV(p3.getX(), p3.getY(), p3.getZ(), 1, 1);
+        tessellator.addVertexWithUV(p4.getX(), p4.getY(), p4.getZ(), 0, 1);
     }
 
     private static class Vector {
