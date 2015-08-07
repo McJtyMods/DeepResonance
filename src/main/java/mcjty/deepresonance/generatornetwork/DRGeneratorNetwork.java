@@ -81,12 +81,9 @@ public class DRGeneratorNetwork extends WorldSavedData {
         for (int i = 0 ; i < lst.tagCount() ; i++) {
             NBTTagCompound tc = lst.getCompoundTagAt(i);
             int channel = tc.getInteger("channel");
-            int v = tc.getInteger("refcount");
-            int energy = tc.getInteger("energy");
-
+            NBTTagCompound networkTag = tc.getCompoundTag("networkData");
             Network value = new Network();
-            value.refcount = v;
-            value.energy = energy;
+            value.readFromNBT(networkTag);
             networks.put(channel, value);
         }
         lastId = tagCompound.getInteger("lastId");
@@ -98,8 +95,9 @@ public class DRGeneratorNetwork extends WorldSavedData {
         for (Map.Entry<Integer, Network> entry : networks.entrySet()) {
             NBTTagCompound tc = new NBTTagCompound();
             tc.setInteger("channel", entry.getKey());
-            tc.setInteger("refcount", entry.getValue().getRefcount());
-            tc.setInteger("energy", entry.getValue().getEnergy());
+            NBTTagCompound networkTag = new NBTTagCompound();
+            entry.getValue().writeToNBT(networkTag);
+            tc.setTag("networkData", networkTag);
             lst.appendTag(tc);
         }
         tagCompound.setTag("networks", lst);
@@ -132,6 +130,16 @@ public class DRGeneratorNetwork extends WorldSavedData {
 
         public void setEnergy(int energy) {
             this.energy = energy;
+        }
+
+        public void writeToNBT(NBTTagCompound tagCompound){
+            tagCompound.setInteger("refcount", refcount);
+            tagCompound.setInteger("energy", energy);
+        }
+
+        public void readFromNBT(NBTTagCompound tagCompound){
+            this.refcount = tagCompound.getInteger("refcount");
+            this.energy = tagCompound.getInteger("energy");
         }
     }
 }
