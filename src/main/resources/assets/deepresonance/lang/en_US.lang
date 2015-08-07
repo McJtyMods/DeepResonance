@@ -3,6 +3,7 @@ item.DeepResonanceManual.name=Deep Resonance Manual
 tile.oreResonating.name=Resonating Ore
 tile.resonatingCrystalBlock.name=Resonating Crystal
 tile.generatorBlock.name=Generator
+tile.energyCollectorBlock.name=Energy Collector
 
 itemGroup.DeepResonance=Deep Resonance
 

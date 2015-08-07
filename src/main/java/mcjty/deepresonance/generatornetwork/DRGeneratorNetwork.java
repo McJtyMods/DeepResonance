@@ -82,9 +82,11 @@ public class DRGeneratorNetwork extends WorldSavedData {
             NBTTagCompound tc = lst.getCompoundTagAt(i);
             int channel = tc.getInteger("channel");
             int v = tc.getInteger("refcount");
+            int energy = tc.getInteger("energy");
 
             Network value = new Network();
             value.refcount = v;
+            value.energy = energy;
             networks.put(channel, value);
         }
         lastId = tagCompound.getInteger("lastId");
@@ -97,6 +99,7 @@ public class DRGeneratorNetwork extends WorldSavedData {
             NBTTagCompound tc = new NBTTagCompound();
             tc.setInteger("channel", entry.getKey());
             tc.setInteger("refcount", entry.getValue().getRefcount());
+            tc.setInteger("energy", entry.getValue().getEnergy());
             lst.appendTag(tc);
         }
         tagCompound.setTag("networks", lst);
@@ -105,6 +108,7 @@ public class DRGeneratorNetwork extends WorldSavedData {
 
     public static class Network {
         private int refcount = 0;
+        private int energy = 0;
 
         public int getRefcount() {
             return refcount;
@@ -120,6 +124,14 @@ public class DRGeneratorNetwork extends WorldSavedData {
 
         public void decRefCount() {
             this.refcount--;
+        }
+
+        public int getEnergy() {
+            return energy;
+        }
+
+        public void setEnergy(int energy) {
+            this.energy = energy;
         }
     }
 }
