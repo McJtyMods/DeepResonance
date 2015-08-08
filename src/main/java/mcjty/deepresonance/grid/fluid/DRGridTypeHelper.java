@@ -41,6 +41,10 @@ public class DRGridTypeHelper extends AbstractWiringTypeHelper {
         return true;
     }
 
+    public boolean canTransmitterConnectTo(TileEntity transmitter, ForgeDirection direction){
+        return true;
+    }
+
     @Override
     public boolean canSourceProvideTo(TileEntity tile, ForgeDirection direction) {
         return ((IDeepResonanceFluidProvider)tile).canAcceptFrom(direction);
