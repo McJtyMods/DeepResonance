@@ -55,7 +55,7 @@ public class GeneratorControllerBlock extends GenericBlock {
     }
 
     @Override
-    public String getSideIconName() {
+    public String getIdentifyingIconName() {
         return "generatorControllerOn";
     }
 
@@ -84,7 +84,6 @@ public class GeneratorControllerBlock extends GenericBlock {
                     }
                 }
             }
-            world.setBlockMetadataWithNotify(x, y, z, meta, 3);
 
         }
     }
