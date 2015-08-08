@@ -192,6 +192,17 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         return generatorNetwork.getOrCreateNetwork(networkId);
     }
 
+    public void activate(boolean active) {
+        DRGeneratorNetwork.Network network = getNetwork();
+        if (network != null && network.isActive() != active) {
+            network.setActive(active);
+            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
+            generatorNetwork.save(worldObj);
+            Set<Coordinate> done = new HashSet<Coordinate> ();
+            activateBlocks(new Coordinate(xCoord, yCoord, zCoord), done, active);
+        }
+    }
+
     private void activateBlocks(Coordinate c, Set<Coordinate> done, boolean active) {
         done.add(c);
 
@@ -219,21 +230,8 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
     }
 
     @Override
-    protected void checkStateServer() {
-        int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-        int newvalue = BlockTools.getRedstoneSignalIn(meta) ? 1 : 0;
-        if (newvalue != prevValue) {
-            prevValue = newvalue;
-            DRGeneratorNetwork.Network network = getNetwork();
-            boolean active = newvalue != 0;
-            if (network.isActive() == !active) {
-                network.setActive(active);
-                DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
-                generatorNetwork.save(worldObj);
-                Set<Coordinate> done = new HashSet<Coordinate> ();
-                activateBlocks(new Coordinate(xCoord, yCoord, zCoord), done, active);
-            }
-        }
+    public boolean canUpdate() {
+        return false;
     }
 
     @Override

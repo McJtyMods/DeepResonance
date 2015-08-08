@@ -212,11 +212,6 @@ public class GeneratorBlock extends GenericBlock {
     }
 
     @Override
-    public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
-        checkRedstone(world, x, y, z);
-    }
-
-    @Override
     public IIcon getIcon(int side, int meta) {
         if (side == ForgeDirection.DOWN.ordinal() || side == ForgeDirection.UP.ordinal()) {
             return iconUpDown;

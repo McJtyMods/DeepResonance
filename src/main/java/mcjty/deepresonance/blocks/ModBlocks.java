@@ -7,6 +7,7 @@ import mcjty.deepresonance.blocks.crystals.ResonatingCrystalBlock;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.blocks.duct.BlockDuct;
 import mcjty.deepresonance.blocks.duct.TileBasicFluidDuct;
+import mcjty.deepresonance.blocks.gencontroller.GeneratorControllerSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.ore.ResonatingOreBlock;
 import net.minecraft.block.Block;
@@ -29,6 +30,7 @@ public final class ModBlocks {
         duct = new BlockDuct(TileBasicFluidDuct.class, "basicFluidDuct").registerTile().register();
 
         GeneratorSetup.setupBlocks();
+        GeneratorControllerSetup.setupBlocks();
         EnergyCollectorSetup.setupBlocks();
     }
 }
