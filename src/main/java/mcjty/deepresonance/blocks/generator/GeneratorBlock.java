@@ -230,10 +230,6 @@ public class GeneratorBlock extends GenericBlock {
             return iconUpDown;
         }
         int meta = blockAccess.getBlockMetadata(x, y, z);
-        boolean rs = BlockTools.getRedstoneSignalIn(meta);
-        if (rs) {
-            meta |= META_ON;
-        }
         return icons[meta & 0x7];
     }
 }

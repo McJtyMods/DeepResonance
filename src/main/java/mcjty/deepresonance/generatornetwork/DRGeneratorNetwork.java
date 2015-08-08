@@ -104,6 +104,7 @@ public class DRGeneratorNetwork extends WorldSavedData {
     public static class Network {
         private int refcount = 0;
         private int energy = 0;
+        private boolean active = false;
 
         public int getRefcount() {
             return refcount;
@@ -129,14 +130,24 @@ public class DRGeneratorNetwork extends WorldSavedData {
             this.energy = energy;
         }
 
+        public boolean isActive() {
+            return active;
+        }
+
+        public void setActive(boolean active) {
+            this.active = active;
+        }
+
         public void writeToNBT(NBTTagCompound tagCompound){
             tagCompound.setInteger("refcount", refcount);
             tagCompound.setInteger("energy", energy);
+            tagCompound.setBoolean("active", active);
         }
 
         public void readFromNBT(NBTTagCompound tagCompound){
             this.refcount = tagCompound.getInteger("refcount");
             this.energy = tagCompound.getInteger("energy");
+            this.active = tagCompound.getBoolean("active");
         }
     }
 }

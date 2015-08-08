@@ -3,6 +3,7 @@ package mcjty.deepresonance.blocks.generator;
 import cofh.api.energy.IEnergyProvider;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.entity.GenericTileEntity;
+import mcjty.varia.BlockTools;
 import mcjty.varia.Coordinate;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,6 +15,7 @@ import java.util.Set;
 public class GeneratorTileEntity extends GenericTileEntity implements IEnergyProvider {
 
     private int networkId = -1;
+    private int prevValue = -1;
 
     public GeneratorTileEntity() {
         super();
@@ -171,15 +173,6 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         generatorNetwork.save(worldObj);
     }
 
-//    // Move block from one network (possibly unset) to another (possibly unset)
-//    public void moveNetwork(int newId) {
-//        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
-//        if (networkId != -1) {
-//            DRGeneratorNetwork.Network sourceNetwork = generatorNetwork.getOrCreateNetwork(networkId);
-//            sou
-//        }
-//    }
-//
     // Move this tile entity to another network.
     public void setNetworkId(int newId) {
         networkId = newId;
@@ -199,9 +192,48 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         return generatorNetwork.getOrCreateNetwork(networkId);
     }
 
+    private void activateBlocks(Coordinate c, Set<Coordinate> done, boolean active) {
+        done.add(c);
+
+        int meta = worldObj.getBlockMetadata(c.getX(), c.getY(), c.getZ());
+
+        if (((meta & GeneratorBlock.META_ON) == 0) == active) {
+            if (active) {
+                worldObj.setBlockMetadataWithNotify(c.getX(), c.getY(), c.getZ(), meta | GeneratorBlock.META_ON, 3);
+            } else {
+                worldObj.setBlockMetadataWithNotify(c.getX(), c.getY(), c.getZ(), meta & ~GeneratorBlock.META_ON, 3);
+            }
+        }
+
+        for (ForgeDirection direction : ForgeDirection.values()) {
+            if (!direction.equals(ForgeDirection.UNKNOWN)) {
+                Coordinate newC = c.addDirection(direction);
+                if (!done.contains(newC)) {
+                    Block block = worldObj.getBlock(newC.getX(), newC.getY(), newC.getZ());
+                    if (block == GeneratorSetup.generatorBlock) {
+                        activateBlocks(newC, done, active);
+                    }
+                }
+            }
+        }
+    }
+
     @Override
-    public boolean canUpdate() {
-        return false;
+    protected void checkStateServer() {
+        int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+        int newvalue = BlockTools.getRedstoneSignalIn(meta) ? 1 : 0;
+        if (newvalue != prevValue) {
+            prevValue = newvalue;
+            DRGeneratorNetwork.Network network = getNetwork();
+            boolean active = newvalue != 0;
+            if (network.isActive() == !active) {
+                network.setActive(active);
+                DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
+                generatorNetwork.save(worldObj);
+                Set<Coordinate> done = new HashSet<Coordinate> ();
+                activateBlocks(new Coordinate(xCoord, yCoord, zCoord), done, active);
+            }
+        }
     }
 
     @Override
