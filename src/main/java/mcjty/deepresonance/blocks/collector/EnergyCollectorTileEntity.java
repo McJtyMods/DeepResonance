@@ -20,6 +20,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
     // Relative coordinates of crystals.
     private Set<Coordinate> crystals = new HashSet<Coordinate>();
     private int crystalTimeout = 20;
+    private boolean lasersActive = false;
 
     public EnergyCollectorTileEntity() {
         super();
@@ -27,17 +28,25 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
 
     @Override
     protected void checkStateServer() {
+        boolean active = false;
         if (worldObj.getBlock(xCoord, yCoord-1, zCoord) == GeneratorSetup.generatorBlock) {
             TileEntity te = worldObj.getTileEntity(xCoord, yCoord-1, zCoord);
             if (te instanceof GeneratorTileEntity) {
                 DRGeneratorNetwork.Network network = ((GeneratorTileEntity) te).getNetwork();
-                if (network != null) {
+                if (network != null && network.isActive()) {
                     // @todo temporary code.
                     network.setEnergy(network.getEnergy()+1);
                     DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
                     generatorNetwork.save(worldObj);
+                    active = true;
                 }
             }
+        }
+
+        if (active != lasersActive) {
+            lasersActive = active;
+            markDirty();
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
 
         // @todo temporary!
@@ -74,6 +83,10 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         return crystals;
     }
 
+    public boolean areLasersActive() {
+        return lasersActive;
+    }
+
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
@@ -84,6 +97,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         for (int i = 0 ; i < crystalX.length ; i++) {
             crystals.add(new Coordinate(crystalX[i], crystalY[i], crystalZ[i]));
         }
+        lasersActive = tagCompound.getBoolean("lasersActive");
     }
 
     @Override
@@ -103,6 +117,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         tagCompound.setByteArray("crystalsX", crystalX);
         tagCompound.setByteArray("crystalsY", crystalY);
         tagCompound.setByteArray("crystalsZ", crystalZ);
+        tagCompound.setBoolean("lasersActive", lasersActive);
     }
 
     @Override

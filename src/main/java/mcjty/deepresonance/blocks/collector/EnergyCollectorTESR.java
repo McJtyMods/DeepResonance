@@ -48,7 +48,7 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
 
         EnergyCollectorTileEntity energyCollectorTileEntity = (EnergyCollectorTileEntity) tileEntity;
 
-        if (!energyCollectorTileEntity.getCrystals().isEmpty()) {
+        if ((!energyCollectorTileEntity.getCrystals().isEmpty()) && energyCollectorTileEntity.areLasersActive()) {
             boolean blending = GL11.glIsEnabled(GL11.GL_BLEND);
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
