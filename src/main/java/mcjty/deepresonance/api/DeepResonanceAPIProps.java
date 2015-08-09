@@ -5,8 +5,8 @@ package mcjty.deepresonance.api;
  */
 public final class DeepResonanceAPIProps {
 
-    public static final String version = "1.0-Alpha-0";
+    public static final String version = "1.0.3-Beta";
     public static final String provides = "DR-API";
-    public static final String owner = "deepresonance";
+    public static final String owner = "eee";
 
 }

@@ -1,22 +1,19 @@
 package mcjty.deepresonance.blocks.duct;
 
 import elec332.core.baseclasses.tileentity.TileBase;
-import elec332.core.main.ElecCore;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.grid.fluid.DRFluidDuctGrid;
 import mcjty.deepresonance.grid.fluid.event.FluidTileEvent;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.FluidStack;
 
 /**
  * Created by Elec332 on 3-8-2015.
  */
 public class TileBasicFluidDuct extends TileBase {
 
-    public TileBasicFluidDuct(){
-        super();
-        ElecCore.Debug = true; //TODO: remove
-    }
+    public FluidStack intTank;
 
     @Override
     public void onTileLoaded() {
@@ -33,26 +30,26 @@ public class TileBasicFluidDuct extends TileBase {
     }
 
     @Override
-    public void readFromNBT(final NBTTagCompound tagCompound) {
+    public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
-        if (!worldObj.isRemote) {
-            ElecCore.tickHandler.registerCall(new Runnable() {
-                @Override
-                public void run() {
-                    getGrid().onTileLoad(TileBasicFluidDuct.this, tagCompound);
-                }
-            });
-        }
+        this.intTank = FluidStack.loadFluidStackFromNBT(tagCompound);
     }
 
     @Override
     public void writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
-        getGrid().onTileSave(this, tagCompound);
+        intTank = getGrid().getFluidShare(this);
+        intTank.writeToNBT(tagCompound);
+    }
+
+    public int getTankStorageMax(){
+        return 200;
     }
 
     public DRFluidDuctGrid getGrid(){
-        return DeepResonance.worldGridRegistry.get(worldObj).getPowerTile(myLocation()).getGrid();
+        if (!worldObj.isRemote)
+            return DeepResonance.worldGridRegistry.get(worldObj).getPowerTile(myLocation()).getGrid();
+        return null;
     }
 
 }

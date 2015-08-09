@@ -2,6 +2,7 @@ package mcjty.deepresonance.blocks.crystals;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import elec332.core.world.WorldHelper;
 import mcjty.container.GenericBlock;
 import mcjty.deepresonance.DeepResonance;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -12,7 +13,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -30,12 +33,12 @@ public class ResonatingCrystalBlock extends GenericBlock {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
-        super.addInformation(itemStack, player, list, whatIsThis);
+    @SuppressWarnings("unchecked")
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean advancedToolTips) {
+        super.addInformation(itemStack, player, list, advancedToolTips);
         list.add("You can feel the latent power present in this crystal.");
         NBTTagCompound tagCompound = itemStack.getTagCompound();
         if (tagCompound != null) {
-
             list.add(EnumChatFormatting.GREEN + "Strength: " + new DecimalFormat("#.##").format(tagCompound.getFloat("strength")) + "%");
             list.add(EnumChatFormatting.GREEN + "Efficiency: " + new DecimalFormat("#.##").format(tagCompound.getFloat("efficiency")) + "%");
             list.add(EnumChatFormatting.GREEN + "Purity: " + new DecimalFormat("#.##").format(tagCompound.getFloat("purity")) + "%");
@@ -55,6 +58,17 @@ public class ResonatingCrystalBlock extends GenericBlock {
             currenttip.add(EnumChatFormatting.YELLOW + "Power left: " + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getPower()) + "%");
         }
         return currenttip;
+    }
+
+    @Override
+    public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {
+        float forceMultiplier = 1;
+        TileEntity tile = world.getTileEntity(x, y, z);
+        if (tile instanceof ResonatingCrystalTileEntity){
+            forceMultiplier = ((ResonatingCrystalTileEntity) tile).getPower()/10;
+        }
+        WorldHelper.spawnExplosion(world, x, y, z, forceMultiplier);
+        super.onBlockExploded(world, x, y, z, explosion);
     }
 
     @Override

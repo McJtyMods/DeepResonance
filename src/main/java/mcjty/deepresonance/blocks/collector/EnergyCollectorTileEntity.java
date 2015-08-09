@@ -1,8 +1,10 @@
 package mcjty.deepresonance.blocks.collector;
 
+import com.google.common.collect.Sets;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
@@ -35,7 +37,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
                 DRGeneratorNetwork.Network network = ((GeneratorTileEntity) te).getNetwork();
                 if (network != null && network.isActive()) {
                     // @todo temporary code.
-                    network.setEnergy(network.getEnergy()+1);
+                    network.setEnergy(network.getEnergy()+calculateRF());
                     DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
                     generatorNetwork.save(worldObj);
                     active = true;
@@ -57,6 +59,20 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         }
     }
 
+    private int calculateRF(){
+        return 1;
+    }
+
+    private Set<ResonatingCrystalTileEntity> getAllTiles(){
+        Set<ResonatingCrystalTileEntity> ret = Sets.newHashSet();
+        for (Coordinate coord : crystals){
+            TileEntity tile = worldObj.getTileEntity(coord.getX(), coord.getY(), coord.getZ());
+            if (tile instanceof ResonatingCrystalTileEntity)
+                ret.add((ResonatingCrystalTileEntity) tile);
+        }
+        return ret;
+    }
+
     private void findCrystals() {
         Set<Coordinate> newCrystals = new HashSet<Coordinate>();
 
@@ -71,7 +87,6 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
                 }
             }
         }
-
         if (!newCrystals.equals(crystals)) {
             crystals = newCrystals;
             markDirty();
