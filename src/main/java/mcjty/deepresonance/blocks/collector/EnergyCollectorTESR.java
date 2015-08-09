@@ -8,6 +8,7 @@ import mcjty.varia.Coordinate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -22,7 +23,7 @@ import java.util.Random;
 public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
     IModelCustom model = AdvancedModelLoader.loadModel(new ResourceLocation(DeepResonance.MODID, "obj/collector.obj"));
     ResourceLocation blockTexture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/energyCollector.png");
-    ResourceLocation laserbeam = new ResourceLocation(DeepResonance.MODID, "textures/effects/laserbeam.png");
+    ResourceLocation halo = new ResourceLocation(DeepResonance.MODID, "textures/effects/halo.png");
     ResourceLocation laserbeams[] = new ResourceLocation[4];
     Random random = new Random();
 
@@ -54,40 +55,49 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
 
-            this.bindTexture(laserbeams[random.nextInt(4)]);
-
             Minecraft mc = Minecraft.getMinecraft();
             EntityClientPlayerMP p = mc.thePlayer;
             double doubleX = p.lastTickPosX + (p.posX - p.lastTickPosX) * time;
             double doubleY = p.lastTickPosY + (p.posY - p.lastTickPosY) * time;
             double doubleZ = p.lastTickPosZ + (p.posZ - p.lastTickPosZ) * time;
 
+            Coordinate thisLocation = new Coordinate(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+            Vector start = new Vector(thisLocation.getX() + .5f, thisLocation.getY() + .5f + .3f, thisLocation.getZ() + .5f);
+            Vector player = new Vector((float) doubleX, (float) doubleY, (float) doubleZ);
+
             GL11.glPushMatrix();
             GL11.glTranslated(-doubleX, -doubleY, -doubleZ);
 
+            // ----------------------------------------
+
+//            this.bindTexture(blockTexture);
+//            renderBillboardQuad(0.0f, 0.8f, start);
+
+            // ----------------------------------------
+
             Tessellator tessellator = Tessellator.instance;
 
+            // ----------------------------------------
+
+            this.bindTexture(laserbeams[random.nextInt(4)]);
+
             tessellator.startDrawingQuads();
-//            tessellator.setColorRGBA(255, 0, 0, 180);
             tessellator.setBrightness(240);
 
             float startupFactor = (float) energyCollectorTileEntity.getLaserStartup() / (float) GeneratorConfiguration.startupTime;
 
-            Coordinate thisLocation = new Coordinate(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
             for (Coordinate relative : energyCollectorTileEntity.getCrystals()) {
                 Coordinate destination = new Coordinate(relative.getX() + tileEntity.xCoord, relative.getY() + tileEntity.yCoord, relative.getZ() + tileEntity.zCoord);
-                Vector start = new Vector(thisLocation.getX() + .5f, thisLocation.getY() + .5f + .3f, thisLocation.getZ() + .5f);
                 Vector end = new Vector(destination.getX() + .5f, destination.getY() + .5f, destination.getZ() + .5f);
-                Vector player = new Vector((float) doubleX, (float) doubleY, (float) doubleZ);
 
                 if (startupFactor > .8f) {
                     // Do nothing
                 } else if (startupFactor > .001f) {
                     Vector middle = new Vector(jitter(startupFactor, start.x, end.x), jitter(startupFactor, start.y, end.y), jitter(startupFactor, start.z, end.z));
-                    drawLine(start, middle, player);
-                    drawLine(middle, end, player);
+                    drawBeam(start, middle, player);
+                    drawBeam(middle, end, player);
                 } else {
-                    drawLine(start, end, player);
+                    drawBeam(start, end, player);
                 }
             }
 
@@ -105,7 +115,32 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
         return (a1 + a2) / 2.0f + (random.nextFloat() * 2.0f - 1.0f) * startupFactor;
     }
 
-    private void drawLine(Vector S, Vector E, Vector P) {
+    public static void renderBillboardQuad(float rot, double scale, Vector pos) {
+        GL11.glPushMatrix();
+
+        rotateToPlayer();
+
+        GL11.glPushMatrix();
+
+        GL11.glRotatef(rot, 0, 0, 1);
+
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(pos.x-scale, pos.y-scale, pos.z, 0, 0);
+        tessellator.addVertexWithUV(pos.x-scale, pos.y+scale, pos.z, 0, 1);
+        tessellator.addVertexWithUV(pos.x+scale, pos.y+scale, pos.z, 1, 1);
+        tessellator.addVertexWithUV(pos.x+scale, pos.y-scale, pos.z, 1, 0);
+        tessellator.draw();
+        GL11.glPopMatrix();
+        GL11.glPopMatrix();
+    }
+
+    public static void rotateToPlayer() {
+        GL11.glRotatef(-RenderManager.instance.playerViewY, 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(RenderManager.instance.playerViewX, 1.0F, 0.0F, 0.0F);
+    }
+
+    private void drawBeam(Vector S, Vector E, Vector P) {
         Vector PS = Sub(S, P);
         Vector SE = Sub(E, S);
 
