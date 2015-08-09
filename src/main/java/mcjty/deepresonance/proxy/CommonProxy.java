@@ -1,4 +1,4 @@
-package mcjty.deepresonance;
+package mcjty.deepresonance.proxy;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
@@ -7,6 +7,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.crafting.ModCrafting;
@@ -28,7 +29,7 @@ public abstract class CommonProxy {
 
     public static File mainConfigDir;
     public static File modConfigDir;
-    protected Configuration mainConfig;
+    public Configuration mainConfig;
 
     public void preInit(FMLPreInitializationEvent e) {
         mainConfigDir = e.getModConfigurationDirectory();

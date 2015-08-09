@@ -10,6 +10,7 @@ import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.compat.CompatHandler;
 import mcjty.deepresonance.compat.handlers.ComputerCraftCompatHandler;
 import mcjty.deepresonance.grid.WorldGridRegistry;
+import mcjty.deepresonance.proxy.CommonProxy;
 import mcjty.gui.GuiStyle;
 import mcjty.varia.Logging;
 import net.minecraft.creativetab.CreativeTabs;
@@ -29,9 +30,9 @@ public class DeepResonance implements ModBase {
     public static final String VERSION = "0.1.1";
     public static final String MIN_FORGE_VER = "10.13.2.1291";
     public static final String MIN_MCJTYLIB_VER = "1.2.0";
-    public static final String MIN_ELECCORE_VER = "1.4.120";
+    public static final String MIN_ELECCORE_VER = "1.4.122";
 
-    @SidedProxy(clientSide="mcjty.deepresonance.ClientProxy", serverSide="mcjty.deepresonance.ServerProxy")
+    @SidedProxy(clientSide="mcjty.deepresonance.proxy.ClientProxy", serverSide="mcjty.deepresonance.proxy.ServerProxy")
     public static CommonProxy proxy;
 
     @Mod.Instance("deepresonance")
