@@ -62,20 +62,31 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
 
     @SideOnly(Side.CLIENT)
     private void stopSounds() {
-        if (generatorStartupSound != null) {
-            Minecraft.getMinecraft().getSoundHandler().stopSound(generatorStartupSound);
-            generatorStartupSound = null;
-        }
-        if (generatorLoopSound != null) {
-            Minecraft.getMinecraft().getSoundHandler().stopSound(generatorLoopSound);
-            generatorLoopSound = null;
-        }
+        stopStartup();
+        stopLoop();
+        stopShutdown();
+    }
+
+    private void stopShutdown() {
         if (generatorShutdownSound != null) {
             Minecraft.getMinecraft().getSoundHandler().stopSound(generatorShutdownSound);
             generatorShutdownSound = null;
         }
     }
 
+    private void stopLoop() {
+        if (generatorLoopSound != null) {
+            Minecraft.getMinecraft().getSoundHandler().stopSound(generatorLoopSound);
+            generatorLoopSound = null;
+        }
+    }
+
+    private void stopStartup() {
+        if (generatorStartupSound != null) {
+            Minecraft.getMinecraft().getSoundHandler().stopSound(generatorStartupSound);
+            generatorStartupSound = null;
+        }
+    }
 
 
     @Override
@@ -86,14 +97,20 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
     @Override
     protected void checkStateClient() {
         if (startup != 0) {
+            stopLoop();
+            stopShutdown();
             if (generatorStartupSound == null) {
                 playStartup();
             }
         } else if (shutdown != 0) {
+            stopLoop();
+            stopStartup();
             if (generatorShutdownSound == null) {
                 playShutdown();
             }
         } else if (active) {
+            stopShutdown();
+            stopStartup();
             if (generatorLoopSound == null) {
                 playLoop();
             }
@@ -143,7 +160,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
     private boolean handleActivate(int id, Coordinate coordinate) {
         DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
         DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(id);
-        if (network.isActive()) {
+        if (network.isActive() && network.getShutdownCounter() == 0) {
             return false; // Nothing to do.
         }
         startup = network.getStartupCounter();
@@ -168,12 +185,12 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
     private boolean handleDeactivate(int id, Coordinate coordinate) {
         DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
         DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(id);
-        if ((!network.isActive()) && network.getShutdownCounter() == 0) {
+        if ((!network.isActive()) && network.getShutdownCounter() == 0 && network.getStartupCounter() == 0) {
             return false;   // Nothing to do.
         }
 
         shutdown = network.getShutdownCounter();
-        if (network.isActive()) {
+        if (network.isActive() || network.getStartupCounter() != 0) {
             shutdown = GeneratorConfiguration.shutdownTime;
             GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) worldObj.getTileEntity(coordinate.getX(), coordinate.getY(), coordinate.getZ());
             generatorTileEntity.activate(false);
