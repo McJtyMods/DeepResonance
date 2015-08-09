@@ -61,7 +61,7 @@ public class DRFluidDuctGrid extends AbstractCableGrid<DRFluidDuctGrid, DRFluidT
     }
 
     public FluidStack addStackToInternalTank(FluidStack stack){
-        if (DRFluidRegistry.isValidLiquidCrystalStack(stack))
+        if (!DRFluidRegistry.isValidLiquidCrystalStack(stack))
             return stack;
         return tank.add(stack);
     }
