@@ -82,7 +82,7 @@ public final class LiquidCrystalFluidTagData {
             valid = true;
         }
     }
-    
+
     /**
      * Getters
      */
