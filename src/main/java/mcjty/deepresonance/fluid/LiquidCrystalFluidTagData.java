@@ -32,7 +32,12 @@ public final class LiquidCrystalFluidTagData {
     private float purity;
 
     public void merge(LiquidCrystalFluidTagData otherTag){
-        float f = otherTag.referenceStack.amount/referenceStack.amount;
+        checkNullity();
+        otherTag.checkNullity();
+        float f = 1;
+        if (otherTag.referenceStack.amount >= 0 && referenceStack.amount >= 0) {
+            f = otherTag.referenceStack.amount / (float) referenceStack.amount;
+        }
         purity = (purity+otherTag.purity*f)/2;
 
         referenceStack.amount += otherTag.referenceStack.amount;
@@ -44,7 +49,14 @@ public final class LiquidCrystalFluidTagData {
     }
 
     public void writeDataToNBT(NBTTagCompound tagCompound){
+        checkNullity();
         tagCompound.setFloat("purity", purity);
+    }
+
+    private void checkNullity(){
+        if (referenceStack == null || referenceStack.amount <= 0){
+            purity = 0;
+        }
     }
 
     /**

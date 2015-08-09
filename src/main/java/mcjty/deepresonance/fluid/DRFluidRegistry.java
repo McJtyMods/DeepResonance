@@ -22,6 +22,6 @@ public class DRFluidRegistry {
     }
 
     public static boolean isValidLiquidCrystalStack(FluidStack stack){
-        return !(stack == null || stack.getFluid() == null || stack.amount == 0 || stack.getFluid() != DRFluidRegistry.liquidCrystal);
+        return !(stack == null || stack.getFluid() == null || stack.getFluid() != DRFluidRegistry.liquidCrystal);
     }
 }
