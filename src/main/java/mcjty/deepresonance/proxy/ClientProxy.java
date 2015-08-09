@@ -1,4 +1,4 @@
-package mcjty.deepresonance;
+package mcjty.deepresonance.proxy;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
