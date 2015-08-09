@@ -5,6 +5,8 @@ import elec332.core.main.ElecCore;
 import elec332.core.util.BlockLoc;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
+import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
 import mcjty.deepresonance.blocks.duct.TileBasicFluidDuct;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
@@ -22,7 +24,7 @@ public class DRFluidDuctGrid extends AbstractCableGrid<DRFluidDuctGrid, DRFluidT
         super(world, p, direction, DRGridTypeHelper.instance, DeepResonance.worldGridRegistry);
         tank = new InternalGridTank(p.getTankStorage());
         if (p.getTile() instanceof TileBasicFluidDuct)
-            tank.add(((TileBasicFluidDuct) p.getTile()).intTank);//amount += ((TileBasicFluidDuct) p.getTile()).intTank;
+            tank.add(((TileBasicFluidDuct) p.getTile()).intTank);
     }
 
     private InternalGridTank tank;
@@ -37,6 +39,29 @@ public class DRFluidDuctGrid extends AbstractCableGrid<DRFluidDuctGrid, DRFluidT
     public void onTick() {
         for (BlockLoc loc : locations)
             ElecCore.systemPrintDebug(loc);
+        processLiquids();
+    }
+
+    private void processLiquids(){
+        int requestedRCL = 0;
+        int[] va = new int[acceptors.size()];
+        for (GridData gridData : providers) {
+            int maxProvide = tank.maxAmount-getStoredAmount();
+            tank.add(((IDeepResonanceFluidProvider) getWorldHolder().getPowerTile(gridData.getLoc()).getTile()).getProvidedFluid(maxProvide, gridData.getDirection()));
+        }
+        for (GridData gridData : acceptors) {
+            int e = ((IDeepResonanceFluidAcceptor) getWorldHolder().getPowerTile(gridData.getLoc()).getTile()).getRequestedAmount(gridData.getDirection());
+            va[acceptors.indexOf(gridData)] = e;
+            requestedRCL += e;
+        }
+        if (getStoredAmount() >= requestedRCL){
+            for (GridData gridData : acceptors)
+                ((IDeepResonanceFluidAcceptor) getWorldHolder().getPowerTile(gridData.getLoc()).getTile()).acceptFluid(tank.remove(va[acceptors.indexOf(gridData)]), gridData.getDirection());
+        }else if (getStoredAmount() > 0){
+            float diff = (float)getStoredAmount()/(float)requestedRCL;
+            for (GridData gridData : acceptors)
+                ((IDeepResonanceFluidAcceptor) getWorldHolder().getPowerTile(gridData.getLoc()).getTile()).acceptFluid(tank.remove((int)(va[acceptors.indexOf(gridData)] * diff)), gridData.getDirection());
+        }
     }
 
     @Override
