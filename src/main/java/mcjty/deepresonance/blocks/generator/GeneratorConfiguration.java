@@ -5,6 +5,11 @@ import net.minecraftforge.common.config.Configuration;
 public class GeneratorConfiguration {
     public static final String CATEGORY_GENERATOR = "generator";
 
+    public static int startupTime = 130;
+    public static int shutdownTime = 130;
+
     public static void init(Configuration cfg) {
+        startupTime = cfg.get(CATEGORY_GENERATOR, "startupTime", startupTime, "Startup time of the generator (in ticks)").getInt();
+        shutdownTime = cfg.get(CATEGORY_GENERATOR, "shutdownTime", shutdownTime, "Shutdown time of the generator (in ticks)").getInt();
     }
 }

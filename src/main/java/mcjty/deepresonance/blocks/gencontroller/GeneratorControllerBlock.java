@@ -70,22 +70,22 @@ public class GeneratorControllerBlock extends GenericBlock {
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
         checkRedstone(world, x, y, z);
 
-        if (!world.isRemote) {
-            int meta = world.getBlockMetadata(x, y, z);
-            Coordinate thisCoord = new Coordinate(x, y, z);
-            for (ForgeDirection direction : ForgeDirection.values()) {
-                if (!direction.equals(ForgeDirection.UNKNOWN)) {
-                    Coordinate newC = thisCoord.addDirection(direction);
-                    Block b = world.getBlock(newC.getX(), newC.getY(), newC.getZ());
-                    if (b == GeneratorSetup.generatorBlock) {
-                        GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) world.getTileEntity(newC.getX(), newC.getY(), newC.getZ());
-                        boolean active = BlockTools.getRedstoneSignalIn(meta);
-                        generatorTileEntity.activate(active);
-                    }
-                }
-            }
-
-        }
+//        if (!world.isRemote) {
+//            int meta = world.getBlockMetadata(x, y, z);
+//            Coordinate thisCoord = new Coordinate(x, y, z);
+//            for (ForgeDirection direction : ForgeDirection.values()) {
+//                if (!direction.equals(ForgeDirection.UNKNOWN)) {
+//                    Coordinate newC = thisCoord.addDirection(direction);
+//                    Block b = world.getBlock(newC.getX(), newC.getY(), newC.getZ());
+//                    if (b == GeneratorSetup.generatorBlock) {
+//                        GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) world.getTileEntity(newC.getX(), newC.getY(), newC.getZ());
+//                        boolean active = BlockTools.getRedstoneSignalIn(meta);
+//                        generatorTileEntity.activate(active);
+//                    }
+//                }
+//            }
+//
+//        }
     }
 
     @Override
