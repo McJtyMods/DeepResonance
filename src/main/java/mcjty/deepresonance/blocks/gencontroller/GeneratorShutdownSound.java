@@ -3,6 +3,7 @@ package mcjty.deepresonance.blocks.gencontroller;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import net.minecraft.block.Block;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,6 +42,6 @@ public class GeneratorShutdownSound extends MovingSound {
             donePlaying = true;
             return;
         }
-        volume = 1.0f;
+        volume = GeneratorConfiguration.baseGeneratorVolume;
     }
 }

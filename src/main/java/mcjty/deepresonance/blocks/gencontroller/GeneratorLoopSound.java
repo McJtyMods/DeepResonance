@@ -3,6 +3,7 @@ package mcjty.deepresonance.blocks.gencontroller;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import net.minecraft.block.Block;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +17,8 @@ public class GeneratorLoopSound extends MovingSound {
     private final int x;
     private final int y;
     private final int z;
+
+    private float scaleDown = 1.0f;
 
     public GeneratorLoopSound(EntityPlayer player, World world, int x, int y, int z) {
         super(new ResourceLocation(DeepResonance.MODID + ":engine_loop"));
@@ -41,6 +44,9 @@ public class GeneratorLoopSound extends MovingSound {
             donePlaying = true;
             return;
         }
-        volume = 1.0f;
+        volume = GeneratorConfiguration.baseGeneratorVolume * scaleDown;
+        if (scaleDown > GeneratorConfiguration.loopVolumeFactor) {
+            scaleDown -= 0.01f;
+        }
     }
 }

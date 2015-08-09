@@ -96,6 +96,10 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
 
     @Override
     protected void checkStateClient() {
+        if (GeneratorConfiguration.baseGeneratorVolume < 0.01f) {
+            // No sounds.
+            return;
+        }
         if (startup != 0) {
             stopLoop();
             stopShutdown();
