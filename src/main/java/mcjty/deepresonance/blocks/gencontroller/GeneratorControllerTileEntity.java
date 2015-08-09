@@ -90,11 +90,11 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
                 playStartup();
             }
         } else if (shutdown != 0) {
-            if (generatorShutdownSound != null) {
+            if (generatorShutdownSound == null) {
                 playShutdown();
             }
         } else if (active) {
-            if (generatorLoopSound != null) {
+            if (generatorLoopSound == null) {
                 playLoop();
             }
         } else {
@@ -157,6 +157,8 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
             generatorTileEntity.activate(true);
         }
         active = network.isActive();
+        shutdown = 0;
+        network.setShutdownCounter(0);
         network.setStartupCounter(startup);
         markDirty();
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -180,7 +182,9 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
         if (shutdown <= 0) {
             shutdown = 0;
         }
+        startup = 0;
         active = network.isActive();
+        network.setStartupCounter(0);
         network.setShutdownCounter(shutdown);
         markDirty();
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
