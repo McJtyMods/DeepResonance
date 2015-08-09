@@ -15,8 +15,10 @@ public class TileBasicFluidDuct extends TileBase {
 
     public TileBasicFluidDuct(){
         super();
-        ElecCore.Debug = true; //TODO: remove
+        //ElecCore.Debug = true; //TODO: remove
     }
+
+    public float intTank;
 
     @Override
     public void onTileLoaded() {
@@ -33,22 +35,16 @@ public class TileBasicFluidDuct extends TileBase {
     }
 
     @Override
-    public void readFromNBT(final NBTTagCompound tagCompound) {
+    public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
-        if (!worldObj.isRemote) {
-            ElecCore.tickHandler.registerCall(new Runnable() {
-                @Override
-                public void run() {
-                    getGrid().onTileLoad(TileBasicFluidDuct.this, tagCompound);
-                }
-            });
-        }
+        this.intTank = tagCompound.getFloat("amount");
     }
 
     @Override
     public void writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
-        getGrid().onTileSave(this, tagCompound);
+        intTank = getGrid().getFluidShare();
+        tagCompound.setFloat("amount", intTank);
     }
 
     public DRFluidDuctGrid getGrid(){
