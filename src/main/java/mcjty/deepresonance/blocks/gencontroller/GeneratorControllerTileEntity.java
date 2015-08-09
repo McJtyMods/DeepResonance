@@ -190,6 +190,13 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
         DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
         DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(id);
         if ((!network.isActive()) && network.getShutdownCounter() == 0 && network.getStartupCounter() == 0) {
+            if (network.getShutdownCounter() != shutdown || network.getStartupCounter() != startup || (network.isActive() != active)) {
+                shutdown = network.getShutdownCounter();
+                startup = network.getStartupCounter();
+                active = network.isActive();
+                markDirty();
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            }
             return false;   // Nothing to do.
         }
 
