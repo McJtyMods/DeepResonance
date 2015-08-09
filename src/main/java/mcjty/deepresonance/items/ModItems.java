@@ -37,7 +37,13 @@ public final class ModItems {
         public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
             TileEntity tile = world.getTileEntity(x, y, z);
             if (tile instanceof TileBasicFluidDuct && !world.isRemote){
-                PlayerHelper.sendMessageToPlayer(player, ""+((TileBasicFluidDuct) tile).getGrid().amount);
+                if (((TileBasicFluidDuct) tile).getGrid() == null)
+                    System.out.println("ERROR: grid == null");
+                if (!player.isSneaking()) {
+                    PlayerHelper.sendMessageToPlayer(player, "" + ((TileBasicFluidDuct) tile).getGrid().amount);
+                } else {
+                    ((TileBasicFluidDuct) tile).getGrid().amount++;
+                }
             }
             return super.onItemUseFirst(stack, player, world, x, y, z, side, hitX, hitY, hitZ);
         }
