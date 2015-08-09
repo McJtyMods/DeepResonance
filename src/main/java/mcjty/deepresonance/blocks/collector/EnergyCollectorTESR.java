@@ -3,6 +3,7 @@ package mcjty.deepresonance.blocks.collector;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.varia.Coordinate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -48,7 +49,7 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
 
         EnergyCollectorTileEntity energyCollectorTileEntity = (EnergyCollectorTileEntity) tileEntity;
 
-        if ((!energyCollectorTileEntity.getCrystals().isEmpty()) && energyCollectorTileEntity.areLasersActive()) {
+        if ((!energyCollectorTileEntity.getCrystals().isEmpty()) && (energyCollectorTileEntity.areLasersActive() || energyCollectorTileEntity.getLaserStartup() > 0)) {
             boolean blending = GL11.glIsEnabled(GL11.GL_BLEND);
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
@@ -70,10 +71,24 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
 //            tessellator.setColorRGBA(255, 0, 0, 180);
             tessellator.setBrightness(240);
 
+            float startupFactor = (float) energyCollectorTileEntity.getLaserStartup() / (float) GeneratorConfiguration.startupTime;
+
             Coordinate thisLocation = new Coordinate(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
             for (Coordinate relative : energyCollectorTileEntity.getCrystals()) {
                 Coordinate destination = new Coordinate(relative.getX() + tileEntity.xCoord, relative.getY() + tileEntity.yCoord, relative.getZ() + tileEntity.zCoord);
-                drawLine(thisLocation, destination, doubleX, doubleY, doubleZ);
+                Vector start = new Vector(thisLocation.getX() + .5f, thisLocation.getY() + .5f + .3f, thisLocation.getZ() + .5f);
+                Vector end = new Vector(destination.getX() + .5f, destination.getY() + .5f, destination.getZ() + .5f);
+                Vector player = new Vector((float) doubleX, (float) doubleY, (float) doubleZ);
+
+                if (startupFactor > .8f) {
+                    // Do nothing
+                } else if (startupFactor > .001f) {
+                    Vector middle = new Vector(jitter(startupFactor, start.x, end.x), jitter(startupFactor, start.y, end.y), jitter(startupFactor, start.z, end.z));
+                    drawLine(start, middle, player);
+                    drawLine(middle, end, player);
+                } else {
+                    drawLine(start, end, player);
+                }
             }
 
             tessellator.draw();
@@ -86,22 +101,11 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
         }
     }
 
-    private void drawLine(Coordinate c1, Coordinate c2, double playerX, double playerY, double playerZ) {
-        // Calculate the start point of the laser
-        float mx1 = c1.getX() + .5f;
-        float my1 = c1.getY() + .5f + .3f;
-        float mz1 = c1.getZ() + .5f;
-        Vector S = new Vector(mx1, my1, mz1);
+    private float jitter(float startupFactor, float a1, float a2) {
+        return (a1 + a2) / 2.0f + (random.nextFloat() * 2.0f - 1.0f) * startupFactor;
+    }
 
-        // Calculate the end point of the laser
-        float mx2 = c2.getX() + .5f;
-        float my2 = c2.getY() + .5f;
-        float mz2 = c2.getZ() + .5f;
-        Vector E = new Vector(mx2, my2, mz2);
-
-        // Player position.
-        Vector P = new Vector((float) playerX, (float) playerY, (float) playerZ);
-
+    private void drawLine(Vector S, Vector E, Vector P) {
         Vector PS = Sub(S, P);
         Vector SE = Sub(E, S);
 

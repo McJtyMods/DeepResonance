@@ -23,6 +23,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
     private Set<Coordinate> crystals = new HashSet<Coordinate>();
     private int crystalTimeout = 20;
     private boolean lasersActive = false;
+    private int laserStartup = 0;        // A mirror (for the client) of the network startup counter.
 
     public EnergyCollectorTileEntity() {
         super();
@@ -31,22 +32,27 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
     @Override
     protected void checkStateServer() {
         boolean active = false;
+        int startup = 0;
         if (worldObj.getBlock(xCoord, yCoord-1, zCoord) == GeneratorSetup.generatorBlock) {
             TileEntity te = worldObj.getTileEntity(xCoord, yCoord-1, zCoord);
             if (te instanceof GeneratorTileEntity) {
                 DRGeneratorNetwork.Network network = ((GeneratorTileEntity) te).getNetwork();
-                if (network != null && network.isActive()) {
-                    // @todo temporary code.
-                    network.setEnergy(network.getEnergy()+calculateRF());
-                    DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
-                    generatorNetwork.save(worldObj);
-                    active = true;
+                if (network != null) {
+                    if (network.isActive()) {
+                        // @todo temporary code.
+                        network.setEnergy(network.getEnergy() + calculateRF());
+                        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
+                        generatorNetwork.save(worldObj);
+                        active = true;
+                    }
+                    startup = network.getStartupCounter();
                 }
             }
         }
 
-        if (active != lasersActive) {
+        if (active != lasersActive || startup != laserStartup) {
             lasersActive = active;
+            laserStartup = startup;
             markDirty();
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
@@ -102,6 +108,10 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         return lasersActive;
     }
 
+    public int getLaserStartup() {
+        return laserStartup;
+    }
+
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
@@ -113,6 +123,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
             crystals.add(new Coordinate(crystalX[i], crystalY[i], crystalZ[i]));
         }
         lasersActive = tagCompound.getBoolean("lasersActive");
+        laserStartup = tagCompound.getInteger("laserStartup");
     }
 
     @Override
@@ -133,6 +144,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         tagCompound.setByteArray("crystalsY", crystalY);
         tagCompound.setByteArray("crystalsZ", crystalZ);
         tagCompound.setBoolean("lasersActive", lasersActive);
+        tagCompound.setInteger("laserStartup", laserStartup);
     }
 
     @Override
