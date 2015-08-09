@@ -3,6 +3,7 @@ package mcjty.deepresonance.items;
 import cpw.mods.fml.common.registry.GameRegistry;
 import elec332.core.baseclasses.item.BaseItem;
 import elec332.core.player.PlayerHelper;
+import elec332.core.util.NBTHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.duct.TileBasicFluidDuct;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
@@ -12,6 +13,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.Random;
 
 public final class ModItems {
 
@@ -42,9 +45,9 @@ public final class ModItems {
                 if (((TileBasicFluidDuct) tile).getGrid() == null)
                     System.out.println("ERROR: grid == null");
                 if (!player.isSneaking()) {
-                    PlayerHelper.sendMessageToPlayer(player, "" + ((TileBasicFluidDuct) tile).getGrid().getStoredAmount());
+                    PlayerHelper.sendMessageToPlayer(player, ((TileBasicFluidDuct) tile).getGrid().getInfo());
                 } else {
-                    ((TileBasicFluidDuct) tile).getGrid().addStackToInternalTank(new FluidStack(DRFluidRegistry.liquidCrystal, 1));
+                    ((TileBasicFluidDuct) tile).getGrid().addStackToInternalTank(new FluidStack(DRFluidRegistry.liquidCrystal, new Random().nextInt(3000), new NBTHelper().addToTag(new Random().nextFloat()*5, "purity").toNBT()));
                 }
             }
             return super.onItemUseFirst(stack, player, world, x, y, z, side, hitX, hitY, hitZ);

@@ -66,6 +66,10 @@ public class DRFluidDuctGrid extends AbstractCableGrid<DRFluidDuctGrid, DRFluidT
         return tank.add(stack);
     }
 
+    public String getInfo(){
+        return tank.tank.toString();
+    }
+
     public int getStoredAmount(){
         return tank.getStoredAmount();
     }

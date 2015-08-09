@@ -19,6 +19,7 @@ public final class LiquidCrystalFluidTagData {
             stack.tag = new NBTTagCompound();
         NBTTagCompound fluidTag = stack.tag;
         LiquidCrystalFluidTagData ret = new LiquidCrystalFluidTagData();
+        ret.valid = stack.amount > 0;
         ret.purity = fluidTag.getFloat("purity");
 
         ret.referenceStack = stack;
@@ -29,19 +30,23 @@ public final class LiquidCrystalFluidTagData {
     }
 
     private FluidStack referenceStack;
+    private boolean valid;
     private float purity;
 
     public void merge(LiquidCrystalFluidTagData otherTag){
         checkNullity();
-        otherTag.checkNullity();
-        float f = 1;
-        if (otherTag.referenceStack.amount >= 0 && referenceStack.amount >= 0) {
-            f = otherTag.referenceStack.amount / (float) referenceStack.amount;
+        if (!otherTag.valid){
+            return;
         }
-        purity = (purity+otherTag.purity*f)/2;
+        this.purity = calculate(otherTag, purity, otherTag.purity);
 
         referenceStack.amount += otherTag.referenceStack.amount;
         save();
+    }
+
+    private float calculate(LiquidCrystalFluidTagData other, float myValue, float otherValue){
+        float f = (other.getInternalTankAmount()/((float)getInternalTankAmount() + other.getInternalTankAmount()));
+        return (1-f)*myValue + f*otherValue;
     }
 
     public void save(){
@@ -55,7 +60,10 @@ public final class LiquidCrystalFluidTagData {
 
     private void checkNullity(){
         if (referenceStack == null || referenceStack.amount <= 0){
+            valid = false;
             purity = 0;
+        } else if (!valid){
+            valid = true;
         }
     }
 
@@ -81,4 +89,8 @@ public final class LiquidCrystalFluidTagData {
         referenceStack.amount = i;
     }
 
+    @Override
+    public String toString() {
+        return "Amount: "+referenceStack.amount+" ,Purity: "+purity;
+    }
 }
