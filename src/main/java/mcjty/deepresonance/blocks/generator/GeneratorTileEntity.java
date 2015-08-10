@@ -248,18 +248,37 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
 
     @Override
     public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-
-        return 0;
+        if (networkId == -1) {
+            return 0;
+        }
+        DRGeneratorNetwork.Network network = getNetwork();
+        int energy = network.getEnergy();
+        if (maxExtract > energy) {
+            maxExtract = energy;
+        }
+        if (maxExtract > GeneratorConfiguration.rfPerTickGenerator) {
+            maxExtract = GeneratorConfiguration.rfPerTickGenerator;
+        }
+        network.setEnergy(energy - maxExtract);
+        return maxExtract;
     }
 
     @Override
     public int getEnergyStored(ForgeDirection from) {
-        return 0;
+        if (networkId == -1) {
+            return 0;
+        }
+        DRGeneratorNetwork.Network network = getNetwork();
+        return network.getEnergy();
     }
 
     @Override
     public int getMaxEnergyStored(ForgeDirection from) {
-        return 0;
+        if (networkId == -1) {
+            return 0;
+        }
+        DRGeneratorNetwork.Network network = getNetwork();
+        return network.getRefcount() * GeneratorConfiguration.rfPerGeneratorBlock;
     }
 
     @Override
