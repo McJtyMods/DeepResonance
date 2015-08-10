@@ -1,12 +1,14 @@
 package mcjty.deepresonance.blocks.generator;
 
+import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
+import mcjty.deepresonance.varia.EnergyTools;
 import mcjty.entity.GenericTileEntity;
-import mcjty.varia.BlockTools;
 import mcjty.varia.Coordinate;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.HashSet;
@@ -15,7 +17,6 @@ import java.util.Set;
 public class GeneratorTileEntity extends GenericTileEntity implements IEnergyProvider {
 
     private int networkId = -1;
-    private int prevValue = -1;
 
     public GeneratorTileEntity() {
         super();
@@ -230,11 +231,6 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
     }
 
     @Override
-    public boolean canUpdate() {
-        return false;
-    }
-
-    @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
         networkId = tagCompound.getInteger("networkId");
@@ -245,6 +241,38 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("networkId", networkId);
     }
+
+    @Override
+    protected void checkStateServer() {
+        int energyStored = getEnergyStored(ForgeDirection.DOWN);
+
+        for (int i = 0 ; i < 6 ; i++) {
+            ForgeDirection dir = ForgeDirection.getOrientation(i);
+            int x = xCoord + dir.offsetX;
+            int y = yCoord + dir.offsetY;
+            int z = zCoord + dir.offsetZ;
+            TileEntity te = worldObj.getTileEntity(x, y, z);
+            if (EnergyTools.isEnergyTE(te)) {
+                IEnergyConnection connection = (IEnergyConnection) te;
+                ForgeDirection opposite = dir.getOpposite();
+                if (connection.canConnectEnergy(opposite)) {
+                    int rfToGive;
+                    if (GeneratorConfiguration.rfPerTickGenerator <= energyStored) {
+                        rfToGive = GeneratorConfiguration.rfPerTickGenerator;
+                    } else {
+                        rfToGive = energyStored;
+                    }
+
+                    int received = EnergyTools.receiveEnergy(te, opposite, rfToGive);
+                    energyStored -= extractEnergy(ForgeDirection.DOWN, received, false);
+                    if (energyStored <= 0) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
 
     @Override
     public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
@@ -259,7 +287,9 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         if (maxExtract > GeneratorConfiguration.rfPerTickGenerator) {
             maxExtract = GeneratorConfiguration.rfPerTickGenerator;
         }
-        network.setEnergy(energy - maxExtract);
+        if (!simulate) {
+            network.setEnergy(energy - maxExtract);
+        }
         return maxExtract;
     }
 
