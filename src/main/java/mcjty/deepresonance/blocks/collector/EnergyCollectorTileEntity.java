@@ -3,7 +3,6 @@ package mcjty.deepresonance.blocks.collector;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.deepresonance.blocks.crystals.ResonatingCrystalConfiguration;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
@@ -11,6 +10,8 @@ import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.entity.GenericTileEntity;
 import mcjty.varia.Coordinate;
+import mcjty.varia.Logging;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -65,12 +66,15 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         }
 
         if (active != lasersActive || startup != laserStartup) {
+            boolean doFind = lasersActive != active;
             lasersActive = active;
             laserStartup = startup;
             markDirty();
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 
-            findCrystals(network);
+            if (doFind) {
+                findCrystals(network);
+            }
         }
     }
 
@@ -118,6 +122,9 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         int maxSupportedRF = network.getRefcount() * GeneratorConfiguration.maxRFInputPerBlock;
         int maxSupportedCrystals = network.getRefcount() * GeneratorConfiguration.maxCrystalsPerBlock;
 
+        boolean tooManyCrystals = false;
+        boolean tooMuchPower = false;
+
         for (int y = yCoord - 1 ; y <= yCoord + 1 ; y++) {
             if (y >= 0 && y < worldObj.getHeight()) {
                 for (int x = xCoord - 10 ; x <= xCoord + 10 ; x++) {
@@ -129,8 +136,10 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
                                 if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
                                     if (newCrystals.size() >= maxSupportedCrystals) {
                                         resonatingCrystalTileEntity.setGlowing(false);
+                                        tooManyCrystals = true;
                                     } else if (resonatingCrystalTileEntity.getRfPerTick() > maxSupportedRF) {
                                         resonatingCrystalTileEntity.setGlowing(false);
+                                        tooMuchPower = true;
                                     } else {
                                         maxSupportedRF -= resonatingCrystalTileEntity.getRfPerTick();
                                         newCrystals.add(new Coordinate(x - xCoord, y - yCoord, z - zCoord));
@@ -150,6 +159,23 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
             markDirty();
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
+
+        if (lasersActive && (tooManyCrystals || tooMuchPower)) {
+            // @todo This should be put in the Logging class as a broadcast message
+            for (Object p : worldObj.playerEntities) {
+                EntityPlayer player = (EntityPlayer)p;
+                double sqdist = player.getDistanceSq(xCoord+.5, yCoord+.5, zCoord+.5);
+                if (sqdist < 100) {
+                    if (tooManyCrystals) {
+                        Logging.warn(player, "There are too many crystals for this size generator!");
+                    }
+                    if (tooMuchPower) {
+                        Logging.warn(player, "Some crystals are too powerful for this size generator!!");
+                    }
+                }
+            }
+        }
+
     }
 
     public Set<Coordinate> getCrystals() {
