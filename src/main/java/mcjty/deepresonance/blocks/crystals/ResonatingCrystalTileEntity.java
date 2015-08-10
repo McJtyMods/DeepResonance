@@ -10,6 +10,8 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     private float efficiency = 1.0f;    // Default 1%
     private float purity = 1.0f;        // Default 1% purity
 
+    private boolean glowing = false;
+
     @Override
     public boolean canUpdate() {
         return false;
@@ -29,6 +31,10 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     public float getPurity() {
         return purity;
+    }
+
+    public boolean isGlowing() {
+        return glowing;
     }
 
     public void setStrength(float strength) {
@@ -55,6 +61,15 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
+    public void setGlowing(boolean glowing) {
+        if (this.glowing == glowing) {
+            return;
+        }
+        this.glowing = glowing;
+        markDirty();
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+    }
+
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
@@ -67,6 +82,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         power = tagCompound.getFloat("power");
         efficiency = tagCompound.getFloat("efficiency");
         purity = tagCompound.getFloat("purity");
+        glowing = tagCompound.getBoolean("glowing");
     }
 
     @Override
@@ -81,6 +97,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         tagCompound.setFloat("power", power);
         tagCompound.setFloat("efficiency", efficiency);
         tagCompound.setFloat("purity", purity);
+        tagCompound.setBoolean("glowing", glowing);
     }
 
 

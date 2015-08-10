@@ -54,6 +54,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
             lasersActive = active;
             laserStartup = startup;
             markDirty();
+            updateCrystalState();
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
 
@@ -69,14 +70,15 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         return 1;
     }
 
-    private Set<ResonatingCrystalTileEntity> getAllTiles(){
-        Set<ResonatingCrystalTileEntity> ret = Sets.newHashSet();
-        for (Coordinate coord : crystals){
-            TileEntity tile = worldObj.getTileEntity(coord.getX(), coord.getY(), coord.getZ());
-            if (tile instanceof ResonatingCrystalTileEntity)
-                ret.add((ResonatingCrystalTileEntity) tile);
+    private void updateCrystalState() {
+        for (Coordinate coordinate : crystals) {
+            TileEntity te = worldObj.getTileEntity(coordinate.getX() + xCoord, coordinate.getY() + yCoord, coordinate.getZ() + zCoord);
+            if (te instanceof ResonatingCrystalTileEntity) {
+                ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
+                resonatingCrystalTileEntity.setGlowing(lasersActive);
+            }
         }
-        return ret;
+
     }
 
     private void findCrystals() {
@@ -97,6 +99,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
             crystals = newCrystals;
             markDirty();
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            updateCrystalState();
         }
     }
 

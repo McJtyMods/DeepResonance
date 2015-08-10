@@ -3,6 +3,7 @@ package mcjty.deepresonance.blocks.crystals;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.gui.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -15,6 +16,7 @@ import org.lwjgl.opengl.GL12;
 public class ResonatingCrystalTESR extends TileEntitySpecialRenderer {
     IModelCustom model = AdvancedModelLoader.loadModel(new ResourceLocation(DeepResonance.MODID, "obj/crystal.obj"));
     ResourceLocation texture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/crystal.png");
+    ResourceLocation redhalo = new ResourceLocation(DeepResonance.MODID, "textures/effects/redhalo.png");
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float time) {
@@ -32,6 +34,15 @@ public class ResonatingCrystalTESR extends TileEntitySpecialRenderer {
 //        GL11.glScalef(0.09375F, 0.09375F, 0.09375F);
 
         model.renderAll();
+
+        ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
+        if (resonatingCrystalTileEntity.isGlowing()) {
+            GL11.glTranslatef(0.0f, 0.5f, 0.0f);
+            GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+            this.bindTexture(redhalo);
+            RenderHelper.renderBillboardQuad(0.6f);
+        }
+
         GL11.glPopMatrix();
 
         if (!blending) {
