@@ -12,7 +12,7 @@ import net.minecraftforge.fluids.*;
 /**
  * Created by Elec332 on 10-8-2015.
  */
-public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolder, DRTankMultiBlock> implements IFluidHandler{
+public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolder, DRTankMultiBlock> implements IFluidHandler, IFluidTank{
 
     public DRTankMultiBlock(TileEntity tile, DRTankWorldHolder worldHolder) {
         super(tile, worldHolder);
@@ -39,20 +39,46 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         return tank.getShare(allLocations.size());
     }
 
-    public Fluid getFluid(){
+    public Fluid getStoredFluid(){
         return tank.getStoredFluid();
+    }
+
+    @Override
+    public FluidStack getFluid() {
+        return tank.getStoredFluidStack();
+    }
+
+    @Override
+    public int getFluidAmount() {
+        return tank.getStoredAmount();
+    }
+
+    @Override
+    public int getCapacity() {
+        return tank.getMaxAmount();
+    }
+
+    @Override
+    public FluidTankInfo getInfo() {
+        return null;
+    }
+
+    @Override
+    public int fill(FluidStack resource, boolean doFill) {
+        return tank.fill(resource, doFill);
+    }
+
+    @Override
+    public FluidStack drain(int maxDrain, boolean doDrain) {
+        return tank.drain(maxDrain, doDrain);
     }
 
     public String getTankInfo(){
         return tank.getInfo();
     }
 
-    public int getMaxStored(){
-        return tank.getMaxAmount();
-    }
-
     public int getFreeSpace(){
-        return getMaxStored() - tank.getStoredAmount();
+        return getCapacity() - getFluidAmount();
     }
 
     private TileTank getTank(BlockLoc loc){
@@ -61,7 +87,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
 
     @Override
     public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
-        return tank.fill(resource, doFill);
+        return fill(resource, doFill);
     }
 
     @Override
@@ -69,12 +95,12 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         if (resource == null || !resource.isFluidEqual(tank.getStoredFluidStack())) {
             return null;
         }
-        return tank.drain(resource.amount, doDrain);
+        return drain(resource.amount, doDrain);
     }
 
     @Override
     public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-        return tank.drain(maxDrain, doDrain);
+        return drain(maxDrain, doDrain);
     }
 
     @Override

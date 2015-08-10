@@ -14,7 +14,7 @@ import net.minecraftforge.fluids.*;
 /**
  * Created by Elec332 on 9-8-2015.
  */
-public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor{
+public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IFluidTank{
 
     public TileTank(){
         super();
@@ -56,7 +56,7 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
         super.writeToItemStack(tagCompound);
         if (multiBlock != null) {
             myTank = multiBlock.getFluidShare(this);
-            lastSeenFluid = multiBlock.getFluid();
+            lastSeenFluid = multiBlock.getStoredFluid();
         }
         if (myTank != null) {
             NBTTagCompound fluidTag = new NBTTagCompound();
@@ -107,40 +107,49 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
         return multiBlock == null ? new FluidTankInfo[0] : multiBlock.getTankInfo(from);
     }
 
-    /**
-     * @param direction The direction
-     * @return Weather the tile can connect to the given side
-     */
     @Override
     public boolean canAcceptFrom(ForgeDirection direction) {
         return true;
     }
 
-    /**
-     * This gets called right before IDeepResonanceFluidAcceptor#acceptFluid,
-     * the network to which the tile is connected will attempt to give you
-     * as much RS as returned by this method.
-     *
-     * @param from from where the fluid will be provided
-     * @return the requested amount of RS
-     */
     @Override
     public int getRequestedAmount(ForgeDirection from) {
         return multiBlock == null ? 0 : Math.min(multiBlock.getFreeSpace(), 1000);
     }
 
-    /**
-     * This gets called right after IDeepResonanceFluidAcceptor#getRequestedAmount,
-     * the provided FluidStack will contain less or as much fluid as the value provided
-     * in IDeepResonanceFluidAcceptor#getRequestedAmount.
-     *
-     * @param fluidStack The provided FluidStack
-     * @param from       From where the fluid was provided
-     * @return The amount of fluid that wasn't used
-     */
     @Override
     public FluidStack acceptFluid(FluidStack fluidStack, ForgeDirection from) {
         fill(from, fluidStack, true);
         return null;
+    }
+
+    @Override
+    public FluidStack getFluid() {
+        return multiBlock == null ? null : multiBlock.getFluid();
+    }
+
+    @Override
+    public int getFluidAmount() {
+        return multiBlock == null ? 0 : multiBlock.getFluidAmount();
+    }
+
+    @Override
+    public int getCapacity() {
+        return multiBlock == null ? 0 : multiBlock.getCapacity();
+    }
+
+    @Override
+    public FluidTankInfo getInfo() {
+        return multiBlock == null ? null : multiBlock.getInfo();
+    }
+
+    @Override
+    public int fill(FluidStack resource, boolean doFill) {
+        return multiBlock == null ? 0 : multiBlock.fill(resource, doFill);
+    }
+
+    @Override
+    public FluidStack drain(int maxDrain, boolean doDrain) {
+        return multiBlock == null ? null : multiBlock.drain(maxDrain, doDrain);
     }
 }
