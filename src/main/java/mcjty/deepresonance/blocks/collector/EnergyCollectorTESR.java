@@ -55,6 +55,12 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
 
+            GL11.glPushMatrix();
+            GL11.glTranslatef((float) x + 0.5F, (float) y + 0.85F, (float) z + 0.5F);
+            this.bindTexture(halo);
+            renderBillboardQuad(0.0f, 1.0f);
+            GL11.glPopMatrix();
+
             Minecraft mc = Minecraft.getMinecraft();
             EntityClientPlayerMP p = mc.thePlayer;
             double doubleX = p.lastTickPosX + (p.posX - p.lastTickPosX) * time;
@@ -67,13 +73,6 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
 
             GL11.glPushMatrix();
             GL11.glTranslated(-doubleX, -doubleY, -doubleZ);
-
-            // ----------------------------------------
-
-//            this.bindTexture(blockTexture);
-//            renderBillboardQuad(0.0f, 0.8f, start);
-
-            // ----------------------------------------
 
             Tessellator tessellator = Tessellator.instance;
 
@@ -89,6 +88,8 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
             for (Coordinate relative : energyCollectorTileEntity.getCrystals()) {
                 Coordinate destination = new Coordinate(relative.getX() + tileEntity.xCoord, relative.getY() + tileEntity.yCoord, relative.getZ() + tileEntity.zCoord);
                 Vector end = new Vector(destination.getX() + .5f, destination.getY() + .5f, destination.getZ() + .5f);
+
+                // @todo Increase jitter if crystals are not pure
 
                 if (startupFactor > .8f) {
                     // Do nothing
@@ -115,23 +116,23 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
         return (a1 + a2) / 2.0f + (random.nextFloat() * 2.0f - 1.0f) * startupFactor;
     }
 
-    public static void renderBillboardQuad(float rot, double scale, Vector pos) {
+    public static void renderBillboardQuad(float rot, double scale) {
         GL11.glPushMatrix();
 
         rotateToPlayer();
 
-        GL11.glPushMatrix();
+//        GL11.glPushMatrix();
 
-        GL11.glRotatef(rot, 0, 0, 1);
+//        GL11.glRotatef(rot, 0, 0, 1);
 
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV(pos.x-scale, pos.y-scale, pos.z, 0, 0);
-        tessellator.addVertexWithUV(pos.x-scale, pos.y+scale, pos.z, 0, 1);
-        tessellator.addVertexWithUV(pos.x+scale, pos.y+scale, pos.z, 1, 1);
-        tessellator.addVertexWithUV(pos.x+scale, pos.y-scale, pos.z, 1, 0);
+        tessellator.addVertexWithUV(-scale, -scale, 0, 0, 0);
+        tessellator.addVertexWithUV(-scale, +scale, 0, 0, 1);
+        tessellator.addVertexWithUV(+scale, +scale, 0, 1, 1);
+        tessellator.addVertexWithUV(+scale, -scale, 0, 1, 0);
         tessellator.draw();
-        GL11.glPopMatrix();
+//        GL11.glPopMatrix();
         GL11.glPopMatrix();
     }
 
