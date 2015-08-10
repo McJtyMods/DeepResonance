@@ -85,15 +85,16 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     public float getPowerPerTick() {
         if (powerPerTick < 0) {
-            float totalRF = ResonatingCrystalConfiguration.maximumRF * strength / 100.0f + (purity + 20.0f) / 120.0f;
-            powerPerTick = totalRF / getRfPerTick();
+            float totalRF = ResonatingCrystalConfiguration.maximumRF * strength / 100.0f * (purity + 20.0f) / 120.0f;
+            float numticks = totalRF / getRfPerTick();
+            powerPerTick = 100.0f / numticks;
         }
         return powerPerTick;
     }
 
     public int getRfPerTick() {
         if (rfPerTick == -1) {
-            rfPerTick = (int) (ResonatingCrystalConfiguration.maximumRFtick * efficiency / 100.0f + (purity + 10.0f) / 110.0f + 1);
+            rfPerTick = (int) (ResonatingCrystalConfiguration.maximumRFtick * efficiency / 100.0f * (purity + 10.0f) / 110.0f + 1);
         }
         return rfPerTick;
     }
