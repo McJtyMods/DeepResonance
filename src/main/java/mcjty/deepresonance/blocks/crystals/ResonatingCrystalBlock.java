@@ -46,8 +46,8 @@ public class ResonatingCrystalBlock extends GenericBlock {
         list.add("You can feel the latent power present in this crystal.");
         NBTTagCompound tagCompound = itemStack.getTagCompound();
         if (tagCompound != null) {
-            list.add(EnumChatFormatting.GREEN + "Strength/Efficiency/Purity: " + new DecimalFormat("#.##").format(tagCompound.getFloat("strength")) + "%, "
-                    + new DecimalFormat("#.##").format(tagCompound.getFloat("efficiency")) + "%, "
+            list.add(EnumChatFormatting.GREEN + "Strength/Efficiency/Purity: " + new DecimalFormat("#.##").format(tagCompound.getFloat("strength")) + "% "
+                    + new DecimalFormat("#.##").format(tagCompound.getFloat("efficiency")) + "% "
                     + new DecimalFormat("#.##").format(tagCompound.getFloat("purity")) + "%");
             list.add(EnumChatFormatting.YELLOW + "Power left: " + new DecimalFormat("#.##").format(tagCompound.getFloat("power")) + "%");
         }
@@ -59,11 +59,10 @@ public class ResonatingCrystalBlock extends GenericBlock {
         TileEntity tileEntity = accessor.getTileEntity();
         if (tileEntity instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
-            currenttip.add(EnumChatFormatting.GREEN + "Strength/Efficiency/Purity: " + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getStrength()) + "%, "
-                    + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getEfficiency()) + "%, "
+            currenttip.add(EnumChatFormatting.GREEN + "Strength/Efficiency/Purity: " + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getStrength()) + "% "
+                    + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getEfficiency()) + "% "
                     + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getPurity()) + "%");
-            currenttip.add(EnumChatFormatting.YELLOW + "Power left: " + new DecimalFormat("#.##").format(tooltipPower) + "%");
-            currenttip.add(EnumChatFormatting.YELLOW + "RF/tick: " + tooltipRFTick);
+            currenttip.add(EnumChatFormatting.YELLOW + "Power left: " + new DecimalFormat("#.##").format(tooltipPower) + "% (" + tooltipRFTick + " RF/t)");
             if (System.currentTimeMillis() - lastTime > 500) {
                 lastTime = System.currentTimeMillis();
                 DRMessages.INSTANCE.sendToServer(new PacketGetCrystalInfo(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord));
