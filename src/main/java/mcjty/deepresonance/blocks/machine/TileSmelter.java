@@ -8,6 +8,7 @@ import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.base.TileEnergyReceiver;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -22,10 +23,12 @@ public class TileSmelter extends TileEnergyReceiver{
     public TileSmelter(){
         super(new EnergyStorage(900*ConfigMachines.Smelter.rfPerTick, 3*ConfigMachines.Smelter.rfPerTick));
         this.inventory = new BasicInventory("InventorySmelter", 1, this);
+        this.checkBlocks = true;
     }
 
     private BasicInventory inventory;
     private int progress;
+    private boolean checkBlocks;
 
     @Override
     public void updateEntity() {
@@ -48,9 +51,31 @@ public class TileSmelter extends TileEnergyReceiver{
     }
 
     private boolean canWork(){
+        if (checkBlocks){
+            if (!checkBlocks())
+                return false;
+            checkBlocks = false;
+        }
+        IFluidTank above = (IFluidTank) WorldHelper.getTileAt(worldObj, myLocation().atSide(ForgeDirection.UP));
+        IFluidTank below = (IFluidTank) WorldHelper.getTileAt(worldObj, myLocation().atSide(ForgeDirection.DOWN));
+        return above.getFluid() != null && above.getFluid().getFluid() == FluidRegistry.LAVA && above.getFluidAmount() > above.getCapacity()*0.25f && below.fill(new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), false) == ConfigMachines.Smelter.rclPerOre && energyStorage.getMaxEnergyStored() >= ConfigMachines.Smelter.rfPerTick && validSlot();
+        //return ((IFluidHandler) above).drain(ForgeDirection.DOWN, new FluidStack(FluidRegistry.LAVA, ConfigMachines.Smelter.lavaCost), false).amount == ConfigMachines.Smelter.lavaCost && below instanceof IFluidHandler && ((IFluidHandler) below).fill(ForgeDirection.UP, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), false) == ConfigMachines.Smelter.rclPerOre && energyStorage.getMaxEnergyStored() >= ConfigMachines.Smelter.rfPerTick && inventory.getStackInSlot(0) != null && inventory.getStackInSlot(0).getItem() == Item.getItemFromBlock(ModBlocks.resonatingOreBlock);
+    }
+
+    private boolean validSlot(){
+        return inventory.getStackInSlot(0) != null && inventory.getStackInSlot(0).getItem() == Item.getItemFromBlock(ModBlocks.resonatingOreBlock);
+    }
+
+    private boolean checkBlocks(){
         TileEntity above = WorldHelper.getTileAt(worldObj, myLocation().atSide(ForgeDirection.UP));
         TileEntity below = WorldHelper.getTileAt(worldObj, myLocation().atSide(ForgeDirection.DOWN));
-        return above instanceof IFluidHandler && ((IFluidHandler) above).drain(ForgeDirection.DOWN, new FluidStack(FluidRegistry.LAVA, ConfigMachines.Smelter.lavaCost), false).amount == ConfigMachines.Smelter.lavaCost && below instanceof IFluidHandler && ((IFluidHandler) below).fill(ForgeDirection.UP, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), false) == ConfigMachines.Smelter.rclPerOre && energyStorage.getMaxEnergyStored() >= ConfigMachines.Smelter.rfPerTick && inventory.getStackInSlot(0) != null && inventory.getStackInSlot(0).getItem() == Item.getItemFromBlock(ModBlocks.resonatingOreBlock);
+        return above instanceof IFluidTank && below instanceof IFluidTank;
+    }
+
+    @Override
+    public void onNeighborBlockChange(Block block) {
+        super.onNeighborBlockChange(block);
+        checkBlocks = true;
     }
 
     private void smelt(){
