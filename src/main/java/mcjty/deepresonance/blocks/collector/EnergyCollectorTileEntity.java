@@ -19,7 +19,9 @@ import java.util.Set;
 
 public class EnergyCollectorTileEntity extends GenericTileEntity {
 
+    // Minimum power before we stop using a crystal.
     public static final float CRYSTAL_MIN_POWER = .0001f;
+
     // Relative coordinates of active crystals.
     private Set<Coordinate> crystals = new HashSet<Coordinate>();
     private boolean lasersActive = false;
@@ -78,6 +80,10 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
                 if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
                     resonatingCrystalTileEntity.setGlowing(lasersActive);
                     tokeep.add(coordinate);
+
+//                    resonatingCrystalTileEntity.
+
+
                     rf++;
                 } else {
                     resonatingCrystalTileEntity.setGlowing(false);
