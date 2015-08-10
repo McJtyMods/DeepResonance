@@ -77,13 +77,14 @@ public class DeepResonance implements ModBase {
         logger = e.getModLog();
         mainConfigDir = e.getModConfigurationDirectory();
         modConfigDir = new File(mainConfigDir.getPath() + File.separator + "deepresonance");
-        config = new Configuration(new File(modConfigDir, "machines.cfg"));
+        config = new Configuration(new File(modConfigDir, "main.cfg"));
         worldGridRegistry = new WorldGridRegistry();
         networkHandler = new NetworkHandler(MODID);
         compatHandler = new CompatHandler(config, logger);
         compatHandler.addHandler(new ComputerCraftCompatHandler());
-        configWrapper = new ConfigWrapper(config);
-        configWrapper.registerConfig(new ConfigMachines());
+        configWrapper = new ConfigWrapper(new Configuration(new File(modConfigDir, "machines.cfg")));
+        configWrapper.registerConfigWithInnerClasses(new ConfigMachines());
+        configWrapper.refresh();
         proxy.preInit(e);
         FMLInterModComms.sendMessage("Waila", "register", "mcjty.wailasupport.WailaCompatibility.load");
         FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
