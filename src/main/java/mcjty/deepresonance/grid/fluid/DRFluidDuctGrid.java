@@ -9,11 +9,11 @@ import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
 import mcjty.deepresonance.blocks.duct.TileBasicFluidDuct;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
-import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
-import net.minecraft.nbt.NBTTagCompound;
+import mcjty.deepresonance.grid.InternalGridTank;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -21,10 +21,10 @@ import net.minecraftforge.fluids.FluidStack;
  */
 public class DRFluidDuctGrid extends AbstractCableGrid<DRFluidDuctGrid, DRFluidTile, DRGridTypeHelper, DRFluidWorldGridHolder> {
     public DRFluidDuctGrid(World world, DRFluidTile p, ForgeDirection direction) {
-        super(world, p, direction, DRGridTypeHelper.instance, DeepResonance.worldGridRegistry);
+        super(world, p, direction, DRGridTypeHelper.instance, DeepResonance.worldGridRegistry.getFluidRegistry());
         tank = new InternalGridTank(p.getTankStorage());
         if (p.getTile() instanceof TileBasicFluidDuct)
-            tank.add(((TileBasicFluidDuct) p.getTile()).intTank);
+            tank.fill(((TileBasicFluidDuct) p.getTile()).intTank, true);
     }
 
     private InternalGridTank tank;
@@ -46,8 +46,8 @@ public class DRFluidDuctGrid extends AbstractCableGrid<DRFluidDuctGrid, DRFluidT
         int requestedRCL = 0;
         int[] va = new int[acceptors.size()];
         for (GridData gridData : providers) {
-            int maxProvide = tank.maxAmount-getStoredAmount();
-            tank.add(((IDeepResonanceFluidProvider) getWorldHolder().getPowerTile(gridData.getLoc()).getTile()).getProvidedFluid(maxProvide, gridData.getDirection()));
+            int maxProvide = tank.getMaxAmount()-getStoredAmount();
+            tank.fill(((IDeepResonanceFluidProvider) getWorldHolder().getPowerTile(gridData.getLoc()).getTile()).getProvidedFluid(maxProvide, gridData.getDirection()), true);
         }
         for (GridData gridData : acceptors) {
             int e = ((IDeepResonanceFluidAcceptor) getWorldHolder().getPowerTile(gridData.getLoc()).getTile()).getRequestedAmount(gridData.getDirection());
@@ -56,11 +56,11 @@ public class DRFluidDuctGrid extends AbstractCableGrid<DRFluidDuctGrid, DRFluidT
         }
         if (getStoredAmount() >= requestedRCL){
             for (GridData gridData : acceptors)
-                ((IDeepResonanceFluidAcceptor) getWorldHolder().getPowerTile(gridData.getLoc()).getTile()).acceptFluid(tank.remove(va[acceptors.indexOf(gridData)]), gridData.getDirection());
+                ((IDeepResonanceFluidAcceptor) getWorldHolder().getPowerTile(gridData.getLoc()).getTile()).acceptFluid(tank.drain(va[acceptors.indexOf(gridData)], true), gridData.getDirection());
         }else if (getStoredAmount() > 0){
             float diff = (float)getStoredAmount()/(float)requestedRCL;
             for (GridData gridData : acceptors)
-                ((IDeepResonanceFluidAcceptor) getWorldHolder().getPowerTile(gridData.getLoc()).getTile()).acceptFluid(tank.remove((int)(va[acceptors.indexOf(gridData)] * diff)), gridData.getDirection());
+                ((IDeepResonanceFluidAcceptor) getWorldHolder().getPowerTile(gridData.getLoc()).getTile()).acceptFluid(tank.drain((int) (va[acceptors.indexOf(gridData)] * diff), true), gridData.getDirection());
         }
     }
 
@@ -71,11 +71,17 @@ public class DRFluidDuctGrid extends AbstractCableGrid<DRFluidDuctGrid, DRFluidT
             TileEntity tileEntity = WorldHelper.getTileAt(world, gridData.getLoc());
             if (tileEntity == null)
                 tileEntity = tile.getTile();
-            if (tileEntity instanceof TileBasicFluidDuct)
+            if (tileEntity instanceof TileBasicFluidDuct) {
                 ((TileBasicFluidDuct) tileEntity).intTank = getFluidShare(tile.getTile());
+                ((TileBasicFluidDuct) tileEntity).lastSeenFluid = tank.getStoredFluid();
+            }
         }
         if (tile.getTile() instanceof TileBasicFluidDuct)
-            tank.remove(((TileBasicFluidDuct)tile.getTile()).intTank.amount);
+            tank.drain(((TileBasicFluidDuct) tile.getTile()).intTank.amount, true);
+    }
+
+    public Fluid getFluid(){
+        return tank.getStoredFluid();
     }
 
     public FluidStack getFluidShare(TileEntity tile){
@@ -85,70 +91,16 @@ public class DRFluidDuctGrid extends AbstractCableGrid<DRFluidDuctGrid, DRFluidT
         return null;
     }
 
-    public FluidStack addStackToInternalTank(FluidStack stack){
-        if (!DRFluidRegistry.isValidLiquidCrystalStack(stack))
-            return stack;
-        return tank.add(stack);
+    public int addStackToInternalTank(FluidStack stack, boolean doFill){
+        return tank.fill(stack, doFill);
     }
 
     public String getInfo(){
-        return tank.tank.toString();
+        return tank.getInfo();
     }
 
     public int getStoredAmount(){
         return tank.getStoredAmount();
-    }
-
-    private static final class InternalGridTank{
-        private InternalGridTank(int maxAmount){
-            this.maxAmount = maxAmount;
-            this.tank = LiquidCrystalFluidTagData.fromNBT(new NBTTagCompound(), 0);
-        }
-
-        private int maxAmount;
-        private LiquidCrystalFluidTagData tank;
-
-        public int getStoredAmount(){
-            return tank.getInternalTankAmount();
-        }
-
-        public FluidStack add(FluidStack stack){
-            if (!DRFluidRegistry.isValidLiquidCrystalStack(stack))
-                return stack;
-            FluidStack ret = null;
-            int compare = tank.getInternalTankAmount() + stack.amount;
-            FluidStack toAdd = stack.copy();
-            if (compare > maxAmount){
-                toAdd.amount = maxAmount - tank.getInternalTankAmount();
-                ret = stack;
-                ret.amount -= toAdd.amount;
-            }
-            tank.merge(LiquidCrystalFluidTagData.fromStack(toAdd));
-            return ret;
-        }
-
-        public FluidStack remove(int toRemove){
-            NBTTagCompound tag = new NBTTagCompound();
-            tank.writeDataToNBT(tag);
-            int stored = tank.getInternalTankAmount();
-            if (toRemove > stored)
-                toRemove = stored;
-            tank.setInternalAmount(stored - toRemove);
-            return new FluidStack(DRFluidRegistry.liquidCrystal, toRemove, tag);
-        }
-
-        private FluidStack getShare(int i){
-            NBTTagCompound tag = new NBTTagCompound();
-            tank.writeDataToNBT(tag);
-            int ret = getStoredAmount()/i;
-            return new FluidStack(DRFluidRegistry.liquidCrystal, ret, tag);
-        }
-
-        private void merge(InternalGridTank otherTank){
-            maxAmount += otherTank.maxAmount;
-            tank.merge(otherTank.tank);
-        }
-
     }
 
 }

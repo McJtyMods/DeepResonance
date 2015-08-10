@@ -1,28 +1,65 @@
 package mcjty.deepresonance.grid;
 
+import elec332.core.multiblock.dynamic.AbstractDynamicMultiBlockWorldHolder;
 import elec332.core.registry.AbstractWorldRegistryHolder;
 import elec332.core.util.EventHelper;
 import mcjty.deepresonance.grid.fluid.DRFluidWorldGridHolder;
 import mcjty.deepresonance.grid.fluid.EventHandler;
+import mcjty.deepresonance.grid.tank.DRTankWorldHolder;
 import net.minecraft.world.World;
 
 /**
  * Created by Elec332 on 3-8-2015.
  */
-public class WorldGridRegistry extends AbstractWorldRegistryHolder<DRFluidWorldGridHolder> {
+public class WorldGridRegistry {
 
     public WorldGridRegistry(){
+        this.fluidGridWorldRegistry = new DRFluidGridWorldRegistry();
+        this.tankGridWorldRegistry = new DRTankGridWorldRegistry();
         EventHelper.registerHandlerForge(new EventHandler());
     }
 
-    @Override
-    public boolean serverOnly() {
-        return true;
+    private DRFluidGridWorldRegistry fluidGridWorldRegistry;
+    private DRTankGridWorldRegistry tankGridWorldRegistry;
+
+    public DRFluidGridWorldRegistry getFluidRegistry() {
+        return fluidGridWorldRegistry;
     }
 
-    @Override
-    public DRFluidWorldGridHolder newRegistry(World world) {
-        return new DRFluidWorldGridHolder(world);
+    public DRTankGridWorldRegistry getTankRegistry() {
+        return tankGridWorldRegistry;
+    }
+
+    public static class DRTankGridWorldRegistry extends AbstractWorldRegistryHolder<AbstractDynamicMultiBlockWorldHolder>{
+
+        private DRTankGridWorldRegistry(){
+        }
+
+        @Override
+        public boolean serverOnly() {
+            return true;
+        }
+
+        @Override
+        public AbstractDynamicMultiBlockWorldHolder newRegistry(World world) {
+            return new DRTankWorldHolder(world);
+        }
+    }
+
+    public static class DRFluidGridWorldRegistry extends AbstractWorldRegistryHolder<DRFluidWorldGridHolder>{
+
+        private DRFluidGridWorldRegistry(){
+        }
+
+        @Override
+        public boolean serverOnly() {
+            return true;
+        }
+
+        @Override
+        public DRFluidWorldGridHolder newRegistry(World world) {
+            return new DRFluidWorldGridHolder(world);
+        }
     }
 
 }

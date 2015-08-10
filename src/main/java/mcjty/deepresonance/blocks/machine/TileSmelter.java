@@ -42,7 +42,7 @@ public class TileSmelter extends TileBase implements IFluidHandler{
     }
 
     private boolean canWork(){
-        return progress == 0;
+        return lavaTank.getFluidAmount() > 2.5f*FluidContainerRegistry.BUCKET_VOLUME && inventory.getStackInSlot(0) != null;
     }
 
     private void smelt(){

@@ -12,7 +12,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class DRFluidTile extends AbstractGridTile<DRFluidDuctGrid, DRFluidTile, DRGridTypeHelper, DRFluidWorldGridHolder>{
 
     public DRFluidTile(TileEntity tileEntity) {
-        super(tileEntity, DRGridTypeHelper.instance, DeepResonance.worldGridRegistry);
+        super(tileEntity, DRGridTypeHelper.instance, DeepResonance.worldGridRegistry.getFluidRegistry());
     }
 
     public int getTankStorage(){
