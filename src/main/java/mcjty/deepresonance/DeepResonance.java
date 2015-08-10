@@ -5,12 +5,14 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import elec332.core.config.ConfigWrapper;
 import elec332.core.network.NetworkHandler;
 import mcjty.base.ModBase;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.commands.CommandDRGen;
 import mcjty.deepresonance.compat.CompatHandler;
 import mcjty.deepresonance.compat.handlers.ComputerCraftCompatHandler;
+import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.grid.WorldGridRegistry;
 import mcjty.deepresonance.proxy.CommonProxy;
 import mcjty.gui.GuiStyle;
@@ -42,12 +44,13 @@ public class DeepResonance implements ModBase {
 
     @Mod.Instance("deepresonance")
     public static DeepResonance instance;
+    public static Logger logger;
     public static File mainConfigDir;
     public static File modConfigDir;
     public static WorldGridRegistry worldGridRegistry;
     public static Configuration config;
     public static CompatHandler compatHandler;
-    public static Logger logger;
+    public static ConfigWrapper configWrapper;
     public static NetworkHandler networkHandler;
 
     public static final String SHIFT_MESSAGE = "<Press Shift>";
@@ -74,11 +77,13 @@ public class DeepResonance implements ModBase {
         logger = e.getModLog();
         mainConfigDir = e.getModConfigurationDirectory();
         modConfigDir = new File(mainConfigDir.getPath() + File.separator + "deepresonance");
-        config = new Configuration(new File(modConfigDir, "main.cfg"));
+        config = new Configuration(new File(modConfigDir, "machines.cfg"));
         worldGridRegistry = new WorldGridRegistry();
         networkHandler = new NetworkHandler(MODID);
         compatHandler = new CompatHandler(config, logger);
         compatHandler.addHandler(new ComputerCraftCompatHandler());
+        configWrapper = new ConfigWrapper(config);
+        configWrapper.registerConfig(new ConfigMachines());
         proxy.preInit(e);
         FMLInterModComms.sendMessage("Waila", "register", "mcjty.wailasupport.WailaCompatibility.load");
         FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
@@ -108,6 +113,7 @@ public class DeepResonance implements ModBase {
     public void init(FMLInitializationEvent e) {
         proxy.init(e);
         compatHandler.init();
+        configWrapper.refresh();
     }
 
     @Mod.EventHandler

@@ -31,6 +31,10 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         tank.merge(multiBlock.tank);
     }
 
+    public int getTankSize(){
+        return allLocations.size();
+    }
+
     public FluidStack getFluidShare(TileTank tile){
         return tank.getShare(allLocations.size());
     }
