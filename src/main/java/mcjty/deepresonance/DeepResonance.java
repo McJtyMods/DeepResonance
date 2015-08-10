@@ -7,6 +7,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.base.ModBase;
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.commands.CommandDRGen;
 import mcjty.deepresonance.compat.CompatHandler;
 import mcjty.deepresonance.compat.handlers.ComputerCraftCompatHandler;
 import mcjty.deepresonance.grid.WorldGridRegistry;
@@ -79,6 +80,11 @@ public class DeepResonance implements ModBase {
 //
     }
 
+
+    @Mod.EventHandler
+    public void serverLoad(FMLServerStartingEvent event) {
+        event.registerServerCommand(new CommandDRGen());
+    }
 
 
     /**
