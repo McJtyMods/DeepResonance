@@ -137,6 +137,10 @@ public final class LiquidCrystalFluidTagData {
         referenceStack.amount = i;
     }
 
+    public FluidStack getReferenceStack() {
+        return referenceStack.copy();
+    }
+
     @Override
     public String toString() {
         return "Amount: "+referenceStack.amount+" ,Quality: "+quality+" ,Purity: "+purity+" ,Power: "+power+" ,LastingTime: "+lastingTime+" ,CrystallisingTime: "+crystallisingTime;

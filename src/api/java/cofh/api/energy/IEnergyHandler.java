@@ -12,7 +12,7 @@ import net.minecraftforge.common.util.ForgeDirection;
  */
 public interface IEnergyHandler extends IEnergyProvider, IEnergyReceiver {
 
-	// merely a convenience interface (remove these methods in 1.8; provided here for back-compat via compiler doing things)
+	// merely a convenience interface (drain these methods in 1.8; provided here for back-compat via compiler doing things)
 
 	/**
 	 * Add energy to an IEnergyReceiver, internal distribution is left entirely to the IEnergyReceiver.

@@ -6,6 +6,8 @@ import mcjty.deepresonance.grid.fluid.DRFluidDuctGrid;
 import mcjty.deepresonance.grid.fluid.event.FluidTileEvent;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -14,6 +16,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class TileBasicFluidDuct extends TileBase {
 
     public FluidStack intTank;
+    public Fluid lastSeenFluid;
 
     @Override
     public void onTileLoaded() {
@@ -32,14 +35,26 @@ public class TileBasicFluidDuct extends TileBase {
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
-        this.intTank = FluidStack.loadFluidStackFromNBT(tagCompound);
+        if (tagCompound.hasKey("fluid"))
+            this.intTank = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("fluid"));
+        if (tagCompound.hasKey("lastSeenFluid"))
+            this.lastSeenFluid = FluidRegistry.getFluid(tagCompound.getString("lastSeenFluid"));
     }
 
     @Override
     public void writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
-        intTank = getGrid().getFluidShare(this);
-        intTank.writeToNBT(tagCompound);
+        if (getGrid() != null) {
+            intTank = getGrid().getFluidShare(this);
+            lastSeenFluid = getGrid().getFluid();
+        }
+        if (intTank != null) {
+            NBTTagCompound fluidTag = new NBTTagCompound();
+            intTank.writeToNBT(fluidTag);
+            tagCompound.setTag("fluid", fluidTag);
+        }
+        if (lastSeenFluid != null)
+            tagCompound.setString("lastSeenFluid", FluidRegistry.getFluidName(lastSeenFluid));
     }
 
     public int getTankStorageMax(){
@@ -48,7 +63,7 @@ public class TileBasicFluidDuct extends TileBase {
 
     public DRFluidDuctGrid getGrid(){
         if (!worldObj.isRemote)
-            return DeepResonance.worldGridRegistry.get(worldObj).getPowerTile(myLocation()).getGrid();
+            return DeepResonance.worldGridRegistry.getFluidRegistry().get(worldObj).getPowerTile(myLocation()).getGrid();
         return null;
     }
 

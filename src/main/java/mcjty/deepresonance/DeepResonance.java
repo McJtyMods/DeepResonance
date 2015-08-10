@@ -5,6 +5,7 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import elec332.core.network.NetworkHandler;
 import mcjty.base.ModBase;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.commands.CommandDRGen;
@@ -41,6 +42,7 @@ public class DeepResonance implements ModBase {
     public static WorldGridRegistry worldGridRegistry;
     public static CompatHandler compatHandler;
     public static Logger logger;
+    public static NetworkHandler networkHandler;
 
     public static final String SHIFT_MESSAGE = "<Press Shift>";
 
@@ -66,6 +68,7 @@ public class DeepResonance implements ModBase {
         proxy.preInit(e);
         logger = e.getModLog();
         worldGridRegistry = new WorldGridRegistry();
+        networkHandler = new NetworkHandler(MODID);
         compatHandler = new CompatHandler(proxy.mainConfig, logger);
         compatHandler.addHandler(new ComputerCraftCompatHandler());
         FMLInterModComms.sendMessage("Waila", "register", "mcjty.wailasupport.WailaCompatibility.load");

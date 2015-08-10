@@ -6,6 +6,7 @@ import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
 import mcjty.deepresonance.blocks.duct.TileBasicFluidDuct;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
 
 /**
  * Created by Elec332 on 3-8-2015.
@@ -38,7 +39,9 @@ public class DRGridTypeHelper extends AbstractWiringTypeHelper {
 
     @Override
     public boolean canTransmitterConnectTo(TileEntity transmitter, TileEntity otherTransmitter) {
-        return true;
+        Fluid fluid1 = ((TileBasicFluidDuct) transmitter).lastSeenFluid;
+        Fluid fluid2 = ((TileBasicFluidDuct) otherTransmitter).lastSeenFluid;
+        return (fluid1 == null || fluid2 == null) || fluid1 == fluid2;
     }
 
     public boolean canTransmitterConnectTo(TileEntity transmitter, ForgeDirection direction){
