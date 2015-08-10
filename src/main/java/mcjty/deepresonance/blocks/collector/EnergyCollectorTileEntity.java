@@ -1,10 +1,10 @@
 package mcjty.deepresonance.blocks.collector;
 
-import com.google.common.collect.Sets;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
+import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
@@ -19,9 +19,9 @@ import java.util.Set;
 
 public class EnergyCollectorTileEntity extends GenericTileEntity {
 
-    // Relative coordinates of crystals.
+    public static final float CRYSTAL_MIN_POWER = .0001f;
+    // Relative coordinates of active crystals.
     private Set<Coordinate> crystals = new HashSet<Coordinate>();
-    private int crystalTimeout = 20;
     private boolean lasersActive = false;
     private int laserStartup = 0;        // A mirror (for the client) of the network startup counter.
 
@@ -40,9 +40,16 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
                 if (network != null) {
                     if (network.isActive()) {
                         // @todo temporary code.
-                        network.setEnergy(network.getEnergy() + calculateRF());
-                        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
-                        generatorNetwork.save(worldObj);
+                        int newEnergy = network.getEnergy() + calculateRF();
+                        int maxEnergy = network.getRefcount() * GeneratorConfiguration.rfPerGeneratorBlock;
+                        if (newEnergy > maxEnergy) {
+                            newEnergy = maxEnergy;
+                        }
+                        if (network.getEnergy() != newEnergy) {
+                            network.setEnergy(newEnergy);
+                            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
+                            generatorNetwork.save(worldObj);
+                        }
                         active = true;
                     }
                     startup = network.getStartupCounter();
@@ -54,31 +61,38 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
             lasersActive = active;
             laserStartup = startup;
             markDirty();
-            updateCrystalState();
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-        }
 
-        // @todo temporary!
-        crystalTimeout--;
-        if (crystalTimeout <= 0) {
-            crystalTimeout = 20;
             findCrystals();
         }
     }
 
-    private int calculateRF(){
-        return 1;
-    }
-
-    private void updateCrystalState() {
+    private int calculateRF() {
+        Set<Coordinate> tokeep = new HashSet<Coordinate>();
+        boolean dirty = false;
+        int rf = 0;
         for (Coordinate coordinate : crystals) {
             TileEntity te = worldObj.getTileEntity(coordinate.getX() + xCoord, coordinate.getY() + yCoord, coordinate.getZ() + zCoord);
             if (te instanceof ResonatingCrystalTileEntity) {
                 ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
-                resonatingCrystalTileEntity.setGlowing(lasersActive);
+                if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
+                    resonatingCrystalTileEntity.setGlowing(lasersActive);
+                    tokeep.add(coordinate);
+                    rf++;
+                } else {
+                    resonatingCrystalTileEntity.setGlowing(false);
+                    dirty = true;
+                }
+            } else {
+                dirty = true;
             }
         }
-
+        if (dirty) {
+            crystals = tokeep;
+            markDirty();
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        }
+        return rf;
     }
 
     private void findCrystals() {
@@ -89,7 +103,16 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
                 for (int x = xCoord - 10 ; x <= xCoord + 10 ; x++) {
                     for (int z = zCoord - 10 ; z <= zCoord + 10 ; z++) {
                         if (worldObj.getBlock(x, y, z) == ModBlocks.resonatingCrystalBlock) {
-                            newCrystals.add(new Coordinate(x-xCoord, y-yCoord, z-zCoord));
+                            TileEntity te = worldObj.getTileEntity(x, y, z);
+                            if (te instanceof ResonatingCrystalTileEntity) {
+                                ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
+                                if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
+                                    newCrystals.add(new Coordinate(x - xCoord, y - yCoord, z - zCoord));
+                                    resonatingCrystalTileEntity.setGlowing(lasersActive);
+                                } else {
+                                    resonatingCrystalTileEntity.setGlowing(false);
+                                }
+                            }
                         }
                     }
                 }
@@ -99,7 +122,6 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
             crystals = newCrystals;
             markDirty();
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-            updateCrystalState();
         }
     }
 
