@@ -35,6 +35,8 @@ public class ResonatingCrystalBlock extends GenericBlock {
         setHardness(3.0f);
         setResistance(5.0f);
         setHarvestLevel("pickaxe", 2);
+        setBlockTextureName(DeepResonance.MODID + ":crystal");
+        setStepSound(soundTypeGlass);
         setCreativeTab(DeepResonance.tabDeepResonance);
     }
 
