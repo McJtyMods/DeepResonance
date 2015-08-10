@@ -70,7 +70,7 @@ public class DeepWorldGenerator implements IWorldGenerator {
                         if (WorldGenConfiguration.verboseSpawn) {
                             Logging.log("Spawned a crystal at: " + x + "," + y + "," + z);
                         }
-                        ResonatingCrystalTileEntity.spawnRandomCrystal(world, random, x, y+1, z);
+                        ResonatingCrystalTileEntity.spawnRandomCrystal(world, random, x, y+1, z, 0);
                         return;
                     }
                 }

@@ -118,6 +118,11 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         efficiency = tagCompound.getFloat("efficiency");
         purity = tagCompound.getFloat("purity");
         glowing = tagCompound.getBoolean("glowing");
+        byte version = tagCompound.getByte("version");
+        if (version < (byte) 2) {
+            // We have to convert the power.
+            power *= 20.0f;
+        }
     }
 
     @Override
@@ -133,17 +138,34 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         tagCompound.setFloat("efficiency", efficiency);
         tagCompound.setFloat("purity", purity);
         tagCompound.setBoolean("glowing", glowing);
+        tagCompound.setByte("version", (byte) 2);      // Legacy support to support older crystals.
     }
 
-    public static void spawnRandomCrystal(World world, Random random, int x, int y, int z) {
+    // Special == 0, normal
+    // Special == 1, average random
+    // Special == 2, best random
+    // Special == 3, best non-overcharged
+    public static void spawnRandomCrystal(World world, Random random, int x, int y, int z, int special) {
         world.setBlock(x, y, z, ModBlocks.resonatingCrystalBlock, 0, 3);
         TileEntity te = world.getTileEntity(x, y, z);
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
-            resonatingCrystalTileEntity.setStrength(random.nextFloat() * 3.0f + 0.01f);
-            resonatingCrystalTileEntity.setPower(random.nextFloat() * 3.0f + 0.01f);
-            resonatingCrystalTileEntity.setEfficiency(random.nextFloat() * 3.0f + 0.1f);
-            resonatingCrystalTileEntity.setPurity(random.nextFloat() * 10.0f + 5.0f);
+            if (special == 3) {
+                resonatingCrystalTileEntity.setStrength(100);
+                resonatingCrystalTileEntity.setPower(100);
+                resonatingCrystalTileEntity.setEfficiency(100);
+                resonatingCrystalTileEntity.setPurity(100);
+            } else {
+                resonatingCrystalTileEntity.setStrength(getRandomSpecial(random, special) * 3.0f + 0.01f);
+                resonatingCrystalTileEntity.setPower(getRandomSpecial(random, special) * 60.0f + 0.2f);
+                resonatingCrystalTileEntity.setEfficiency(getRandomSpecial(random, special) * 3.0f + 0.1f);
+                resonatingCrystalTileEntity.setPurity(getRandomSpecial(random, special) * 10.0f + 5.0f);
+            }
         }
+    }
+
+    private static float getRandomSpecial(Random random, int special) {
+        return special == 0 ? random.nextFloat() :
+                special == 1 ? .5f : 1.0f;
     }
 }

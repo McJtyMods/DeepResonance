@@ -12,7 +12,7 @@ import java.util.Random;
 public class CmdSpawnCrystal extends AbstractDRCommand {
     @Override
     public String getHelp() {
-        return "";
+        return "[0=normal, 1=average, 2=max random, 3=max overall]";
     }
 
     @Override
@@ -27,7 +27,7 @@ public class CmdSpawnCrystal extends AbstractDRCommand {
 
     @Override
     public void execute(ICommandSender sender, String[] args) {
-        if (args.length > 1) {
+        if (args.length > 2) {
             sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Too many parameters!"));
             return;
         }
@@ -37,6 +37,8 @@ public class CmdSpawnCrystal extends AbstractDRCommand {
             return;
         }
 
+        int special = fetchInt(sender, args, 1, 0);
+
         EntityPlayer player = (EntityPlayer) sender;
         World world = player.worldObj;
         int x = (int) player.posX;
@@ -45,6 +47,6 @@ public class CmdSpawnCrystal extends AbstractDRCommand {
         Random random = new Random(System.currentTimeMillis());
         random.nextFloat();
 
-        ResonatingCrystalTileEntity.spawnRandomCrystal(world, random, x, y, z);
+        ResonatingCrystalTileEntity.spawnRandomCrystal(world, random, x, y, z, special);
     }
 }
