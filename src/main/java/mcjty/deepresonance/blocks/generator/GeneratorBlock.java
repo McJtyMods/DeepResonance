@@ -86,7 +86,7 @@ public class GeneratorBlock extends GenericBlock {
                 lastTime = System.currentTimeMillis();
                 DRMessages.INSTANCE.sendToServer(new PacketGetGeneratorInfo(generatorTileEntity.getNetworkId()));
             }
-            currenttip.add(EnumChatFormatting.GREEN + "Energy: " + tooltipEnergy + " RF");
+            currenttip.add(EnumChatFormatting.GREEN + "Energy: " + tooltipEnergy + "/" + (tooltipRefCount*GeneratorConfiguration.rfPerGeneratorBlock) + " RF");
             currenttip.add(EnumChatFormatting.GREEN + "Blocks: " + tooltipRefCount);
         }
         return currenttip;
