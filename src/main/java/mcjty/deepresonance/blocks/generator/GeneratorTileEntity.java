@@ -48,6 +48,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
             // Only one network adjacent. So we can simply join this new block to that network.
             networkId = adjacentGeneratorIds.iterator().next();
             DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(networkId);
+            network.setActive(false);       // Deactivate to make sure it properly restarts
             network.incRefCount();
         } else {
             // We need to merge networks. The first network will be the master. First we
@@ -55,6 +56,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
             int energy = 0;
             for (Integer netId : adjacentGeneratorIds) {
                 DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(netId);
+                network.setActive(false);       // Deactivate to make sure it properly restarts
                 energy += network.getEnergy();
             }
 
@@ -106,10 +108,12 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         if (networkId != -1) {
             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
             DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(networkId);
+            network.setActive(false);       // Deactivate to make sure it properly restarts
             network.decRefCount();
             totalEnergy = network.getEnergy();
             totalBlocks = network.getRefcount();
             setNetworkId(-1);
+
         }
         // Safety:
         if (totalBlocks < 1) {
