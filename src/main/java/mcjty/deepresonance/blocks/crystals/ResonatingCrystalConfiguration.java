@@ -6,7 +6,7 @@ public class ResonatingCrystalConfiguration {
     public static final String CATEGORY_CRYSTALS = "crystals";
 
     public static int maximumRF = 500000000;      // The maximum RF that a crystal with 100% power can hold.
-    public static int maximumRFtick = 50000;      // The maximum RF/tick that a crystal with 100% efficiency can give.
+    public static int maximumRFtick = 20000;      // The maximum RF/tick that a crystal with 100% efficiency can give.
 
     public static void init(Configuration cfg) {
 

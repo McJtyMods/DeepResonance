@@ -15,9 +15,9 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     //    * P: Purity (0-100%)
     //    * E: Efficiency (0-100%)
     // Is equal to:
-    //    * MaxRF = FullMax * (S/100) * ((P+20)/120)
+    //    * MaxRF = FullMax * (S/100) * ((P+30)/130)
     // The RF/tick you can get out of a crystal with the above characteristics is:
-    //    * RFTick = FullRFTick * (E/100) * ((P+10)/110) + 1
+    //    * RFTick = FullRFTick * (E/100) * ((P+2)/102) + 1
 
     private float strength = 1.0f;
     private float power = 1.0f;         // Default 1% power
@@ -90,7 +90,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     public float getPowerPerTick() {
         if (powerPerTick < 0) {
-            float totalRF = ResonatingCrystalConfiguration.maximumRF * strength / 100.0f * (purity + 20.0f) / 120.0f;
+            float totalRF = ResonatingCrystalConfiguration.maximumRF * strength / 100.0f * (purity + 30.0f) / 130.0f;
             float numticks = totalRF / getRfPerTick();
             powerPerTick = 100.0f / numticks;
         }
@@ -99,7 +99,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     public int getRfPerTick() {
         if (rfPerTick == -1) {
-            rfPerTick = (int) (ResonatingCrystalConfiguration.maximumRFtick * efficiency / 100.0f * (purity + 10.0f) / 110.0f + 1);
+            rfPerTick = (int) (ResonatingCrystalConfiguration.maximumRFtick * efficiency / 100.0f * (purity + 2.0f) / 102.0f + 1);
         }
         return rfPerTick;
     }
