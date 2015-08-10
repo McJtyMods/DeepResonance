@@ -29,7 +29,7 @@ public class DeepResonance implements ModBase {
     public static final String MODID = "deepresonance";
     public static final String VERSION = "0.1.1";
     public static final String MIN_FORGE_VER = "10.13.2.1291";
-    public static final String MIN_MCJTYLIB_VER = "1.2.0";
+    public static final String MIN_MCJTYLIB_VER = "1.3.0";
     public static final String MIN_ELECCORE_VER = "1.4.122";
 
     @SidedProxy(clientSide="mcjty.deepresonance.proxy.ClientProxy", serverSide="mcjty.deepresonance.proxy.ServerProxy")

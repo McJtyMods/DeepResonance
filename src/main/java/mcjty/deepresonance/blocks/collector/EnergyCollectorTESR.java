@@ -4,11 +4,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
+import mcjty.gui.RenderHelper;
+import mcjty.gui.RenderHelper.Vector;
 import mcjty.varia.Coordinate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -58,7 +59,7 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
             GL11.glPushMatrix();
             GL11.glTranslatef((float) x + 0.5F, (float) y + 0.85F, (float) z + 0.5F);
             this.bindTexture(halo);
-            renderBillboardQuad(0.0f, 1.0f);
+            RenderHelper.renderBillboardQuad(1.0f);
             GL11.glPopMatrix();
 
             Minecraft mc = Minecraft.getMinecraft();
@@ -95,10 +96,10 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
                     // Do nothing
                 } else if (startupFactor > .001f) {
                     Vector middle = new Vector(jitter(startupFactor, start.x, end.x), jitter(startupFactor, start.y, end.y), jitter(startupFactor, start.z, end.z));
-                    drawBeam(start, middle, player);
-                    drawBeam(middle, end, player);
+                    RenderHelper.drawBeam(start, middle, player, .1f);
+                    RenderHelper.drawBeam(middle, end, player, .1f);
                 } else {
-                    drawBeam(start, end, player);
+                    RenderHelper.drawBeam(start, end, player, .1f);
                 }
             }
 
@@ -114,104 +115,6 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
 
     private float jitter(float startupFactor, float a1, float a2) {
         return (a1 + a2) / 2.0f + (random.nextFloat() * 2.0f - 1.0f) * startupFactor;
-    }
-
-    public static void renderBillboardQuad(float rot, double scale) {
-        GL11.glPushMatrix();
-
-        rotateToPlayer();
-
-//        GL11.glPushMatrix();
-
-//        GL11.glRotatef(rot, 0, 0, 1);
-
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV(-scale, -scale, 0, 0, 0);
-        tessellator.addVertexWithUV(-scale, +scale, 0, 0, 1);
-        tessellator.addVertexWithUV(+scale, +scale, 0, 1, 1);
-        tessellator.addVertexWithUV(+scale, -scale, 0, 1, 0);
-        tessellator.draw();
-//        GL11.glPopMatrix();
-        GL11.glPopMatrix();
-    }
-
-    public static void rotateToPlayer() {
-        GL11.glRotatef(-RenderManager.instance.playerViewY, 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(RenderManager.instance.playerViewX, 1.0F, 0.0F, 0.0F);
-    }
-
-    private void drawBeam(Vector S, Vector E, Vector P) {
-        Vector PS = Sub(S, P);
-        Vector SE = Sub(E, S);
-
-        Vector normal = Cross(PS, SE);
-        normal = normal.normalize();
-
-        Vector half = Mul(normal, .1f);
-        Vector p1 = Add(S, half);
-        Vector p2 = Sub(S, half);
-        Vector p3 = Add(E, half);
-        Vector p4 = Sub(E, half);
-
-        drawQuad(Tessellator.instance, p1, p3, p4, p2);
-    }
-
-    private void drawQuad(Tessellator tessellator, Vector p1, Vector p2, Vector p3, Vector p4) {
-        tessellator.addVertexWithUV(p1.getX(), p1.getY(), p1.getZ(), 0, 0);
-        tessellator.addVertexWithUV(p2.getX(), p2.getY(), p2.getZ(), 1, 0);
-        tessellator.addVertexWithUV(p3.getX(), p3.getY(), p3.getZ(), 1, 1);
-        tessellator.addVertexWithUV(p4.getX(), p4.getY(), p4.getZ(), 0, 1);
-    }
-
-    private static class Vector {
-        private final float x;
-        private final float y;
-        private final float z;
-
-        private Vector(float x, float y, float z) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
-        public float getX() {
-            return x;
-        }
-
-        public float getY() {
-            return y;
-        }
-
-        public float getZ() {
-            return z;
-        }
-
-        public float norm() {
-            return (float) Math.sqrt(x * x + y * y + z * z);
-        }
-
-        public Vector normalize() {
-            float n = norm();
-            return new Vector(x / n, y / n, z / n);
-        }
-    }
-
-    private static Vector Cross(Vector a, Vector b) {
-        float x = a.y*b.z - a.z*b.y;
-        float y = a.z*b.x - a.x*b.z;
-        float z = a.x*b.y - a.y*b.x;
-        return new Vector(x, y, z);
-    }
-
-    private static Vector Sub(Vector a, Vector b) {
-        return new Vector(a.x-b.x, a.y-b.y, a.z-b.z);
-    }
-    private static Vector Add(Vector a, Vector b) {
-        return new Vector(a.x+b.x, a.y+b.y, a.z+b.z);
-    }
-    private static Vector Mul(Vector a, float f) {
-        return new Vector(a.x * f, a.y * f, a.z * f);
     }
 
 
