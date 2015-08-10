@@ -67,7 +67,7 @@ public class DeepResonance implements ModBase {
         proxy.preInit(e);
         logger = e.getModLog();
         worldGridRegistry = new WorldGridRegistry();
-        networkHandler = new NetworkHandler(MODID);
+        networkHandler = new NetworkHandler(MODID+"|2");
         compatHandler = new CompatHandler(proxy.mainConfig, logger);
         compatHandler.addHandler(new ComputerCraftCompatHandler());
         FMLInterModComms.sendMessage("Waila", "register", "mcjty.wailasupport.WailaCompatibility.load");
