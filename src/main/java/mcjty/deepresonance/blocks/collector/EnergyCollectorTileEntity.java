@@ -3,6 +3,7 @@ package mcjty.deepresonance.blocks.collector;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.blocks.crystals.ResonatingCrystalConfiguration;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
@@ -20,7 +21,7 @@ import java.util.Set;
 public class EnergyCollectorTileEntity extends GenericTileEntity {
 
     // Minimum power before we stop using a crystal.
-    public static final float CRYSTAL_MIN_POWER = .0001f;
+    public static final float CRYSTAL_MIN_POWER = .00001f;
 
     // Relative coordinates of active crystals.
     private Set<Coordinate> crystals = new HashSet<Coordinate>();
@@ -81,10 +82,16 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
                     resonatingCrystalTileEntity.setGlowing(lasersActive);
                     tokeep.add(coordinate);
 
-//                    resonatingCrystalTileEntity.
-
-
-                    rf++;
+                    float power = resonatingCrystalTileEntity.getPower();
+                    if (power < resonatingCrystalTileEntity.getPowerPerTick()) {
+                        // We are empty.
+                        resonatingCrystalTileEntity.setPower(0);
+                        // Crystal will be removed from the list of active crystals next tick.
+                    } else {
+                        power -= resonatingCrystalTileEntity.getPowerPerTick();
+                        resonatingCrystalTileEntity.setPower(power); // @@@ No block update on crystal yet!
+                        rf += resonatingCrystalTileEntity.getRfPerTick();
+                    }
                 } else {
                     resonatingCrystalTileEntity.setGlowing(false);
                     dirty = true;

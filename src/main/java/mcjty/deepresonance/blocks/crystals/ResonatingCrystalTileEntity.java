@@ -5,10 +5,22 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
+    // The total maximum RF you can get out of a crystal with the following characteristics:
+    //    * S: Strength (0-100%)
+    //    * P: Purity (0-100%)
+    //    * E: Efficiency (0-100%)
+    // Is equal to:
+    //    * MaxRF = FullMax * (S/100) * ((P+20)/120)
+    // The RF/tick you can get out of a crystal with the above characteristics is:
+    //    * RFTick = FullRFTick * (E/100) * ((P+10)/110) + 1
+
     private float strength = 1.0f;
     private float power = 1.0f;         // Default 1% power
     private float efficiency = 1.0f;    // Default 1%
     private float purity = 1.0f;        // Default 1% purity
+
+    private float powerPerTick = -1;    // Calculated value that contains the power/tick that is drained for this crystal.
+    private int rfPerTick = -1;         // Calculated value that contains the RF/tick for this crystal.
 
     private boolean glowing = false;
 
@@ -46,7 +58,8 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     public void setPower(float power) {
         this.power = power;
         markDirty();
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        // Don't do block update. We query power on demand from the tooltip of the crystal.
+//        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
     public void setEfficiency(float efficiency) {
@@ -69,6 +82,22 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         markDirty();
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
+
+    public float getPowerPerTick() {
+        if (powerPerTick < 0) {
+            float totalRF = ResonatingCrystalConfiguration.maximumRF * strength / 100.0f + (purity + 20.0f) / 120.0f;
+            powerPerTick = totalRF / getRfPerTick();
+        }
+        return powerPerTick;
+    }
+
+    public int getRfPerTick() {
+        if (rfPerTick == -1) {
+            rfPerTick = (int) (ResonatingCrystalConfiguration.maximumRFtick * efficiency / 100.0f + (purity + 10.0f) / 110.0f + 1);
+        }
+        return rfPerTick;
+    }
+
 
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {

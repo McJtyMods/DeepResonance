@@ -5,6 +5,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import elec332.core.world.WorldHelper;
 import mcjty.container.GenericBlock;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.network.DRMessages;
+import mcjty.deepresonance.network.PacketGetCrystalInfo;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
@@ -21,6 +23,11 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 public class ResonatingCrystalBlock extends GenericBlock {
+
+    public static int tooltipRFTick = 0;
+    public static float tooltipPower = 0;
+
+    private static long lastTime = 0;
 
     public ResonatingCrystalBlock() {
         super(DeepResonance.instance, Material.glass, ResonatingCrystalTileEntity.class, false);
@@ -39,9 +46,9 @@ public class ResonatingCrystalBlock extends GenericBlock {
         list.add("You can feel the latent power present in this crystal.");
         NBTTagCompound tagCompound = itemStack.getTagCompound();
         if (tagCompound != null) {
-            list.add(EnumChatFormatting.GREEN + "Strength: " + new DecimalFormat("#.##").format(tagCompound.getFloat("strength")) + "%");
-            list.add(EnumChatFormatting.GREEN + "Efficiency: " + new DecimalFormat("#.##").format(tagCompound.getFloat("efficiency")) + "%");
-            list.add(EnumChatFormatting.GREEN + "Purity: " + new DecimalFormat("#.##").format(tagCompound.getFloat("purity")) + "%");
+            list.add(EnumChatFormatting.GREEN + "Strength/Efficiency/Purity: " + new DecimalFormat("#.##").format(tagCompound.getFloat("strength")) + "%, "
+                    + new DecimalFormat("#.##").format(tagCompound.getFloat("efficiency")) + "%, "
+                    + new DecimalFormat("#.##").format(tagCompound.getFloat("purity")) + "%");
             list.add(EnumChatFormatting.YELLOW + "Power left: " + new DecimalFormat("#.##").format(tagCompound.getFloat("power")) + "%");
         }
     }
@@ -52,10 +59,15 @@ public class ResonatingCrystalBlock extends GenericBlock {
         TileEntity tileEntity = accessor.getTileEntity();
         if (tileEntity instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
-            currenttip.add(EnumChatFormatting.GREEN + "Strength: " + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getStrength()) + "%");
-            currenttip.add(EnumChatFormatting.GREEN + "Efficiency: " + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getEfficiency()) + "%");
-            currenttip.add(EnumChatFormatting.GREEN + "Purity: " + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getPurity()) + "%");
-            currenttip.add(EnumChatFormatting.YELLOW + "Power left: " + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getPower()) + "%");
+            currenttip.add(EnumChatFormatting.GREEN + "Strength/Efficiency/Purity: " + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getStrength()) + "%, "
+                    + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getEfficiency()) + "%, "
+                    + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getPurity()) + "%");
+            currenttip.add(EnumChatFormatting.YELLOW + "Power left: " + new DecimalFormat("#.##").format(tooltipPower) + "%");
+            currenttip.add(EnumChatFormatting.YELLOW + "RF/tick: " + tooltipRFTick);
+            if (System.currentTimeMillis() - lastTime > 500) {
+                lastTime = System.currentTimeMillis();
+                DRMessages.INSTANCE.sendToServer(new PacketGetCrystalInfo(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord));
+            }
         }
         return currenttip;
     }

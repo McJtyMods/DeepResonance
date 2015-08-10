@@ -12,8 +12,10 @@ public class DRMessages {
 
         // Server side
         net.registerMessage(PacketGetGeneratorInfo.class, PacketGetGeneratorInfo.class, PacketHandler.nextID(), Side.SERVER);
+        net.registerMessage(PacketGetCrystalInfo.class, PacketGetCrystalInfo.class, PacketHandler.nextID(), Side.SERVER);
 
         // Client side
         net.registerMessage(PacketReturnGeneratorInfoHandler.class, PacketReturnGeneratorInfo.class, PacketHandler.nextID(), Side.CLIENT);
+        net.registerMessage(PacketReturnCrystalInfoHandler.class, PacketReturnCrystalInfo.class, PacketHandler.nextID(), Side.CLIENT);
     }
 }
