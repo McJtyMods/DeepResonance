@@ -43,6 +43,14 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         return tank.getInfo();
     }
 
+    public int getMaxStored(){
+        return tank.getMaxAmount();
+    }
+
+    public int getFreeSpace(){
+        return getMaxStored() - tank.getStoredAmount();
+    }
+
     private TileTank getTank(BlockLoc loc){
         return (TileTank) WorldHelper.getTileAt(world, loc);
     }
