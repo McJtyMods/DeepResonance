@@ -35,11 +35,12 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
     @Override
     protected void checkStateServer() {
         boolean active = false;
+        DRGeneratorNetwork.Network network = null;
         int startup = 0;
         if (worldObj.getBlock(xCoord, yCoord-1, zCoord) == GeneratorSetup.generatorBlock) {
             TileEntity te = worldObj.getTileEntity(xCoord, yCoord-1, zCoord);
             if (te instanceof GeneratorTileEntity) {
-                DRGeneratorNetwork.Network network = ((GeneratorTileEntity) te).getNetwork();
+                network = ((GeneratorTileEntity) te).getNetwork();
                 if (network != null) {
                     if (network.isActive()) {
                         int rfPerTick = calculateRF();
@@ -69,7 +70,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
             markDirty();
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 
-            findCrystals();
+            findCrystals(network);
         }
     }
 
@@ -111,8 +112,11 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         return rf;
     }
 
-    private void findCrystals() {
+    private void findCrystals(DRGeneratorNetwork.Network network) {
         Set<Coordinate> newCrystals = new HashSet<Coordinate>();
+
+        int maxSupportedRF = network.getRefcount() * GeneratorConfiguration.maxRFInputPerBlock;
+        int maxSupportedCrystals = network.getRefcount() * GeneratorConfiguration.maxCrystalsPerBlock;
 
         for (int y = yCoord - 1 ; y <= yCoord + 1 ; y++) {
             if (y >= 0 && y < worldObj.getHeight()) {
@@ -123,8 +127,15 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
                             if (te instanceof ResonatingCrystalTileEntity) {
                                 ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
                                 if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
-                                    newCrystals.add(new Coordinate(x - xCoord, y - yCoord, z - zCoord));
-                                    resonatingCrystalTileEntity.setGlowing(lasersActive);
+                                    if (newCrystals.size() >= maxSupportedCrystals) {
+                                        resonatingCrystalTileEntity.setGlowing(false);
+                                    } else if (resonatingCrystalTileEntity.getRfPerTick() > maxSupportedRF) {
+                                        resonatingCrystalTileEntity.setGlowing(false);
+                                    } else {
+                                        maxSupportedRF -= resonatingCrystalTileEntity.getRfPerTick();
+                                        newCrystals.add(new Coordinate(x - xCoord, y - yCoord, z - zCoord));
+                                        resonatingCrystalTileEntity.setGlowing(lasersActive);
+                                    }
                                 } else {
                                     resonatingCrystalTileEntity.setGlowing(false);
                                 }
