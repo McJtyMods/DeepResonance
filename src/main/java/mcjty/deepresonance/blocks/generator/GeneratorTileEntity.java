@@ -246,6 +246,10 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
     protected void checkStateServer() {
         int energyStored = getEnergyStored(ForgeDirection.DOWN);
 
+        if (energyStored <= 0) {
+            return;
+        }
+
         for (int i = 0 ; i < 6 ; i++) {
             ForgeDirection dir = ForgeDirection.getOrientation(i);
             int x = xCoord + dir.offsetX;
@@ -289,6 +293,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         }
         if (!simulate) {
             network.setEnergy(energy - maxExtract);
+            DRGeneratorNetwork.getChannels(worldObj).save(worldObj);
         }
         return maxExtract;
     }
