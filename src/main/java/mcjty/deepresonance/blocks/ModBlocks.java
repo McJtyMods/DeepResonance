@@ -12,6 +12,7 @@ import mcjty.deepresonance.blocks.duct.TileBasicFluidDuct;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.machine.TileSmelter;
 import mcjty.deepresonance.blocks.ore.ResonatingOreBlock;
+import mcjty.deepresonance.blocks.tank.TileTank;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraftforge.oredict.OreDictionary;
@@ -20,7 +21,7 @@ public final class ModBlocks {
 
     public static ResonatingOreBlock resonatingOreBlock;
     public static ResonatingCrystalBlock resonatingCrystalBlock;
-    public static Block duct, smelter;
+    public static Block duct, smelter, tank;
 
     public static void init() {
         resonatingOreBlock = new ResonatingOreBlock();
@@ -33,6 +34,7 @@ public final class ModBlocks {
 
         duct = new BlockDuct(TileBasicFluidDuct.class, "basicFluidDuct").registerTile().register();
         smelter = new BlockTileBase(Material.rock, TileSmelter.class, "smelter", DeepResonance.MODID).registerTile().register();
+        tank = new BlockTileBase(Material.rock, TileTank.class, "tank", DeepResonance.MODID).registerTile().register().setCreativeTab(DeepResonance.tabDeepResonance);
 
         GeneratorSetup.setupBlocks();
         EnergyCollectorSetup.setupBlocks();
