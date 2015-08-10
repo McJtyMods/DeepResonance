@@ -19,7 +19,10 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Logger;
+
+import java.io.File;
 
 @Mod(modid = DeepResonance.MODID, name="DeepResonance", dependencies =
         "required-after:Forge@["+DeepResonance.MIN_FORGE_VER+
@@ -39,7 +42,10 @@ public class DeepResonance implements ModBase {
 
     @Mod.Instance("deepresonance")
     public static DeepResonance instance;
+    public static File mainConfigDir;
+    public static File modConfigDir;
     public static WorldGridRegistry worldGridRegistry;
+    public static Configuration config;
     public static CompatHandler compatHandler;
     public static Logger logger;
     public static NetworkHandler networkHandler;
@@ -65,14 +71,19 @@ public class DeepResonance implements ModBase {
      */
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
-        proxy.preInit(e);
         logger = e.getModLog();
+        mainConfigDir = e.getModConfigurationDirectory();
+        modConfigDir = new File(mainConfigDir.getPath() + File.separator + "deepresonance");
+        config = new Configuration(new File(modConfigDir, "main.cfg"));
         worldGridRegistry = new WorldGridRegistry();
-        networkHandler = new NetworkHandler(MODID+"|2");
-        compatHandler = new CompatHandler(proxy.mainConfig, logger);
+        networkHandler = new NetworkHandler(MODID);
+        compatHandler = new CompatHandler(config, logger);
         compatHandler.addHandler(new ComputerCraftCompatHandler());
+        proxy.preInit(e);
         FMLInterModComms.sendMessage("Waila", "register", "mcjty.wailasupport.WailaCompatibility.load");
         FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
+
+
 //        mainConfigDir = e.getModConfigurationDirectory();
 //        mainConfig = new Configuration(new File(mainConfigDir.getPath() + File.separator + "rftools", "main.cfg"));
 //

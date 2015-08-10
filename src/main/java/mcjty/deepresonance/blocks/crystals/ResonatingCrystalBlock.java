@@ -65,7 +65,7 @@ public class ResonatingCrystalBlock extends GenericBlock {
             currenttip.add(EnumChatFormatting.YELLOW + "Power left: " + new DecimalFormat("#.##").format(tooltipPower) + "% (" + tooltipRFTick + " RF/t)");
             if (System.currentTimeMillis() - lastTime > 250) {
                 lastTime = System.currentTimeMillis();
-                DRMessages.INSTANCE.sendToServer(new PacketGetCrystalInfo(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord));
+                DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetCrystalInfo(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord));
             }
         }
         return currenttip;

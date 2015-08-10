@@ -85,7 +85,7 @@ public class GeneratorBlock extends GenericBlock {
             currenttip.add(EnumChatFormatting.GREEN + "ID: " + new DecimalFormat("#.##").format(generatorTileEntity.getNetworkId()));
             if (System.currentTimeMillis() - lastTime > 250) {
                 lastTime = System.currentTimeMillis();
-                DRMessages.INSTANCE.sendToServer(new PacketGetGeneratorInfo(generatorTileEntity.getNetworkId()));
+                DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetGeneratorInfo(generatorTileEntity.getNetworkId()));
             }
             currenttip.add(EnumChatFormatting.GREEN + "Energy: " + tooltipEnergy + "/" + (tooltipRefCount*GeneratorConfiguration.rfPerGeneratorBlock) + " RF");
             currenttip.add(EnumChatFormatting.YELLOW + Integer.toString(tooltipRfPerTick) + " RF/t");

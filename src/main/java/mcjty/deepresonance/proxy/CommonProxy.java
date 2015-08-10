@@ -6,7 +6,6 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalConfiguration;
@@ -19,28 +18,18 @@ import mcjty.deepresonance.network.DRMessages;
 import mcjty.deepresonance.worldgen.WorldGen;
 import mcjty.deepresonance.worldgen.WorldGenConfiguration;
 import mcjty.deepresonance.worldgen.WorldTickHandler;
-import mcjty.network.PacketHandler;
 import mcjty.varia.WrenchChecker;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Level;
 
-import java.io.File;
-
 public abstract class CommonProxy {
 
-    public static File mainConfigDir;
-    public static File modConfigDir;
-    public Configuration mainConfig;
+    private Configuration mainConfig;
 
     public void preInit(FMLPreInitializationEvent e) {
-        mainConfigDir = e.getModConfigurationDirectory();
-        modConfigDir = new File(mainConfigDir.getPath() + File.separator + "deepresonance");
-        mainConfig = new Configuration(new File(modConfigDir, "main.cfg"));
+        mainConfig = DeepResonance.config;
         readMainConfig();
-
-        SimpleNetworkWrapper network = PacketHandler.registerMessages("deepresonance");
-        DRMessages.registerNetworkMessages(network);
-
+        DRMessages.registerNetworkMessages();
         DRFluidRegistry.preInitFluids();
         ModItems.init();
         ModBlocks.init();
