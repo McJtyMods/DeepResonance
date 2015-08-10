@@ -8,7 +8,8 @@ import elec332.core.config.Configurable;
 public class ConfigMachines {
 
     public static class Smelter{
-
+        private static final String category = "Smelter";
+        
         @Configurable(category = category, minValue = 5, maxValue = 900)
         public static int rfPerTick = 10;
 
@@ -18,6 +19,6 @@ public class ConfigMachines {
         @Configurable(category = category, minValue = 50, maxValue = 1000)
         public static int rclPerOre = 200;
 
-        private static final String category = "Smelter";
+
     }
 }
