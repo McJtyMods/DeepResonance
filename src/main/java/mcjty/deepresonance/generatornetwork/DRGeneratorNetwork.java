@@ -107,6 +107,7 @@ public class DRGeneratorNetwork extends WorldSavedData {
         private boolean active = false;
         private int startupCounter = 0;
         private int shutdownCounter = 0;
+        private int lastRfPerTick = 0;
 
         public int getRefcount() {
             return refcount;
@@ -130,6 +131,14 @@ public class DRGeneratorNetwork extends WorldSavedData {
 
         public void setEnergy(int energy) {
             this.energy = energy;
+        }
+
+        public int getLastRfPerTick() {
+            return lastRfPerTick;
+        }
+
+        public void setLastRfPerTick(int lastRfPerTick) {
+            this.lastRfPerTick = lastRfPerTick;
         }
 
         public boolean isActive() {

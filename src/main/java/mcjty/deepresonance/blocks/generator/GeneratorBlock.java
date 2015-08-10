@@ -41,6 +41,7 @@ public class GeneratorBlock extends GenericBlock {
 
     public static int tooltipEnergy = 0;
     public static int tooltipRefCount = 0;
+    public static int tooltipRfPerTick = 0;
 
     private static long lastTime = 0;
 
@@ -87,7 +88,7 @@ public class GeneratorBlock extends GenericBlock {
                 DRMessages.INSTANCE.sendToServer(new PacketGetGeneratorInfo(generatorTileEntity.getNetworkId()));
             }
             currenttip.add(EnumChatFormatting.GREEN + "Energy: " + tooltipEnergy + "/" + (tooltipRefCount*GeneratorConfiguration.rfPerGeneratorBlock) + " RF");
-            currenttip.add(EnumChatFormatting.GREEN + "Blocks: " + tooltipRefCount);
+            currenttip.add(EnumChatFormatting.YELLOW + Integer.toString(tooltipRfPerTick) + " RF/t");
         }
         return currenttip;
     }

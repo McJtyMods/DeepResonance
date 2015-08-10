@@ -36,7 +36,7 @@ public class PacketGetGeneratorInfo implements IMessage,IMessageHandler<PacketGe
             return null;
         }
 
-        return new PacketReturnGeneratorInfo(message.networkId, network.getEnergy(), network.getRefcount());
+        return new PacketReturnGeneratorInfo(message.networkId, network.getEnergy(), network.getRefcount(), network.getLastRfPerTick());
     }
 
 }

@@ -42,8 +42,9 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
                 DRGeneratorNetwork.Network network = ((GeneratorTileEntity) te).getNetwork();
                 if (network != null) {
                     if (network.isActive()) {
-                        // @todo temporary code.
-                        int newEnergy = network.getEnergy() + calculateRF();
+                        int rfPerTick = calculateRF();
+                        network.setLastRfPerTick(rfPerTick);
+                        int newEnergy = network.getEnergy() + rfPerTick;
                         int maxEnergy = network.getRefcount() * GeneratorConfiguration.rfPerGeneratorBlock;
                         if (newEnergy > maxEnergy) {
                             newEnergy = maxEnergy;
@@ -54,6 +55,8 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
                             generatorNetwork.save(worldObj);
                         }
                         active = true;
+                    } else {
+                        network.setLastRfPerTick(0);
                     }
                     startup = network.getStartupCounter();
                 }

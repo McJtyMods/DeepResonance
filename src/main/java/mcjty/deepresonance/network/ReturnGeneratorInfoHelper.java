@@ -9,6 +9,7 @@ public class ReturnGeneratorInfoHelper {
     public static void setEnergyLevel(PacketReturnGeneratorInfo message) {
         GeneratorBlock.tooltipEnergy = message.getEnergy();
         GeneratorBlock.tooltipRefCount = message.getRefcount();
+        GeneratorBlock.tooltipRfPerTick = message.getRfPerTick();
     }
 
 }
