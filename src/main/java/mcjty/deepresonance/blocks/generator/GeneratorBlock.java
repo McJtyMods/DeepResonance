@@ -82,7 +82,7 @@ public class GeneratorBlock extends GenericBlock {
         if (tileEntity instanceof GeneratorTileEntity) {
             GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) tileEntity;
             currenttip.add(EnumChatFormatting.GREEN + "ID: " + new DecimalFormat("#.##").format(generatorTileEntity.getNetworkId()));
-            if (System.currentTimeMillis() - lastTime > 500) {
+            if (System.currentTimeMillis() - lastTime > 250) {
                 lastTime = System.currentTimeMillis();
                 DRMessages.INSTANCE.sendToServer(new PacketGetGeneratorInfo(generatorTileEntity.getNetworkId()));
             }

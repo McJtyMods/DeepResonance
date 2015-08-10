@@ -63,7 +63,7 @@ public class ResonatingCrystalBlock extends GenericBlock {
                     + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getEfficiency()) + "% "
                     + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getPurity()) + "%");
             currenttip.add(EnumChatFormatting.YELLOW + "Power left: " + new DecimalFormat("#.##").format(tooltipPower) + "% (" + tooltipRFTick + " RF/t)");
-            if (System.currentTimeMillis() - lastTime > 500) {
+            if (System.currentTimeMillis() - lastTime > 250) {
                 lastTime = System.currentTimeMillis();
                 DRMessages.INSTANCE.sendToServer(new PacketGetCrystalInfo(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord));
             }
