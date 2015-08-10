@@ -43,19 +43,19 @@ public final class ModItems {
         public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
             TileEntity tile = world.getTileEntity(x, y, z);
             if (!world.isRemote){
-                if (tile instanceof TileBasicFluidDuct) {
+                if (tile instanceof TileTank){
+                    if (((TileTank) tile).getMultiBlock() == null){
+                        System.out.println("ERROR: multiblock == null");
+                    } else if (!player.isSneaking()){
+                        PlayerHelper.sendMessageToPlayer(player, ((TileTank) tile).getMultiBlock().getTankInfo());
+                    }
+                } else if (tile instanceof TileBasicFluidDuct) {
                     if (((TileBasicFluidDuct) tile).getGrid() == null) {
                         System.out.println("ERROR: grid == null");
                     } else if (!player.isSneaking()) {
                         PlayerHelper.sendMessageToPlayer(player, ((TileBasicFluidDuct) tile).getGrid().getInfo());
                     } else {
                         ((TileBasicFluidDuct) tile).getGrid().addStackToInternalTank(new FluidStack(DRFluidRegistry.liquidCrystal, new Random().nextInt(3000), new NBTHelper().addToTag(new Random().nextFloat() * 5, "purity").toNBT()), true);
-                    }
-                } else if (tile instanceof TileTank){
-                    if (((TileTank) tile).getMultiBlock() == null){
-                        System.out.println("ERROR: multiblock == null");
-                    } else if (!player.isSneaking()){
-                        PlayerHelper.sendMessageToPlayer(player, ((TileTank) tile).getMultiBlock().getTankInfo());
                     }
                 }
             }

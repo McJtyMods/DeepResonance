@@ -1,11 +1,16 @@
 package mcjty.deepresonance.blocks.duct;
 
 import elec332.core.baseclasses.tileentity.TileBase;
+import elec332.core.util.BlockLoc;
+import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.grid.fluid.DRFluidDuctGrid;
 import mcjty.deepresonance.grid.fluid.event.FluidTileEvent;
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -21,15 +26,19 @@ public class TileBasicFluidDuct extends TileBase {
     @Override
     public void onTileLoaded() {
         super.onTileLoaded();
-        if (!worldObj.isRemote)
+        if (!worldObj.isRemote) {
             MinecraftForge.EVENT_BUS.post(new FluidTileEvent.Load(this));
+            //addAllAdjacentTanks();
+        }
     }
 
     @Override
     public void onTileUnloaded() {
         super.onTileUnloaded();
-        if (!worldObj.isRemote)
+        if (!worldObj.isRemote) {
             MinecraftForge.EVENT_BUS.post(new FluidTileEvent.Unload(this));
+            //removeAllAdjacentTanks();
+        }
     }
 
     @Override
@@ -55,6 +64,28 @@ public class TileBasicFluidDuct extends TileBase {
         }
         if (lastSeenFluid != null)
             tagCompound.setString("lastSeenFluid", FluidRegistry.getFluidName(lastSeenFluid));
+    }
+
+    @Override
+    public void onNeighborBlockChange(Block block) {
+        super.onNeighborBlockChange(block);
+        //removeAllAdjacentTanks();
+        //addAllAdjacentTanks();
+    }
+
+    private void removeAllAdjacentTanks(){
+        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS){
+            if (getGrid() != null)
+                getGrid().removeTank(myLocation().atSide(direction));
+        }
+    }
+
+    private void addAllAdjacentTanks(){
+        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS){
+            BlockLoc translated = myLocation().atSide(direction);
+            if (WorldHelper.getTileAt(worldObj, translated) instanceof TileTank && getGrid() != null)
+                getGrid().addTank(translated);
+        }
     }
 
     public int getTankStorageMax(){
