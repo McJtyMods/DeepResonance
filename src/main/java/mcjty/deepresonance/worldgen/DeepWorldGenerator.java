@@ -9,7 +9,6 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
@@ -71,15 +70,7 @@ public class DeepWorldGenerator implements IWorldGenerator {
                         if (WorldGenConfiguration.verboseSpawn) {
                             Logging.log("Spawned a crystal at: " + x + "," + y + "," + z);
                         }
-                        world.setBlock(x, y + 1, z, ModBlocks.resonatingCrystalBlock, 0, 3);
-                        TileEntity te = world.getTileEntity(x, y+1, z);
-                        if (te instanceof ResonatingCrystalTileEntity) {
-                            ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
-                            resonatingCrystalTileEntity.setStrength(random.nextFloat() * 3.0f + 0.01f);
-                            resonatingCrystalTileEntity.setPower(random.nextFloat() * 3.0f + 0.01f);
-                            resonatingCrystalTileEntity.setEfficiency(random.nextFloat() * 3.0f + 0.1f);
-                            resonatingCrystalTileEntity.setPurity(random.nextFloat() * 10.0f + 5.0f);
-                        }
+                        ResonatingCrystalTileEntity.spawnRandomCrystal(world, random, x, y+1, z);
                         return;
                     }
                 }

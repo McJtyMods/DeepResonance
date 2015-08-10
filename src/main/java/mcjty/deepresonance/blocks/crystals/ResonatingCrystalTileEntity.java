@@ -1,7 +1,12 @@
 package mcjty.deepresonance.blocks.crystals;
 
+import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.entity.GenericTileEntity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
@@ -130,5 +135,15 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         tagCompound.setBoolean("glowing", glowing);
     }
 
-
+    public static void spawnRandomCrystal(World world, Random random, int x, int y, int z) {
+        world.setBlock(x, y, z, ModBlocks.resonatingCrystalBlock, 0, 3);
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te instanceof ResonatingCrystalTileEntity) {
+            ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
+            resonatingCrystalTileEntity.setStrength(random.nextFloat() * 3.0f + 0.01f);
+            resonatingCrystalTileEntity.setPower(random.nextFloat() * 3.0f + 0.01f);
+            resonatingCrystalTileEntity.setEfficiency(random.nextFloat() * 3.0f + 0.1f);
+            resonatingCrystalTileEntity.setPurity(random.nextFloat() * 10.0f + 5.0f);
+        }
+    }
 }
