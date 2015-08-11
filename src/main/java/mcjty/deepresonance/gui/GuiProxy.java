@@ -2,7 +2,6 @@ package mcjty.deepresonance.gui;
 
 import cpw.mods.fml.common.network.IGuiHandler;
 import mcjty.container.GenericBlock;
-import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.items.manual.GuiDeepResonanceManual;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,9 +9,15 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class GuiProxy implements IGuiHandler {
+
+    /** This is used to keep track of GUIs that we make*/
+    private static int modGuiIndex = 0;
+
+    public static final int GUI_MANUAL_MAIN = modGuiIndex++;
+
     @Override
     public Object getServerGuiElement(int guiid, EntityPlayer entityPlayer, World world, int x, int y, int z) {
-        if (guiid == DeepResonance.GUI_MANUAL_MAIN) {
+        if (guiid == GUI_MANUAL_MAIN) {
             return null;
         }
 
@@ -27,7 +32,7 @@ public class GuiProxy implements IGuiHandler {
 
     @Override
     public Object getClientGuiElement(int guiid, EntityPlayer entityPlayer, World world, int x, int y, int z) {
-        if (guiid == DeepResonance.GUI_MANUAL_MAIN) {
+        if (guiid == GUI_MANUAL_MAIN) {
             return new GuiDeepResonanceManual();
         }
 

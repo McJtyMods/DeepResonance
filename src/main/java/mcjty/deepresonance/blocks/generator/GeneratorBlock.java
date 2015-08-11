@@ -4,8 +4,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.container.GenericBlock;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
-import mcjty.deepresonance.network.DRMessages;
 import mcjty.deepresonance.network.PacketGetGeneratorInfo;
 import mcjty.varia.BlockTools;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -57,9 +57,9 @@ public class GeneratorBlock extends GenericBlock {
         return -1;
     }
 
-
-    @SideOnly(Side.CLIENT)
     @Override
+    @SuppressWarnings("unchecked")
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
         super.addInformation(itemStack, player, list, whatIsThis);
 
@@ -72,7 +72,7 @@ public class GeneratorBlock extends GenericBlock {
             list.add(EnumChatFormatting.WHITE + "Part of a generator multi-block.");
             list.add(EnumChatFormatting.WHITE + "You can place these in any configuration.");
         } else {
-            list.add(EnumChatFormatting.WHITE + DeepResonance.SHIFT_MESSAGE);
+            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
         }
     }
 

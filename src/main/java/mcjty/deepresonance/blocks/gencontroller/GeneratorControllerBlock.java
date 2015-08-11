@@ -4,10 +4,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.container.GenericBlock;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.blocks.generator.GeneratorSetup;
-import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
+import mcjty.deepresonance.client.ClientHandler;
 import mcjty.varia.BlockTools;
-import mcjty.varia.Coordinate;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -17,7 +15,6 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
@@ -39,9 +36,9 @@ public class GeneratorControllerBlock extends GenericBlock {
         return -1;
     }
 
-
-    @SideOnly(Side.CLIENT)
     @Override
+    @SuppressWarnings("unchecked")
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
         super.addInformation(itemStack, player, list, whatIsThis);
 
@@ -50,7 +47,7 @@ public class GeneratorControllerBlock extends GenericBlock {
             list.add(EnumChatFormatting.WHITE + "Use this block to turn on/off the reactor with");
             list.add(EnumChatFormatting.WHITE + "a redstone signal.");
         } else {
-            list.add(EnumChatFormatting.WHITE + DeepResonance.SHIFT_MESSAGE);
+            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
         }
     }
 
