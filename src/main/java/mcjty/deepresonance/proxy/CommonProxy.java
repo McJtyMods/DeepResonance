@@ -15,6 +15,7 @@ import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.gui.GuiProxy;
 import mcjty.deepresonance.items.ModItems;
 import mcjty.deepresonance.network.DRMessages;
+import mcjty.deepresonance.radiation.RadiationTickEvent;
 import mcjty.deepresonance.worldgen.WorldGen;
 import mcjty.deepresonance.worldgen.WorldGenConfiguration;
 import mcjty.deepresonance.worldgen.WorldTickHandler;
@@ -59,6 +60,7 @@ public abstract class CommonProxy {
     public void init(FMLInitializationEvent e) {
         NetworkRegistry.INSTANCE.registerGuiHandler(DeepResonance.instance, new GuiProxy());
         FMLCommonHandler.instance().bus().register(WorldTickHandler.instance);
+        FMLCommonHandler.instance().bus().register(new RadiationTickEvent());
     }
 
     public void postInit(FMLPostInitializationEvent e) {

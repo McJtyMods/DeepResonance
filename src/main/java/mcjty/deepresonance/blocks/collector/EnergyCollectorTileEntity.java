@@ -8,8 +8,10 @@ import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
+import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.entity.GenericTileEntity;
 import mcjty.varia.Coordinate;
+import mcjty.varia.GlobalCoordinate;
 import mcjty.varia.Logging;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -56,6 +58,12 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
                             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
                             generatorNetwork.save(worldObj);
                         }
+
+                        DRRadiationManager radiationManager = DRRadiationManager.getManager(worldObj);
+                        DRRadiationManager.RadiationSource radiationSource = radiationManager.getOrCreateRadiationSource(new GlobalCoordinate(new Coordinate(xCoord, yCoord, zCoord), worldObj.provider.dimensionId));
+                        radiationSource.update(10, 100);
+                        radiationManager.save(worldObj);
+
                         active = true;
                     } else {
                         network.setLastRfPerTick(0);

@@ -13,8 +13,10 @@ import mcjty.deepresonance.commands.CommandDRGen;
 import mcjty.deepresonance.compat.CompatHandler;
 import mcjty.deepresonance.compat.handlers.ComputerCraftCompatHandler;
 import mcjty.deepresonance.config.ConfigMachines;
+import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.grid.WorldGridRegistry;
 import mcjty.deepresonance.proxy.CommonProxy;
+import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.gui.GuiStyle;
 import mcjty.varia.Logging;
 import net.minecraft.creativetab.CreativeTabs;
@@ -120,6 +122,8 @@ public class DeepResonance implements ModBase {
     @Mod.EventHandler
     public void serverStopped(FMLServerStoppedEvent event) {
         Logging.log("Deep Resonance: server is stopping. Shutting down gracefully");
+        DRRadiationManager.clearInstance();
+        DRGeneratorNetwork.clearInstance();
     }
 
     /**
