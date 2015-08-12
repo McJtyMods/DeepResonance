@@ -3,12 +3,14 @@ package mcjty.deepresonance.blocks.collector;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.blocks.crystals.ResonatingCrystalConfiguration;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.radiation.DRRadiationManager;
+import mcjty.deepresonance.radiation.RadiationConfiguration;
 import mcjty.entity.GenericTileEntity;
 import mcjty.varia.Coordinate;
 import mcjty.varia.GlobalCoordinate;
@@ -84,6 +86,10 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
     private int calculateRF() {
         Set<Coordinate> tokeep = new HashSet<Coordinate>();
         boolean dirty = false;
+
+        float radiationRadius = 0;
+        float radiationStrength = 0;
+
         int rf = 0;
         for (Coordinate coordinate : crystals) {
             TileEntity te = worldObj.getTileEntity(coordinate.getX() + xCoord, coordinate.getY() + yCoord, coordinate.getZ() + zCoord);
@@ -101,7 +107,24 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
                     } else {
                         power -= resonatingCrystalTileEntity.getPowerPerTick();
                         resonatingCrystalTileEntity.setPower(power); // @@@ No block update on crystal yet!
-                        rf += resonatingCrystalTileEntity.getRfPerTick();
+                        int rfPerTick = resonatingCrystalTileEntity.getRfPerTick();
+                        rf += rfPerTick;
+
+                        float purity = resonatingCrystalTileEntity.getPurity();
+                        if (purity < 99.0f) {
+                            float radius = RadiationConfiguration.minRadiationRadius + ((float) rfPerTick / ResonatingCrystalConfiguration.maximumRFtick)
+                                    * (RadiationConfiguration.maxRadiationRadius - RadiationConfiguration.minRadiationRadius);
+                            radius += radius * (100.0f-purity) * .005f;
+
+                            if (radius > radiationRadius) {
+                                radiationRadius = radius;
+                            }
+
+                            float strength = RadiationConfiguration.minRadiationStrength + resonatingCrystalTileEntity.getStrength() / 100.0f
+                                    * (RadiationConfiguration.maxRadiationStrength - RadiationConfiguration.minRadiationStrength);
+                            strength += strength * (100.0f-purity) * .005f;
+                            radiationStrength += strength;
+                        }
                     }
                 } else {
                     resonatingCrystalTileEntity.setGlowing(false);
@@ -117,10 +140,14 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
 
-        if (rf > 0) {
+        if (radiationRadius > 0.1f) {
             DRRadiationManager radiationManager = DRRadiationManager.getManager(worldObj);
-            DRRadiationManager.RadiationSource radiationSource = radiationManager.getOrCreateRadiationSource(new GlobalCoordinate(new Coordinate(xCoord, yCoord, zCoord), worldObj.provider.dimensionId));
-            radiationSource.update(10, 100);
+            GlobalCoordinate thisCoordinate = new GlobalCoordinate(new Coordinate(xCoord, yCoord, zCoord), worldObj.provider.dimensionId);
+            if (radiationManager.getRadiationSource(thisCoordinate) == null) {
+                Logging.log("Created radiation source with radius " + radiationRadius + " and strength " + radiationStrength);
+            }
+            DRRadiationManager.RadiationSource radiationSource = radiationManager.getOrCreateRadiationSource(thisCoordinate);
+            radiationSource.update(radiationRadius, radiationStrength);
             radiationManager.save(worldObj);
         }
 
