@@ -34,6 +34,10 @@ public class DRRadiationManager extends WorldSavedData {
         }
     }
 
+    public void removeAllRadiation() {
+        sources.clear();
+    }
+
     public static DRRadiationManager getManager() {
         return instance;
     }

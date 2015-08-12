@@ -5,6 +5,8 @@ public class CommandDRGen extends DefaultCommand {
     public CommandDRGen() {
         super();
         registerCommand(new CmdSpawnCrystal());
+        registerCommand(new CmdListRadiation());
+        registerCommand(new CmdCleanRadiation());
     }
 
     @Override
