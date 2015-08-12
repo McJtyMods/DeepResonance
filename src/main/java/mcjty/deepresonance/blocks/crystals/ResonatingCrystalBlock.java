@@ -6,6 +6,9 @@ import elec332.core.world.WorldHelper;
 import mcjty.container.GenericBlock;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.network.PacketGetCrystalInfo;
+import mcjty.deepresonance.radiation.DRRadiationManager;
+import mcjty.varia.Coordinate;
+import mcjty.varia.GlobalCoordinate;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
@@ -77,7 +80,14 @@ public class ResonatingCrystalBlock extends GenericBlock {
         float forceMultiplier = 1;
         TileEntity tile = world.getTileEntity(x, y, z);
         if (tile instanceof ResonatingCrystalTileEntity){
-            forceMultiplier = ((ResonatingCrystalTileEntity) tile).getPower()/10;
+            ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tile;
+            forceMultiplier = resonatingCrystalTileEntity.getPower()/10;
+            DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
+            DRRadiationManager.RadiationSource source = radiationManager.getOrCreateRadiationSource(new GlobalCoordinate(new Coordinate(x, y, z), world.provider.dimensionId));
+            source.update(DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getRfPerTick(), resonatingCrystalTileEntity.getPurity()),
+                    DRRadiationManager.calculateRadiationStrength(resonatingCrystalTileEntity.getStrength(), resonatingCrystalTileEntity.getPurity()),
+                    10000);
+
         }
         WorldHelper.spawnExplosion(world, x, y, z, forceMultiplier);
         super.onBlockExploded(world, x, y, z, explosion);

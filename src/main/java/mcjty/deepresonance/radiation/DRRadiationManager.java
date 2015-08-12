@@ -1,5 +1,7 @@
 package mcjty.deepresonance.radiation;
 
+import mcjty.deepresonance.blocks.crystals.ResonatingCrystalConfiguration;
+import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.varia.Coordinate;
 import mcjty.varia.GlobalCoordinate;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,6 +22,20 @@ public class DRRadiationManager extends WorldSavedData {
 
     public DRRadiationManager(String identifier) {
         super(identifier);
+    }
+
+    public static float calculateRadiationStrength(float strength, float purity) {
+        float str = RadiationConfiguration.minRadiationStrength + strength / 100.0f
+                * (RadiationConfiguration.maxRadiationStrength - RadiationConfiguration.minRadiationStrength);
+        str += str * (100.0f - purity) * .005f;
+        return str;
+    }
+
+    public static float calculateRadiationRadius(float rfPerTick, float purity) {
+        float radius = RadiationConfiguration.minRadiationRadius + (rfPerTick / ResonatingCrystalConfiguration.maximumRFtick)
+                * (RadiationConfiguration.maxRadiationRadius - RadiationConfiguration.minRadiationRadius);
+        radius += radius * (100.0f - purity) * .005f;
+        return radius;
     }
 
     public void save(World world) {

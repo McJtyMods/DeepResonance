@@ -3,14 +3,12 @@ package mcjty.deepresonance.blocks.collector;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.deepresonance.blocks.crystals.ResonatingCrystalConfiguration;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.radiation.DRRadiationManager;
-import mcjty.deepresonance.radiation.RadiationConfiguration;
 import mcjty.entity.GenericTileEntity;
 import mcjty.varia.Coordinate;
 import mcjty.varia.GlobalCoordinate;
@@ -123,17 +121,11 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
                         if (doRadiation) {
                             float purity = resonatingCrystalTileEntity.getPurity();
                             if (purity < 99.0f) {
-                                float radius = RadiationConfiguration.minRadiationRadius + ((float) rfPerTick / ResonatingCrystalConfiguration.maximumRFtick)
-                                        * (RadiationConfiguration.maxRadiationRadius - RadiationConfiguration.minRadiationRadius);
-                                radius += radius * (100.0f - purity) * .005f;
-
+                                float radius = DRRadiationManager.calculateRadiationRadius(rfPerTick, purity);
                                 if (radius > radiationRadius) {
                                     radiationRadius = radius;
                                 }
-
-                                float strength = RadiationConfiguration.minRadiationStrength + resonatingCrystalTileEntity.getStrength() / 100.0f
-                                        * (RadiationConfiguration.maxRadiationStrength - RadiationConfiguration.minRadiationStrength);
-                                strength += strength * (100.0f - purity) * .005f;
+                                float strength = DRRadiationManager.calculateRadiationStrength(resonatingCrystalTileEntity.getStrength(), purity);
                                 radiationStrength += strength;
                             }
                         }
