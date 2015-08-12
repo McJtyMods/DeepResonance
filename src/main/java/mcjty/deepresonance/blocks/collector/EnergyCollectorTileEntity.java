@@ -59,11 +59,6 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
                             generatorNetwork.save(worldObj);
                         }
 
-                        DRRadiationManager radiationManager = DRRadiationManager.getManager(worldObj);
-                        DRRadiationManager.RadiationSource radiationSource = radiationManager.getOrCreateRadiationSource(new GlobalCoordinate(new Coordinate(xCoord, yCoord, zCoord), worldObj.provider.dimensionId));
-                        radiationSource.update(10, 100);
-                        radiationManager.save(worldObj);
-
                         active = true;
                     } else {
                         network.setLastRfPerTick(0);
@@ -121,6 +116,14 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
             markDirty();
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
+
+        if (rf > 0) {
+            DRRadiationManager radiationManager = DRRadiationManager.getManager(worldObj);
+            DRRadiationManager.RadiationSource radiationSource = radiationManager.getOrCreateRadiationSource(new GlobalCoordinate(new Coordinate(xCoord, yCoord, zCoord), worldObj.provider.dimensionId));
+            radiationSource.update(10, 100);
+            radiationManager.save(worldObj);
+        }
+
         return rf;
     }
 
