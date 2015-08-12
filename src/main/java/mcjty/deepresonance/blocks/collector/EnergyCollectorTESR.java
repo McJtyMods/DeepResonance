@@ -68,8 +68,7 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
             double doubleY = p.lastTickPosY + (p.posY - p.lastTickPosY) * time;
             double doubleZ = p.lastTickPosZ + (p.posZ - p.lastTickPosZ) * time;
 
-            Coordinate thisLocation = new Coordinate(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
-            Vector start = new Vector(thisLocation.getX() + .5f, thisLocation.getY() + .5f + .3f, thisLocation.getZ() + .5f);
+            Vector start = new Vector(tileEntity.xCoord + .5f, tileEntity.yCoord + .5f + .3f, tileEntity.zCoord + .5f);
             Vector player = new Vector((float) doubleX, (float) doubleY, (float) doubleZ);
 
             GL11.glPushMatrix();
