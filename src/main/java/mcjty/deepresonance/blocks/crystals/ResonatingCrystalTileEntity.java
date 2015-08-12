@@ -150,11 +150,11 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         TileEntity te = world.getTileEntity(x, y, z);
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
-            if (special == 3) {
+            if (special >= 3) {
                 resonatingCrystalTileEntity.setStrength(100);
                 resonatingCrystalTileEntity.setPower(100);
                 resonatingCrystalTileEntity.setEfficiency(100);
-                resonatingCrystalTileEntity.setPurity(100);
+                resonatingCrystalTileEntity.setPurity(special == 4 ? 1 : 100);
             } else {
                 resonatingCrystalTileEntity.setStrength(getRandomSpecial(random, special) * 3.0f + 0.01f);
                 resonatingCrystalTileEntity.setPower(getRandomSpecial(random, special) * 60.0f + 0.2f);

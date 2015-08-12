@@ -12,7 +12,7 @@ import java.util.Random;
 public class CmdSpawnCrystal extends AbstractDRCommand {
     @Override
     public String getHelp() {
-        return "[0=normal, 1=average, 2=max random, 3=max overall]";
+        return "[0=nor, 1=avg, 2=maxrnd, 3=max, 4=dirty]";
     }
 
     @Override
