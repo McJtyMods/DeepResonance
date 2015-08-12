@@ -11,20 +11,26 @@ import mcjty.deepresonance.blocks.base.TileEnergyReceiver;
 import mcjty.deepresonance.blocks.tank.ITankHook;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.client.DRResourceLocation;
+import mcjty.deepresonance.compat.handlers.WailaCompatHandler;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.inventory.ContainerSmelter;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
+import java.util.List;
+
 /**
  * Created by Elec332 on 9-8-2015.
  */
-public class TileSmelter extends TileEnergyReceiver implements ITankHook{
+public class TileSmelter extends TileEnergyReceiver implements ITankHook, WailaCompatHandler.IWailaInfoTile {
 
     public TileSmelter(){
         super(new EnergyStorage(900*ConfigMachines.Smelter.rfPerTick, 3*ConfigMachines.Smelter.rfPerTick));
@@ -93,8 +99,8 @@ public class TileSmelter extends TileEnergyReceiver implements ITankHook{
 
     private void smelt(){
         inventory.decrStackSize(0, 1);
-        ((IFluidHandler)WorldHelper.getTileAt(worldObj, myLocation().atSide(ForgeDirection.UP))).drain(ForgeDirection.DOWN, new FluidStack(FluidRegistry.LAVA, ConfigMachines.Smelter.lavaCost), true);
-        ((IFluidHandler)WorldHelper.getTileAt(worldObj, myLocation().atSide(ForgeDirection.DOWN))).fill(ForgeDirection.UP, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), true);
+        lavaTank.drain(ForgeDirection.UP, new FluidStack(FluidRegistry.LAVA, ConfigMachines.Smelter.lavaCost), true);
+        rclTank.fill(ForgeDirection.UNKNOWN, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), true);
     }
 
     @Override
@@ -118,7 +124,7 @@ public class TileSmelter extends TileEnergyReceiver implements ITankHook{
     public void hook(TileTank tank, ForgeDirection direction) {
         if (direction == ForgeDirection.DOWN){
             this.lavaTank = tank;
-        } else if (rclTank != null){
+        } else if (rclTank == null){
             if (validRCLTank(tank)){
                 rclTank = tank;
             }
@@ -156,4 +162,9 @@ public class TileSmelter extends TileEnergyReceiver implements ITankHook{
         return first != null && second != null && first.myLocation().equals(second.myLocation()) && WorldHelper.getDimID(first.getWorldObj()) == WorldHelper.getDimID(second.getWorldObj());
     }
 
+    @Override
+    public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        currentTip.add("TESTERT");
+        return currentTip;
+    }
 }

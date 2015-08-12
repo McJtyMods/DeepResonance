@@ -28,4 +28,9 @@ public class DRFluidRegistry {
     public static Fluid getFluidFromStack(FluidStack stack){
         return stack == null ? null : stack.getFluid();
     }
+
+    public static String getFluidName(FluidStack stack){
+        Fluid fluid = getFluidFromStack(stack);
+        return fluid == null ? "null" : fluid.getName();
+    }
 }
