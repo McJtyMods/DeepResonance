@@ -135,12 +135,18 @@ public class DRRadiationManager extends WorldSavedData {
         }
 
         // Update radiation for this radiation source
-        public void update(float radius, float maxStrenght) {
+        // @param ticks is the amount of ticks to update for.
+        public void update(float radius, float maxStrenght, int ticks) {
             this.maxStrength = maxStrenght;
             this.radius = radius;
-            if (strength < maxStrenght) {
-                strength += 2.0;
+            float toadd = maxStrenght * RadiationConfiguration.strengthGrowthFactor * ticks;
+            if ((strength + toadd) < maxStrenght) {
+                toadd = maxStrenght - strength;
+                if (toadd < 0) {
+                    toadd = 0;
+                }
             }
+            strength += toadd;
         }
 
         public void writeToNBT(NBTTagCompound tagCompound) {

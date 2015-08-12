@@ -58,7 +58,8 @@ public class RadiationTickEvent {
                     // The world is loaded and the chunk containing the radiation source is also loaded.
                     DRRadiationManager.RadiationSource radiationSource = source.getValue();
                     float strength = radiationSource.getStrength();
-                    strength -= MAXTICKS;
+
+                    strength -= RadiationConfiguration.strengthDecreasePerTick * MAXTICKS;
                     dirty = true;
                     if (strength <= 0) {
                         toRemove.add(coordinate);

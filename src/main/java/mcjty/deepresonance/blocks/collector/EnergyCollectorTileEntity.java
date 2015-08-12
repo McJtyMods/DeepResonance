@@ -28,10 +28,13 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
     // Minimum power before we stop using a crystal.
     public static final float CRYSTAL_MIN_POWER = .00001f;
 
+    public static int MAXTICKS = 20;        // Update radiation every second.
+
     // Relative coordinates of active crystals.
     private Set<Coordinate> crystals = new HashSet<Coordinate>();
     private boolean lasersActive = false;
     private int laserStartup = 0;        // A mirror (for the client) of the network startup counter.
+    private int radiationUpdateCount = MAXTICKS;
 
     public EnergyCollectorTileEntity() {
         super();
@@ -90,6 +93,13 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         float radiationRadius = 0;
         float radiationStrength = 0;
 
+        boolean doRadiation = false;
+        radiationUpdateCount--;
+        if (radiationUpdateCount <= 0) {
+            radiationUpdateCount = MAXTICKS;
+            doRadiation = true;
+        }
+
         int rf = 0;
         for (Coordinate coordinate : crystals) {
             TileEntity te = worldObj.getTileEntity(coordinate.getX() + xCoord, coordinate.getY() + yCoord, coordinate.getZ() + zCoord);
@@ -110,20 +120,22 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
                         int rfPerTick = resonatingCrystalTileEntity.getRfPerTick();
                         rf += rfPerTick;
 
-                        float purity = resonatingCrystalTileEntity.getPurity();
-                        if (purity < 99.0f) {
-                            float radius = RadiationConfiguration.minRadiationRadius + ((float) rfPerTick / ResonatingCrystalConfiguration.maximumRFtick)
-                                    * (RadiationConfiguration.maxRadiationRadius - RadiationConfiguration.minRadiationRadius);
-                            radius += radius * (100.0f-purity) * .005f;
+                        if (doRadiation) {
+                            float purity = resonatingCrystalTileEntity.getPurity();
+                            if (purity < 99.0f) {
+                                float radius = RadiationConfiguration.minRadiationRadius + ((float) rfPerTick / ResonatingCrystalConfiguration.maximumRFtick)
+                                        * (RadiationConfiguration.maxRadiationRadius - RadiationConfiguration.minRadiationRadius);
+                                radius += radius * (100.0f - purity) * .005f;
 
-                            if (radius > radiationRadius) {
-                                radiationRadius = radius;
+                                if (radius > radiationRadius) {
+                                    radiationRadius = radius;
+                                }
+
+                                float strength = RadiationConfiguration.minRadiationStrength + resonatingCrystalTileEntity.getStrength() / 100.0f
+                                        * (RadiationConfiguration.maxRadiationStrength - RadiationConfiguration.minRadiationStrength);
+                                strength += strength * (100.0f - purity) * .005f;
+                                radiationStrength += strength;
                             }
-
-                            float strength = RadiationConfiguration.minRadiationStrength + resonatingCrystalTileEntity.getStrength() / 100.0f
-                                    * (RadiationConfiguration.maxRadiationStrength - RadiationConfiguration.minRadiationStrength);
-                            strength += strength * (100.0f-purity) * .005f;
-                            radiationStrength += strength;
                         }
                     }
                 } else {
@@ -140,14 +152,14 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
 
-        if (radiationRadius > 0.1f) {
+        if (doRadiation && radiationRadius > 0.1f) {
             DRRadiationManager radiationManager = DRRadiationManager.getManager(worldObj);
             GlobalCoordinate thisCoordinate = new GlobalCoordinate(new Coordinate(xCoord, yCoord, zCoord), worldObj.provider.dimensionId);
             if (radiationManager.getRadiationSource(thisCoordinate) == null) {
                 Logging.log("Created radiation source with radius " + radiationRadius + " and strength " + radiationStrength);
             }
             DRRadiationManager.RadiationSource radiationSource = radiationManager.getOrCreateRadiationSource(thisCoordinate);
-            radiationSource.update(radiationRadius, radiationStrength);
+            radiationSource.update(radiationRadius, radiationStrength, MAXTICKS);
             radiationManager.save(worldObj);
         }
 

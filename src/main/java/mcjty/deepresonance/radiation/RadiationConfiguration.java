@@ -11,6 +11,9 @@ public class RadiationConfiguration {
     public static float minRadiationStrength = 100.0f;
     public static float maxRadiationStrength = 1000000.0f;
 
+    public static float strengthGrowthFactor = 0.1f;
+    public static float strengthDecreasePerTick = 1.0f;
+
     public static void init(Configuration cfg) {
         minRadiationRadius = (float) cfg.get(CATEGORY_RADIATION, "minRadiationRadius", minRadiationRadius,
                 "The minimum radiation radius").getDouble();
@@ -21,6 +24,11 @@ public class RadiationConfiguration {
                 "The minimum radiation strength").getDouble();
         maxRadiationStrength = (float) cfg.get(CATEGORY_RADIATION, "maxRadiationStrength", maxRadiationStrength,
                 "The maximum radiation strength for a 100/100/100 crystal").getDouble();
+
+        strengthGrowthFactor = (float) cfg.get(CATEGORY_RADIATION, "strengthGrowthFactor", strengthGrowthFactor,
+                "How much percentage of the maximum strength the radiation increases every tick").getDouble();
+        strengthDecreasePerTick = (float) cfg.get(CATEGORY_RADIATION, "strengthDecreasePerTick", strengthDecreasePerTick,
+                "How much the radiation strength decreases every tick").getDouble();
     }
 
 }
