@@ -1,6 +1,8 @@
 package mcjty.deepresonance.blocks.machine;
 
 import cofh.api.energy.EnergyStorage;
+import elec332.core.client.inventory.BaseGuiContainer;
+import elec332.core.inventory.BaseContainer;
 import elec332.core.util.BasicInventory;
 import elec332.core.util.DirectionHelper;
 import elec332.core.world.WorldHelper;
@@ -8,10 +10,14 @@ import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.base.TileEnergyReceiver;
 import mcjty.deepresonance.blocks.tank.ITankHook;
 import mcjty.deepresonance.blocks.tank.TileTank;
+import mcjty.deepresonance.client.DRResourceLocation;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
+import mcjty.deepresonance.inventory.ContainerSmelter;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
@@ -23,6 +29,7 @@ public class TileSmelter extends TileEnergyReceiver implements ITankHook{
     public TileSmelter(){
         super(new EnergyStorage(900*ConfigMachines.Smelter.rfPerTick, 3*ConfigMachines.Smelter.rfPerTick));
         this.inventory = new BasicInventory("InventorySmelter", 1, this);
+        checkTanks = true;
     }
 
     private BasicInventory inventory;
@@ -51,6 +58,19 @@ public class TileSmelter extends TileEnergyReceiver implements ITankHook{
         }
     }
 
+    @Override
+    public Object getGui(EntityPlayer player, boolean client) {
+        BaseContainer container = new ContainerSmelter(player, inventory);
+        if (client)
+            return new BaseGuiContainer(container) {
+                @Override
+                public ResourceLocation getBackgroundImageLocation() {
+                    return new DRResourceLocation("file");
+                }
+            };
+        return container;
+    }
+
     private boolean canWork(){
         if (checkTanks){
             if (checkTanks()) {
@@ -63,7 +83,7 @@ public class TileSmelter extends TileEnergyReceiver implements ITankHook{
     }
 
     private boolean checkTanks(){
-        return DRFluidRegistry.getFluidFromStack(lavaTank.getFluid()) == FluidRegistry.LAVA && lavaTank.getFluidAmount() > lavaTank.getCapacity()*0.25f && rclTank.fill(new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), false) == ConfigMachines.Smelter.rclPerOre;
+        return lavaTank != null && rclTank != null && DRFluidRegistry.getFluidFromStack(lavaTank.getFluid()) == FluidRegistry.LAVA && lavaTank.getFluidAmount() > lavaTank.getCapacity()*0.25f && rclTank.fill(new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), false) == ConfigMachines.Smelter.rclPerOre;
     }
 
     private boolean validSlot(){
@@ -133,6 +153,7 @@ public class TileSmelter extends TileEnergyReceiver implements ITankHook{
     }
 
     private boolean tilesEqual(TileTank first, TileTank second){
-        return first.myLocation().equals(second.myLocation()) && WorldHelper.getDimID(first.getWorldObj()) == WorldHelper.getDimID(second.getWorldObj());
+        return first != null && second != null && first.myLocation().equals(second.myLocation()) && WorldHelper.getDimID(first.getWorldObj()) == WorldHelper.getDimID(second.getWorldObj());
     }
+
 }
