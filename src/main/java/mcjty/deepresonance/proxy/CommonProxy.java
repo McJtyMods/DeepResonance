@@ -15,6 +15,7 @@ import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.gui.GuiProxy;
 import mcjty.deepresonance.items.ModItems;
 import mcjty.deepresonance.network.DRMessages;
+import mcjty.deepresonance.radiation.RadiationConfiguration;
 import mcjty.deepresonance.radiation.RadiationTickEvent;
 import mcjty.deepresonance.worldgen.WorldGen;
 import mcjty.deepresonance.worldgen.WorldGenConfiguration;
@@ -45,9 +46,11 @@ public abstract class CommonProxy {
             cfg.addCustomCategoryComment(WorldGenConfiguration.CATEGORY_WORLDGEN, "Configuration for wodlgen");
             cfg.addCustomCategoryComment(GeneratorConfiguration.CATEGORY_GENERATOR, "Configuration for the generator multiblock");
             cfg.addCustomCategoryComment(ResonatingCrystalConfiguration.CATEGORY_CRYSTALS, "Configuration for the crystals");
+            cfg.addCustomCategoryComment(RadiationConfiguration.CATEGORY_RADIATION, "Configuration for the radiation");
             WorldGenConfiguration.init(cfg);
             GeneratorConfiguration.init(cfg);
             ResonatingCrystalConfiguration.init(cfg);
+            RadiationConfiguration.init(cfg);
         } catch (Exception e1) {
             FMLLog.log(Level.ERROR, e1, "Problem loading config file!");
         } finally {
