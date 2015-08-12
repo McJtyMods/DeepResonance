@@ -6,21 +6,27 @@ import elec332.core.multiblock.dynamic.IDynamicMultiBlockTile;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
+import mcjty.deepresonance.compat.handlers.WailaCompatHandler;
+import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.grid.fluid.event.FluidTileEvent;
 import mcjty.deepresonance.grid.tank.DRTankMultiBlock;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by Elec332 on 9-8-2015.
  */
-public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IFluidTank{
+public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IFluidTank, WailaCompatHandler.IWailaInfoTile{
 
     public TileTank(){
         super();
@@ -195,5 +201,12 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
                 ret.put((ITankHook) tile, direction.getOpposite());
         }
         return ret;
+    }
+
+    @Override
+    public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(getFluid()));
+        currentTip.add("Amount: "+getFluidAmount());
+        return currentTip;
     }
 }

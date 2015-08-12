@@ -17,6 +17,9 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     public DRTankMultiBlock(TileEntity tile, DRTankWorldHolder worldHolder) {
         super(tile, worldHolder);
         this.tank = new InternalGridTank(9 * FluidContainerRegistry.BUCKET_VOLUME);
+        if (tile instanceof TileTank){
+            tank.fill(((TileTank) tile).myTank, true);
+        }
     }
 
     private InternalGridTank tank;

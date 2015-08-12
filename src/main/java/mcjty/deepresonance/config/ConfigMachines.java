@@ -13,6 +13,9 @@ public class ConfigMachines {
         @Configurable(category = category, minValue = 5, maxValue = 900)
         public static int rfPerTick = 10;
 
+        @Configurable(category = category, minValue = 20, maxValue = 1000)
+        public static int processTime = 400;
+
         @Configurable(category = category, minValue = 100, maxValue = 10000)
         public static int lavaCost = 200;
 
