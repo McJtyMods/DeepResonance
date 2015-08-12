@@ -5,7 +5,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import elec332.core.world.WorldHelper;
 import mcjty.container.GenericBlock;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.network.DRMessages;
 import mcjty.deepresonance.network.PacketGetCrystalInfo;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;

@@ -1,6 +1,7 @@
 package mcjty.deepresonance.items.manual;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.gui.GuiProxy;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -20,7 +21,7 @@ public class DeepResonanceManualItem extends Item {
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if (world.isRemote) {
-            player.openGui(DeepResonance.instance, DeepResonance.GUI_MANUAL_MAIN, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
+            player.openGui(DeepResonance.instance, GuiProxy.GUI_MANUAL_MAIN, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
             return stack;
         }
         return stack;

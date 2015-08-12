@@ -55,13 +55,6 @@ public class DeepResonance implements ModBase {
     public static ConfigWrapper configWrapper;
     public static NetworkHandler networkHandler;
 
-    public static final String SHIFT_MESSAGE = "<Press Shift>";
-
-    /** This is used to keep track of GUIs that we make*/
-    private static int modGuiIndex = 0;
-
-    public static final int GUI_MANUAL_MAIN = modGuiIndex++;
-
     public static CreativeTabs tabDeepResonance = new CreativeTabs("DeepResonance") {
         @Override
         @SideOnly(Side.CLIENT)
@@ -90,16 +83,6 @@ public class DeepResonance implements ModBase {
         proxy.preInit(e);
         FMLInterModComms.sendMessage("Waila", "register", "mcjty.wailasupport.WailaCompatibility.load");
         FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
-
-
-//        mainConfigDir = e.getModConfigurationDirectory();
-//        mainConfig = new Configuration(new File(mainConfigDir.getPath() + File.separator + "rftools", "main.cfg"));
-//
-//        readMainConfig();
-//
-//        PacketHandler.registerMessages("rftools");
-//        RFToolsMessages.registerNetworkMessages();
-//
     }
 
 

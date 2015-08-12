@@ -22,6 +22,10 @@ public class DRFluidRegistry {
     }
 
     public static boolean isValidLiquidCrystalStack(FluidStack stack){
-        return !(stack == null || stack.getFluid() == null || stack.getFluid() != DRFluidRegistry.liquidCrystal);
+        return getFluidFromStack(stack) == liquidCrystal;
+    }
+
+    public static Fluid getFluidFromStack(FluidStack stack){
+        return stack == null ? null : stack.getFluid();
     }
 }

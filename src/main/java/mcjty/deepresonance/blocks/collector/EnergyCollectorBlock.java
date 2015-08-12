@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.container.GenericBlock;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.client.ClientHandler;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -27,9 +28,9 @@ public class EnergyCollectorBlock extends GenericBlock {
         return -1;
     }
 
-
-    @SideOnly(Side.CLIENT)
     @Override
+    @SuppressWarnings("unchecked")
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
         super.addInformation(itemStack, player, list, whatIsThis);
 
@@ -38,7 +39,7 @@ public class EnergyCollectorBlock extends GenericBlock {
             list.add(EnumChatFormatting.WHITE + "Place this on top of a generator with");
             list.add(EnumChatFormatting.WHITE + "crystals nearby.");
         } else {
-            list.add(EnumChatFormatting.WHITE + DeepResonance.SHIFT_MESSAGE);
+            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
         }
     }
 

@@ -9,8 +9,6 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
 import mcjty.deepresonance.blocks.duct.TileBasicFluidDuct;
-import mcjty.deepresonance.blocks.tank.TileTank;
-import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.grid.InternalGridTank;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
