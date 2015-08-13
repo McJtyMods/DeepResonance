@@ -88,7 +88,7 @@ public class ResonatingCrystalBlock extends GenericBlock {
                     forceMultiplier = resonatingCrystalTileEntity.getPower()/10;
                     DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
                     DRRadiationManager.RadiationSource source = radiationManager.getOrCreateRadiationSource(new GlobalCoordinate(new Coordinate(x, y, z), world.provider.dimensionId));
-                    source.update(DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getRfPerTick(), resonatingCrystalTileEntity.getPurity()),
+                    source.update(DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getEfficiency(), resonatingCrystalTileEntity.getPurity()),
                             DRRadiationManager.calculateRadiationStrength(resonatingCrystalTileEntity.getStrength(), resonatingCrystalTileEntity.getPurity()),
                             10000);
                 }

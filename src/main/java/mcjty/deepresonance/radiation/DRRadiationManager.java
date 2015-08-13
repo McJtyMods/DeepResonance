@@ -31,10 +31,10 @@ public class DRRadiationManager extends WorldSavedData {
         return str;
     }
 
-    public static float calculateRadiationRadius(float rfPerTick, float purity) {
-        float radius = RadiationConfiguration.minRadiationRadius + (rfPerTick / ResonatingCrystalConfiguration.maximumRFtick)
+    public static float calculateRadiationRadius(float efficiency, float purity) {
+        float radius = RadiationConfiguration.minRadiationRadius + efficiency / 100.0f
                 * (RadiationConfiguration.maxRadiationRadius - RadiationConfiguration.minRadiationRadius);
-        radius += radius * (100.0f - purity) * .005f;
+        radius += radius * (100.0f - purity) * .002f;
         return radius;
     }
 

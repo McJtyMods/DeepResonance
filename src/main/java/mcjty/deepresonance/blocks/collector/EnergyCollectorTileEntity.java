@@ -121,7 +121,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
                         if (doRadiation) {
                             float purity = resonatingCrystalTileEntity.getPurity();
                             if (purity < 99.0f) {
-                                float radius = DRRadiationManager.calculateRadiationRadius(rfPerTick, purity);
+                                float radius = DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getEfficiency(), purity);
                                 if (radius > radiationRadius) {
                                     radiationRadius = radius;
                                 }
