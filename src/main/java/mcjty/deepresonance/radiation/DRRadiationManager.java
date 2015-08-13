@@ -156,7 +156,7 @@ public class DRRadiationManager extends WorldSavedData {
             this.maxStrength = maxStrenght;
             this.radius = radius;
             float toadd = maxStrenght * RadiationConfiguration.strengthGrowthFactor * ticks;
-            if ((strength + toadd) < maxStrenght) {
+            if ((strength + toadd) > maxStrenght) {
                 toadd = maxStrenght - strength;
                 if (toadd < 0) {
                     toadd = 0;
