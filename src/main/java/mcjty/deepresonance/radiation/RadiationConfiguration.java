@@ -14,6 +14,12 @@ public class RadiationConfiguration {
     public static float strengthGrowthFactor = 0.001f;
     public static float strengthDecreasePerTick = 5.0f;
 
+    public static float radiationStrenghLevel0 = 50000.0f;
+    public static float radiationStrenghLevel1 = 100000.0f;
+    public static float radiationStrenghLevel2 = 200000.0f;
+    public static float radiationStrenghLevel3 = 500000.0f;
+    public static float radiationStrenghLevel4 = 1000000.0f;
+
     public static void init(Configuration cfg) {
         minRadiationRadius = (float) cfg.get(CATEGORY_RADIATION, "minRadiationRadius", minRadiationRadius,
                 "The minimum radiation radius").getDouble();
@@ -29,6 +35,17 @@ public class RadiationConfiguration {
                 "How much percentage of the maximum strength the radiation increases every tick").getDouble();
         strengthDecreasePerTick = (float) cfg.get(CATEGORY_RADIATION, "strengthDecreasePerTick", strengthDecreasePerTick,
                 "How much the radiation strength decreases every tick").getDouble();
+
+        radiationStrenghLevel0 = (float) cfg.get(CATEGORY_RADIATION, "radiationStrenghLevel0", radiationStrenghLevel0,
+                "Radiation strength level 0").getDouble();
+        radiationStrenghLevel1 = (float) cfg.get(CATEGORY_RADIATION, "radiationStrenghLevel1", radiationStrenghLevel1,
+                "Radiation strength level 1").getDouble();
+        radiationStrenghLevel2 = (float) cfg.get(CATEGORY_RADIATION, "radiationStrenghLevel2", radiationStrenghLevel2,
+                "Radiation strength level 2").getDouble();
+        radiationStrenghLevel3 = (float) cfg.get(CATEGORY_RADIATION, "radiationStrenghLevel3", radiationStrenghLevel3,
+                "Radiation strength level 3").getDouble();
+        radiationStrenghLevel4 = (float) cfg.get(CATEGORY_RADIATION, "radiationStrenghLevel4", radiationStrenghLevel4,
+                "Radiation strength level 4").getDouble();
     }
 
 }
