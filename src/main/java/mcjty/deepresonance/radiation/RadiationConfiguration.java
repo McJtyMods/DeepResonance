@@ -11,7 +11,7 @@ public class RadiationConfiguration {
     public static float minRadiationStrength = 100.0f;
     public static float maxRadiationStrength = 1000000.0f;
 
-    public static float strengthGrowthFactor = 0.1f;
+    public static float strengthGrowthFactor = 0.01f;
     public static float strengthDecreasePerTick = 1.0f;
 
     public static void init(Configuration cfg) {
