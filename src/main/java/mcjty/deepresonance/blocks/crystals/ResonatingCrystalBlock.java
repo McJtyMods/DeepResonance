@@ -6,6 +6,7 @@ import elec332.core.main.ElecCore;
 import mcjty.container.GenericBlock;
 import mcjty.deepresonance.DeepResonance;
 import elec332.core.explosion.Elexplosion;
+import mcjty.deepresonance.boom.TestExplosion;
 import mcjty.deepresonance.network.PacketGetCrystalInfo;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.varia.Coordinate;
@@ -93,7 +94,7 @@ public class ResonatingCrystalBlock extends GenericBlock {
                                 DRRadiationManager.calculateRadiationStrength(resonatingCrystalTileEntity.getStrength(), resonatingCrystalTileEntity.getPurity()),
                                 10000);
                     }
-                    Elexplosion boom = new Elexplosion(world, null, x, y, z, forceMultiplier);
+                    Elexplosion boom = new TestExplosion(world, null, x, y, z, forceMultiplier);
                     boom.explode();
                 }
             });
