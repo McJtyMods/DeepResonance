@@ -67,6 +67,9 @@ public abstract class CommonProxy {
     }
 
     public void postInit(FMLPostInitializationEvent e) {
+        if (mainConfig.hasChanged()) {
+            mainConfig.save();
+        }
         mainConfig = null;
         WrenchChecker.init();
     }
