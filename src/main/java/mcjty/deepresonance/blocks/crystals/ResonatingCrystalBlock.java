@@ -78,24 +78,26 @@ public class ResonatingCrystalBlock extends GenericBlock {
 
     @Override
     public void onBlockExploded(final World world, final int x, final int y, final int z, Explosion explosion) {
-        final TileEntity theCrystalTile = world.getTileEntity(x, y, z);
-        ElecCore.tickHandler.registerCall(new Runnable() {
-            @Override
-            public void run() {
-                float forceMultiplier = 1;
-                if (theCrystalTile instanceof ResonatingCrystalTileEntity){
-                    ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) theCrystalTile;
-                    forceMultiplier = resonatingCrystalTileEntity.getPower()/3;
-                    DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
-                    DRRadiationManager.RadiationSource source = radiationManager.getOrCreateRadiationSource(new GlobalCoordinate(new Coordinate(x, y, z), world.provider.dimensionId));
-                    source.update(DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getEfficiency(), resonatingCrystalTileEntity.getPurity()),
-                            DRRadiationManager.calculateRadiationStrength(resonatingCrystalTileEntity.getStrength(), resonatingCrystalTileEntity.getPurity()),
-                            10000);
+        if (!world.isRemote) {
+            final TileEntity theCrystalTile = world.getTileEntity(x, y, z);
+            ElecCore.tickHandler.registerCall(new Runnable() {
+                @Override
+                public void run() {
+                    float forceMultiplier = 1;
+                    if (theCrystalTile instanceof ResonatingCrystalTileEntity) {
+                        ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) theCrystalTile;
+                        forceMultiplier = resonatingCrystalTileEntity.getPower() / 3;
+                        DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
+                        DRRadiationManager.RadiationSource source = radiationManager.getOrCreateRadiationSource(new GlobalCoordinate(new Coordinate(x, y, z), world.provider.dimensionId));
+                        source.update(DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getEfficiency(), resonatingCrystalTileEntity.getPurity()),
+                                DRRadiationManager.calculateRadiationStrength(resonatingCrystalTileEntity.getStrength(), resonatingCrystalTileEntity.getPurity()),
+                                10000);
+                    }
+                    Elexplosion boom = new Elexplosion(world, null, x, y, z, forceMultiplier);
+                    boom.explode();
                 }
-                Elexplosion boom = new Elexplosion(world, null, x, y, z, forceMultiplier);
-                boom.explode();
-            }
-        });
+            });
+        }
         super.onBlockExploded(world, x, y, z, explosion);
     }
 
