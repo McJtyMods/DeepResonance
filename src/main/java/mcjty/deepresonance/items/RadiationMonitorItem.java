@@ -46,7 +46,7 @@ public class RadiationMonitorItem extends Item {
             if (maxStrength <= 0.0f) {
                 Logging.message(player, EnumChatFormatting.GREEN + "No radiation detected");
             } else {
-                Logging.message(player, EnumChatFormatting.RED + "Radiation of strength " + new DecimalFormat("#.##").format(maxStrength) + "!");
+                Logging.message(player, EnumChatFormatting.RED + "Strength of Radiation " + new DecimalFormat("#.##").format(maxStrength) + "!");
             }
         }
         return stack;
@@ -72,7 +72,7 @@ public class RadiationMonitorItem extends Item {
                 double distanceSq = getDistanceSq(player.getCoordinate(), coordinate.getCoordinate());
                 if (distanceSq < radiusSq) {
                     double distance = Math.sqrt(distanceSq);
-                    float strength = (float) (radiationSource.getStrength() * (radius - distance));
+                    float strength = (float) (radiationSource.getStrength() * (radius - distance) / radius);
                     if (strength > maxStrength) {
                         maxStrength = strength;
                     }

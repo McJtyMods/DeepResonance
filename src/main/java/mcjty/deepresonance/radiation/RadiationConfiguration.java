@@ -6,7 +6,7 @@ public class RadiationConfiguration {
     public static final String CATEGORY_RADIATION = "radiation";
 
     public static float minRadiationRadius = 5.0f;
-    public static float maxRadiationRadius = 100.0f;
+    public static float maxRadiationRadius = 60.0f;
 
     public static float minRadiationStrength = 100.0f;
     public static float maxRadiationStrength = 1000000.0f;
@@ -20,7 +20,10 @@ public class RadiationConfiguration {
     public static float radiationStrenghLevel3 = 500000.0f;
     public static float radiationStrenghLevel4 = 1000000.0f;
 
-    public static float maxRadiationMeter = 500000.0f;
+    public static float maxRadiationMeter = 200000.0f;
+
+    public static float radiationExplosionFactor = 1.3f;
+    public static float explosionStrengthFactor = 700.0f;
 
     public static void init(Configuration cfg) {
         minRadiationRadius = (float) cfg.get(CATEGORY_RADIATION, "minRadiationRadius", minRadiationRadius,
@@ -51,6 +54,11 @@ public class RadiationConfiguration {
 
         maxRadiationMeter = (float) cfg.get(CATEGORY_RADIATION, "maxRadiationMeter", maxRadiationMeter,
                 "The maximum that a radiation meter can measure").getDouble();
+
+        radiationExplosionFactor = (float) cfg.get(CATEGORY_RADIATION, "radiationExplosionFactor", radiationExplosionFactor,
+                "This factor increases the radius of radiation on explosion and decreases the strength").getDouble();
+        explosionStrengthFactor = (float) cfg.get(CATEGORY_RADIATION, "explosionStrengthFactor", explosionStrengthFactor,
+                "The crystal strength is diviced by this factor to affect the size of the explosion. Bigger values mean smaller explosions").getDouble();
     }
 
 }

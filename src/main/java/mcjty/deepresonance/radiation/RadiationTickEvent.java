@@ -100,7 +100,7 @@ public class RadiationTickEvent {
             double distanceSq = entityLivingBase.getDistanceSq(dx, dy, dz);
             if (distanceSq < radiusSq) {
                 double distance = Math.sqrt(distanceSq);
-                float strength = (float) (baseStrength * (radius-distance));
+                float strength = (float) (baseStrength * (radius-distance) / radius);
 
                 if (strength < RadiationConfiguration.radiationStrenghLevel0) {
                     entityLivingBase.addPotionEffect(new PotionEffect(Potion.hunger.getId(), EFFECTS_MAX * MAXTICKS, 1, true));

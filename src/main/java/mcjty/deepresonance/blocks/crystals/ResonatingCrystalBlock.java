@@ -9,6 +9,7 @@ import elec332.core.explosion.Elexplosion;
 import mcjty.deepresonance.boom.TestExplosion;
 import mcjty.deepresonance.network.PacketGetCrystalInfo;
 import mcjty.deepresonance.radiation.DRRadiationManager;
+import mcjty.deepresonance.radiation.RadiationConfiguration;
 import mcjty.varia.Coordinate;
 import mcjty.varia.GlobalCoordinate;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -87,12 +88,12 @@ public class ResonatingCrystalBlock extends GenericBlock {
                     float forceMultiplier = 1;
                     if (theCrystalTile instanceof ResonatingCrystalTileEntity) {
                         ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) theCrystalTile;
-                        forceMultiplier = resonatingCrystalTileEntity.getPower() / 3;
+                        forceMultiplier = (resonatingCrystalTileEntity.getPower() + 20) * resonatingCrystalTileEntity.getStrength() / RadiationConfiguration.explosionStrengthFactor;
                         DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
                         DRRadiationManager.RadiationSource source = radiationManager.getOrCreateRadiationSource(new GlobalCoordinate(new Coordinate(x, y, z), world.provider.dimensionId));
-                        source.update(DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getEfficiency(), resonatingCrystalTileEntity.getPurity()),
-                                DRRadiationManager.calculateRadiationStrength(resonatingCrystalTileEntity.getStrength(), resonatingCrystalTileEntity.getPurity()),
-                                10000);
+                        float radiationRadius = DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getEfficiency(), resonatingCrystalTileEntity.getPurity());
+                        float radiationStrength = DRRadiationManager.calculateRadiationStrength(resonatingCrystalTileEntity.getStrength(), resonatingCrystalTileEntity.getPurity());
+                        source.update(radiationRadius * RadiationConfiguration.radiationExplosionFactor, radiationStrength / RadiationConfiguration.radiationExplosionFactor, 1000);
                     }
                     Elexplosion boom = new TestExplosion(world, null, x, y, z, forceMultiplier);
                     boom.explode();
