@@ -23,6 +23,7 @@ public final class ModBlocks {
     public static ResonatingOreBlock resonatingOreBlock;
     public static ResonatingCrystalBlock resonatingCrystalBlock;
     public static Block duct, smelter, tank;
+    public static MachineFrame machineFrame;
 
     public static void init() {
         resonatingOreBlock = new ResonatingOreBlock();
@@ -36,6 +37,9 @@ public final class ModBlocks {
         duct = new BlockDuct(TileBasicFluidDuct.class, "basicFluidDuct").registerTile().register();
         smelter = new BlockTileBase(Material.rock, TileSmelter.class, "smelter", DeepResonance.MODID).registerTile().register();
         tank = new BlockTileBase(Material.rock, TileTank.class, "tank", DeepResonance.MODID).registerTile().register().setCreativeTab(DeepResonance.tabDeepResonance);
+
+        machineFrame = new MachineFrame();
+        GameRegistry.registerBlock(machineFrame, "machineFrame");
 
         GeneratorSetup.setupBlocks();
         GeneratorControllerSetup.setupBlocks();

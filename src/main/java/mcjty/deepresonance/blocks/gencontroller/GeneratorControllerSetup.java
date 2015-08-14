@@ -2,6 +2,10 @@ package mcjty.deepresonance.blocks.gencontroller;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import mcjty.container.GenericItemBlock;
+import mcjty.deepresonance.blocks.ModBlocks;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 
 public class GeneratorControllerSetup {
     public static GeneratorControllerBlock generatorControllerBlock;
@@ -13,5 +17,7 @@ public class GeneratorControllerSetup {
     }
 
     public static void setupCrafting() {
+        GameRegistry.addRecipe(new ItemStack(generatorControllerBlock), "rCr", "iMi", "rir", 'M', ModBlocks.machineFrame, 'r', Items.redstone,
+                'C', Items.comparator, 'i', Items.iron_ingot);
     }
 }

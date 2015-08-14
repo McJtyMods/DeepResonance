@@ -2,6 +2,9 @@ package mcjty.deepresonance.blocks.collector;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import mcjty.container.GenericItemBlock;
+import mcjty.deepresonance.blocks.ModBlocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 
 public class EnergyCollectorSetup {
     public static EnergyCollectorBlock energyCollectorBlock;
@@ -13,5 +16,6 @@ public class EnergyCollectorSetup {
     }
 
     public static void setupCrafting() {
+        GameRegistry.addRecipe(new ItemStack(energyCollectorBlock), " q ", "qMq", "ggg", 'M', ModBlocks.machineFrame, 'g', Items.gold_ingot, 'q', Items.quartz);
     }
 }
