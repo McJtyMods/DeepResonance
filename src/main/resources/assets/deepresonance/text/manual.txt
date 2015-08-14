@@ -64,6 +64,11 @@ Turning off a generator will not immediatelly stop the radiation.
 Depending on the strength of the radiation it will take a while before
 it completely disappears.
 {-------------------------------------------------------------}
+{b}Radiation Monitor
+Using the radiation monitor you can measure how much radiation there
+is in a certain area:
+{ri:radiationMonitorItem}
+{-------------------------------------------------------------}
 {b}Machine Frame
 {n:frame}
 Nearly everything in this mod requires a machine frame as a basic

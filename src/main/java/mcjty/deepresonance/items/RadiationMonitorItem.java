@@ -46,7 +46,7 @@ public class RadiationMonitorItem extends Item {
             if (maxStrength <= 0.0f) {
                 Logging.message(player, EnumChatFormatting.GREEN + "No radiation detected");
             } else {
-                Logging.message(player, EnumChatFormatting.RED + "Radiation of strength " + new DecimalFormat("#.##").format(maxStrength) + "!");
+                Logging.message(player, EnumChatFormatting.RED + "Strength of Radiation " + new DecimalFormat("#.##").format(maxStrength) + "!");
             }
         }
         return stack;
