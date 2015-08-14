@@ -1,9 +1,17 @@
 {b}Deep Resonance Manual
 
+This mod is in beta! Currently it does not have any way to make your own
+crystals. You can however generate power with naturally spawned crystals.
+
 Table of contents:
 {l:ore}Resonating Ore
 {l:crystals}Crystals
-{/}
+{l:attributes}Crystal Attributes
+{l:radiation}Radiation
+{l:frame}Machine Frame
+{l:generator}Generator
+{l:collector}Energy Collector
+{l:controller}Generator Controller
 {-------------------------------------------------------------}
 {b}Resonating Ore
 {n:ore}
@@ -11,13 +19,81 @@ Deep under the ground a good miner can occasionally find resonating
 ore. If you do then this can be your start to a big adventure.
 
 Note that this version of Deep Resonance is not ready yet. For now
-you cannot use this ore for anything. Keep it for later.
+this ore can only be used as a crafting ingredients for the
+generator machines in this mod.
 {-------------------------------------------------------------}
 {b}Resonating Crystals
 {n:crystals}
 Very rarely you can find a resonating crystal in a deep cave. Collect these
-crystals. They will come in very handy later.
+crystals. These crystals have low power and low purity but they can
+be useful for early game power. Just place them near a correctly
+formed generator.
 
-Note that this version of Deep Resonance is not ready yet. For now
-you cannot use these crystals for anything. Keep it for later.
+Note that crystals explode heavily if there is a nearby explosion (like
+from a creeper). Be careful! The power of this explosion depends on the
+power that is in the crystal as well as the strength of this crystal.
+{-------------------------------------------------------------}
+{b}Crystal Attributes
+{n:attributes}
+Every crystal has four basic characteristics:
+
+    * Strength: this is the inherent strength of a crystal. The stronger
+      a crystal is the more power it can contain. This goes from 0% to
+      100% but in the future you will be able to 'overcharge' crystals
+      for even more power (and even more danger).
+    * Efficiency: this represents how efficient this crystal is at
+      producing power. i.e. a higher efficiency means a higher RF/tick.
+    * Purity: this represents how clean the crystal is. Low purity crystals
+      will cause more radiation and are less efficient at producing power.
+    * Power: this is the actual power that is still left in this crystal.
+      It is represented as a percentage of the total possible power that
+      this crystal has.
+{-------------------------------------------------------------}
+{b}Radiation
+{n:radiation}
+A running generator will produce radiation. The amount of radiation
+as well as the power of this radiation depends on the power of the
+crystal as well as the purity of it. A 100% pure crystal that is not
+overcharged will generate no radiation.
+
+Naturally spawned crystals are not pure but because they contain
+little power they don't cause a lot of radiation. So you can use
+them for early game power.
+
+Turning off a generator will not immediatelly stop the radiation.
+Depending on the strength of the radiation it will take a while before
+it completely disappears.
+{-------------------------------------------------------------}
+{b}Machine Frame
+{n:frame}
+Nearly everything in this mod requires a machine frame as a basic
+crafting ingredient:
+{rb:machineFrame}
+{-------------------------------------------------------------}
+{b}Generator Block
+{n:generator}
+To generate power you need a generator multiblock. The basis of this block
+is the generator which you craft as follows:
+{rb:generatorBlock}
+
+A single block supports up to 2 crystals and maximum 10KRF/tick. If you
+need to handle more or more powerful crystals you will have to add blocks
+to your generator. A generator can be any shape. It doesn't have to be
+rectangular.
+{-------------------------------------------------------------}
+{b}Energy Collector
+{n:collector}
+The generator on its own cannot get the power out of the crystals. For that
+you need one energy collector on top of the generator multiblock. Only
+one collector can be put on a single generator multiblock. You can make
+this collector as follows:
+{rb:energyCollectorBlock}
+{-------------------------------------------------------------}
+{b}Generator Controller
+{n:controller}
+The generator can only work if it is turned on. You can do that with
+the generator controller:
+{rb:generatorControllerBlock}
+
+To turn on the generator simply give this block a redstone signal.
 {-------------------------------------------------------------}
