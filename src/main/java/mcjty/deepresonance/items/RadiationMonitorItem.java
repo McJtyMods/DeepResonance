@@ -72,7 +72,7 @@ public class RadiationMonitorItem extends Item {
                 double distanceSq = getDistanceSq(player.getCoordinate(), coordinate.getCoordinate());
                 if (distanceSq < radiusSq) {
                     double distance = Math.sqrt(distanceSq);
-                    float strength = (float) (radiationSource.getStrength() * (radius - distance));
+                    float strength = (float) (radiationSource.getStrength() * (radius - distance) / radius);
                     if (strength > maxStrength) {
                         maxStrength = strength;
                     }

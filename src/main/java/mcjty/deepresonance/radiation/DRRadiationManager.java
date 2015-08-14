@@ -1,7 +1,5 @@
 package mcjty.deepresonance.radiation;
 
-import mcjty.deepresonance.blocks.crystals.ResonatingCrystalConfiguration;
-import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.varia.Coordinate;
 import mcjty.varia.GlobalCoordinate;
 import net.minecraft.nbt.NBTTagCompound;
