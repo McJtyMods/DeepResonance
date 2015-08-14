@@ -20,6 +20,7 @@ import java.util.Random;
 public final class ModItems {
 
     public static DeepResonanceManualItem deepResonanceManualItem;
+    public static RadiationMonitorItem radiationMonitorItem;
 
     public static void init() {
         deepResonanceManualItem = new DeepResonanceManualItem();
@@ -27,6 +28,12 @@ public final class ModItems {
         deepResonanceManualItem.setCreativeTab(DeepResonance.tabDeepResonance);
         deepResonanceManualItem.setTextureName(DeepResonance.MODID + ":deepResonanceManual");
         GameRegistry.registerItem(deepResonanceManualItem, "deepResonanceManualItem");
+
+        radiationMonitorItem = new RadiationMonitorItem();
+        radiationMonitorItem.setUnlocalizedName("RadiationMonitor");
+        radiationMonitorItem.setCreativeTab(DeepResonance.tabDeepResonance);
+        GameRegistry.registerItem(radiationMonitorItem, "radiationMonitorItem");
+
         new TestItem(); //Auto-registers
     }
 

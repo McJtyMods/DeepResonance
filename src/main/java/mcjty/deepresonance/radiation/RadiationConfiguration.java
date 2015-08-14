@@ -20,6 +20,8 @@ public class RadiationConfiguration {
     public static float radiationStrenghLevel3 = 500000.0f;
     public static float radiationStrenghLevel4 = 1000000.0f;
 
+    public static float maxRadiationMeter = 500000.0f;
+
     public static void init(Configuration cfg) {
         minRadiationRadius = (float) cfg.get(CATEGORY_RADIATION, "minRadiationRadius", minRadiationRadius,
                 "The minimum radiation radius").getDouble();
@@ -46,6 +48,9 @@ public class RadiationConfiguration {
                 "Radiation strength level 3").getDouble();
         radiationStrenghLevel4 = (float) cfg.get(CATEGORY_RADIATION, "radiationStrenghLevel4", radiationStrenghLevel4,
                 "Radiation strength level 4").getDouble();
+
+        maxRadiationMeter = (float) cfg.get(CATEGORY_RADIATION, "maxRadiationMeter", maxRadiationMeter,
+                "The maximum that a radiation meter can measure").getDouble();
     }
 
 }

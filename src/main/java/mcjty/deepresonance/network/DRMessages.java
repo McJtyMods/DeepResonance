@@ -20,10 +20,12 @@ public class DRMessages {
         // Server side
         DeepResonance.networkHandler.registerPacket(PacketGetGeneratorInfo.class, Side.SERVER);
         DeepResonance.networkHandler.registerPacket(PacketGetCrystalInfo.class, Side.SERVER);
+        DeepResonance.networkHandler.registerPacket(PacketGetRadiationLevel.class, Side.SERVER);
 
         // Client side
         DeepResonance.networkHandler.registerPacket(PacketReturnGeneratorInfoHandler.class,PacketReturnGeneratorInfo.class, Side.CLIENT);
         DeepResonance.networkHandler.registerPacket(PacketReturnCrystalInfoHandler.class, PacketReturnCrystalInfo.class, Side.CLIENT);
+        DeepResonance.networkHandler.registerPacket(PacketReturnRadiationHandler.class, PacketReturnRadiation.class, Side.CLIENT);
     }
 
     private static void discoverPackets(){
