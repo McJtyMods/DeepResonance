@@ -72,7 +72,8 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         }
 
         if (active != lasersActive || startup != laserStartup) {
-            boolean doFind = lasersActive != active;
+            // Only when active changes and the lasert started recently do we check for new crystals.
+            boolean doFind = lasersActive != active || (laserStartup > (GeneratorConfiguration.startupTime - 5));
             lasersActive = active;
             laserStartup = startup;
             markDirty();
