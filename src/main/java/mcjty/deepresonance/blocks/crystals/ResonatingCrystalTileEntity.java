@@ -168,4 +168,9 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         return special == 0 ? random.nextFloat() :
                 special == 1 ? .5f : 1.0f;
     }
+
+    @Override
+    public boolean shouldRenderInPass(int pass) {
+        return pass == 1;
+    }
 }

@@ -44,7 +44,6 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         GL11.glTranslatef((float) x + 0.5F, (float) y + 0.0F, (float) z + 0.5F);
-//        GL11.glScalef(0.09375F, 0.09375F, 0.09375F);
 
         model.renderAll();
         GL11.glPopMatrix();
@@ -53,6 +52,9 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
 
         if ((!energyCollectorTileEntity.getCrystals().isEmpty()) && (energyCollectorTileEntity.areLasersActive() || energyCollectorTileEntity.getLaserStartup() > 0)) {
             boolean blending = GL11.glIsEnabled(GL11.GL_BLEND);
+            boolean depthMask = GL11.glGetBoolean(GL11.GL_DEPTH_WRITEMASK);
+            GL11.glDepthMask(false);
+
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
 
@@ -108,6 +110,9 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
 
             if (!blending) {
                 GL11.glDisable(GL11.GL_BLEND);
+            }
+            if (depthMask) {
+                GL11.glDepthMask(true);
             }
         }
     }
