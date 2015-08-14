@@ -23,7 +23,10 @@ public class RadiationConfiguration {
     public static float maxRadiationMeter = 200000.0f;
 
     public static float radiationExplosionFactor = 1.3f;
-    public static float explosionStrengthFactor = 700.0f;
+
+    public static float minimumExplosionMultiplier = 6.0f;
+    public static float maximumExplosionMultiplier = 17.0f;
+    public static float absoluteMaximumExplosionMultiplier = 20.0f;
 
     public static void init(Configuration cfg) {
         minRadiationRadius = (float) cfg.get(CATEGORY_RADIATION, "minRadiationRadius", minRadiationRadius,
@@ -57,8 +60,12 @@ public class RadiationConfiguration {
 
         radiationExplosionFactor = (float) cfg.get(CATEGORY_RADIATION, "radiationExplosionFactor", radiationExplosionFactor,
                 "This factor increases the radius of radiation on explosion and decreases the strength").getDouble();
-        explosionStrengthFactor = (float) cfg.get(CATEGORY_RADIATION, "explosionStrengthFactor", explosionStrengthFactor,
-                "The crystal strength is divided by this factor to affect the size of the explosion. Bigger values mean smaller explosions").getDouble();
+        minimumExplosionMultiplier = (float) cfg.get(CATEGORY_RADIATION, "minimumExplosionMultiplier", minimumExplosionMultiplier,
+                "The minimum explosion multiplier").getDouble();
+        maximumExplosionMultiplier = (float) cfg.get(CATEGORY_RADIATION, "maximumExplosionMultiplier", maximumExplosionMultiplier,
+                "The maximum explosion multiplier for a 100%/100% power/strength crystal").getDouble();
+        absoluteMaximumExplosionMultiplier = (float) cfg.get(CATEGORY_RADIATION, "absoluteMaximumExplosionMultiplier", absoluteMaximumExplosionMultiplier,
+                "The maximum explosion multiplier that is possible").getDouble();
     }
 
 }
