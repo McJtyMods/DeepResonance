@@ -1,6 +1,7 @@
 package mcjty.deepresonance.boom;
 
 import elec332.core.explosion.Elexplosion;
+import elec332.core.player.PlayerHelper;
 import elec332.core.util.BlockLoc;
 import elec332.core.world.WorldHelper;
 import net.minecraft.block.Block;
@@ -49,5 +50,39 @@ public class TestExplosion extends Elexplosion{
             }
         }
 
+    }
+
+    @Override
+    protected void damageEntities(float radius, float power) {
+        if(!this.getWorld().isRemote) {
+            radius *= 2.0F;
+            BlockLoc minCoord = this.getLocation().copy();
+            minCoord.add(-radius - 1.0F);
+            BlockLoc maxCoord = this.getLocation().copy();
+            maxCoord.add(radius + 1.0F);
+            List allEntities = this.getWorld().getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox((double) minCoord.xCoord, (double) minCoord.yCoord, (double) minCoord.zCoord, (double) maxCoord.xCoord, (double) maxCoord.yCoord, (double) maxCoord.zCoord));
+            Iterator i$ = allEntities.iterator();
+
+            while(i$.hasNext()) {
+                Entity entity = (Entity)i$.next();
+                double distance = entity.getDistance((double) this.getLocation().xCoord, (double) this.getLocation().yCoord, (double) this.getLocation().zCoord) / (double)radius;
+                if(distance <= 1.0D) {
+                    double xDifference = entity.posX - (double)this.getLocation().xCoord;
+                    double yDifference = entity.posY - (double)this.getLocation().yCoord;
+                    double zDifference = entity.posZ - (double)this.getLocation().zCoord;
+                    double d1 = (double)MathHelper.sqrt_double(xDifference * xDifference + yDifference * yDifference + zDifference * zDifference);
+                    xDifference /= d1;
+                    yDifference /= d1;
+                    zDifference /= d1;
+                    double density = (double) this.getWorld().getBlockDensity(Vec3.createVectorHelper((double) this.getLocation().xCoord, (double)this.getLocation().yCoord, (double)this.getLocation().zCoord), entity.boundingBox);
+                    double d2 = (1.0D - distance) * density;
+                    int damage = (int)((d2 * d2 + d2) / 2.0D * 8.0D * (double)power + 1.0D);
+                    entity.attackEntityFrom(DamageSource.setExplosionSource(this), (float)damage);
+                    entity.motionX += xDifference * d2;
+                    entity.motionY += yDifference * d2;
+                    entity.motionZ += zDifference * d2;
+                }
+            }
+        }
     }
 }
