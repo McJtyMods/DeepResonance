@@ -58,7 +58,7 @@ public class RadiationConfiguration {
         radiationExplosionFactor = (float) cfg.get(CATEGORY_RADIATION, "radiationExplosionFactor", radiationExplosionFactor,
                 "This factor increases the radius of radiation on explosion and decreases the strength").getDouble();
         explosionStrengthFactor = (float) cfg.get(CATEGORY_RADIATION, "explosionStrengthFactor", explosionStrengthFactor,
-                "The crystal strength is diviced by this factor to affect the size of the explosion. Bigger values mean smaller explosions").getDouble();
+                "The crystal strength is divided by this factor to affect the size of the explosion. Bigger values mean smaller explosions").getDouble();
     }
 
 }
