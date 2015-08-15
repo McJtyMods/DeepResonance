@@ -5,9 +5,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import elec332.core.baseclasses.tileentity.TileBase;
 import elec332.core.compat.handlers.WailaCompatHandler;
-import elec332.core.main.ElecCore;
 import elec332.core.multiblock.dynamic.IDynamicMultiBlockTile;
-import elec332.core.server.ServerHelper;
 import elec332.core.util.NBTHelper;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
@@ -18,17 +16,14 @@ import mcjty.deepresonance.grid.tank.DRTankMultiBlock;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -241,9 +236,6 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
         switch (ID){
             case 1:
                 sendPacket(2, new NBTHelper().addToTag(getMultiBlock() == null ? 0 : getMultiBlock().getFluidAmount(), "totalFluid").toNBT());
-                return;
-            case 2:
-
         }
     }
 

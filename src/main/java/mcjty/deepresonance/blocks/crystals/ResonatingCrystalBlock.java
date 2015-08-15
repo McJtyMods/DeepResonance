@@ -2,10 +2,10 @@ package mcjty.deepresonance.blocks.crystals;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import elec332.core.explosion.Elexplosion;
 import elec332.core.main.ElecCore;
 import mcjty.container.GenericBlock;
 import mcjty.deepresonance.DeepResonance;
-import elec332.core.explosion.Elexplosion;
 import mcjty.deepresonance.boom.TestExplosion;
 import mcjty.deepresonance.network.PacketGetCrystalInfo;
 import mcjty.deepresonance.radiation.DRRadiationManager;

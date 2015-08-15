@@ -1,7 +1,6 @@
 package mcjty.deepresonance.boom;
 
 import elec332.core.explosion.Elexplosion;
-import elec332.core.player.PlayerHelper;
 import elec332.core.util.BlockLoc;
 import elec332.core.world.WorldHelper;
 import net.minecraft.block.Block;
@@ -14,8 +13,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 

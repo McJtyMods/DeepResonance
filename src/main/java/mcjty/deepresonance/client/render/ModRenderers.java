@@ -29,7 +29,7 @@ public final class ModRenderers {
 
     public static final int ductRenderID;
 
-    
+
     static {
         ductRenderID = RenderingRegistry.getNextAvailableRenderId();
     }

@@ -3,7 +3,6 @@ package mcjty.deepresonance.blocks.gencontroller;
 import cpw.mods.fml.common.registry.GameRegistry;
 import mcjty.container.GenericItemBlock;
 import mcjty.deepresonance.blocks.ModBlocks;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
