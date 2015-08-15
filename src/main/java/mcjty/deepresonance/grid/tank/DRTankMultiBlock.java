@@ -1,13 +1,23 @@
 package mcjty.deepresonance.grid.tank;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import elec332.core.main.ElecCore;
 import elec332.core.multiblock.dynamic.AbstractDynamicMultiBlock;
 import elec332.core.util.BlockLoc;
+import elec332.core.util.NBTHelper;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.tank.TileTank;
+import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.grid.InternalGridTank;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Elec332 on 10-8-2015.
@@ -17,21 +27,60 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     public DRTankMultiBlock(TileEntity tile, DRTankWorldHolder worldHolder) {
         super(tile, worldHolder);
         this.tank = new InternalGridTank(9 * FluidContainerRegistry.BUCKET_VOLUME);
+        this.renderData = Maps.newHashMap();
         if (tile instanceof TileTank){
             tank.fill(((TileTank) tile).myTank, true);
         }
+        needsSorting = true;
+        sendFluidData();
     }
 
+    private boolean needsSorting;
     private InternalGridTank tank;
+    private Map<Integer, List<BlockLoc>> renderData;
 
     @Override
     public void tick() {
+        if (world.getTotalWorldTime() % 180L == 0L){
+            sendFluidData();
+            sendFluidHeight();
+        }
     }
 
     @Override
     protected void mergeWith(DRTankMultiBlock multiBlock) {
         super.mergeWith(multiBlock);
         tank.merge(multiBlock.tank);
+        needsSorting = true;
+    }
+
+    private void setTankFluidHeights(){
+        if (needsSorting){
+            Collections.sort(allLocations, new Comparator<BlockLoc>() {
+                @Override
+                public int compare(BlockLoc o1, BlockLoc o2) {
+                    return o1.yCoord - o2.yCoord;
+                }
+            });
+            for (BlockLoc loc : allLocations){
+                List<BlockLoc> list = renderData.get(loc.yCoord);
+                if (list == null){
+                    renderData.put(loc.yCoord, list = Lists.newArrayList());
+                }
+                list.add(loc);
+            }
+            needsSorting = false;
+        }
+        int total = tank.getStoredAmount();
+        for (List<BlockLoc> list : renderData.values()){
+            int i = list.size();
+            int toAdd = Math.min(total, i * 9 * FluidContainerRegistry.BUCKET_VOLUME);
+            total -= toAdd;
+            float filled = (float)toAdd/( i * 9 * FluidContainerRegistry.BUCKET_VOLUME);
+            for (BlockLoc loc : list) {
+                getTank(loc).sendPacket(3, new NBTHelper().addToTag(filled, "render").toNBT());
+            }
+        }
     }
 
     public int getTankSize(){
@@ -68,11 +117,14 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
 
     @Override
     public int fill(FluidStack resource, boolean doFill) {
+        sendFluidData();
+        setTankFluidHeights();
         return tank.fill(resource, doFill);
     }
 
     @Override
     public FluidStack drain(int maxDrain, boolean doDrain) {
+        setTankFluidHeights();
         return tank.drain(maxDrain, doDrain);
     }
 
@@ -119,5 +171,25 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     @Override
     public FluidTankInfo[] getTankInfo(ForgeDirection from) {
         return new FluidTankInfo[0];
+    }
+
+    private void sendFluidHeight(){
+        ElecCore.tickHandler.registerCall(new Runnable() {
+            @Override
+            public void run() {
+                setTankFluidHeights();
+            }
+        });
+    }
+
+    private void sendFluidData(){
+        ElecCore.tickHandler.registerCall(new Runnable() {
+            @Override
+            public void run() {
+                for (BlockLoc loc : allLocations){
+                    getTank(loc).sendPacket(1, new NBTHelper().addToTag(DRFluidRegistry.getFluidName(getFluid()), "fluid").toNBT());
+                }
+            }
+        });
     }
 }

@@ -73,6 +73,11 @@ public class TileBasicFluidDuct extends TileBase {
         //addAllAdjacentTanks();
     }
 
+    @Override
+    public boolean canUpdate() {
+        return false;
+    }
+
     private void removeAllAdjacentTanks(){
         for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS){
             if (getGrid() != null)

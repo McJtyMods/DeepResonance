@@ -1,9 +1,14 @@
 package mcjty.deepresonance.blocks.tank;
 
 import com.google.common.collect.Maps;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import elec332.core.baseclasses.tileentity.TileBase;
 import elec332.core.compat.handlers.WailaCompatHandler;
+import elec332.core.main.ElecCore;
 import elec332.core.multiblock.dynamic.IDynamicMultiBlockTile;
+import elec332.core.server.ServerHelper;
+import elec332.core.util.NBTHelper;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
@@ -13,13 +18,17 @@ import mcjty.deepresonance.grid.tank.DRTankMultiBlock;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +40,14 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
     public TileTank(){
         super();
     }
+
+    @SideOnly(Side.CLIENT)
+    public Fluid clientRenderFluid;
+    @SideOnly(Side.CLIENT)
+    public int totalFluidAmount;
+    @SideOnly(Side.CLIENT)
+    public float renderHeight; //Value from 0.0f to 1.0f
+    private long lastTime;
 
     @Override
     public void onTileLoaded() {
@@ -83,6 +100,11 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
         }
         if (lastSeenFluid != null)
             tagCompound.setString("lastSeenFluid", FluidRegistry.getFluidName(lastSeenFluid));
+    }
+
+    @Override
+    public boolean canUpdate() {
+        return false;
     }
 
     @Override
@@ -205,8 +227,37 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
 
     @Override
     public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(getFluid()));
-        currentTip.add("Amount: "+getFluidAmount());
+        currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(clientRenderFluid));
+        currentTip.add("Amount: "+totalFluidAmount);
+        if (System.currentTimeMillis() - lastTime > 100){
+            lastTime = System.currentTimeMillis();
+            sendPacketToServer(1, new NBTTagCompound());
+        }
         return currentTip;
+    }
+
+    @Override
+    public void onPacketReceivedFromClient(EntityPlayerMP sender, int ID, NBTTagCompound data) {
+        switch (ID){
+            case 1:
+                sendPacket(2, new NBTHelper().addToTag(getMultiBlock() == null ? 0 : getMultiBlock().getFluidAmount(), "totalFluid").toNBT());
+                return;
+            case 2:
+
+        }
+    }
+
+    @Override
+    public void onDataPacket(int id, NBTTagCompound tag) {
+        switch (id){
+            case 1:
+                this.clientRenderFluid = FluidRegistry.getFluid(tag.getString("fluid"));
+                return;
+            case 2:
+                this.totalFluidAmount = tag.getInteger("totalFluid");
+                return;
+            case 3:
+                this.renderHeight = tag.getFloat("render");
+        }
     }
 }
