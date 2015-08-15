@@ -2,11 +2,11 @@ package mcjty.deepresonance.blocks.tank;
 
 import com.google.common.collect.Maps;
 import elec332.core.baseclasses.tileentity.TileBase;
+import elec332.core.compat.handlers.WailaCompatHandler;
 import elec332.core.multiblock.dynamic.IDynamicMultiBlockTile;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
-import mcjty.deepresonance.compat.handlers.WailaCompatHandler;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.grid.fluid.event.FluidTileEvent;
 import mcjty.deepresonance.grid.tank.DRTankMultiBlock;
@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * Created by Elec332 on 9-8-2015.
  */
-public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IFluidTank, WailaCompatHandler.IWailaInfoTile{
+public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IFluidTank, WailaCompatHandler.IWailaInfoTile {
 
     public TileTank(){
         super();

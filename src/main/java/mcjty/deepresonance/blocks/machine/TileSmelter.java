@@ -2,6 +2,7 @@ package mcjty.deepresonance.blocks.machine;
 
 import cofh.api.energy.EnergyStorage;
 import elec332.core.client.inventory.BaseGuiContainer;
+import elec332.core.compat.handlers.WailaCompatHandler;
 import elec332.core.inventory.BaseContainer;
 import elec332.core.util.BasicInventory;
 import elec332.core.util.DirectionHelper;
@@ -11,7 +12,6 @@ import mcjty.deepresonance.blocks.base.TileEnergyReceiver;
 import mcjty.deepresonance.blocks.tank.ITankHook;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.client.DRResourceLocation;
-import mcjty.deepresonance.compat.handlers.WailaCompatHandler;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.inventory.ContainerSmelter;

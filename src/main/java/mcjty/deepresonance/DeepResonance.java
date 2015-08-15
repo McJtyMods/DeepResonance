@@ -12,7 +12,6 @@ import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.commands.CommandDRGen;
 import mcjty.deepresonance.compat.CompatHandler;
 import mcjty.deepresonance.compat.handlers.ComputerCraftCompatHandler;
-import mcjty.deepresonance.compat.handlers.WailaCompatHandler;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.grid.WorldGridRegistry;
@@ -40,7 +39,7 @@ public class DeepResonance implements ModBase {
     public static final String VERSION = "0.2.0";
     public static final String MIN_FORGE_VER = "10.13.2.1291";
     public static final String MIN_MCJTYLIB_VER = "1.3.0";
-    public static final String MIN_ELECCORE_VER = "1.4.130";
+    public static final String MIN_ELECCORE_VER = "1.4.131";
 
     @SidedProxy(clientSide="mcjty.deepresonance.proxy.ClientProxy", serverSide="mcjty.deepresonance.proxy.ServerProxy")
     public static CommonProxy proxy;
@@ -78,11 +77,11 @@ public class DeepResonance implements ModBase {
         networkHandler = new NetworkHandler(MODID);
         compatHandler = new CompatHandler(config, logger);
         compatHandler.addHandler(new ComputerCraftCompatHandler());
-        compatHandler.addHandler(new WailaCompatHandler());
         configWrapper = new ConfigWrapper(new Configuration(new File(modConfigDir, "machines.cfg")));
         configWrapper.registerConfigWithInnerClasses(new ConfigMachines());
         configWrapper.refresh();
         proxy.preInit(e);
+        FMLInterModComms.sendMessage("Waila", "register", "mcjty.wailasupport.WailaCompatibility.load");
         FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
     }
 
