@@ -1,4 +1,4 @@
-package mcjty.deepresonance.render;
+package mcjty.deepresonance.client.render;
 
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.client.renderer.Tessellator;
