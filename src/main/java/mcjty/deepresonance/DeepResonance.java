@@ -10,6 +10,8 @@ import elec332.core.network.NetworkHandler;
 import mcjty.base.ModBase;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.commands.CommandDRGen;
+import mcjty.deepresonance.compat.CompatHandler;
+import mcjty.deepresonance.compat.handlers.ComputerCraftCompatHandler;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.grid.WorldGridRegistry;
@@ -34,7 +36,7 @@ import java.io.File;
         version = DeepResonance.VERSION)
 public class DeepResonance implements ModBase {
     public static final String MODID = "deepresonance";
-    public static final String VERSION = "0.2.2";
+    public static final String VERSION = "0.2.1";
     public static final String MIN_FORGE_VER = "10.13.2.1291";
     public static final String MIN_MCJTYLIB_VER = "1.3.0";
     public static final String MIN_ELECCORE_VER = "1.4.131";
@@ -49,7 +51,7 @@ public class DeepResonance implements ModBase {
     public static File modConfigDir;
     public static WorldGridRegistry worldGridRegistry;
     public static Configuration config;
-//    public static CompatHandler compatHandler;
+    public static CompatHandler compatHandler;
     public static ConfigWrapper configWrapper;
     public static NetworkHandler networkHandler;
 
@@ -73,8 +75,8 @@ public class DeepResonance implements ModBase {
         config = new Configuration(new File(modConfigDir, "main.cfg"));
         worldGridRegistry = new WorldGridRegistry();
         networkHandler = new NetworkHandler(MODID);
-//        compatHandler = new CompatHandler(config, logger);
-//        compatHandler.addHandler(new ComputerCraftCompatHandler());
+        compatHandler = new CompatHandler(config, logger);
+        compatHandler.addHandler(new ComputerCraftCompatHandler());
         configWrapper = new ConfigWrapper(new Configuration(new File(modConfigDir, "machines.cfg")));
         configWrapper.registerConfigWithInnerClasses(new ConfigMachines());
         configWrapper.refresh();
@@ -96,7 +98,7 @@ public class DeepResonance implements ModBase {
     @Mod.EventHandler
     public void init(FMLInitializationEvent e) {
         proxy.init(e);
-//        compatHandler.init();
+        compatHandler.init();
         configWrapper.refresh();
     }
 
