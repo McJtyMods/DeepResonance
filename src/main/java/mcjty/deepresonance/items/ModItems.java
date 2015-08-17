@@ -34,13 +34,13 @@ public final class ModItems {
         radiationMonitorItem.setCreativeTab(DeepResonance.tabDeepResonance);
         GameRegistry.registerItem(radiationMonitorItem, "radiationMonitorItem");
 
-        //new TestItem(); //Auto-registers
+        new TestItem(); //Auto-registers
     }
 
     /**
      * Testing only, will be removed soon *TM*
      */
-    /*private static class TestItem extends BaseItem {
+    private static class TestItem extends BaseItem {
 
         public TestItem() {
             super("GridDebugger", DeepResonance.tabDeepResonance, DeepResonance.MODID);
@@ -69,5 +69,5 @@ public final class ModItems {
             return super.onItemUseFirst(stack, player, world, x, y, z, side, hitX, hitY, hitZ);
         }
 
-    }*/
+    }
 }

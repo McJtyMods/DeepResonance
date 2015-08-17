@@ -37,7 +37,7 @@ public class DeepResonance implements ModBase {
     public static final String VERSION = "0.2.2";
     public static final String MIN_FORGE_VER = "10.13.2.1291";
     public static final String MIN_MCJTYLIB_VER = "1.3.0";
-    public static final String MIN_ELECCORE_VER = "1.4.130";
+    public static final String MIN_ELECCORE_VER = "1.4.131";
 
     @SidedProxy(clientSide="mcjty.deepresonance.proxy.ClientProxy", serverSide="mcjty.deepresonance.proxy.ServerProxy")
     public static CommonProxy proxy;
@@ -71,7 +71,7 @@ public class DeepResonance implements ModBase {
         mainConfigDir = e.getModConfigurationDirectory();
         modConfigDir = new File(mainConfigDir.getPath() + File.separator + "deepresonance");
         config = new Configuration(new File(modConfigDir, "main.cfg"));
-        //worldGridRegistry = new WorldGridRegistry();
+        worldGridRegistry = new WorldGridRegistry();
         networkHandler = new NetworkHandler(MODID);
 //        compatHandler = new CompatHandler(config, logger);
 //        compatHandler.addHandler(new ComputerCraftCompatHandler());
