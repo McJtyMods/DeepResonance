@@ -13,6 +13,7 @@ import mcjty.deepresonance.blocks.gencontroller.GeneratorControllerSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.machine.TileSmelter;
 import mcjty.deepresonance.blocks.ore.ResonatingOreBlock;
+import mcjty.deepresonance.blocks.poisondirt.PoisonedDirtBlock;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -22,6 +23,7 @@ public final class ModBlocks {
 
     public static ResonatingOreBlock resonatingOreBlock;
     public static ResonatingCrystalBlock resonatingCrystalBlock;
+    public static PoisonedDirtBlock poisonedDirtBlock;
     public static Block duct, smelter, tank;
     public static MachineFrame machineFrame;
 
@@ -29,6 +31,9 @@ public final class ModBlocks {
         resonatingOreBlock = new ResonatingOreBlock();
         GameRegistry.registerBlock(resonatingOreBlock, "oreResonating");
         OreDictionary.registerOre("oreResonating", resonatingOreBlock);
+
+        poisonedDirtBlock = new PoisonedDirtBlock();
+        GameRegistry.registerBlock(poisonedDirtBlock, "poisonedDirt");
 
         resonatingCrystalBlock = new ResonatingCrystalBlock();
         GameRegistry.registerBlock(resonatingCrystalBlock, GenericItemBlock.class, "resonatingCrystalBlock");

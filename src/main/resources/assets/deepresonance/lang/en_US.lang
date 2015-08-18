@@ -2,6 +2,7 @@ item.DeepResonanceManual.name=Deep Resonance Manual
 item.RadiationMonitor.name=Radiation Monitor
 
 tile.oreResonating.name=Resonating Ore
+tile.poisonedDirt.name=Poisoned Dirt
 tile.resonatingCrystalBlock.name=Resonating Crystal
 tile.generatorBlock.name=Generator
 tile.generatorControllerBlock.name=Generator Controller
