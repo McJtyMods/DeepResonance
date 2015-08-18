@@ -108,7 +108,6 @@ public class DRGeneratorNetwork extends WorldSavedData {
         private int startupCounter = 0;
         private int shutdownCounter = 0;
         private int lastRfPerTick = 0;
-        private boolean hasCollector = false;
 
         public int getRefcount() {
             return refcount;
@@ -166,25 +165,12 @@ public class DRGeneratorNetwork extends WorldSavedData {
             this.shutdownCounter = shutdownCounter;
         }
 
-        public boolean hasCollector() {
-            return hasCollector;
-        }
-
-        public void setHasCollector(boolean hasCollector) {
-            this.hasCollector = hasCollector;
-        }
-
-        public boolean canActivate(){
-            return hasCollector();
-        }
-
         public void writeToNBT(NBTTagCompound tagCompound){
             tagCompound.setInteger("refcount", refcount);
             tagCompound.setInteger("energy", energy);
             tagCompound.setBoolean("active", active);
             tagCompound.setInteger("startup", startupCounter);
             tagCompound.setInteger("shutdown", shutdownCounter);
-            tagCompound.setBoolean("collector", hasCollector);
         }
 
         public void readFromNBT(NBTTagCompound tagCompound){
@@ -193,7 +179,6 @@ public class DRGeneratorNetwork extends WorldSavedData {
             this.active = tagCompound.getBoolean("active");
             this.startupCounter = tagCompound.getInteger("startup");
             this.shutdownCounter = tagCompound.getInteger("shutdown");
-            this.hasCollector = tagCompound.getBoolean("collector");
         }
     }
 }

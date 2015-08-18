@@ -164,7 +164,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
     private boolean handleActivate(int id, Coordinate coordinate) {
         DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
         DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(id);
-        if (network.isActive() && network.getShutdownCounter() == 0 || !network.canActivate()) {
+        if (network.isActive() && network.getShutdownCounter() == 0) {
             return false; // Nothing to do.
         }
         startup = network.getStartupCounter();
