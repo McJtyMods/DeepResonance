@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  * Created by Elec332 on 9-8-2015.
  */
-public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IDeepResonanceFluidProvider, IFluidTank, WailaCompatHandler.IWailaInfoTile {
+public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IDeepResonanceFluidProvider, WailaCompatHandler.IWailaInfoTile {
 
     public TileTank(){
         super();
@@ -147,7 +147,7 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
     public boolean onBlockActivated(EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
         ForgeDirection direction = ForgeDirection.getOrientation(side);
         int i = settings.get(direction);
-        if (i < 3)
+        if (i < 2)
             i++;
         else
             i = 0;
@@ -168,30 +168,36 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
 
     @Override
     public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+        if (!isInput(from))
+            return 0;
         notifyChanges(doFill);
         return multiBlock == null ? 0 : multiBlock.fill(from, resource, doFill);
     }
 
     @Override
     public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+        if (!isOutput(from))
+            return null;
         notifyChanges(doDrain);
         return multiBlock == null ? null : multiBlock.drain(from, resource, doDrain);
     }
 
     @Override
     public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+        if (!isOutput(from))
+            return null;
         notifyChanges(doDrain);
         return multiBlock == null ? null : multiBlock.drain(from, maxDrain, doDrain);
     }
 
     @Override
     public boolean canFill(ForgeDirection from, Fluid fluid) {
-        return multiBlock != null && multiBlock.canFill(from, fluid);
+        return isInput(from) && multiBlock != null && multiBlock.canFill(from, fluid);
     }
 
     @Override
     public boolean canDrain(ForgeDirection from, Fluid fluid) {
-        return multiBlock != null && multiBlock.canDrain(from, fluid);
+        return isOutput(from) && multiBlock != null && multiBlock.canDrain(from, fluid);
     }
 
     @Override
@@ -201,63 +207,37 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
 
     @Override
     public boolean canAcceptFrom(ForgeDirection direction) {
-        return settings.get(direction) == 1;
+        return isInput(direction);
     }
 
     @Override
     public boolean canProvideTo(ForgeDirection direction) {
-        return settings.get(direction) == 2;
+        return isOutput(direction);
     }
 
     @Override
     public FluidStack getProvidedFluid(int maxProvided, ForgeDirection from) {
-        if (settings.get(from) != 2)
+        if (!isOutput(from))
             return null;
         return getMultiBlock() == null ? null : getMultiBlock().drain(maxProvided, true);
     }
 
     @Override
     public int getRequestedAmount(ForgeDirection from) {
+        if (!isInput(from))
+            return 0;
         return multiBlock == null ? 0 : Math.min(multiBlock.getFreeSpace(), 1000);
     }
 
     @Override
     public FluidStack acceptFluid(FluidStack fluidStack, ForgeDirection from) {
-        fill(from, fluidStack, true);
-        notifyChanges(true);
-        return null;
-    }
-
-    @Override
-    public FluidStack getFluid() {
-        return multiBlock == null ? null : multiBlock.getFluid();
-    }
-
-    @Override
-    public int getFluidAmount() {
-        return multiBlock == null ? 0 : multiBlock.getFluidAmount();
-    }
-
-    @Override
-    public int getCapacity() {
-        return multiBlock == null ? 0 : multiBlock.getCapacity();
-    }
-
-    @Override
-    public FluidTankInfo getInfo() {
-        return multiBlock == null ? null : multiBlock.getInfo();
-    }
-
-    @Override
-    public int fill(FluidStack resource, boolean doFill) {
-        notifyChanges(doFill);
-        return multiBlock == null ? 0 : multiBlock.fill(resource, doFill);
-    }
-
-    @Override
-    public FluidStack drain(int maxDrain, boolean doDrain) {
-        notifyChanges(doDrain);
-        return multiBlock == null ? null : multiBlock.drain(maxDrain, doDrain);
+        if (!isInput(from)) {
+            fill(from, fluidStack, true);
+            notifyChanges(true);
+            return null;
+        } else {
+            return fluidStack;
+        }
     }
 
     private void notifyChanges(boolean b){
@@ -276,6 +256,14 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
                 ret.put((ITankHook) tile, direction.getOpposite());
         }
         return ret;
+    }
+
+    private boolean isInput(ForgeDirection direction){
+        return direction == ForgeDirection.UNKNOWN || settings.get(direction) == 1;
+    }
+
+    private boolean isOutput(ForgeDirection direction){
+        return direction == ForgeDirection.UNKNOWN || settings.get(direction) == 2;
     }
 
     @Override

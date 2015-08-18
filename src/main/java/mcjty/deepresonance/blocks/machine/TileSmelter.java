@@ -101,7 +101,7 @@ public class TileSmelter extends TileEnergyReceiver implements ITankHook, WailaC
 
     private void smelt(){
         inventory.decrStackSize(0, 1);
-        lavaTank.drain(ForgeDirection.UP, new FluidStack(FluidRegistry.LAVA, ConfigMachines.Smelter.lavaCost), true);
+        lavaTank.drain(ForgeDirection.UNKNOWN, new FluidStack(FluidRegistry.LAVA, ConfigMachines.Smelter.lavaCost), true);
         rclTank.fill(ForgeDirection.UNKNOWN, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), true);
     }
 
