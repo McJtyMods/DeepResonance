@@ -50,7 +50,7 @@ public class DRGridTypeHelper extends AbstractWiringTypeHelper {
 
     @Override
     public boolean canSourceProvideTo(TileEntity tile, ForgeDirection direction) {
-        return ((IDeepResonanceFluidProvider)tile).canAcceptFrom(direction);
+        return ((IDeepResonanceFluidProvider)tile).canProvideTo(direction);
     }
 
     @Override
