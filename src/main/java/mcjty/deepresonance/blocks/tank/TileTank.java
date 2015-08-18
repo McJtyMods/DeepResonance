@@ -240,6 +240,18 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
         }
     }
 
+    public FluidStack getFluid() {
+        return multiBlock == null ? null : multiBlock.getFluid();
+    }
+
+    public int getFluidAmount() {
+        return multiBlock == null ? 0 : multiBlock.getFluidAmount();
+    }
+
+    public int getCapacity() {
+        return multiBlock == null ? 0 : multiBlock.getCapacity();
+    }
+
     private void notifyChanges(boolean b){
         if (multiBlock != null && b){
             for (Map.Entry<ITankHook, ForgeDirection> entry : getConnectedHooks().entrySet()){
