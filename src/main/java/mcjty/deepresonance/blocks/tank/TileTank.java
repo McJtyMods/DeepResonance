@@ -10,15 +10,18 @@ import elec332.core.util.NBTHelper;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
+import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.grid.fluid.event.FluidTileEvent;
 import mcjty.deepresonance.grid.tank.DRTankMultiBlock;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -30,10 +33,14 @@ import java.util.Map;
 /**
  * Created by Elec332 on 9-8-2015.
  */
-public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IFluidTank, WailaCompatHandler.IWailaInfoTile {
+public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IDeepResonanceFluidProvider, IFluidTank, WailaCompatHandler.IWailaInfoTile {
 
     public TileTank(){
         super();
+        this.settings = Maps.newHashMap();
+        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS){
+            settings.put(direction, 0);
+        }
     }
 
     @SideOnly(Side.CLIENT)
@@ -43,6 +50,7 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
     @SideOnly(Side.CLIENT)
     public float renderHeight; //Value from 0.0f to 1.0f
     private long lastTime;
+    private Map<ForgeDirection, Integer> settings;
 
     @Override
     public void onTileLoaded() {
@@ -71,6 +79,31 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
     private DRTankMultiBlock multiBlock;
     public FluidStack myTank;
     public Fluid lastSeenFluid;
+
+    @Override
+    public void readFromNBT(NBTTagCompound tagCompound) {
+        super.readFromNBT(tagCompound);
+        NBTTagList tagList = tagCompound.getTagList("settings", 10);
+        if (tagList != null){
+            for (int i = 0; i < tagList.tagCount(); i++) {
+                NBTTagCompound tag = tagList.getCompoundTagAt(i);
+                settings.put(ForgeDirection.valueOf(tag.getString("dir")), tag.getInteger("n"));
+            }
+        }
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound tagCompound) {
+        super.writeToNBT(tagCompound);
+        NBTTagList tagList = new NBTTagList();
+        for (Map.Entry<ForgeDirection, Integer> entry : settings.entrySet()){
+            NBTTagCompound tag = new NBTTagCompound();
+            tag.setString("dir", entry.getKey().toString());
+            tag.setInteger("n", entry.getValue());
+            tagList.appendTag(tag);
+        }
+        tagCompound.setTag("settings", tagList);
+    }
 
     @Override
     public void readItemStackNBT(NBTTagCompound tagCompound) {
@@ -108,6 +141,19 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
         for (Map.Entry<ITankHook, ForgeDirection> entry : getConnectedHooks().entrySet()){
             entry.getKey().hook(this, entry.getValue());
         }
+    }
+
+    @Override
+    public boolean onBlockActivated(EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+        ForgeDirection direction = ForgeDirection.getOrientation(side);
+        int i = settings.get(direction);
+        if (i < 3)
+            i++;
+        else
+            i = 0;
+        settings.put(direction, i);
+        markDirty();
+        return true;
     }
 
     @Override
@@ -155,7 +201,19 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
 
     @Override
     public boolean canAcceptFrom(ForgeDirection direction) {
-        return true;
+        return settings.get(direction) == 1;
+    }
+
+    @Override
+    public boolean canProvideTo(ForgeDirection direction) {
+        return settings.get(direction) == 2;
+    }
+
+    @Override
+    public FluidStack getProvidedFluid(int maxProvided, ForgeDirection from) {
+        if (settings.get(from) != 2)
+            return null;
+        return getMultiBlock() == null ? null : getMultiBlock().drain(maxProvided, true);
     }
 
     @Override
@@ -222,6 +280,8 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
 
     @Override
     public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        int i = settings.get(accessor.getSide());
+        currentTip.add("Mode: "+(i == 0 ? "none" : (i == 1 ? "accept" : "provide")));
         currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(clientRenderFluid));
         currentTip.add("Amount: "+totalFluidAmount);
         if (System.currentTimeMillis() - lastTime > 100){
