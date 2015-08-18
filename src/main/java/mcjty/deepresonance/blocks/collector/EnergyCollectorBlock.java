@@ -4,12 +4,15 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.container.GenericBlock;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
 import mcjty.deepresonance.client.ClientHandler;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
@@ -26,6 +29,16 @@ public class EnergyCollectorBlock extends GenericBlock {
     @Override
     public int getGuiID() {
         return -1;
+    }
+
+    @Override
+    public boolean canPlaceBlockAt(World world, int x, int y, int z) {
+        TileEntity tile = world.getTileEntity(x, y, z);
+        if (tile instanceof GeneratorTileEntity){
+            if (((GeneratorTileEntity) tile).getNetwork().hasCollector())
+                return false;
+        }
+        return super.canPlaceBlockAt(world, x, y, z);
     }
 
     @Override

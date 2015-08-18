@@ -2,6 +2,7 @@ package mcjty.deepresonance.blocks.collector;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import elec332.core.main.ElecCore;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
@@ -39,6 +40,44 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
     }
 
     @Override
+    public void invalidate() {
+        super.invalidate();
+        if (!worldObj.isRemote) {
+            TileEntity te = worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
+            if (te instanceof GeneratorTileEntity) {
+                DRGeneratorNetwork.Network network = ((GeneratorTileEntity) te).getNetwork();
+                if (network != null) {
+                    network.setActive(false);
+                    network.setHasCollector(false);
+                    shutDownCrystals();
+                }
+            }
+        }
+    }
+
+    private void shutDownCrystals(){
+        boolean doNoStuff = false;
+        TileEntity gen = worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
+        if (gen instanceof GeneratorTileEntity) {
+            DRGeneratorNetwork.Network network = ((GeneratorTileEntity) gen).getNetwork();
+            if (network != null) {
+                doNoStuff = !network.isActive();
+            }
+        }
+        if (!doNoStuff){
+            for (Coordinate coordinate : crystals) {
+                TileEntity te = worldObj.getTileEntity(coordinate.getX() + xCoord, coordinate.getY() + yCoord, coordinate.getZ() + zCoord);
+                if (te instanceof ResonatingCrystalTileEntity) {
+                    ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
+                    if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
+                        resonatingCrystalTileEntity.setGlowing(false);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
     protected void checkStateServer() {
         boolean active = false;
         DRGeneratorNetwork.Network network = null;
@@ -48,6 +87,9 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
             if (te instanceof GeneratorTileEntity) {
                 network = ((GeneratorTileEntity) te).getNetwork();
                 if (network != null) {
+                    if (!network.hasCollector()){
+                        network.setHasCollector(true);
+                    }
                     if (network.isActive()) {
                         int rfPerTick = calculateRF();
                         network.setLastRfPerTick(rfPerTick);
