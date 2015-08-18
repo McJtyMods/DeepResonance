@@ -12,7 +12,7 @@ public interface IDeepResonanceFluidProvider {
      * @param direction The direction
      * @return Weather the tile can connect to the given side
      */
-    public boolean canAcceptFrom(ForgeDirection direction);
+    public boolean canProvideTo(ForgeDirection direction);
 
     /**
      * Use this method to provide RS to the grid, make sure the FluidStack you return
