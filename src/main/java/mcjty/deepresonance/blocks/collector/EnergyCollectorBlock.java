@@ -4,12 +4,19 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.container.GenericBlock;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.blocks.generator.GeneratorSetup;
+import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
 import mcjty.deepresonance.client.ClientHandler;
+import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
@@ -40,6 +47,24 @@ public class EnergyCollectorBlock extends GenericBlock {
             list.add(EnumChatFormatting.WHITE + "crystals nearby.");
         } else {
             list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
+        }
+    }
+
+    @Override
+    public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
+        super.breakBlock(world, x, y, z, block, meta);
+        if (!world.isRemote) {
+            if (world.getBlock(x, y - 1, z) == GeneratorSetup.generatorBlock) {
+                TileEntity te = world.getTileEntity(x, y - 1, z);
+                if (te instanceof GeneratorTileEntity) {
+                    DRGeneratorNetwork.Network network = ((GeneratorTileEntity) te).getNetwork();
+                    if (network != null) {
+                        network.setActive(false);
+                        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(world);
+                        generatorNetwork.save(world);
+                    }
+                }
+            }
         }
     }
 

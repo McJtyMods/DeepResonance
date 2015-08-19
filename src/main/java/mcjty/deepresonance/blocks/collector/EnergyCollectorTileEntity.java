@@ -9,11 +9,11 @@ import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.radiation.DRRadiationManager;
+import mcjty.deepresonance.varia.Broadcaster;
 import mcjty.entity.GenericTileEntity;
 import mcjty.varia.Coordinate;
 import mcjty.varia.GlobalCoordinate;
 import mcjty.varia.Logging;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -205,17 +205,11 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
 
         if (lasersActive && (tooManyCrystals || tooMuchPower)) {
             // @todo This should be put in the Logging class as a broadcast message
-            for (Object p : worldObj.playerEntities) {
-                EntityPlayer player = (EntityPlayer)p;
-                double sqdist = player.getDistanceSq(xCoord+.5, yCoord+.5, zCoord+.5);
-                if (sqdist < 100) {
-                    if (tooManyCrystals) {
-                        Logging.warn(player, "There are too many crystals for this size generator!");
-                    }
-                    if (tooMuchPower) {
-                        Logging.warn(player, "Some crystals are too powerful for this size generator!!");
-                    }
-                }
+            if (tooManyCrystals) {
+                Broadcaster.broadcast(worldObj, xCoord, yCoord, zCoord, "There are too many crystals for this size generator!", 100);
+            }
+            if (tooMuchPower) {
+                Broadcaster.broadcast(worldObj, xCoord, yCoord, zCoord, "Some crystals are too powerful for this size generator!!", 100);
             }
         }
 
