@@ -2,7 +2,6 @@ package mcjty.deepresonance.blocks.gencontroller;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
@@ -15,7 +14,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.HashSet;
@@ -126,35 +124,6 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
         }
     }
 
-    public static int countCollectors(World world, int x, int y, int z) {
-        Set<Coordinate> done = new HashSet<Coordinate>();
-        return countCollectors(world, new Coordinate(x, y, z), done);
-    }
-
-    private static int countCollectors(World world, Coordinate thisCoord,  Set<Coordinate> done) {
-        if (done.contains(thisCoord)) {
-            return 0;
-        }
-
-        done.add(thisCoord);
-        int cnt = 0;
-        if (world.getBlock(thisCoord.getX(), thisCoord.getY()+1, thisCoord.getZ()) == EnergyCollectorSetup.energyCollectorBlock) {
-            cnt++;
-        }
-
-        for (ForgeDirection direction : ForgeDirection.values()) {
-            if (!direction.equals(ForgeDirection.UNKNOWN)) {
-                Coordinate newC = thisCoord.addDirection(direction);
-                Block b = world.getBlock(newC.getX(), newC.getY(), newC.getZ());
-                if (b == GeneratorSetup.generatorBlock) {
-                    cnt += countCollectors(world, newC, done);
-                }
-            }
-        }
-        return cnt;
-    }
-
-
     @Override
     protected void checkStateServer() {
         int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
@@ -164,37 +133,34 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
         boolean dirty = false;
         Set<Integer> networks = new HashSet<Integer>();
         Coordinate thisCoord = new Coordinate(xCoord, yCoord, zCoord);
-        for (ForgeDirection direction : ForgeDirection.values()) {
-            if (!direction.equals(ForgeDirection.UNKNOWN)) {
-                Coordinate newC = thisCoord.addDirection(direction);
-                Block b = worldObj.getBlock(newC.getX(), newC.getY(), newC.getZ());
-                if (b == GeneratorSetup.generatorBlock) {
-                    GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) worldObj.getTileEntity(newC.getX(), newC.getY(), newC.getZ());
-                    int networkId = generatorTileEntity.getNetworkId();
-                    if (networkId != -1 && !networks.contains(networkId)) {
-                        networks.add(networkId);
-                        if (active) {
-                            // Only activate with sufficient energy collectors.
-                            // @todo NOT EFFICIENT
-                            int countCollectors = countCollectors(worldObj, newC.getX(), newC.getY(), newC.getZ());
-                            if (countCollectors == 1) {
-                                if (handleActivate(networkId, newC)) {
-                                    dirty = true;
-                                }
-                            } else {
-                                if (countCollectors < 1) {
-                                    Broadcaster.broadcast(worldObj, xCoord, yCoord, zCoord, "There is no energy collector on this generator!", 100);
-                                } else {
-                                    Broadcaster.broadcast(worldObj, xCoord, yCoord, zCoord, "There are too many energy collectors on this generator!!", 100);
-                                }
-                                if (handleDeactivate(networkId, newC)) {
-                                    dirty = true;
-                                }
+        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
+            Coordinate newC = thisCoord.addDirection(direction);
+            Block b = worldObj.getBlock(newC.getX(), newC.getY(), newC.getZ());
+            if (b == GeneratorSetup.generatorBlock) {
+                GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) worldObj.getTileEntity(newC.getX(), newC.getY(), newC.getZ());
+                int networkId = generatorTileEntity.getNetworkId();
+                if (networkId != -1 && !networks.contains(networkId)) {
+                    networks.add(networkId);
+                    if (active) {
+                        // Only activate with sufficient energy collectors.
+                        int countCollectors = generatorTileEntity.getNetwork().getCollectorBlocks();
+                        if (countCollectors == 1) {
+                            if (handleActivate(networkId, newC)) {
+                                dirty = true;
                             }
                         } else {
+                            if (countCollectors < 1) {
+                                Broadcaster.broadcast(worldObj, xCoord, yCoord, zCoord, "There is no energy collector on this generator!", 100);
+                            } else {
+                                Broadcaster.broadcast(worldObj, xCoord, yCoord, zCoord, "There are too many energy collectors on this generator!!", 100);
+                            }
                             if (handleDeactivate(networkId, newC)) {
                                 dirty = true;
                             }
+                        }
+                    } else {
+                        if (handleDeactivate(networkId, newC)) {
+                            dirty = true;
                         }
                     }
                 }

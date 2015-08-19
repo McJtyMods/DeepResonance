@@ -102,27 +102,44 @@ public class DRGeneratorNetwork extends WorldSavedData {
     }
 
     public static class Network {
-        private int refcount = 0;
+        private int generatorBlocks = 0;
+        private int collectorBlocks = 0;
         private int energy = 0;
         private boolean active = false;
         private int startupCounter = 0;
         private int shutdownCounter = 0;
         private int lastRfPerTick = 0;
 
-        public int getRefcount() {
-            return refcount;
+        public int getGeneratorBlocks() {
+            return generatorBlocks;
         }
 
-        public void setRefcount(int refcount) {
-            this.refcount = refcount;
+        public void setGeneratorBlocks(int generatorBlocks) {
+            this.generatorBlocks = generatorBlocks;
         }
 
-        public void incRefCount() {
-            this.refcount++;
+        public void incGeneratorBlocks() {
+            this.generatorBlocks++;
         }
 
-        public void decRefCount() {
-            this.refcount--;
+        public void decGeneratorBlocks() {
+            this.generatorBlocks--;
+        }
+
+        public int getCollectorBlocks() {
+            return collectorBlocks;
+        }
+
+        public void setCollectorBlocks(int collectorBlocks) {
+            this.collectorBlocks = collectorBlocks;
+        }
+
+        public void incCollectorBlocks() {
+            collectorBlocks++;
+        }
+
+        public void decCollectorBlocks() {
+            collectorBlocks--;
         }
 
         public int getEnergy() {
@@ -166,7 +183,8 @@ public class DRGeneratorNetwork extends WorldSavedData {
         }
 
         public void writeToNBT(NBTTagCompound tagCompound){
-            tagCompound.setInteger("refcount", refcount);
+            tagCompound.setInteger("refcount", generatorBlocks);
+            tagCompound.setInteger("collectors", collectorBlocks);
             tagCompound.setInteger("energy", energy);
             tagCompound.setBoolean("active", active);
             tagCompound.setInteger("startup", startupCounter);
@@ -174,7 +192,8 @@ public class DRGeneratorNetwork extends WorldSavedData {
         }
 
         public void readFromNBT(NBTTagCompound tagCompound){
-            this.refcount = tagCompound.getInteger("refcount");
+            this.generatorBlocks = tagCompound.getInteger("refcount");
+            this.collectorBlocks = tagCompound.getInteger("collectors");
             this.energy = tagCompound.getInteger("energy");
             this.active = tagCompound.getBoolean("active");
             this.startupCounter = tagCompound.getInteger("startup");

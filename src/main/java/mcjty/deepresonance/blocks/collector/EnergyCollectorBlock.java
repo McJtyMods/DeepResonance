@@ -51,15 +51,40 @@ public class EnergyCollectorBlock extends GenericBlock {
     }
 
     @Override
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLivingBase, ItemStack itemStack) {
+        super.onBlockPlacedBy(world, x, y, z, entityLivingBase, itemStack);
+        if (!world.isRemote) {
+            TileEntity te = world.getTileEntity(x, y-1, z);
+            if (te instanceof GeneratorTileEntity) {
+                GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) te;
+                DRGeneratorNetwork.Network network = generatorTileEntity.getNetwork();
+                if (network != null) {
+                    network.incCollectorBlocks();
+                    DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(world);
+                    generatorNetwork.save(world);
+                    EnergyCollectorTileEntity energyCollectorTileEntity = (EnergyCollectorTileEntity) world.getTileEntity(x, y, z);
+                    energyCollectorTileEntity.setNetworkID(generatorTileEntity.getNetworkId());
+                }
+            }
+        }
+    }
+
+    @Override
     public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te instanceof EnergyCollectorTileEntity) {
+            EnergyCollectorTileEntity energyCollectorTileEntity = (EnergyCollectorTileEntity) te;
+            energyCollectorTileEntity.disableCrystalGlow();
+        }
+
         super.breakBlock(world, x, y, z, block, meta);
         if (!world.isRemote) {
             if (world.getBlock(x, y - 1, z) == GeneratorSetup.generatorBlock) {
-                TileEntity te = world.getTileEntity(x, y - 1, z);
+                te = world.getTileEntity(x, y-1, z);
                 if (te instanceof GeneratorTileEntity) {
                     DRGeneratorNetwork.Network network = ((GeneratorTileEntity) te).getNetwork();
                     if (network != null) {
-                        network.setActive(false);
+                        network.decCollectorBlocks();
                         DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(world);
                         generatorNetwork.save(world);
                     }

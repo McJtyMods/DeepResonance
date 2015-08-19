@@ -33,6 +33,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
     private boolean lasersActive = false;
     private int laserStartup = 0;        // A mirror (for the client) of the network startup counter.
     private int radiationUpdateCount = MAXTICKS;
+    private int networkID = -1;
 
     public EnergyCollectorTileEntity() {
         super();
@@ -41,33 +42,50 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
     @Override
     protected void checkStateServer() {
         boolean active = false;
-        DRGeneratorNetwork.Network network = null;
         int startup = 0;
-        if (worldObj.getBlock(xCoord, yCoord-1, zCoord) == GeneratorSetup.generatorBlock) {
-            TileEntity te = worldObj.getTileEntity(xCoord, yCoord-1, zCoord);
-            if (te instanceof GeneratorTileEntity) {
-                network = ((GeneratorTileEntity) te).getNetwork();
-                if (network != null) {
-                    if (network.isActive()) {
-                        int rfPerTick = calculateRF();
-                        network.setLastRfPerTick(rfPerTick);
-                        int newEnergy = network.getEnergy() + rfPerTick;
-                        int maxEnergy = network.getRefcount() * GeneratorConfiguration.rfPerGeneratorBlock;
-                        if (newEnergy > maxEnergy) {
-                            newEnergy = maxEnergy;
-                        }
-                        if (network.getEnergy() != newEnergy) {
-                            network.setEnergy(newEnergy);
-                            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
-                            generatorNetwork.save(worldObj);
-                        }
+        DRGeneratorNetwork.Network network = null;
 
-                        active = true;
-                    } else {
-                        network.setLastRfPerTick(0);
-                    }
-                    startup = network.getStartupCounter();
+        TileEntity te = worldObj.getTileEntity(xCoord, yCoord-1, zCoord);
+        if (te instanceof GeneratorTileEntity) {
+            GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) te;
+            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
+
+            if (networkID != generatorTileEntity.getNetworkId()) {
+                if (networkID != -1) {
+                    generatorNetwork.getOrCreateNetwork(networkID).decCollectorBlocks();
                 }
+
+                networkID = generatorTileEntity.getNetworkId();
+                generatorTileEntity.getNetwork().incCollectorBlocks();
+                generatorNetwork.save(worldObj);
+            }
+
+
+            network = generatorTileEntity.getNetwork();
+            if (network != null) {
+                if (network.isActive()) {
+                    int rfPerTick = calculateRF();
+                    network.setLastRfPerTick(rfPerTick);
+                    int newEnergy = network.getEnergy() + rfPerTick;
+                    int maxEnergy = network.getGeneratorBlocks() * GeneratorConfiguration.rfPerGeneratorBlock;
+                    if (newEnergy > maxEnergy) {
+                        newEnergy = maxEnergy;
+                    }
+                    if (network.getEnergy() != newEnergy) {
+                        network.setEnergy(newEnergy);
+                        generatorNetwork.save(worldObj);
+                    }
+
+                    active = true;
+                } else {
+                    network.setLastRfPerTick(0);
+                }
+                startup = network.getStartupCounter();
+            }
+        } else {
+            if (networkID != -1) {
+                networkID = -1;
+                markDirty();
             }
         }
 
@@ -81,6 +99,16 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
 
             if (doFind) {
                 findCrystals(network);
+            }
+        }
+    }
+
+    public void disableCrystalGlow() {
+        for (Coordinate coordinate : crystals) {
+            TileEntity te = worldObj.getTileEntity(coordinate.getX() + xCoord, coordinate.getY() + yCoord, coordinate.getZ() + zCoord);
+            if (te instanceof ResonatingCrystalTileEntity) {
+                ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
+                resonatingCrystalTileEntity.setGlowing(false);
             }
         }
     }
@@ -162,8 +190,8 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
     private void findCrystals(DRGeneratorNetwork.Network network) {
         Set<Coordinate> newCrystals = new HashSet<Coordinate>();
 
-        int maxSupportedRF = network.getRefcount() * GeneratorConfiguration.maxRFInputPerBlock;
-        int maxSupportedCrystals = network.getRefcount() * GeneratorConfiguration.maxCrystalsPerBlock;
+        int maxSupportedRF = network.getGeneratorBlocks() * GeneratorConfiguration.maxRFInputPerBlock;
+        int maxSupportedCrystals = network.getGeneratorBlocks() * GeneratorConfiguration.maxCrystalsPerBlock;
 
         boolean tooManyCrystals = false;
         boolean tooMuchPower = false;
@@ -227,6 +255,15 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         return laserStartup;
     }
 
+    public int getNetworkID() {
+        return networkID;
+    }
+
+    public void setNetworkID(int networkID) {
+        this.networkID = networkID;
+        markDirty();
+    }
+
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
@@ -239,6 +276,11 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         }
         lasersActive = tagCompound.getBoolean("lasersActive");
         laserStartup = tagCompound.getInteger("laserStartup");
+        if (tagCompound.hasKey("networkId")) {
+            networkID = tagCompound.getInteger("networkId");
+        } else {
+            networkID = -1;
+        }
     }
 
     @Override
@@ -260,6 +302,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         tagCompound.setByteArray("crystalsZ", crystalZ);
         tagCompound.setBoolean("lasersActive", lasersActive);
         tagCompound.setInteger("laserStartup", laserStartup);
+        tagCompound.setInteger("networkId", networkID);
     }
 
     @Override

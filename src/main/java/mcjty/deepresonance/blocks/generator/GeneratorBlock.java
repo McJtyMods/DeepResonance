@@ -147,7 +147,7 @@ public class GeneratorBlock extends GenericBlock {
             if (te instanceof GeneratorTileEntity) {
                 DRGeneratorNetwork.Network network = ((GeneratorTileEntity) te).getNetwork();
                 if (network != null) {
-                    int energy = network.getEnergy() / network.getRefcount();
+                    int energy = network.getEnergy() / network.getGeneratorBlocks();
                     if (!drops.isEmpty()) {
                         NBTTagCompound tagCompound = drops.get(0).getTagCompound();
                         if (tagCompound == null) {
@@ -169,7 +169,7 @@ public class GeneratorBlock extends GenericBlock {
             if (te instanceof GeneratorTileEntity) {
                 DRGeneratorNetwork.Network network = ((GeneratorTileEntity) te).getNetwork();
                 if (network != null) {
-                    int energy = network.getEnergy() / network.getRefcount();
+                    int energy = network.getEnergy() / network.getGeneratorBlocks();
                     network.setEnergy(network.getEnergy() - energy);
                 }
 
