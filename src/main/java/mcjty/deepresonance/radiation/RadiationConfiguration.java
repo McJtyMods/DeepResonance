@@ -20,6 +20,9 @@ public class RadiationConfiguration {
     public static float radiationStrenghLevel3 = 500000.0f;
     public static float radiationStrenghLevel4 = 1000000.0f;
 
+    public static float radiationDestructionEventLevel = 200000.0f;
+    public static float destructionEventChance = 0.02f;
+
     public static float maxRadiationMeter = 200000.0f;
 
     public static float radiationExplosionFactor = 1.3f;
@@ -54,6 +57,11 @@ public class RadiationConfiguration {
                 "Radiation strength level 3").getDouble();
         radiationStrenghLevel4 = (float) cfg.get(CATEGORY_RADIATION, "radiationStrenghLevel4", radiationStrenghLevel4,
                 "Radiation strength level 4").getDouble();
+
+        radiationDestructionEventLevel = (float) cfg.get(CATEGORY_RADIATION, "radiationDestructionEventLevel", radiationDestructionEventLevel,
+                "The radiation strength at which point destruction events can happen").getDouble();
+        destructionEventChance = (float) cfg.get(CATEGORY_RADIATION, "destructionEventChance", destructionEventChance,
+                "Every 10 ticks (half a second) this chance is evaluated to see if there should be a destruction event. 1.0 means it will always occur").getDouble();
 
         maxRadiationMeter = (float) cfg.get(CATEGORY_RADIATION, "maxRadiationMeter", maxRadiationMeter,
                 "The maximum that a radiation meter can measure").getDouble();

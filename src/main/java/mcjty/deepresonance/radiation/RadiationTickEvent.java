@@ -2,24 +2,27 @@ package mcjty.deepresonance.radiation;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.varia.GlobalCoordinate;
 import mcjty.varia.Logging;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockLeaves;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Blocks;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class RadiationTickEvent {
     public static final int MAXTICKS = 10;
     private int counter = MAXTICKS;
+    private static Random random = new Random();
 
     private static final int EFFECTS_MAX = 18;
     private int counterEffects = EFFECTS_MAX;
@@ -70,6 +73,9 @@ public class RadiationTickEvent {
                             handleRadiationEffects(world, coordinate, radiationSource);
                         }
 
+                        if (strength > RadiationConfiguration.radiationDestructionEventLevel && random.nextFloat() < RadiationConfiguration.destructionEventChance) {
+                            handleDestructionEvent(world, coordinate, radiationSource);
+                        }
                     }
                 }
             }
@@ -85,19 +91,103 @@ public class RadiationTickEvent {
         }
     }
 
+    private void handleDestructionEvent(World world, GlobalCoordinate coordinate, DRRadiationManager.RadiationSource radiationSource) {
+        double centerx = coordinate.getCoordinate().getX();
+        double centery = coordinate.getCoordinate().getY();
+        double centerz = coordinate.getCoordinate().getZ();
+        double radius = radiationSource.getRadius();
+
+        double theta = random.nextDouble() * Math.PI * 2.0;
+        double phi = random.nextDouble() * Math.PI - Math.PI / 2.0;
+        double dist = random.nextDouble() * radius;
+
+        double cosphi = Math.cos(phi);
+        double destx = centerx + dist * Math.cos(theta) * cosphi;
+        double destz = centerz + dist * Math.sin(theta) * cosphi;
+        double desty;
+        if (random.nextFloat() > 0.5f) {
+            desty = world.getTopSolidOrLiquidBlock((int) destx, (int) destz);
+        } else {
+            desty = centery + dist * Math.sin(phi);
+        }
+        Logging.log("Destruction event at: " + destx + "," + desty + "," + destz);
+
+        float baseStrength = radiationSource.getStrength();
+        double distanceSq = (centerx-destx) * (centerx-destx) + (centery-desty) * (centery-desty) + (centerz-destz) * (centerz-destz);
+        double distance = Math.sqrt(distanceSq);
+        float strength = (float) (baseStrength * (radius-distance) / radius);
+
+        int eventradius = 8;
+        int damage;
+        float poisonBlockChance;
+        float setOnFireChance;
+
+        if (strength > RadiationConfiguration.radiationDestructionEventLevel/2) {
+            // Worst destruction event
+            damage = 30;
+            poisonBlockChance = 0.9f;
+            setOnFireChance = 0.03f;
+        } else if (strength > RadiationConfiguration.radiationDestructionEventLevel/3) {
+            // Moderate
+            damage = 5;
+            poisonBlockChance = 0.6f;
+            setOnFireChance = 0.001f;
+        } else if (strength > RadiationConfiguration.radiationDestructionEventLevel/4) {
+            // Minor
+            damage = 1;
+            poisonBlockChance = 0.3f;
+            setOnFireChance = 0.0f;
+        } else {
+            return;
+        }
+
+        List list = world.selectEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(destx - eventradius, desty - eventradius, destz - eventradius, destx + eventradius, desty + eventradius, destz + eventradius), null);
+        for (Object o : list) {
+            EntityLivingBase entityLivingBase = (EntityLivingBase) o;
+            entityLivingBase.addPotionEffect(new PotionEffect(Potion.harm.getId(), 10, damage));
+        }
+
+        for (int x = (int) (destx-eventradius); x <= destx+eventradius ; x++) {
+            for (int y = (int) (desty-eventradius); y <= desty+eventradius ; y++) {
+                for (int z = (int) (destz-eventradius); z <= destz+eventradius ; z++) {
+                    double dSq = (x-destx) * (x-destx) + (y-desty) * (y-desty) + (z-destz) * (z-destz);
+                    double d = Math.sqrt(dSq);
+                    double str = (eventradius-d) / eventradius;
+
+                    Block block = world.getBlock(x, y, z);
+                    if (block == Blocks.dirt || block == Blocks.farmland || block == Blocks.grass) {
+                        if (random.nextFloat() < poisonBlockChance * str) {
+                            world.setBlock(x, y, z, ModBlocks.poisonedDirtBlock, 0, 2);
+                        }
+                    } else if (block.isLeaves(world, x, y, z)) {
+                        if (random.nextFloat() < poisonBlockChance * str) {
+                            world.setBlockToAir(x, y, z);
+                        }
+                    }
+                    if (random.nextFloat() < setOnFireChance * str) {
+                        if ((!world.isAirBlock(x, y, z)) && world.isAirBlock(x, y+1, z)) {
+                            Logging.log("Set fire at: " + x + "," + y + "," + z);
+                            world.setBlock(x, y+1, z, Blocks.fire, 0, 3);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private void handleRadiationEffects(World world, GlobalCoordinate coordinate, DRRadiationManager.RadiationSource radiationSource) {
-        double dx = coordinate.getCoordinate().getX();
-        double dy = coordinate.getCoordinate().getY();
-        double dz = coordinate.getCoordinate().getZ();
+        double centerx = coordinate.getCoordinate().getX();
+        double centery = coordinate.getCoordinate().getY();
+        double centerz = coordinate.getCoordinate().getZ();
         double radius = radiationSource.getRadius();
         double radiusSq = radius * radius;
         float baseStrength = radiationSource.getStrength();
 
-        List list = world.selectEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(dx - radius, dy - radius, dz - radius, dx + radius, dy + radius, dz + radius), null);
+        List list = world.selectEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(centerx - radius, centery - radius, centerz - radius, centerx + radius, centery + radius, centerz + radius), null);
         for (Object o : list) {
             EntityLivingBase entityLivingBase = (EntityLivingBase) o;
 
-            double distanceSq = entityLivingBase.getDistanceSq(dx, dy, dz);
+            double distanceSq = entityLivingBase.getDistanceSq(centerx, centery, centerz);
             if (distanceSq < radiusSq) {
                 double distance = Math.sqrt(distanceSq);
                 float strength = (float) (baseStrength * (radius-distance) / radius);
