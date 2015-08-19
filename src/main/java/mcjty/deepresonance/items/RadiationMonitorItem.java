@@ -46,7 +46,7 @@ public class RadiationMonitorItem extends Item {
             if (maxStrength <= 0.0f) {
                 Logging.message(player, EnumChatFormatting.GREEN + "No radiation detected");
             } else {
-                Logging.message(player, EnumChatFormatting.RED + "Strength of Radiation " + new DecimalFormat("#.##").format(maxStrength) + "!");
+                Logging.message(player, EnumChatFormatting.RED + "Strength of Radiation " + new Float(maxStrength).intValue() + "!");
             }
         }
         return stack;
@@ -123,7 +123,7 @@ public class RadiationMonitorItem extends Item {
         if (radiationStrength <= 0.0f) {
             list.add(EnumChatFormatting.GREEN + "No radiation detected");
         } else {
-            list.add(EnumChatFormatting.RED + "Radiation: " + new DecimalFormat("#.##").format(radiationStrength) + "!");
+            list.add(EnumChatFormatting.RED + "Radiation: " + new Float(radiationStrength).intValue() + "!");
         }
     }
 
