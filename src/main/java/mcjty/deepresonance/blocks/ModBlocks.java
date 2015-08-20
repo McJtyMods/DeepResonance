@@ -11,9 +11,11 @@ import mcjty.deepresonance.blocks.duct.BlockDuct;
 import mcjty.deepresonance.blocks.duct.TileBasicFluidDuct;
 import mcjty.deepresonance.blocks.gencontroller.GeneratorControllerSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
+import mcjty.deepresonance.blocks.machine.BlockSmelter;
 import mcjty.deepresonance.blocks.machine.TileSmelter;
 import mcjty.deepresonance.blocks.ore.ResonatingOreBlock;
 import mcjty.deepresonance.blocks.poisondirt.PoisonedDirtBlock;
+import mcjty.deepresonance.blocks.tank.BlockTank;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -40,8 +42,8 @@ public final class ModBlocks {
         GameRegistry.registerTileEntity(ResonatingCrystalTileEntity.class, "ResonatingCrystalTileEntity");
 
         duct = new BlockDuct(TileBasicFluidDuct.class, "basicFluidDuct").registerTile().register();
-        smelter = new BlockTileBase(Material.rock, TileSmelter.class, "smelter", DeepResonance.MODID).registerTile().register();
-        tank = new BlockTileBase(Material.rock, TileTank.class, "tank", DeepResonance.MODID).registerTile().register().setCreativeTab(DeepResonance.tabDeepResonance);
+        smelter = new BlockSmelter("smelter").registerTile().register();
+        tank = new BlockTank("tank").registerTile().register();
 
         machineFrame = new MachineFrame();
         GameRegistry.registerBlock(machineFrame, "machineFrame");
