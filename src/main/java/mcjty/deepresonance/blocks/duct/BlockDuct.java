@@ -1,7 +1,5 @@
 package mcjty.deepresonance.blocks.duct;
 
-import elec332.core.baseclasses.tileentity.BlockTileBase;
-import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.base.ElecGenericBlockBase;
 import mcjty.deepresonance.client.render.ModRenderers;
 import net.minecraft.block.material.Material;

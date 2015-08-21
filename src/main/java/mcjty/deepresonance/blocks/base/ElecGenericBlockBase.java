@@ -61,6 +61,7 @@ public class ElecGenericBlockBase extends GenericBlock {
         return tile instanceof TileBase ?((TileBase)tile).onBlockActivated(player, side, hitX, hitY, hitZ):super.onBlockActivated(world, x, y, z, player, side, hitX, hitY, hitZ);
     }
 
+    @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
         TileEntity tile = world.getTileEntity(x, y, z);
         if(tile instanceof TileBase) {
@@ -70,6 +71,7 @@ public class ElecGenericBlockBase extends GenericBlock {
         super.onNeighborBlockChange(world, x, y, z, block);
     }
 
+    @Override
     public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
         TileEntity tile = world.getTileEntity(x, y, z);
         return tile instanceof TileBase?((TileBase)tile).getDrops(fortune):super.getDrops(world, x, y, z, metadata, fortune);
