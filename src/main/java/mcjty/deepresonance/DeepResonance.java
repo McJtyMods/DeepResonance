@@ -9,14 +9,18 @@ import elec332.core.config.ConfigWrapper;
 import elec332.core.network.NetworkHandler;
 import mcjty.base.ModBase;
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.commands.CommandDRGen;
 import mcjty.deepresonance.compat.CompatHandler;
 import mcjty.deepresonance.compat.handlers.ComputerCraftCompatHandler;
+import mcjty.deepresonance.config.ConfigGenerator;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.grid.WorldGridRegistry;
 import mcjty.deepresonance.proxy.CommonProxy;
 import mcjty.deepresonance.radiation.DRRadiationManager;
+import mcjty.deepresonance.radiation.RadiationConfiguration;
+import mcjty.deepresonance.worldgen.WorldGenConfiguration;
 import mcjty.gui.GuiStyle;
 import mcjty.varia.Logging;
 import net.minecraft.creativetab.CreativeTabs;
@@ -53,6 +57,7 @@ public class DeepResonance implements ModBase {
     public static Configuration config;
     public static CompatHandler compatHandler;
     public static ConfigWrapper configWrapper;
+    public static ConfigWrapper configGenerator;
     public static NetworkHandler networkHandler;
 
     public static CreativeTabs tabDeepResonance = new CreativeTabs("DeepResonance") {
@@ -80,6 +85,10 @@ public class DeepResonance implements ModBase {
         configWrapper = new ConfigWrapper(new Configuration(new File(modConfigDir, "machines.cfg")));
         configWrapper.registerConfigWithInnerClasses(new ConfigMachines());
         configWrapper.refresh();
+        configGenerator = new ConfigWrapper(new Configuration(new File(modConfigDir, "generator.cfg")));
+        configGenerator.registerConfigWithInnerClasses(new ConfigGenerator());
+        configGenerator.setCategoryData(WorldGenConfiguration.CATEGORY_WORLDGEN, "Configuration for worldGen").setCategoryData(GeneratorConfiguration.CATEGORY_GENERATOR, "Configuration for the generator multiblock").setCategoryData(ConfigGenerator.Crystal.category, "Configuration for the crystals").setCategoryData(RadiationConfiguration.CATEGORY_RADIATION, "Configuration for the radiation");
+        configGenerator.refresh();
         proxy.preInit(e);
         FMLInterModComms.sendMessage("Waila", "register", "mcjty.wailasupport.WailaCompatibility.load");
         FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
@@ -100,6 +109,7 @@ public class DeepResonance implements ModBase {
         proxy.init(e);
         compatHandler.init();
         configWrapper.refresh();
+        configGenerator.refresh();
     }
 
     @Mod.EventHandler

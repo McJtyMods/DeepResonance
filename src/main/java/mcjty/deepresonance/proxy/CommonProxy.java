@@ -8,7 +8,6 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.deepresonance.blocks.crystals.ResonatingCrystalConfiguration;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.crafting.ModCrafting;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
@@ -45,11 +44,10 @@ public abstract class CommonProxy {
             cfg.load();
             cfg.addCustomCategoryComment(WorldGenConfiguration.CATEGORY_WORLDGEN, "Configuration for wodlgen");
             cfg.addCustomCategoryComment(GeneratorConfiguration.CATEGORY_GENERATOR, "Configuration for the generator multiblock");
-            cfg.addCustomCategoryComment(ResonatingCrystalConfiguration.CATEGORY_CRYSTALS, "Configuration for the crystals");
             cfg.addCustomCategoryComment(RadiationConfiguration.CATEGORY_RADIATION, "Configuration for the radiation");
             WorldGenConfiguration.init(cfg);
             GeneratorConfiguration.init(cfg);
-            ResonatingCrystalConfiguration.init(cfg);
+
             RadiationConfiguration.init(cfg);
         } catch (Exception e1) {
             FMLLog.log(Level.ERROR, e1, "Problem loading config file!");

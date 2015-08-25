@@ -1,6 +1,7 @@
 package mcjty.deepresonance.blocks.crystals;
 
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.config.ConfigGenerator;
 import mcjty.entity.GenericTileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -90,7 +91,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     public float getPowerPerTick() {
         if (powerPerTick < 0) {
-            float totalRF = ResonatingCrystalConfiguration.maximumRF * strength / 100.0f * (purity + 30.0f) / 130.0f;
+            float totalRF = ConfigGenerator.Crystal.maximumRF * strength / 100.0f * (purity + 30.0f) / 130.0f;
             float numticks = totalRF / getRfPerTick();
             powerPerTick = 100.0f / numticks;
         }
@@ -99,7 +100,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     public int getRfPerTick() {
         if (rfPerTick == -1) {
-            rfPerTick = (int) (ResonatingCrystalConfiguration.maximumRFtick * efficiency / 100.1f * (purity + 2.0f) / 102.0f + 1);
+            rfPerTick = (int) (ConfigGenerator.Crystal.maximumRFPerTick * efficiency / 100.1f * (purity + 2.0f) / 102.0f + 1);
         }
         return rfPerTick;
     }
