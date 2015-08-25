@@ -8,7 +8,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 /**
  * Created by Elec332 on 10-8-2015.
  */
-public abstract class TileEnergyReceiver extends DRTileBase implements IEnergyReceiver{
+public abstract class TileEnergyReceiver extends ElecTileBase implements IEnergyReceiver{
 
     public TileEnergyReceiver(EnergyStorage energyStorage){
         this.energyStorage = energyStorage;

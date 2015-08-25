@@ -1,25 +1,18 @@
 package mcjty.deepresonance.blocks.base;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import elec332.core.baseclasses.tileentity.TileBase;
 import elec332.core.helper.RegisterHelper;
 import mcjty.container.GenericBlock;
 import mcjty.deepresonance.DeepResonance;
-import net.minecraft.block.Block;
+import mcjty.entity.GenericTileEntity;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-
-import java.util.ArrayList;
 
 /**
  * Created by Elec332 on 20-8-2015.
  */
 public class ElecGenericBlockBase extends GenericBlock {
 
-    public ElecGenericBlockBase(Material material, Class<? extends TileEntity> tileEntityClass, String blockName) {
+    public ElecGenericBlockBase(Material material, Class<? extends GenericTileEntity> tileEntityClass, String blockName) {
         super(DeepResonance.instance, material, tileEntityClass, false);
         this.blockName = blockName;
         setup();
@@ -55,25 +48,4 @@ public class ElecGenericBlockBase extends GenericBlock {
         return this;
     }
 
-    @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
-        TileEntity tile = world.getTileEntity(x, y, z);
-        return tile instanceof TileBase ?((TileBase)tile).onBlockActivated(player, side, hitX, hitY, hitZ):super.onBlockActivated(world, x, y, z, player, side, hitX, hitY, hitZ);
-    }
-
-    @Override
-    public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
-        TileEntity tile = world.getTileEntity(x, y, z);
-        if(tile instanceof TileBase) {
-            ((TileBase)tile).onNeighborBlockChange(block);
-        }
-
-        super.onNeighborBlockChange(world, x, y, z, block);
-    }
-
-    @Override
-    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
-        TileEntity tile = world.getTileEntity(x, y, z);
-        return tile instanceof TileBase?((TileBase)tile).getDrops(fortune):super.getDrops(world, x, y, z, metadata, fortune);
-    }
 }

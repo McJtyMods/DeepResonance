@@ -19,7 +19,6 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 

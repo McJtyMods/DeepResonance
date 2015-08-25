@@ -3,7 +3,6 @@ package mcjty.deepresonance.blocks.tank;
 import com.google.common.collect.Maps;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import elec332.core.baseclasses.tileentity.TileBase;
 import elec332.core.compat.handlers.WailaCompatHandler;
 import elec332.core.multiblock.dynamic.IDynamicMultiBlockTile;
 import elec332.core.util.NBTHelper;
@@ -11,13 +10,12 @@ import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
+import mcjty.deepresonance.blocks.base.ElecTileBase;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.grid.fluid.event.FluidTileEvent;
 import mcjty.deepresonance.grid.tank.DRTankMultiBlock;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -33,7 +31,7 @@ import java.util.Map;
 /**
  * Created by Elec332 on 9-8-2015.
  */
-public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IDeepResonanceFluidProvider, WailaCompatHandler.IWailaInfoTile {
+public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IDeepResonanceFluidProvider, WailaCompatHandler.IWailaInfoTile {
 
     public TileTank(){
         super();
@@ -50,7 +48,7 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
     @SideOnly(Side.CLIENT)
     public float renderHeight; //Value from 0.0f to 1.0f
     private long lastTime;
-    private Map<ForgeDirection, Integer> settings;
+    protected Map<ForgeDirection, Integer> settings;
 
     @Override
     public void onTileLoaded() {
@@ -106,8 +104,8 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
     }
 
     @Override
-    public void readItemStackNBT(NBTTagCompound tagCompound) {
-        super.readItemStackNBT(tagCompound);
+    public void readRestorableFromNBT(NBTTagCompound tagCompound) {
+        super.readRestorableFromNBT(tagCompound);
         if (tagCompound.hasKey("fluid"))
             this.myTank = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("fluid"));
         if (tagCompound.hasKey("lastSeenFluid"))
@@ -115,8 +113,8 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
     }
 
     @Override
-    public void writeToItemStack(NBTTagCompound tagCompound) {
-        super.writeToItemStack(tagCompound);
+    public void writeRestorableToNBT(NBTTagCompound tagCompound) {
+        super.writeRestorableToNBT(tagCompound);
         if (multiBlock != null) {
             myTank = multiBlock.getFluidShare(this);
             lastSeenFluid = multiBlock.getStoredFluid();
@@ -133,27 +131,6 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
     @Override
     public boolean canUpdate() {
         return false;
-    }
-
-    @Override
-    public void onNeighborBlockChange(Block block) {
-        super.onNeighborBlockChange(block);
-        for (Map.Entry<ITankHook, ForgeDirection> entry : getConnectedHooks().entrySet()){
-            entry.getKey().hook(this, entry.getValue());
-        }
-    }
-
-    @Override
-    public boolean onBlockActivated(EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
-        ForgeDirection direction = ForgeDirection.getOrientation(side);
-        int i = settings.get(direction);
-        if (i < 2)
-            i++;
-        else
-            i = 0;
-        settings.put(direction, i);
-        markDirty();
-        return true;
     }
 
     @Override
@@ -260,7 +237,7 @@ public class TileTank extends TileBase implements IDynamicMultiBlockTile<DRTankM
         }
     }
 
-    private Map<ITankHook, ForgeDirection> getConnectedHooks(){
+    protected Map<ITankHook, ForgeDirection> getConnectedHooks(){
         Map<ITankHook, ForgeDirection> ret = Maps.newHashMap();
         for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS){
             TileEntity tile = WorldHelper.getTileAt(worldObj, myLocation().atSide(direction));

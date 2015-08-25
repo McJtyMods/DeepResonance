@@ -6,7 +6,6 @@ import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.varia.GlobalCoordinate;
 import mcjty.varia.Logging;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockLeaves;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.potion.Potion;
@@ -15,7 +14,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.*;
 

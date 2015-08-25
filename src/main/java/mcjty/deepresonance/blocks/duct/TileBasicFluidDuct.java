@@ -1,16 +1,11 @@
 package mcjty.deepresonance.blocks.duct;
 
-import elec332.core.baseclasses.tileentity.TileBase;
-import elec332.core.util.BlockLoc;
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.blocks.tank.TileTank;
+import mcjty.deepresonance.blocks.base.ElecTileBase;
 import mcjty.deepresonance.grid.fluid.DRFluidDuctGrid;
 import mcjty.deepresonance.grid.fluid.event.FluidTileEvent;
-import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -18,7 +13,7 @@ import net.minecraftforge.fluids.FluidStack;
 /**
  * Created by Elec332 on 3-8-2015.
  */
-public class TileBasicFluidDuct extends TileBase {
+public class TileBasicFluidDuct extends ElecTileBase {
 
     public FluidStack intTank;
     public Fluid lastSeenFluid;
@@ -67,30 +62,8 @@ public class TileBasicFluidDuct extends TileBase {
     }
 
     @Override
-    public void onNeighborBlockChange(Block block) {
-        super.onNeighborBlockChange(block);
-        //removeAllAdjacentTanks();
-        //addAllAdjacentTanks();
-    }
-
-    @Override
     public boolean canUpdate() {
         return false;
-    }
-
-    private void removeAllAdjacentTanks(){
-        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS){
-            if (getGrid() != null)
-                getGrid().removeTank(myLocation().atSide(direction));
-        }
-    }
-
-    private void addAllAdjacentTanks(){
-        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS){
-            BlockLoc translated = myLocation().atSide(direction);
-            if (WorldHelper.getTileAt(worldObj, translated) instanceof TileTank && getGrid() != null)
-                getGrid().addTank(translated);
-        }
     }
 
     public int getTankStorageMax(){
