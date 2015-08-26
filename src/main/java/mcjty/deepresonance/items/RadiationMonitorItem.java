@@ -6,6 +6,7 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.network.PacketGetRadiationLevel;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
+import mcjty.deepresonance.varia.QuadTree;
 import mcjty.varia.Coordinate;
 import mcjty.varia.GlobalCoordinate;
 import mcjty.varia.Logging;
@@ -72,6 +73,11 @@ public class RadiationMonitorItem extends Item {
                 if (distanceSq < radiusSq) {
                     double distance = Math.sqrt(distanceSq);
                     float strength = (float) (radiationSource.getStrength() * (radius - distance) / radius);
+                    int cx = coordinate.getCoordinate().getX();
+                    int cy = coordinate.getCoordinate().getY();
+                    int cz = coordinate.getCoordinate().getZ();
+                    QuadTree radiationTree = radiationSource.getRadiationTree(world, cx, cy, cz);
+                    strength = strength * (float) radiationTree.factor(cx, cy, cz, player.getCoordinate().getX(), player.getCoordinate().getY(), player.getCoordinate().getZ());
                     if (strength > maxStrength) {
                         maxStrength = strength;
                     }

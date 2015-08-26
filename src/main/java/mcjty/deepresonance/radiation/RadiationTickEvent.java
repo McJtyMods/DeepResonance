@@ -3,6 +3,7 @@ package mcjty.deepresonance.radiation;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.varia.QuadTree;
 import mcjty.varia.GlobalCoordinate;
 import mcjty.varia.Logging;
 import net.minecraft.block.Block;
@@ -90,9 +91,12 @@ public class RadiationTickEvent {
     }
 
     private void handleDestructionEvent(World world, GlobalCoordinate coordinate, DRRadiationManager.RadiationSource radiationSource) {
-        double centerx = coordinate.getCoordinate().getX();
-        double centery = coordinate.getCoordinate().getY();
-        double centerz = coordinate.getCoordinate().getZ();
+        int cx = coordinate.getCoordinate().getX();
+        int cy = coordinate.getCoordinate().getY();
+        int cz = coordinate.getCoordinate().getZ();
+        double centerx = cx;
+        double centery = cy;
+        double centerz = cz;
         double radius = radiationSource.getRadius();
 
         double theta = random.nextDouble() * Math.PI * 2.0;
@@ -114,6 +118,8 @@ public class RadiationTickEvent {
         double distanceSq = (centerx-destx) * (centerx-destx) + (centery-desty) * (centery-desty) + (centerz-destz) * (centerz-destz);
         double distance = Math.sqrt(distanceSq);
         float strength = (float) (baseStrength * (radius-distance) / radius);
+        QuadTree radiationTree = radiationSource.getRadiationTree(world, cx, cy, cz);
+        strength = strength * (float) radiationTree.factor(cx, cy, cz, (int) destx, (int) desty, (int) destz);
 
         int eventradius = 8;
         int damage;
@@ -174,9 +180,12 @@ public class RadiationTickEvent {
     }
 
     private void handleRadiationEffects(World world, GlobalCoordinate coordinate, DRRadiationManager.RadiationSource radiationSource) {
-        double centerx = coordinate.getCoordinate().getX();
-        double centery = coordinate.getCoordinate().getY();
-        double centerz = coordinate.getCoordinate().getZ();
+        int cx = coordinate.getCoordinate().getX();
+        int cy = coordinate.getCoordinate().getY();
+        int cz = coordinate.getCoordinate().getZ();
+        double centerx = cx;
+        double centery = cy;
+        double centerz = cz;
         double radius = radiationSource.getRadius();
         double radiusSq = radius * radius;
         float baseStrength = radiationSource.getStrength();
@@ -189,6 +198,8 @@ public class RadiationTickEvent {
             if (distanceSq < radiusSq) {
                 double distance = Math.sqrt(distanceSq);
                 float strength = (float) (baseStrength * (radius-distance) / radius);
+                QuadTree radiationTree = radiationSource.getRadiationTree(world, cx, cy, cz);
+                strength = strength * (float) radiationTree.factor(cx, cy, cz, (int) entityLivingBase.posX, (int) entityLivingBase.posY, (int) entityLivingBase.posZ);
 
                 if (strength < RadiationConfiguration.radiationStrenghLevel0) {
                     entityLivingBase.addPotionEffect(new PotionEffect(Potion.hunger.getId(), EFFECTS_MAX * MAXTICKS, 1, true));

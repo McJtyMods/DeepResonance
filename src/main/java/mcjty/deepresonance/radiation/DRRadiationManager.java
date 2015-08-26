@@ -1,7 +1,10 @@
 package mcjty.deepresonance.radiation;
 
+import mcjty.deepresonance.varia.QuadTree;
 import mcjty.varia.Coordinate;
 import mcjty.varia.GlobalCoordinate;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
@@ -123,6 +126,8 @@ public class DRRadiationManager extends WorldSavedData {
         private float radius;
         private float maxStrength;              // Roughly an indication of the amount of ticks.
         private float strength;
+        private QuadTree radiationTree;
+
 
         public float getRadius() {
             return radius;
@@ -146,6 +151,23 @@ public class DRRadiationManager extends WorldSavedData {
 
         public void setStrength(float strength) {
             this.strength = strength;
+        }
+
+        public QuadTree getRadiationTree(World world, int centerX, int centerY, int centerZ) {
+            if (radiationTree == null) {
+                radiationTree = new QuadTree((int) (centerX-radius - 1), (int) (centerY-radius - 1), (int) (centerZ-radius-1), (int) (centerX+radius + 1), (int) (centerY+radius + 1), (int) (centerZ+radius + 1));
+                for (int x = (int) (centerX-radius); x <= centerX+radius ; x++) {
+                    for (int y = (int) (centerY-radius); y <= centerY+radius ; y++) {
+                        for (int z = (int) (centerZ-radius); z <= centerZ+radius ; z++) {
+                            Block block = world.getBlock(x, y, z);
+                            if (block == Blocks.obsidian) {
+                                radiationTree.addBlocker(x, y, z, .20f);
+                            }
+                        }
+                    }
+                }
+            }
+            return radiationTree;
         }
 
         // Update radiation for this radiation source
