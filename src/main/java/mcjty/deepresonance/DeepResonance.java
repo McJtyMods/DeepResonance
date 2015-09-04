@@ -133,13 +133,12 @@ public class DeepResonance implements ModBase {
     }
 
     @Override
-    public void setGuiStyle(EntityPlayerMP entityPlayerMP, GuiStyle guiStyle) {
-
+    public void setGuiStyle(EntityPlayerMP entityPlayerMP, GuiStyle style) {
     }
 
     @Override
     public GuiStyle getGuiStyle(EntityPlayer entityPlayer) {
-        return null;
+        return GuiStyle.STYLE_BEVEL;
     }
 
     @Override

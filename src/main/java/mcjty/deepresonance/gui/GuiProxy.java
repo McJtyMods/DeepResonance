@@ -15,6 +15,7 @@ public class GuiProxy implements IGuiHandler {
     private static int modGuiIndex = 0;
 
     public static final int GUI_MANUAL_MAIN = modGuiIndex++;
+    public static final int GUI_SMELTER = modGuiIndex++;
     public static final int ELEC_GUI_STUFF = modGuiIndex++;
 
     @Override
