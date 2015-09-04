@@ -37,10 +37,11 @@ public class BlockTank extends ElecGenericBlockBase {
             TileTank tank = (TileTank)tile;
             ForgeDirection direction = ForgeDirection.getOrientation(side);
             int i = tank.settings.get(direction);
-            if (i < 2)
+            if (i < TileTank.SETTING_MAX) {
                 i++;
-            else
-                i = 0;
+            } else {
+                i = TileTank.SETTING_NONE;
+            }
             tank.settings.put(direction, i);
             tank.markDirty();
             return true;

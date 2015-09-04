@@ -22,6 +22,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
@@ -33,11 +34,16 @@ import java.util.Map;
  */
 public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IDeepResonanceFluidProvider, WailaCompatHandler.IWailaInfoTile {
 
+    public static final int SETTING_NONE = 0;
+    public static final int SETTING_ACCEPT = 1;
+    public static final int SETTING_PROVIDE = 2;
+    public static final int SETTING_MAX = 2;
+
     public TileTank(){
         super();
         this.settings = Maps.newHashMap();
         for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS){
-            settings.put(direction, 0);
+            settings.put(direction, SETTING_NONE);
         }
     }
 
@@ -81,7 +87,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
-        NBTTagList tagList = tagCompound.getTagList("settings", 10);
+        NBTTagList tagList = tagCompound.getTagList("settings", Constants.NBT.TAG_COMPOUND);
         if (tagList != null){
             for (int i = 0; i < tagList.tagCount(); i++) {
                 NBTTagCompound tag = tagList.getCompoundTagAt(i);
@@ -248,17 +254,17 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     }
 
     private boolean isInput(ForgeDirection direction){
-        return direction == ForgeDirection.UNKNOWN || settings.get(direction) == 1;
+        return direction == ForgeDirection.UNKNOWN || settings.get(direction) == SETTING_ACCEPT;
     }
 
     private boolean isOutput(ForgeDirection direction){
-        return direction == ForgeDirection.UNKNOWN || settings.get(direction) == 2;
+        return direction == ForgeDirection.UNKNOWN || settings.get(direction) == SETTING_PROVIDE;
     }
 
     @Override
     public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
         int i = settings.get(accessor.getSide());
-        currentTip.add("Mode: "+(i == 0 ? "none" : (i == 1 ? "accept" : "provide")));
+        currentTip.add("Mode: "+(i == SETTING_NONE ? "none" : (i == SETTING_ACCEPT ? "accept" : "provide")));
         currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(clientRenderFluid));
         currentTip.add("Amount: "+totalFluidAmount);
         if (System.currentTimeMillis() - lastTime > 100){
