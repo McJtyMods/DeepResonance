@@ -15,6 +15,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -128,11 +130,6 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
         }
     }
 
-
-    @Override
-    public boolean canConnectEnergy(ForgeDirection from) {
-        return DirectionHelper.getDirectionFromNumber(getBlockMetadata()).getOpposite().equals(from);
-    }
 
     @Override
     public void hook(TileTank tank, ForgeDirection direction) {
@@ -250,5 +247,4 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         return true;
     }
-
 }

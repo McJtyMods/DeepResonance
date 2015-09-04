@@ -1,26 +1,14 @@
 package mcjty.deepresonance.blocks.base;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import elec332.core.baseclasses.tileentity.IInventoryTile;
 import elec332.core.main.ElecCore;
 import elec332.core.network.IElecCoreNetworkTile;
-import elec332.core.network.PacketTileDataToServer;
-import elec332.core.server.ServerHelper;
-import elec332.core.util.BlockLoc;
 import elec332.core.util.IRunOnce;
-import mcjty.deepresonance.DeepResonance;
 import mcjty.entity.GenericEnergyReceiverTileEntity;
-import mcjty.entity.GenericTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-
-import java.util.Iterator;
 
 /**
  * Created by Elec332 on 12-8-2015.
@@ -77,76 +65,25 @@ public abstract class ElecEnergyReceiverTileBase extends GenericEnergyReceiverTi
         this.worldObj.notifyBlockChange(xCoord, yCoord, zCoord, blockType);
     }
 
-    public BlockLoc myLocation(){
-        return new BlockLoc(this.xCoord, this.yCoord, this.zCoord);
-    }
-
-    public boolean openGui(EntityPlayer player, int ID){
-        player.openGui(DeepResonance.instance, ID, worldObj, xCoord, yCoord, zCoord);
-        return true;
-    }
-
-    @Override
-    public Container getGuiServer(EntityPlayer entityPlayer) {
-        return (Container) getGui(entityPlayer, false);
-    }
-
-    @Override
-    public Object getGuiClient(EntityPlayer entityPlayer) {
-        return getGui(entityPlayer, true);
-    }
-
-    public Object getGui(EntityPlayer player, boolean client){
-        return null;
-    }
-
     public boolean timeCheck() {
         return this.worldObj.getTotalWorldTime() % 32L == 0L;
-    }
-
-    public void syncData() {
-        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void sendPacketToServer(int ID, NBTTagCompound data) {
-        ElecCore.networkHandler.getNetworkWrapper().sendToServer(new PacketTileDataToServer(this, ID, data));
     }
 
     public void onPacketReceivedFromClient(EntityPlayerMP sender, int ID, NBTTagCompound data) {
     }
 
-    public void sendPacket(int ID, NBTTagCompound data) {
-        Iterator i$ = ServerHelper.instance.getAllPlayersWatchingBlock(this.worldObj, this.xCoord, this.zCoord).iterator();
-
-        while(i$.hasNext()) {
-            EntityPlayerMP player = (EntityPlayerMP)i$.next();
-            this.sendPacketTo(player, ID, data);
-        }
-
-    }
-
-    public void sendPacketTo(EntityPlayerMP player, int ID, NBTTagCompound data) {
-        player.playerNetServerHandler.sendPacket(new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, ID, data));
+    @Override
+    public Object getGuiClient(EntityPlayer entityPlayer) {
+        return null;
     }
 
     @Override
-    public Packet getDescriptionPacket() {
-        NBTTagCompound nbtTag = new NBTTagCompound();
-        this.writeToNBT(nbtTag);
-        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, nbtTag);
+    public Container getGuiServer(EntityPlayer entityPlayer) {
+        return null;
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
-        if(packet.func_148853_f() == 0) {
-            this.readFromNBT(packet.func_148857_g());
-        } else {
-            this.onDataPacket(packet.func_148853_f(), packet.func_148857_g());
-        }
+    public void onDataPacket(int i, NBTTagCompound nbtTagCompound) {
 
-    }
-
-    public void onDataPacket(int id, NBTTagCompound tag) {
     }
 }
