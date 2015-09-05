@@ -1,32 +1,37 @@
 package mcjty.deepresonance.blocks.machine;
 
-import elec332.core.util.DirectionHelper;
 import elec332.core.world.WorldHelper;
 import mcjty.container.InventoryHelper;
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.base.ElecEnergyReceiverTileBase;
 import mcjty.deepresonance.blocks.tank.ITankHook;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
+import mcjty.network.Argument;
+import mcjty.network.PacketRequestIntegerFromServer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.Map;
+
 /**
  * Created by Elec332 on 9-8-2015.
  */
 public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook, ISidedInventory {
+
+    public static final String CMD_GETPROGRESS = "getProgress";
+    public static final String CLIENTCMD_GETPROGRESS = "getProgress";
 
     private InventoryHelper inventoryHelper = new InventoryHelper(this, SmelterContainer.factory, 1);
 
@@ -35,39 +40,43 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
         checkTanks = true;
     }
 
-    private int progress;
+    private int progress = 0;
     private TileTank lavaTank;
     private TileTank rclTank;
     private boolean checkTanks;
 
     @Override
     protected void checkStateServer() {
-        if (progress == 400){
-            if (timeCheck()) {
-                if (canWork()) { //Prevent too much checking
-                    progress--;
-                    storage.extractEnergy(ConfigMachines.Smelter.rfPerTick, true);
+        if (progress > 0) {
+            if (canWork()) {
+                progress--;
+                storage.extractEnergy(ConfigMachines.Smelter.rfPerTick, true);
+                if (progress == 0) {
+                    // Done!
+                    stopSmelting();
                 }
             }
-        } else if (progress > 0 && canWork()){
-            progress--;
-            storage.extractEnergy(ConfigMachines.Smelter.rfPerTick, true);
         } else {
-            if (canWork())
-                smelt();
-            progress = 400;
+            if (canWork() && validSlot()) {
+                startSmelting();
+                progress = ConfigMachines.Smelter.processTime;
+            }
         }
     }
 
-    private boolean canWork(){
-        if (checkTanks){
+    public int getProgress() {
+        return progress;
+    }
+
+    private boolean canWork() {
+        if (checkTanks) {
             if (checkTanks()) {
                 checkTanks = false;
             } else {
                 return false;
             }
         }
-        return storage.getMaxEnergyStored() >= ConfigMachines.Smelter.rfPerTick && validSlot();
+        return storage.getMaxEnergyStored() >= ConfigMachines.Smelter.rfPerTick;
     }
 
     private boolean checkTanks(){
@@ -75,13 +84,16 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
     }
 
     private boolean validSlot(){
-        return inventoryHelper.getStackInSlot(0) != null && inventoryHelper.getStackInSlot(0).getItem() == Item.getItemFromBlock(ModBlocks.resonatingOreBlock);
+        return inventoryHelper.getStackInSlot(SmelterContainer.SLOT_OREINPUT) != null && inventoryHelper.getStackInSlot(SmelterContainer.SLOT_OREINPUT).getItem() == Item.getItemFromBlock(ModBlocks.resonatingOreBlock);
     }
 
 
-    private void smelt(){
-        inventoryHelper.decrStackSize(0, 1);
+    private void startSmelting() {
+        inventoryHelper.decrStackSize(SmelterContainer.SLOT_OREINPUT, 1);
         lavaTank.drain(ForgeDirection.UNKNOWN, new FluidStack(FluidRegistry.LAVA, ConfigMachines.Smelter.lavaCost), true);
+    }
+
+    private void stopSmelting() {
         rclTank.fill(ForgeDirection.UNKNOWN, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), true);
     }
 
@@ -215,7 +227,7 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
 
     @Override
     public String getInventoryName() {
-        return "Infuser Inventory";
+        return "Smelter Inventory";
     }
 
     @Override
@@ -247,4 +259,38 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         return true;
     }
+
+    // Request the researching amount from the server. This has to be called on the client side.
+    public void requestProgressFromServer() {
+        DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketRequestIntegerFromServer(xCoord, yCoord, zCoord,
+                CMD_GETPROGRESS,
+                CLIENTCMD_GETPROGRESS));
+    }
+
+    @Override
+    public Integer executeWithResultInteger(String command, Map<String, Argument> args) {
+        Integer rc = super.executeWithResultInteger(command, args);
+        if (rc != null) {
+            return rc;
+        }
+        if (CMD_GETPROGRESS.equals(command)) {
+            return progress;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean execute(String command, Integer result) {
+        boolean rc = super.execute(command, result);
+        if (rc) {
+            return true;
+        }
+        if (CLIENTCMD_GETPROGRESS.equals(command)) {
+            progress = result;
+            return true;
+        }
+        return false;
+    }
+
+
 }

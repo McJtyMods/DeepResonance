@@ -65,10 +65,6 @@ public abstract class ElecEnergyReceiverTileBase extends GenericEnergyReceiverTi
         this.worldObj.notifyBlockChange(xCoord, yCoord, zCoord, blockType);
     }
 
-    public boolean timeCheck() {
-        return this.worldObj.getTotalWorldTime() % 32L == 0L;
-    }
-
     public void onPacketReceivedFromClient(EntityPlayerMP sender, int ID, NBTTagCompound data) {
     }
 
