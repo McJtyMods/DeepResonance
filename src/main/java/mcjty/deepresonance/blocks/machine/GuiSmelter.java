@@ -18,7 +18,7 @@ public class GuiSmelter extends GenericGuiContainer<TileSmelter> {
 
     private EnergyBar energyBar;
     private ImageLabel burningImage;
-    private TextField percentage;
+    private Label percentage;
 
     private static final ResourceLocation iconLocation = new ResourceLocation(DeepResonance.MODID, "textures/gui/smelter.png");
     private static final ResourceLocation iconBurning = new ResourceLocation(DeepResonance.MODID, "textures/gui/burning.png");
@@ -42,7 +42,8 @@ public class GuiSmelter extends GenericGuiContainer<TileSmelter> {
         burningImage = new ImageLabel(mc, this).setImage(iconBurning, 0, 0);
         burningImage.setLayoutHint(new PositionalLayout.PositionalHint(90, 2, 64, 64));
 
-        percentage = new TextField(mc, this).setLayoutHint(new PositionalLayout.PositionalHint(100, 12, 44, 14));
+        percentage = new Label(mc, this);
+        percentage.setLayoutHint(new PositionalLayout.PositionalHint(54, 44, 32, 14));
 
         Widget toplevel = new Panel(mc, this).setBackground(iconLocation).setLayout(new PositionalLayout()).addChild(energyBar).addChild(burningImage).addChild(percentage);
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
@@ -55,8 +56,8 @@ public class GuiSmelter extends GenericGuiContainer<TileSmelter> {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float v, int i, int i2) {
-        int progress = tileEntity.getProgress();
-        if (progress > 0) {
+        int progress = tileEntity.getProgressPercentage();
+        if (progress < 100) {
             int p = ((progress/3) % 9) + 1;
             int x = (p % 4) * 64;
             int y = (p / 4) * 64;
@@ -64,7 +65,7 @@ public class GuiSmelter extends GenericGuiContainer<TileSmelter> {
         } else {
             burningImage.setImage(iconBurning, 0, 0);
         }
-        percentage.setText("" + progress);
+        percentage.setText(progress + "%");
 
         drawWindow();
 

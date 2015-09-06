@@ -1,5 +1,7 @@
 package mcjty.deepresonance.blocks.machine;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import elec332.core.world.WorldHelper;
 import mcjty.container.InventoryHelper;
 import mcjty.deepresonance.DeepResonance;
@@ -41,12 +43,16 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
         checkTanks = true;
     }
 
+    private int totalProgress = 0;
     private int progress = 0;
     private TileTank lavaTank;
     private TileTank rclTank;
     private boolean checkTanks;
     private float finalQuality = 1.0f;  // Calculated quality based on the amount of lava in the lava tank
     private float finalPurity = 0.1f;   // Calculated quality based on the amount of lava in the lava tank
+
+    @SideOnly(Side.CLIENT)
+    private int progressPercentage = 0;
 
     @Override
     protected void checkStateServer() {
@@ -66,8 +72,9 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
         }
     }
 
-    public int getProgress() {
-        return progress;
+    @SideOnly(Side.CLIENT)
+    public int getProgressPercentage() {
+        return progressPercentage;
     }
 
     private boolean canWork() {
@@ -117,6 +124,7 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
         lavaTank.drain(ForgeDirection.UNKNOWN, new FluidStack(FluidRegistry.LAVA, ConfigMachines.Smelter.lavaCost), true);
 
         progress = ConfigMachines.Smelter.processTime + (int) ((percentage - 0.5f) * ConfigMachines.Smelter.processTime);
+        totalProgress = progress;
     }
 
     private void stopSmelting() {
@@ -129,6 +137,7 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
     @Override
     public void writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
+        tagCompound.setInteger("totalProgress", totalProgress);
         tagCompound.setInteger("progress", progress);
         tagCompound.setFloat("finalQuality", finalQuality);
         tagCompound.setFloat("finalPurity", finalPurity);
@@ -158,6 +167,7 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
+        totalProgress = tagCompound.getInteger("totalProgress");
         progress = tagCompound.getInteger("progress");
         finalQuality = tagCompound.getFloat("finalQuality");
         finalPurity = tagCompound.getFloat("finalPurity");
@@ -309,7 +319,11 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
             return rc;
         }
         if (CMD_GETPROGRESS.equals(command)) {
-            return progress;
+            if (totalProgress == 0) {
+                return 0;
+            } else {
+                return (totalProgress - progress) * 100 / totalProgress;
+            }
         }
         return null;
     }
@@ -321,7 +335,7 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
             return true;
         }
         if (CLIENTCMD_GETPROGRESS.equals(command)) {
-            progress = result;
+            progressPercentage = result;
             return true;
         }
         return false;
