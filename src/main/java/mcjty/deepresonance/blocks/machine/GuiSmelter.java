@@ -2,16 +2,15 @@ package mcjty.deepresonance.blocks.machine;
 
 import mcjty.container.GenericGuiContainer;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.gui.Window;
 import mcjty.gui.layout.PositionalLayout;
-import mcjty.gui.widgets.EnergyBar;
-import mcjty.gui.widgets.ImageLabel;
+import mcjty.gui.widgets.*;
 import mcjty.gui.widgets.Panel;
-import mcjty.gui.widgets.Widget;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 public class GuiSmelter extends GenericGuiContainer<TileSmelter> {
     public static final int SMELTER_WIDTH = 180;
@@ -19,6 +18,7 @@ public class GuiSmelter extends GenericGuiContainer<TileSmelter> {
 
     private EnergyBar energyBar;
     private ImageLabel burningImage;
+    private TextField percentage;
 
     private static final ResourceLocation iconLocation = new ResourceLocation(DeepResonance.MODID, "textures/gui/smelter.png");
     private static final ResourceLocation iconBurning = new ResourceLocation(DeepResonance.MODID, "textures/gui/burning.png");
@@ -42,7 +42,9 @@ public class GuiSmelter extends GenericGuiContainer<TileSmelter> {
         burningImage = new ImageLabel(mc, this).setImage(iconBurning, 0, 0);
         burningImage.setLayoutHint(new PositionalLayout.PositionalHint(90, 2, 64, 64));
 
-        Widget toplevel = new Panel(mc, this).setBackground(iconLocation).setLayout(new PositionalLayout()).addChild(energyBar).addChild(burningImage);
+        percentage = new TextField(mc, this).setLayoutHint(new PositionalLayout.PositionalHint(100, 12, 44, 14));
+
+        Widget toplevel = new Panel(mc, this).setBackground(iconLocation).setLayout(new PositionalLayout()).addChild(energyBar).addChild(burningImage).addChild(percentage);
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
 
         window = new Window(this, toplevel);
@@ -62,6 +64,7 @@ public class GuiSmelter extends GenericGuiContainer<TileSmelter> {
         } else {
             burningImage.setImage(iconBurning, 0, 0);
         }
+        percentage.setText("" + progress);
 
         drawWindow();
 

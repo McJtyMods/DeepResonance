@@ -45,6 +45,8 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
     private TileTank lavaTank;
     private TileTank rclTank;
     private boolean checkTanks;
+    private float finalQuality = 1.0f;  // Calculated quality based on the amount of lava in the lava tank
+    private float finalPurity = 0.1f;   // Calculated quality based on the amount of lava in the lava tank
 
     @Override
     protected void checkStateServer() {
@@ -60,7 +62,6 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
         } else {
             if (canWork() && validSlot()) {
                 startSmelting();
-                progress = ConfigMachines.Smelter.processTime;
             }
         }
     }
@@ -94,17 +95,43 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
 
     private void startSmelting() {
         inventoryHelper.decrStackSize(SmelterContainer.SLOT_OREINPUT, 1);
+
+        float percentage = (float)lavaTank.getFluidAmount() / lavaTank.getCapacity();
+
+        if (percentage < 0.40f) {
+            // Slower smelting progress and slightly reduced quality
+            finalQuality = 1.0f - (0.40f - percentage);
+            finalPurity = 0.1f;
+        } else if (percentage > 0.75f) {
+            finalQuality = -1.0f;   // Total waste!
+            finalPurity = 0.0f;
+        } else if (percentage > 0.60f) {
+            // Reduced quality.
+            finalQuality = 1.0f - (percentage - 0.60f) * 6.666f;
+            finalPurity = 0.1f - (percentage - 0.60f) * 0.3f;
+        } else {
+            finalQuality = 1.0f;
+            finalPurity = 0.1f;
+        }
+
         lavaTank.drain(ForgeDirection.UNKNOWN, new FluidStack(FluidRegistry.LAVA, ConfigMachines.Smelter.lavaCost), true);
+
+        progress = ConfigMachines.Smelter.processTime + (int) ((percentage - 0.5f) * ConfigMachines.Smelter.processTime);
     }
 
     private void stopSmelting() {
-        FluidStack stack = LiquidCrystalFluidTagData.makeLiquidCrystalStack(ConfigMachines.Smelter.rclPerOre, 1.0f, 0.1f, 0.1f, 0.1f, 0.1f);
-        rclTank.fill(ForgeDirection.UNKNOWN, stack, true);
+        if (finalQuality > 0.0f) {
+            FluidStack stack = LiquidCrystalFluidTagData.makeLiquidCrystalStack(ConfigMachines.Smelter.rclPerOre, finalQuality, finalPurity, 0.1f, 0.1f, 0.1f);
+            rclTank.fill(ForgeDirection.UNKNOWN, stack, true);
+        }
     }
 
     @Override
     public void writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
+        tagCompound.setInteger("progress", progress);
+        tagCompound.setFloat("finalQuality", finalQuality);
+        tagCompound.setFloat("finalPurity", finalPurity);
     }
 
     @Override
@@ -131,6 +158,9 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
+        progress = tagCompound.getInteger("progress");
+        finalQuality = tagCompound.getFloat("finalQuality");
+        finalPurity = tagCompound.getFloat("finalPurity");
     }
 
     @Override
