@@ -52,6 +52,8 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     @SideOnly(Side.CLIENT)
     public int totalFluidAmount;
     @SideOnly(Side.CLIENT)
+    public int tankCapacity;
+    @SideOnly(Side.CLIENT)
     public float renderHeight; //Value from 0.0f to 1.0f
     private long lastTime;
     protected Map<ForgeDirection, Integer> settings;
@@ -266,7 +268,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         int i = settings.get(accessor.getSide());
         currentTip.add("Mode: "+(i == SETTING_NONE ? "none" : (i == SETTING_ACCEPT ? "accept" : "provide")));
         currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(clientRenderFluid));
-        currentTip.add("Amount: "+totalFluidAmount);
+        currentTip.add("Amount: "+totalFluidAmount + " (" + tankCapacity + ")");
         if (System.currentTimeMillis() - lastTime > 100){
             lastTime = System.currentTimeMillis();
             sendPacketToServer(1, new NBTTagCompound());
@@ -278,7 +280,10 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     public void onPacketReceivedFromClient(EntityPlayerMP sender, int ID, NBTTagCompound data) {
         switch (ID){
             case 1:
-                sendPacket(2, new NBTHelper().addToTag(getMultiBlock() == null ? 0 : getMultiBlock().getFluidAmount(), "totalFluid").toNBT());
+                sendPacket(2, new NBTHelper()
+                        .addToTag(getFluidAmount(), "totalFluid")
+                        .addToTag(getCapacity(), "capacity")
+                        .toNBT());
         }
     }
 
@@ -290,6 +295,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
                 return;
             case 2:
                 this.totalFluidAmount = tag.getInteger("totalFluid");
+                this.tankCapacity = tag.getInteger("capacity");
                 return;
             case 3:
                 this.renderHeight = tag.getFloat("render");

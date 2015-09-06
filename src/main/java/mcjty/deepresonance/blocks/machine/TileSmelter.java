@@ -9,6 +9,7 @@ import mcjty.deepresonance.blocks.tank.ITankHook;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
+import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.network.Argument;
 import mcjty.network.PacketRequestIntegerFromServer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -80,7 +81,10 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
     }
 
     private boolean checkTanks(){
-        return lavaTank != null && rclTank != null && DRFluidRegistry.getFluidFromStack(lavaTank.getFluid()) == FluidRegistry.LAVA && lavaTank.getFluidAmount() > lavaTank.getCapacity()*0.25f && rclTank.fill(ForgeDirection.UNKNOWN, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), false) == ConfigMachines.Smelter.rclPerOre;
+        return lavaTank != null && rclTank != null
+                && DRFluidRegistry.getFluidFromStack(lavaTank.getFluid()) == FluidRegistry.LAVA
+                && lavaTank.getFluidAmount() > lavaTank.getCapacity()*0.25f
+                && rclTank.fill(ForgeDirection.UNKNOWN, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), false) == ConfigMachines.Smelter.rclPerOre;
     }
 
     private boolean validSlot(){
@@ -94,7 +98,8 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
     }
 
     private void stopSmelting() {
-        rclTank.fill(ForgeDirection.UNKNOWN, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), true);
+        FluidStack stack = LiquidCrystalFluidTagData.makeLiquidCrystalStack(ConfigMachines.Smelter.rclPerOre, 1.0f, 0.1f, 0.1f, 0.1f, 0.1f);
+        rclTank.fill(ForgeDirection.UNKNOWN, stack, true);
     }
 
     @Override
