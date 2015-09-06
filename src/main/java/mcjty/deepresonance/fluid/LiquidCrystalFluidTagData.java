@@ -30,15 +30,24 @@ public final class LiquidCrystalFluidTagData {
         if (stack.tag == null)
             stack.tag = new NBTTagCompound();
         NBTTagCompound fluidTag = stack.tag;
-        LiquidCrystalFluidTagData ret = new LiquidCrystalFluidTagData();
+        LiquidCrystalFluidTagData ret = fromNBT(fluidTag);
         ret.valid = stack.amount > 0;
+        ret.referenceStack = stack;
+        return ret;
+    }
+
+    public static LiquidCrystalFluidTagData fromNBT(NBTTagCompound fluidTag) {
+        if (fluidTag == null) {
+            return null;
+        }
+        LiquidCrystalFluidTagData ret = new LiquidCrystalFluidTagData();
+        ret.valid = true;
         ret.quality = fluidTag.getFloat("quality");
         ret.purity = fluidTag.getFloat("purity");
         ret.power = fluidTag.getFloat("power");
         ret.lastingTime = fluidTag.getFloat("lastingTime");
         ret.crystallisingTime = fluidTag.getFloat("crystallisingTime");
 
-        ret.referenceStack = stack;
         return ret;
     }
 

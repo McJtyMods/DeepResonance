@@ -12,6 +12,7 @@ import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
 import mcjty.deepresonance.blocks.base.ElecTileBase;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
+import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.deepresonance.grid.fluid.event.FluidTileEvent;
 import mcjty.deepresonance.grid.tank.DRTankMultiBlock;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -21,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -48,13 +50,16 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     }
 
     @SideOnly(Side.CLIENT)
-    public Fluid clientRenderFluid;
+    private Fluid clientRenderFluid;
     @SideOnly(Side.CLIENT)
-    public int totalFluidAmount;
+    private int totalFluidAmount;
     @SideOnly(Side.CLIENT)
-    public int tankCapacity;
+    private int tankCapacity;
     @SideOnly(Side.CLIENT)
-    public float renderHeight; //Value from 0.0f to 1.0f
+    private float renderHeight; //Value from 0.0f to 1.0f
+    @SideOnly(Side.CLIENT)
+    private LiquidCrystalFluidTagData fluidData;
+
     private long lastTime;
     protected Map<ForgeDirection, Integer> settings;
 
@@ -229,6 +234,10 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         return multiBlock == null ? null : multiBlock.getFluid();
     }
 
+    public NBTTagCompound getFluidTag() {
+        return getFluid() == null ? null : getFluid().tag;
+    }
+
     public int getFluidAmount() {
         return multiBlock == null ? 0 : multiBlock.getFluidAmount();
     }
@@ -269,6 +278,13 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         currentTip.add("Mode: "+(i == SETTING_NONE ? "none" : (i == SETTING_ACCEPT ? "accept" : "provide")));
         currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(clientRenderFluid));
         currentTip.add("Amount: "+totalFluidAmount + " (" + tankCapacity + ")");
+        if (fluidData != null) {
+            currentTip.add(EnumChatFormatting.YELLOW + "Quality: " + (int)(fluidData.getQuality() * 100) + "%");
+            currentTip.add(EnumChatFormatting.YELLOW + "Purity: " + (int)(fluidData.getPurity() * 100) + "%");
+            currentTip.add(EnumChatFormatting.YELLOW + "Power: " + (int)(fluidData.getPower() * 100) + "%");
+            currentTip.add(EnumChatFormatting.YELLOW + "Time: " + (int)(fluidData.getLastingTime() * 100) + "%");
+            currentTip.add(EnumChatFormatting.YELLOW + "Crystalizing: " + (int)(fluidData.getCrystallisingTime() * 100) + "%");
+        }
         if (System.currentTimeMillis() - lastTime > 100){
             lastTime = System.currentTimeMillis();
             sendPacketToServer(1, new NBTTagCompound());
@@ -283,6 +299,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
                 sendPacket(2, new NBTHelper()
                         .addToTag(getFluidAmount(), "totalFluid")
                         .addToTag(getCapacity(), "capacity")
+                        .addToTag(getFluidTag(), "fluidTag")
                         .toNBT());
         }
     }
@@ -296,6 +313,8 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
             case 2:
                 this.totalFluidAmount = tag.getInteger("totalFluid");
                 this.tankCapacity = tag.getInteger("capacity");
+                NBTTagCompound fluidTag = (NBTTagCompound) tag.getTag("fluidTag");
+                fluidData = LiquidCrystalFluidTagData.fromNBT(fluidTag);
                 return;
             case 3:
                 this.renderHeight = tag.getFloat("render");
