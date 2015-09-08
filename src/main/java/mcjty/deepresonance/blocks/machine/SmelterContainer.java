@@ -21,7 +21,7 @@ public class SmelterContainer extends GenericContainer {
         }
     };
 
-    public SmelterContainer(EntityPlayer player, TileSmelter containerInventory) {
+    public SmelterContainer(EntityPlayer player, SmelterTileEntity containerInventory) {
         super(factory);
         addInventory(CONTAINER_INVENTORY, containerInventory);
         addInventory(ContainerFactory.CONTAINER_PLAYER, player.inventory);

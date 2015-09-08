@@ -5,24 +5,31 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.base.ElecGenericBlockBase;
 import mcjty.deepresonance.gui.GuiProxy;
+import mcjty.varia.BlockTools;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 
 import java.util.List;
 
 /**
  * Created by Elec332 on 20-8-2015.
  */
-public class BlockSmelter extends ElecGenericBlockBase {
+public class SmelterBlock extends ElecGenericBlockBase {
 
-    public BlockSmelter(String blockName) {
-        super(Material.rock, TileSmelter.class, blockName);
+    private IIcon iconActive;
+    private IIcon iconInactive;
+
+    public SmelterBlock(String blockName) {
+        super(Material.rock, SmelterTileEntity.class, blockName);
     }
 
     @Override
@@ -35,19 +42,40 @@ public class BlockSmelter extends ElecGenericBlockBase {
     @Override
     @SideOnly(Side.CLIENT)
     public GuiContainer createClientGui(EntityPlayer entityPlayer, TileEntity tileEntity) {
-        TileSmelter smelterTile = (TileSmelter) tileEntity;
+        SmelterTileEntity smelterTile = (SmelterTileEntity) tileEntity;
         SmelterContainer smelterContainer = new SmelterContainer(entityPlayer, smelterTile);
         return new GuiSmelter(smelterTile, smelterContainer);
     }
 
     @Override
     public Container createServerContainer(EntityPlayer entityPlayer, TileEntity tileEntity) {
-        return new SmelterContainer(entityPlayer, (TileSmelter) tileEntity);
+        return new SmelterContainer(entityPlayer, (SmelterTileEntity) tileEntity);
     }
 
     @Override
     public int getGuiID() {
         return GuiProxy.GUI_SMELTER;
+    }
+
+    @Override
+    public void registerBlockIcons(IIconRegister iconRegister) {
+        super.registerBlockIcons(iconRegister);
+        iconActive = iconRegister.registerIcon(DeepResonance.MODID + ":smelterActive");
+        iconInactive = iconRegister.registerIcon(DeepResonance.MODID + ":smelterInactive");
+    }
+
+    @Override
+    public String getIdentifyingIconName() {
+        return "smelterActive";
+    }
+
+    @Override
+    public IIcon getIconInd(IBlockAccess blockAccess, int x, int y, int z, int meta) {
+        if (BlockTools.getRedstoneSignalIn(meta)) {
+            return iconActive;
+        } else {
+            return iconInactive;
+        }
     }
 
 }

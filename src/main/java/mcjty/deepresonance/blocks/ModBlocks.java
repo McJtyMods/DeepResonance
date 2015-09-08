@@ -9,7 +9,7 @@ import mcjty.deepresonance.blocks.duct.BlockDuct;
 import mcjty.deepresonance.blocks.duct.TileBasicFluidDuct;
 import mcjty.deepresonance.blocks.gencontroller.GeneratorControllerSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
-import mcjty.deepresonance.blocks.machine.BlockSmelter;
+import mcjty.deepresonance.blocks.machine.SmelterBlock;
 import mcjty.deepresonance.blocks.ore.ResonatingOreBlock;
 import mcjty.deepresonance.blocks.poisondirt.PoisonedDirtBlock;
 import mcjty.deepresonance.blocks.tank.BlockTank;
@@ -37,7 +37,7 @@ public final class ModBlocks {
         GameRegistry.registerTileEntity(ResonatingCrystalTileEntity.class, "ResonatingCrystalTileEntity");
 
         duct = new BlockDuct(TileBasicFluidDuct.class, "basicFluidDuct").registerTile().register();
-        smelter = new BlockSmelter("smelter").registerTile().register();
+        smelter = new SmelterBlock("smelter").registerTile().register();
         tank = new BlockTank("tank").registerTile().register();
 
         machineFrame = new MachineFrame();

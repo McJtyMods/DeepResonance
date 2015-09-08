@@ -14,6 +14,7 @@ import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.network.Argument;
 import mcjty.network.PacketRequestIntegerFromServer;
+import mcjty.varia.BlockTools;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
@@ -31,14 +32,14 @@ import java.util.Map;
 /**
  * Created by Elec332 on 9-8-2015.
  */
-public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook, ISidedInventory {
+public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITankHook, ISidedInventory {
 
     public static final String CMD_GETPROGRESS = "getProgress";
     public static final String CLIENTCMD_GETPROGRESS = "getProgress";
 
     private InventoryHelper inventoryHelper = new InventoryHelper(this, SmelterContainer.factory, 1);
 
-    public TileSmelter() {
+    public SmelterTileEntity() {
         super(900*ConfigMachines.Smelter.rfPerTick, 3*ConfigMachines.Smelter.rfPerTick);
         checkTanks = true;
     }
@@ -66,8 +67,16 @@ public class TileSmelter extends ElecEnergyReceiverTileBase implements ITankHook
                 }
             }
         } else {
+            int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+            int meta2;
             if (canWork() && validSlot()) {
                 startSmelting();
+                meta2 = BlockTools.setRedstoneSignalIn(meta, true);
+            } else {
+                meta2 = BlockTools.setRedstoneSignalIn(meta, false);
+            }
+            if (meta != meta2) {
+                worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, meta2, 3);
             }
         }
     }

@@ -65,6 +65,7 @@ public abstract class ElecEnergyReceiverTileBase extends GenericEnergyReceiverTi
         this.worldObj.notifyBlockChange(xCoord, yCoord, zCoord, blockType);
     }
 
+    @Override
     public void onPacketReceivedFromClient(EntityPlayerMP sender, int ID, NBTTagCompound data) {
     }
 

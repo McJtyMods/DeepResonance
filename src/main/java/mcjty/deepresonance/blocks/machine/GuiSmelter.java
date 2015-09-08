@@ -2,7 +2,6 @@ package mcjty.deepresonance.blocks.machine;
 
 import mcjty.container.GenericGuiContainer;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.gui.Window;
 import mcjty.gui.layout.PositionalLayout;
 import mcjty.gui.widgets.*;
@@ -12,7 +11,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.awt.Rectangle;
 
-public class GuiSmelter extends GenericGuiContainer<TileSmelter> {
+public class GuiSmelter extends GenericGuiContainer<SmelterTileEntity> {
     public static final int SMELTER_WIDTH = 180;
     public static final int SMELTER_HEIGHT = 152;
 
@@ -23,7 +22,7 @@ public class GuiSmelter extends GenericGuiContainer<TileSmelter> {
     private static final ResourceLocation iconLocation = new ResourceLocation(DeepResonance.MODID, "textures/gui/smelter.png");
     private static final ResourceLocation iconBurning = new ResourceLocation(DeepResonance.MODID, "textures/gui/burning.png");
 
-    public GuiSmelter(TileSmelter machineInfuserTileEntity, SmelterContainer container) {
+    public GuiSmelter(SmelterTileEntity machineInfuserTileEntity, SmelterContainer container) {
         super(DeepResonance.instance, DeepResonance.networkHandler.getNetworkWrapper(), machineInfuserTileEntity, container, 0, "smelter");
         machineInfuserTileEntity.setCurrentRF(machineInfuserTileEntity.getEnergyStored(ForgeDirection.DOWN));
 
@@ -57,7 +56,7 @@ public class GuiSmelter extends GenericGuiContainer<TileSmelter> {
     @Override
     protected void drawGuiContainerBackgroundLayer(float v, int i, int i2) {
         int progress = tileEntity.getProgressPercentage();
-        if (progress < 100) {
+        if (0 < progress && progress < 100) {
             int p = ((progress/3) % 9) + 1;
             int x = (p % 4) * 64;
             int y = (p / 4) * 64;
