@@ -230,6 +230,16 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         }
     }
 
+    @SideOnly(Side.CLIENT)
+    public Fluid getClientRenderFluid() {
+        return clientRenderFluid;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public float getRenderHeight() {
+        return renderHeight;
+    }
+
     public FluidStack getFluid() {
         return multiBlock == null ? null : multiBlock.getFluid();
     }

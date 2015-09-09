@@ -67,6 +67,14 @@ public abstract class DefaultISBRH implements ISimpleBlockRenderingHandler {
         tessellator.addVertexWithUV(quad.v4.x * mult + offset, quad.v4.y * mult + offset, quad.v4.z * mult + offset, u2, v1);
     }
 
+    public static void addSide(Tessellator tessellator, int side, float u1, float mult, float offset, float v1, float u2, float v2) {
+        Quad quad = quads[side];
+        tessellator.addVertexWithUV(quad.v1.x * mult + offset, quad.v1.y * mult + offset, quad.v1.z * mult + offset, u1, v1);
+        tessellator.addVertexWithUV(quad.v2.x * mult + offset, quad.v2.y * mult + offset, quad.v2.z * mult + offset, u1, v2);
+        tessellator.addVertexWithUV(quad.v3.x * mult + offset, quad.v3.y * mult + offset, quad.v3.z * mult + offset, u2, v2);
+        tessellator.addVertexWithUV(quad.v4.x * mult + offset, quad.v4.y * mult + offset, quad.v4.z * mult + offset, u2, v1);
+    }
+
     public static void addSideConditionally(IBlockAccess world, int x, int y, int z, Block block, Tessellator tessellator, IIcon icon, ForgeDirection direction) {
         if (block.shouldSideBeRendered(world, x+direction.offsetX, y+direction.offsetY, z+direction.offsetZ, direction.ordinal())) {
             addSide(tessellator, direction.ordinal(), icon);

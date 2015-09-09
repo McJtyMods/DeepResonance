@@ -5,8 +5,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
 
 import java.util.Map;
 
@@ -47,5 +50,32 @@ public class BlockTank extends ElecGenericBlockBase {
             return true;
         }
         return super.onBlockActivated(world, x, y, z, player, side, sidex, sidey, sidez);
+    }
+
+    @Override
+    public String getSideIconName() {
+        return "tankSide";
+    }
+
+//    @Override
+//    public boolean shouldSideBeRendered(IBlockAccess blockAccess, int x, int y, int z, int side) {
+//        return false;
+//    }
+//
+    @Override
+    public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side) {
+        return getIcon(side, 0);
+    }
+
+    @Override
+    public IIcon getIcon(int side, int meta) {
+        ForgeDirection dir = ForgeDirection.getOrientation(side);
+        if (dir == ForgeDirection.DOWN) {
+            return iconBottom;
+        } else if (dir == ForgeDirection.UP) {
+            return iconTop;
+        } else {
+            return iconSide;
+        }
     }
 }

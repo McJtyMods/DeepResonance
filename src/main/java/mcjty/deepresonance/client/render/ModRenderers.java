@@ -10,6 +10,8 @@ import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalItemRenderer;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTESR;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
+import mcjty.deepresonance.blocks.tank.TankTESR;
+import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.client.render.duct.FluidDuctISBHR;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -19,6 +21,8 @@ public final class ModRenderers {
     public static void init() {
         ClientRegistry.bindTileEntitySpecialRenderer(ResonatingCrystalTileEntity.class, new ResonatingCrystalTESR());
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.resonatingCrystalBlock), new ResonatingCrystalItemRenderer());
+
+        ClientRegistry.bindTileEntitySpecialRenderer(TileTank.class, new TankTESR());
 
         ClientRegistry.bindTileEntitySpecialRenderer(EnergyCollectorTileEntity.class, new EnergyCollectorTESR());
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(EnergyCollectorSetup.energyCollectorBlock), new EnergyCollectorItemRenderer());
