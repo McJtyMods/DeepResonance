@@ -10,7 +10,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public abstract class DefaultISBRH implements ISimpleBlockRenderingHandler {
 
-    protected static class Vt {
+    public static final class Vt {
         public final float x;
         public final float y;
         public final float z;
@@ -22,7 +22,7 @@ public abstract class DefaultISBRH implements ISimpleBlockRenderingHandler {
         }
     }
 
-    protected static class Quad {
+    public static final class Quad {
         public final Vt v1;
         public final Vt v2;
         public final Vt v3;
@@ -55,6 +55,14 @@ public abstract class DefaultISBRH implements ISimpleBlockRenderingHandler {
             new Quad(new Vt(1, 0, 0), new Vt(1, 1, 0), new Vt(1, 1, 1), new Vt(1, 0, 1)),       // EAST
     };
 
+    public static Quad getQuad(ForgeDirection side){
+        return getQuad(side.ordinal());
+    }
+
+    public static Quad getQuad(int i){
+        return quads[i];
+    }
+
     public static void addSideFullTexture(Tessellator tessellator, int side, float mult, float offset) {
         float u1 = 0;
         float v1 = 0;
@@ -73,6 +81,14 @@ public abstract class DefaultISBRH implements ISimpleBlockRenderingHandler {
         tessellator.addVertexWithUV(quad.v2.x * mult + offset, quad.v2.y * mult + offset, quad.v2.z * mult + offset, u1, v2);
         tessellator.addVertexWithUV(quad.v3.x * mult + offset, quad.v3.y * mult + offset, quad.v3.z * mult + offset, u2, v2);
         tessellator.addVertexWithUV(quad.v4.x * mult + offset, quad.v4.y * mult + offset, quad.v4.z * mult + offset, u2, v1);
+    }
+
+    public static void addSideConfigurableHeight(Tessellator tessellator, int side, float height, float offset, float u1, float v1, float u2, float v2) {
+        Quad quad = quads[side];
+        tessellator.addVertexWithUV(quad.v1.x + offset, quad.v1.y * height + offset, quad.v1.z + offset, u1, v1);
+        tessellator.addVertexWithUV(quad.v2.x + offset, quad.v2.y * height + offset, quad.v2.z + offset, u1, v2);
+        tessellator.addVertexWithUV(quad.v3.x + offset, quad.v3.y * height + offset, quad.v3.z + offset, u2, v2);
+        tessellator.addVertexWithUV(quad.v4.x + offset, quad.v4.y * height + offset, quad.v4.z + offset, u2, v1);
     }
 
     public static void addSideConditionally(IBlockAccess world, int x, int y, int z, Block block, Tessellator tessellator, IIcon icon, ForgeDirection direction) {

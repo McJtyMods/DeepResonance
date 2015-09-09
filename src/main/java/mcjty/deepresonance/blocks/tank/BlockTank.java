@@ -57,11 +57,6 @@ public class BlockTank extends ElecGenericBlockBase {
         return "tankSide";
     }
 
-//    @Override
-//    public boolean shouldSideBeRendered(IBlockAccess blockAccess, int x, int y, int z, int side) {
-//        return false;
-//    }
-//
     @Override
     public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side) {
         return getIcon(side, 0);
