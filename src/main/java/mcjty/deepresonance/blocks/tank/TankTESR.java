@@ -38,20 +38,21 @@ public class TankTESR extends TileEntitySpecialRenderer {
                 float v1 = fluid.getMinV();
                 float u2 = fluid.getMaxU();
                 float v2 = fluid.getMaxV() - (fluid.getMaxV()-fluid.getMinV()) * (1 - scale);
+                float hy = 3/16f + (1 - 3/8f) * scale;
 
                 //NORTH
-                tessellator.addVertexWithUV(1 - 3/16f, (1 - 3/16f) * scale, -renderDistance, u1, v1);
+                tessellator.addVertexWithUV(1 - 3/16f, hy, -renderDistance, u1, v1);
                 tessellator.addVertexWithUV(1 - 3/16f, 3/16f, -renderDistance, u1, v2);
                 tessellator.addVertexWithUV(3/16f, 3/16f, -renderDistance, u2, v2);
-                tessellator.addVertexWithUV(3/16f, (1 - 3/16f) * scale, -renderDistance, u2, v1);
+                tessellator.addVertexWithUV(3/16f, hy, -renderDistance, u2, v1);
 
                 //EAST
                 //TODO
 
                 //SOUTH
                 tessellator.addVertexWithUV(1 - 3/16f, 3/16f, 1 + renderDistance, u1, v2);
-                tessellator.addVertexWithUV(1 - 3/16f, (1 - 3/16f) * scale, 1 + renderDistance, u1, v1);
-                tessellator.addVertexWithUV(3/16f, (1 - 3/16f) * scale, 1 + renderDistance, u2, v1);
+                tessellator.addVertexWithUV(1 - 3/16f, hy, 1 + renderDistance, u1, v1);
+                tessellator.addVertexWithUV(3/16f, hy, 1 + renderDistance, u2, v1);
                 tessellator.addVertexWithUV(3/16f, 3/16f, 1 + renderDistance, u2, v2);
 
                 //WEST
