@@ -14,10 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Elec332 on 10-8-2015.
@@ -57,6 +54,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
 
     private void setTankFluidHeights(){
         if (needsSorting){
+            renderData.clear();
             Collections.sort(allLocations, new Comparator<BlockLoc>() {
                 @Override
                 public int compare(BlockLoc o1, BlockLoc o2) {
@@ -73,11 +71,17 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
             needsSorting = false;
         }
         int total = tank.getStoredAmount();
-        for (List<BlockLoc> list : renderData.values()){
-            int i = list.size();
-            int toAdd = Math.min(total, i * 9 * FluidContainerRegistry.BUCKET_VOLUME);
-            total -= toAdd;
-            float filled = (float)toAdd/( i * 9 * FluidContainerRegistry.BUCKET_VOLUME);
+        List<Integer> list8776 = Lists.newArrayList(renderData.keySet());
+        Collections.sort(list8776);
+        for (Integer j : list8776){
+            List<BlockLoc> list = renderData.get(j);
+            float filled = 0.0f;
+            if (total > 0) {
+                int i = list.size();
+                int toAdd = Math.min(total, i * 9 * FluidContainerRegistry.BUCKET_VOLUME);
+                total -= toAdd;
+                filled = (float) toAdd / (i * 9 * FluidContainerRegistry.BUCKET_VOLUME);
+            }
             for (BlockLoc loc : list) {
                 getTank(loc).sendPacket(3, new NBTHelper().addToTag(filled, "render").toNBT());
             }
