@@ -3,11 +3,13 @@ package mcjty.deepresonance.blocks.tank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import elec332.core.client.render.RenderHelper;
+import mcjty.deepresonance.client.render.DefaultISBRH;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import org.lwjgl.opengl.GL11;
 
@@ -47,7 +49,10 @@ public class TankTESR extends TileEntitySpecialRenderer {
                 tessellator.addVertexWithUV(3/16f, hy, -renderDistance, u2, v1);
 
                 //EAST
-                //TODO
+                tessellator.addVertexWithUV(-renderDistance, 3/16f, 1 - 3/16f, u1, v2);
+                tessellator.addVertexWithUV(-renderDistance, hy, 1 - 3/16f, u1, v1);
+                tessellator.addVertexWithUV(-renderDistance, hy, 3/16f, u2, v1);
+                tessellator.addVertexWithUV(-renderDistance, 3/16f, 3/16f, u2, v2);
 
                 //SOUTH
                 tessellator.addVertexWithUV(1 - 3/16f, 3/16f, 1 + renderDistance, u1, v2);
@@ -56,7 +61,10 @@ public class TankTESR extends TileEntitySpecialRenderer {
                 tessellator.addVertexWithUV(3/16f, 3/16f, 1 + renderDistance, u2, v2);
 
                 //WEST
-                //TODO
+                tessellator.addVertexWithUV(1+renderDistance, hy, 1 - 3/16f, u1, v1);
+                tessellator.addVertexWithUV(1+renderDistance, 3/16f, 1 - 3/16f, u1, v2);
+                tessellator.addVertexWithUV(1+renderDistance, 3/16f, 3/16f, u2, v2);
+                tessellator.addVertexWithUV(1+renderDistance, hy, 3/16f, u2, v1);
 
 
                 tessellator.draw();
