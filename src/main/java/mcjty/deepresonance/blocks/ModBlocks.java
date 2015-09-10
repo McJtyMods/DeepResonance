@@ -21,7 +21,8 @@ public final class ModBlocks {
     public static ResonatingOreBlock resonatingOreBlock;
     public static ResonatingCrystalBlock resonatingCrystalBlock;
     public static PoisonedDirtBlock poisonedDirtBlock;
-    public static Block duct, smelter, tank;
+    public static Block duct, smelter;
+    public static BlockTank tank;
     public static MachineFrame machineFrame;
 
     public static void init() {
@@ -38,7 +39,8 @@ public final class ModBlocks {
 
         duct = new BlockDuct(TileBasicFluidDuct.class, "basicFluidDuct").registerTile().register();
         smelter = new SmelterBlock("smelter").registerTile().register();
-        tank = new BlockTank("tank").registerTile().register();
+        tank = new BlockTank("tank");
+        tank.registerTile().register();
 
         machineFrame = new MachineFrame();
         GameRegistry.registerBlock(machineFrame, "machineFrame");

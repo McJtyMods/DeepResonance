@@ -9,7 +9,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
 
 import java.util.Map;
 
@@ -70,6 +69,24 @@ public class BlockTank extends ElecGenericBlockBase {
     @Override
     public String getSideIconName() {
         return "tankSide";
+    }
+
+    public IIcon getSideIcon() {
+        return iconSide;
+    }
+
+    public IIcon getBottomIcon() {
+        return iconBottom;
+    }
+
+    public IIcon getTopIcon() {
+        return iconTop;
+    }
+
+    @Override
+    public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side) {
+//        System.out.println("x = " + x+","+y+","+z+"    ->"+side + "    ->" + world.getBlock(x, y, z).getLocalizedName());
+        return world.getBlock(x, y, z) != this;
     }
 
     @Override
