@@ -38,7 +38,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
 
     @Override
     public void tick() {
-        if (world.getTotalWorldTime() % 180L == 0L){
+        if (world.getTotalWorldTime() % 20L == 0L){
             setTankFluidHeights();
             sendFluidData();
             sendFluidHeight();
