@@ -74,35 +74,38 @@ public class TankTESR extends TileEntitySpecialRenderer {
             tessellator.addVertexWithUV(0, scale - offset, 1, u1, v2);
             tessellator.addVertexWithUV(1, scale - offset, 1, u2, v2);
             tessellator.addVertexWithUV(1, scale - offset, 0, u2, v1);
+            
+            if (scale > 3/16f) {
 
-            if (scale > 1 - 3/16f)
-                scale = 1 - 3/16f;
+                if (scale > 1 - 3/16f)
+                    scale = 1 - 3/16f;
 
-            v2 -= (fluid.getMaxV() - fluid.getMinV()) * (1 - scale);
+                v2 -= (fluid.getMaxV() - fluid.getMinV()) * (1 - scale);
 
-            //NORTH
-            tessellator.addVertexWithUV(1 - 3 / 16f, scale, -offset, u1, v1);
-            tessellator.addVertexWithUV(1 - 3 / 16f, 3 / 16f, -offset, u1, v2);
-            tessellator.addVertexWithUV(3 / 16f, 3 / 16f, -offset, u2, v2);
-            tessellator.addVertexWithUV(3 / 16f, scale, -offset, u2, v1);
+                //NORTH
+                tessellator.addVertexWithUV(1 - 3 / 16f, scale, -offset, u1, v1);
+                tessellator.addVertexWithUV(1 - 3 / 16f, 3 / 16f, -offset, u1, v2);
+                tessellator.addVertexWithUV(3 / 16f, 3 / 16f, -offset, u2, v2);
+                tessellator.addVertexWithUV(3 / 16f, scale, -offset, u2, v1);
 
-            //EAST
-            tessellator.addVertexWithUV(-offset, 3 / 16f, 1 - 3 / 16f, u1, v2);
-            tessellator.addVertexWithUV(-offset, scale, 1 - 3 / 16f, u1, v1);
-            tessellator.addVertexWithUV(-offset, scale, 3 / 16f, u2, v1);
-            tessellator.addVertexWithUV(-offset, 3 / 16f, 3 / 16f, u2, v2);
+                //EAST
+                tessellator.addVertexWithUV(-offset, 3 / 16f, 1 - 3 / 16f, u1, v2);
+                tessellator.addVertexWithUV(-offset, scale, 1 - 3 / 16f, u1, v1);
+                tessellator.addVertexWithUV(-offset, scale, 3 / 16f, u2, v1);
+                tessellator.addVertexWithUV(-offset, 3 / 16f, 3 / 16f, u2, v2);
 
-            //SOUTH
-            tessellator.addVertexWithUV(1 - 3 / 16f, 3 / 16f, 1 + offset, u1, v2);
-            tessellator.addVertexWithUV(1 - 3 / 16f, scale, 1 + offset, u1, v1);
-            tessellator.addVertexWithUV(3 / 16f, scale, 1 + offset, u2, v1);
-            tessellator.addVertexWithUV(3 / 16f, 3 / 16f, 1 + offset, u2, v2);
+                //SOUTH
+                tessellator.addVertexWithUV(1 - 3 / 16f, 3 / 16f, 1 + offset, u1, v2);
+                tessellator.addVertexWithUV(1 - 3 / 16f, scale, 1 + offset, u1, v1);
+                tessellator.addVertexWithUV(3 / 16f, scale, 1 + offset, u2, v1);
+                tessellator.addVertexWithUV(3 / 16f, 3 / 16f, 1 + offset, u2, v2);
 
-            //WEST
-            tessellator.addVertexWithUV(1 + offset, scale, 1 - 3 / 16f, u1, v1);
-            tessellator.addVertexWithUV(1 + offset, 3 / 16f, 1 - 3 / 16f, u1, v2);
-            tessellator.addVertexWithUV(1 + offset, 3 / 16f, 3 / 16f, u2, v2);
-            tessellator.addVertexWithUV(1 + offset, scale, 3 / 16f, u2, v1);
+                //WEST
+                tessellator.addVertexWithUV(1 + offset, scale, 1 - 3 / 16f, u1, v1);
+                tessellator.addVertexWithUV(1 + offset, 3 / 16f, 1 - 3 / 16f, u1, v2);
+                tessellator.addVertexWithUV(1 + offset, 3 / 16f, 3 / 16f, u2, v2);
+                tessellator.addVertexWithUV(1 + offset, scale, 3 / 16f, u2, v1);
+            }
         }
         tessellator.draw();
     }
