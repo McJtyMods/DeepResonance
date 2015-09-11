@@ -3,6 +3,7 @@ package mcjty.deepresonance.blocks;
 import cpw.mods.fml.common.registry.GameRegistry;
 import mcjty.container.GenericItemBlock;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
+import mcjty.deepresonance.blocks.crystalizer.CrystalizerBlock;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalBlock;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.blocks.duct.BlockDuct;
@@ -23,6 +24,7 @@ public final class ModBlocks {
     public static PoisonedDirtBlock poisonedDirtBlock;
     public static Block duct, smelter;
     public static BlockTank tank;
+    public static CrystalizerBlock crystalizer;
     public static MachineFrame machineFrame;
 
     public static void init() {
@@ -39,8 +41,12 @@ public final class ModBlocks {
 
         duct = new BlockDuct(TileBasicFluidDuct.class, "basicFluidDuct").registerTile().register();
         smelter = new SmelterBlock("smelter").registerTile().register();
+
         tank = new BlockTank("tank");
         tank.registerTile().register();
+
+        crystalizer = new CrystalizerBlock("crystalizer");
+        crystalizer.registerTile().register();
 
         machineFrame = new MachineFrame();
         GameRegistry.registerBlock(machineFrame, "machineFrame");

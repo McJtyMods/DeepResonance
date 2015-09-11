@@ -40,7 +40,7 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     private InventoryHelper inventoryHelper = new InventoryHelper(this, SmelterContainer.factory, 1);
 
     public SmelterTileEntity() {
-        super(900*ConfigMachines.Smelter.rfPerTick, 3*ConfigMachines.Smelter.rfPerTick);
+        super(ConfigMachines.Smelter.rfMaximum, ConfigMachines.Smelter.rfPerTick);
         checkTanks = true;
     }
 

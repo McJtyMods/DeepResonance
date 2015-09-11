@@ -10,10 +10,13 @@ public class ConfigMachines {
     public static class Smelter{
         private static final String category = "Smelter";
 
-        @Configurable(category = category, minValue = 5, maxValue = 900)
+        @Configurable(category = category, minValue = 0, maxValue = 1000)
         public static int rfPerTick = 10;
 
-        @Configurable(category = category, minValue = 20, maxValue = 1000)
+        @Configurable(category = category, minValue = 0, maxValue = 1000000000)
+        public static int rfMaximum = 50000;
+
+        @Configurable(category = category, minValue = 10, maxValue = 1000)
         public static int processTime = 400;
 
         @Configurable(category = category, minValue = 100, maxValue = 10000)
@@ -21,6 +24,22 @@ public class ConfigMachines {
 
         @Configurable(category = category, minValue = 50, maxValue = 1000)
         public static int rclPerOre = 200;
+    }
+
+    public static class Crystalizer{
+        private static final String category = "Crystalizer";
+
+        @Configurable(category = category, minValue = 0, maxValue = 1000)
+        public static int rfPerTick = 10;
+
+        @Configurable(category = category, minValue = 0, maxValue = 1000000000)
+        public static int rfMaximum = 50000;
+
+        @Configurable(category = category, minValue = 10, maxValue = 1000)
+        public static int processTime = 400;
+
+        @Configurable(category = category, minValue = 10, maxValue = 100000)
+        public static int rclPerCrystal = 5000;
 
     }
 }

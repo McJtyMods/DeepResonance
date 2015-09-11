@@ -21,7 +21,7 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
     private InventoryHelper inventoryHelper = new InventoryHelper(this, CrystalizerContainer.factory, 1);
 
     public CrystalizerTileEntity() {
-        super(900*ConfigMachines.Smelter.rfPerTick, 3*ConfigMachines.Smelter.rfPerTick);
+        super(ConfigMachines.Crystalizer.rfMaximum, ConfigMachines.Crystalizer.rfPerTick);
         checkTanks = true;
     }
 

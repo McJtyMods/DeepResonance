@@ -26,6 +26,6 @@ public class CrystalizerBlock extends ElecGenericBlockBase {
 
     @Override
     public String getIdentifyingIconName() {
-        return "smelterActive";
+        return "crystalizer";
     }
 }
