@@ -1,5 +1,6 @@
 package mcjty.deepresonance.blocks.tank;
 
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.base.ElecGenericBlockBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -27,6 +28,7 @@ public class BlockTank extends ElecGenericBlockBase {
 
     public BlockTank(String name) {
         super(Material.rock, TileTank.class, name);
+        setCreativeTab(DeepResonance.tabDeepResonance);
     }
 
     @Override

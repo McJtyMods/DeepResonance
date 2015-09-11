@@ -22,9 +22,9 @@ public class GuiSmelter extends GenericGuiContainer<SmelterTileEntity> {
     private static final ResourceLocation iconLocation = new ResourceLocation(DeepResonance.MODID, "textures/gui/smelter.png");
     private static final ResourceLocation iconBurning = new ResourceLocation(DeepResonance.MODID, "textures/gui/burning.png");
 
-    public GuiSmelter(SmelterTileEntity machineInfuserTileEntity, SmelterContainer container) {
-        super(DeepResonance.instance, DeepResonance.networkHandler.getNetworkWrapper(), machineInfuserTileEntity, container, 0, "smelter");
-        machineInfuserTileEntity.setCurrentRF(machineInfuserTileEntity.getEnergyStored(ForgeDirection.DOWN));
+    public GuiSmelter(SmelterTileEntity smelterTileEntity, SmelterContainer container) {
+        super(DeepResonance.instance, DeepResonance.networkHandler.getNetworkWrapper(), smelterTileEntity, container, 0, "smelter");
+        smelterTileEntity.setCurrentRF(smelterTileEntity.getEnergyStored(ForgeDirection.DOWN));
 
         xSize = SMELTER_WIDTH;
         ySize = SMELTER_HEIGHT;

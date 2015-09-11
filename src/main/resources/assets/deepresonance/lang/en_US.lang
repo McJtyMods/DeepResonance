@@ -9,7 +9,8 @@ tile.generatorControllerBlock.name=Generator Controller
 tile.energyCollectorBlock.name=Energy Collector
 tile.machineFrame.name=Machine Frame
 tile.deepresonance.tank.name=Tank
-tile.deepresonance.crystalizer.name=Tank
+tile.deepresonance.crystalizer.name=Crystalizer
+tile.deepresonance.smelter.name=Smelter
 
 itemGroup.DeepResonance=Deep Resonance
 

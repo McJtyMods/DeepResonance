@@ -22,35 +22,44 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
 
     public CrystalizerTileEntity() {
         super(ConfigMachines.Crystalizer.rfMaximum, ConfigMachines.Crystalizer.rfPerTick);
-        checkTanks = true;
     }
 
     private TileTank rclTank;
-    private boolean checkTanks;
+    private int progress = 0;
 
     @Override
     protected void checkStateServer() {
-    }
-
-    private boolean canWork() {
-        if (checkTanks) {
-            if (checkTanks()) {
-                checkTanks = false;
-            } else {
-                return false;
-            }
+        if (rclTank == null) {
+            return;
         }
-        return storage.getMaxEnergyStored() >= ConfigMachines.Smelter.rfPerTick;
-    }
 
-    private boolean checkTanks(){
-        return rclTank != null
-                && rclTank.fill(ForgeDirection.UNKNOWN, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), false) == ConfigMachines.Smelter.rclPerOre;
+        if (storage.getMaxEnergyStored() < ConfigMachines.Crystalizer.rfPerRcl) {
+            return;
+        }
+
+        ItemStack crystalStack = inventoryHelper.getStackInSlot(CrystalizerContainer.SLOT_CRYSTAL);
+        if (crystalStack != null) {
+            return;
+        }
+
+        FluidStack fluidStack = rclTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Crystalizer.rclPerTick, false);
+        if (fluidStack == null || fluidStack.amount != ConfigMachines.Crystalizer.rclPerTick) {
+            return;
+        }
+
+        storage.extractEnergy(ConfigMachines.Crystalizer.rfPerRcl, false);
+        rclTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Crystalizer.rclPerTick, true);
+
+        progress++;
+        if (progress >= ConfigMachines.Crystalizer.processTime) {
+
+        }
     }
 
     @Override
     public void writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
+        tagCompound.setInteger("progress", progress);
     }
 
     @Override
@@ -61,6 +70,7 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
+        progress = tagCompound.getInteger("progress");
     }
 
     @Override
@@ -79,7 +89,6 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
                 rclTank = tank;
             }
         }
-        checkTanks = true;
     }
 
     @Override
@@ -88,7 +97,6 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
             rclTank = null;
             notifyNeighboursOfDataChange();
         }
-        checkTanks = true;
     }
 
     @Override
@@ -98,7 +106,6 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
                 rclTank = null;
             }
         }
-        checkTanks = true;
     }
 
     private boolean validRCLTank(TileTank tank){

@@ -60,7 +60,7 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
         if (progress > 0) {
             if (canWork()) {
                 progress--;
-                storage.extractEnergy(ConfigMachines.Smelter.rfPerTick, true);
+                storage.extractEnergy(ConfigMachines.Smelter.rfPerOre, true);
                 if (progress == 0) {
                     // Done!
                     stopSmelting();
@@ -94,7 +94,7 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
                 return false;
             }
         }
-        return storage.getMaxEnergyStored() >= ConfigMachines.Smelter.rfPerTick;
+        return storage.getMaxEnergyStored() >= ConfigMachines.Smelter.rfPerOre;
     }
 
     private boolean checkTanks(){

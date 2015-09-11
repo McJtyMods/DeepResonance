@@ -5,7 +5,6 @@ import mcjty.container.GenericContainer;
 import mcjty.container.SlotDefinition;
 import mcjty.container.SlotType;
 import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.deepresonance.blocks.smelter.SmelterTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -22,7 +21,7 @@ public class CrystalizerContainer extends GenericContainer {
         }
     };
 
-    public CrystalizerContainer(EntityPlayer player, SmelterTileEntity containerInventory) {
+    public CrystalizerContainer(EntityPlayer player, CrystalizerTileEntity containerInventory) {
         super(factory);
         addInventory(CONTAINER_INVENTORY, containerInventory);
         addInventory(ContainerFactory.CONTAINER_PLAYER, player.inventory);
