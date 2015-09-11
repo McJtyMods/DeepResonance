@@ -1,4 +1,4 @@
-package mcjty.deepresonance.blocks.machine;
+package mcjty.deepresonance.blocks.smelter;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

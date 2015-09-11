@@ -1,4 +1,4 @@
-package mcjty.deepresonance.blocks.machine;
+package mcjty.deepresonance.blocks.smelter;
 
 import mcjty.container.ContainerFactory;
 import mcjty.container.GenericContainer;

@@ -9,7 +9,7 @@ import mcjty.deepresonance.blocks.duct.BlockDuct;
 import mcjty.deepresonance.blocks.duct.TileBasicFluidDuct;
 import mcjty.deepresonance.blocks.gencontroller.GeneratorControllerSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
-import mcjty.deepresonance.blocks.machine.SmelterBlock;
+import mcjty.deepresonance.blocks.smelter.SmelterBlock;
 import mcjty.deepresonance.blocks.ore.ResonatingOreBlock;
 import mcjty.deepresonance.blocks.poisondirt.PoisonedDirtBlock;
 import mcjty.deepresonance.blocks.tank.BlockTank;
