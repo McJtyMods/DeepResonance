@@ -109,17 +109,14 @@ public abstract class ElecTileBase extends GenericTileEntity implements IInvento
         ElecCore.networkHandler.getNetworkWrapper().sendToServer(new PacketTileDataToServer(this, ID, data));
     }
 
+    @Override
     public void onPacketReceivedFromClient(EntityPlayerMP sender, int ID, NBTTagCompound data) {
     }
 
     public void sendPacket(int ID, NBTTagCompound data) {
-        Iterator i$ = ServerHelper.instance.getAllPlayersWatchingBlock(this.worldObj, this.xCoord, this.zCoord).iterator();
-
-        while(i$.hasNext()) {
-            EntityPlayerMP player = (EntityPlayerMP)i$.next();
-            this.sendPacketTo(player, ID, data);
+        for (Object player : ServerHelper.instance.getAllPlayersWatchingBlock(this.worldObj, this.xCoord, this.zCoord)) {
+            this.sendPacketTo((EntityPlayerMP) player, ID, data);
         }
-
     }
 
     public void sendPacketTo(EntityPlayerMP player, int ID, NBTTagCompound data) {
@@ -143,6 +140,7 @@ public abstract class ElecTileBase extends GenericTileEntity implements IInvento
 
     }
 
+    @Override
     public void onDataPacket(int id, NBTTagCompound tag) {
     }
 }

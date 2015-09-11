@@ -274,11 +274,11 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         return ret;
     }
 
-    private boolean isInput(ForgeDirection direction){
+    public boolean isInput(ForgeDirection direction){
         return direction == ForgeDirection.UNKNOWN || settings.get(direction) == SETTING_ACCEPT;
     }
 
-    private boolean isOutput(ForgeDirection direction){
+    public boolean isOutput(ForgeDirection direction){
         return direction == ForgeDirection.UNKNOWN || settings.get(direction) == SETTING_PROVIDE;
     }
 
