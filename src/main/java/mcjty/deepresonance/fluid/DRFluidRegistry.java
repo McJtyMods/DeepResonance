@@ -1,5 +1,6 @@
 package mcjty.deepresonance.fluid;
 
+import mcjty.deepresonance.DeepResonance;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -18,7 +19,7 @@ public class DRFluidRegistry {
 
     //TODO: icons for the fluid
     public static void registerIcons(IIconRegister iconRegister){
-        liquidCrystal.setIcons(iconRegister.registerIcon("FluidStillIcon"), iconRegister.registerIcon("FluidFlowingIcon.png"));
+        liquidCrystal.setIcons(iconRegister.registerIcon(DeepResonance.MODID + ":rclfluid"), iconRegister.registerIcon(DeepResonance.MODID + ":rclfluid"));
     }
 
     public static boolean isValidLiquidCrystalStack(FluidStack stack){
