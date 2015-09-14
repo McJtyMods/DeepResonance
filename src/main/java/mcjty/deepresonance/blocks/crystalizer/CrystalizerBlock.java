@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 
 import java.util.List;
 
@@ -38,6 +39,37 @@ public class CrystalizerBlock extends ElecGenericBlockBase {
     @Override
     public int getGuiID() {
         return GuiProxy.GUI_CRYSTALIZER;
+    }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    public boolean isOpaqueCube() {
+        return false;
+    }
+
+    @Override
+    public int getRenderBlockPass() {
+        return 1;
+    }
+
+    public IIcon getTopIcon() {
+        return iconTop;
+    }
+
+    public IIcon getBottomIcon() {
+        return iconBottom;
+    }
+
+    public IIcon getSideIcon() {
+        return iconSide;
+    }
+
+    public IIcon getSouthIcon() {
+        return iconInd;
     }
 
     @Override

@@ -5,12 +5,13 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.gui.Window;
 import mcjty.gui.layout.PositionalLayout;
 import mcjty.gui.widgets.EnergyBar;
+import mcjty.gui.widgets.Label;
 import mcjty.gui.widgets.Panel;
 import mcjty.gui.widgets.Widget;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 public class GuiCrystalizer extends GenericGuiContainer<CrystalizerTileEntity> {
     public static final int CRYSTALIZER_WIDTH = 180;
@@ -18,7 +19,7 @@ public class GuiCrystalizer extends GenericGuiContainer<CrystalizerTileEntity> {
 
     private EnergyBar energyBar;
 //    private ImageLabel burningImage;
-//    private Label percentage;
+    private Label percentage;
 
     private static final ResourceLocation iconLocation = new ResourceLocation(DeepResonance.MODID, "textures/gui/crystalizer.png");
 //    private static final ResourceLocation iconBurning = new ResourceLocation(DeepResonance.MODID, "textures/gui/burning.png");
@@ -41,22 +42,22 @@ public class GuiCrystalizer extends GenericGuiContainer<CrystalizerTileEntity> {
 
 //        burningImage = new ImageLabel(mc, this).setImage(iconBurning, 0, 0);
 //        burningImage.setLayoutHint(new PositionalLayout.PositionalHint(90, 2, 64, 64));
-//
-//        percentage = new Label(mc, this);
-//        percentage.setLayoutHint(new PositionalLayout.PositionalHint(54, 44, 32, 14));
 
-        Widget toplevel = new Panel(mc, this).setBackground(iconLocation).setLayout(new PositionalLayout()).addChild(energyBar);//.addChild(burningImage).addChild(percentage);
+        percentage = new Label(mc, this);
+        percentage.setLayoutHint(new PositionalLayout.PositionalHint(54, 44, 32, 14));
+
+        Widget toplevel = new Panel(mc, this).setBackground(iconLocation).setLayout(new PositionalLayout()).addChild(energyBar).addChild(percentage);
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
 
         window = new Window(this, toplevel);
         tileEntity.requestRfFromServer(DeepResonance.networkHandler.getNetworkWrapper());
-//        tileEntity.requestProgressFromServer();
+        tileEntity.requestProgressFromServer();
     }
 
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float v, int i, int i2) {
-//        int progress = tileEntity.getProgressPercentage();
+        int progress = tileEntity.getClientProgress();
 //        if (0 < progress && progress < 100) {
 //            int p = ((progress/3) % 9) + 1;
 //            int x = (p % 4) * 64;
@@ -65,13 +66,13 @@ public class GuiCrystalizer extends GenericGuiContainer<CrystalizerTileEntity> {
 //        } else {
 //            burningImage.setImage(iconBurning, 0, 0);
 //        }
-//        percentage.setText(progress + "%");
+        percentage.setText(progress + "%");
 
         drawWindow();
 
         energyBar.setValue(tileEntity.getCurrentRF());
 
         tileEntity.requestRfFromServer(DeepResonance.networkHandler.getNetworkWrapper());
-//        tileEntity.requestProgressFromServer();
+        tileEntity.requestProgressFromServer();
     }
 }

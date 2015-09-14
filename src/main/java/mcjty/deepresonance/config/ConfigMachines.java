@@ -42,11 +42,11 @@ public class ConfigMachines {
         public static int rfMaximum = 50000;
 
         @Configurable(category = category, minValue = 10, maxValue = 1000)
-        public static int processTime = 400;
+        public static int processTime = 200;
 
-        @Configurable(category = category, minValue = 10, maxValue = 100000)
-        public static int rclPerCrystal = 5000;
-
+//        @Configurable(category = category, minValue = 10, maxValue = 100000)
+//        public static int rclPerCrystal = 5000;
+//
         @Configurable(category = category, minValue = 1, maxValue = 100000)
         public static int rclPerTick = 10;
     }

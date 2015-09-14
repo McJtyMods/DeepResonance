@@ -12,13 +12,13 @@ public final class LiquidCrystalFluidTagData {
         return fromStack(new FluidStack(DRFluidRegistry.liquidCrystal, amount, tag));
     }
 
-    public static FluidStack makeLiquidCrystalStack(int amount, float quality, float purity, float power, float lastingTime, float crystallisingTime) {
+    public static FluidStack makeLiquidCrystalStack(int amount, float quality, float purity, float strength, float lastingTime, float crystallisingTime) {
         FluidStack stack = new FluidStack(DRFluidRegistry.liquidCrystal, amount);
         NBTTagCompound tagCompound = new NBTTagCompound();
         stack.tag = tagCompound;
         stack.tag.setFloat("quality", quality);
         stack.tag.setFloat("purity", purity);
-        stack.tag.setFloat("power", power);
+        stack.tag.setFloat("strength", strength);
         stack.tag.setFloat("lastingTime", lastingTime);
         stack.tag.setFloat("crystallisingTime", crystallisingTime);
         return stack;
@@ -44,7 +44,7 @@ public final class LiquidCrystalFluidTagData {
         ret.valid = true;
         ret.quality = fluidTag.getFloat("quality");
         ret.purity = fluidTag.getFloat("purity");
-        ret.power = fluidTag.getFloat("power");
+        ret.strength = fluidTag.getFloat("strength");
         ret.lastingTime = fluidTag.getFloat("lastingTime");
         ret.crystallisingTime = fluidTag.getFloat("crystallisingTime");
 
@@ -58,7 +58,7 @@ public final class LiquidCrystalFluidTagData {
     private boolean valid;
     private float quality;
     private float purity;
-    private float power;
+    private float strength;
     private float lastingTime;
     private float crystallisingTime;
 
@@ -69,7 +69,7 @@ public final class LiquidCrystalFluidTagData {
         }
         this.quality = calculate(otherTag, quality, otherTag.quality);
         this.purity = calculate(otherTag, purity, otherTag.purity);
-        this.power = calculate(otherTag, power, otherTag.power);
+        this.strength = calculate(otherTag, strength, otherTag.strength);
         this.lastingTime = calculate(otherTag, lastingTime, otherTag.lastingTime);
         this.crystallisingTime = calculate(otherTag, lastingTime, otherTag.lastingTime);
 
@@ -90,7 +90,7 @@ public final class LiquidCrystalFluidTagData {
         checkNullity();
         tagCompound.setFloat("quality", quality);
         tagCompound.setFloat("purity", purity);
-        tagCompound.setFloat("power", power);
+        tagCompound.setFloat("strength", strength);
         tagCompound.setFloat("lastingTime", lastingTime);
         tagCompound.setFloat("crystallisingTime", crystallisingTime);
     }
@@ -115,8 +115,8 @@ public final class LiquidCrystalFluidTagData {
         return purity;
     }
 
-    public float getPower() {
-        return power;
+    public float getStrength() {
+        return strength;
     }
 
     public float getLastingTime() {
@@ -142,8 +142,8 @@ public final class LiquidCrystalFluidTagData {
         this.purity = purity;
     }
 
-    public void setPower(float power) {
-        this.power = power;
+    public void setStrength(float strength) {
+        this.strength = strength;
     }
 
     public void setLastingTime(float lastingTime) {
@@ -164,6 +164,6 @@ public final class LiquidCrystalFluidTagData {
 
     @Override
     public String toString() {
-        return "Amount: "+referenceStack.amount+" ,Quality: "+quality+" ,Purity: "+purity+" ,Power: "+power+" ,LastingTime: "+lastingTime+" ,CrystallisingTime: "+crystallisingTime;
+        return "Amount: "+referenceStack.amount+" ,Quality: "+quality+" ,Purity: "+purity+" ,Strength: "+ strength +" ,LastingTime: "+lastingTime+" ,CrystallisingTime: "+crystallisingTime;
     }
 }
