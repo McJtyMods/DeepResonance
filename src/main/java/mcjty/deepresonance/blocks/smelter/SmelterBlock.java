@@ -35,7 +35,6 @@ public class SmelterBlock extends ElecGenericBlockBase {
     @Override
     @SideOnly(Side.CLIENT)
     public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        currentTip.add("TESTERT");
         return currentTip;
     }
 

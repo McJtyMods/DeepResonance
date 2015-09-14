@@ -137,6 +137,7 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
             NBTTagCompound dataCompound = new NBTTagCompound();
             mergedData.writeDataToNBT(dataCompound);
             tagCompound.setTag("data", dataCompound);
+            tagCompound.setInteger("amount", mergedData.getInternalTankAmount());
         }
     }
 
@@ -164,7 +165,9 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
         super.readFromNBT(tagCompound);
         progress = tagCompound.getInteger("progress");
         if (tagCompound.hasKey("data")) {
-            mergedData = LiquidCrystalFluidTagData.fromNBT((NBTTagCompound) tagCompound.getTag("data"));
+            NBTTagCompound dataCompound = (NBTTagCompound) tagCompound.getTag("data");
+            int amount = dataCompound.getInteger("amount");
+            mergedData = LiquidCrystalFluidTagData.fromNBT(dataCompound, amount);
         } else {
             mergedData = null;
         }
