@@ -12,7 +12,7 @@ public class SmelterSetup {
     public static Block smelter;
 
     public static void setupBlocks() {
-        smelter = new SmelterBlock("smelter").registerTile().register();
+        smelter = new SmelterBlock("smelterBlock").registerTile().register();
     }
 
     public static void setupCrafting() {

@@ -41,7 +41,7 @@ public final class ModItems {
         resonatingPlateItem.setTextureName(DeepResonance.MODID + ":resonatingPlate");
         GameRegistry.registerItem(resonatingPlateItem, "resonatingPlateItem");
 
-        new TestItem(); //Auto-registers
+//        new TestItem(); //Auto-registers
     }
 
     /**

@@ -32,7 +32,7 @@ public class ElecGenericBlockBase extends GenericBlock {
         this.setResistance(4.5F);
         this.setHardness(2.0F);
         this.setStepSound(soundTypeStone);
-        this.setBlockName(DeepResonance.MODID + "." + blockName);
+        this.setBlockName(blockName);
         setCreativeTab(DeepResonance.tabDeepResonance);
     }
 

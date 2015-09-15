@@ -10,7 +10,7 @@ public class CrystalizerSetup {
     public static CrystalizerBlock crystalizer;
 
     public static void setupBlocks() {
-        crystalizer = new CrystalizerBlock("crystalizer");
+        crystalizer = new CrystalizerBlock("crystalizerBlock");
         crystalizer.registerTile().register();
     }
 

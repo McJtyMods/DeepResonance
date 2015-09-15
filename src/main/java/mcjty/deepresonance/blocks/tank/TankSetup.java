@@ -10,7 +10,7 @@ public class TankSetup {
     public static BlockTank tank;
 
     public static void setupBlocks() {
-        tank = new BlockTank("tank");
+        tank = new BlockTank("tankBlock");
         tank.registerTile().register();
     }
 
