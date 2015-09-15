@@ -105,6 +105,7 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
         float purity = fluidData.getPurity();
         purity += ConfigMachines.Purifier.addedPurity / 100.0f;
         float maxPurity = ConfigMachines.Purifier.maxPurity / 100.0f;
+        maxPurity *= fluidData.getQuality();
         if (purity > maxPurity) {
             purity = maxPurity;
         }
