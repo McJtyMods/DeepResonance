@@ -21,6 +21,7 @@ public final class ModCrafting {
                 'c', Items.clock, 't', Items.compass);
         GameRegistry.addRecipe(new ItemStack(ModBlocks.machineFrame), "ioi", "oso", "ioi", 'i', Items.iron_ingot, 's', Blocks.stone, 'o', ModItems.resonatingPlateItem);
         GameRegistry.addRecipe(new ItemStack(ModItems.filterMaterialItem, 8), "gcg", "csc", "gcg", 'g', Blocks.gravel, 'c', Items.coal, 's', Blocks.sand);
+        GameRegistry.addRecipe(new ItemStack(ModItems.filterMaterialItem, 8), "gcg", "csc", "gcg", 'g', Blocks.gravel, 'c', new ItemStack(Items.coal, 1, 1), 's', Blocks.sand);
 
         GameRegistry.addSmelting(ModBlocks.resonatingOreBlock, new ItemStack(ModItems.resonatingPlateItem, 8), 0.0f);
 
