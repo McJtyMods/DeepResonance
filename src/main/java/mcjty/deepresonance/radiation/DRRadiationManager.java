@@ -1,5 +1,6 @@
 package mcjty.deepresonance.radiation;
 
+import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.varia.QuadTree;
 import mcjty.varia.Coordinate;
 import mcjty.varia.GlobalCoordinate;
@@ -162,6 +163,8 @@ public class DRRadiationManager extends WorldSavedData {
                             Block block = world.getBlock(x, y, z);
                             if (block == Blocks.obsidian) {
                                 radiationTree.addBlocker(x, y, z, .20f);
+                            } else if (block == ModBlocks.denseObsidianBlock) {
+                                radiationTree.addBlocker(x, y, z, .05f);
                             }
                         }
                     }

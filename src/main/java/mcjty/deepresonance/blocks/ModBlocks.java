@@ -10,6 +10,7 @@ import mcjty.deepresonance.blocks.duct.BlockDuct;
 import mcjty.deepresonance.blocks.duct.TileBasicFluidDuct;
 import mcjty.deepresonance.blocks.gencontroller.GeneratorControllerSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
+import mcjty.deepresonance.blocks.ore.DenseObsidianBlock;
 import mcjty.deepresonance.blocks.ore.ResonatingOreBlock;
 import mcjty.deepresonance.blocks.poisondirt.PoisonedDirtBlock;
 import mcjty.deepresonance.blocks.purifier.PurifierSetup;
@@ -21,6 +22,7 @@ import net.minecraftforge.oredict.OreDictionary;
 public final class ModBlocks {
 
     public static ResonatingOreBlock resonatingOreBlock;
+    public static DenseObsidianBlock denseObsidianBlock;
     public static ResonatingCrystalBlock resonatingCrystalBlock;
     public static PoisonedDirtBlock poisonedDirtBlock;
     public static Block duct;
@@ -30,6 +32,9 @@ public final class ModBlocks {
         resonatingOreBlock = new ResonatingOreBlock();
         GameRegistry.registerBlock(resonatingOreBlock, "oreResonating");
         OreDictionary.registerOre("oreResonating", resonatingOreBlock);
+
+        denseObsidianBlock = new DenseObsidianBlock();
+        GameRegistry.registerBlock(denseObsidianBlock, "denseObsidian");
 
         poisonedDirtBlock = new PoisonedDirtBlock();
         GameRegistry.registerBlock(poisonedDirtBlock, "poisonedDirt");
