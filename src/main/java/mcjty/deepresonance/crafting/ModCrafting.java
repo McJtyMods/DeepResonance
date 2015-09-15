@@ -16,7 +16,7 @@ import net.minecraft.item.ItemStack;
 public final class ModCrafting {
     public static void init() {
         GameRegistry.addRecipe(new ItemStack(ModItems.deepResonanceManualItem), " o ", "rbr", " r ", 'r', Items.redstone, 'b', Items.book, 'o', ModBlocks.resonatingOreBlock);
-        GameRegistry.addRecipe(new ItemStack(ModItems.radiationMonitorItem), "qcq", "tot", "qrq", 'r', Items.redstone, 'q', Items.quartz, 'o', ModBlocks.resonatingOreBlock,
+        GameRegistry.addRecipe(new ItemStack(ModItems.radiationMonitorItem), "qcq", "tot", "qrq", 'r', Items.redstone, 'q', Items.quartz, 'o', ModItems.resonatingPlateItem,
                 'c', Items.clock, 't', Items.compass);
         GameRegistry.addRecipe(new ItemStack(ModBlocks.machineFrame), "ioi", "oso", "ioi", 'i', Items.iron_ingot, 's', Blocks.stone, 'o', ModItems.resonatingPlateItem);
 
