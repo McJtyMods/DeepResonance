@@ -54,6 +54,11 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         needsSorting = true;
     }
 
+    public int getComparatorInputOverride(){
+        float f = (float)tank.getStoredAmount()/getCapacity();
+        return (int)(f * 15);
+    }
+
     private void setTankFluidHeights(){
         if (needsSorting){
             renderData.clear();

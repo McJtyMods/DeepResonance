@@ -33,9 +33,18 @@ public class BlockTank extends ElecGenericBlockBase {
 
     @Override
     public int getComparatorInputOverride(World world, int x, int y, int z, int side) {
-//        int meta = world.getBlockMetadata(x, y, z);
-//        return ((meta & 1) != 0) ? 15 : 0;
+        TileEntity tile = world.getTileEntity(x, y, z);
+        if (tile instanceof TileTank) {
+            TileTank tank = (TileTank) tile;
+            if (tank.getMultiBlock() != null)
+                return tank.getMultiBlock().getComparatorInputOverride();
+        }
         return 0;
+    }
+
+    @Override
+    public boolean hasComparatorInputOverride() {
+        return true;
     }
 
     @Override
