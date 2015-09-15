@@ -202,6 +202,9 @@ the tank of RCL that you want to purify above the purifier and another
 tank below it. The purifier can only purify up to 85% purity and will do
 so in steps of 25%. When the filter material is used up it will be ejected
 in an nearby inventory (or in the world if there is no such inventory).
+
+Note that if the quality of the liquid is not very good you may not
+be able to purify it as high as 85%.
 {-------------------------------------------------------------}
 {b}Crystalizer
 {n:crystalizer}
