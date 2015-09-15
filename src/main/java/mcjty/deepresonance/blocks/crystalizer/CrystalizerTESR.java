@@ -42,7 +42,7 @@ public class CrystalizerTESR extends TileEntitySpecialRenderer {
                 GL11.glTranslatef((float) x + 0.5F, (float) y + 0.4F, (float) z + 0.5F);
                 GL11.glScalef(0.4f, 0.4f, 0.4f);
 
-                if (0 < progress && progress < ConfigMachines.Crystalizer.processTime) {
+                if (0 < progress && progress < CrystalizerTileEntity.getTotalProgress()) {
                     float t = (System.currentTimeMillis() % 10000) / 10000.0f;
                     GL11.glRotatef(t * 360.0f, 0.0F, 1.0F, 0.0F);
                 }

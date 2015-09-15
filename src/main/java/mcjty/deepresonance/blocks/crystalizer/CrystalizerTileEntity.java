@@ -39,11 +39,19 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
     }
 
     private TileTank rclTank;
+    private static int totalProgress = 0;
     private int progress = 0;
     private LiquidCrystalFluidTagData mergedData = null;
 
     @SideOnly(Side.CLIENT)
     private static int clientProgress = 0;
+
+    public static int getTotalProgress() {
+        if (totalProgress == 0) {
+            totalProgress = ConfigMachines.Crystalizer.rclPerCrystal / ConfigMachines.Crystalizer.rclPerTick;
+        }
+        return totalProgress;
+    }
 
     @Override
     protected void checkStateServer() {
@@ -70,7 +78,7 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
 
-        if (progress >= ConfigMachines.Crystalizer.processTime) {
+        if (progress >= getTotalProgress()) {
             progress = 0;
             makeCrystal();
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);    // To make sure client can update
@@ -320,7 +328,7 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
             return rc;
         }
         if (CMD_GETPROGRESS.equals(command)) {
-            return progress * 100 / ConfigMachines.Crystalizer.processTime;
+            return progress * 100 / getTotalProgress();
         }
         return null;
     }
