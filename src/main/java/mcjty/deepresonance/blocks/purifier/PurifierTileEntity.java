@@ -9,12 +9,15 @@ import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.deepresonance.items.ModItems;
+import mcjty.varia.Coordinate;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -33,6 +36,9 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
     private boolean checkTanks;
     private int progress = 0;
 
+    // Cache for the inventory used to put the spent filter material in.
+    private Coordinate inventoryCoordinate = null;
+
     private LiquidCrystalFluidTagData fluidData = null;
 
     @Override
@@ -44,19 +50,7 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
                 progress = 1;
                 if (bottomTank != null) {
                     if (fillBottomTank()) {
-                        float purity = fluidData.getPurity();
-                        purity += ConfigMachines.Purifier.addedPurity / 100.0f;
-                        float maxPurity = ConfigMachines.Purifier.maxPurity / 100.0f;
-                        if (purity > maxPurity) {
-                            purity = maxPurity;
-                        }
-                        fluidData.setPurity(purity);
-                        FluidStack stack = fluidData.makeLiquidCrystalStack();
-                        bottomTank.fill(ForgeDirection.UNKNOWN, stack, true);
-                        fillBottomTank();
-                        EntityItem entityItem = new EntityItem(worldObj, xCoord, yCoord, zCoord, new ItemStack(ModItems.spentFilterMaterialItem, 1));
-                        worldObj.spawnEntityInWorld(entityItem);
-
+                        doPurify();
                         progress = 0;   // Really done
                     }
                 }
@@ -69,6 +63,69 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
             }
         }
 
+    }
+
+    private IInventory findInventory() {
+        if (inventoryCoordinate != null) {
+            IInventory inv = getInventoryAtCoordinate(inventoryCoordinate);
+            if (inv != null) {
+                return inv;
+            }
+            inventoryCoordinate = null;
+        }
+        Coordinate thisCoordinate = getCoordinate();
+        inventoryCoordinate = thisCoordinate.addDirection(ForgeDirection.EAST);
+        IInventory inv = getInventoryAtCoordinate(thisCoordinate);
+        if (inv != null) {
+            return inv;
+        }
+        inventoryCoordinate = thisCoordinate.addDirection(ForgeDirection.WEST);
+        inv = getInventoryAtCoordinate(thisCoordinate);
+        if (inv != null) {
+            return inv;
+        }
+        inventoryCoordinate = thisCoordinate.addDirection(ForgeDirection.NORTH);
+        inv = getInventoryAtCoordinate(thisCoordinate);
+        if (inv != null) {
+            return inv;
+        }
+        inventoryCoordinate = thisCoordinate.addDirection(ForgeDirection.SOUTH);
+        return getInventoryAtCoordinate(thisCoordinate);
+    }
+
+    private IInventory getInventoryAtCoordinate(Coordinate c) {
+        TileEntity te = worldObj.getTileEntity(c.getX(), c.getY(), c.getZ());
+        if (te instanceof IInventory) {
+            return (IInventory) te;
+        }
+        return null;
+    }
+
+    private void doPurify() {
+        float purity = fluidData.getPurity();
+        purity += ConfigMachines.Purifier.addedPurity / 100.0f;
+        float maxPurity = ConfigMachines.Purifier.maxPurity / 100.0f;
+        if (purity > maxPurity) {
+            purity = maxPurity;
+        }
+        fluidData.setPurity(purity);
+        FluidStack stack = fluidData.makeLiquidCrystalStack();
+        bottomTank.fill(ForgeDirection.UNKNOWN, stack, true);
+        fillBottomTank();
+
+        IInventory inventory = findInventory();
+        ItemStack spentMaterial = new ItemStack(ModItems.spentFilterMaterialItem, 1);
+        boolean spawnInWorld = true;
+        if (inventory != null) {
+            if (InventoryHelper.mergeItemStack(inventory, spentMaterial, 0, inventory.getSizeInventory(), null) == 0) {
+                spawnInWorld = false;
+            }
+        }
+
+        if (spawnInWorld) {
+            EntityItem entityItem = new EntityItem(worldObj, xCoord, yCoord, zCoord, spentMaterial);
+            worldObj.spawnEntityInWorld(entityItem);
+        }
     }
 
     private boolean fillBottomTank() {
