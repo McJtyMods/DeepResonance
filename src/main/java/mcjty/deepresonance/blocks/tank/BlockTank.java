@@ -79,6 +79,17 @@ public class BlockTank extends ElecGenericBlockBase {
     }
 
     @Override
+    public int getLightValue(IBlockAccess world, int x, int y, int z) {
+        TileEntity tile = world.getTileEntity(x, y, z);
+        if (tile instanceof TileTank){
+            TileTank tank = (TileTank) tile;
+            if (tank.getClientRenderFluid() != null)
+                return tank.getClientRenderFluid().getLuminosity();
+        }
+        return super.getLightValue(world, x, y, z);
+    }
+
+    @Override
     public boolean renderAsNormalBlock() {
         return false;
     }

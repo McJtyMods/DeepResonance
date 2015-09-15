@@ -32,11 +32,13 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         }
         needsSorting = true;
         sendFluidData();
+        markAllBlocksForUpdate();
     }
 
     private boolean needsSorting;
     private InternalGridTank tank;
     private Map<Integer, List<BlockLoc>> renderData;
+    private Fluid check;
 
     @Override
     public void tick() {
@@ -44,6 +46,10 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
             setTankFluidHeights();
             sendFluidData();
             sendFluidHeight();
+            if (check != tank.getStoredFluid()){
+                markAllBlocksForUpdate();
+                check = tank.getStoredFluid();
+            }
         }
     }
 
@@ -54,6 +60,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         sendFluidData();
         needsSorting = true;
         markEverythingDirty();
+        markAllBlocksForUpdate();
     }
 
     public int getComparatorInputOverride(){
@@ -66,6 +73,12 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
             TileTank tank = getTank(loc);
             if (tank != null)
                 tank.markDirty();
+        }
+    }
+
+    public void markAllBlocksForUpdate(){
+        for (BlockLoc loc : allLocations){
+            world.markBlockForUpdate(loc.xCoord, loc.yCoord, loc.zCoord);
         }
     }
 
