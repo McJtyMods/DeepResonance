@@ -3,8 +3,6 @@ package mcjty.deepresonance.blocks.crystalizer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.deepresonance.config.ConfigMachines;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -75,42 +73,42 @@ public class CrystalizerTESR extends TileEntitySpecialRenderer {
         IIcon blockIcon;
 
         //NORTH other side
-        blockIcon = ModBlocks.crystalizer.getSideIcon();
+        blockIcon = CrystalizerSetup.crystalizer.getSideIcon();
         tessellator.addVertexWithUV(1, 0, offset, blockIcon.getMinU(), blockIcon.getMinV());
         tessellator.addVertexWithUV(1, 1, offset, blockIcon.getMinU(), blockIcon.getMaxV());
         tessellator.addVertexWithUV(0, 1, offset, blockIcon.getMaxU(), blockIcon.getMaxV());
         tessellator.addVertexWithUV(0, 0, offset, blockIcon.getMaxU(), blockIcon.getMinV());
 
         //SOUTH other side
-        blockIcon = ModBlocks.crystalizer.getSouthIcon();
+        blockIcon = CrystalizerSetup.crystalizer.getSouthIcon();
         tessellator.addVertexWithUV(1, 1, 1 - offset, blockIcon.getMinU(), blockIcon.getMinV());
         tessellator.addVertexWithUV(1, 0, 1 - offset, blockIcon.getMinU(), blockIcon.getMaxV());
         tessellator.addVertexWithUV(0, 0, 1 - offset, blockIcon.getMaxU(), blockIcon.getMaxV());
         tessellator.addVertexWithUV(0, 1, 1 - offset, blockIcon.getMaxU(), blockIcon.getMinV());
 
         //EAST other side
-        blockIcon = ModBlocks.crystalizer.getSideIcon();
+        blockIcon = CrystalizerSetup.crystalizer.getSideIcon();
         tessellator.addVertexWithUV(offset, 1, 1, blockIcon.getMinU(), blockIcon.getMinV());
         tessellator.addVertexWithUV(offset, 0, 1, blockIcon.getMinU(), blockIcon.getMaxV());
         tessellator.addVertexWithUV(offset, 0, 0, blockIcon.getMaxU(), blockIcon.getMaxV());
         tessellator.addVertexWithUV(offset, 1, 0, blockIcon.getMaxU(), blockIcon.getMinV());
 
         //WEST other side
-        blockIcon = ModBlocks.crystalizer.getSideIcon();
+        blockIcon = CrystalizerSetup.crystalizer.getSideIcon();
         tessellator.addVertexWithUV(1 - offset, 0, 1, blockIcon.getMinU(), blockIcon.getMinV());
         tessellator.addVertexWithUV(1 - offset, 1, 1, blockIcon.getMinU(), blockIcon.getMaxV());
         tessellator.addVertexWithUV(1 - offset, 1, 0, blockIcon.getMaxU(), blockIcon.getMaxV());
         tessellator.addVertexWithUV(1 - offset, 0, 0, blockIcon.getMaxU(), blockIcon.getMinV());
 
         // Bottom other side. Raised a bit
-        blockIcon = ModBlocks.crystalizer.getBottomIcon();
+        blockIcon = CrystalizerSetup.crystalizer.getBottomIcon();
         tessellator.addVertexWithUV(0, .4f, 0, blockIcon.getMinU(), blockIcon.getMinV());
         tessellator.addVertexWithUV(0, .4f, 1, blockIcon.getMinU(), blockIcon.getMaxV());
         tessellator.addVertexWithUV(1, .4f, 1, blockIcon.getMaxU(), blockIcon.getMaxV());
         tessellator.addVertexWithUV(1, .4f, 0, blockIcon.getMaxU(), blockIcon.getMinV());
 
         // Top other side
-        blockIcon = ModBlocks.crystalizer.getTopIcon();
+        blockIcon = CrystalizerSetup.crystalizer.getTopIcon();
         tessellator.addVertexWithUV(0, 1 - offset, 0, blockIcon.getMinU(), blockIcon.getMinV());
         tessellator.addVertexWithUV(1, 1 - offset, 0, blockIcon.getMinU(), blockIcon.getMaxV());
         tessellator.addVertexWithUV(1, 1 - offset, 1, blockIcon.getMaxU(), blockIcon.getMaxV());

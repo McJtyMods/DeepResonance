@@ -3,7 +3,6 @@ package mcjty.deepresonance.blocks.tank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import elec332.core.client.render.RenderHelper;
-import mcjty.deepresonance.blocks.ModBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -120,10 +119,10 @@ public class TankTESR extends TileEntitySpecialRenderer {
         // ---------------------------------------------------------------
         // Render the inside of the tank
         // ---------------------------------------------------------------
-        IIcon blockIcon = ModBlocks.tank.getSideIcon();
+        IIcon blockIcon = TankSetup.tank.getSideIcon();
 
         //NORTH other side
-        if (world.getBlock(ix, iy, iz-1) != ModBlocks.tank) {
+        if (world.getBlock(ix, iy, iz-1) != TankSetup.tank) {
             tessellator.addVertexWithUV(1, 0, offset, blockIcon.getMinU(), blockIcon.getMinV());
             tessellator.addVertexWithUV(1, 1, offset, blockIcon.getMinU(), blockIcon.getMaxV());
             tessellator.addVertexWithUV(0, 1, offset, blockIcon.getMaxU(), blockIcon.getMaxV());
@@ -131,7 +130,7 @@ public class TankTESR extends TileEntitySpecialRenderer {
         }
 
         //SOUTH other side
-        if (world.getBlock(ix, iy, iz+1) != ModBlocks.tank) {
+        if (world.getBlock(ix, iy, iz+1) != TankSetup.tank) {
             tessellator.addVertexWithUV(1, 1, 1 - offset, blockIcon.getMinU(), blockIcon.getMinV());
             tessellator.addVertexWithUV(1, 0, 1 - offset, blockIcon.getMinU(), blockIcon.getMaxV());
             tessellator.addVertexWithUV(0, 0, 1 - offset, blockIcon.getMaxU(), blockIcon.getMaxV());
@@ -139,7 +138,7 @@ public class TankTESR extends TileEntitySpecialRenderer {
         }
 
         //EAST other side
-        if (world.getBlock(ix-1, iy, iz) != ModBlocks.tank) {
+        if (world.getBlock(ix-1, iy, iz) != TankSetup.tank) {
             tessellator.addVertexWithUV(offset, 1, 1, blockIcon.getMinU(), blockIcon.getMinV());
             tessellator.addVertexWithUV(offset, 0, 1, blockIcon.getMinU(), blockIcon.getMaxV());
             tessellator.addVertexWithUV(offset, 0, 0, blockIcon.getMaxU(), blockIcon.getMaxV());
@@ -147,7 +146,7 @@ public class TankTESR extends TileEntitySpecialRenderer {
         }
 
         //WEST other side
-        if (world.getBlock(ix+1, iy, iz) != ModBlocks.tank) {
+        if (world.getBlock(ix+1, iy, iz) != TankSetup.tank) {
             tessellator.addVertexWithUV(1 - offset, 0, 1, blockIcon.getMinU(), blockIcon.getMinV());
             tessellator.addVertexWithUV(1 - offset, 1, 1, blockIcon.getMinU(), blockIcon.getMaxV());
             tessellator.addVertexWithUV(1 - offset, 1, 0, blockIcon.getMaxU(), blockIcon.getMaxV());
@@ -155,8 +154,8 @@ public class TankTESR extends TileEntitySpecialRenderer {
         }
 
         // Bottom other side
-        if (world.getBlock(ix, iy-1, iz) != ModBlocks.tank) {
-            blockIcon = ModBlocks.tank.getBottomIcon();
+        if (world.getBlock(ix, iy-1, iz) != TankSetup.tank) {
+            blockIcon = TankSetup.tank.getBottomIcon();
             tessellator.addVertexWithUV(0, offset, 0, blockIcon.getMinU(), blockIcon.getMinV());
             tessellator.addVertexWithUV(0, offset, 1, blockIcon.getMinU(), blockIcon.getMaxV());
             tessellator.addVertexWithUV(1, offset, 1, blockIcon.getMaxU(), blockIcon.getMaxV());
@@ -164,8 +163,8 @@ public class TankTESR extends TileEntitySpecialRenderer {
         }
 
         // Top other side
-        if (world.getBlock(ix, iy+1, iz) != ModBlocks.tank) {
-            blockIcon = ModBlocks.tank.getTopIcon();
+        if (world.getBlock(ix, iy+1, iz) != TankSetup.tank) {
+            blockIcon = TankSetup.tank.getTopIcon();
             tessellator.addVertexWithUV(0, 1 - offset, 0, blockIcon.getMinU(), blockIcon.getMinV());
             tessellator.addVertexWithUV(1, 1 - offset, 0, blockIcon.getMinU(), blockIcon.getMaxV());
             tessellator.addVertexWithUV(1, 1 - offset, 1, blockIcon.getMaxU(), blockIcon.getMaxV());
