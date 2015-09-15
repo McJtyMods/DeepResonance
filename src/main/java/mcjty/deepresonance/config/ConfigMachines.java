@@ -16,8 +16,11 @@ public class ConfigMachines {
         @Configurable(category = category, minValue = 1, maxValue = 10000, comment = "The amount of RCL we purify as one unit")
         public static int rclPerPurify = 100;
 
-//        @Configurable(category = category, minValue = 0.01f, maxValue = 10000, comment = "The amount of RCL we purify as one unit")
-//        public static float addedPurity = .25f;
+        @Configurable(category = category, minValue = 1, maxValue = 100, comment = "How much the purifier adds to the purity of a liquid (in %)")
+        public static int addedPurity = 25;
+
+        @Configurable(category = category, minValue = 1, maxValue = 100, comment = "Maximum purity that the purifier can handle (in %)")
+        public static int maxPurity = 85;
     }
 
     public static class Smelter {

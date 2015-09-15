@@ -45,9 +45,10 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
                 if (bottomTank != null) {
                     if (fillBottomTank()) {
                         float purity = fluidData.getPurity();
-                        purity += .2f;
-                        if (purity > 0.85f) {
-                            purity = 0.85f;
+                        purity += ConfigMachines.Purifier.addedPurity / 100.0f;
+                        float maxPurity = ConfigMachines.Purifier.maxPurity / 100.0f;
+                        if (purity > maxPurity) {
+                            purity = maxPurity;
                         }
                         fluidData.setPurity(purity);
                         FluidStack stack = fluidData.makeLiquidCrystalStack();
