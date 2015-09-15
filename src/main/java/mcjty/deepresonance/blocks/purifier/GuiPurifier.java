@@ -17,7 +17,7 @@ public class GuiPurifier extends GenericGuiContainer<PurifierTileEntity> {
     private static final ResourceLocation iconLocation = new ResourceLocation(DeepResonance.MODID, "textures/gui/purifier.png");
 
     public GuiPurifier(PurifierTileEntity purifierTileEntity, PurifierContainer container) {
-        super(DeepResonance.instance, DeepResonance.networkHandler.getNetworkWrapper(), purifierTileEntity, container, 0, "smelter");
+        super(DeepResonance.instance, DeepResonance.networkHandler.getNetworkWrapper(), purifierTileEntity, container, 0, "purifier");
 
         xSize = PURIFIER_WIDTH;
         ySize = PURIFIER_HEIGHT;

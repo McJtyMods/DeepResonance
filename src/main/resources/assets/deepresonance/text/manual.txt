@@ -19,6 +19,7 @@ Table of contents:
 {l:rcl}Resonating Crystal Liquid
 {l:tank}Tank
 {l:smelter}Smelter
+{l:purifier}Purifier
 {l:crystalizer}Crystalizer
 {-------------------------------------------------------------}
 {b}Resonating Ore
@@ -78,6 +79,9 @@ disappears.
 Using the radiation monitor you can measure how much radiation there
 is in a certain area:
 {ri:radiationMonitorItem}
+
+Note that obsidian helps to block some of the radiation but dense
+obsidian is even better.
 {-------------------------------------------------------------}
 {b}Machine Frame
 {n:frame}
@@ -188,6 +192,16 @@ or by inserting it in the user interface).
 The smelter works best with the lava tank filled between 40 and 60%. More
 lava will increase the operation speed but if you use too much lava the
 quality of the RCL will decrease.
+{-------------------------------------------------------------}
+{b}Purifier
+{n:purifier}
+{rb:purifierBlock}
+With the purifier you can enhance the purity of the liquid. To do this
+you need filter material which you can insert into the purifier. Put
+the tank of RCL that you want to purify above the purifier and another
+tank below it. The purifier can only purify up to 85% purity and will do
+so in steps of 25%. When the filter material is used up it will be ejected
+in an nearby inventory (or in the world if there is no such inventory).
 {-------------------------------------------------------------}
 {b}Crystalizer
 {n:crystalizer}
