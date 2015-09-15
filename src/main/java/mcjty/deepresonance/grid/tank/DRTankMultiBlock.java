@@ -21,9 +21,11 @@ import java.util.*;
  */
 public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolder, DRTankMultiBlock> implements IFluidHandler, IFluidTank{
 
+    public static final int TANK_BUCKETS = 16;
+
     public DRTankMultiBlock(TileEntity tile, DRTankWorldHolder worldHolder) {
         super(tile, worldHolder);
-        this.tank = new InternalGridTank(9 * FluidContainerRegistry.BUCKET_VOLUME);
+        this.tank = new InternalGridTank(TANK_BUCKETS * FluidContainerRegistry.BUCKET_VOLUME);
         this.renderData = Maps.newHashMap();
         if (tile instanceof TileTank){
             tank.fill(((TileTank) tile).myTank, true);
@@ -78,9 +80,9 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
             float filled = 0.0f;
             if (total > 0) {
                 int i = list.size();
-                int toAdd = Math.min(total, i * 9 * FluidContainerRegistry.BUCKET_VOLUME);
+                int toAdd = Math.min(total, i * TANK_BUCKETS * FluidContainerRegistry.BUCKET_VOLUME);
                 total -= toAdd;
-                filled = (float) toAdd / (i * 9 * FluidContainerRegistry.BUCKET_VOLUME);
+                filled = (float) toAdd / (i * TANK_BUCKETS * FluidContainerRegistry.BUCKET_VOLUME);
             }
             for (BlockLoc loc : list) {
                 getTank(loc).sendPacket(3, new NBTHelper().addToTag(filled, "render").toNBT());
