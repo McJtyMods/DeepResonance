@@ -12,6 +12,7 @@ import mcjty.deepresonance.blocks.gencontroller.GeneratorControllerSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.ore.ResonatingOreBlock;
 import mcjty.deepresonance.blocks.poisondirt.PoisonedDirtBlock;
+import mcjty.deepresonance.blocks.purifier.PurifierSetup;
 import mcjty.deepresonance.blocks.smelter.SmelterSetup;
 import mcjty.deepresonance.blocks.tank.TankSetup;
 import net.minecraft.block.Block;
@@ -48,5 +49,6 @@ public final class ModBlocks {
         CrystalizerSetup.setupBlocks();
         SmelterSetup.setupBlocks();
         TankSetup.setupBlocks();
+        PurifierSetup.setupBlocks();
     }
 }

@@ -18,10 +18,11 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.Random;
 
 public final class ModItems {
-
     public static DeepResonanceManualItem deepResonanceManualItem;
     public static RadiationMonitorItem radiationMonitorItem;
     public static ResonatingPlateItem resonatingPlateItem;
+    public static FilterMaterialItem filterMaterialItem;
+    public static SpentFilterMaterialItem spentFilterMaterialItem;
 
     public static void init() {
         deepResonanceManualItem = new DeepResonanceManualItem();
@@ -40,6 +41,18 @@ public final class ModItems {
         resonatingPlateItem.setCreativeTab(DeepResonance.tabDeepResonance);
         resonatingPlateItem.setTextureName(DeepResonance.MODID + ":resonatingPlate");
         GameRegistry.registerItem(resonatingPlateItem, "resonatingPlateItem");
+
+        filterMaterialItem = new FilterMaterialItem();
+        filterMaterialItem.setUnlocalizedName("FilterMaterial");
+        filterMaterialItem.setCreativeTab(DeepResonance.tabDeepResonance);
+        filterMaterialItem.setTextureName(DeepResonance.MODID + ":filterMaterial");
+        GameRegistry.registerItem(filterMaterialItem, "filterMaterialItem");
+
+        spentFilterMaterialItem = new SpentFilterMaterialItem();
+        spentFilterMaterialItem.setUnlocalizedName("SpentFilterMaterial");
+        spentFilterMaterialItem.setCreativeTab(DeepResonance.tabDeepResonance);
+        spentFilterMaterialItem.setTextureName(DeepResonance.MODID + ":spentFilterMaterial");
+        GameRegistry.registerItem(spentFilterMaterialItem, "spentFilterMaterialItem");
 
 //        new TestItem(); //Auto-registers
     }

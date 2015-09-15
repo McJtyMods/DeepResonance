@@ -1,6 +1,8 @@
 item.DeepResonanceManual.name=Deep Resonance Manual
 item.RadiationMonitor.name=Radiation Monitor
 item.ResonatingPlate.name=Resonating Plate
+item.FilterMaterial.name=Filter Material
+item.SpentFilterMaterial.name=Spent Filter Material
 
 tile.oreResonating.name=Resonating Ore
 tile.poisonedDirt.name=Poisoned Dirt
@@ -12,6 +14,7 @@ tile.machineFrame.name=Machine Frame
 tile.tankBlock.name=Tank
 tile.crystalizerBlock.name=Crystalizer
 tile.smelterBlock.name=Smelter
+tile.purifierBlock.name=Purifier
 
 itemGroup.DeepResonance=Deep Resonance
 

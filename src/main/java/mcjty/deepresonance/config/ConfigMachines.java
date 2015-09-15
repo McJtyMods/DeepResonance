@@ -7,6 +7,16 @@ import elec332.core.config.Configurable;
  */
 public class ConfigMachines {
 
+    public static class Purifier {
+        private static final String category = "Purifier";
+
+        @Configurable(category = category, minValue = 1, maxValue = 10000)
+        public static int ticksPerPurify = 10;
+
+        @Configurable(category = category, minValue = 1, maxValue = 10000)
+        public static int rclPerPurify = 10;
+    }
+
     public static class Smelter{
         private static final String category = "Smelter";
 
