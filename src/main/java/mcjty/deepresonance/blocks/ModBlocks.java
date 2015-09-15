@@ -37,7 +37,7 @@ public final class ModBlocks {
         GameRegistry.registerBlock(resonatingCrystalBlock, GenericItemBlock.class, "resonatingCrystalBlock");
         GameRegistry.registerTileEntity(ResonatingCrystalTileEntity.class, "ResonatingCrystalTileEntity");
 
-        duct = new BlockDuct(TileBasicFluidDuct.class, "basicFluidDuct").registerTile().register();
+//        duct = new BlockDuct(TileBasicFluidDuct.class, "basicFluidDuct").registerTile().register();
 
         machineFrame = new MachineFrame();
         GameRegistry.registerBlock(machineFrame, "machineFrame");
