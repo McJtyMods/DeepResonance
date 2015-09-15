@@ -17,7 +17,6 @@ public class DRFluidRegistry {
         FluidRegistry.registerFluid(liquidCrystal);
     }
 
-    //TODO: icons for the fluid
     public static void registerIcons(IIconRegister iconRegister){
         liquidCrystal.setIcons(iconRegister.registerIcon(DeepResonance.MODID + ":rclfluid"), iconRegister.registerIcon(DeepResonance.MODID + ":rclfluid"));
     }

@@ -36,7 +36,7 @@ public class ConfigMachines {
         public static int rfPerTick = 200;
 
         @Configurable(category = category, minValue = 0, maxValue = 1000)
-        public static int rfPerRcl = 200;
+        public static int rfPerRcl = 20;
 
         @Configurable(category = category, minValue = 0, maxValue = 1000000000)
         public static int rfMaximum = 50000;
@@ -45,6 +45,6 @@ public class ConfigMachines {
         public static int rclPerCrystal = 6000;
 
         @Configurable(category = category, minValue = 1, maxValue = 100000)
-        public static int rclPerTick = 10;
+        public static int rclPerTick = 1;
     }
 }

@@ -17,7 +17,7 @@ public final class ModCrafting {
                 'c', Items.clock, 't', Items.compass);
         GameRegistry.addRecipe(new ItemStack(ModBlocks.machineFrame), "isi", "sos", "isi", 'i', Items.iron_ingot, 's', Blocks.stone, 'o', ModBlocks.resonatingOreBlock);
 
-        GameRegistry.addSmelting(ModBlocks.resonatingOreBlock, new ItemStack(ModItems.resonatingPlateItem), 0.0f);
+        GameRegistry.addSmelting(ModBlocks.resonatingOreBlock, new ItemStack(ModItems.resonatingPlateItem, 4), 0.0f);
 
         GeneratorSetup.setupCrafting();
         GeneratorControllerSetup.setupCrafting();

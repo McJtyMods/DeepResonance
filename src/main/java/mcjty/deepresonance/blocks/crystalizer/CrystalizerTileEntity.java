@@ -101,7 +101,7 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
             return false;
         }
 
-        if (storage.getMaxEnergyStored() < ConfigMachines.Crystalizer.rfPerRcl) {
+        if (storage.getEnergyStored() < ConfigMachines.Crystalizer.rfPerRcl) {
             return false;
         }
 
