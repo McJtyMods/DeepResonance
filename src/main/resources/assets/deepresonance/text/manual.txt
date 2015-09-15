@@ -1,8 +1,5 @@
 {b}Deep Resonance Manual
 
-This mod is in beta! Currently it does not have any way to make your own
-crystals. You can however generate power with naturally spawned crystals.
-
 Table of contents:
 {l:ore}Resonating Ore
 {l:crystals}Crystals
@@ -12,15 +9,28 @@ Table of contents:
 {l:generator}Generator
 {l:collector}Energy Collector
 {l:controller}Generator Controller
+
+
+
+{/}
+
+
+
+{l:rcl}Resonating Crystal Liquid
+{l:tank}Tank
+{l:smelter}Smelter
+{l:crystalizer}Crystalizer
 {-------------------------------------------------------------}
 {b}Resonating Ore
 {n:ore}
 Deep under the ground a good miner can occasionally find resonating
 ore. If you do then this can be your start to a big adventure.
 
-Note that this version of Deep Resonance is not ready yet. For now
-this ore can only be used as a crafting ingredients for the
-generator machines in this mod.
+If you melt this ore you get resonating plates which are used as base
+for many crafting recipes in this mod.
+
+But the main usage for this ore is melting it in the smelter to generate
+the Resonating Crystal Liquid (RCL).
 {-------------------------------------------------------------}
 {b}Resonating Crystals
 {n:crystals}
@@ -51,18 +61,18 @@ Every crystal has four basic characteristics:
 {-------------------------------------------------------------}
 {b}Radiation
 {n:radiation}
-A running generator will produce radiation. The amount of radiation
-as well as the power of this radiation depends on the power of the
-crystal as well as the purity of it. A 100% pure crystal that is not
-overcharged will generate no radiation.
+A running generator will produce radiation. The amount of radiation as
+well as the power of this radiation depends on the power of the crystal
+as well as the purity of it. A 100% pure crystal that is not overcharged
+will generate no radiation.
 
-Naturally spawned crystals are not pure but because they contain
-little power they don't cause a lot of radiation. So you can use
-them for early game power.
+Naturally spawned crystals are not pure but because they contain little
+power they don't cause a lot of radiation. So you can use them for early
+game power.
 
-Turning off a generator will not immediatelly stop the radiation.
-Depending on the strength of the radiation it will take a while before
-it completely disappears.
+Turning off a generator will not immediatelly stop the radiation. Depending
+on the strength of the radiation it will take a while before it completely
+disappears.
 {-------------------------------------------------------------}
 {b}Radiation Monitor
 Using the radiation monitor you can measure how much radiation there
@@ -101,4 +111,88 @@ the generator controller:
 {rb:generatorControllerBlock}
 
 To turn on the generator simply give this block a redstone signal.
+{-------------------------------------------------------------}
+{b}Resonating Crystal Liquid
+{n:rcl}
+When you place resonating ore in the smelter it will produce RCL.
+This liquid is the crucial ingredient for growing your own crystals. The
+quality of the final crystal will depend on the attributes of this liquid:
+quality, purity, strength, and time:
+{l:rclquality}Quality
+{l:rclpurity}Purity
+{l:rclstrength}Strength
+{l:rclefficiency}Efficiency
+{-------------------------------------------------------------}
+{b}RCL Quality
+{n:rclquality}
+Only liquids with 100% quality can be grown into the best crystals.
+Quality is determined in the smelter. Only with the right amount of lava (tank
+about half full) will you produce optimal quality RCL. Putting too much lava
+in the tank will make the smelting process too hot which introduces impurities
+in the liquid.
+
+Note that there is no way to increase quality later so it is very important
+that you get quality right from the first step.
+{-------------------------------------------------------------}
+{b}RCL Purity
+{n:rclpurity}
+The purity of the liquid determines how much radiation and pollution you
+will get when generating power from a crystal. It is important to try to get
+the purity as high as possible. In addition, crystals with higher purity will
+generate more power at a higher RF/t as well.
+
+With the right amount of lava the smelter will produce liquid with only 10%
+purity so you need to use the purifier to improve purity.
+{-------------------------------------------------------------}
+{b}RCL Strength
+{n:rclstrength}
+The strength of the liquid determines how much power in total this
+crystal will be able to generate. The smelter will always produce
+liquid with strength 10%.
+{-------------------------------------------------------------}
+{b}RCL Efficiency
+{n:rclefficiency}
+The efficiency of the liquid determines how efficient the
+generated crystal will be able to produce its power. In other words,
+the higher the efficiency, the better the RF/tick. The smelter
+will always produce liquid with efficiency 10%.
+{-------------------------------------------------------------}
+{b}Tank
+{n:tank}
+{rb:tankBlock}
+The tanks from Deep Resonance have room for 16 buckets of liquid.
+If you place multiple tanks connected to each other they will form a
+multiblock capable of holding more liquid. They are normal tanks so they
+can contain liquids of any mod but they have special support for RCL as
+they can mix incoming RCL with the liquid that is already there. For
+example, adding 50% purity liquid to a tank containing already 40% purity
+liquid will slightly increase the overall purity of the liquid in the tank.
+{-------------------------------------------------------------}
+Right clicking a face of the tank will toggle between three modes:
+none, accept, and provide. This is not needed for sides that are
+connected to machines of this mod (smelter, crystalizer, ...) as
+they will automatically connect to the tank.
+
+Placing a comparator next to the tank will allow detecting if
+the tank is filled between 40 and 60%. This helps for automating
+the correct filling of the lava tank under the smelter.
+{-------------------------------------------------------------}
+{b}Smelter
+{n:smelter}
+{rb:smelterBlock}
+To use the smelter you need a tank below it filled with lava and a tank
+above it which will be filled with RCL. In addition you need to give the
+smelter power and supply it with resonating ore (either with automation
+or by inserting it in the user interface).
+
+The smelter works best with the lava tank filled between 40 and 60%. More
+lava will increase the operation speed but if you use too much lava the
+quality of the RCL will decrease.
+{-------------------------------------------------------------}
+{b}Crystalizer
+{n:crystalizer}
+{rb:crystalizerBlock}
+The crystalizer needs to be placed on top of a tank filled with RCL. It
+will consume the liquid in that tank and form a crystal out of it. The
+crystalizer also needs power.
 {-------------------------------------------------------------}
