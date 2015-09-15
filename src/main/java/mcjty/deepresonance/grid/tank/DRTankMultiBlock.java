@@ -52,11 +52,20 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         super.mergeWith(multiBlock);
         tank.merge(multiBlock.tank);
         needsSorting = true;
+        markEverythingDirty();
     }
 
     public int getComparatorInputOverride(){
         float f = (float)tank.getStoredAmount()/getCapacity();
         return (int)(f * 15);
+    }
+
+    public void markEverythingDirty(){
+        for (BlockLoc loc : allLocations){
+            TileTank tank = getTank(loc);
+            if (tank != null)
+                tank.markDirty();
+        }
     }
 
     private void setTankFluidHeights(){
@@ -90,7 +99,9 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
                 filled = (float) toAdd / (i * TANK_BUCKETS * FluidContainerRegistry.BUCKET_VOLUME);
             }
             for (BlockLoc loc : list) {
-                getTank(loc).sendPacket(3, new NBTHelper().addToTag(filled, "render").toNBT());
+                TileTank tank = getTank(loc);
+                if (tank != null)
+                    tank.sendPacket(3, new NBTHelper().addToTag(filled, "render").toNBT());
             }
         }
     }
@@ -198,8 +209,11 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         ElecCore.tickHandler.registerCall(new Runnable() {
             @Override
             public void run() {
+                markEverythingDirty();
                 for (BlockLoc loc : allLocations){
-                    getTank(loc).sendPacket(1, new NBTHelper().addToTag(DRFluidRegistry.getFluidName(getFluid()), "fluid").toNBT());
+                    TileTank tank = getTank(loc);
+                    if (tank != null)
+                        tank.sendPacket(1, new NBTHelper().addToTag(DRFluidRegistry.getFluidName(getFluid()), "fluid").toNBT());
                 }
             }
         });
