@@ -51,6 +51,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     protected void mergeWith(DRTankMultiBlock multiBlock) {
         super.mergeWith(multiBlock);
         tank.merge(multiBlock.tank);
+        sendFluidData();
         needsSorting = true;
         markEverythingDirty();
     }
@@ -205,17 +206,14 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         });
     }
 
-    private void sendFluidData(){
-        ElecCore.tickHandler.registerCall(new Runnable() {
-            @Override
-            public void run() {
-                markEverythingDirty();
-                for (BlockLoc loc : allLocations){
-                    TileTank tank = getTank(loc);
-                    if (tank != null)
-                        tank.sendPacket(1, new NBTHelper().addToTag(DRFluidRegistry.getFluidName(getFluid()), "fluid").toNBT());
-                }
+    private void sendFluidData() {
+        markEverythingDirty();
+        for (BlockLoc loc : allLocations) {
+            TileTank tank = getTank(loc);
+            if (tank != null) {
+                tank.lastSeenFluid = getStoredFluid();
+                tank.sendPacket(1, new NBTHelper().addToTag(DRFluidRegistry.getFluidName(getFluid()), "fluid").toNBT());
             }
-        });
+        }
     }
 }
