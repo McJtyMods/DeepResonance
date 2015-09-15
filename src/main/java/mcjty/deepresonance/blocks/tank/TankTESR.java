@@ -34,7 +34,7 @@ public class TankTESR extends TileEntitySpecialRenderer {
 
             bindTexture(TextureMap.locationBlocksTexture);
             World world = tileEntity.getWorldObj();
-            renderTankInside(tessellator, world, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+            renderTankInside(tessellator, world, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileTank);
 
             Fluid renderFluid = tileTank.getClientRenderFluid();
             if (renderFluid != null) {
@@ -109,7 +109,7 @@ public class TankTESR extends TileEntitySpecialRenderer {
         tessellator.draw();
     }
 
-    private void renderTankInside(Tessellator tessellator, World world, int ix, int iy, int iz) {
+    private void renderTankInside(Tessellator tessellator, World world, int ix, int iy, int iz, TileTank tank) {
         float offset = 0.002f;
 
         tessellator.startDrawingQuads();
@@ -122,7 +122,7 @@ public class TankTESR extends TileEntitySpecialRenderer {
         IIcon blockIcon = TankSetup.tank.getSideIcon();
 
         //NORTH other side
-        if (world.getBlock(ix, iy, iz-1) != TankSetup.tank) {
+        if (doRenderToSide(world, ix, iy, iz-1, tank)) {
             tessellator.addVertexWithUV(1, 0, offset, blockIcon.getMinU(), blockIcon.getMinV());
             tessellator.addVertexWithUV(1, 1, offset, blockIcon.getMinU(), blockIcon.getMaxV());
             tessellator.addVertexWithUV(0, 1, offset, blockIcon.getMaxU(), blockIcon.getMaxV());
@@ -130,7 +130,7 @@ public class TankTESR extends TileEntitySpecialRenderer {
         }
 
         //SOUTH other side
-        if (world.getBlock(ix, iy, iz+1) != TankSetup.tank) {
+        if (doRenderToSide(world, ix, iy, iz+1, tank)) {
             tessellator.addVertexWithUV(1, 1, 1 - offset, blockIcon.getMinU(), blockIcon.getMinV());
             tessellator.addVertexWithUV(1, 0, 1 - offset, blockIcon.getMinU(), blockIcon.getMaxV());
             tessellator.addVertexWithUV(0, 0, 1 - offset, blockIcon.getMaxU(), blockIcon.getMaxV());
@@ -138,7 +138,7 @@ public class TankTESR extends TileEntitySpecialRenderer {
         }
 
         //EAST other side
-        if (world.getBlock(ix-1, iy, iz) != TankSetup.tank) {
+        if (doRenderToSide(world, ix-1, iy, iz, tank)) {
             tessellator.addVertexWithUV(offset, 1, 1, blockIcon.getMinU(), blockIcon.getMinV());
             tessellator.addVertexWithUV(offset, 0, 1, blockIcon.getMinU(), blockIcon.getMaxV());
             tessellator.addVertexWithUV(offset, 0, 0, blockIcon.getMaxU(), blockIcon.getMaxV());
@@ -146,7 +146,7 @@ public class TankTESR extends TileEntitySpecialRenderer {
         }
 
         //WEST other side
-        if (world.getBlock(ix+1, iy, iz) != TankSetup.tank) {
+        if (doRenderToSide(world, ix+1, iy, iz, tank)) {
             tessellator.addVertexWithUV(1 - offset, 0, 1, blockIcon.getMinU(), blockIcon.getMinV());
             tessellator.addVertexWithUV(1 - offset, 1, 1, blockIcon.getMinU(), blockIcon.getMaxV());
             tessellator.addVertexWithUV(1 - offset, 1, 0, blockIcon.getMaxU(), blockIcon.getMaxV());
@@ -154,7 +154,7 @@ public class TankTESR extends TileEntitySpecialRenderer {
         }
 
         // Bottom other side
-        if (world.getBlock(ix, iy-1, iz) != TankSetup.tank) {
+        if (doRenderToSide(world, ix, iy-1, iz, tank)) {
             blockIcon = TankSetup.tank.getBottomIcon();
             tessellator.addVertexWithUV(0, offset, 0, blockIcon.getMinU(), blockIcon.getMinV());
             tessellator.addVertexWithUV(0, offset, 1, blockIcon.getMinU(), blockIcon.getMaxV());
@@ -163,7 +163,7 @@ public class TankTESR extends TileEntitySpecialRenderer {
         }
 
         // Top other side
-        if (world.getBlock(ix, iy+1, iz) != TankSetup.tank) {
+        if (doRenderToSide(world, ix, iy+1, iz, tank)) {
             blockIcon = TankSetup.tank.getTopIcon();
             tessellator.addVertexWithUV(0, 1 - offset, 0, blockIcon.getMinU(), blockIcon.getMinV());
             tessellator.addVertexWithUV(1, 1 - offset, 0, blockIcon.getMinU(), blockIcon.getMaxV());
@@ -172,5 +172,10 @@ public class TankTESR extends TileEntitySpecialRenderer {
         }
 
         tessellator.draw();
+    }
+
+    private boolean doRenderToSide(World world, int x, int y ,int z, TileTank tank){
+        TileEntity tile = world.getTileEntity(x, y, z);
+        return !(tile instanceof TileTank && ((TileTank)tile).getClientRenderFluid() == tank.getClientRenderFluid());
     }
 }
