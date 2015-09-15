@@ -176,6 +176,6 @@ public class TankTESR extends TileEntitySpecialRenderer {
 
     private boolean doRenderToSide(World world, int x, int y ,int z, TileTank tank){
         TileEntity tile = world.getTileEntity(x, y, z);
-        return tile instanceof TileTank && ((TileTank)tile).getClientRenderFluid() == tank.getClientRenderFluid();
+        return !(tile instanceof TileTank && ((TileTank)tile).getClientRenderFluid() == tank.getClientRenderFluid());
     }
 }
