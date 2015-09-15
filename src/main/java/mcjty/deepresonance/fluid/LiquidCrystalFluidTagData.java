@@ -12,15 +12,14 @@ public final class LiquidCrystalFluidTagData {
         return fromStack(new FluidStack(DRFluidRegistry.liquidCrystal, amount, tag));
     }
 
-    public static FluidStack makeLiquidCrystalStack(int amount, float quality, float purity, float strength, float lastingTime, float crystallisingTime) {
+    public static FluidStack makeLiquidCrystalStack(int amount, float quality, float purity, float strength, float efficiency) {
         FluidStack stack = new FluidStack(DRFluidRegistry.liquidCrystal, amount);
         NBTTagCompound tagCompound = new NBTTagCompound();
         stack.tag = tagCompound;
         stack.tag.setFloat("quality", quality);
         stack.tag.setFloat("purity", purity);
         stack.tag.setFloat("strength", strength);
-        stack.tag.setFloat("lastingTime", lastingTime);
-        stack.tag.setFloat("crystallisingTime", crystallisingTime);
+        stack.tag.setFloat("efficiency", efficiency);
         return stack;
     }
 
@@ -45,8 +44,7 @@ public final class LiquidCrystalFluidTagData {
         ret.quality = fluidTag.getFloat("quality");
         ret.purity = fluidTag.getFloat("purity");
         ret.strength = fluidTag.getFloat("strength");
-        ret.lastingTime = fluidTag.getFloat("lastingTime");
-        ret.crystallisingTime = fluidTag.getFloat("crystallisingTime");
+        ret.efficiency = fluidTag.getFloat("efficiency");
 
         return ret;
     }
@@ -59,8 +57,7 @@ public final class LiquidCrystalFluidTagData {
     private float quality;
     private float purity;
     private float strength;
-    private float lastingTime;
-    private float crystallisingTime;
+    private float efficiency;
 
     public void merge(LiquidCrystalFluidTagData otherTag){
         checkNullity();
@@ -70,8 +67,7 @@ public final class LiquidCrystalFluidTagData {
         this.quality = calculate(otherTag, quality, otherTag.quality);
         this.purity = calculate(otherTag, purity, otherTag.purity);
         this.strength = calculate(otherTag, strength, otherTag.strength);
-        this.lastingTime = calculate(otherTag, lastingTime, otherTag.lastingTime);
-        this.crystallisingTime = calculate(otherTag, lastingTime, otherTag.lastingTime);
+        this.efficiency = calculate(otherTag, efficiency, otherTag.efficiency);
 
         referenceStack.amount += otherTag.referenceStack.amount;
         save();
@@ -91,8 +87,7 @@ public final class LiquidCrystalFluidTagData {
         tagCompound.setFloat("quality", quality);
         tagCompound.setFloat("purity", purity);
         tagCompound.setFloat("strength", strength);
-        tagCompound.setFloat("lastingTime", lastingTime);
-        tagCompound.setFloat("crystallisingTime", crystallisingTime);
+        tagCompound.setFloat("efficiency", efficiency);
     }
 
     private void checkNullity(){
@@ -119,12 +114,8 @@ public final class LiquidCrystalFluidTagData {
         return strength;
     }
 
-    public float getLastingTime() {
-        return lastingTime;
-    }
-
-    public float getCrystallisingTime() {
-        return crystallisingTime;
+    public float getEfficiency() {
+        return efficiency;
     }
 
     public int getInternalTankAmount() {
@@ -146,12 +137,8 @@ public final class LiquidCrystalFluidTagData {
         this.strength = strength;
     }
 
-    public void setLastingTime(float lastingTime) {
-        this.lastingTime = lastingTime;
-    }
-
-    public void setCrystallisingTime(float crystallisingTime) {
-        this.crystallisingTime = crystallisingTime;
+    public void setEfficiency(float efficiency) {
+        this.efficiency = efficiency;
     }
 
     public void setInternalAmount(int i){
@@ -164,6 +151,6 @@ public final class LiquidCrystalFluidTagData {
 
     @Override
     public String toString() {
-        return "Amount: "+referenceStack.amount+" ,Quality: "+quality+" ,Purity: "+purity+" ,Strength: "+ strength +" ,LastingTime: "+lastingTime+" ,CrystallisingTime: "+crystallisingTime;
+        return "Amount: "+referenceStack.amount+" ,Quality: "+quality+" ,Purity: "+purity+" ,Strength: "+ strength +" ,Efficiency: "+ efficiency;
     }
 }

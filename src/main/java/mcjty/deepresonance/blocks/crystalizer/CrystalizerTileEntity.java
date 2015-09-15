@@ -129,7 +129,7 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
         NBTTagCompound compound = new NBTTagCompound();
         compound.setFloat("power", 100.0f);
         compound.setFloat("strength", mergedData.getStrength() * 100.0f);
-        compound.setFloat("efficiency", mergedData.getLastingTime() * 100.0f);
+        compound.setFloat("efficiency", mergedData.getEfficiency() * 100.0f);
         compound.setFloat("purity", mergedData.getPurity() * 100.0f);
         compound.setByte("version", (byte) 2);      // Legacy support to support older crystals.
         stack.setTagCompound(compound);

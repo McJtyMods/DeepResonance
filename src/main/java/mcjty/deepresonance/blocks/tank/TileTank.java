@@ -292,8 +292,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
             currentTip.add(EnumChatFormatting.YELLOW + "Quality: " + (int)(fluidData.getQuality() * 100) + "%");
             currentTip.add(EnumChatFormatting.YELLOW + "Purity: " + (int)(fluidData.getPurity() * 100) + "%");
             currentTip.add(EnumChatFormatting.YELLOW + "Power: " + (int)(fluidData.getStrength() * 100) + "%");
-            currentTip.add(EnumChatFormatting.YELLOW + "Time: " + (int)(fluidData.getLastingTime() * 100) + "%");
-            currentTip.add(EnumChatFormatting.YELLOW + "Crystalizing: " + (int)(fluidData.getCrystallisingTime() * 100) + "%");
+            currentTip.add(EnumChatFormatting.YELLOW + "Efficiency: " + (int)(fluidData.getEfficiency() * 100) + "%");
         }
         if (System.currentTimeMillis() - lastTime > 100){
             lastTime = System.currentTimeMillis();

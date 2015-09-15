@@ -138,7 +138,7 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
 
     private void stopSmelting() {
         if (finalQuality > 0.0f) {
-            FluidStack stack = LiquidCrystalFluidTagData.makeLiquidCrystalStack(ConfigMachines.Smelter.rclPerOre, finalQuality, finalPurity, 0.1f, 0.1f, 0.1f);
+            FluidStack stack = LiquidCrystalFluidTagData.makeLiquidCrystalStack(ConfigMachines.Smelter.rclPerOre, finalQuality, finalPurity, 0.1f, 0.1f);
             rclTank.fill(ForgeDirection.UNKNOWN, stack, true);
         }
     }
