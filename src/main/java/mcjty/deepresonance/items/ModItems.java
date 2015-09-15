@@ -21,6 +21,7 @@ public final class ModItems {
 
     public static DeepResonanceManualItem deepResonanceManualItem;
     public static RadiationMonitorItem radiationMonitorItem;
+    public static ResonatingPlateItem resonatingPlateItem;
 
     public static void init() {
         deepResonanceManualItem = new DeepResonanceManualItem();
@@ -33,6 +34,12 @@ public final class ModItems {
         radiationMonitorItem.setUnlocalizedName("RadiationMonitor");
         radiationMonitorItem.setCreativeTab(DeepResonance.tabDeepResonance);
         GameRegistry.registerItem(radiationMonitorItem, "radiationMonitorItem");
+
+        resonatingPlateItem = new ResonatingPlateItem();
+        resonatingPlateItem.setUnlocalizedName("ResonatingPlate");
+        resonatingPlateItem.setCreativeTab(DeepResonance.tabDeepResonance);
+        resonatingPlateItem.setTextureName(DeepResonance.MODID + ":resonatingPlate");
+        GameRegistry.registerItem(resonatingPlateItem, "resonatingPlateItem");
 
         new TestItem(); //Auto-registers
     }
