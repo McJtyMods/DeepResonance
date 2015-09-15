@@ -11,10 +11,13 @@ public class ConfigMachines {
         private static final String category = "Purifier";
 
         @Configurable(category = category, minValue = 1, maxValue = 10000, comment = "Amount of ticks needed to purify one unit of RCL")
-        public static int ticksPerPurify = 10;
+        public static int ticksPerPurify = 100;
 
         @Configurable(category = category, minValue = 1, maxValue = 10000, comment = "The amount of RCL we purify as one unit")
-        public static int rclPerPurify = 10;
+        public static int rclPerPurify = 100;
+
+//        @Configurable(category = category, minValue = 0.01f, maxValue = 10000, comment = "The amount of RCL we purify as one unit")
+//        public static float addedPurity = .25f;
     }
 
     public static class Smelter {

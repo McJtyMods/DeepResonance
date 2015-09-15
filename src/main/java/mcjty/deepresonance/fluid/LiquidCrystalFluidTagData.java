@@ -23,6 +23,17 @@ public final class LiquidCrystalFluidTagData {
         return stack;
     }
 
+    public FluidStack makeLiquidCrystalStack() {
+        FluidStack stack = new FluidStack(DRFluidRegistry.liquidCrystal, referenceStack.amount);
+        NBTTagCompound tagCompound = new NBTTagCompound();
+        stack.tag = tagCompound;
+        stack.tag.setFloat("quality", quality);
+        stack.tag.setFloat("purity", purity);
+        stack.tag.setFloat("strength", strength);
+        stack.tag.setFloat("efficiency", efficiency);
+        return stack;
+    }
+
     public static LiquidCrystalFluidTagData fromStack(FluidStack stack){
         if (!DRFluidRegistry.isValidLiquidCrystalStack(stack))
             return null;

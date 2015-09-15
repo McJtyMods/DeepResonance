@@ -2,22 +2,22 @@ package mcjty.deepresonance.blocks.purifier;
 
 import elec332.core.world.WorldHelper;
 import mcjty.container.InventoryHelper;
-import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.base.ElecTileBase;
 import mcjty.deepresonance.blocks.tank.ITankHook;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
+import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.deepresonance.items.ModItems;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISidedInventory {
@@ -33,8 +33,45 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
     private boolean checkTanks;
     private int progress = 0;
 
+    private LiquidCrystalFluidTagData fluidData = null;
+
     @Override
     protected void checkStateServer() {
+        if (progress > 0) {
+            progress--;
+            if (progress == 0) {
+                // Done. First check if we can actually insert the liquid. If not we postpone this.
+                progress = 1;
+                if (bottomTank != null) {
+                    if (fillBottomTank()) {
+                        float purity = fluidData.getPurity();
+                        purity += .2f;
+                        if (purity > 0.85f) {
+                            purity = 0.85f;
+                        }
+                        fluidData.setPurity(purity);
+                        FluidStack stack = fluidData.makeLiquidCrystalStack();
+                        bottomTank.fill(ForgeDirection.UNKNOWN, stack, true);
+                        fillBottomTank();
+                        EntityItem entityItem = new EntityItem(worldObj, xCoord, yCoord, zCoord, new ItemStack(ModItems.spentFilterMaterialItem, 1));
+                        worldObj.spawnEntityInWorld(entityItem);
+
+                        progress = 0;   // Really done
+                    }
+                }
+            }
+        } else {
+            if (canWork() && validSlot()) {
+                progress = ConfigMachines.Purifier.ticksPerPurify;
+                fluidData = LiquidCrystalFluidTagData.fromStack(topTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Purifier.rclPerPurify, true));
+                inventoryHelper.decrStackSize(PurifierContainer.SLOT_FILTERINPUT, 1);
+            }
+        }
+
+    }
+
+    private boolean fillBottomTank() {
+        return bottomTank.fill(ForgeDirection.UNKNOWN, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Purifier.rclPerPurify), false) == ConfigMachines.Purifier.rclPerPurify;
     }
 
     private boolean canWork() {
@@ -50,13 +87,12 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
 
     private boolean checkTanks(){
         return bottomTank != null && topTank != null
-                && DRFluidRegistry.getFluidFromStack(bottomTank.getFluid()) == FluidRegistry.LAVA
-                && bottomTank.getFluidAmount() > bottomTank.getCapacity()*0.25f
-                && topTank.fill(ForgeDirection.UNKNOWN, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), false) == ConfigMachines.Smelter.rclPerOre;
+                && topTank.getFluidAmount() >= ConfigMachines.Purifier.rclPerPurify
+                && fillBottomTank();
     }
 
     private boolean validSlot(){
-        return inventoryHelper.getStackInSlot(PurifierContainer.SLOT_FILTERINPUT) != null && inventoryHelper.getStackInSlot(PurifierContainer.SLOT_FILTERINPUT).getItem() == Item.getItemFromBlock(ModBlocks.resonatingOreBlock);
+        return inventoryHelper.getStackInSlot(PurifierContainer.SLOT_FILTERINPUT) != null && inventoryHelper.getStackInSlot(PurifierContainer.SLOT_FILTERINPUT).getItem() == ModItems.filterMaterialItem;
     }
 
 
@@ -64,6 +100,12 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
     public void writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("progress", progress);
+        if (fluidData != null) {
+            NBTTagCompound dataCompound = new NBTTagCompound();
+            fluidData.writeDataToNBT(dataCompound);
+            tagCompound.setTag("data", dataCompound);
+            tagCompound.setInteger("amount", fluidData.getInternalTankAmount());
+        }
     }
 
     @Override
@@ -91,6 +133,13 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
         progress = tagCompound.getInteger("progress");
+        if (tagCompound.hasKey("data")) {
+            NBTTagCompound dataCompound = (NBTTagCompound) tagCompound.getTag("data");
+            int amount = dataCompound.getInteger("amount");
+            fluidData = LiquidCrystalFluidTagData.fromNBT(dataCompound, amount);
+        } else {
+            fluidData = null;
+        }
     }
 
     @Override

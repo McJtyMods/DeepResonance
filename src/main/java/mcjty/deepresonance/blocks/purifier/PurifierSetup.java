@@ -2,7 +2,7 @@ package mcjty.deepresonance.blocks.purifier;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import mcjty.deepresonance.blocks.ModBlocks;
-import net.minecraft.init.Blocks;
+import mcjty.deepresonance.items.ModItems;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
@@ -15,6 +15,6 @@ public class PurifierSetup {
     }
 
     public static void setupCrafting() {
-        GameRegistry.addRecipe(new ItemStack(purifierBlock), "ggg", "iMi", "ggg", 'M', ModBlocks.machineFrame, 'g', Blocks.gravel, 'i', Items.iron_ingot);
+        GameRegistry.addRecipe(new ItemStack(purifierBlock), "ggg", "iMi", "ggg", 'M', ModBlocks.machineFrame, 'g', ModItems.filterMaterialItem, 'i', Items.iron_ingot);
     }
 }
