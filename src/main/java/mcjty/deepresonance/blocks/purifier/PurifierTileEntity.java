@@ -75,22 +75,22 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
         }
         Coordinate thisCoordinate = getCoordinate();
         inventoryCoordinate = thisCoordinate.addDirection(ForgeDirection.EAST);
-        IInventory inv = getInventoryAtCoordinate(thisCoordinate);
+        IInventory inv = getInventoryAtCoordinate(inventoryCoordinate);
         if (inv != null) {
             return inv;
         }
         inventoryCoordinate = thisCoordinate.addDirection(ForgeDirection.WEST);
-        inv = getInventoryAtCoordinate(thisCoordinate);
+        inv = getInventoryAtCoordinate(inventoryCoordinate);
         if (inv != null) {
             return inv;
         }
         inventoryCoordinate = thisCoordinate.addDirection(ForgeDirection.NORTH);
-        inv = getInventoryAtCoordinate(thisCoordinate);
+        inv = getInventoryAtCoordinate(inventoryCoordinate);
         if (inv != null) {
             return inv;
         }
         inventoryCoordinate = thisCoordinate.addDirection(ForgeDirection.SOUTH);
-        return getInventoryAtCoordinate(thisCoordinate);
+        return getInventoryAtCoordinate(inventoryCoordinate);
     }
 
     private IInventory getInventoryAtCoordinate(Coordinate c) {
