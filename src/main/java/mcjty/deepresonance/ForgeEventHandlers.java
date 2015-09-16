@@ -1,6 +1,7 @@
 package mcjty.deepresonance;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.varia.QuadTree;
@@ -16,7 +17,7 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onBlockBreakEvent(BlockEvent.BreakEvent event) {
-        if (event.block != Blocks.obsidian) {
+        if (event.block != Blocks.obsidian && event.block != ModBlocks.denseObsidianBlock) {
             return;
         }
 
@@ -46,7 +47,7 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onBlockPlaceEvent(BlockEvent.PlaceEvent event) {
-        if (event.block != Blocks.obsidian) {
+        if (event.block != Blocks.obsidian && event.block != ModBlocks.denseObsidianBlock) {
             return;
         }
 
@@ -68,7 +69,11 @@ public class ForgeEventHandlers {
             if (Math.abs(c.getX()-x) < radius && Math.abs(c.getY()-y) < radius && Math.abs(c.getZ()-z) < radius) {
                 System.out.println("Add blocker at: " + x + "," + y + "," + z);
                 QuadTree radiationTree = source.getRadiationTree(world, c.getX(), c.getY(), c.getZ());
-                radiationTree.addBlocker(x, y, z, .20f);
+                if (event.block == Blocks.obsidian) {
+                    radiationTree.addBlocker(x, y, z, .20f);
+                } else if (event.block == ModBlocks.denseObsidianBlock) {
+                    radiationTree.addBlocker(x, y, z, .05f);
+                }
             }
         }
 
