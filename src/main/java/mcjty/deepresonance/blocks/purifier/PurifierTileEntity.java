@@ -28,12 +28,10 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
     private InventoryHelper inventoryHelper = new InventoryHelper(this, PurifierContainer.factory, 1);
 
     public PurifierTileEntity() {
-        checkTanks = true;
     }
 
     private TileTank bottomTank;
     private TileTank topTank;
-    private boolean checkTanks;
     private int progress = 0;
 
     // Cache for the inventory used to put the spent filter material in.
@@ -55,11 +53,13 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
                     }
                 }
             }
+            markDirty();
         } else {
             if (canWork() && validSlot()) {
                 progress = ConfigMachines.Purifier.ticksPerPurify;
                 fluidData = LiquidCrystalFluidTagData.fromStack(topTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Purifier.rclPerPurify, true));
                 inventoryHelper.decrStackSize(PurifierContainer.SLOT_FILTERINPUT, 1);
+                markDirty();
             }
         }
 
@@ -112,7 +112,7 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
         fluidData.setPurity(purity);
         FluidStack stack = fluidData.makeLiquidCrystalStack();
         bottomTank.fill(ForgeDirection.UNKNOWN, stack, true);
-        fillBottomTank();
+        fluidData = null;
 
         IInventory inventory = findInventory();
         ItemStack spentMaterial = new ItemStack(ModItems.spentFilterMaterialItem, 1);
@@ -134,20 +134,16 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
     }
 
     private boolean canWork() {
-        if (checkTanks) {
-            if (checkTanks()) {
-                checkTanks = false;
-            } else {
-                return false;
-            }
+        if (bottomTank == null || topTank == null) {
+            return false;
+        }
+        if (topTank.getFluidAmount() < ConfigMachines.Purifier.rclPerPurify) {
+            return false;
+        }
+        if (!fillBottomTank()) {
+            return false;
         }
         return true;
-    }
-
-    private boolean checkTanks(){
-        return bottomTank != null && topTank != null
-                && topTank.getFluidAmount() >= ConfigMachines.Purifier.rclPerPurify
-                && fillBottomTank();
     }
 
     private boolean validSlot(){
@@ -227,7 +223,6 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
                 topTank = tank;
             }
         }
-        checkTanks = true;
     }
 
     @Override
@@ -239,7 +234,6 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
             topTank = null;
             notifyNeighboursOfDataChange();
         }
-        checkTanks = true;
     }
 
     @Override
@@ -254,7 +248,6 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
                 bottomTank = null;
             }
         }
-        checkTanks = true;
     }
 
     private boolean validRCLTank(TileTank tank){
