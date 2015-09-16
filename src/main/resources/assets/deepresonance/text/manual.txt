@@ -81,7 +81,8 @@ is in a certain area:
 {ri:radiationMonitorItem}
 
 Note that obsidian helps to block some of the radiation but dense
-obsidian is even better.
+obsidian is even better. You can also use lead blocks. These are better
+then obsidian but not as good as dense obsidian.
 {-------------------------------------------------------------}
 {b}Machine Frame
 {n:frame}
