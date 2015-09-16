@@ -6,6 +6,8 @@ import mcjty.deepresonance.DeepResonance;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.Facing;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 
@@ -53,6 +55,18 @@ public class DenseGlassBlock extends Block {
     @Override
     public boolean isOpaqueCube()
     {
-        return true;
+        return false;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)    {
+        Block block = world.getBlock(x, y, z);
+
+        if (block == this) {
+            return false;
+        }
+
+        return super.shouldSideBeRendered(world, x, y, z, side);
     }
 }
