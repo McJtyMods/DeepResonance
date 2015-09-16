@@ -53,6 +53,6 @@ public class DenseGlassBlock extends Block {
     @Override
     public boolean isOpaqueCube()
     {
-        return false;
+        return true;
     }
 }
