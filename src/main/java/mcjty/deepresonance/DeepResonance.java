@@ -17,6 +17,7 @@ import mcjty.deepresonance.config.ConfigGenerator;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.grid.WorldGridRegistry;
+import mcjty.deepresonance.items.manual.GuiDeepResonanceManual;
 import mcjty.deepresonance.proxy.CommonProxy;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
@@ -142,7 +143,8 @@ public class DeepResonance implements ModBase {
     }
 
     @Override
-    public void openManual(EntityPlayer entityPlayer, int i, String s) {
-
+    public void openManual(EntityPlayer player, int bookIndex, String page) {
+        GuiDeepResonanceManual.locatePage = page;
+        player.openGui(DeepResonance.instance, bookIndex, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
     }
 }
