@@ -33,6 +33,7 @@ public class RadiationConfiguration {
 
     public static float radiationShieldObsidianFactor = 0.2f;
     public static float radiationShieldDenseObsidianFactor = 0.05f;
+    public static float radiationShieldDenseGlassFactor = 0.1f;
     public static float radiationShieldLeadFactor = 0.1f;
 
     public static void init(Configuration cfg) {
@@ -83,6 +84,8 @@ public class RadiationConfiguration {
                 "How much obsidian blocks radiation (0.0 is total block, 1.0 is not block at all)").getDouble();
         radiationShieldDenseObsidianFactor = (float) cfg.get(CATEGORY_RADIATION, "radiationShieldDenseObsidianFactor", radiationShieldDenseObsidianFactor,
                 "How much dense obsidian blocks radiation (0.0 is total block, 1.0 is not block at all)").getDouble();
+        radiationShieldDenseGlassFactor = (float) cfg.get(CATEGORY_RADIATION, "radiationShieldDenseGlassFactor", radiationShieldDenseGlassFactor,
+                "How much dense glass blocks radiation (0.0 is total block, 1.0 is not block at all)").getDouble();
         radiationShieldLeadFactor = (float) cfg.get(CATEGORY_RADIATION, "radiationShieldLeadFactor", radiationShieldLeadFactor,
                 "How much dense lead blocks radiation (0.0 is total block, 1.0 is not block at all)").getDouble();
     }

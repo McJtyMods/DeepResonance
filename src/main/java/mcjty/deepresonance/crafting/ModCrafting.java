@@ -23,6 +23,7 @@ public final class ModCrafting {
         GameRegistry.addRecipe(new ItemStack(ModItems.filterMaterialItem, 8), "gcg", "csc", "gcg", 'g', Blocks.gravel, 'c', Items.coal, 's', Blocks.sand);
         GameRegistry.addRecipe(new ItemStack(ModItems.filterMaterialItem, 8), "gcg", "csc", "gcg", 'g', Blocks.gravel, 'c', new ItemStack(Items.coal, 1, 1), 's', Blocks.sand);
         GameRegistry.addRecipe(new ItemStack(ModBlocks.denseObsidianBlock, 4), "sos", "oso", "sos", 's', ModItems.spentFilterMaterialItem, 'o', Blocks.obsidian);
+        GameRegistry.addRecipe(new ItemStack(ModBlocks.denseGlassBlock, 4), "sgs", "gog", "sgs", 's', ModItems.spentFilterMaterialItem, 'o', Blocks.obsidian, 'g', Blocks.glass);
 
         GameRegistry.addSmelting(ModBlocks.resonatingOreBlock, new ItemStack(ModItems.resonatingPlateItem, 8), 0.0f);
 

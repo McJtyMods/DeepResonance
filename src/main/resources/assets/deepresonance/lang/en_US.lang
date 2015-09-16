@@ -6,6 +6,7 @@ item.SpentFilterMaterial.name=Spent Filter Material
 
 tile.oreResonating.name=Resonating Ore
 tile.denseObsidian.name=Dense Obsidian
+tile.denseGlass.name=Dense Glass
 tile.poisonedDirt.name=Poisoned Dirt
 tile.resonatingCrystalBlock.name=Resonating Crystal
 tile.generatorBlock.name=Generator

@@ -41,6 +41,8 @@ public class RadiationShieldRegistry {
             return RadiationConfiguration.radiationShieldObsidianFactor;
         } else if (block == ModBlocks.denseObsidianBlock) {
             return RadiationConfiguration.radiationShieldDenseObsidianFactor;
+        } else if (block == ModBlocks.denseGlassBlock) {
+            return RadiationConfiguration.radiationShieldDenseGlassFactor;
         } else if (getLeadBlocks().contains(block)) {
             return RadiationConfiguration.radiationShieldLeadFactor;
         } else {

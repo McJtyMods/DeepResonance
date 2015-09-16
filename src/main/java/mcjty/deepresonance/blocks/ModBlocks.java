@@ -10,6 +10,7 @@ import mcjty.deepresonance.blocks.duct.BlockDuct;
 import mcjty.deepresonance.blocks.duct.TileBasicFluidDuct;
 import mcjty.deepresonance.blocks.gencontroller.GeneratorControllerSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
+import mcjty.deepresonance.blocks.ore.DenseGlassBlock;
 import mcjty.deepresonance.blocks.ore.DenseObsidianBlock;
 import mcjty.deepresonance.blocks.ore.ResonatingOreBlock;
 import mcjty.deepresonance.blocks.poisondirt.PoisonedDirtBlock;
@@ -23,6 +24,7 @@ public final class ModBlocks {
 
     public static ResonatingOreBlock resonatingOreBlock;
     public static DenseObsidianBlock denseObsidianBlock;
+    public static DenseGlassBlock denseGlassBlock;
     public static ResonatingCrystalBlock resonatingCrystalBlock;
     public static PoisonedDirtBlock poisonedDirtBlock;
     public static Block duct;
@@ -35,6 +37,9 @@ public final class ModBlocks {
 
         denseObsidianBlock = new DenseObsidianBlock();
         GameRegistry.registerBlock(denseObsidianBlock, "denseObsidian");
+
+        denseGlassBlock = new DenseGlassBlock();
+        GameRegistry.registerBlock(denseGlassBlock, "denseGlass");
 
         poisonedDirtBlock = new PoisonedDirtBlock();
         GameRegistry.registerBlock(poisonedDirtBlock, "poisonedDirt");
