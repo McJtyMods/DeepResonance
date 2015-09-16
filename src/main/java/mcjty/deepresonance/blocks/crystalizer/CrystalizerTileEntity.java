@@ -17,6 +17,7 @@ import mcjty.network.Argument;
 import mcjty.network.PacketRequestIntegerFromServer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -240,7 +241,7 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
 
     @Override
     public boolean canInsertItem(int index, ItemStack item, int side) {
-        return SmelterContainer.factory.isInputSlot(index) || SmelterContainer.factory.isSpecificItemSlot(index);
+        return false;
     }
 
     @Override
@@ -305,7 +306,7 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return true;
+        return stack.getItem() == Item.getItemFromBlock(ModBlocks.resonatingCrystalBlock);
     }
 
 
