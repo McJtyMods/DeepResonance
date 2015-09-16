@@ -31,6 +31,10 @@ public class RadiationConfiguration {
     public static float maximumExplosionMultiplier = 17.0f;
     public static float absoluteMaximumExplosionMultiplier = 20.0f;
 
+    public static float radiationShieldObsidianFactor = 0.2f;
+    public static float radiationShieldDenseObsidianFactor = 0.05f;
+    public static float radiationShieldLeadFactor = 0.1f;
+
     public static void init(Configuration cfg) {
         minRadiationRadius = (float) cfg.get(CATEGORY_RADIATION, "minRadiationRadius", minRadiationRadius,
                 "The minimum radiation radius").getDouble();
@@ -74,6 +78,13 @@ public class RadiationConfiguration {
                 "The maximum explosion multiplier for a 100%/100% power/strength crystal").getDouble();
         absoluteMaximumExplosionMultiplier = (float) cfg.get(CATEGORY_RADIATION, "absoluteMaximumExplosionMultiplier", absoluteMaximumExplosionMultiplier,
                 "The maximum explosion multiplier that is possible").getDouble();
+
+        radiationShieldObsidianFactor = (float) cfg.get(CATEGORY_RADIATION, "radiationShieldObsidianFactor", radiationShieldObsidianFactor,
+                "How much obsidian blocks radiation (0.0 is total block, 1.0 is not block at all)").getDouble();
+        radiationShieldDenseObsidianFactor = (float) cfg.get(CATEGORY_RADIATION, "radiationShieldDenseObsidianFactor", radiationShieldDenseObsidianFactor,
+                "How much dense obsidian blocks radiation (0.0 is total block, 1.0 is not block at all)").getDouble();
+        radiationShieldLeadFactor = (float) cfg.get(CATEGORY_RADIATION, "radiationShieldLeadFactor", radiationShieldLeadFactor,
+                "How much dense lead blocks radiation (0.0 is total block, 1.0 is not block at all)").getDouble();
     }
 
 }

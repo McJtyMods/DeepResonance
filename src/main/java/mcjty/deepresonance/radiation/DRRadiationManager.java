@@ -161,10 +161,9 @@ public class DRRadiationManager extends WorldSavedData {
                     for (int y = (int) (centerY-radius); y <= centerY+radius ; y++) {
                         for (int z = (int) (centerZ-radius); z <= centerZ+radius ; z++) {
                             Block block = world.getBlock(x, y, z);
-                            if (block == Blocks.obsidian) {
-                                radiationTree.addBlocker(x, y, z, .20f);
-                            } else if (block == ModBlocks.denseObsidianBlock) {
-                                radiationTree.addBlocker(x, y, z, .05f);
+                            float blocker = RadiationShieldRegistry.getBlocker(block);
+                            if (blocker < 0.99f) {
+                                radiationTree.addBlocker(x, y, z, blocker);
                             }
                         }
                     }
