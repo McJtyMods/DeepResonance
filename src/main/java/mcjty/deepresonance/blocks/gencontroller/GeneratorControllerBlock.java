@@ -43,9 +43,9 @@ public class GeneratorControllerBlock extends GenericBlock {
         super.addInformation(itemStack, player, list, whatIsThis);
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-            list.add(EnumChatFormatting.WHITE + "Part of a generator multi-block.");
-            list.add(EnumChatFormatting.WHITE + "Use this block to turn on/off the reactor with");
-            list.add(EnumChatFormatting.WHITE + "a redstone signal.");
+            list.add("Part of a generator multi-block.");
+            list.add("Use this block to turn on/off the reactor with");
+            list.add("a redstone signal.");
         } else {
             list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
         }

@@ -69,8 +69,8 @@ public class GeneratorBlock extends GenericBlock {
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-            list.add(EnumChatFormatting.WHITE + "Part of a generator multi-block.");
-            list.add(EnumChatFormatting.WHITE + "You can place these in any configuration.");
+            list.add("Part of a generator multi-block.");
+            list.add("You can place these in any configuration.");
         } else {
             list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
         }

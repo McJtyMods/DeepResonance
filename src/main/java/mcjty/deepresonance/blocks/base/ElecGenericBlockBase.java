@@ -1,8 +1,8 @@
 package mcjty.deepresonance.blocks.base;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import elec332.core.helper.RegisterHelper;
 import mcjty.container.GenericBlock;
+import mcjty.container.GenericItemBlock;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.entity.GenericTileEntity;
 import net.minecraft.block.material.Material;
@@ -44,7 +44,7 @@ public class ElecGenericBlockBase extends GenericBlock {
     }
 
     public ElecGenericBlockBase register() {
-        RegisterHelper.registerBlock(this, this.blockName);
+        GameRegistry.registerBlock(this, GenericItemBlock.class, this.blockName);
         return this;
     }
 

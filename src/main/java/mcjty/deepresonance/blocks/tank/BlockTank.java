@@ -1,17 +1,24 @@
 package mcjty.deepresonance.blocks.tank;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.base.ElecGenericBlockBase;
+import mcjty.deepresonance.client.ClientHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import org.lwjgl.input.Keyboard;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,6 +36,21 @@ public class BlockTank extends ElecGenericBlockBase {
     public BlockTank(String name) {
         super(Material.rock, TileTank.class, name);
         setCreativeTab(DeepResonance.tabDeepResonance);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
+        super.addInformation(itemStack, player, list, whatIsThis);
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+            list.add("This tank can hold up to 16 buckets of liquid.");
+            list.add("It is also capable of mixing the characteristics");
+            list.add("of liquid crystal.");
+            list.add("Place a comparator next to this tank to detect");
+            list.add("how filled the tank is");
+        } else {
+            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
+        }
     }
 
     @Override

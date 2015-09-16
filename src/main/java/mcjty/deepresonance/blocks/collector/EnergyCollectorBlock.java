@@ -42,9 +42,9 @@ public class EnergyCollectorBlock extends GenericBlock {
         super.addInformation(itemStack, player, list, whatIsThis);
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-            list.add(EnumChatFormatting.WHITE + "Part of a generator multi-block.");
-            list.add(EnumChatFormatting.WHITE + "Place this on top of a generator with");
-            list.add(EnumChatFormatting.WHITE + "crystals nearby.");
+            list.add("Part of a generator multi-block.");
+            list.add("Place this on top of a generator with");
+            list.add("crystals nearby.");
         } else {
             list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
         }
