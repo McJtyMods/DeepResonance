@@ -60,7 +60,7 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
         if (progress > 0) {
             if (canWork()) {
                 progress--;
-                storage.extractEnergy(ConfigMachines.Smelter.rfPerOre, true);
+                storage.extractEnergy(ConfigMachines.Smelter.rfPerOre, false);
                 if (progress == 0) {
                     // Done!
                     stopSmelting();
