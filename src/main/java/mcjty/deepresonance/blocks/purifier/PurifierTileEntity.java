@@ -36,6 +36,7 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
 
     // Cache for the inventory used to put the spent filter material in.
     private Coordinate inventoryCoordinate = null;
+    private int inventorySide = 0;
 
     private LiquidCrystalFluidTagData fluidData = null;
 
@@ -44,12 +45,14 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
         if (progress > 0) {
             progress--;
             if (progress == 0) {
-                // Done. First check if we can actually insert the liquid. If not we postpone this.
-                progress = 1;
-                if (bottomTank != null) {
-                    if (fillBottomTank()) {
-                        doPurify();
-                        progress = 0;   // Really done
+                if (fluidData != null) {
+                    // Done. First check if we can actually insert the liquid. If not we postpone this.
+                    progress = 1;
+                    if (bottomTank != null) {
+                        if (fillBottomTank()) {
+                            doPurify();
+                            progress = 0;   // Really done
+                        }
                     }
                 }
             }
@@ -62,34 +65,20 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
                 markDirty();
             }
         }
-
     }
 
-    private IInventory findInventory() {
-        if (inventoryCoordinate != null) {
-            IInventory inv = getInventoryAtCoordinate(inventoryCoordinate);
-            if (inv != null) {
-                return inv;
+    private static ForgeDirection[] directions = new ForgeDirection[] { ForgeDirection.UNKNOWN, ForgeDirection.EAST, ForgeDirection.WEST, ForgeDirection.NORTH, ForgeDirection.SOUTH };
+
+    private IInventory getInventoryAtDirection(Coordinate thisCoordinate, ForgeDirection direction) {
+        if (direction == ForgeDirection.UNKNOWN) {
+            if (inventoryCoordinate != null) {
+                return getInventoryAtCoordinate(inventoryCoordinate);
             }
-            inventoryCoordinate = null;
+            return null;
         }
-        Coordinate thisCoordinate = getCoordinate();
-        inventoryCoordinate = thisCoordinate.addDirection(ForgeDirection.EAST);
-        IInventory inv = getInventoryAtCoordinate(inventoryCoordinate);
-        if (inv != null) {
-            return inv;
-        }
-        inventoryCoordinate = thisCoordinate.addDirection(ForgeDirection.WEST);
-        inv = getInventoryAtCoordinate(inventoryCoordinate);
-        if (inv != null) {
-            return inv;
-        }
-        inventoryCoordinate = thisCoordinate.addDirection(ForgeDirection.NORTH);
-        inv = getInventoryAtCoordinate(inventoryCoordinate);
-        if (inv != null) {
-            return inv;
-        }
-        inventoryCoordinate = thisCoordinate.addDirection(ForgeDirection.SOUTH);
+        // Remember in inventoryCoordinate (acts as a cache)
+        inventoryCoordinate = thisCoordinate.addDirection(direction);
+        inventorySide = direction.getOpposite().ordinal();
         return getInventoryAtCoordinate(inventoryCoordinate);
     }
 
@@ -114,12 +103,17 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
         bottomTank.fill(ForgeDirection.UNKNOWN, stack, true);
         fluidData = null;
 
-        IInventory inventory = findInventory();
-        ItemStack spentMaterial = new ItemStack(ModItems.spentFilterMaterialItem, 1);
         boolean spawnInWorld = true;
-        if (inventory != null) {
-            if (InventoryHelper.mergeItemStack(inventory, spentMaterial, 0, inventory.getSizeInventory(), null) == 0) {
-                spawnInWorld = false;
+        ItemStack spentMaterial = new ItemStack(ModItems.spentFilterMaterialItem, 1);
+
+        Coordinate thisCoordinate = getCoordinate();
+        for (ForgeDirection dir : directions) {
+            IInventory inventory = getInventoryAtDirection(thisCoordinate, dir);
+            if (inventory != null) {
+                if (InventoryHelper.mergeItemStackSafe(inventory, inventorySide, spentMaterial, 0, inventory.getSizeInventory(), null) == 0) {
+                    spawnInWorld = false;
+                    break;
+                }
             }
         }
 
