@@ -37,17 +37,20 @@ public class DenseGlassBlock extends Block {
         return icon;
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public int getRenderBlockPass()
     {
         return 0;
     }
 
+    @Override
     public boolean renderAsNormalBlock()
     {
         return false;
     }
 
+    @Override
     public boolean isOpaqueCube()
     {
         return false;
