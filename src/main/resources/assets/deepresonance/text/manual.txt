@@ -36,9 +36,8 @@ the Resonating Crystal Liquid (RCL).
 {b}Resonating Crystals
 {n:crystals}
 Very rarely you can find a resonating crystal in a deep cave. Collect these
-crystals. These crystals have low power and low purity but they can
-be useful for early game power. Just place them near a correctly
-formed generator.
+crystals. They have low power and low purity but they can be useful for
+early game power. Just place them near a correctly formed generator.
 
 Note that crystals explode heavily if there is a nearby explosion (like
 from a creeper). Be careful! The power of this explosion depends on the
@@ -82,7 +81,8 @@ is in a certain area:
 
 Note that obsidian helps to block some of the radiation but dense
 obsidian is even better. You can also use lead blocks. These are better
-then obsidian but not as good as dense obsidian.
+then obsidian but not as good as dense obsidian. Dense glass can
+also be used and is about as good as lead.
 {-------------------------------------------------------------}
 {b}Machine Frame
 {n:frame}
@@ -122,7 +122,7 @@ To turn on the generator simply give this block a redstone signal.
 When you place resonating ore in the smelter it will produce RCL.
 This liquid is the crucial ingredient for growing your own crystals. The
 quality of the final crystal will depend on the attributes of this liquid:
-quality, purity, strength, and time:
+
 {l:rclquality}Quality
 {l:rclpurity}Purity
 {l:rclstrength}Strength
