@@ -7,6 +7,7 @@ import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.varia.InventoryLocator;
+import mcjty.deepresonance.varia.Tools;
 import mcjty.entity.GenericTileEntity;
 import mcjty.varia.BlockTools;
 import mcjty.varia.Coordinate;
@@ -69,6 +70,7 @@ public class PedestalTileEntity extends GenericTileEntity implements IInventory 
                 ItemBlock itemBlock = (ItemBlock) (crystalStack.getItem());
                 itemBlock.placeBlockAt(crystalStack, FakePlayerFactory.getMinecraft((WorldServer) worldObj), worldObj, xx, yy, zz, 0, 0, 0, 0, 0);
                 inventoryHelper.decrStackSize(PedestalContainer.SLOT_CRYSTAL, 1);
+                Tools.playSound(worldObj, ModBlocks.resonatingCrystalBlock.stepSound.getBreakSound(), xx, yy, zz, 1.0f, 1.0f);
 
                 if (findCollector(xx, yy, zz)) {
                     TileEntity tileEntity = worldObj.getTileEntity(cachedLocator.getX(), cachedLocator.getY(), cachedLocator.getZ());
@@ -97,6 +99,7 @@ public class PedestalTileEntity extends GenericTileEntity implements IInventory 
                 spentCrystal.setTagCompound(tagCompound);
                 inventoryLocator.ejectStack(worldObj, xCoord, yCoord, zCoord, spentCrystal, getCoordinate(), directions);
                 worldObj.setBlockToAir(xx, yy, zz);
+                Tools.playSound(worldObj, ModBlocks.resonatingCrystalBlock.stepSound.getBreakSound(), xx, yy, zz, 1.0f, 1.0f);
             }
         }
     }
