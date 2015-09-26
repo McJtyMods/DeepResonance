@@ -249,7 +249,6 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         Set<Coordinate> newCrystals = new HashSet<Coordinate>();
 
         int maxSupportedRF = network.getGeneratorBlocks() * GeneratorConfiguration.maxRFInputPerBlock;
-        int maxSupportedCrystals = network.getGeneratorBlocks() * GeneratorConfiguration.maxCrystalsPerBlock;
 
         boolean tooManyCrystals = false;
         boolean tooMuchPower = false;

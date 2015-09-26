@@ -111,21 +111,28 @@ public class PedestalTileEntity extends GenericTileEntity implements IInventory 
             }
             cachedLocator = null;
         }
-        // @todo this is not a good algorithm. It should find the closest first.
+
+        Coordinate crystalLocation = new Coordinate(xx, yy, zz);
+        float closestDistance = Float.MAX_VALUE;
+
         for (int y = yy - ConfigMachines.Collector.maxVerticalCrystalDistance ; y <= yy + ConfigMachines.Collector.maxVerticalCrystalDistance ; y++) {
             if (y >= 0 && y < worldObj.getHeight()) {
                 int maxhordist = ConfigMachines.Collector.maxHorizontalCrystalDistance;
                 for (int x = xx - maxhordist; x <= xx + maxhordist; x++) {
                     for (int z = zz - maxhordist; z <= zz + maxhordist; z++) {
                         if (worldObj.getBlock(x, y, z) == EnergyCollectorSetup.energyCollectorBlock) {
-                            cachedLocator = new Coordinate(x, y, z);
-                            return true;
+                            Coordinate locator = new Coordinate(x, y, z);
+                            float sqdist = locator.squaredDistance(crystalLocation);
+                            if (sqdist < closestDistance) {
+                                closestDistance = sqdist;
+                                cachedLocator = locator;
+                            }
                         }
                     }
                 }
             }
         }
-        return false;
+        return cachedLocator != null;
     }
 
     @Override
