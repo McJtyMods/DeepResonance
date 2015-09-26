@@ -18,6 +18,7 @@ import mcjty.deepresonance.blocks.poisondirt.PoisonedDirtBlock;
 import mcjty.deepresonance.blocks.purifier.PurifierSetup;
 import mcjty.deepresonance.blocks.smelter.SmelterSetup;
 import mcjty.deepresonance.blocks.tank.TankSetup;
+import mcjty.deepresonance.blocks.valve.ValveSetup;
 import net.minecraft.block.Block;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -62,5 +63,6 @@ public final class ModBlocks {
         TankSetup.setupBlocks();
         PurifierSetup.setupBlocks();
         PedestalSetup.setupBlocks();
+        ValveSetup.setupBlocks();
     }
 }

@@ -73,4 +73,14 @@ public class ConfigMachines {
         @Configurable(category = category, minValue = 1, maxValue = 16, comment = "Maximum vertical distance to look for crystals")
         public static int maxVerticalCrystalDistance = 1;
     }
+
+    public static class Valve {
+        public static final String category = "Valve";
+
+        @Configurable(category = category, minValue = 1, maxValue = 10000, comment = "Amount of ticks needed to transfer one unit of RCL")
+        public static int ticksPerOperation = 5;
+
+        @Configurable(category = category, minValue = 1, maxValue = 10000, comment = "The amount of RCL we process in one operation")
+        public static int rclPerOperation = 100;
+    }
 }

@@ -18,6 +18,7 @@ tile.crystalizerBlock.name=Crystalizer
 tile.smelterBlock.name=Smelter
 tile.purifierBlock.name=Purifier
 tile.pedestalBlock.name=Pedestal
+tile.valveBlock.name=Valve
 
 itemGroup.DeepResonance=Deep Resonance
 
