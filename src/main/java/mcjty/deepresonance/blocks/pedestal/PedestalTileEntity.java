@@ -96,6 +96,7 @@ public class PedestalTileEntity extends GenericTileEntity implements IInventory 
                 resonatingCrystalTileEntity.writeToNBT(tagCompound);
                 spentCrystal.setTagCompound(tagCompound);
                 inventoryLocator.ejectStack(worldObj, xCoord, yCoord, zCoord, spentCrystal, getCoordinate(), directions);
+                worldObj.setBlockToAir(xx, yy, zz);
             }
         }
     }
