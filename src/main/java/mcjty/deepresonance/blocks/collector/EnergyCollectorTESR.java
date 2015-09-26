@@ -40,7 +40,8 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
         bindTexture(blockTexture);
 
         GL11.glPushMatrix();
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         GL11.glTranslatef((float) x + 0.5F, (float) y + 0.0F, (float) z + 0.5F);
