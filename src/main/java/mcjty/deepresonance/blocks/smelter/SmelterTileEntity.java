@@ -94,7 +94,7 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
                 return false;
             }
         }
-        return storage.getMaxEnergyStored() >= ConfigMachines.Smelter.rfPerOre;
+        return storage.getEnergyStored() >= ConfigMachines.Smelter.rfPerOre;
     }
 
     private boolean checkTanks(){
