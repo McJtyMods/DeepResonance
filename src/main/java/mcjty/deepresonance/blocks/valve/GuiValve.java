@@ -59,9 +59,19 @@ public class GuiValve extends GenericGuiContainer<ValveTileEntity> {
         minPurity.setText(Integer.toString((int) (tileEntity.getMinPurity() * 100)));
         minStrength.setText(Integer.toString((int) (tileEntity.getMinStrength() * 100)));
         minEfficiency.setText(Integer.toString((int) (tileEntity.getMinEfficiency() * 100)));
-        toplevel.addChild(new Panel(mc, this).setLayout(new HorizontalLayout()).addChild(new Label(mc, this).setText("Purity")).addChild(minPurity));
-        toplevel.addChild(new Panel(mc, this).setLayout(new HorizontalLayout()).addChild(new Label(mc, this).setText("Strength")).addChild(minStrength));
-        toplevel.addChild(new Panel(mc, this).setLayout(new HorizontalLayout()).addChild(new Label(mc, this).setText("Efficiency")).addChild(minEfficiency));
+        Panel purityPanel = new Panel(mc, this).setLayout(new HorizontalLayout())
+                .setDesiredHeight(16)
+                .addChild(new Label(mc, this).setText("Purity").setDesiredWidth(60))
+                .addChild(minPurity);
+        Panel strengthPanel = new Panel(mc, this).setLayout(new HorizontalLayout())
+                .setDesiredHeight(16)
+                .addChild(new Label(mc, this).setText("Strength").setDesiredWidth(60))
+                .addChild(minStrength);
+        Panel efficiencyPanel = new Panel(mc, this).setLayout(new HorizontalLayout())
+                .setDesiredHeight(16)
+                .addChild(new Label(mc, this).setText("Efficiency").setDesiredWidth(60))
+                .addChild(minEfficiency);
+        toplevel.addChild(purityPanel).addChild(strengthPanel).addChild(efficiencyPanel);
 
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
 
