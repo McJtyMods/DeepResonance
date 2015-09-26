@@ -9,15 +9,12 @@ import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.deepresonance.items.ModItems;
-import mcjty.varia.Coordinate;
-import net.minecraft.entity.item.EntityItem;
+import mcjty.deepresonance.varia.InventoryLocator;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -35,8 +32,7 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
     private int progress = 0;
 
     // Cache for the inventory used to put the spent filter material in.
-    private Coordinate inventoryCoordinate = null;
-    private int inventorySide = 0;
+    private InventoryLocator inventoryLocator = new InventoryLocator();
 
     private LiquidCrystalFluidTagData fluidData = null;
 
@@ -69,27 +65,6 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
 
     private static ForgeDirection[] directions = new ForgeDirection[] { ForgeDirection.UNKNOWN, ForgeDirection.EAST, ForgeDirection.WEST, ForgeDirection.NORTH, ForgeDirection.SOUTH };
 
-    private IInventory getInventoryAtDirection(Coordinate thisCoordinate, ForgeDirection direction) {
-        if (direction == ForgeDirection.UNKNOWN) {
-            if (inventoryCoordinate != null) {
-                return getInventoryAtCoordinate(inventoryCoordinate);
-            }
-            return null;
-        }
-        // Remember in inventoryCoordinate (acts as a cache)
-        inventoryCoordinate = thisCoordinate.addDirection(direction);
-        inventorySide = direction.getOpposite().ordinal();
-        return getInventoryAtCoordinate(inventoryCoordinate);
-    }
-
-    private IInventory getInventoryAtCoordinate(Coordinate c) {
-        TileEntity te = worldObj.getTileEntity(c.getX(), c.getY(), c.getZ());
-        if (te instanceof IInventory) {
-            return (IInventory) te;
-        }
-        return null;
-    }
-
     private void doPurify() {
         float purity = fluidData.getPurity();
         purity += ConfigMachines.Purifier.addedPurity / 100.0f;
@@ -103,24 +78,8 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
         bottomTank.fill(ForgeDirection.UNKNOWN, stack, true);
         fluidData = null;
 
-        boolean spawnInWorld = true;
         ItemStack spentMaterial = new ItemStack(ModItems.spentFilterMaterialItem, 1);
-
-        Coordinate thisCoordinate = getCoordinate();
-        for (ForgeDirection dir : directions) {
-            IInventory inventory = getInventoryAtDirection(thisCoordinate, dir);
-            if (inventory != null) {
-                if (InventoryHelper.mergeItemStackSafe(inventory, inventorySide, spentMaterial, 0, inventory.getSizeInventory(), null) == 0) {
-                    spawnInWorld = false;
-                    break;
-                }
-            }
-        }
-
-        if (spawnInWorld) {
-            EntityItem entityItem = new EntityItem(worldObj, xCoord, yCoord, zCoord, spentMaterial);
-            worldObj.spawnEntityInWorld(entityItem);
-        }
+        inventoryLocator.ejectStack(worldObj, xCoord, yCoord, zCoord, spentMaterial, getCoordinate(), directions);
     }
 
     private boolean fillBottomTank() {
