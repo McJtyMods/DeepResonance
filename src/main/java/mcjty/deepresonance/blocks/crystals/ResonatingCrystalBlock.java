@@ -49,9 +49,13 @@ public class ResonatingCrystalBlock extends GenericBlock {
     @Override
     @SuppressWarnings("unchecked")
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean advancedToolTips) {
+        NBTTagCompound tagCompound = itemStack.getTagCompound();
+        if (tagCompound != null) {
+            tagCompound.removeTag("owner");
+            tagCompound.removeTag("ownerM");
+        }
         super.addInformation(itemStack, player, list, advancedToolTips);
         list.add("You can feel the latent power present in this crystal.");
-        NBTTagCompound tagCompound = itemStack.getTagCompound();
         if (tagCompound != null) {
             list.add(EnumChatFormatting.GREEN + "Strength/Efficiency/Purity: " + new DecimalFormat("#.##").format(tagCompound.getFloat("strength")) + "% "
                     + new DecimalFormat("#.##").format(tagCompound.getFloat("efficiency")) + "% "

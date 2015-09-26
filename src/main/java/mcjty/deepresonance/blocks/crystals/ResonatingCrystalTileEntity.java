@@ -3,11 +3,13 @@ package mcjty.deepresonance.blocks.crystals;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.config.ConfigGenerator;
 import mcjty.entity.GenericTileEntity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import java.util.Random;
+import java.util.UUID;
 
 public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
@@ -87,6 +89,21 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         this.glowing = glowing;
         markDirty();
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+    }
+
+    @Override
+    public boolean setOwner(EntityPlayer player) {
+        return false;
+    }
+
+    @Override
+    public String getOwnerName() {
+        return "";
+    }
+
+    @Override
+    public UUID getOwnerUUID() {
+        return null;
     }
 
     public float getPowerPerTick() {
