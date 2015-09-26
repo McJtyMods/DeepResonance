@@ -6,6 +6,7 @@ import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
+import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.varia.Broadcaster;
@@ -195,10 +196,11 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         boolean tooManyCrystals = false;
         boolean tooMuchPower = false;
 
-        for (int y = yCoord - 1 ; y <= yCoord + 1 ; y++) {
+        for (int y = yCoord - ConfigMachines.Collector.maxVerticalCrystalDistance ; y <= yCoord + ConfigMachines.Collector.maxVerticalCrystalDistance ; y++) {
             if (y >= 0 && y < worldObj.getHeight()) {
-                for (int x = xCoord - 10 ; x <= xCoord + 10 ; x++) {
-                    for (int z = zCoord - 10 ; z <= zCoord + 10 ; z++) {
+                int maxhordist = ConfigMachines.Collector.maxHorizontalCrystalDistance;
+                for (int x = xCoord - maxhordist; x <= xCoord + maxhordist; x++) {
+                    for (int z = zCoord - maxhordist; z <= zCoord + maxhordist; z++) {
                         if (worldObj.getBlock(x, y, z) == ModBlocks.resonatingCrystalBlock) {
                             TileEntity te = worldObj.getTileEntity(x, y, z);
                             if (te instanceof ResonatingCrystalTileEntity) {

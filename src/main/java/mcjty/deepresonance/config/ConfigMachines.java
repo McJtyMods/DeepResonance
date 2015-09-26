@@ -45,7 +45,7 @@ public class ConfigMachines {
         public static int rclPerOre = 200;
     }
 
-    public static class Crystalizer{
+    public static class Crystalizer {
         private static final String category = "Crystalizer";
 
         @Configurable(category = category, minValue = 0, maxValue = 1000, comment = "How much RF/t this machine can input from a generator/capacitor")
@@ -62,5 +62,15 @@ public class ConfigMachines {
 
         @Configurable(category = category, minValue = 1, maxValue = 100000, comment = "The amount of RCL/t that is consumed during crystalizing")
         public static int rclPerTick = 1;
+    }
+
+    public static class Collector {
+        public static final String category = "Collector";
+
+        @Configurable(category = category, minValue = 1, maxValue = 16, comment = "Maximum horizontal distance to look for crystals")
+        public static int maxHorizontalCrystalDistance = 10;
+
+        @Configurable(category = category, minValue = 1, maxValue = 16, comment = "Maximum vertical distance to look for crystals")
+        public static int maxVerticalCrystalDistance = 1;
     }
 }
