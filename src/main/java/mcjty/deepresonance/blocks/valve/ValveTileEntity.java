@@ -6,12 +6,19 @@ import mcjty.deepresonance.blocks.tank.ITankHook;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
+import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.network.Argument;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.Map;
+
 public class ValveTileEntity extends ElecTileBase implements ITankHook {
+
+    public static String CMD_SETTINGS = "settings";
 
     public ValveTileEntity() {
     }
@@ -20,6 +27,9 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
     private TileTank topTank;
     private int progress = 0;
 
+    private float minPurity = 0;
+    private float minStrength = 0;
+    private float minEfficiency = 0;
 
     @Override
     protected void checkStateServer() {
@@ -36,9 +46,50 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
 
         FluidStack fluidStack = topTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Valve.rclPerOperation, false);
         if (fluidStack != null && fillBottomTank(fluidStack.amount)) {
+            LiquidCrystalFluidTagData data = LiquidCrystalFluidTagData.fromStack(fluidStack);
+            if (data == null) {
+                return;
+            }
+            if (data.getPurity() < minPurity) {
+                return;
+            }
+            if (data.getStrength() < minStrength) {
+                return;
+            }
+            if (data.getEfficiency() < minEfficiency) {
+                return;
+            }
+
             fluidStack = topTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Valve.rclPerOperation, true);
             bottomTank.fill(ForgeDirection.UNKNOWN, fluidStack, true);
         }
+    }
+
+    public float getMinEfficiency() {
+        return minEfficiency;
+    }
+
+    public void setMinEfficiency(float minEfficiency) {
+        this.minEfficiency = minEfficiency;
+        markDirty();
+    }
+
+    public float getMinPurity() {
+        return minPurity;
+    }
+
+    public void setMinPurity(float minPurity) {
+        this.minPurity = minPurity;
+        markDirty();
+    }
+
+    public float getMinStrength() {
+        return minStrength;
+    }
+
+    public void setMinStrength(float minStrength) {
+        this.minStrength = minStrength;
+        markDirty();
     }
 
     private boolean fillBottomTank(int amount) {
@@ -54,6 +105,9 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
     @Override
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
         super.writeRestorableToNBT(tagCompound);
+        tagCompound.setFloat("minPurity", minPurity);
+        tagCompound.setFloat("minStrength", minStrength);
+        tagCompound.setFloat("minEfficiency", minEfficiency);
     }
 
     @Override
@@ -65,6 +119,9 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
     @Override
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
         super.readRestorableFromNBT(tagCompound);
+        minPurity = tagCompound.getFloat("minPurity");
+        minStrength = tagCompound.getFloat("minStrength");
+        minEfficiency = tagCompound.getFloat("minEfficiency");
     }
 
     @Override
@@ -112,5 +169,23 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
 
     private boolean tilesEqual(TileTank first, TileTank second){
         return first != null && second != null && first.myLocation().equals(second.myLocation()) && WorldHelper.getDimID(first.getWorldObj()) == WorldHelper.getDimID(second.getWorldObj());
+    }
+
+    @Override
+    public boolean execute(EntityPlayerMP playerMP, String command, Map<String, Argument> args) {
+        boolean rc = super.execute(playerMP, command, args);
+        if (rc) {
+            return true;
+        }
+        if (CMD_SETTINGS.equals(command)) {
+            double purity = args.get("purity").getDouble();
+            double strength = args.get("strength").getDouble();
+            double efficiency = args.get("efficiency").getDouble();
+            setMinPurity((float) purity);
+            setMinStrength((float) strength);
+            setMinEfficiency((float) efficiency);
+            return true;
+        }
+        return false;
     }
 }
