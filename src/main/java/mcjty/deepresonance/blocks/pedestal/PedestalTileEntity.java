@@ -2,6 +2,7 @@ package mcjty.deepresonance.blocks.pedestal;
 
 import mcjty.container.InventoryHelper;
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.varia.InventoryLocator;
 import mcjty.entity.GenericTileEntity;
@@ -75,7 +76,7 @@ public class PedestalTileEntity extends GenericTileEntity implements IInventory 
         TileEntity tileEntity = worldObj.getTileEntity(xx, yy, zz);
         if (tileEntity instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
-            if (resonatingCrystalTileEntity.getPower() < 0.0001f) {
+            if (resonatingCrystalTileEntity.getPower() <= EnergyCollectorTileEntity.CRYSTAL_MIN_POWER) {
                 ItemStack spentCrystal = new ItemStack(ModBlocks.resonatingCrystalBlock, 1);
                 NBTTagCompound tagCompound = new NBTTagCompound();
                 resonatingCrystalTileEntity.writeToNBT(tagCompound);
@@ -175,12 +176,10 @@ public class PedestalTileEntity extends GenericTileEntity implements IInventory 
 
     @Override
     public void openInventory() {
-
     }
 
     @Override
     public void closeInventory() {
-
     }
 
     @Override

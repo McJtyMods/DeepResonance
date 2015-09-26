@@ -18,6 +18,7 @@ public class GuiProxy implements IGuiHandler {
     public static final int GUI_SMELTER = modGuiIndex++;
     public static final int GUI_CRYSTALIZER = modGuiIndex++;
     public static final int GUI_PURIFIER = modGuiIndex++;
+    public static final int GUI_PEDESTAL = modGuiIndex++;
     public static final int ELEC_GUI_STUFF = modGuiIndex++;
 
     @Override
