@@ -187,6 +187,64 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         return rf;
     }
 
+    public void addCrystal(int x, int y, int z) {
+        if (networkID == -1) {
+            return;
+        }
+
+        DRGeneratorNetwork channels = DRGeneratorNetwork.getChannels(worldObj);
+        DRGeneratorNetwork.Network network = channels.getChannel(networkID);
+        if (network == null) {
+            return;
+        }
+
+        int maxSupportedRF = network.getGeneratorBlocks() * GeneratorConfiguration.maxRFInputPerBlock;
+        for (Coordinate crystal : crystals) {
+            TileEntity te = worldObj.getTileEntity(crystal.getX(), crystal.getY(), crystal.getZ());
+            if (te instanceof ResonatingCrystalTileEntity) {
+                ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
+                if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
+                    maxSupportedRF -= resonatingCrystalTileEntity.getRfPerTick();
+                }
+            }
+        }
+
+        if (addCrystal(x, y, z, network, crystals, maxSupportedRF) >= 0) {
+            // Success.
+            markDirty();
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        }
+    }
+
+    private static int ERROR_TOOMANYCRYSTALS = -1;
+    private static int ERROR_TOOMUCHPOWER = -2;
+
+    // Returns remaining RF that is supported if crystal could be added. Otherwise one of the errors above.
+    private int addCrystal(int x, int y, int z, DRGeneratorNetwork.Network network, Set<Coordinate> newCrystals, int maxSupportedRF) {
+        int maxSupportedCrystals = network.getGeneratorBlocks() * GeneratorConfiguration.maxCrystalsPerBlock;
+
+        TileEntity te = worldObj.getTileEntity(x, y, z);
+        if (te instanceof ResonatingCrystalTileEntity) {
+            ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
+            if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
+                if (newCrystals.size() >= maxSupportedCrystals) {
+                    resonatingCrystalTileEntity.setGlowing(false);
+                    return ERROR_TOOMANYCRYSTALS;
+                } else if (resonatingCrystalTileEntity.getRfPerTick() > maxSupportedRF) {
+                    resonatingCrystalTileEntity.setGlowing(false);
+                    return ERROR_TOOMUCHPOWER;
+                } else {
+                    maxSupportedRF -= resonatingCrystalTileEntity.getRfPerTick();
+                    newCrystals.add(new Coordinate(x - xCoord, y - yCoord, z - zCoord));
+                    resonatingCrystalTileEntity.setGlowing(lasersActive);
+                }
+            } else {
+                resonatingCrystalTileEntity.setGlowing(false);
+            }
+        }
+        return maxSupportedRF;
+    }
+
     private void findCrystals(DRGeneratorNetwork.Network network) {
         Set<Coordinate> newCrystals = new HashSet<Coordinate>();
 
@@ -196,30 +254,18 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         boolean tooManyCrystals = false;
         boolean tooMuchPower = false;
 
+        // @todo this is not a good algorithm. It should find the closest first.
         for (int y = yCoord - ConfigMachines.Collector.maxVerticalCrystalDistance ; y <= yCoord + ConfigMachines.Collector.maxVerticalCrystalDistance ; y++) {
             if (y >= 0 && y < worldObj.getHeight()) {
                 int maxhordist = ConfigMachines.Collector.maxHorizontalCrystalDistance;
                 for (int x = xCoord - maxhordist; x <= xCoord + maxhordist; x++) {
                     for (int z = zCoord - maxhordist; z <= zCoord + maxhordist; z++) {
                         if (worldObj.getBlock(x, y, z) == ModBlocks.resonatingCrystalBlock) {
-                            TileEntity te = worldObj.getTileEntity(x, y, z);
-                            if (te instanceof ResonatingCrystalTileEntity) {
-                                ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
-                                if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
-                                    if (newCrystals.size() >= maxSupportedCrystals) {
-                                        resonatingCrystalTileEntity.setGlowing(false);
-                                        tooManyCrystals = true;
-                                    } else if (resonatingCrystalTileEntity.getRfPerTick() > maxSupportedRF) {
-                                        resonatingCrystalTileEntity.setGlowing(false);
-                                        tooMuchPower = true;
-                                    } else {
-                                        maxSupportedRF -= resonatingCrystalTileEntity.getRfPerTick();
-                                        newCrystals.add(new Coordinate(x - xCoord, y - yCoord, z - zCoord));
-                                        resonatingCrystalTileEntity.setGlowing(lasersActive);
-                                    }
-                                } else {
-                                    resonatingCrystalTileEntity.setGlowing(false);
-                                }
+                            maxSupportedRF = addCrystal(x, y, z, network, newCrystals, maxSupportedRF);
+                            if (maxSupportedRF == ERROR_TOOMANYCRYSTALS) {
+                                tooManyCrystals = true;
+                            } else if (maxSupportedRF == ERROR_TOOMUCHPOWER) {
+                                tooMuchPower = true;
                             }
                         }
                     }

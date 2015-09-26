@@ -2,11 +2,14 @@ package mcjty.deepresonance.blocks.pedestal;
 
 import mcjty.container.InventoryHelper;
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
+import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.varia.InventoryLocator;
 import mcjty.entity.GenericTileEntity;
 import mcjty.varia.BlockTools;
+import mcjty.varia.Coordinate;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -16,7 +19,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class PedestalTileEntity extends GenericTileEntity implements IInventory {
@@ -27,6 +32,7 @@ public class PedestalTileEntity extends GenericTileEntity implements IInventory 
     // Cache for the inventory used to put the spent crystal material in.
     private InventoryLocator inventoryLocator = new InventoryLocator();
 
+    private Coordinate cachedLocator = null;
 
     @Override
     public boolean canUpdate() {
@@ -61,8 +67,16 @@ public class PedestalTileEntity extends GenericTileEntity implements IInventory 
         if (crystalStack != null && crystalStack.stackSize > 0) {
             if (crystalStack.getItem() instanceof ItemBlock) {
                 ItemBlock itemBlock = (ItemBlock) (crystalStack.getItem());
-                itemBlock.placeBlockAt(crystalStack, null, worldObj, xx, yy, zz, 0, 0, 0, 0, 0);
+                itemBlock.placeBlockAt(crystalStack, FakePlayerFactory.getMinecraft((WorldServer) worldObj), worldObj, xx, yy, zz, 0, 0, 0, 0, 0);
                 inventoryHelper.decrStackSize(PedestalContainer.SLOT_CRYSTAL, 1);
+
+                if (findCollector(xx, yy, zz)) {
+                    TileEntity tileEntity = worldObj.getTileEntity(cachedLocator.getX(), cachedLocator.getY(), cachedLocator.getZ());
+                    if (tileEntity instanceof EnergyCollectorTileEntity) {
+                        EnergyCollectorTileEntity energyCollectorTileEntity = (EnergyCollectorTileEntity) tileEntity;
+                        energyCollectorTileEntity.addCrystal(xx, yy, zz);
+                    }
+                }
             }
         }
     }
@@ -84,6 +98,30 @@ public class PedestalTileEntity extends GenericTileEntity implements IInventory 
                 inventoryLocator.ejectStack(worldObj, xCoord, yCoord, zCoord, spentCrystal, getCoordinate(), directions);
             }
         }
+    }
+
+    private boolean findCollector(int xx, int yy, int zz) {
+        if (cachedLocator != null) {
+            if (worldObj.getBlock(xx, yy, zz) == EnergyCollectorSetup.energyCollectorBlock) {
+                return true;
+            }
+            cachedLocator = null;
+        }
+        // @todo this is not a good algorithm. It should find the closest first.
+        for (int y = yy - ConfigMachines.Collector.maxVerticalCrystalDistance ; y <= yy + ConfigMachines.Collector.maxVerticalCrystalDistance ; y++) {
+            if (y >= 0 && y < worldObj.getHeight()) {
+                int maxhordist = ConfigMachines.Collector.maxHorizontalCrystalDistance;
+                for (int x = xx - maxhordist; x <= xx + maxhordist; x++) {
+                    for (int z = zz - maxhordist; z <= zz + maxhordist; z++) {
+                        if (worldObj.getBlock(x, y, z) == EnergyCollectorSetup.energyCollectorBlock) {
+                            cachedLocator = new Coordinate(x, y, z);
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     @Override
