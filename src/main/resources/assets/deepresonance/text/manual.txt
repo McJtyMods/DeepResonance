@@ -20,7 +20,9 @@ Table of contents:
 {l:tank}Tank
 {l:smelter}Smelter
 {l:purifier}Purifier
+{l:valve}Valve
 {l:crystalizer}Crystalizer
+{l:pedestal}Pedestal
 {-------------------------------------------------------------}
 {b}Resonating Ore
 {n:ore}
@@ -207,10 +209,30 @@ in an nearby inventory (or in the world if there is no such inventory).
 Note that if the quality of the liquid is not very good you may not
 be able to purify it as high as 85%.
 {-------------------------------------------------------------}
+{b}Valve
+{n:valve}
+{rb:valveBlock}
+The valve is an advanced filter that can measure various attributes
+of the RCL liquid in a tank above it and if these attributes are
+better then specific values it will move liquid to the bottom tank.
+Using the valve you can make a purifier setup using a single purifier
+where you loop the RCL back through the same tank and then use the
+valve to extract the liquid when it has sufficient purity.
+{-------------------------------------------------------------}
 {b}Crystalizer
 {n:crystalizer}
 {rb:crystalizerBlock}
 The crystalizer needs to be placed on top of a tank filled with RCL. It
 will consume the liquid in that tank and form a crystal out of it. The
 crystalizer also needs power.
+{-------------------------------------------------------------}
+{b}Pedestal
+{n:pedestal}
+{rb:pedestalBlock}
+The pedestal can automatically place crystals in front of it. It will
+also break crystals if they are used up and try to place them in an
+adjacent inventory. If it can't find one it will eject it into the
+world instead.
+Once the crystal is placed it will be automatically connected to the
+closest generator (if that generator allows it).
 {-------------------------------------------------------------}
