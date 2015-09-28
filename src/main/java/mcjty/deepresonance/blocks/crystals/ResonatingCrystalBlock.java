@@ -97,15 +97,18 @@ public class ResonatingCrystalBlock extends GenericBlock {
                         if (forceMultiplier > RadiationConfiguration.absoluteMaximumExplosionMultiplier) {
                             forceMultiplier = RadiationConfiguration.absoluteMaximumExplosionMultiplier;
                         }
-                        System.out.println(forceMultiplier);
-                        DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
-                        DRRadiationManager.RadiationSource source = radiationManager.getOrCreateRadiationSource(new GlobalCoordinate(new Coordinate(x, y, z), world.provider.dimensionId));
-                        float radiationRadius = DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getEfficiency(), resonatingCrystalTileEntity.getPurity());
-                        float radiationStrength = DRRadiationManager.calculateRadiationStrength(resonatingCrystalTileEntity.getStrength(), resonatingCrystalTileEntity.getPurity());
-                        source.update(radiationRadius * RadiationConfiguration.radiationExplosionFactor, radiationStrength / RadiationConfiguration.radiationExplosionFactor, 1000);
+                        if (forceMultiplier > 0.001f) {
+                            DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
+                            DRRadiationManager.RadiationSource source = radiationManager.getOrCreateRadiationSource(new GlobalCoordinate(new Coordinate(x, y, z), world.provider.dimensionId));
+                            float radiationRadius = DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getEfficiency(), resonatingCrystalTileEntity.getPurity());
+                            float radiationStrength = DRRadiationManager.calculateRadiationStrength(resonatingCrystalTileEntity.getStrength(), resonatingCrystalTileEntity.getPurity());
+                            source.update(radiationRadius * RadiationConfiguration.radiationExplosionFactor, radiationStrength / RadiationConfiguration.radiationExplosionFactor, 1000);
+                        }
                     }
-                    Elexplosion boom = new TestExplosion(world, null, x, y, z, forceMultiplier);
-                    boom.explode();
+                    if (forceMultiplier > 0.001f) {
+                        Elexplosion boom = new TestExplosion(world, null, x, y, z, forceMultiplier);
+                        boom.explode();
+                    }
                 }
             });
         }

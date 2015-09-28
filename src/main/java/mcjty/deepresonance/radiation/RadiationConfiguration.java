@@ -78,7 +78,7 @@ public class RadiationConfiguration {
         maximumExplosionMultiplier = (float) cfg.get(CATEGORY_RADIATION, "maximumExplosionMultiplier", maximumExplosionMultiplier,
                 "The maximum explosion multiplier for a 100%/100% power/strength crystal").getDouble();
         absoluteMaximumExplosionMultiplier = (float) cfg.get(CATEGORY_RADIATION, "absoluteMaximumExplosionMultiplier", absoluteMaximumExplosionMultiplier,
-                "The maximum explosion multiplier that is possible").getDouble();
+                "The maximum explosion multiplier that is possible. Set to 0 to disable all explosions").getDouble();
 
         radiationShieldObsidianFactor = (float) cfg.get(CATEGORY_RADIATION, "radiationShieldObsidianFactor", radiationShieldObsidianFactor,
                 "How much obsidian blocks radiation (0.0 is total block, 1.0 is not block at all)").getDouble();
