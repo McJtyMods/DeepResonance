@@ -209,7 +209,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
             }
         }
 
-        if (addCrystal(x, y, z, network, crystals, maxSupportedRF) >= 0) {
+        if (addCrystal(x, y, z, network, crystals, crystals, maxSupportedRF) >= 0) {
             // Success.
             markDirty();
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -220,13 +220,20 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
     private static int ERROR_TOOMUCHPOWER = -2;
 
     // Returns remaining RF that is supported if crystal could be added. Otherwise one of the errors above.
-    private int addCrystal(int x, int y, int z, DRGeneratorNetwork.Network network, Set<Coordinate> newCrystals, int maxSupportedRF) {
+    private int addCrystal(int x, int y, int z, DRGeneratorNetwork.Network network, Set<Coordinate> newCrystals, Set<Coordinate> oldCrystals, int maxSupportedRF) {
         int maxSupportedCrystals = network.getGeneratorBlocks() * GeneratorConfiguration.maxCrystalsPerBlock;
 
         TileEntity te = worldObj.getTileEntity(x, y, z);
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
             if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
+                Coordinate crystalCoordinate = new Coordinate(x - xCoord, y - yCoord, z - zCoord);
+                if (resonatingCrystalTileEntity.isGlowing() && !oldCrystals.contains(crystalCoordinate)) {
+                    // The crystal is already glowing and is not in our 'old' crystal set. That means that it
+                    // is currently being managed by another generator. We ignore it then.
+                    return maxSupportedRF;
+                }
+
                 if (newCrystals.size() >= maxSupportedCrystals) {
                     resonatingCrystalTileEntity.setGlowing(false);
                     return ERROR_TOOMANYCRYSTALS;
@@ -235,7 +242,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
                     return ERROR_TOOMUCHPOWER;
                 } else {
                     maxSupportedRF -= resonatingCrystalTileEntity.getRfPerTick();
-                    newCrystals.add(new Coordinate(x - xCoord, y - yCoord, z - zCoord));
+                    newCrystals.add(crystalCoordinate);
                     resonatingCrystalTileEntity.setGlowing(lasersActive);
                 }
             } else {
@@ -260,7 +267,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
                 for (int x = xCoord - maxhordist; x <= xCoord + maxhordist; x++) {
                     for (int z = zCoord - maxhordist; z <= zCoord + maxhordist; z++) {
                         if (worldObj.getBlock(x, y, z) == ModBlocks.resonatingCrystalBlock) {
-                            maxSupportedRF = addCrystal(x, y, z, network, newCrystals, maxSupportedRF);
+                            maxSupportedRF = addCrystal(x, y, z, network, newCrystals, crystals, maxSupportedRF);
                             if (maxSupportedRF == ERROR_TOOMANYCRYSTALS) {
                                 tooManyCrystals = true;
                             } else if (maxSupportedRF == ERROR_TOOMUCHPOWER) {
