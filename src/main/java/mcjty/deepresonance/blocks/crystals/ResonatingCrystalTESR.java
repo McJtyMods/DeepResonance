@@ -3,6 +3,7 @@ package mcjty.deepresonance.blocks.crystals;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.gui.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -15,12 +16,18 @@ import org.lwjgl.opengl.GL12;
 @SideOnly(Side.CLIENT)
 public class ResonatingCrystalTESR extends TileEntitySpecialRenderer {
     IModelCustom model = AdvancedModelLoader.loadModel(new ResourceLocation(DeepResonance.MODID, "obj/crystal.obj"));
-    ResourceLocation texture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/crystal.png");
+    ResourceLocation crystal = new ResourceLocation(DeepResonance.MODID, "textures/blocks/crystal.png");
+    ResourceLocation emptyCrystal = new ResourceLocation(DeepResonance.MODID, "textures/blocks/emptycrystal.png");
     ResourceLocation redhalo = new ResourceLocation(DeepResonance.MODID, "textures/effects/redhalo.png");
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float time) {
-        bindTexture(texture);
+        ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
+        if (resonatingCrystalTileEntity.getPower() > EnergyCollectorTileEntity.CRYSTAL_MIN_POWER) {
+            bindTexture(crystal);
+        } else {
+            bindTexture(emptyCrystal);
+        }
 
         GL11.glPushMatrix();
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -35,7 +42,6 @@ public class ResonatingCrystalTESR extends TileEntitySpecialRenderer {
 
         model.renderAll();
 
-        ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
         if (resonatingCrystalTileEntity.isGlowing()) {
             GL11.glTranslatef(0.0f, 0.5f, 0.0f);
             GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);

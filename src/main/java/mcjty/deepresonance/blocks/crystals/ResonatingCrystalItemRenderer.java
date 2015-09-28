@@ -2,6 +2,7 @@ package mcjty.deepresonance.blocks.crystals;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
@@ -12,7 +13,8 @@ import org.lwjgl.opengl.GL12;
 
 public class ResonatingCrystalItemRenderer implements IItemRenderer {
     IModelCustom model = AdvancedModelLoader.loadModel(new ResourceLocation(DeepResonance.MODID, "obj/crystal.obj"));
-    ResourceLocation texture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/crystal.png");
+    ResourceLocation crystal = new ResourceLocation(DeepResonance.MODID, "textures/blocks/crystal.png");
+    ResourceLocation emptyCrystal = new ResourceLocation(DeepResonance.MODID, "textures/blocks/emptycrystal.png");
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
@@ -26,7 +28,15 @@ public class ResonatingCrystalItemRenderer implements IItemRenderer {
 
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
+        float power = 100.0f;
+        if (item.getTagCompound() != null) {
+            power = item.getTagCompound().getFloat("power");
+        }
+        if (power > EnergyCollectorTileEntity.CRYSTAL_MIN_POWER) {
+            FMLClientHandler.instance().getClient().renderEngine.bindTexture(crystal);
+        } else {
+            FMLClientHandler.instance().getClient().renderEngine.bindTexture(emptyCrystal);
+        }
 
         GL11.glPushMatrix();
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
