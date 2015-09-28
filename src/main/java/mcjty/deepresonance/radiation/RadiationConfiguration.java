@@ -6,7 +6,7 @@ public class RadiationConfiguration {
     public static final String CATEGORY_RADIATION = "radiation";
 
     public static float minRadiationRadius = 5.0f;
-    public static float maxRadiationRadius = 60.0f;
+    public static float maxRadiationRadius = 30.0f;
 
     public static float minRadiationStrength = 100.0f;
     public static float maxRadiationStrength = 1000000.0f;
