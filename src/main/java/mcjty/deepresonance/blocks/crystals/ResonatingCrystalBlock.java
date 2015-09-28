@@ -6,6 +6,7 @@ import elec332.core.explosion.Elexplosion;
 import elec332.core.main.ElecCore;
 import mcjty.container.GenericBlock;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.deepresonance.boom.TestExplosion;
 import mcjty.deepresonance.network.PacketGetCrystalInfo;
 import mcjty.deepresonance.radiation.DRRadiationManager;
@@ -55,12 +56,20 @@ public class ResonatingCrystalBlock extends GenericBlock {
             tagCompound.removeTag("ownerM");
         }
         super.addInformation(itemStack, player, list, advancedToolTips);
-        list.add("You can feel the latent power present in this crystal.");
+        float power = 100.0f;
+        if (tagCompound != null) {
+            power = tagCompound.getFloat("power");
+        }
+        if (power > EnergyCollectorTileEntity.CRYSTAL_MIN_POWER) {
+            list.add("You can feel the latent power present in this crystal.");
+        } else {
+            list.add("This crystal is depleted. Perhaps it still has a future use?");
+        }
         if (tagCompound != null) {
             list.add(EnumChatFormatting.GREEN + "Strength/Efficiency/Purity: " + new DecimalFormat("#.##").format(tagCompound.getFloat("strength")) + "% "
                     + new DecimalFormat("#.##").format(tagCompound.getFloat("efficiency")) + "% "
                     + new DecimalFormat("#.##").format(tagCompound.getFloat("purity")) + "%");
-            list.add(EnumChatFormatting.YELLOW + "Power left: " + new DecimalFormat("#.##").format(tagCompound.getFloat("power")) + "%");
+            list.add(EnumChatFormatting.YELLOW + "Power left: " + new DecimalFormat("#.##").format(power) + "%");
         }
     }
 
