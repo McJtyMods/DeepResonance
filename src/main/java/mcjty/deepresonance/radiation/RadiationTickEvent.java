@@ -3,6 +3,7 @@ package mcjty.deepresonance.radiation;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.items.ItemRadiationSuit;
 import mcjty.deepresonance.varia.QuadTree;
 import mcjty.varia.GlobalCoordinate;
 import mcjty.varia.Logging;
@@ -83,7 +84,7 @@ public class RadiationTickEvent {
         if (dirty) {
             for (GlobalCoordinate coordinate : toRemove) {
                 radiationManager.deleteRadiationSource(coordinate);
-                Logging.log("Removed radiation source at: " + coordinate.getCoordinate().toString() + " (" + coordinate.getDimension() + ")");
+                Logging.logDebug("Removed radiation source at: " + coordinate.getCoordinate().toString() + " (" + coordinate.getDimension() + ")");
             }
 
             radiationManager.save(entityWorld);
@@ -112,7 +113,7 @@ public class RadiationTickEvent {
         } else {
             desty = centery + dist * Math.sin(phi);
         }
-        Logging.log("Destruction event at: " + destx + "," + desty + "," + destz);
+        Logging.logDebug("Destruction event at: " + destx + "," + desty + "," + destz);
 
         float baseStrength = radiationSource.getStrength();
         double distanceSq = (centerx-destx) * (centerx-destx) + (centery-desty) * (centery-desty) + (centerz-destz) * (centerz-destz);
@@ -170,7 +171,7 @@ public class RadiationTickEvent {
                     }
                     if (random.nextFloat() < setOnFireChance * str) {
                         if ((!world.isAirBlock(x, y, z)) && world.isAirBlock(x, y+1, z)) {
-                            Logging.log("Set fire at: " + x + "," + y + "," + z);
+                            Logging.logDebug("Set fire at: " + x + "," + y + "," + z);
                             world.setBlock(x, y+1, z, Blocks.fire, 0, 3);
                         }
                     }
@@ -194,7 +195,12 @@ public class RadiationTickEvent {
         for (Object o : list) {
             EntityLivingBase entityLivingBase = (EntityLivingBase) o;
 
+            if (ItemRadiationSuit.hasCompleteSuit(entityLivingBase)) {
+                continue;
+            }
+
             double distanceSq = entityLivingBase.getDistanceSq(centerx, centery, centerz);
+
             if (distanceSq < radiusSq) {
                 double distance = Math.sqrt(distanceSq);
                 float strength = (float) (baseStrength * (radius-distance) / radius);

@@ -1,14 +1,12 @@
 package mcjty.deepresonance;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.RadiationShieldRegistry;
 import mcjty.deepresonance.varia.QuadTree;
 import mcjty.varia.Coordinate;
 import mcjty.varia.GlobalCoordinate;
-import net.minecraft.init.Blocks;
+import mcjty.varia.Logging;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent;
 
@@ -40,7 +38,7 @@ public class ForgeEventHandlers {
             GlobalCoordinate gc = entry.getKey();
             Coordinate c = gc.getCoordinate();
             if (Math.abs(c.getX()-x) < radius && Math.abs(c.getY()-y) < radius && Math.abs(c.getZ()-z) < radius) {
-                System.out.println("Removed blocker at: " + x + "," + y + "," + z);
+                Logging.logDebug("Removed blocker at: " + x + "," + y + "," + z);
                 QuadTree radiationTree = source.getRadiationTree(world, c.getX(), c.getY(), c.getZ());
                 radiationTree.addBlocker(x, y, z, 1.0f);
             }
@@ -70,7 +68,7 @@ public class ForgeEventHandlers {
             GlobalCoordinate gc = entry.getKey();
             Coordinate c = gc.getCoordinate();
             if (Math.abs(c.getX()-x) < radius && Math.abs(c.getY()-y) < radius && Math.abs(c.getZ()-z) < radius) {
-                System.out.println("Add blocker at: " + x + "," + y + "," + z);
+                Logging.logDebug("Add blocker at: " + x + "," + y + "," + z);
                 QuadTree radiationTree = source.getRadiationTree(world, c.getX(), c.getY(), c.getZ());
                 radiationTree.addBlocker(x, y, z, blocker);
             }

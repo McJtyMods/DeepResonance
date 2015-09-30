@@ -10,6 +10,7 @@ import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.items.manual.DeepResonanceManualItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -23,6 +24,7 @@ public final class ModItems {
     public static ResonatingPlateItem resonatingPlateItem;
     public static FilterMaterialItem filterMaterialItem;
     public static SpentFilterMaterialItem spentFilterMaterialItem;
+    public static ItemRadiationSuit helmet, chestplate, leggings, boots;
 
     public static void init() {
         deepResonanceManualItem = new DeepResonanceManualItem();
@@ -54,7 +56,18 @@ public final class ModItems {
         spentFilterMaterialItem.setTextureName(DeepResonance.MODID + ":spentFilterMaterial");
         GameRegistry.registerItem(spentFilterMaterialItem, "spentFilterMaterialItem");
 
+        helmet = newRadiationSuitPart(0);
+        chestplate = newRadiationSuitPart(1);
+        leggings = newRadiationSuitPart(2);
+        boots = newRadiationSuitPart(3);
+
 //        new TestItem(); //Auto-registers
+    }
+
+    private static ItemRadiationSuit newRadiationSuitPart(int i){
+        ItemRadiationSuit ret = new ItemRadiationSuit(ItemArmor.ArmorMaterial.DIAMOND, 0, i, "radiationSuit");
+        GameRegistry.registerItem(ret, "radiationSuit"+i);
+        return ret;
     }
 
     /**
