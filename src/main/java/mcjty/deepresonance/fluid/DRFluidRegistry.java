@@ -37,4 +37,8 @@ public class DRFluidRegistry {
     public static String getFluidName(Fluid fluid){
         return fluid == null ? "null" : fluid.getName();
     }
+
+    public static int getAmount(FluidStack stack){
+        return stack == null ? 0 : stack.amount;
+    }
 }

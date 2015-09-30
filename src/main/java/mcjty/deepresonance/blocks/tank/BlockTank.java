@@ -2,7 +2,6 @@ package mcjty.deepresonance.blocks.tank;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.base.ElecGenericBlockBase;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
@@ -42,14 +41,14 @@ public class BlockTank extends ElecGenericBlockBase {
 
     @Override
     @SideOnly(Side.CLIENT)
-    @SuppressWarnings("all")
+    @SuppressWarnings("unchecked")
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
-        /*super.addInformation(itemStack, player, list, whatIsThis);
+        super.addInformation(itemStack, player, list, whatIsThis);
         NBTTagCompound tagCompound = itemStack.getTagCompound();
-        if (tagCompound.hasKey("fluid")) {
+        if (tagCompound != null && tagCompound.hasKey("fluid")) {
             FluidStack fluidStack = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("fluid"));
             list.add(EnumChatFormatting.GREEN + "Fluid: "+ DRFluidRegistry.getFluidName(fluidStack));
-            list.add(EnumChatFormatting.GREEN + "Amount: "+fluidStack.amount + " mb");
+            list.add(EnumChatFormatting.GREEN + "Amount: "+ DRFluidRegistry.getAmount(fluidStack) + " mb");
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
             list.add("This tank can hold up to 16 buckets of liquid.");
@@ -59,7 +58,7 @@ public class BlockTank extends ElecGenericBlockBase {
             list.add("how filled the tank is");
         } else {
             list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
-        }*/
+        }
     }
 
     @Override
