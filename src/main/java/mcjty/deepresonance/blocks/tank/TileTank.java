@@ -104,28 +104,22 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     }
 
     @Override
-    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        TileEntity te = accessor.getTileEntity();
-        if (te instanceof TileTank) {
-            TileTank tileTank = (TileTank) te;
-            Map<ForgeDirection, Integer> settings = tileTank.getSettings();
-            int i = settings.get(accessor.getSide());
-            currenttip.add("Mode: " + (i == TileTank.SETTING_NONE ? "none" : (i == TileTank.SETTING_ACCEPT ? "accept" : "provide")));
-            currenttip.add("Fluid: " + DRFluidRegistry.getFluidName(tileTank.getClientRenderFluid()));
-            currenttip.add("Amount: " + tileTank.getTotalFluidAmount() + " (" + tileTank.getTankCapacity() + ")");
-            LiquidCrystalFluidTagData fluidData = tileTank.getFluidData();
-            if (fluidData != null) {
-                currenttip.add(EnumChatFormatting.YELLOW + "Quality: " + (int) (fluidData.getQuality() * 100) + "%");
-                currenttip.add(EnumChatFormatting.YELLOW + "Purity: " + (int) (fluidData.getPurity() * 100) + "%");
-                currenttip.add(EnumChatFormatting.YELLOW + "Power: " + (int) (fluidData.getStrength() * 100) + "%");
-                currenttip.add(EnumChatFormatting.YELLOW + "Efficiency: " + (int) (fluidData.getEfficiency() * 100) + "%");
-            }
-            if (System.currentTimeMillis() - lastTime > 100) {
-                lastTime = System.currentTimeMillis();
-                tileTank.sendPacketToServer(1, new NBTTagCompound());
-            }
+    public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        int i = settings.get(accessor.getSide());
+        currentTip.add("Mode: "+(i == SETTING_NONE ? "none" : (i == SETTING_ACCEPT ? "accept" : "provide")));
+        currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(clientRenderFluid));
+        currentTip.add("Amount: "+totalFluidAmount + " (" + tankCapacity + ")");
+        if (fluidData != null) {
+            currentTip.add(EnumChatFormatting.YELLOW + "Quality: " + (int)(fluidData.getQuality() * 100) + "%");
+            currentTip.add(EnumChatFormatting.YELLOW + "Purity: " + (int)(fluidData.getPurity() * 100) + "%");
+            currentTip.add(EnumChatFormatting.YELLOW + "Power: " + (int)(fluidData.getStrength() * 100) + "%");
+            currentTip.add(EnumChatFormatting.YELLOW + "Efficiency: " + (int)(fluidData.getEfficiency() * 100) + "%");
         }
-        return currenttip;
+        if (System.currentTimeMillis() - lastTime > 100){
+            lastTime = System.currentTimeMillis();
+            sendPacketToServer(1, new NBTTagCompound());
+        }
+        return currentTip;
     }
 
     @Override
@@ -169,18 +163,6 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     @Override
     public boolean canUpdate() {
         return false;
-    }
-
-    public int getTotalFluidAmount() {
-        return totalFluidAmount;
-    }
-
-    public int getTankCapacity() {
-        return tankCapacity;
-    }
-
-    public LiquidCrystalFluidTagData getFluidData() {
-        return fluidData;
     }
 
     @Override
@@ -265,10 +247,6 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         } else {
             return fluidStack;
         }
-    }
-
-    public Map<ForgeDirection, Integer> getSettings() {
-        return settings;
     }
 
     @SideOnly(Side.CLIENT)
