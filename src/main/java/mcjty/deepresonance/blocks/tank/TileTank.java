@@ -3,6 +3,7 @@ package mcjty.deepresonance.blocks.tank;
 import com.google.common.collect.Maps;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import elec332.core.compat.handlers.WailaCompatHandler;
 import elec332.core.multiblock.dynamic.IDynamicMultiBlockTile;
 import elec332.core.util.NBTHelper;
 import elec332.core.world.WorldHelper;
@@ -10,24 +11,30 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
 import mcjty.deepresonance.blocks.base.ElecTileBase;
+import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.deepresonance.grid.fluid.event.FluidTileEvent;
 import mcjty.deepresonance.grid.tank.DRTankMultiBlock;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by Elec332 on 9-8-2015.
  */
-public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IDeepResonanceFluidProvider {
+public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IDeepResonanceFluidProvider, WailaCompatHandler.IWailaInfoTile {
 
     public static final int SETTING_NONE = 0;
     public static final int SETTING_ACCEPT = 1;
@@ -52,6 +59,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     private float renderHeight; //Value from 0.0f to 1.0f
     @SideOnly(Side.CLIENT)
     private LiquidCrystalFluidTagData fluidData;
+    private long lastTime;
 
     protected Map<ForgeDirection, Integer> settings;
 
@@ -93,6 +101,31 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
                 settings.put(ForgeDirection.valueOf(tag.getString("dir")), tag.getInteger("n"));
             }
         }
+    }
+
+    @Override
+    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        TileEntity te = accessor.getTileEntity();
+        if (te instanceof TileTank) {
+            TileTank tileTank = (TileTank) te;
+            Map<ForgeDirection, Integer> settings = tileTank.getSettings();
+            int i = settings.get(accessor.getSide());
+            currenttip.add("Mode: " + (i == TileTank.SETTING_NONE ? "none" : (i == TileTank.SETTING_ACCEPT ? "accept" : "provide")));
+            currenttip.add("Fluid: " + DRFluidRegistry.getFluidName(tileTank.getClientRenderFluid()));
+            currenttip.add("Amount: " + tileTank.getTotalFluidAmount() + " (" + tileTank.getTankCapacity() + ")");
+            LiquidCrystalFluidTagData fluidData = tileTank.getFluidData();
+            if (fluidData != null) {
+                currenttip.add(EnumChatFormatting.YELLOW + "Quality: " + (int) (fluidData.getQuality() * 100) + "%");
+                currenttip.add(EnumChatFormatting.YELLOW + "Purity: " + (int) (fluidData.getPurity() * 100) + "%");
+                currenttip.add(EnumChatFormatting.YELLOW + "Power: " + (int) (fluidData.getStrength() * 100) + "%");
+                currenttip.add(EnumChatFormatting.YELLOW + "Efficiency: " + (int) (fluidData.getEfficiency() * 100) + "%");
+            }
+            if (System.currentTimeMillis() - lastTime > 100) {
+                lastTime = System.currentTimeMillis();
+                tileTank.sendPacketToServer(1, new NBTTagCompound());
+            }
+        }
+        return currenttip;
     }
 
     @Override

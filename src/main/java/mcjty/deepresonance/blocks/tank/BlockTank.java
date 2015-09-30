@@ -6,9 +6,6 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.base.ElecGenericBlockBase;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
-import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -41,17 +38,17 @@ public class BlockTank extends ElecGenericBlockBase {
 
     public BlockTank(String name) {
         super(Material.rock, TileTank.class, name);
-        setCreativeTab(DeepResonance.tabDeepResonance);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
+    @SuppressWarnings("all")
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
-        super.addInformation(itemStack, player, list, whatIsThis);
+        /*super.addInformation(itemStack, player, list, whatIsThis);
         NBTTagCompound tagCompound = itemStack.getTagCompound();
         if (tagCompound.hasKey("fluid")) {
             FluidStack fluidStack = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("fluid"));
-            list.add(EnumChatFormatting.GREEN + "Fluid: "+ DRFluidRegistry.getFluidName(fluidStack.getFluid()));
+            list.add(EnumChatFormatting.GREEN + "Fluid: "+ DRFluidRegistry.getFluidName(fluidStack));
             list.add(EnumChatFormatting.GREEN + "Amount: "+fluidStack.amount + " mb");
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
@@ -62,36 +59,7 @@ public class BlockTank extends ElecGenericBlockBase {
             list.add("how filled the tank is");
         } else {
             list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
-        }
-    }
-
-    private long lastTime;
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        super.getWailaBody(itemStack, currenttip, accessor, config);
-        TileEntity te = accessor.getTileEntity();
-        if (te instanceof TileTank) {
-            TileTank tileTank = (TileTank) te;
-            Map<ForgeDirection, Integer> settings = tileTank.getSettings();
-            int i = settings.get(accessor.getSide());
-            currenttip.add("Mode: " + (i == TileTank.SETTING_NONE ? "none" : (i == TileTank.SETTING_ACCEPT ? "accept" : "provide")));
-            currenttip.add("Fluid: " + DRFluidRegistry.getFluidName(tileTank.getClientRenderFluid()));
-            currenttip.add("Amount: " + tileTank.getTotalFluidAmount() + " (" + tileTank.getTankCapacity() + ")");
-            LiquidCrystalFluidTagData fluidData = tileTank.getFluidData();
-            if (fluidData != null) {
-                currenttip.add(EnumChatFormatting.YELLOW + "Quality: " + (int) (fluidData.getQuality() * 100) + "%");
-                currenttip.add(EnumChatFormatting.YELLOW + "Purity: " + (int) (fluidData.getPurity() * 100) + "%");
-                currenttip.add(EnumChatFormatting.YELLOW + "Power: " + (int) (fluidData.getStrength() * 100) + "%");
-                currenttip.add(EnumChatFormatting.YELLOW + "Efficiency: " + (int) (fluidData.getEfficiency() * 100) + "%");
-            }
-            if (System.currentTimeMillis() - lastTime > 100) {
-                lastTime = System.currentTimeMillis();
-                tileTank.sendPacketToServer(1, new NBTTagCompound());
-            }
-        }
-        return currenttip;
+        }*/
     }
 
     @Override
