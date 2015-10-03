@@ -24,6 +24,7 @@ import mcjty.deepresonance.radiation.RadiationConfiguration;
 import mcjty.deepresonance.worldgen.WorldGenConfiguration;
 import mcjty.gui.GuiStyle;
 import mcjty.varia.Logging;
+import mcjty.wailasupport.WailaCompatibility;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -43,7 +44,7 @@ public class DeepResonance implements ModBase {
     public static final String MODID = "deepresonance";
     public static final String VERSION = "0.3.0";
     public static final String MIN_FORGE_VER = "10.13.2.1291";
-    public static final String MIN_MCJTYLIB_VER = "1.5.0";
+    public static final String MIN_MCJTYLIB_VER = "1.6.0";
     public static final String MIN_ELECCORE_VER = "1.4.152";
 
     @SidedProxy(clientSide="mcjty.deepresonance.proxy.ClientProxy", serverSide="mcjty.deepresonance.proxy.ServerProxy")
@@ -91,7 +92,8 @@ public class DeepResonance implements ModBase {
         configGenerator.setCategoryData(WorldGenConfiguration.CATEGORY_WORLDGEN, "Configuration for worldGen").setCategoryData(GeneratorConfiguration.CATEGORY_GENERATOR, "Configuration for the generator multiblock").setCategoryData(ConfigGenerator.Crystal.category, "Configuration for the crystals").setCategoryData(RadiationConfiguration.CATEGORY_RADIATION, "Configuration for the radiation");
         configGenerator.refresh();
         proxy.preInit(e);
-        FMLInterModComms.sendMessage("Waila", "register", "mcjty.wailasupport.WailaCompatibility.load");
+        WailaCompatibility.register();
+//        FMLInterModComms.sendMessage("Waila", "register", "mcjty.wailasupport.WailaCompatibility.load");
         FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
     }
 
