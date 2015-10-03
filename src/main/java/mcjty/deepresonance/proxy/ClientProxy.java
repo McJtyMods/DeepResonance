@@ -4,6 +4,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import mcjty.deepresonance.client.gui.NoRFFoundException;
 import mcjty.deepresonance.client.render.ModRenderers;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -26,6 +27,16 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void postInit(FMLPostInitializationEvent e) {
         super.postInit(e);
+    }
+
+    @Override
+    public void throwException(Exception e, int i) {
+        switch (i){
+            case 0:
+                throw new NoRFFoundException(e);
+            default:
+                throw new RuntimeException(e);
+        }
     }
 
     @SubscribeEvent

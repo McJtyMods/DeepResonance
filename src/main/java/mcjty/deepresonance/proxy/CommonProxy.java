@@ -75,4 +75,6 @@ public abstract class CommonProxy {
         WrenchChecker.init();
     }
 
+    public abstract void throwException(Exception e, int i);
+
 }
