@@ -54,6 +54,12 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     }
 
     @Override
+    protected void invalidate() {
+        super.invalidate();
+        markEverythingDirty();
+    }
+
+    @Override
     protected void mergeWith(DRTankMultiBlock multiBlock) {
         super.mergeWith(multiBlock);
         tank.merge(multiBlock.tank);
