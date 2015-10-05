@@ -65,7 +65,7 @@ public final class ModItems {
     }
 
     private static ItemRadiationSuit newRadiationSuitPart(int i){
-        ItemRadiationSuit ret = new ItemRadiationSuit(ItemArmor.ArmorMaterial.DIAMOND, 0, i, "radiationSuit");
+        ItemRadiationSuit ret = new ItemRadiationSuit(ItemArmor.ArmorMaterial.IRON, 0, i, "radiationSuit");
         GameRegistry.registerItem(ret, "radiationSuit"+i);
         return ret;
     }
