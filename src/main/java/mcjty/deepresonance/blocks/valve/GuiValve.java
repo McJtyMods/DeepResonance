@@ -3,17 +3,15 @@ package mcjty.deepresonance.blocks.valve;
 import mcjty.container.GenericGuiContainer;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.gui.Window;
+import mcjty.gui.events.ButtonEvent;
 import mcjty.gui.events.TextEvent;
 import mcjty.gui.layout.HorizontalLayout;
 import mcjty.gui.layout.VerticalLayout;
-import mcjty.gui.widgets.Label;
-import mcjty.gui.widgets.Panel;
-import mcjty.gui.widgets.TextField;
-import mcjty.gui.widgets.Widget;
+import mcjty.gui.widgets.*;
 import mcjty.network.Argument;
 import net.minecraft.util.ResourceLocation;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 public class GuiValve extends GenericGuiContainer<ValveTileEntity> {
     public static final int VALVE_WIDTH = 180;
@@ -38,27 +36,22 @@ public class GuiValve extends GenericGuiContainer<ValveTileEntity> {
 
         Panel toplevel = new Panel(mc, this).setBackground(iconLocation).setLayout(new VerticalLayout());
 
-        minPurity = new TextField(mc, this).setTooltips("The minimum purity % to", "accept the liquid").addTextEvent(new TextEvent() {
-            @Override
-            public void textChanged(Widget parent, String newText) {
-                updateSettings();
-            }
-        });
-        minStrength = new TextField(mc, this).setTooltips("The minimum strength % to", "accept the liquid").addTextEvent(new TextEvent() {
-            @Override
-            public void textChanged(Widget parent, String newText) {
-                updateSettings();
-            }
-        });
-        minEfficiency = new TextField(mc, this).setTooltips("The minimum efficiency % to", "accept the liquid").addTextEvent(new TextEvent() {
-            @Override
-            public void textChanged(Widget parent, String newText) {
-                updateSettings();
-            }
-        });
-        minPurity.setText(Integer.toString((int) (tileEntity.getMinPurity() * 100)));
-        minStrength.setText(Integer.toString((int) (tileEntity.getMinStrength() * 100)));
-        minEfficiency.setText(Integer.toString((int) (tileEntity.getMinEfficiency() * 100)));
+        minPurity = new TextField(mc, this).setTooltips("The minimum purity % to", "accept the liquid");
+        minStrength = new TextField(mc, this).setTooltips("The minimum strength % to", "accept the liquid");
+        minEfficiency = new TextField(mc, this).setTooltips("The minimum efficiency % to", "accept the liquid");
+        minPurity.setText(Integer.toString((int) (tileEntity.getMinPurity() * 100))).setDesiredWidth(50);
+        minStrength.setText(Integer.toString((int) (tileEntity.getMinStrength() * 100))).setDesiredWidth(50);
+        minEfficiency.setText(Integer.toString((int) (tileEntity.getMinEfficiency() * 100))).setDesiredWidth(50);
+        Button applyButton = new Button(mc, this)
+                .setText("Apply")
+                .setTooltips("Apply the new setting")
+                .setDesiredHeight(14)
+                .addButtonEvent(new ButtonEvent() {
+                    @Override
+                    public void buttonClicked(Widget parent) {
+                        updateSettings();
+                    }
+                });
         Panel purityPanel = new Panel(mc, this).setLayout(new HorizontalLayout())
                 .setDesiredHeight(16)
                 .addChild(new Label(mc, this).setText("Purity").setDesiredWidth(60))
@@ -66,11 +59,13 @@ public class GuiValve extends GenericGuiContainer<ValveTileEntity> {
         Panel strengthPanel = new Panel(mc, this).setLayout(new HorizontalLayout())
                 .setDesiredHeight(16)
                 .addChild(new Label(mc, this).setText("Strength").setDesiredWidth(60))
-                .addChild(minStrength);
+                .addChild(minStrength)
+                .addChild(applyButton);
         Panel efficiencyPanel = new Panel(mc, this).setLayout(new HorizontalLayout())
                 .setDesiredHeight(16)
                 .addChild(new Label(mc, this).setText("Efficiency").setDesiredWidth(60))
                 .addChild(minEfficiency);
+
         toplevel.addChild(purityPanel).addChild(strengthPanel).addChild(efficiencyPanel);
 
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
