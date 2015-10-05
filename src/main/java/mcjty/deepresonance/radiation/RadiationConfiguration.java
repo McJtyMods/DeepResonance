@@ -36,6 +36,8 @@ public class RadiationConfiguration {
     public static float radiationShieldDenseGlassFactor = 0.1f;
     public static float radiationShieldLeadFactor = 0.1f;
 
+    public static float suitProtection[] = new float[] { 0, .25f, .50f, .75f, .95f };
+
     public static void init(Configuration cfg) {
         minRadiationRadius = (float) cfg.get(CATEGORY_RADIATION, "minRadiationRadius", minRadiationRadius,
                 "The minimum radiation radius").getDouble();
@@ -88,6 +90,15 @@ public class RadiationConfiguration {
                 "How much dense glass blocks radiation (0.0 is total block, 1.0 is not block at all)").getDouble();
         radiationShieldLeadFactor = (float) cfg.get(CATEGORY_RADIATION, "radiationShieldLeadFactor", radiationShieldLeadFactor,
                 "How much dense lead blocks radiation (0.0 is total block, 1.0 is not block at all)").getDouble();
+
+        suitProtection[1] = (float) cfg.get(CATEGORY_RADIATION, "suitProtection1", suitProtection[1],
+                "How much protection you get from radiation with 1 radiation suit piece equipped").getDouble();
+        suitProtection[2] = (float) cfg.get(CATEGORY_RADIATION, "suitProtection2", suitProtection[2],
+                "How much protection you get from radiation with 2 radiation suit pieces equipped").getDouble();
+        suitProtection[3] = (float) cfg.get(CATEGORY_RADIATION, "suitProtection3", suitProtection[3],
+                "How much protection you get from radiation with 3 radiation suit pieces equipped").getDouble();
+        suitProtection[4] = (float) cfg.get(CATEGORY_RADIATION, "suitProtection4", suitProtection[4],
+                "How much protection you get from radiation with 4 radiation suit pieces equipped").getDouble();
     }
 
 }

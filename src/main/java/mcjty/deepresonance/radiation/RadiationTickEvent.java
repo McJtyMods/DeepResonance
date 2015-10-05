@@ -195,16 +195,16 @@ public class RadiationTickEvent {
         for (Object o : list) {
             EntityLivingBase entityLivingBase = (EntityLivingBase) o;
 
-            if (ItemRadiationSuit.hasCompleteSuit(entityLivingBase)) {
-                continue;
-            }
+            int pieces = ItemRadiationSuit.countSuitPieces(entityLivingBase);
+            float protection = RadiationConfiguration.suitProtection[pieces];
 
             double distanceSq = entityLivingBase.getDistanceSq(centerx, centery, centerz);
 
             if (distanceSq < radiusSq) {
                 double distance = Math.sqrt(distanceSq);
-                float strength = (float) (baseStrength * (radius-distance) / radius);
                 QuadTree radiationTree = radiationSource.getRadiationTree(world, cx, cy, cz);
+                float strength = (float) (baseStrength * (radius-distance) / radius);
+                strength = strength * (1.0f-protection);
                 strength = strength * (float) radiationTree.factor(cx, cy, cz, (int) entityLivingBase.posX, (int) entityLivingBase.posY, (int) entityLivingBase.posZ);
 
                 if (strength < RadiationConfiguration.radiationStrenghLevel0) {

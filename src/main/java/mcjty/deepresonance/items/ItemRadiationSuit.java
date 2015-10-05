@@ -41,12 +41,14 @@ public class ItemRadiationSuit extends ItemArmor {
         return false;
     }
 
-    public static boolean hasCompleteSuit(EntityLivingBase entity){
+    public static int countSuitPieces(EntityLivingBase entity){
+        int cnt = 0;
         for (int i = 1; i < 5; i++) {
             ItemStack stack = entity.getEquipmentInSlot(i);
-            if (stack == null || !(stack.getItem() instanceof ItemRadiationSuit))
-                return false;
+            if (stack != null && (stack.getItem() instanceof ItemRadiationSuit)) {
+                cnt++;
+            }
         }
-        return true;
+        return cnt;
     }
 }
