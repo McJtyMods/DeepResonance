@@ -64,7 +64,7 @@ public final class ModItems {
 //        new TestItem(); //Auto-registers
     }
 
-    private static ItemRadiationSuit newRadiationSuitPart(int i){
+    private static ItemRadiationSuit newRadiationSuitPart(int i) {
         ItemRadiationSuit ret = new ItemRadiationSuit(ItemArmor.ArmorMaterial.IRON, 0, i, "radiationSuit");
         GameRegistry.registerItem(ret, "radiationSuit"+i);
         return ret;

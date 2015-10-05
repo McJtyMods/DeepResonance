@@ -3,6 +3,11 @@ item.RadiationMonitor.name=Radiation Monitor
 item.ResonatingPlate.name=Resonating Plate
 item.FilterMaterial.name=Filter Material
 item.SpentFilterMaterial.name=Spent Filter Material
+item.SpentFilterMaterial.name=Spent Filter Material
+item.radiationSuit0.name=Radiation Suit Helmet (WIP)
+item.radiationSuit1.name=Radiation Suit Chestplate (WIP)
+item.radiationSuit2.name=Radiation Suit Leggings (WIP)
+item.radiationSuit3.name=Radiation Suit Boots (WIP)
 
 tile.oreResonating.name=Resonating Ore
 tile.denseObsidian.name=Dense Obsidian

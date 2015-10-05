@@ -13,8 +13,9 @@ public class ItemRadiationSuit extends ItemArmor {
 
     public ItemRadiationSuit(ArmorMaterial material, int renderIndex, int armorType, String name) {
         super(material, renderIndex, armorType);
+        setUnlocalizedName(name);
         this.name = name;
-        setTextureName(DeepResonance.MODID+"."+name);
+        setTextureName(DeepResonance.MODID+":"+name);
         setCreativeTab(DeepResonance.tabDeepResonance);
     }
 
@@ -23,7 +24,7 @@ public class ItemRadiationSuit extends ItemArmor {
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
         int i = armorType == 2 ? 2 : 1;
-        return DeepResonance.MODID+":textures/items/armor/"+name+"-"+i+".png";
+        return DeepResonance.MODID+":textures/items/"+name+"-"+i+".png";
     }
 
     @Override
