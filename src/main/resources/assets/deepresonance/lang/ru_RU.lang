@@ -1,0 +1,29 @@
+item.DeepResonanceManual.name=Руководство по Deep Resonance
+item.RadiationMonitor.name=Дозиметр
+item.ResonatingPlate.name=Резонирующая пластина
+item.FilterMaterial.name=Отфильтрованный материал
+item.SpentFilterMaterial.name=Использованные отфильтрованный материал
+item.radiationSuit0.name=Шлем радиационно-защитного костюма (WIP)
+item.radiationSuit1.name=Кираса радиационно-защитного костюма (WIP)
+item.radiationSuit2.name=Поножи радиационно-защитного костюма (WIP)
+item.radiationSuit3.name=Ботинки радиационно-защитного костюма (WIP)
+
+tile.oreResonating.name=Резонирующая руда
+tile.denseObsidian.name=Плотный обсидиан
+tile.denseGlass.name=Плотное стекло
+tile.poisonedDirt.name=Отравленная земля
+tile.resonatingCrystalBlock.name=Резонирующий кристалл
+tile.generatorBlock.name=Генератор
+tile.generatorControllerBlock.name=Контроллер генератора
+tile.energyCollectorBlock.name=Сборщик энергии
+tile.machineFrame.name=Каркас механизма
+tile.tankBlock.name=Цистерна
+tile.crystalizerBlock.name=Кристаллизатор
+tile.smelterBlock.name=Плавильня
+tile.purifierBlock.name=Очиститель
+tile.pedestalBlock.name=Пьедестал
+tile.valveBlock.name=Вентиль
+
+itemGroup.DeepResonance=Deep Resonance
+
+message.shiftMessage=Нажмите Shift
