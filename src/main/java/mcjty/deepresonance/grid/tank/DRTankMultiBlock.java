@@ -10,6 +10,7 @@ import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.grid.InternalGridTank;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
@@ -56,7 +57,11 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     @Override
     protected void invalidate() {
         super.invalidate();
-        markEverythingDirty();
+        for (BlockLoc loc : allLocations){
+            TileTank tank = getTank(loc);
+            if (tank != null)
+                setDataToTile(tank);
+        }
     }
 
     @Override
@@ -67,6 +72,21 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         needsSorting = true;
         markEverythingDirty();
         markAllBlocksForUpdate();
+    }
+
+    public void setDataToTile(TileTank tile){
+        NBTTagCompound tagCompound = new NBTTagCompound();
+        FluidStack myTank = getFluidShare(tile);
+        Fluid lastSeenFluid = getStoredFluid();
+        if (myTank != null) {
+            NBTTagCompound fluidTag = new NBTTagCompound();
+            myTank.writeToNBT(fluidTag);
+            tagCompound.setTag("fluid", fluidTag);
+        }
+        if (lastSeenFluid != null)
+            tagCompound.setString("lastSeenFluid", FluidRegistry.getFluidName(lastSeenFluid));
+        tile.setSaveData(tagCompound);
+        tile.markDirty();
     }
 
     public int getComparatorInputOverride(){
@@ -124,10 +144,6 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
                     tank.sendPacket(3, new NBTHelper().addToTag(filled, "render").toNBT());
             }
         }
-    }
-
-    public int getTankSize(){
-        return allLocations.size();
     }
 
     public FluidStack getFluidShare(TileTank tile){

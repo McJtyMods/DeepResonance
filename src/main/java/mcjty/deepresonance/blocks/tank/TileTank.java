@@ -61,6 +61,8 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     private LiquidCrystalFluidTagData fluidData;
     private long lastTime;
 
+    private NBTTagCompound multiBlockSaveData;
+
     protected Map<ForgeDirection, Integer> settings;
 
     @Override
@@ -138,16 +140,26 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     @Override
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
         super.readRestorableFromNBT(tagCompound);
-        if (tagCompound.hasKey("fluid"))
+        NBTTagCompound mbTag = multiBlockSaveData = tagCompound.getCompoundTag("multiBlockData");
+        if (tagCompound.hasKey("fluid")) { /* legacy compat */
             this.myTank = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("fluid"));
-        if (tagCompound.hasKey("lastSeenFluid"))
+        } else if (mbTag.hasKey("fluid")){
+            this.myTank = FluidStack.loadFluidStackFromNBT(mbTag.getCompoundTag("fluid"));
+        }
+        if (tagCompound.hasKey("lastSeenFluid")) { /* legacy compat */
             this.lastSeenFluid = FluidRegistry.getFluid(tagCompound.getString("lastSeenFluid"));
+        } else if (mbTag.hasKey("lastSeenFluid")){
+            this.lastSeenFluid = FluidRegistry.getFluid(mbTag.getString("lastSeenFluid"));
+        }
     }
 
     @Override
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
         super.writeRestorableToNBT(tagCompound);
-        if (multiBlock != null) {
+        if (multiBlock != null)
+            getMultiBlock().setDataToTile(this);
+        tagCompound.setTag("multiBlockData", multiBlockSaveData);
+        /*if (multiBlock != null) {
             myTank = multiBlock.getFluidShare(this);
             lastSeenFluid = multiBlock.getStoredFluid();
         }
@@ -157,7 +169,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
             tagCompound.setTag("fluid", fluidTag);
         }
         if (lastSeenFluid != null)
-            tagCompound.setString("lastSeenFluid", FluidRegistry.getFluidName(lastSeenFluid));
+            tagCompound.setString("lastSeenFluid", FluidRegistry.getFluidName(lastSeenFluid));*/
     }
 
     @Override
@@ -173,6 +185,16 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     @Override
     public DRTankMultiBlock getMultiBlock() {
         return multiBlock;
+    }
+
+    @Override
+    public void setSaveData(NBTTagCompound nbtTagCompound) {
+        this.multiBlockSaveData = nbtTagCompound;
+    }
+
+    @Override
+    public NBTTagCompound getSaveData() {
+        return this.multiBlockSaveData;
     }
 
     @Override
