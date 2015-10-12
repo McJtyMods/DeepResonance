@@ -6,6 +6,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import mcjty.base.GeneralConfig;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.ForgeEventHandlers;
 import mcjty.deepresonance.blocks.ModBlocks;
@@ -30,6 +31,7 @@ public abstract class CommonProxy {
     private Configuration mainConfig;
 
     public void preInit(FMLPreInitializationEvent e) {
+        GeneralConfig.preInit(e);
         mainConfig = DeepResonance.config;
         readMainConfig();
         DRMessages.registerNetworkMessages();
