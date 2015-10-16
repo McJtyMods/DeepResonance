@@ -90,12 +90,12 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
         if (bottomTank == null || topTank == null) {
             return false;
         }
+        if (topTank.getFluidAmount() < ConfigMachines.Purifier.rclPerPurify) {
+            return false;
+        }
         if (topTank.getMultiBlock().equals(bottomTank.getMultiBlock())) {
             // Same tank so operation is possible.
             return true;
-        }
-        if (topTank.getFluidAmount() < ConfigMachines.Purifier.rclPerPurify) {
-            return false;
         }
         if (!fillBottomTank()) {
             return false;
