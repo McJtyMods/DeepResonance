@@ -19,6 +19,8 @@ public class TankTESR extends TileEntitySpecialRenderer {
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float time) {
         if (tileEntity instanceof TileTank) {
+            GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
+
             TileTank tileTank = (TileTank) tileEntity;
 
             Tessellator tessellator = Tessellator.instance;
@@ -42,6 +44,8 @@ public class TankTESR extends TileEntitySpecialRenderer {
             }
 
             GL11.glPopMatrix();
+
+            GL11.glPopAttrib();
         }
     }
 

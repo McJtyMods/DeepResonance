@@ -37,6 +37,8 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float time) {
+        GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
+
         bindTexture(blockTexture);
 
         GL11.glPushMatrix();
@@ -52,8 +54,6 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
         EnergyCollectorTileEntity energyCollectorTileEntity = (EnergyCollectorTileEntity) tileEntity;
 
         if ((!energyCollectorTileEntity.getCrystals().isEmpty()) && (energyCollectorTileEntity.areLasersActive() || energyCollectorTileEntity.getLaserStartup() > 0)) {
-            boolean blending = GL11.glIsEnabled(GL11.GL_BLEND);
-            boolean depthMask = GL11.glGetBoolean(GL11.GL_DEPTH_WRITEMASK);
             GL11.glDepthMask(false);
 
             GL11.glEnable(GL11.GL_BLEND);
@@ -108,14 +108,8 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
             tessellator.draw();
 
             GL11.glPopMatrix();
-
-            if (!blending) {
-                GL11.glDisable(GL11.GL_BLEND);
-            }
-            if (depthMask) {
-                GL11.glDepthMask(true);
-            }
         }
+        GL11.glPopAttrib();
     }
 
     private float jitter(float startupFactor, float a1, float a2) {
