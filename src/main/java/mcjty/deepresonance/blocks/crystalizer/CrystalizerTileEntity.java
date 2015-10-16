@@ -7,7 +7,6 @@ import mcjty.container.InventoryHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.base.ElecEnergyReceiverTileBase;
-import mcjty.deepresonance.blocks.smelter.SmelterContainer;
 import mcjty.deepresonance.blocks.tank.ITankHook;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
@@ -246,7 +245,7 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
 
     @Override
     public boolean canExtractItem(int index, ItemStack item, int side) {
-        return SmelterContainer.factory.isOutputSlot(index);
+        return index == CrystalizerContainer.SLOT_CRYSTAL;
     }
 
     @Override
