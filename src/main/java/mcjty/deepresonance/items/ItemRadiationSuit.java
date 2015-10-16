@@ -11,11 +11,13 @@ import net.minecraft.item.ItemStack;
  */
 public class ItemRadiationSuit extends ItemArmor {
 
+    private final String textureSuffix;
+
     public ItemRadiationSuit(ArmorMaterial material, int renderIndex, int armorType, String name) {
         super(material, renderIndex, armorType);
         setUnlocalizedName(name);
-        this.name = name;
-        setTextureName(DeepResonance.MODID+":"+name);
+        this.textureSuffix = name;
+        setTextureName(DeepResonance.MODID+":radiationSuit"+name);
         setCreativeTab(DeepResonance.tabDeepResonance);
     }
 
@@ -23,8 +25,7 @@ public class ItemRadiationSuit extends ItemArmor {
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
-        int i = armorType == 2 ? 2 : 1;
-        return DeepResonance.MODID+":textures/items/"+name+"-"+i+".png";
+        return DeepResonance.MODID+":textures/items/suitTexture"+textureSuffix+".png";
     }
 
     @Override

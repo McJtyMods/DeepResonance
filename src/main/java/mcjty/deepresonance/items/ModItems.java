@@ -56,16 +56,16 @@ public final class ModItems {
         spentFilterMaterialItem.setTextureName(DeepResonance.MODID + ":spentFilterMaterial");
         GameRegistry.registerItem(spentFilterMaterialItem, "spentFilterMaterialItem");
 
-        helmet = newRadiationSuitPart(0);
-        chestplate = newRadiationSuitPart(1);
-        leggings = newRadiationSuitPart(2);
-        boots = newRadiationSuitPart(3);
+        helmet = newRadiationSuitPart(0, "Helmet");
+        chestplate = newRadiationSuitPart(1, "Chest");
+        leggings = newRadiationSuitPart(2, "Leggings");
+        boots = newRadiationSuitPart(3, "Boots");
 
 //        new TestItem(); //Auto-registers
     }
 
-    private static ItemRadiationSuit newRadiationSuitPart(int i) {
-        ItemRadiationSuit ret = new ItemRadiationSuit(ItemArmor.ArmorMaterial.IRON, 0, i, "radiationSuit");
+    private static ItemRadiationSuit newRadiationSuitPart(int i, String texture) {
+        ItemRadiationSuit ret = new ItemRadiationSuit(ItemArmor.ArmorMaterial.IRON, 0, i, texture);
         GameRegistry.registerItem(ret, "radiationSuit"+i);
         return ret;
     }
