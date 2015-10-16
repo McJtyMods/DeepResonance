@@ -80,11 +80,12 @@ disappears.
 Using the radiation monitor you can measure how much radiation there
 is in a certain area:
 {ri:radiationMonitorItem}
+Obsidian helps to block some of the radiation but dense obsidian is even
+better. You can also use lead blocks. These are better then obsidian but
+not as good as dense obsidian. Dense glass is about as good as lead.
 
-Note that obsidian helps to block some of the radiation but dense
-obsidian is even better. You can also use lead blocks. These are better
-then obsidian but not as good as dense obsidian. Dense glass can
-also be used and is about as good as lead.
+A radiation suit also helps. If you have a complete set then nearly
+95% of the radiation will be prevented.
 {-------------------------------------------------------------}
 {b}Machine Frame
 {n:frame}
