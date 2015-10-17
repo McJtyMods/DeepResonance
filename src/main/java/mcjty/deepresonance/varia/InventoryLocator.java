@@ -1,7 +1,7 @@
 package mcjty.deepresonance.varia;
 
-import mcjty.container.InventoryHelper;
-import mcjty.varia.Coordinate;
+import mcjty.lib.container.InventoryHelper;
+import mcjty.lib.varia.Coordinate;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;

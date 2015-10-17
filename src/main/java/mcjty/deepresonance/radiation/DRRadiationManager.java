@@ -1,11 +1,9 @@
 package mcjty.deepresonance.radiation;
 
-import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.varia.QuadTree;
-import mcjty.varia.Coordinate;
-import mcjty.varia.GlobalCoordinate;
+import mcjty.lib.varia.Coordinate;
+import mcjty.lib.varia.GlobalCoordinate;
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;

@@ -2,7 +2,7 @@ package mcjty.deepresonance.blocks.crystals;
 
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.config.ConfigGenerator;
-import mcjty.entity.GenericTileEntity;
+import mcjty.lib.entity.GenericTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;

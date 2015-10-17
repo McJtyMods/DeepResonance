@@ -30,7 +30,7 @@ public class DRMessages {
 
     private static void discoverPackets(){
         try {
-            for (ClassPath.ClassInfo classInfo : ClassPath.from(ClassLoader.getSystemClassLoader()).getTopLevelClasses("mcjty.network")) {
+            for (ClassPath.ClassInfo classInfo : ClassPath.from(ClassLoader.getSystemClassLoader()).getTopLevelClasses("mcjty.lib.network")) {
                 Class clazz = Class.forName(classInfo.getName());
                 if (NetworkHandler.isValidPacket(clazz))
                     mcJtyLibPackets.add(clazz);

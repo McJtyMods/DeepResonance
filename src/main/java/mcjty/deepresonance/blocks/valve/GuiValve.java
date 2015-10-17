@@ -1,17 +1,20 @@
 package mcjty.deepresonance.blocks.valve;
 
-import mcjty.container.GenericGuiContainer;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.gui.Window;
-import mcjty.gui.events.ButtonEvent;
-import mcjty.gui.events.TextEvent;
-import mcjty.gui.layout.HorizontalLayout;
-import mcjty.gui.layout.VerticalLayout;
-import mcjty.gui.widgets.*;
-import mcjty.network.Argument;
+import mcjty.lib.container.GenericGuiContainer;
+import mcjty.lib.gui.Window;
+import mcjty.lib.gui.events.ButtonEvent;
+import mcjty.lib.gui.layout.HorizontalLayout;
+import mcjty.lib.gui.layout.VerticalLayout;
+import mcjty.lib.gui.widgets.Button;
+import mcjty.lib.gui.widgets.Label;
+import mcjty.lib.gui.widgets.Panel;
+import mcjty.lib.gui.widgets.TextField;
+import mcjty.lib.gui.widgets.*;
+import mcjty.lib.network.Argument;
 import net.minecraft.util.ResourceLocation;
 
-import java.awt.Rectangle;
+import java.awt.*;
 
 public class GuiValve extends GenericGuiContainer<ValveTileEntity> {
     public static final int VALVE_WIDTH = 180;

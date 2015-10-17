@@ -1,14 +1,14 @@
 package mcjty.deepresonance.items.manual;
 
 import mcjty.deepresonance.DeepResonance;
-import mcjty.gui.Window;
-import mcjty.gui.events.ButtonEvent;
-import mcjty.gui.layout.HorizontalLayout;
-import mcjty.gui.layout.VerticalLayout;
-import mcjty.gui.widgets.Button;
-import mcjty.gui.widgets.Label;
-import mcjty.gui.widgets.Panel;
-import mcjty.gui.widgets.*;
+import mcjty.lib.gui.Window;
+import mcjty.lib.gui.events.ButtonEvent;
+import mcjty.lib.gui.layout.HorizontalLayout;
+import mcjty.lib.gui.layout.VerticalLayout;
+import mcjty.lib.gui.widgets.Button;
+import mcjty.lib.gui.widgets.Label;
+import mcjty.lib.gui.widgets.Panel;
+import mcjty.lib.gui.widgets.*;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;

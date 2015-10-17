@@ -1,7 +1,7 @@
 package mcjty.deepresonance.commands;
 
 import mcjty.deepresonance.radiation.DRRadiationManager;
-import mcjty.varia.Logging;
+import mcjty.lib.varia.Logging;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;

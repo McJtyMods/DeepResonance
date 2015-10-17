@@ -1,15 +1,16 @@
 package mcjty.deepresonance.blocks.smelter;
 
-import mcjty.container.GenericGuiContainer;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.gui.Window;
-import mcjty.gui.layout.PositionalLayout;
-import mcjty.gui.widgets.*;
-import mcjty.gui.widgets.Panel;
+import mcjty.lib.container.GenericGuiContainer;
+import mcjty.lib.gui.Window;
+import mcjty.lib.gui.layout.PositionalLayout;
+import mcjty.lib.gui.widgets.*;
+import mcjty.lib.gui.widgets.Label;
+import mcjty.lib.gui.widgets.Panel;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.awt.Rectangle;
+import java.awt.*;
 
 public class GuiSmelter extends GenericGuiContainer<SmelterTileEntity> {
     public static final int SMELTER_WIDTH = 180;

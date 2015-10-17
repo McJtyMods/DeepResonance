@@ -1,17 +1,17 @@
 package mcjty.deepresonance.blocks.crystalizer;
 
-import mcjty.container.GenericGuiContainer;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.gui.Window;
-import mcjty.gui.layout.PositionalLayout;
-import mcjty.gui.widgets.EnergyBar;
-import mcjty.gui.widgets.Label;
-import mcjty.gui.widgets.Panel;
-import mcjty.gui.widgets.Widget;
+import mcjty.lib.container.GenericGuiContainer;
+import mcjty.lib.gui.Window;
+import mcjty.lib.gui.layout.PositionalLayout;
+import mcjty.lib.gui.widgets.EnergyBar;
+import mcjty.lib.gui.widgets.Label;
+import mcjty.lib.gui.widgets.Panel;
+import mcjty.lib.gui.widgets.Widget;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.awt.Rectangle;
+import java.awt.*;
 
 public class GuiCrystalizer extends GenericGuiContainer<CrystalizerTileEntity> {
     public static final int CRYSTALIZER_WIDTH = 180;

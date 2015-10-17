@@ -10,7 +10,7 @@ import elec332.core.server.ServerHelper;
 import elec332.core.util.BlockLoc;
 import elec332.core.util.IRunOnce;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.entity.GenericTileEntity;
+import mcjty.lib.entity.GenericTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
@@ -18,8 +18,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-
-import java.util.Iterator;
 
 /**
  * Created by Elec332 on 12-8-2015.

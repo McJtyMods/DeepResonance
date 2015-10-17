@@ -4,9 +4,9 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.RadiationShieldRegistry;
 import mcjty.deepresonance.varia.QuadTree;
-import mcjty.varia.Coordinate;
-import mcjty.varia.GlobalCoordinate;
-import mcjty.varia.Logging;
+import mcjty.lib.varia.Coordinate;
+import mcjty.lib.varia.GlobalCoordinate;
+import mcjty.lib.varia.Logging;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent;
 

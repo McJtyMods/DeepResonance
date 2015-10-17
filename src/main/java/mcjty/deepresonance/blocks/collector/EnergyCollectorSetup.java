@@ -1,8 +1,8 @@
 package mcjty.deepresonance.blocks.collector;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import mcjty.container.GenericItemBlock;
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.lib.container.GenericItemBlock;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 

@@ -1,7 +1,6 @@
 package mcjty.deepresonance.blocks.purifier;
 
 import elec332.core.world.WorldHelper;
-import mcjty.container.InventoryHelper;
 import mcjty.deepresonance.blocks.base.ElecTileBase;
 import mcjty.deepresonance.blocks.tank.ITankHook;
 import mcjty.deepresonance.blocks.tank.TileTank;
@@ -10,6 +9,7 @@ import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.deepresonance.items.ModItems;
 import mcjty.deepresonance.varia.InventoryLocator;
+import mcjty.lib.container.InventoryHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;

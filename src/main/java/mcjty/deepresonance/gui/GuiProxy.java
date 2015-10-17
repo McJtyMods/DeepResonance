@@ -2,8 +2,8 @@ package mcjty.deepresonance.gui;
 
 import cpw.mods.fml.common.network.IGuiHandler;
 import elec332.core.baseclasses.tileentity.IInventoryTile;
-import mcjty.container.GenericBlock;
 import mcjty.deepresonance.items.manual.GuiDeepResonanceManual;
+import mcjty.lib.container.GenericBlock;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;

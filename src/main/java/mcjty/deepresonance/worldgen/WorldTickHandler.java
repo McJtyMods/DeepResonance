@@ -5,7 +5,7 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.hash.THashSet;
-import mcjty.varia.Logging;
+import mcjty.lib.varia.Logging;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;

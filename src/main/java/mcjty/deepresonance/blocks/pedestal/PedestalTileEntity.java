@@ -1,6 +1,5 @@
 package mcjty.deepresonance.blocks.pedestal;
 
-import mcjty.container.InventoryHelper;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
@@ -8,9 +7,10 @@ import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.varia.InventoryLocator;
 import mcjty.deepresonance.varia.Tools;
-import mcjty.entity.GenericTileEntity;
-import mcjty.varia.BlockTools;
-import mcjty.varia.Coordinate;
+import mcjty.lib.container.InventoryHelper;
+import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.varia.BlockTools;
+import mcjty.lib.varia.Coordinate;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;

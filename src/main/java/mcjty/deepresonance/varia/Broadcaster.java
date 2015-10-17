@@ -1,6 +1,6 @@
 package mcjty.deepresonance.varia;
 
-import mcjty.varia.Logging;
+import mcjty.lib.varia.Logging;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 

@@ -7,7 +7,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import elec332.core.config.ConfigWrapper;
 import elec332.core.network.NetworkHandler;
-import mcjty.base.ModBase;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.commands.CommandDRGen;
@@ -22,9 +21,10 @@ import mcjty.deepresonance.proxy.CommonProxy;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
 import mcjty.deepresonance.worldgen.WorldGenConfiguration;
-import mcjty.gui.GuiStyle;
-import mcjty.varia.Logging;
-import mcjty.wailasupport.WailaCompatibility;
+import mcjty.lib.base.ModBase;
+import mcjty.lib.compat.MainCompatHandler;
+import mcjty.lib.gui.GuiStyle;
+import mcjty.lib.varia.Logging;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -92,8 +92,7 @@ public class DeepResonance implements ModBase {
         configGenerator.setCategoryData(WorldGenConfiguration.CATEGORY_WORLDGEN, "Configuration for worldGen").setCategoryData(GeneratorConfiguration.CATEGORY_GENERATOR, "Configuration for the generator multiblock").setCategoryData(ConfigGenerator.Crystal.category, "Configuration for the crystals").setCategoryData(RadiationConfiguration.CATEGORY_RADIATION, "Configuration for the radiation");
         configGenerator.refresh();
         proxy.preInit(e);
-        WailaCompatibility.register();
-//        FMLInterModComms.sendMessage("Waila", "register", "mcjty.wailasupport.WailaCompatibility.load");
+        MainCompatHandler.registerWaila();
         FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
     }
 

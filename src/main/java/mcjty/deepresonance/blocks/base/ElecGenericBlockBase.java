@@ -1,10 +1,10 @@
 package mcjty.deepresonance.blocks.base;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import mcjty.container.GenericBlock;
-import mcjty.container.GenericItemBlock;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.entity.GenericTileEntity;
+import mcjty.lib.container.GenericBlock;
+import mcjty.lib.container.GenericItemBlock;
+import mcjty.lib.entity.GenericTileEntity;
 import net.minecraft.block.material.Material;
 
 /**

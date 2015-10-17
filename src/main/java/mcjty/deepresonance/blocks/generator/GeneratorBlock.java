@@ -2,12 +2,12 @@ package mcjty.deepresonance.blocks.generator;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mcjty.container.GenericBlock;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.network.PacketGetGeneratorInfo;
-import mcjty.varia.BlockTools;
+import mcjty.lib.container.GenericBlock;
+import mcjty.lib.varia.BlockTools;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
