@@ -135,15 +135,6 @@ public class DeepResonance implements ModBase {
     }
 
     @Override
-    public void setGuiStyle(EntityPlayerMP entityPlayerMP, GuiStyle style) {
-    }
-
-    @Override
-    public GuiStyle getGuiStyle(EntityPlayer entityPlayer) {
-        return GuiStyle.STYLE_BEVEL;
-    }
-
-    @Override
     public void openManual(EntityPlayer player, int bookIndex, String page) {
         GuiDeepResonanceManual.locatePage = page;
         player.openGui(DeepResonance.instance, bookIndex, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
