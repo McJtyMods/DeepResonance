@@ -7,6 +7,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.FMLEventHandlers;
 import mcjty.deepresonance.ForgeEventHandlers;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
@@ -67,6 +68,7 @@ public abstract class CommonProxy {
         FMLCommonHandler.instance().bus().register(WorldTickHandler.instance);
         FMLCommonHandler.instance().bus().register(new RadiationTickEvent());
         MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
+        FMLCommonHandler.instance().bus().register(new FMLEventHandlers());
     }
 
     public void postInit(FMLPostInitializationEvent e) {
