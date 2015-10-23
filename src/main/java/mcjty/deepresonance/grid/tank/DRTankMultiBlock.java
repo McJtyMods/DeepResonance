@@ -174,7 +174,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
 
     @Override
     public FluidTankInfo getInfo() {
-        return null;
+        return new FluidTankInfo(getFluid(), getCapacity());
     }
 
     @Override
@@ -232,7 +232,9 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
 
     @Override
     public FluidTankInfo[] getTankInfo(ForgeDirection from) {
-        return new FluidTankInfo[0];
+        return new FluidTankInfo[] {
+            getInfo()
+        };
     }
 
     private void sendFluidHeight(){
