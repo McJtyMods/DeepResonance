@@ -23,6 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -103,6 +104,11 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
                 settings.put(ForgeDirection.valueOf(tag.getString("dir")), tag.getInteger("n"));
             }
         }
+    }
+
+    @Override
+    public NBTTagCompound getWailaTag(EntityPlayerMP entityPlayerMP, TileEntity tileEntity, NBTTagCompound nbtTagCompound, World world, int i, int i1, int i2) {
+        return null;
     }
 
     @Override

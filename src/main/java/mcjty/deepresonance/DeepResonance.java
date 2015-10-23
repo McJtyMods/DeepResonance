@@ -44,7 +44,7 @@ public class DeepResonance implements ModBase {
     public static final String MODID = "deepresonance";
     public static final String VERSION = "0.5.0";
     public static final String MIN_FORGE_VER = "10.13.2.1291";
-    public static final String MIN_MCJTYLIB_VER = "1.6.1";
+    public static final String MIN_MCJTYLIB_VER = "1.7.0";
     public static final String MIN_ELECCORE_VER = "1.4.170";
 
     @SidedProxy(clientSide="mcjty.deepresonance.proxy.ClientProxy", serverSide="mcjty.deepresonance.proxy.ServerProxy")
@@ -132,15 +132,6 @@ public class DeepResonance implements ModBase {
     @Override
     public String getModId() {
         return MODID;
-    }
-
-    @Override
-    public void setGuiStyle(EntityPlayerMP entityPlayerMP, GuiStyle style) {
-    }
-
-    @Override
-    public GuiStyle getGuiStyle(EntityPlayer entityPlayer) {
-        return GuiStyle.STYLE_BEVEL;
     }
 
     @Override
