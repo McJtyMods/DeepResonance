@@ -108,20 +108,27 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     public float getPowerPerTick() {
         if (powerPerTick < 0) {
-            float totalRF = ConfigGenerator.Crystal.maximumRF * strength / 100.0f * (purity + 30.0f) / 130.0f;
+            float totalRF = ResonatingCrystalTileEntity.getTotalPower(strength, purity);
             float numticks = totalRF / getRfPerTick();
             powerPerTick = 100.0f / numticks;
         }
         return powerPerTick;
     }
 
+    public static float getTotalPower(float strength, float purity) {
+        return ConfigGenerator.Crystal.maximumRF * strength / 100.0f * (purity + 30.0f) / 130.0f;
+    }
+
     public int getRfPerTick() {
         if (rfPerTick == -1) {
-            rfPerTick = (int) (ConfigGenerator.Crystal.maximumRFPerTick * efficiency / 100.1f * (purity + 2.0f) / 102.0f + 1);
+            rfPerTick = ResonatingCrystalTileEntity.getRfPerTick(efficiency, purity);
         }
         return rfPerTick;
     }
 
+    public static int getRfPerTick(float efficiency, float purity) {
+        return (int) (ConfigGenerator.Crystal.maximumRFPerTick * efficiency / 100.1f * (purity + 2.0f) / 102.0f + 1);
+    }
 
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
