@@ -14,7 +14,7 @@ public class ConfigMachines {
         public static int ticksPerPurify = 100;
 
         @Configurable(category = category, minValue = 1, maxValue = 10000, comment = "The amount of RCL we purify as one unit")
-        public static int rclPerPurify = 100;
+        public static int rclPerPurify = 200;
 
         @Configurable(category = category, minValue = 1, maxValue = 100, comment = "How much the purifier adds to the purity of a liquid (in %)")
         public static int addedPurity = 25;
