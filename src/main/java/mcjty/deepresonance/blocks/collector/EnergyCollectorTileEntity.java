@@ -360,7 +360,8 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
 
     @Override
     public boolean shouldRenderInPass(int pass) {
-        return pass == 0;
+        EnergyCollectorTESR.currentPass = pass;
+        return pass == 0 || pass == 1;
     }
 
     @SideOnly(Side.CLIENT)

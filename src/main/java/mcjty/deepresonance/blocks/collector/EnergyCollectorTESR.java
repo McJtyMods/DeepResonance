@@ -28,6 +28,8 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
     ResourceLocation laserbeams[] = new ResourceLocation[4];
     Random random = new Random();
 
+    public static int currentPass = 0;
+
     public EnergyCollectorTESR() {
         laserbeams[0] = new ResourceLocation(DeepResonance.MODID, "textures/effects/laserbeam1.png");
         laserbeams[1] = new ResourceLocation(DeepResonance.MODID, "textures/effects/laserbeam2.png");
@@ -39,76 +41,81 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float time) {
         GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
 
-        bindTexture(blockTexture);
-
-        GL11.glPushMatrix();
-
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-        GL11.glTranslatef((float) x + 0.5F, (float) y + 0.0F, (float) z + 0.5F);
-
-        model.renderAll();
-        GL11.glPopMatrix();
-
-        EnergyCollectorTileEntity energyCollectorTileEntity = (EnergyCollectorTileEntity) tileEntity;
-
-        if ((!energyCollectorTileEntity.getCrystals().isEmpty()) && (energyCollectorTileEntity.areLasersActive() || energyCollectorTileEntity.getLaserStartup() > 0)) {
-            GL11.glDepthMask(false);
-
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+        if (currentPass == 0) {
+            bindTexture(blockTexture);
 
             GL11.glPushMatrix();
-            GL11.glTranslatef((float) x + 0.5F, (float) y + 0.85F, (float) z + 0.5F);
-            this.bindTexture(halo);
-            RenderHelper.renderBillboardQuad(1.0f);
-            GL11.glPopMatrix();
 
-            Minecraft mc = Minecraft.getMinecraft();
-            EntityClientPlayerMP p = mc.thePlayer;
-            double doubleX = p.lastTickPosX + (p.posX - p.lastTickPosX) * time;
-            double doubleY = p.lastTickPosY + (p.posY - p.lastTickPosY) * time;
-            double doubleZ = p.lastTickPosZ + (p.posZ - p.lastTickPosZ) * time;
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-            Vector start = new Vector(tileEntity.xCoord + .5f, tileEntity.yCoord + .5f + .3f, tileEntity.zCoord + .5f);
-            Vector player = new Vector((float) doubleX, (float) doubleY, (float) doubleZ);
+            GL11.glTranslatef((float) x + 0.5F, (float) y + 0.0F, (float) z + 0.5F);
 
-            GL11.glPushMatrix();
-            GL11.glTranslated(-doubleX, -doubleY, -doubleZ);
-
-            Tessellator tessellator = Tessellator.instance;
-
-            // ----------------------------------------
-
-            this.bindTexture(laserbeams[random.nextInt(4)]);
-
-            tessellator.startDrawingQuads();
-            tessellator.setBrightness(240);
-
-            float startupFactor = (float) energyCollectorTileEntity.getLaserStartup() / (float) GeneratorConfiguration.startupTime;
-
-            for (Coordinate relative : energyCollectorTileEntity.getCrystals()) {
-                Coordinate destination = new Coordinate(relative.getX() + tileEntity.xCoord, relative.getY() + tileEntity.yCoord, relative.getZ() + tileEntity.zCoord);
-                Vector end = new Vector(destination.getX() + .5f, destination.getY() + .5f, destination.getZ() + .5f);
-
-                // @todo Increase jitter if crystals are not pure
-
-                if (startupFactor > .8f) {
-                    // Do nothing
-                } else if (startupFactor > .001f) {
-                    Vector middle = new Vector(jitter(startupFactor, start.x, end.x), jitter(startupFactor, start.y, end.y), jitter(startupFactor, start.z, end.z));
-                    RenderHelper.drawBeam(start, middle, player, .1f);
-                    RenderHelper.drawBeam(middle, end, player, .1f);
-                } else {
-                    RenderHelper.drawBeam(start, end, player, .1f);
-                }
-            }
-
-            tessellator.draw();
-
+            model.renderAll();
             GL11.glPopMatrix();
         }
+
+        if (currentPass == 1) {
+            EnergyCollectorTileEntity energyCollectorTileEntity = (EnergyCollectorTileEntity) tileEntity;
+
+            if ((!energyCollectorTileEntity.getCrystals().isEmpty()) && (energyCollectorTileEntity.areLasersActive() || energyCollectorTileEntity.getLaserStartup() > 0)) {
+                GL11.glDepthMask(false);
+
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+
+                GL11.glPushMatrix();
+                GL11.glTranslatef((float) x + 0.5F, (float) y + 0.85F, (float) z + 0.5F);
+                this.bindTexture(halo);
+                RenderHelper.renderBillboardQuad(1.0f);
+                GL11.glPopMatrix();
+
+                Minecraft mc = Minecraft.getMinecraft();
+                EntityClientPlayerMP p = mc.thePlayer;
+                double doubleX = p.lastTickPosX + (p.posX - p.lastTickPosX) * time;
+                double doubleY = p.lastTickPosY + (p.posY - p.lastTickPosY) * time;
+                double doubleZ = p.lastTickPosZ + (p.posZ - p.lastTickPosZ) * time;
+
+                Vector start = new Vector(tileEntity.xCoord + .5f, tileEntity.yCoord + .5f + .3f, tileEntity.zCoord + .5f);
+                Vector player = new Vector((float) doubleX, (float) doubleY, (float) doubleZ);
+
+                GL11.glPushMatrix();
+                GL11.glTranslated(-doubleX, -doubleY, -doubleZ);
+
+                Tessellator tessellator = Tessellator.instance;
+
+                // ----------------------------------------
+
+                this.bindTexture(laserbeams[random.nextInt(4)]);
+
+                tessellator.startDrawingQuads();
+                tessellator.setBrightness(240);
+
+                float startupFactor = (float) energyCollectorTileEntity.getLaserStartup() / (float) GeneratorConfiguration.startupTime;
+
+                for (Coordinate relative : energyCollectorTileEntity.getCrystals()) {
+                    Coordinate destination = new Coordinate(relative.getX() + tileEntity.xCoord, relative.getY() + tileEntity.yCoord, relative.getZ() + tileEntity.zCoord);
+                    Vector end = new Vector(destination.getX() + .5f, destination.getY() + .5f, destination.getZ() + .5f);
+
+                    // @todo Increase jitter if crystals are not pure
+
+                    if (startupFactor > .8f) {
+                        // Do nothing
+                    } else if (startupFactor > .001f) {
+                        Vector middle = new Vector(jitter(startupFactor, start.x, end.x), jitter(startupFactor, start.y, end.y), jitter(startupFactor, start.z, end.z));
+                        RenderHelper.drawBeam(start, middle, player, .1f);
+                        RenderHelper.drawBeam(middle, end, player, .1f);
+                    } else {
+                        RenderHelper.drawBeam(start, end, player, .1f);
+                    }
+                }
+
+                tessellator.draw();
+
+                GL11.glPopMatrix();
+            }
+        }
+
         GL11.glPopAttrib();
     }
 
