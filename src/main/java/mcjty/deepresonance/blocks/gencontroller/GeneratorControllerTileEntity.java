@@ -26,17 +26,13 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
         super();
     }
 
-    private void playStartup() {
-        controllerSounds.playStartup(worldObj, xCoord, yCoord, zCoord);
+    private ControllerSounds getControllerSounds() {
+        if (controllerSounds == null) {
+            controllerSounds = new ControllerSounds();
+        }
+        return controllerSounds;
     }
 
-    private void playLoop() {
-        controllerSounds.playLoop(worldObj, xCoord, yCoord, zCoord);
-    }
-
-    private void playShutdown() {
-        controllerSounds.playShutdown(worldObj, xCoord, yCoord, zCoord);
-    }
 
     @Override
     public void invalidate() {
@@ -47,21 +43,9 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
     }
 
     private void stopSounds() {
-        stopStartup();
-        stopLoop();
-        stopShutdown();
-    }
-
-    private void stopShutdown() {
-        controllerSounds.stopShutdown();
-    }
-
-    private void stopLoop() {
-        controllerSounds.stopLoop();
-    }
-
-    private void stopStartup() {
-        controllerSounds.stopStartup();
+        getControllerSounds().stopStartup();
+        getControllerSounds().stopLoop();
+        getControllerSounds().stopShutdown();
     }
 
 
@@ -76,23 +60,24 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
             // No sounds.
             return;
         }
+        ControllerSounds sounds = getControllerSounds();
         if (startup != 0) {
-            stopLoop();
-            stopShutdown();
-            if (!controllerSounds.isStartupPlaying()) {
-                playStartup();
+            sounds.stopLoop();
+            sounds.stopShutdown();
+            if (!sounds.isStartupPlaying()) {
+                sounds.playStartup(worldObj, xCoord, yCoord, zCoord);
             }
         } else if (shutdown != 0) {
-            stopLoop();
-            stopStartup();
-            if (!controllerSounds.isShutdownPlaying()) {
-                playShutdown();
+            sounds.stopLoop();
+            sounds.stopStartup();
+            if (!sounds.isShutdownPlaying()) {
+                sounds.playShutdown(worldObj, xCoord, yCoord, zCoord);
             }
         } else if (active) {
-            stopShutdown();
-            stopStartup();
-            if (!controllerSounds.isLoopPlaying()) {
-                playLoop();
+            sounds.stopShutdown();
+            sounds.stopStartup();
+            if (!sounds.isLoopPlaying()) {
+                sounds.playLoop(worldObj, xCoord, yCoord, zCoord);
             }
         } else {
             stopSounds();
