@@ -1,7 +1,5 @@
 package mcjty.deepresonance.blocks.gencontroller;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
@@ -11,8 +9,6 @@ import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.Coordinate;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -20,12 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class GeneratorControllerTileEntity extends GenericTileEntity {
-    @SideOnly(Side.CLIENT)
-    private GeneratorStartupSound generatorStartupSound;
-    @SideOnly(Side.CLIENT)
-    private GeneratorLoopSound generatorLoopSound;
-    @SideOnly(Side.CLIENT)
-    private GeneratorShutdownSound generatorShutdownSound;
+    private ControllerSounds controllerSounds;
 
     private int startup = 0;
     private int shutdown = 0;
@@ -35,25 +26,16 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
         super();
     }
 
-    @SideOnly(Side.CLIENT)
     private void playStartup() {
-        EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
-        generatorStartupSound = new GeneratorStartupSound(player, worldObj, xCoord, yCoord, zCoord);
-        Minecraft.getMinecraft().getSoundHandler().playSound(generatorStartupSound);
+        controllerSounds.playStartup(worldObj, xCoord, yCoord, zCoord);
     }
 
-    @SideOnly(Side.CLIENT)
     private void playLoop() {
-        EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
-        generatorLoopSound = new GeneratorLoopSound(player, worldObj, xCoord, yCoord, zCoord);
-        Minecraft.getMinecraft().getSoundHandler().playSound(generatorLoopSound);
+        controllerSounds.playLoop(worldObj, xCoord, yCoord, zCoord);
     }
 
-    @SideOnly(Side.CLIENT)
     private void playShutdown() {
-        EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
-        generatorShutdownSound = new GeneratorShutdownSound(player, worldObj, xCoord, yCoord, zCoord);
-        Minecraft.getMinecraft().getSoundHandler().playSound(generatorShutdownSound);
+        controllerSounds.playShutdown(worldObj, xCoord, yCoord, zCoord);
     }
 
     @Override
@@ -64,35 +46,22 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
         }
     }
 
-    @SideOnly(Side.CLIENT)
     private void stopSounds() {
         stopStartup();
         stopLoop();
         stopShutdown();
     }
 
-    @SideOnly(Side.CLIENT)
     private void stopShutdown() {
-        if (generatorShutdownSound != null) {
-            Minecraft.getMinecraft().getSoundHandler().stopSound(generatorShutdownSound);
-            generatorShutdownSound = null;
-        }
+        controllerSounds.stopShutdown();
     }
 
-    @SideOnly(Side.CLIENT)
     private void stopLoop() {
-        if (generatorLoopSound != null) {
-            Minecraft.getMinecraft().getSoundHandler().stopSound(generatorLoopSound);
-            generatorLoopSound = null;
-        }
+        controllerSounds.stopLoop();
     }
 
-    @SideOnly(Side.CLIENT)
     private void stopStartup() {
-        if (generatorStartupSound != null) {
-            Minecraft.getMinecraft().getSoundHandler().stopSound(generatorStartupSound);
-            generatorStartupSound = null;
-        }
+        controllerSounds.stopStartup();
     }
 
 
@@ -110,19 +79,19 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
         if (startup != 0) {
             stopLoop();
             stopShutdown();
-            if (generatorStartupSound == null) {
+            if (!controllerSounds.isStartupPlaying()) {
                 playStartup();
             }
         } else if (shutdown != 0) {
             stopLoop();
             stopStartup();
-            if (generatorShutdownSound == null) {
+            if (!controllerSounds.isShutdownPlaying()) {
                 playShutdown();
             }
         } else if (active) {
             stopShutdown();
             stopStartup();
-            if (generatorLoopSound == null) {
+            if (!controllerSounds.isLoopPlaying()) {
                 playLoop();
             }
         } else {
