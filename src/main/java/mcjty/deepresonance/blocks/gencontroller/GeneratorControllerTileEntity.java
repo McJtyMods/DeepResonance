@@ -20,8 +20,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class GeneratorControllerTileEntity extends GenericTileEntity {
+    @SideOnly(Side.CLIENT)
     private GeneratorStartupSound generatorStartupSound;
+    @SideOnly(Side.CLIENT)
     private GeneratorLoopSound generatorLoopSound;
+    @SideOnly(Side.CLIENT)
     private GeneratorShutdownSound generatorShutdownSound;
 
     private int startup = 0;
@@ -68,6 +71,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
         stopShutdown();
     }
 
+    @SideOnly(Side.CLIENT)
     private void stopShutdown() {
         if (generatorShutdownSound != null) {
             Minecraft.getMinecraft().getSoundHandler().stopSound(generatorShutdownSound);
@@ -75,6 +79,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
         }
     }
 
+    @SideOnly(Side.CLIENT)
     private void stopLoop() {
         if (generatorLoopSound != null) {
             Minecraft.getMinecraft().getSoundHandler().stopSound(generatorLoopSound);
@@ -82,6 +87,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
         }
     }
 
+    @SideOnly(Side.CLIENT)
     private void stopStartup() {
         if (generatorStartupSound != null) {
             Minecraft.getMinecraft().getSoundHandler().stopSound(generatorStartupSound);
