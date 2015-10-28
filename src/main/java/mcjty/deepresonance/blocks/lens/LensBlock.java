@@ -47,7 +47,7 @@ public class LensBlock extends GenericBlock {
 
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLivingBase, ItemStack itemStack) {
-        super.onBlockPlacedBy(world, x, y, z, entityLivingBase, itemStack);
+//        super.onBlockPlacedBy(world, x, y, z, entityLivingBase, itemStack);
     }
 
     @Override

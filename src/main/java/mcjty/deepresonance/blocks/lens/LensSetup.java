@@ -15,7 +15,7 @@ public class LensSetup {
 
     public static void setupBlocks() {
         lensBlock = new LensBlock();
-        GameRegistry.registerBlock(lensBlock, GenericItemBlock.class, "lensBlock");
+        GameRegistry.registerBlock(lensBlock, LensItemBlock.class, "lensBlock");
         GameRegistry.registerTileEntity(LensTileEntity.class, "LensTileEntity");
     }
 
