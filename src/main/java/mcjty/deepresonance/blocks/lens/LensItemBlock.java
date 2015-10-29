@@ -17,13 +17,14 @@ public class LensItemBlock extends GenericItemBlock {
 
     @Override
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata) {
-        ForgeDirection direction = BlockTools.getOrientationHoriz(metadata);
+        ForgeDirection direction = ForgeDirection.values()[side];
         if (direction == ForgeDirection.UP || direction == ForgeDirection.DOWN) {
             if (world.isRemote) {
                 Logging.warn(player, "You can only place this vertical!");
             }
             return false;
         }
+        direction = direction.getOpposite();
         Block block = world.getBlock(x + direction.offsetX, y + direction.offsetY, z + direction.offsetZ);
         if (block != TankSetup.tank) {
             if (world.isRemote) {
@@ -32,6 +33,7 @@ public class LensItemBlock extends GenericItemBlock {
             return false;
         }
 
+        metadata = BlockTools.setOrientationHoriz(metadata, direction);
         return super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
     }
 }

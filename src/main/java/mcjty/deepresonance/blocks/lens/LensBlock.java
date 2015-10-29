@@ -9,6 +9,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -46,8 +47,18 @@ public class LensBlock extends GenericBlock {
     }
 
     @Override
+    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
+        return null;
+    }
+
+    @Override
+    protected boolean wrenchUse(World world, int x, int y, int z, EntityPlayer player) {
+        // Do not rotate
+        return true;
+    }
+
+    @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLivingBase, ItemStack itemStack) {
-//        super.onBlockPlacedBy(world, x, y, z, entityLivingBase, itemStack);
     }
 
     @Override

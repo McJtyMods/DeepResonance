@@ -24,6 +24,7 @@ tile.smelterBlock.name=Smelter
 tile.purifierBlock.name=Purifier
 tile.pedestalBlock.name=Pedestal
 tile.valveBlock.name=Valve
+tile.lensBlock.name=Lens
 
 itemGroup.DeepResonance=Deep Resonance
 

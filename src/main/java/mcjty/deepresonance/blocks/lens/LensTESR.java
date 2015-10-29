@@ -30,21 +30,21 @@ public class LensTESR extends TileEntitySpecialRenderer {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         GL11.glTranslatef((float) x + 0.5F, (float) y + 0.0F, (float) z + 0.5F);
-        ForgeDirection direction = BlockTools.getOrientationHoriz(tileEntity.blockMetadata);
+        ForgeDirection direction = BlockTools.getOrientationHoriz(tileEntity.getBlockMetadata());
         switch (direction) {
             case DOWN:
             case UP:
                 break;
             case NORTH:
-                GL11.glRotatef(90, 0, 1, 0);
                 break;
             case SOUTH:
-                GL11.glRotatef(270, 0, 1, 0);
+                GL11.glRotatef(180, 0, 1, 0);
                 break;
             case WEST:
+                GL11.glRotatef(90, 0, 1, 0);
                 break;
             case EAST:
-                GL11.glRotatef(180, 0, 1, 0);
+                GL11.glRotatef(270, 0, 1, 0);
                 break;
             case UNKNOWN:
                 break;
