@@ -50,7 +50,6 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         }
     }
 
-    @SideOnly(Side.CLIENT)
     private Fluid clientRenderFluid;
     @SideOnly(Side.CLIENT)
     private int totalFluidAmount;
@@ -277,7 +276,6 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         }
     }
 
-    @SideOnly(Side.CLIENT)
     public Fluid getClientRenderFluid() {
         return clientRenderFluid;
     }
