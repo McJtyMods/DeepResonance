@@ -312,9 +312,13 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     protected Map<ITankHook, ForgeDirection> getConnectedHooks(){
         Map<ITankHook, ForgeDirection> ret = Maps.newHashMap();
         for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS){
-            TileEntity tile = WorldHelper.getTileAt(worldObj, myLocation().atSide(direction));
-            if (tile instanceof ITankHook)
-                ret.put((ITankHook) tile, direction.getOpposite());
+            try {
+                TileEntity tile = WorldHelper.getTileAt(worldObj, myLocation().atSide(direction));
+                if (tile instanceof ITankHook)
+                    ret.put((ITankHook) tile, direction.getOpposite());
+            } catch (Exception e){
+                e.printStackTrace();
+            }
         }
         return ret;
     }
