@@ -12,6 +12,8 @@ import mcjty.deepresonance.blocks.crystalizer.CrystalizerTileEntity;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalItemRenderer;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTESR;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
+import mcjty.deepresonance.blocks.laser.LaserRenderer;
+import mcjty.deepresonance.blocks.laser.LaserTileEntity;
 import mcjty.deepresonance.blocks.lens.LensItemRenderer;
 import mcjty.deepresonance.blocks.lens.LensSetup;
 import mcjty.deepresonance.blocks.lens.LensTESR;
@@ -31,6 +33,8 @@ public final class ModRenderers {
         ClientRegistry.bindTileEntitySpecialRenderer(TileTank.class, new TankTESR());
 
         ClientRegistry.bindTileEntitySpecialRenderer(CrystalizerTileEntity.class, new CrystalizerTESR());
+
+        ClientRegistry.bindTileEntitySpecialRenderer(LaserTileEntity.class, new LaserRenderer());
 
         ClientRegistry.bindTileEntitySpecialRenderer(EnergyCollectorTileEntity.class, new EnergyCollectorTESR());
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(EnergyCollectorSetup.energyCollectorBlock), new EnergyCollectorItemRenderer());

@@ -25,6 +25,7 @@ tile.purifierBlock.name=Purifier
 tile.pedestalBlock.name=Pedestal
 tile.valveBlock.name=Valve
 tile.lensBlock.name=Lens (WIP)
+tile.laserBlock.name=Infusing Laser (WIP)
 
 itemGroup.DeepResonance=Deep Resonance
 
