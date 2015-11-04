@@ -1,0 +1,32 @@
+item.DeepResonanceManual.name=Deep Resonance 手册
+item.RadiationMonitor.name=辐射显示器
+item.ResonatingPlate.name=共振盘
+item.FilterMaterial.name=过滤材料
+item.SpentFilterMaterial.name=已用的过滤材料
+item.SpentFilterMaterial.name=已用的过滤材料
+item.radiationSuit0.name=防辐射头盔 (WIP)
+item.radiationSuit1.name=防辐射胸甲 (WIP)
+item.radiationSuit2.name=防辐射护腿 (WIP)
+item.radiationSuit3.name=防辐射靴子 (WIP)
+
+tile.oreResonating.name=共振矿石
+tile.denseObsidian.name=稠密黑曜石
+tile.denseGlass.name=稠密玻璃
+tile.poisonedDirt.name=毒泥土
+tile.resonatingCrystalBlock.name=共振水晶
+tile.generatorBlock.name=发电机
+tile.generatorControllerBlock.name=发电机控制器
+tile.energyCollectorBlock.name=能源收集器
+tile.machineFrame.name=机器框架
+tile.tankBlock.name=储罐
+tile.crystalizerBlock.name=结晶器
+tile.smelterBlock.name=冶炼炉
+tile.purifierBlock.name=净化器
+tile.pedestalBlock.name=磉
+tile.valveBlock.name=阀门
+tile.lensBlock.name=Lens (WIP)
+tile.laserBlock.name=Infusing Laser (WIP)
+
+itemGroup.DeepResonance=Deep Resonance
+
+message.shiftMessage=按 Shift
