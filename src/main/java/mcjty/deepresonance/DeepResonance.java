@@ -9,6 +9,7 @@ import elec332.core.config.ConfigWrapper;
 import elec332.core.network.NetworkHandler;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
+import mcjty.deepresonance.blocks.laser.LaserBonusConfiguration;
 import mcjty.deepresonance.commands.CommandDRGen;
 import mcjty.deepresonance.compat.CompatHandler;
 import mcjty.deepresonance.compat.handlers.ComputerCraftCompatHandler;
@@ -89,7 +90,11 @@ public class DeepResonance implements ModBase {
         configWrapper.refresh();
         configGenerator = new ConfigWrapper(new Configuration(new File(modConfigDir, "generator.cfg")));
         configGenerator.registerConfigWithInnerClasses(new ConfigGenerator());
-        configGenerator.setCategoryData(WorldGenConfiguration.CATEGORY_WORLDGEN, "Configuration for worldGen").setCategoryData(GeneratorConfiguration.CATEGORY_GENERATOR, "Configuration for the generator multiblock").setCategoryData(ConfigGenerator.Crystal.category, "Configuration for the crystals").setCategoryData(RadiationConfiguration.CATEGORY_RADIATION, "Configuration for the radiation");
+        configGenerator.setCategoryData(WorldGenConfiguration.CATEGORY_WORLDGEN, "Configuration for worldGen")
+                .setCategoryData(GeneratorConfiguration.CATEGORY_GENERATOR, "Configuration for the generator multiblock")
+                .setCategoryData(ConfigGenerator.Crystal.category, "Configuration for the crystals")
+                .setCategoryData(RadiationConfiguration.CATEGORY_RADIATION, "Configuration for the radiation")
+                .setCategoryData(LaserBonusConfiguration.CATEGORY_LASERBONUS, "Configuration for the laser bonuses");
         configGenerator.refresh();
         proxy.preInit(e);
         MainCompatHandler.registerWaila();
