@@ -4,16 +4,19 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.client.ClientHandler;
+import mcjty.deepresonance.gui.GuiProxy;
 import mcjty.lib.container.GenericBlock;
+import mcjty.lib.varia.BlockTools;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Keyboard;
 
@@ -31,7 +34,20 @@ public class LaserBlock extends GenericBlock {
 
     @Override
     public int getGuiID() {
-        return -1;
+        return GuiProxy.GUI_LASER;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public GuiContainer createClientGui(EntityPlayer entityPlayer, TileEntity tileEntity) {
+        LaserTileEntity laserTileEntity = (LaserTileEntity) tileEntity;
+        LaserContainer laserContainer = new LaserContainer(entityPlayer, laserTileEntity);
+        return new GuiLaser(laserTileEntity, laserContainer);
+    }
+
+    @Override
+    public Container createServerContainer(EntityPlayer entityPlayer, TileEntity tileEntity) {
+        return new LaserContainer(entityPlayer, (LaserTileEntity) tileEntity);
     }
 
     @Override
@@ -47,12 +63,6 @@ public class LaserBlock extends GenericBlock {
         } else {
             list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
         }
-    }
-
-    @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float sidex, float sidey, float sidez) {
-        world.setBlockMetadataWithNotify(x, y, z, ((y & 1) == 0 ) ? 1 : 2, 3);
-        return super.onBlockActivated(world, x, y, z, player, side, sidex, sidey, sidez);
     }
 
     @Override
@@ -78,21 +88,27 @@ public class LaserBlock extends GenericBlock {
 
     @Override
     public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side) {
-        return getIcon(side, blockAccess.getBlockMetadata(x, y, z));
+        LaserTileEntity laserTileEntity = (LaserTileEntity) blockAccess.getTileEntity(x, y, z);
+        return getIconInternal(side, blockAccess.getBlockMetadata(x, y, z), laserTileEntity.getColor());
     }
 
     @Override
     public IIcon getIcon(int side, int meta) {
-        if (iconInd != null && side == ForgeDirection.SOUTH.ordinal()) {
+        return getIconInternal(side, meta, 0);
+    }
+
+    private IIcon getIconInternal(int side, int meta, int color) {
+        ForgeDirection k = getOrientation(meta);
+        if (iconInd != null && side == k.ordinal()) {
             return iconInd;
-        } else if (iconTop != null && side == ForgeDirection.UP.ordinal()) {
+        } else if (iconTop != null && side == BlockTools.getTopDirection(k).ordinal()) {
             return iconTop;
-        } else if (iconBottom != null && side == ForgeDirection.DOWN.ordinal()) {
+        } else if (iconBottom != null && side ==  BlockTools.getBottomDirection(k).ordinal()) {
             return iconBottom;
         } else {
-            if (meta == 0) {
+            if (color == 0) {
                 return iconSide;
-            } else if (meta == 1) {
+            } else if (color == 1) {
                 return icons[0];
             } else {
                 return icons[1];
