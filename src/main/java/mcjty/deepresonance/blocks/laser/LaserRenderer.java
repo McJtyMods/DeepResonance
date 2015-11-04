@@ -16,6 +16,8 @@ public class LaserRenderer extends TileEntitySpecialRenderer {
 
     private static final ResourceLocation bluelaser = new ResourceLocation(DeepResonance.MODID, "textures/effects/blueLaserbeam.png");
     private static final ResourceLocation redlaser = new ResourceLocation(DeepResonance.MODID, "textures/effects/redLaserbeam.png");
+    private static final ResourceLocation greenlaser = new ResourceLocation(DeepResonance.MODID, "textures/effects/greenLaserbeam.png");
+    private static final ResourceLocation yellowlaser = new ResourceLocation(DeepResonance.MODID, "textures/effects/yellowLaserbeam.png");
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float f) {
@@ -39,7 +41,12 @@ public class LaserRenderer extends TileEntitySpecialRenderer {
             tessellator.setColorRGBA(255, 255, 255, 128);
             tessellator.setBrightness(240);
             GL11.glPushMatrix();
-            this.bindTexture(color == 1 ? redlaser : bluelaser);
+            switch (color) {
+                case LaserTileEntity.COLOR_BLUE: this.bindTexture(bluelaser); break;
+                case LaserTileEntity.COLOR_RED: this.bindTexture(redlaser); break;
+                case LaserTileEntity.COLOR_GREEN: this.bindTexture(greenlaser); break;
+                case LaserTileEntity.COLOR_YELLOW: this.bindTexture(yellowlaser); break;
+            }
 
             Minecraft mc = Minecraft.getMinecraft();
             EntityClientPlayerMP p = mc.thePlayer;

@@ -7,6 +7,7 @@ import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.gui.GuiProxy;
 import mcjty.lib.container.GenericBlock;
 import mcjty.lib.varia.BlockTools;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -17,13 +18,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
 public class LaserBlock extends GenericBlock {
-    private IIcon icons[] = new IIcon[2];
+    private IIcon icons[] = new IIcon[4];
 
     public LaserBlock() {
         super(DeepResonance.instance, Material.iron, LaserTileEntity.class, false);
@@ -81,9 +83,25 @@ public class LaserBlock extends GenericBlock {
         iconSide = iconRegister.registerIcon(this.modBase.getModId() + ":" + getSideIconName());
         icons[0] = iconRegister.registerIcon(DeepResonance.MODID + ":laserBlueBlock");
         icons[1] = iconRegister.registerIcon(DeepResonance.MODID + ":laserRedBlock");
+        icons[2] = iconRegister.registerIcon(DeepResonance.MODID + ":laserGreenBlock");
+        icons[3] = iconRegister.registerIcon(DeepResonance.MODID + ":laserYellowBlock");
 
         iconTop = iconRegister.registerIcon(DeepResonance.MODID + ":" + getTopIconName());
         iconBottom = iconRegister.registerIcon(DeepResonance.MODID + ":" + getBottomIconName());
+    }
+
+    @Override
+    protected void rotateBlock(World world, int x, int y, int z) {
+        super.rotateBlock(world, x, y, z);
+        if (world.isRemote) {
+            // Make sure rendering is up to date.
+            world.markBlockForUpdate(x, y, z);
+        }
+    }
+
+    @Override
+    public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
+        checkRedstone(world, x, y, z);
     }
 
     @Override
@@ -106,12 +124,18 @@ public class LaserBlock extends GenericBlock {
         } else if (iconBottom != null && side ==  BlockTools.getBottomDirection(k).ordinal()) {
             return iconBottom;
         } else {
-            if (color == 0) {
+            if (!BlockTools.getRedstoneSignalIn(meta)) {
                 return iconSide;
-            } else if (color == 1) {
+            } else if (color == LaserTileEntity.COLOR_BLUE) {
                 return icons[0];
-            } else {
+            } else if (color == LaserTileEntity.COLOR_RED) {
                 return icons[1];
+            } else if (color == LaserTileEntity.COLOR_GREEN) {
+                return icons[2];
+            } else if (color == LaserTileEntity.COLOR_YELLOW) {
+                return icons[3];
+            } else {
+                return iconSide;
             }
         }
     }

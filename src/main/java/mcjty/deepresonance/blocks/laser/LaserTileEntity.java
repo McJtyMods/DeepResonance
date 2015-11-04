@@ -2,55 +2,147 @@ package mcjty.deepresonance.blocks.laser;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.lens.LensSetup;
+import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
+import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
+import mcjty.lib.network.Argument;
+import mcjty.lib.network.PacketRequestIntegerFromServer;
 import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.Coordinate;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidStack;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements ISidedInventory {
 
-    private int counter = 10;
-    private int color = 0;      // 0 means not active, > 0 means a color laser
+    public static final String CMD_GETLIQUID = "getLiquid";
+    public static final String CLIENTCMD_GETLIQUID = "getLiquid";
 
-    private InventoryHelper inventoryHelper = new InventoryHelper(this, LaserContainer.factory, 1);
+    public static final int COLOR_BLUE = 1;
+    public static final int COLOR_RED = 2;
+    public static final int COLOR_GREEN = 3;
+    public static final int COLOR_YELLOW = 4;
+
+    // Transient
+    private int tickCounter = 10;
+
+    private int progressCounter = 0;
+    private int color = 0;          // 0 means not active, > 0 means a color laser
+    private int crystalLiquid = 0;  // This is not RCL but just liquidified spent crystal
+
+    @SideOnly(Side.CLIENT)
+    private static int crystalLiquidClient = 0;
+
+    // Infusing bonus for items. Index is the registry name of the item.
+    private static Map<String, InfusingBonus> infusingBonusMap = null;
+
+    private InventoryHelper inventoryHelper = new InventoryHelper(this, LaserContainer.factory, 2);
 
     public LaserTileEntity() {
         super(ConfigMachines.Laser.rfMaximum, ConfigMachines.Laser.rfPerTick);
     }
 
+
     @Override
     protected void checkStateServer() {
-        counter--;
-        if (counter > 0) {
+        tickCounter--;
+        if (tickCounter > 0) {
             return;
         }
-        counter = 10;
+        tickCounter = 10;
+
+        checkCrystal();
 
         int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-        if (findLens(meta)) {
-            changeColor(1);
+
+        if (!BlockTools.getRedstoneSignalIn(meta)) {
+            changeColor(0, meta);
+            return;
+        }
+
+        ItemStack stack = inventoryHelper.getStackInSlot(LaserContainer.SLOT_CATALYST);
+        InfusingBonus bonus = getInfusingBonus(stack);
+        if (bonus == null) {
+            changeColor(0, meta);
+            return;
+        }
+
+        if (getEnergyStored(ForgeDirection.UNKNOWN) < ConfigMachines.Laser.rfUsePerCatalyst) {
+            changeColor(0, meta);
+            return;
+        }
+
+        if (crystalLiquid < ConfigMachines.Laser.crystalLiquidPerCatalyst) {
+            changeColor(0, meta);
+            return;
+        }
+
+        Coordinate tankCoordinate = findLens(meta);
+        if (tankCoordinate != null) {
+            changeColor(bonus.getColor(), meta);
         } else {
-            changeColor(0);
+            changeColor(0, meta);
+            return;
+        }
+
+        progressCounter--;
+        markDirty();
+        if (progressCounter > 0) {
+            return;
+        }
+        progressCounter = ConfigMachines.Laser.ticks10PerCatalyst;
+
+        infuseLiquid(tankCoordinate, bonus);
+    }
+
+    private void infuseLiquid(Coordinate tankCoordinate, InfusingBonus bonus) {
+        // We consume stuff even if the tank does not have enough liquid. Player has to be careful
+        decrStackSize(LaserContainer.SLOT_CATALYST, 1);
+        consumeEnergy(ConfigMachines.Laser.rfUsePerCatalyst);
+        crystalLiquid -= ConfigMachines.Laser.crystalLiquidPerCatalyst;
+
+        TileEntity te = worldObj.getTileEntity(tankCoordinate.getX(), tankCoordinate.getY(), tankCoordinate.getZ());
+        if (te instanceof TileTank) {
+            TileTank tileTank = (TileTank) te;
+            FluidStack stack = tileTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Laser.rclPerCatalyst, false);
+            if (stack != null) {
+                stack = tileTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Laser.rclPerCatalyst, true);
+                LiquidCrystalFluidTagData fluidData = LiquidCrystalFluidTagData.fromStack(stack);
+                float purity = bonus.getPurityModifier().modify(fluidData.getPurity(), fluidData.getQuality());
+                float strength = bonus.getStrengthModifier().modify(fluidData.getStrength(), fluidData.getQuality());
+                float efficiency = bonus.getEfficiencyModifier().modify(fluidData.getEfficiency(), fluidData.getQuality());
+                fluidData.setPurity(purity);
+                fluidData.setStrength(strength);
+                fluidData.setEfficiency(efficiency);
+                FluidStack newStack = fluidData.makeLiquidCrystalStack();
+                tileTank.fill(ForgeDirection.UNKNOWN, newStack, true);
+            }
         }
     }
 
-    private void changeColor(int newcolor) {
+    private void changeColor(int newcolor, int meta) {
         if (newcolor != color) {
             color = newcolor;
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, meta, 3);
             markDirty();
         }
     }
@@ -59,34 +151,148 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         return color;
     }
 
-    private boolean findLens(int meta) {
+    private void checkCrystal() {
+        ItemStack stack = inventoryHelper.getStackInSlot(LaserContainer.SLOT_CRYSTAL);
+        if (stack != null) {
+            int newAmount = crystalLiquid + ConfigMachines.Laser.crystalLiquidPerCrystal;
+            if (newAmount > ConfigMachines.Laser.crystalLiquidMaximum) {
+                // Not enough room
+                return;
+            }
+            inventoryHelper.decrStackSize(LaserContainer.SLOT_CRYSTAL, 1);
+            crystalLiquid = newAmount;
+            markDirty();
+        }
+    }
+
+    private static InfusingBonus getInfusingBonus(ItemStack item) {
+        if (infusingBonusMap == null) {
+            infusingBonusMap = new HashMap<String, InfusingBonus>();
+            infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.diamond), new InfusingBonus(
+                    COLOR_BLUE,
+                    new InfusingBonus.Modifier(20.0f, 100.0f),
+                    InfusingBonus.Modifier.NONE,
+                    InfusingBonus.Modifier.NONE));
+            infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.emerald), new InfusingBonus(
+                    COLOR_GREEN,
+                    new InfusingBonus.Modifier(30.0f, 100.0f),
+                    InfusingBonus.Modifier.NONE,
+                    InfusingBonus.Modifier.NONE));
+            infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.redstone), new InfusingBonus(
+                    COLOR_RED,
+                    new InfusingBonus.Modifier(-1.0f, 0.0f),
+                    new InfusingBonus.Modifier(10.0f, 100.0f),
+                    InfusingBonus.Modifier.NONE));
+            infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.gunpowder), new InfusingBonus(
+                    COLOR_RED,
+                    new InfusingBonus.Modifier(-10.0f, 0.0f),
+                    new InfusingBonus.Modifier(30.0f, 100.0f),
+                    new InfusingBonus.Modifier(5.0f, 100.0f)));
+            infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.glowstone_dust), new InfusingBonus(
+                    COLOR_YELLOW,
+                    new InfusingBonus.Modifier(-2.0f, 0.0f),
+                    new InfusingBonus.Modifier(10.0f, 100.0f),
+                    new InfusingBonus.Modifier(3.0f, 100.0f)));
+            infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.quartz), new InfusingBonus(
+                    COLOR_BLUE,
+                    new InfusingBonus.Modifier(1.0f, 0.0f),
+                    InfusingBonus.Modifier.NONE,
+                    new InfusingBonus.Modifier(10.0f, 100.0f)));
+            infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.nether_star), new InfusingBonus(
+                    COLOR_RED,
+                    new InfusingBonus.Modifier(-80.0f, 0.0f),
+                    new InfusingBonus.Modifier(80.0f, 100.0f),
+                    new InfusingBonus.Modifier(80.0f, 100.0f)));
+            infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.ghast_tear), new InfusingBonus(
+                    COLOR_YELLOW,
+                    new InfusingBonus.Modifier(-8.0f, 0.0f),
+                    new InfusingBonus.Modifier(40.0f, 100.0f),
+                    new InfusingBonus.Modifier(40.0f, 100.0f)));
+            infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.slime_ball), new InfusingBonus(
+                    COLOR_GREEN,
+                    InfusingBonus.Modifier.NONE,
+                    InfusingBonus.Modifier.NONE,
+                    new InfusingBonus.Modifier(-10.0f, 0.0f)));
+            infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.coal), new InfusingBonus(
+                    COLOR_RED,
+                    new InfusingBonus.Modifier(-1.0f, 0.0f),
+                    new InfusingBonus.Modifier(-10.0f, 0.0f),
+                    InfusingBonus.Modifier.NONE));
+        }
+        if (item == null) {
+            return null;
+        }
+        String name = Item.itemRegistry.getNameForObject(item.getItem());
+        return infusingBonusMap.get(name);
+    }
+
+    private Coordinate findLens(int meta) {
         ForgeDirection direction = BlockTools.getOrientationHoriz(meta);
         Coordinate shouldBeAir = getCoordinate().addDirection(direction);
         if (!worldObj.isAirBlock(shouldBeAir.getX(), shouldBeAir.getY(), shouldBeAir.getZ())) {
-            return false;
+            return null;
         }
         Coordinate shouldBeLens = shouldBeAir.addDirection(direction);
         Block lensBlock = worldObj.getBlock(shouldBeLens.getX(), shouldBeLens.getY(),shouldBeLens.getZ());
         if (lensBlock != LensSetup.lensBlock) {
-            return false;
+            return null;
         }
         ForgeDirection lensDirection = BlockTools.getOrientationHoriz(worldObj.getBlockMetadata(shouldBeLens.getX(), shouldBeLens.getY(), shouldBeLens.getZ()));
         if (lensDirection != direction) {
-            return false;
+            return null;
         }
 
-        return true;
+        return shouldBeLens.addDirection(direction);
     }
+
+    public void requestCrystalLiquidFromServer() {
+        DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketRequestIntegerFromServer(xCoord, yCoord, zCoord,
+                CMD_GETLIQUID,
+                CLIENTCMD_GETLIQUID));
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static int getCrystalLiquidClient() {
+        return crystalLiquidClient;
+    }
+
+    @Override
+    public Integer executeWithResultInteger(String command, Map<String, Argument> args) {
+        Integer rc = super.executeWithResultInteger(command, args);
+        if (rc != null) {
+            return rc;
+        }
+        if (CMD_GETLIQUID.equals(command)) {
+            return crystalLiquid;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean execute(String command, Integer result) {
+        boolean rc = super.execute(command, result);
+        if (rc) {
+            return true;
+        }
+        if (CLIENTCMD_GETLIQUID.equals(command)) {
+            crystalLiquidClient = result;
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
         color = tagCompound.getInteger("color");
+        progressCounter = tagCompound.getInteger("progress");
     }
 
     @Override
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
         readBufferFromNBT(tagCompound);
+        crystalLiquid = tagCompound.getInteger("liquid");
     }
 
     private void readBufferFromNBT(NBTTagCompound tagCompound) {
@@ -101,11 +307,13 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     public void writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("color", color);
+        tagCompound.setInteger("progress", progressCounter);
     }
 
     @Override
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
         writeBufferToNBT(tagCompound);
+        tagCompound.setInteger("liquid", crystalLiquid);
     }
 
     private void writeBufferToNBT(NBTTagCompound tagCompound) {
