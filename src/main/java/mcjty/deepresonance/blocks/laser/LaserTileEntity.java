@@ -7,6 +7,7 @@ import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.lens.LensSetup;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
+import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
@@ -26,6 +27,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.HashMap;
@@ -113,6 +115,12 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         infuseLiquid(tankCoordinate, bonus);
     }
 
+    private boolean validRCLTank(TileTank tank){
+        Fluid fluid = DRFluidRegistry.getFluidFromStack(tank.getFluid());
+        return fluid == null || fluid == DRFluidRegistry.liquidCrystal;
+    }
+
+
     private void infuseLiquid(Coordinate tankCoordinate, InfusingBonus bonus) {
         // We consume stuff even if the tank does not have enough liquid. Player has to be careful
         decrStackSize(LaserContainer.SLOT_CATALYST, 1);
@@ -122,18 +130,20 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         TileEntity te = worldObj.getTileEntity(tankCoordinate.getX(), tankCoordinate.getY(), tankCoordinate.getZ());
         if (te instanceof TileTank) {
             TileTank tileTank = (TileTank) te;
-            FluidStack stack = tileTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Laser.rclPerCatalyst, false);
-            if (stack != null) {
-                stack = tileTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Laser.rclPerCatalyst, true);
-                LiquidCrystalFluidTagData fluidData = LiquidCrystalFluidTagData.fromStack(stack);
-                float purity = bonus.getPurityModifier().modify(fluidData.getPurity(), fluidData.getQuality());
-                float strength = bonus.getStrengthModifier().modify(fluidData.getStrength(), fluidData.getQuality());
-                float efficiency = bonus.getEfficiencyModifier().modify(fluidData.getEfficiency(), fluidData.getQuality());
-                fluidData.setPurity(purity);
-                fluidData.setStrength(strength);
-                fluidData.setEfficiency(efficiency);
-                FluidStack newStack = fluidData.makeLiquidCrystalStack();
-                tileTank.fill(ForgeDirection.UNKNOWN, newStack, true);
+            if (validRCLTank(tileTank)) {
+                FluidStack stack = tileTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Laser.rclPerCatalyst, false);
+                if (stack != null) {
+                    stack = tileTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Laser.rclPerCatalyst, true);
+                    LiquidCrystalFluidTagData fluidData = LiquidCrystalFluidTagData.fromStack(stack);
+                    float purity = bonus.getPurityModifier().modify(fluidData.getPurity(), fluidData.getQuality());
+                    float strength = bonus.getStrengthModifier().modify(fluidData.getStrength(), fluidData.getQuality());
+                    float efficiency = bonus.getEfficiencyModifier().modify(fluidData.getEfficiency(), fluidData.getQuality());
+                    fluidData.setPurity(purity);
+                    fluidData.setStrength(strength);
+                    fluidData.setEfficiency(efficiency);
+                    FluidStack newStack = fluidData.makeLiquidCrystalStack();
+                    tileTank.fill(ForgeDirection.UNKNOWN, newStack, true);
+                }
             }
         }
     }
