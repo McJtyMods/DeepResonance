@@ -25,6 +25,7 @@ public final class ModItems {
     public static FilterMaterialItem filterMaterialItem;
     public static SpentFilterMaterialItem spentFilterMaterialItem;
     public static ItemRadiationSuit helmet, chestplate, leggings, boots;
+    public static InsertLiquidItem insertLiquidItem;
 
     public static void init() {
         deepResonanceManualItem = new DeepResonanceManualItem();
@@ -55,6 +56,12 @@ public final class ModItems {
         spentFilterMaterialItem.setCreativeTab(DeepResonance.tabDeepResonance);
         spentFilterMaterialItem.setTextureName(DeepResonance.MODID + ":spentFilterMaterial");
         GameRegistry.registerItem(spentFilterMaterialItem, "spentFilterMaterialItem");
+
+        insertLiquidItem = new InsertLiquidItem();
+        insertLiquidItem.setUnlocalizedName("LiquidInjector");
+        insertLiquidItem.setCreativeTab(DeepResonance.tabDeepResonance);
+        insertLiquidItem.setTextureName(DeepResonance.MODID + ":liquidInjector");
+        GameRegistry.registerItem(insertLiquidItem, "liquidInjector");
 
         helmet = newRadiationSuitPart(0, "Helmet");
         chestplate = newRadiationSuitPart(1, "Chest");
