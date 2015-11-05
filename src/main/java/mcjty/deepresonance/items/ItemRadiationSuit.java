@@ -3,8 +3,11 @@ package mcjty.deepresonance.items;
 import mcjty.deepresonance.DeepResonance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 /**
  * Created by Elec332 on 29-9-2015.
@@ -21,7 +24,12 @@ public class ItemRadiationSuit extends ItemArmor {
         setCreativeTab(DeepResonance.tabDeepResonance);
     }
 
-    private String name;
+    @Override
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
+        super.addInformation(itemStack, player, list, whatIsThis);
+        list.add("Every chest piece of the radiation suit");
+        list.add("adds a bit of protection for radiation");
+    }
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {

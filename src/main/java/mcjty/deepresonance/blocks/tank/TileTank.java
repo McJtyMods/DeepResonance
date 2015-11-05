@@ -3,7 +3,6 @@ package mcjty.deepresonance.blocks.tank;
 import com.google.common.collect.Maps;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import elec332.core.compat.handlers.WailaCompatHandler;
 import elec332.core.multiblock.dynamic.IDynamicMultiBlockTile;
 import elec332.core.util.NBTHelper;
 import elec332.core.world.WorldHelper;
@@ -11,31 +10,24 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
 import mcjty.deepresonance.blocks.base.ElecTileBase;
-import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.deepresonance.grid.fluid.event.FluidTileEvent;
 import mcjty.deepresonance.grid.tank.DRTankMultiBlock;
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
-import java.util.List;
 import java.util.Map;
 
 /**
  * Created by Elec332 on 9-8-2015.
  */
-public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IDeepResonanceFluidProvider, WailaCompatHandler.IWailaInfoTile {
+public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IDeepResonanceFluidProvider {
 
     public static final int SETTING_NONE = 0;
     public static final int SETTING_ACCEPT = 1;
@@ -93,6 +85,25 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     public FluidStack myTank;
     public Fluid lastSeenFluid;
 
+    public Map<ForgeDirection, Integer> getSettings() {
+        return settings;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public int getTotalFluidAmount() {
+        return totalFluidAmount;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public int getTankCapacity() {
+        return tankCapacity;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public LiquidCrystalFluidTagData getFluidData() {
+        return fluidData;
+    }
+
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
@@ -103,30 +114,6 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
                 settings.put(ForgeDirection.valueOf(tag.getString("dir")), tag.getInteger("n"));
             }
         }
-    }
-
-    @Override
-    public NBTTagCompound getWailaTag(EntityPlayerMP entityPlayerMP, TileEntity tileEntity, NBTTagCompound nbtTagCompound, World world, int i, int i1, int i2) {
-        return null;
-    }
-
-    @Override
-    public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        int i = settings.get(accessor.getSide());
-        currentTip.add("Mode: "+(i == SETTING_NONE ? "none" : (i == SETTING_ACCEPT ? "accept" : "provide")));
-        currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(clientRenderFluid));
-        currentTip.add("Amount: "+totalFluidAmount + " (" + tankCapacity + ")");
-        if (fluidData != null) {
-            currentTip.add(EnumChatFormatting.YELLOW + "Quality: " + (int)(fluidData.getQuality() * 100) + "%");
-            currentTip.add(EnumChatFormatting.YELLOW + "Purity: " + (int)(fluidData.getPurity() * 100) + "%");
-            currentTip.add(EnumChatFormatting.YELLOW + "Power: " + (int)(fluidData.getStrength() * 100) + "%");
-            currentTip.add(EnumChatFormatting.YELLOW + "Efficiency: " + (int)(fluidData.getEfficiency() * 100) + "%");
-        }
-        if (System.currentTimeMillis() - lastTime > 100){
-            lastTime = System.currentTimeMillis();
-            sendPacketToServer(1, new NBTTagCompound());
-        }
-        return currentTip;
     }
 
     @Override

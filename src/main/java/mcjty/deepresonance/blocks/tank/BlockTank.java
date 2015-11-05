@@ -5,6 +5,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.blocks.base.ElecGenericBlockBase;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
+import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -59,6 +62,31 @@ public class BlockTank extends ElecGenericBlockBase {
         } else {
             list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
         }
+    }
+
+    private long lastTime;
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        TileTank tankTile = (TileTank) accessor.getTileEntity();
+        Map<ForgeDirection, Integer> settings = tankTile.getSettings();
+        int i = settings.get(accessor.getSide());
+        currentTip.add("Mode: "+(i == TileTank.SETTING_NONE ? "none" : (i == TileTank.SETTING_ACCEPT ? "accept" : "provide")));
+        currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(tankTile.getClientRenderFluid()));
+        currentTip.add("Amount: "+tankTile.getTotalFluidAmount() + " (" + tankTile.getTankCapacity() + ")");
+        LiquidCrystalFluidTagData fluidData = tankTile.getFluidData();
+        if (fluidData != null) {
+            currentTip.add(EnumChatFormatting.YELLOW + "Quality: " + (int)(fluidData.getQuality() * 100) + "%");
+            currentTip.add(EnumChatFormatting.YELLOW + "Purity: " + (int)(fluidData.getPurity() * 100) + "%");
+            currentTip.add(EnumChatFormatting.YELLOW + "Power: " + (int)(fluidData.getStrength() * 100) + "%");
+            currentTip.add(EnumChatFormatting.YELLOW + "Efficiency: " + (int)(fluidData.getEfficiency() * 100) + "%");
+        }
+        if (System.currentTimeMillis() - lastTime > 100){
+            lastTime = System.currentTimeMillis();
+            tankTile.sendPacketToServer(1, new NBTTagCompound());
+        }
+        return currentTip;
     }
 
     @Override

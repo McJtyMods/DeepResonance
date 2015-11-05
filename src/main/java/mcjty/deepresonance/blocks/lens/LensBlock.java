@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.lib.container.GenericBlock;
+import mcjty.lib.varia.BlockTools;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,6 +14,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
@@ -49,6 +51,30 @@ public class LensBlock extends GenericBlock {
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
         return null;
+    }
+
+    @Override
+    public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
+        int meta = world.getBlockMetadata(x, y, z);
+        ForgeDirection direction = BlockTools.getOrientationHoriz(meta);
+        switch (direction) {
+            case DOWN:
+            case UP:
+            case UNKNOWN:
+                break;
+            case NORTH:
+                this.setBlockBounds(0.1F, 0.1F, 0.0F, 0.9F, 0.9F, 0.1F);
+                break;
+            case SOUTH:
+                this.setBlockBounds(0.1F, 0.1F, 0.9F, 0.9F, 0.9F, 1.0F);
+                break;
+            case WEST:
+                this.setBlockBounds(0.0F, 0.1F, 0.1F, 0.1F, 0.9F, 0.9F);
+                break;
+            case EAST:
+                this.setBlockBounds(0.9F, 0.1F, 0.1F, 1.0F, 0.9F, 0.9F);
+                break;
+        }
     }
 
     @Override

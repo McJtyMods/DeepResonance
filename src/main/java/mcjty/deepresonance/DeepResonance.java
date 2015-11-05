@@ -9,6 +9,7 @@ import elec332.core.config.ConfigWrapper;
 import elec332.core.network.NetworkHandler;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
+import mcjty.deepresonance.blocks.laser.LaserBonusConfiguration;
 import mcjty.deepresonance.commands.CommandDRGen;
 import mcjty.deepresonance.compat.CompatHandler;
 import mcjty.deepresonance.compat.handlers.ComputerCraftCompatHandler;
@@ -42,7 +43,7 @@ import java.io.File;
         version = DeepResonance.VERSION)
 public class DeepResonance implements ModBase {
     public static final String MODID = "deepresonance";
-    public static final String VERSION = "1.0.1";
+    public static final String VERSION = "1.1.0beta1";
     public static final String MIN_FORGE_VER = "10.13.2.1291";
     public static final String MIN_MCJTYLIB_VER = "1.7.0";
     public static final String MIN_ELECCORE_VER = "1.4.170";
@@ -89,7 +90,11 @@ public class DeepResonance implements ModBase {
         configWrapper.refresh();
         configGenerator = new ConfigWrapper(new Configuration(new File(modConfigDir, "generator.cfg")));
         configGenerator.registerConfigWithInnerClasses(new ConfigGenerator());
-        configGenerator.setCategoryData(WorldGenConfiguration.CATEGORY_WORLDGEN, "Configuration for worldGen").setCategoryData(GeneratorConfiguration.CATEGORY_GENERATOR, "Configuration for the generator multiblock").setCategoryData(ConfigGenerator.Crystal.category, "Configuration for the crystals").setCategoryData(RadiationConfiguration.CATEGORY_RADIATION, "Configuration for the radiation");
+        configGenerator.setCategoryData(WorldGenConfiguration.CATEGORY_WORLDGEN, "Configuration for worldGen")
+                .setCategoryData(GeneratorConfiguration.CATEGORY_GENERATOR, "Configuration for the generator multiblock")
+                .setCategoryData(ConfigGenerator.Crystal.category, "Configuration for the crystals")
+                .setCategoryData(RadiationConfiguration.CATEGORY_RADIATION, "Configuration for the radiation")
+                .setCategoryData(LaserBonusConfiguration.CATEGORY_LASERBONUS, "Configuration for the laser bonuses");
         configGenerator.refresh();
         proxy.preInit(e);
         MainCompatHandler.registerWaila();

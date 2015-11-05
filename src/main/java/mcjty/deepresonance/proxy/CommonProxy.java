@@ -11,6 +11,7 @@ import mcjty.deepresonance.FMLEventHandlers;
 import mcjty.deepresonance.ForgeEventHandlers;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
+import mcjty.deepresonance.blocks.laser.LaserBonusConfiguration;
 import mcjty.deepresonance.crafting.ModCrafting;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.gui.GuiProxy;
@@ -50,10 +51,11 @@ public abstract class CommonProxy {
             cfg.addCustomCategoryComment(WorldGenConfiguration.CATEGORY_WORLDGEN, "Configuration for wodlgen");
             cfg.addCustomCategoryComment(GeneratorConfiguration.CATEGORY_GENERATOR, "Configuration for the generator multiblock");
             cfg.addCustomCategoryComment(RadiationConfiguration.CATEGORY_RADIATION, "Configuration for the radiation");
+            cfg.addCustomCategoryComment(LaserBonusConfiguration.CATEGORY_LASERBONUS, "Configuration for the laser bonuses");
             WorldGenConfiguration.init(cfg);
             GeneratorConfiguration.init(cfg);
-
             RadiationConfiguration.init(cfg);
+            LaserBonusConfiguration.init(cfg);
         } catch (Exception e1) {
             FMLLog.log(Level.ERROR, e1, "Problem loading config file!");
         } finally {

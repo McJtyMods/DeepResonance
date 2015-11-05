@@ -90,10 +90,25 @@ public class ConfigMachines {
         @Configurable(category = category, minValue = 0, maxValue = 50000, comment = "How much RF/t this machine can input from a generator/capacitor")
         public static int rfPerTick = 2000;
 
-        @Configurable(category = category, minValue = 0, maxValue = 50000, comment = "How much RF/t this machine consumes during beaming the laser")
-        public static int rfUsePerTick = 10;
+        @Configurable(category = category, minValue = 0, maxValue = 50000, comment = "How much RF this machine consumes for infusing one catalyst item")
+        public static int rfUsePerCatalyst = 4000;
+
+        @Configurable(category = category, minValue = 0, maxValue = 10000, comment = "How many multiples of 10 ticks are needed to infuse one catalyst item")
+        public static int ticks10PerCatalyst = 4;
 
         @Configurable(category = category, minValue = 0, maxValue = 1000000000, comment = "Maximum RF that can be stored in this machine")
         public static int rfMaximum = 100000;
+
+        @Configurable(category = category, minValue = 1, maxValue = 100000000, comment = "The maximum amount of liquified crystal this machine can hold (this is not RCL!)")
+        public static int crystalLiquidMaximum = 10000;
+
+        @Configurable(category = category, minValue = 1, maxValue = 10000000, comment = "The amount of liquified crystal one crystal will yield (this is not RCL!)")
+        public static int crystalLiquidPerCrystal = 2000;
+
+        @Configurable(category = category, minValue = 1, maxValue = 10000000, comment = "The amount of RCL we improve with one catalyst item")
+        public static int rclPerCatalyst = 500;
+
+        @Configurable(category = category, minValue = 1, maxValue = 10000000, comment = "The amount of crystal liquid we consume per catalyst item")
+        public static int crystalLiquidPerCatalyst = 50;
     }
 }

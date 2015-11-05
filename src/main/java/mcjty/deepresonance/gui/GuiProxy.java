@@ -20,6 +20,7 @@ public class GuiProxy implements IGuiHandler {
     public static final int GUI_PURIFIER = modGuiIndex++;
     public static final int GUI_PEDESTAL = modGuiIndex++;
     public static final int GUI_VALVE = modGuiIndex++;
+    public static final int GUI_LASER = modGuiIndex++;
     public static final int ELEC_GUI_STUFF = modGuiIndex++;
 
     @Override
