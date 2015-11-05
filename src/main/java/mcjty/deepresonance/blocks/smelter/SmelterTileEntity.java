@@ -52,7 +52,6 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     private float finalQuality = 1.0f;  // Calculated quality based on the amount of lava in the lava tank
     private float finalPurity = 0.1f;   // Calculated quality based on the amount of lava in the lava tank
 
-    @SideOnly(Side.CLIENT)
     private static int progressPercentage = 0;
 
     @Override
