@@ -218,18 +218,20 @@ be able to purify it as high as 85%.
 With the laser and the lens you can improve the quality of the liquid
 in a tank even more then what the purifier can do.
 {-------------------------------------------------------------}
-The lens has to be placed on the tank and then you place the laser
-one block away facing that lens. So you have the laser, one empty space,
-the lens and finally the tank.
+The lens has to be placed on the tank and the laser facing the lens.
+So you have the laser, one empty space, the lens and finally the tank.
 
-The laser needs power and spent crystals (non-spent crystals work too
-but that's a bit of a waste). Finally you also need some kind of
-catalyst item (emerald, diamond, redstone, glowstone, ...). Then give
-the laser a redstone signal and it will start improving the liquid.
+The laser needs power, spent (or unspent) crystals. Finally you also
+need some kind of catalyst item (emerald, diamond, redstone, glowstone,
+...). Then give the laser a redstone signal and it will start improving
+the liquid.
 
 Be careful though! The laser does not test if the tank actually has
 enough liquid in it (500mB) and if the liquid is actually valid liquid
 that can be infused. So be careful not to waste precious materials here.
+
+Warning! Make sure you don't infuse purity below 0% as that
+will destroy a lot of the liquid
 {-------------------------------------------------------------}
 Note that the laser does infuse 500mB per catalist item. The default
 catalyst bonuses are:
