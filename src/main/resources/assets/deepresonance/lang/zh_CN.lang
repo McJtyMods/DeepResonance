@@ -4,6 +4,7 @@ item.ResonatingPlate.name=共振盘
 item.FilterMaterial.name=过滤材料
 item.SpentFilterMaterial.name=已用的过滤材料
 item.SpentFilterMaterial.name=已用的过滤材料
+item.LiquidInjector.name=液体注射器
 item.radiationSuit0.name=防辐射头盔 (WIP)
 item.radiationSuit1.name=防辐射胸甲 (WIP)
 item.radiationSuit2.name=防辐射护腿 (WIP)
@@ -24,8 +25,8 @@ tile.smelterBlock.name=冶炼炉
 tile.purifierBlock.name=净化器
 tile.pedestalBlock.name=磉
 tile.valveBlock.name=阀门
-tile.lensBlock.name=Lens (WIP)
-tile.laserBlock.name=Infusing Laser (WIP)
+tile.lensBlock.name=镜片 (WIP)
+tile.laserBlock.name=注入激光 (WIP)
 
 itemGroup.DeepResonance=Deep Resonance
 
