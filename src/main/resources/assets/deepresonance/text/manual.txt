@@ -20,6 +20,7 @@ Table of contents:
 {l:tank}Tank
 {l:smelter}Smelter
 {l:purifier}Purifier
+{l:laser}Lens and Laser
 {l:valve}Valve
 {l:crystalizer}Crystalizer
 {l:pedestal}Pedestal
@@ -209,6 +210,39 @@ in an nearby inventory (or in the world if there is no such inventory).
 
 Note that if the quality of the liquid is not very good you may not
 be able to purify it as high as 85%.
+{-------------------------------------------------------------}
+{b}Lens and Laser
+{n:laser}
+{rb:laserBlock}
+{rb:lensBlock}
+With the laser and the lens you can improve the quality of the liquid
+in a tank even more then what the purifier can do.
+{-------------------------------------------------------------}
+The lens has to be placed on the tank and then you place the laser
+one block away facing that lens. So you have the laser, one empty space,
+the lens and finally the tank.
+
+The laser needs power and spent crystals (non-spent crystals work too
+but that's a bit of a waste). Finally you also need some kind of
+catalyst item (emerald, diamond, redstone, glowstone, ...). Then give
+the laser a redstone signal and it will start improving the liquid.
+
+Be careful though! The laser does not test if the tank actually has
+enough liquid in it (500mB) and if the liquid is actually valid liquid
+that can be infused. So be careful not to waste precious materials here.
+{-------------------------------------------------------------}
+Note that the laser does infuse 500mB per catalist item. The default
+catalyst bonuses are:
+- Diamond: add 5% purity to a maximum of 100%
+- Emerald: add 8% purity
+- Redstone: remove 1% purity and add 5% strength
+- Gunpowder: remove 8% purity, add 8% strength and 4% efficiency
+- Glowstone: remove 2% purity, add 6% strength and 3% efficiency
+- Quartz: add 1% purity and 7% efficiency
+- Nether Star: remove 50% purity, add 80% strength and 80% efficiency
+- Ghast Tear: remove 20% purity, add 30% strength and 16% efficiency
+- Slime Ball: remove 10% efficiency
+- Coal: remove 1% purity and remove 10% strength
 {-------------------------------------------------------------}
 {b}Valve
 {n:valve}
