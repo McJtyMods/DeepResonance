@@ -50,7 +50,6 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     private int color = 0;          // 0 means not active, > 0 means a color laser
     private int crystalLiquid = 0;  // This is not RCL but just liquidified spent crystal
 
-    @SideOnly(Side.CLIENT)
     private static int crystalLiquidClient = 0;
 
     // Infusing bonus for items. Index is the registry name of the item.
