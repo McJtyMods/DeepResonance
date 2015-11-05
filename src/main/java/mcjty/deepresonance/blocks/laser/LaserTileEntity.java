@@ -348,7 +348,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         // @todo needs a better box
-        return AxisAlignedBB.getBoundingBox(xCoord - 7, yCoord - 1, zCoord - 7, xCoord + 8, yCoord + 2, zCoord + 8);
+        return AxisAlignedBB.getBoundingBox(xCoord - 3, yCoord - 1, zCoord - 3, xCoord + 4, yCoord + 2, zCoord + 4);
     }
 
     @Override
