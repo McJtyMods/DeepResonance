@@ -1,7 +1,9 @@
 package mcjty.deepresonance.blocks.laser;
 
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import crazypants.enderio.api.redstone.IRedstoneConnectable;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.gui.GuiProxy;
@@ -24,7 +26,9 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-public class LaserBlock extends GenericBlock {
+@Optional.InterfaceList({
+        @Optional.Interface(iface = "crazypants.enderio.api.redstone.IRedstoneConnectable", modid = "EnderIO")})
+public class LaserBlock extends GenericBlock implements IRedstoneConnectable {
     private IIcon icons[] = new IIcon[4];
 
     public LaserBlock() {
@@ -97,6 +101,11 @@ public class LaserBlock extends GenericBlock {
             // Make sure rendering is up to date.
             world.markBlockForUpdate(x, y, z);
         }
+    }
+
+    @Override
+    public boolean shouldRedstoneConduitConnect(World world, int x, int y, int z, ForgeDirection from) {
+        return true;
     }
 
     @Override
