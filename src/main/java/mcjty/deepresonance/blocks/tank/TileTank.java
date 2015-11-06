@@ -108,17 +108,27 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     @Override
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
         super.readRestorableFromNBT(tagCompound);
-        NBTTagCompound mbTag = multiBlockSaveData = tagCompound.getCompoundTag("multiBlockData");
-        if (tagCompound.hasKey("fluid")) { /* legacy compat */
-            this.myTank = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("fluid"));
-        } else if (mbTag.hasKey("fluid")){
-            this.myTank = FluidStack.loadFluidStackFromNBT(mbTag.getCompoundTag("fluid"));
-        }
+        this.myTank = getFluidStackFromNBT(tagCompound);
+
+        multiBlockSaveData = tagCompound.getCompoundTag("multiBlockData");
         if (tagCompound.hasKey("lastSeenFluid")) { /* legacy compat */
             this.lastSeenFluid = FluidRegistry.getFluid(tagCompound.getString("lastSeenFluid"));
-        } else if (mbTag.hasKey("lastSeenFluid")){
-            this.lastSeenFluid = FluidRegistry.getFluid(mbTag.getString("lastSeenFluid"));
+        } else if (multiBlockSaveData.hasKey("lastSeenFluid")){
+            this.lastSeenFluid = FluidRegistry.getFluid(multiBlockSaveData.getString("lastSeenFluid"));
         }
+    }
+
+    public static FluidStack getFluidStackFromNBT(NBTTagCompound tagCompound) {
+        NBTTagCompound mbTag = tagCompound.getCompoundTag("multiBlockData");
+        FluidStack s;
+        if (tagCompound.hasKey("fluid")) { /* legacy compat */
+            s = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("fluid"));
+        } else if (mbTag.hasKey("fluid")){
+            s = FluidStack.loadFluidStackFromNBT(mbTag.getCompoundTag("fluid"));
+        } else {
+            s = null;
+        }
+        return s;
     }
 
     @Override

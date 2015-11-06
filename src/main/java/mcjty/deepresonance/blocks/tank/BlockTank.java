@@ -52,10 +52,12 @@ public class BlockTank extends ElecGenericBlockBase {
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
         super.addInformation(itemStack, player, list, whatIsThis);
         NBTTagCompound tagCompound = itemStack.getTagCompound();
-        if (tagCompound != null && tagCompound.hasKey("fluid")) {
-            FluidStack fluidStack = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("fluid"));
-            list.add(EnumChatFormatting.GREEN + "Fluid: "+ DRFluidRegistry.getFluidName(fluidStack));
-            list.add(EnumChatFormatting.GREEN + "Amount: "+ DRFluidRegistry.getAmount(fluidStack) + " mb");
+        if (tagCompound != null) {
+            FluidStack fluidStack = TileTank.getFluidStackFromNBT(tagCompound);
+            if (fluidStack != null) {
+                list.add(EnumChatFormatting.GREEN + "Fluid: " + DRFluidRegistry.getFluidName(fluidStack));
+                list.add(EnumChatFormatting.GREEN + "Amount: " + DRFluidRegistry.getAmount(fluidStack) + " mb");
+            }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
             list.add("This tank can hold up to 16 buckets of liquid.");
@@ -70,7 +72,6 @@ public class BlockTank extends ElecGenericBlockBase {
 
     // For Waila:
     private long lastTime;
-
     public int totalFluidAmount = 0;
     public int tankCapacity = 0;
     public LiquidCrystalFluidTagData fluidData = null;
