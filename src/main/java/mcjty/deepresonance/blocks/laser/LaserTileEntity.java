@@ -168,7 +168,8 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     private void checkCrystal() {
         ItemStack stack = inventoryHelper.getStackInSlot(LaserContainer.SLOT_CRYSTAL);
         if (stack != null) {
-            float strength = stack.getTagCompound().getFloat("strength") / 100.0f;
+            NBTTagCompound tagCompound = stack.getTagCompound();
+            float strength = tagCompound == null ? 0 : tagCompound.getFloat("strength") / 100.0f;
             int addAmount = (int) (ConfigMachines.Laser.minCrystalLiquidPerCrystal + strength * (ConfigMachines.Laser.maxCrystalLiquidPerCrystal - ConfigMachines.Laser.minCrystalLiquidPerCrystal));
             int newAmount = crystalLiquid + addAmount;
             if (newAmount > ConfigMachines.Laser.crystalLiquidMaximum) {
