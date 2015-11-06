@@ -182,7 +182,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         }
     }
 
-    private static InfusingBonus getInfusingBonus(ItemStack item) {
+    public static InfusingBonus getInfusingBonus(ItemStack item) {
         if (item == null) {
             return null;
         }

@@ -17,8 +17,8 @@ public class LaserContainer extends GenericContainer {
     public static final ContainerFactory factory = new ContainerFactory() {
         @Override
         protected void setup() {
-            addSlotBox(new SlotDefinition(SlotType.SLOT_SPECIFICITEM, new ItemStack(ModBlocks.resonatingCrystalBlock)), CONTAINER_INVENTORY, SLOT_CRYSTAL, 64, 24, 1, 18, 1, 18);
-            addSlotBox(new SlotDefinition(SlotType.SLOT_INPUT), CONTAINER_INVENTORY, SLOT_CATALYST, 64 + 20, 24, 1, 18, 1, 18);
+            addSlotBox(new SlotDefinition(SlotType.SLOT_SPECIFICITEM, new ItemStack(ModBlocks.resonatingCrystalBlock)), CONTAINER_INVENTORY, SLOT_CRYSTAL, 154, 48, 1, 18, 1, 18);
+            addSlotBox(new SlotDefinition(SlotType.SLOT_INPUT), CONTAINER_INVENTORY, SLOT_CATALYST, 20, 7, 1, 18, 1, 18);
             layoutPlayerInventorySlots(10, 70);
         }
     };
