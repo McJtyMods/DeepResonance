@@ -237,12 +237,14 @@ Note that the laser does infuse 500mB per catalist item. The default
 catalyst bonuses are:
 - Diamond: add 5% purity to a maximum of 100%
 - Emerald: add 8% purity
+- Enderpearl: add 2% purity
 - Redstone: remove 1% purity and add 5% strength
 - Gunpowder: remove 8% purity, add 8% strength and 4% efficiency
 - Glowstone: remove 2% purity, add 6% strength and 3% efficiency
+- Blaze powder: remove 4% purity, add 6% strength and 8% efficiency
 - Quartz: add 1% purity and 7% efficiency
-- Nether Star: remove 50% purity, add 80% strength and 80% efficiency
-- Ghast Tear: remove 20% purity, add 30% strength and 16% efficiency
+- Nether Star: remove 60% purity, add 90% strength and 90% efficiency
+- Ghast Tear: remove 20% purity, add 25% strength and 16% efficiency
 - Slime Ball: remove 10% efficiency
 - Coal: remove 1% purity and remove 10% strength
 {-------------------------------------------------------------}

@@ -197,6 +197,11 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
                 new InfusingBonus.Modifier(8.0f, 100.0f),
                 InfusingBonus.Modifier.NONE,
                 InfusingBonus.Modifier.NONE));
+        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.ender_pearl), new InfusingBonus(
+                COLOR_GREEN,
+                new InfusingBonus.Modifier(2.0f, 100.0f),
+                InfusingBonus.Modifier.NONE,
+                InfusingBonus.Modifier.NONE));
         infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.redstone), new InfusingBonus(
                 COLOR_RED,
                 new InfusingBonus.Modifier(-1.0f, 0.0f),
@@ -212,6 +217,11 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
                 new InfusingBonus.Modifier(-2.0f, 0.0f),
                 new InfusingBonus.Modifier(6.0f, 100.0f),
                 new InfusingBonus.Modifier(3.0f, 100.0f)));
+        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.blaze_powder), new InfusingBonus(
+                COLOR_YELLOW,
+                new InfusingBonus.Modifier(-4.0f, 0.0f),
+                new InfusingBonus.Modifier(6.0f, 100.0f),
+                new InfusingBonus.Modifier(8.0f, 100.0f)));
         infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.quartz), new InfusingBonus(
                 COLOR_BLUE,
                 new InfusingBonus.Modifier(1.0f, 0.0f),
@@ -219,13 +229,13 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
                 new InfusingBonus.Modifier(7.0f, 100.0f)));
         infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.nether_star), new InfusingBonus(
                 COLOR_RED,
-                new InfusingBonus.Modifier(-50.0f, 0.0f),
-                new InfusingBonus.Modifier(80.0f, 100.0f),
-                new InfusingBonus.Modifier(80.0f, 100.0f)));
+                new InfusingBonus.Modifier(-60.0f, 0.0f),
+                new InfusingBonus.Modifier(90.0f, 100.0f),
+                new InfusingBonus.Modifier(90.0f, 100.0f)));
         infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.ghast_tear), new InfusingBonus(
                 COLOR_YELLOW,
                 new InfusingBonus.Modifier(-20.0f, 0.0f),
-                new InfusingBonus.Modifier(30.0f, 100.0f),
+                new InfusingBonus.Modifier(25.0f, 100.0f),
                 new InfusingBonus.Modifier(15.0f, 100.0f)));
         infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.slime_ball), new InfusingBonus(
                 COLOR_GREEN,
