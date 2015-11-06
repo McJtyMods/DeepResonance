@@ -4,6 +4,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.blocks.crystals.ResonatingCrystalBlock;
+import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.blocks.lens.LensSetup;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
@@ -166,7 +168,9 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     private void checkCrystal() {
         ItemStack stack = inventoryHelper.getStackInSlot(LaserContainer.SLOT_CRYSTAL);
         if (stack != null) {
-            int newAmount = crystalLiquid + ConfigMachines.Laser.crystalLiquidPerCrystal;
+            float strength = stack.getTagCompound().getFloat("strength") / 100.0f;
+            int addAmount = (int) (ConfigMachines.Laser.minCrystalLiquidPerCrystal + strength * (ConfigMachines.Laser.maxCrystalLiquidPerCrystal - ConfigMachines.Laser.minCrystalLiquidPerCrystal));
+            int newAmount = crystalLiquid + addAmount;
             if (newAmount > ConfigMachines.Laser.crystalLiquidMaximum) {
                 // Not enough room
                 return;

@@ -100,10 +100,13 @@ public class ConfigMachines {
         public static int rfMaximum = 100000;
 
         @Configurable(category = category, minValue = 1, maxValue = 100000000, comment = "The maximum amount of liquified crystal this machine can hold (this is not RCL!)")
-        public static int crystalLiquidMaximum = 10000;
+        public static int crystalLiquidMaximum = 20000;
 
-        @Configurable(category = category, minValue = 1, maxValue = 10000000, comment = "The amount of liquified crystal one crystal will yield (this is not RCL!)")
-        public static int crystalLiquidPerCrystal = 2000;
+        @Configurable(category = category, minValue = 1, maxValue = 10000000, comment = "The minimum amount of liquified crystal one crystal will yield (this is not RCL!). This value is for a 0% strength crystal")
+        public static int minCrystalLiquidPerCrystal = 2000;
+
+        @Configurable(category = category, minValue = 1, maxValue = 10000000, comment = "The maximum amount of liquified crystal one crystal will yield (this is not RCL!). This value is for a 100% strength crystal")
+        public static int maxCrystalLiquidPerCrystal = 10000;
 
         @Configurable(category = category, minValue = 1, maxValue = 10000000, comment = "The amount of RCL we improve with one catalyst item")
         public static int rclPerCatalyst = 500;
