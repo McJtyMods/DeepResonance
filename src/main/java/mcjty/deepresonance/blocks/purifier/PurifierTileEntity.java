@@ -44,8 +44,8 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
                 if (fluidData != null) {
                     // Done. First check if we can actually insert the liquid. If not we postpone this.
                     progress = 1;
-                    if (bottomTank != null) {
-                        if (fillBottomTank()) {
+                    if (getOutputTank() != null) {
+                        if (fillOutputTank()) {
                             doPurify();
                             progress = 0;   // Really done
                         }
@@ -56,7 +56,7 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
         } else {
             if (canWork() && validSlot()) {
                 progress = ConfigMachines.Purifier.ticksPerPurify;
-                fluidData = LiquidCrystalFluidTagData.fromStack(topTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Purifier.rclPerPurify, true));
+                fluidData = LiquidCrystalFluidTagData.fromStack(getInputTank().drain(ForgeDirection.UNKNOWN, ConfigMachines.Purifier.rclPerPurify, true));
                 inventoryHelper.decrStackSize(PurifierContainer.SLOT_FILTERINPUT, 1);
                 markDirty();
             }
@@ -75,29 +75,43 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
         }
         fluidData.setPurity(purity);
         FluidStack stack = fluidData.makeLiquidCrystalStack();
-        bottomTank.fill(ForgeDirection.UNKNOWN, stack, true);
+        getOutputTank().fill(ForgeDirection.UNKNOWN, stack, true);
         fluidData = null;
 
         ItemStack spentMaterial = new ItemStack(ModItems.spentFilterMaterialItem, 1);
         inventoryLocator.ejectStack(worldObj, xCoord, yCoord, zCoord, spentMaterial, getCoordinate(), directions);
     }
 
-    private boolean fillBottomTank() {
-        return bottomTank.fill(ForgeDirection.UNKNOWN, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Purifier.rclPerPurify), false) == ConfigMachines.Purifier.rclPerPurify;
+    private boolean fillOutputTank() {
+        return getOutputTank().fill(ForgeDirection.UNKNOWN, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Purifier.rclPerPurify), false) == ConfigMachines.Purifier.rclPerPurify;
+    }
+
+    private TileTank getInputTank() {
+        if (topTank == null) {
+            return bottomTank;
+        }
+        return topTank;
+    }
+
+    private TileTank getOutputTank() {
+        if (bottomTank == null) {
+            return topTank;
+        }
+        return bottomTank;
     }
 
     private boolean canWork() {
-        if (bottomTank == null || topTank == null) {
+        if (bottomTank == null && topTank == null) {
             return false;
         }
-        if (topTank.getFluidAmount() < ConfigMachines.Purifier.rclPerPurify) {
+        if (getInputTank().getFluidAmount() < ConfigMachines.Purifier.rclPerPurify) {
             return false;
         }
-        if (topTank.getMultiBlock().equals(bottomTank.getMultiBlock())) {
+        if (getInputTank().getMultiBlock().equals(getOutputTank().getMultiBlock())) {
             // Same tank so operation is possible.
             return true;
         }
-        if (!fillBottomTank()) {
+        if (!fillOutputTank()) {
             return false;
         }
         return true;
