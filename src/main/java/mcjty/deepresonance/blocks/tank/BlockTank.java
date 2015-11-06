@@ -2,10 +2,14 @@ package mcjty.deepresonance.blocks.tank;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.base.ElecGenericBlockBase;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.deepresonance.network.DRMessages;
+import mcjty.deepresonance.network.PacketGetCrystalInfo;
+import mcjty.deepresonance.network.PacketGetTankInfo;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
@@ -20,6 +24,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.input.Keyboard;
 
@@ -64,7 +69,13 @@ public class BlockTank extends ElecGenericBlockBase {
         }
     }
 
+    // For Waila:
     private long lastTime;
+
+    public int totalFluidAmount = 0;
+    public int tankCapacity = 0;
+    public LiquidCrystalFluidTagData fluidData = null;
+    public Fluid clientRenderFluid = null;
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -73,18 +84,17 @@ public class BlockTank extends ElecGenericBlockBase {
         Map<ForgeDirection, Integer> settings = tankTile.getSettings();
         int i = settings.get(accessor.getSide());
         currentTip.add("Mode: "+(i == TileTank.SETTING_NONE ? "none" : (i == TileTank.SETTING_ACCEPT ? "accept" : "provide")));
-        currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(tankTile.getClientRenderFluid()));
-        currentTip.add("Amount: "+tankTile.getTotalFluidAmount() + " (" + tankTile.getTankCapacity() + ")");
-        LiquidCrystalFluidTagData fluidData = tankTile.getFluidData();
+        currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(clientRenderFluid));
+        currentTip.add("Amount: "+totalFluidAmount + " (" + tankCapacity + ")");
         if (fluidData != null) {
             currentTip.add(EnumChatFormatting.YELLOW + "Quality: " + (int)(fluidData.getQuality() * 100) + "%");
             currentTip.add(EnumChatFormatting.YELLOW + "Purity: " + (int)(fluidData.getPurity() * 100) + "%");
             currentTip.add(EnumChatFormatting.YELLOW + "Power: " + (int)(fluidData.getStrength() * 100) + "%");
             currentTip.add(EnumChatFormatting.YELLOW + "Efficiency: " + (int)(fluidData.getEfficiency() * 100) + "%");
         }
-        if (System.currentTimeMillis() - lastTime > 100){
+        if (System.currentTimeMillis() - lastTime > 100) {
             lastTime = System.currentTimeMillis();
-            tankTile.sendPacketToServer(1, new NBTTagCompound());
+            DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetTankInfo(tankTile.xCoord, tankTile.yCoord, tankTile.zCoord));
         }
         return currentTip;
     }
