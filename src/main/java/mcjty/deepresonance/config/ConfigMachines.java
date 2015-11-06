@@ -114,4 +114,15 @@ public class ConfigMachines {
         @Configurable(category = category, minValue = 1, maxValue = 10000000, comment = "The amount of crystal liquid we consume per catalyst item")
         public static int crystalLiquidPerCatalyst = 50;
     }
+
+    public static class Power {
+        public static final String category = "Power";
+
+        @Configurable(category = category, minValue = 1, maxValue = 2000000000, comment = "The maximum kilo-RF (per 1000, so 1000 = 1milion RF) that a crystal with 100% power can hold")
+        public static int maximumKiloRF = 1000000;
+
+        @Configurable(category = category, minValue = 0, maxValue = 20000, comment = "The maximum RF/tick that a crystal with 100% efficiency can give")
+        public static int maximumRFPerTick = 20000;
+
+    }
 }
