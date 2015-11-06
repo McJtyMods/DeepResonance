@@ -25,8 +25,8 @@ tile.smelterBlock.name=冶炼炉
 tile.purifierBlock.name=净化器
 tile.pedestalBlock.name=磉
 tile.valveBlock.name=阀门
-tile.lensBlock.name=镜片 (WIP)
-tile.laserBlock.name=注入激光 (WIP)
+tile.lensBlock.name=镜片
+tile.laserBlock.name=注入激光
 
 itemGroup.DeepResonance=Deep Resonance
 

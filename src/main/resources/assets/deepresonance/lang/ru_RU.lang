@@ -23,8 +23,8 @@ tile.smelterBlock.name=Плавильня
 tile.purifierBlock.name=Очиститель
 tile.pedestalBlock.name=Пьедестал
 tile.valveBlock.name=Вентиль
-tile.lensBlock.name=Lens (WIP)
-tile.laserBlock.name=Laser (WIP)
+tile.lensBlock.name=Lens
+tile.laserBlock.name=Laser
 
 itemGroup.DeepResonance=Deep Resonance
 
