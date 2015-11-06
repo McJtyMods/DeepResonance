@@ -233,20 +233,12 @@ that can be infused. So be careful not to waste precious materials here.
 Warning! Make sure you don't infuse purity below 0% as that
 will destroy a lot of the liquid
 {-------------------------------------------------------------}
-Note that the laser does infuse 500mB per catalist item. The default
-catalyst bonuses are:
-- Diamond: add 5% purity to a maximum of 100%
-- Emerald: add 8% purity
-- Enderpearl: add 2% purity
-- Redstone: remove 1% purity and add 5% strength
-- Gunpowder: remove 5% purity, add 8% strength and 4% efficiency (max 80%)
-- Glowstone: remove 2% purity, add 6% strength and 3% efficiency (max 70%)
-- Blaze powder: remove 6% purity, add 5% strength and 5% efficiency (max 90%)
-- Quartz: add 1% purity and 7% efficiency
-- Nether Star: remove 60% purity, add 90% strength and 90% efficiency
-- Ghast Tear: remove 20% purity, add 25% strength and 16% efficiency
-- Slime Ball: remove 10% efficiency
-- Coal: remove 1% purity and remove 10% strength
+Note that the laser does infuse 500mB per catalist item. By default
+the following catalysts are supported: diamond, emerald, ender pearl,
+redstone, gunpowder, glowstone, blaze powder, quartz, nether star,
+ghast tear, slime ball and coal. You can see what bonuses a catalyst
+has in the GUI of the laser (just turn off the laser and put the
+catalyst in the slot).
 {-------------------------------------------------------------}
 {b}Valve
 {n:valve}
