@@ -239,9 +239,9 @@ catalyst bonuses are:
 - Emerald: add 8% purity
 - Enderpearl: add 2% purity
 - Redstone: remove 1% purity and add 5% strength
-- Gunpowder: remove 8% purity, add 8% strength and 4% efficiency
-- Glowstone: remove 2% purity, add 6% strength and 3% efficiency
-- Blaze powder: remove 4% purity, add 6% strength and 8% efficiency
+- Gunpowder: remove 5% purity, add 8% strength and 4% efficiency (max 80%)
+- Glowstone: remove 2% purity, add 6% strength and 3% efficiency (max 70%)
+- Blaze powder: remove 6% purity, add 5% strength and 5% efficiency (max 90%)
 - Quartz: add 1% purity and 7% efficiency
 - Nether Star: remove 60% purity, add 90% strength and 90% efficiency
 - Ghast Tear: remove 20% purity, add 25% strength and 16% efficiency

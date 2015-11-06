@@ -209,19 +209,19 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
                 InfusingBonus.Modifier.NONE));
         infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.gunpowder), new InfusingBonus(
                 COLOR_RED,
-                new InfusingBonus.Modifier(-8.0f, 0.0f),
-                new InfusingBonus.Modifier(8.0f, 100.0f),
-                new InfusingBonus.Modifier(4.0f, 100.0f)));
+                new InfusingBonus.Modifier(-5.0f, 0.0f),
+                new InfusingBonus.Modifier(8.0f, 80.0f),
+                new InfusingBonus.Modifier(4.0f, 80.0f)));
         infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.glowstone_dust), new InfusingBonus(
                 COLOR_YELLOW,
                 new InfusingBonus.Modifier(-2.0f, 0.0f),
-                new InfusingBonus.Modifier(6.0f, 100.0f),
-                new InfusingBonus.Modifier(3.0f, 100.0f)));
+                new InfusingBonus.Modifier(6.0f, 70.0f),
+                new InfusingBonus.Modifier(3.0f, 70.0f)));
         infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.blaze_powder), new InfusingBonus(
                 COLOR_YELLOW,
-                new InfusingBonus.Modifier(-4.0f, 0.0f),
-                new InfusingBonus.Modifier(6.0f, 100.0f),
-                new InfusingBonus.Modifier(8.0f, 100.0f)));
+                new InfusingBonus.Modifier(-6.0f, 0.0f),
+                new InfusingBonus.Modifier(5.0f, 90.0f),
+                new InfusingBonus.Modifier(5.0f, 90.0f)));
         infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.quartz), new InfusingBonus(
                 COLOR_BLUE,
                 new InfusingBonus.Modifier(1.0f, 0.0f),
