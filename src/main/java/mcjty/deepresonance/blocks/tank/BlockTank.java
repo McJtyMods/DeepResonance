@@ -7,8 +7,6 @@ import mcjty.deepresonance.blocks.base.ElecGenericBlockBase;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
-import mcjty.deepresonance.network.DRMessages;
-import mcjty.deepresonance.network.PacketGetCrystalInfo;
 import mcjty.deepresonance.network.PacketGetTankInfo;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -25,6 +23,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.input.Keyboard;
 
@@ -131,6 +130,21 @@ public class BlockTank extends ElecGenericBlockBase {
         TileEntity tile = world.getTileEntity(x, y, z);
         if (tile instanceof TileTank){
             TileTank tank = (TileTank)tile;
+
+            if (player.getHeldItem() != null) {
+                if (FluidContainerRegistry.isEmptyContainer(player.getHeldItem())) {
+                    if (!world.isRemote) {
+                        extractIntoContainer(player, tank);
+                    }
+                    return true;
+                } else if (FluidContainerRegistry.isFilledContainer(player.getHeldItem())) {
+                    if (!world.isRemote) {
+                        fillFromContainer(player, tank);
+                    }
+                    return true;
+                }
+            }
+
             ForgeDirection direction = ForgeDirection.getOrientation(side);
             int i = tank.settings.get(direction);
             if (i < TileTank.SETTING_MAX) {
@@ -144,6 +158,40 @@ public class BlockTank extends ElecGenericBlockBase {
             return true;
         }
         return super.onBlockActivated(world, x, y, z, player, side, sidex, sidey, sidez);
+    }
+
+    private void fillFromContainer(EntityPlayer player, TileTank tank) {
+        FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(player.getHeldItem());
+        if (fluidStack != null) {
+            int fill = tank.fill(ForgeDirection.UNKNOWN, fluidStack, false);
+            if (fill == fluidStack.amount) {
+                tank.fill(ForgeDirection.UNKNOWN, fluidStack, true);
+                if (!player.capabilities.isCreativeMode) {
+                    ItemStack emptyContainer = FluidContainerRegistry.drainFluidContainer(player.getHeldItem());
+                    player.inventory.setInventorySlotContents(player.inventory.currentItem, emptyContainer);
+                }
+            }
+        }
+    }
+
+    private void extractIntoContainer(EntityPlayer player, TileTank tank) {
+        FluidStack fluidStack = tank.drain(ForgeDirection.UNKNOWN, 1, false);
+        if (fluidStack != null) {
+            int capacity = FluidContainerRegistry.getContainerCapacity(fluidStack, player.getHeldItem());
+            if (capacity != 0) {
+                fluidStack = tank.drain(ForgeDirection.UNKNOWN, capacity, false);
+                if (fluidStack != null && fluidStack.amount == capacity) {
+                    fluidStack = tank.drain(ForgeDirection.UNKNOWN, capacity, true);
+                    ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(fluidStack, player.getHeldItem());
+                    if (filledContainer != null) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, filledContainer);
+                    } else {
+                        // Try to insert the fluid back into the tank
+                        tank.fill(ForgeDirection.UNKNOWN, fluidStack, true);
+                    }
+                }
+            }
+        }
     }
 
     @Override
