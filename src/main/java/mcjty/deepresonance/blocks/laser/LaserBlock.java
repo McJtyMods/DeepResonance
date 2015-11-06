@@ -110,21 +110,20 @@ public class LaserBlock extends GenericBlock implements IRedstoneConnectable {
 
     @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
-        checkRedstone(world, x, y, z);
+        checkRedstoneWithTE(world, x, y, z);
     }
 
     @Override
     public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side) {
-        LaserTileEntity laserTileEntity = (LaserTileEntity) blockAccess.getTileEntity(x, y, z);
-        return getIconInternal(side, blockAccess.getBlockMetadata(x, y, z), laserTileEntity.getColor());
+        return getIconInternal(side, blockAccess.getBlockMetadata(x, y, z));
     }
 
     @Override
     public IIcon getIcon(int side, int meta) {
-        return getIconInternal(side, meta, 0);
+        return getIconInternal(side, meta);
     }
 
-    private IIcon getIconInternal(int side, int meta, int color) {
+    private IIcon getIconInternal(int side, int meta) {
         ForgeDirection k = getOrientation(meta);
         if (iconInd != null && side == k.ordinal()) {
             return iconInd;
@@ -133,16 +132,17 @@ public class LaserBlock extends GenericBlock implements IRedstoneConnectable {
         } else if (iconBottom != null && side ==  BlockTools.getBottomDirection(k).ordinal()) {
             return iconBottom;
         } else {
-            if (!BlockTools.getRedstoneSignalIn(meta)) {
-                return iconSide;
-            } else if (color == LaserTileEntity.COLOR_BLUE) {
+            // Due to meta limitation we can't have a yellow side here!
+            int color = (meta >> 2) & 3;
+
+            if (color == LaserTileEntity.COLOR_BLUE) {
                 return icons[0];
             } else if (color == LaserTileEntity.COLOR_RED) {
                 return icons[1];
             } else if (color == LaserTileEntity.COLOR_GREEN) {
                 return icons[2];
-            } else if (color == LaserTileEntity.COLOR_YELLOW) {
-                return icons[3];
+//            } else if (color == LaserTileEntity.COLOR_YELLOW) {
+//                return icons[3];
             } else {
                 return iconSide;
             }

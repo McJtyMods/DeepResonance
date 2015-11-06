@@ -51,6 +51,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     private int progressCounter = 0;
     private int color = 0;          // 0 means not active, > 0 means a color laser
     private int crystalLiquid = 0;  // This is not RCL but just liquidified spent crystal
+    private int powered = 0;
 
     private static int crystalLiquidClient = 0;
 
@@ -63,6 +64,14 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         super(ConfigMachines.Laser.rfMaximum, ConfigMachines.Laser.rfPerTick);
     }
 
+    @Override
+    public void setPowered(int powered) {
+        if (this.powered != powered) {
+            this.powered = powered;
+            markDirty();
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        }
+    }
 
     @Override
     protected void checkStateServer() {
@@ -76,7 +85,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
 
         int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 
-        if (!BlockTools.getRedstoneSignalIn(meta)) {
+        if (powered == 0) {
             changeColor(0, meta);
             return;
         }
@@ -156,6 +165,12 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         if (newcolor != color) {
             color = newcolor;
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            // We only have four bits so we can't represent yellow. We use red in that case.
+            if (color == COLOR_YELLOW) {
+                meta = (meta & 0x3) | (COLOR_RED<<2);
+            } else {
+                meta = (meta & 0x3) | (color<<2);
+            }
             worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, meta, 3);
             markDirty();
         }
@@ -315,6 +330,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         super.readFromNBT(tagCompound);
         color = tagCompound.getInteger("color");
         progressCounter = tagCompound.getInteger("progress");
+        powered = tagCompound.getByte("powered");
     }
 
     @Override
@@ -336,6 +352,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("color", color);
         tagCompound.setInteger("progress", progressCounter);
+        tagCompound.setByte("powered", (byte) powered);
     }
 
     @Override
