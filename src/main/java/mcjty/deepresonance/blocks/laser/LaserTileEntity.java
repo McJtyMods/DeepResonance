@@ -143,7 +143,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
                     fluidData.setStrength(strength);
                     fluidData.setEfficiency(efficiency);
                     FluidStack newStack = fluidData.makeLiquidCrystalStack();
-                    if (Math.abs(purity) < 0.1) {
+                    if (Math.abs(purity) < 0.01) {
                         newStack.amount /= 10;
                     }
                     tileTank.fill(ForgeDirection.UNKNOWN, newStack, true);
