@@ -41,7 +41,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
 
     private Fluid clientRenderFluid;
 
-    @SideOnly(Side.CLIENT)
+    // Client only
     private float renderHeight; //Value from 0.0f to 1.0f
 
     private NBTTagCompound multiBlockSaveData;
@@ -253,7 +253,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         return clientRenderFluid;
     }
 
-    @SideOnly(Side.CLIENT)
+    // Client only
     public float getRenderHeight() {
         return renderHeight;
     }

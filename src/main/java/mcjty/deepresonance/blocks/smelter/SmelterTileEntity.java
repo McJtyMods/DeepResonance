@@ -80,7 +80,6 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
         }
     }
 
-    @SideOnly(Side.CLIENT)
     public static int getProgressPercentage() {
         return progressPercentage;
     }

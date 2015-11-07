@@ -43,7 +43,6 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
     private int progress = 0;
     private LiquidCrystalFluidTagData mergedData = null;
 
-    @SideOnly(Side.CLIENT)
     private static int clientProgress = 0;
 
     public static int getTotalProgress() {
@@ -91,7 +90,6 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
         return progress;
     }
 
-    @SideOnly(Side.CLIENT)
     public static int getClientProgress() {
         return clientProgress;
     }

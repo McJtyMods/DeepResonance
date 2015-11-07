@@ -102,11 +102,6 @@ public abstract class ElecTileBase extends GenericTileEntity implements IInvento
         this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
-    @SideOnly(Side.CLIENT)
-    public void sendPacketToServer(int ID, NBTTagCompound data) {
-        ElecCore.networkHandler.getNetworkWrapper().sendToServer(new PacketTileDataToServer(this, ID, data));
-    }
-
     @Override
     public void onPacketReceivedFromClient(EntityPlayerMP sender, int ID, NBTTagCompound data) {
     }
