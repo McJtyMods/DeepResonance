@@ -37,6 +37,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS){
             settings.put(direction, SETTING_NONE);
         }
+        this.multiBlockSaveData = new NBTTagCompound();
     }
 
     private Fluid clientRenderFluid;
