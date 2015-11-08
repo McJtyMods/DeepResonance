@@ -31,8 +31,8 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         super(tile, worldHolder);
         this.tank = new InternalGridTank(TANK_BUCKETS * FluidContainerRegistry.BUCKET_VOLUME);
         this.renderData = Maps.newHashMap();
-        if (tile instanceof TileTank){
-            tank.fill(((TileTank) tile).myTank, true);
+        if (tile instanceof TileTank && ((TileTank)tile).getSaveData() != null){
+            tank.fill(FluidStack.loadFluidStackFromNBT(((TileTank)tile).getSaveData().getCompoundTag("fluid")), true);
         }
         needsSorting = true;
         sendFluidData();
