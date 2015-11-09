@@ -51,7 +51,6 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
 
     @Override
     public void onTileLoaded() {
-        System.out.println("TileTank.onTileLoaded: " + xCoord + "," + yCoord + "," + zCoord);
         super.onTileLoaded();
         if (!worldObj.isRemote) {
             DeepResonance.worldGridRegistry.getTankRegistry().get(getWorldObj()).addTile(this);
@@ -64,7 +63,6 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
 
     @Override
     public void onTileUnloaded() {
-        System.out.println("TileTank.onTileUnloaded: " + xCoord + "," + yCoord + "," + zCoord);
         super.onTileUnloaded();
         if (!worldObj.isRemote) {
             DeepResonance.worldGridRegistry.getTankRegistry().get(getWorldObj()).removeTile(this);
