@@ -30,6 +30,7 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
     private float minPurity = 0;
     private float minStrength = 0;
     private float minEfficiency = 0;
+    private int maxMb = 0;
 
     @Override
     protected void checkStateServer() {
@@ -60,9 +61,28 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
                 return;
             }
 
-            fluidStack = topTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Valve.rclPerOperation, true);
-            bottomTank.fill(ForgeDirection.UNKNOWN, fluidStack, true);
+            if (maxMb > 0) {
+                // We have to check maximum volume
+                int fluidAmount = bottomTank.getFluidAmount();
+                if (fluidAmount < maxMb) {
+                    int toDrain = Math.min(maxMb - fluidAmount, ConfigMachines.Valve.rclPerOperation);
+                    fluidStack = topTank.drain(ForgeDirection.UNKNOWN, toDrain, true);
+                    bottomTank.fill(ForgeDirection.UNKNOWN, fluidStack, true);
+                }
+            } else {
+                fluidStack = topTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Valve.rclPerOperation, true);
+                bottomTank.fill(ForgeDirection.UNKNOWN, fluidStack, true);
+            }
         }
+    }
+
+    public int getMaxMb() {
+        return maxMb;
+    }
+
+    public void setMaxMb(int maxMb) {
+        this.maxMb = maxMb;
+        markDirty();
     }
 
     public float getMinEfficiency() {
@@ -108,6 +128,7 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
         tagCompound.setFloat("minPurity", minPurity);
         tagCompound.setFloat("minStrength", minStrength);
         tagCompound.setFloat("minEfficiency", minEfficiency);
+        tagCompound.setInteger("maxMb", maxMb);
     }
 
     @Override
@@ -122,6 +143,7 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
         minPurity = tagCompound.getFloat("minPurity");
         minStrength = tagCompound.getFloat("minStrength");
         minEfficiency = tagCompound.getFloat("minEfficiency");
+        maxMb = tagCompound.getInteger("maxMb");
     }
 
     @Override
@@ -181,9 +203,11 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
             double purity = args.get("purity").getDouble();
             double strength = args.get("strength").getDouble();
             double efficiency = args.get("efficiency").getDouble();
+            int maxMb = args.get("maxMb").getInteger();
             setMinPurity((float) purity);
             setMinStrength((float) strength);
             setMinEfficiency((float) efficiency);
+            setMaxMb(maxMb);
             return true;
         }
         return false;

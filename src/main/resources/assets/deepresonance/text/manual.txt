@@ -249,6 +249,8 @@ better then specific values it will move liquid to the bottom tank.
 Using the valve you can make a purifier setup using a single purifier
 where you loop the RCL back through the same tank and then use the
 valve to extract the liquid when it has sufficient purity.
+The valve can also make sure the bottom tank has not more then
+a certain amount of RCL liquid in it.
 {-------------------------------------------------------------}
 {b}Crystalizer
 {n:crystalizer}
