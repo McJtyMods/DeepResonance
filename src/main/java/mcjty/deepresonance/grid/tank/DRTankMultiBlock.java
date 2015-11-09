@@ -15,10 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Elec332 on 10-8-2015.
@@ -60,7 +57,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     @Override
     protected void invalidate() {
         super.invalidate();
-        for (BlockLoc loc : allLocations){
+        for (BlockLoc loc : new ArrayList<BlockLoc>(allLocations)){
             TileTank tank = getTank(loc);
             if (tank != null)
                 setDataToTile(tank);
