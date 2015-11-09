@@ -27,6 +27,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.input.Keyboard;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -87,10 +88,11 @@ public class BlockTank extends ElecGenericBlockBase {
         currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(clientRenderFluid));
         currentTip.add("Amount: "+totalFluidAmount + " (" + tankCapacity + ")");
         if (fluidData != null) {
-            currentTip.add(EnumChatFormatting.YELLOW + "Quality: " + (int)(fluidData.getQuality() * 100) + "%");
-            currentTip.add(EnumChatFormatting.YELLOW + "Purity: " + (int)(fluidData.getPurity() * 100) + "%");
-            currentTip.add(EnumChatFormatting.YELLOW + "Power: " + (int)(fluidData.getStrength() * 100) + "%");
-            currentTip.add(EnumChatFormatting.YELLOW + "Efficiency: " + (int)(fluidData.getEfficiency() * 100) + "%");
+            DecimalFormat decimalFormat = new DecimalFormat("#.#");
+            currentTip.add(EnumChatFormatting.YELLOW + "Quality: " + decimalFormat.format(fluidData.getQuality() * 100) + "%");
+            currentTip.add(EnumChatFormatting.YELLOW + "Purity: " + decimalFormat.format(fluidData.getPurity() * 100) + "%");
+            currentTip.add(EnumChatFormatting.YELLOW + "Power: " + decimalFormat.format(fluidData.getStrength() * 100) + "%");
+            currentTip.add(EnumChatFormatting.YELLOW + "Efficiency: " + decimalFormat.format(fluidData.getEfficiency() * 100) + "%");
         }
         if (System.currentTimeMillis() - lastTime > 100) {
             lastTime = System.currentTimeMillis();

@@ -66,10 +66,11 @@ public class ResonatingCrystalBlock extends GenericBlock {
             list.add("This crystal is depleted. Perhaps it still has a future use?");
         }
         if (tagCompound != null) {
-            list.add(EnumChatFormatting.GREEN + "Strength/Efficiency/Purity: " + new DecimalFormat("#.##").format(tagCompound.getFloat("strength")) + "% "
-                    + new DecimalFormat("#.##").format(tagCompound.getFloat("efficiency")) + "% "
-                    + new DecimalFormat("#.##").format(tagCompound.getFloat("purity")) + "%");
-            list.add(EnumChatFormatting.YELLOW + "Power left: " + new DecimalFormat("#.##").format(power) + "%");
+            DecimalFormat decimalFormat = new DecimalFormat("#.##");
+            list.add(EnumChatFormatting.GREEN + "Strength/Efficiency/Purity: " + decimalFormat.format(tagCompound.getFloat("strength")) + "% "
+                    + decimalFormat.format(tagCompound.getFloat("efficiency")) + "% "
+                    + decimalFormat.format(tagCompound.getFloat("purity")) + "%");
+            list.add(EnumChatFormatting.YELLOW + "Power left: " + decimalFormat.format(power) + "%");
         }
     }
 
@@ -79,10 +80,11 @@ public class ResonatingCrystalBlock extends GenericBlock {
         TileEntity tileEntity = accessor.getTileEntity();
         if (tileEntity instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
-            currenttip.add(EnumChatFormatting.GREEN + "Strength/Efficiency/Purity: " + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getStrength()) + "% "
-                    + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getEfficiency()) + "% "
-                    + new DecimalFormat("#.##").format(resonatingCrystalTileEntity.getPurity()) + "%");
-            currenttip.add(EnumChatFormatting.YELLOW + "Power left: " + new DecimalFormat("#.##").format(tooltipPower) + "% (" + tooltipRFTick + " RF/t)");
+            DecimalFormat decimalFormat = new DecimalFormat("#.##");
+            currenttip.add(EnumChatFormatting.GREEN + "Strength/Efficiency/Purity: " + decimalFormat.format(resonatingCrystalTileEntity.getStrength()) + "% "
+                    + decimalFormat.format(resonatingCrystalTileEntity.getEfficiency()) + "% "
+                    + decimalFormat.format(resonatingCrystalTileEntity.getPurity()) + "%");
+            currenttip.add(EnumChatFormatting.YELLOW + "Power left: " + decimalFormat.format(tooltipPower) + "% (" + tooltipRFTick + " RF/t)");
             if (System.currentTimeMillis() - lastTime > 250) {
                 lastTime = System.currentTimeMillis();
                 DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetCrystalInfo(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord));
