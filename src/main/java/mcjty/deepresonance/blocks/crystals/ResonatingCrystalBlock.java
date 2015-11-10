@@ -121,7 +121,7 @@ public class ResonatingCrystalBlock extends GenericBlock {
                         boom.explode();
                     }
                 }
-            });
+            }, world);
         }
         super.onBlockExploded(world, x, y, z, explosion);
     }

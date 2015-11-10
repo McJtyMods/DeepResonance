@@ -240,7 +240,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
             public void run() {
                 setTankFluidHeights();
             }
-        });
+        }, world);
     }
 
     private void sendFluidData() {
