@@ -2,7 +2,6 @@ package mcjty.deepresonance.grid.tank;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import elec332.core.main.ElecCore;
 import elec332.core.multiblock.dynamic.AbstractDynamicMultiBlock;
 import elec332.core.util.BlockLoc;
 import elec332.core.util.NBTHelper;
@@ -32,7 +31,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
             tank.fill(FluidStack.loadFluidStackFromNBT(((TileTank)tile).getSaveData().getCompoundTag("fluid")), true);
         }
         needsSorting = true;
-        sendFluidData();
+        setClientRenderFluid();
         markAllBlocksForUpdate();
     }
 
@@ -45,8 +44,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     public void tick() {
         if (world.getTotalWorldTime() % 20L == 0L){
             setTankFluidHeights();
-            sendFluidData();
-            sendFluidHeight();
+            setClientRenderFluid();
             if (check != tank.getStoredFluid()){
                 markAllBlocksForUpdate();
                 check = tank.getStoredFluid();
@@ -68,8 +66,9 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     protected void mergeWith(DRTankMultiBlock multiBlock) {
         super.mergeWith(multiBlock);
         tank.merge(multiBlock.tank);
-        sendFluidData();
+        setClientRenderFluid();
         needsSorting = true;
+        setTankFluidHeights();
         markEverythingDirty();
         markAllBlocksForUpdate();
     }
@@ -176,15 +175,20 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
 
     @Override
     public int fill(FluidStack resource, boolean doFill) {
-        sendFluidData();
-        setTankFluidHeights();
-        return tank.fill(resource, doFill);
+        int ret = tank.fill(resource, doFill);
+        if (doFill) {
+            setClientRenderFluid();
+            setTankFluidHeights();
+        }
+        return ret;
     }
 
     @Override
     public FluidStack drain(int maxDrain, boolean doDrain) {
-        setTankFluidHeights();
-        return tank.drain(maxDrain, doDrain);
+        FluidStack ret = tank.drain(maxDrain, doDrain);
+        if (doDrain)
+            setTankFluidHeights();
+        return ret;
     }
 
     public String getTankInfo(){
@@ -201,7 +205,12 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
 
     @Override
     public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
-        return fill(resource, doFill);
+        int ret = fill(resource, doFill);
+        if (doFill) {
+            setClientRenderFluid();
+            setTankFluidHeights();
+        }
+        return ret;
     }
 
     @Override
@@ -209,12 +218,18 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         if (resource == null || !resource.isFluidEqual(tank.getStoredFluidStack())) {
             return null;
         }
-        return drain(resource.amount, doDrain);
+        FluidStack ret = drain(resource.amount, doDrain);
+        if (doDrain)
+            setTankFluidHeights();
+        return ret;
     }
 
     @Override
     public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-        return drain(maxDrain, doDrain);
+        FluidStack ret = drain(maxDrain, doDrain);
+        if (doDrain)
+            setTankFluidHeights();
+        return ret;
     }
 
     @Override
@@ -234,16 +249,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         };
     }
 
-    private void sendFluidHeight(){
-        ElecCore.tickHandler.registerCall(new Runnable() {
-            @Override
-            public void run() {
-                setTankFluidHeights();
-            }
-        }, world);
-    }
-
-    private void sendFluidData() {
+    private void setClientRenderFluid() {
         markEverythingDirty();
         for (BlockLoc loc : allLocations) {
             TileTank tank = getTank(loc);
@@ -253,4 +259,5 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
             }
         }
     }
+
 }
