@@ -13,6 +13,7 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -187,7 +188,12 @@ public class BlockTank extends ElecGenericBlockBase {
                     fluidStack = tank.drain(ForgeDirection.UNKNOWN, capacity, true);
                     ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(fluidStack, player.getHeldItem());
                     if (filledContainer != null) {
-                        player.inventory.setInventorySlotContents(player.inventory.currentItem, filledContainer);
+                        player.inventory.decrStackSize(player.inventory.currentItem, 1);
+                        if (!player.inventory.addItemStackToInventory(filledContainer)) {
+                            EntityItem entityItem = new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, filledContainer);
+                            player.worldObj.spawnEntityInWorld(entityItem);
+                        }
+                        player.openContainer.detectAndSendChanges();
                     } else {
                         // Try to insert the fluid back into the tank
                         tank.fill(ForgeDirection.UNKNOWN, fluidStack, true);
