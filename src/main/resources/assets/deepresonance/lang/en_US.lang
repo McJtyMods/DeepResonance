@@ -5,6 +5,7 @@ item.FilterMaterial.name=Filter Material
 item.SpentFilterMaterial.name=Spent Filter Material
 item.SpentFilterMaterial.name=Spent Filter Material
 item.LiquidInjector.name=Liquid Injector
+//Maybe should be different?
 item.helmet0.name=Radiation Suit Helmet (WIP)
 item.chestplate1.name=Radiation Suit Chestplate (WIP)
 item.leggings2.name=Radiation Suit Leggings (WIP)
