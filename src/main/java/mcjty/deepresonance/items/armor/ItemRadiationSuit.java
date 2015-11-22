@@ -1,6 +1,7 @@
-package mcjty.deepresonance.items;
+package mcjty.deepresonance.items.armor;
 
 import mcjty.deepresonance.DeepResonance;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,6 +16,11 @@ import java.util.List;
 public class ItemRadiationSuit extends ItemArmor {
 
     private final String textureSuffix;
+
+    private static BootsModel bootsModel = new BootsModel();
+    private static ChestModel chestModel = new ChestModel();
+    private static LegsModel legsModel = new LegsModel();
+    private static HelmetModel helmetModel = new HelmetModel();
 
     public ItemRadiationSuit(ArmorMaterial material, int renderIndex, int armorType, String name) {
         super(material, renderIndex, armorType);
@@ -33,7 +39,19 @@ public class ItemRadiationSuit extends ItemArmor {
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
-        return DeepResonance.MODID+":textures/items/suitTexture"+textureSuffix+".png";
+//        return DeepResonance.MODID+":textures/items/suitTexture"+textureSuffix+".png";
+        return DeepResonance.MODID+":textures/items/texture"+textureSuffix+".png";
+    }
+
+    @Override
+    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot) {
+        switch (armorType) {
+            case 0: return helmetModel;
+            case 1: return chestModel;
+            case 2: return legsModel;
+            case 3: return bootsModel;
+        }
+        return super.getArmorModel(entityLiving, itemStack, armorSlot);
     }
 
     @Override
