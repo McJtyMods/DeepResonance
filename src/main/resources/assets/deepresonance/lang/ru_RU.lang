@@ -9,6 +9,7 @@ item.Leggings2.name=Поножи радиационно-защитного ко�
 item.Boots3.name=Ботинки радиационно-защитного костюма (WIP)
 
 tile.oreResonating.name=Резонирующая руда
+tile.blockResonating.name=Resonating Plate Block
 tile.denseObsidian.name=Плотный обсидиан
 tile.denseGlass.name=Плотное стекло
 tile.poisonedDirt.name=Отравленная земля

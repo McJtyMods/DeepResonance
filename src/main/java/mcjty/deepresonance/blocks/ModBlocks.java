@@ -12,6 +12,7 @@ import mcjty.deepresonance.blocks.lens.LensSetup;
 import mcjty.deepresonance.blocks.ore.DenseGlassBlock;
 import mcjty.deepresonance.blocks.ore.DenseObsidianBlock;
 import mcjty.deepresonance.blocks.ore.ResonatingOreBlock;
+import mcjty.deepresonance.blocks.ore.ResonatingPlateBlock;
 import mcjty.deepresonance.blocks.pedestal.PedestalSetup;
 import mcjty.deepresonance.blocks.poisondirt.PoisonedDirtBlock;
 import mcjty.deepresonance.blocks.purifier.PurifierSetup;
@@ -25,6 +26,7 @@ import net.minecraftforge.oredict.OreDictionary;
 public final class ModBlocks {
 
     public static ResonatingOreBlock resonatingOreBlock;
+    public static ResonatingPlateBlock resonatingPlateBlock;
     public static DenseObsidianBlock denseObsidianBlock;
     public static DenseGlassBlock denseGlassBlock;
     public static ResonatingCrystalBlock resonatingCrystalBlock;
@@ -36,6 +38,9 @@ public final class ModBlocks {
         resonatingOreBlock = new ResonatingOreBlock();
         GameRegistry.registerBlock(resonatingOreBlock, "oreResonating");
         OreDictionary.registerOre("oreResonating", resonatingOreBlock);
+
+        resonatingPlateBlock = new ResonatingPlateBlock();
+        GameRegistry.registerBlock(resonatingPlateBlock, "blockResonating");
 
         denseObsidianBlock = new DenseObsidianBlock();
         GameRegistry.registerBlock(denseObsidianBlock, "denseObsidian");

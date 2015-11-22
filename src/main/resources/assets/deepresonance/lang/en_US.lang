@@ -12,6 +12,7 @@ item.Leggings2.name=Radiation Suit Leggings (WIP)
 item.Boots3.name=Radiation Suit Boots (WIP)
 
 tile.oreResonating.name=Resonating Ore
+tile.blockResonating.name=Resonating Plate Block
 tile.denseObsidian.name=Dense Obsidian
 tile.denseGlass.name=Dense Glass
 tile.poisonedDirt.name=Poisoned Dirt

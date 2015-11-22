@@ -7,6 +7,19 @@ import elec332.core.config.Configurable;
  */
 public class ConfigMachines {
 
+    public static class PlateBlock {
+        private static final String category = "PlateBlock";
+
+        @Configurable(category = category, minValue = 0, maxValue = 100000, comment = "Strength of radiation that a plate block gives when it has a redstone signal. 0 to disable")
+        public static int radiationStrength = 20000;
+
+        @Configurable(category = category, minValue = 0, maxValue = 100000, comment = "Radius of radiation that a plate block gives when it has a redstone signal")
+        public static int radiationRadius = 10;
+
+        @Configurable(category = category, minValue = 0, maxValue = 100000, comment = "Amount of ticks that the radiation lasts from a plate block")
+        public static int radiationTicks = 100;
+    }
+
     public static class Purifier {
         private static final String category = "Purifier";
 

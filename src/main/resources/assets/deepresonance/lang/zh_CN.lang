@@ -11,6 +11,7 @@ item.Leggings2.name=防辐射护腿 (WIP)
 item.Boots3.name=防辐射靴子 (WIP)
 
 tile.oreResonating.name=共振矿石
+tile.blockResonating.name=Resonating Plate Block
 tile.denseObsidian.name=稠密黑曜石
 tile.denseGlass.name=稠密玻璃
 tile.poisonedDirt.name=毒泥土
