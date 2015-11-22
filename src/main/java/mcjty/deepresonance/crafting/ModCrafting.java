@@ -32,7 +32,7 @@ public final class ModCrafting {
         GameRegistry.addSmelting(ModBlocks.resonatingOreBlock, new ItemStack(ModItems.resonatingPlateItem, 8), 0.0f);
 
         GameRegistry.addRecipe(new ItemStack(ModItems.helmet), "ppp", "p p", "   ", 'p', ModItems.resonatingPlateItem);
-        GameRegistry.addRecipe(new ItemStack(ModItems.chestplate), "ppp", "ppp", "p p", 'p', ModItems.resonatingPlateItem);
+        GameRegistry.addRecipe(new ItemStack(ModItems.chestplate), "p p", "ppp", "ppp", 'p', ModItems.resonatingPlateItem);
         GameRegistry.addRecipe(new ItemStack(ModItems.boots), "   ", "p p", "p p", 'p', ModItems.resonatingPlateItem);
         GameRegistry.addRecipe(new ItemStack(ModItems.leggings), "ppp", "p p", "p p", 'p', ModItems.resonatingPlateItem);
 
