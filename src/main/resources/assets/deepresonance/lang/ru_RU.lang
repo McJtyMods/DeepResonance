@@ -3,10 +3,10 @@ item.RadiationMonitor.name=Дозиметр
 item.ResonatingPlate.name=Резонирующая пластина
 item.FilterMaterial.name=Отфильтрованный материал
 item.SpentFilterMaterial.name=Использованные отфильтрованный материал
-item.radiationSuit0.name=Шлем радиационно-защитного костюма (WIP)
-item.radiationSuit1.name=Кираса радиационно-защитного костюма (WIP)
-item.radiationSuit2.name=Поножи радиационно-защитного костюма (WIP)
-item.radiationSuit3.name=Ботинки радиационно-защитного костюма (WIP)
+item.Helmet0.name=Шлем радиационно-защитного костюма (WIP)
+item.Chest1.name=Кираса радиационно-защитного костюма (WIP)
+item.Leggings2.name=Поножи радиационно-защитного костюма (WIP)
+item.Boots3.name=Ботинки радиационно-защитного костюма (WIP)
 
 tile.oreResonating.name=Резонирующая руда
 tile.denseObsidian.name=Плотный обсидиан

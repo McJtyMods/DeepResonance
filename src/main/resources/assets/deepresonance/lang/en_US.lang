@@ -6,10 +6,10 @@ item.SpentFilterMaterial.name=Spent Filter Material
 item.SpentFilterMaterial.name=Spent Filter Material
 item.LiquidInjector.name=Liquid Injector
 //Maybe should be different?
-item.helmet0.name=Radiation Suit Helmet (WIP)
-item.chestplate1.name=Radiation Suit Chestplate (WIP)
-item.leggings2.name=Radiation Suit Leggings (WIP)
-item.boots3.name=Radiation Suit Boots (WIP)
+item.Helmet0.name=Radiation Suit Helmet (WIP)
+item.Chest1.name=Radiation Suit Chestplate (WIP)
+item.Leggings2.name=Radiation Suit Leggings (WIP)
+item.Boots3.name=Radiation Suit Boots (WIP)
 
 tile.oreResonating.name=Resonating Ore
 tile.denseObsidian.name=Dense Obsidian

@@ -5,10 +5,10 @@ item.FilterMaterial.name=过滤材料
 item.SpentFilterMaterial.name=已用的过滤材料
 item.SpentFilterMaterial.name=已用的过滤材料
 item.LiquidInjector.name=液体注射器
-item.radiationSuit0.name=防辐射头盔 (WIP)
-item.radiationSuit1.name=防辐射胸甲 (WIP)
-item.radiationSuit2.name=防辐射护腿 (WIP)
-item.radiationSuit3.name=防辐射靴子 (WIP)
+item.Helmet0.name=防辐射头盔 (WIP)
+item.Chest1.name=防辐射胸甲 (WIP)
+item.Leggings2.name=防辐射护腿 (WIP)
+item.Boots3.name=防辐射靴子 (WIP)
 
 tile.oreResonating.name=共振矿石
 tile.denseObsidian.name=稠密黑曜石
