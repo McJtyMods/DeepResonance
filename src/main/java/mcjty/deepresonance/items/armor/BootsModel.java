@@ -12,6 +12,8 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
 public class BootsModel extends ModelBiped {
+    public static BootsModel bootsModel = new BootsModel();
+
     //fields
     ModelRenderer leftfootbase;
     ModelRenderer rightfootbase;

@@ -12,6 +12,8 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
 public class HelmetModel extends ModelBiped {
+    public static HelmetModel helmetModel = new HelmetModel();
+
     //fields
     ModelRenderer top;
     ModelRenderer side1;

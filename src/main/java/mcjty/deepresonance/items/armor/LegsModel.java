@@ -12,6 +12,9 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
 public class LegsModel extends ModelBiped {
+
+    public static LegsModel legsModel = new LegsModel();
+
     //fields
     ModelRenderer leftfront;
     ModelRenderer rightfront;

@@ -11,6 +11,8 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
 public class ChestModel extends ModelBiped {
+    public static ChestModel chestModel = new ChestModel();
+
     //fields
     ModelRenderer front;
     ModelRenderer back;
