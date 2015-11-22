@@ -39,7 +39,6 @@ public class ItemRadiationSuit extends ItemArmor {
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
-//        return DeepResonance.MODID+":textures/items/suitTexture"+textureSuffix+".png";
         return DeepResonance.MODID+":textures/items/texture"+textureSuffix+".png";
     }
 
