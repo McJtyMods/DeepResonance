@@ -54,6 +54,7 @@ public class ResonatingCrystalBlock extends GenericBlock {
         if (tagCompound != null) {
             tagCompound.removeTag("owner");
             tagCompound.removeTag("ownerM");
+            tagCompound.removeTag("idM");
         }
         super.addInformation(itemStack, player, list, advancedToolTips);
         float power = 100.0f;
