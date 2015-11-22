@@ -20,6 +20,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.Random;
+
 public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISidedInventory {
 
     private InventoryHelper inventoryHelper = new InventoryHelper(this, PurifierContainer.factory, 1);
@@ -36,6 +38,8 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
 
     private LiquidCrystalFluidTagData fluidData = null;
 
+    private static Random random = new Random();
+
     @Override
     protected void checkStateServer() {
         if (progress > 0) {
@@ -45,8 +49,10 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
                     // Done. First check if we can actually insert the liquid. If not we postpone this.
                     progress = 1;
                     if (getOutputTank() != null) {
-                        if (fillOutputTank()) {
-                            doPurify();
+                        if (fillOutputTank() && validSlot()) {
+                            if (random.nextInt(doPurify()) == 0) {
+                                consumeFilter();
+                            }
                             progress = 0;   // Really done
                         }
                     }
@@ -57,7 +63,6 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
             if (canWork() && validSlot()) {
                 progress = ConfigMachines.Purifier.ticksPerPurify;
                 fluidData = LiquidCrystalFluidTagData.fromStack(getInputTank().drain(ForgeDirection.UNKNOWN, ConfigMachines.Purifier.rclPerPurify, true));
-                inventoryHelper.decrStackSize(PurifierContainer.SLOT_FILTERINPUT, 1);
                 markDirty();
             }
         }
@@ -65,21 +70,32 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
 
     private static ForgeDirection[] directions = new ForgeDirection[] { ForgeDirection.UNKNOWN, ForgeDirection.EAST, ForgeDirection.WEST, ForgeDirection.NORTH, ForgeDirection.SOUTH };
 
-    private void doPurify() {
+    private void consumeFilter() {
+        inventoryHelper.decrStackSize(PurifierContainer.SLOT_FILTERINPUT, 1);
+        ItemStack spentMaterial = new ItemStack(ModItems.spentFilterMaterialItem, 1);
+        inventoryLocator.ejectStack(worldObj, xCoord, yCoord, zCoord, spentMaterial, getCoordinate(), directions);
+    }
+
+    private int doPurify() {
         float purity = fluidData.getPurity();
-        purity += ConfigMachines.Purifier.addedPurity / 100.0f;
+        float maxPurityToAdd = ConfigMachines.Purifier.addedPurity / 100.0f;
+        float addedPurity = maxPurityToAdd;
         float maxPurity = ConfigMachines.Purifier.maxPurity / 100.0f;
         maxPurity *= fluidData.getQuality();
-        if (purity > maxPurity) {
-            purity = maxPurity;
+        if (purity + addedPurity > maxPurity) {
+            addedPurity = maxPurity - purity;
+            if (addedPurity < 0.0001f) {
+                // We are already very pure. Do nothing.
+                return 1000;
+            }
         }
+
+        purity += addedPurity;
         fluidData.setPurity(purity);
         FluidStack stack = fluidData.makeLiquidCrystalStack();
         getOutputTank().fill(ForgeDirection.UNKNOWN, stack, true);
         fluidData = null;
-
-        ItemStack spentMaterial = new ItemStack(ModItems.spentFilterMaterialItem, 1);
-        inventoryLocator.ejectStack(worldObj, xCoord, yCoord, zCoord, spentMaterial, getCoordinate(), directions);
+        return (int) ((maxPurityToAdd - addedPurity) * 1000 / maxPurityToAdd + 1);
     }
 
     private boolean fillOutputTank() {
