@@ -52,16 +52,25 @@ public class InfusingBonus {
             if (bonus == 0.0f) {
                 return value;
             }
-            value += bonus / 100.0f;
+            float toAdd = bonus / 100.0f;
+            float cap = maxOrMin / 100.0f * quality;
+
             if (bonus > 0) {
-                if (value > maxOrMin*quality) {
-                    value = maxOrMin*quality;
+                if (value + toAdd > cap) {
+                    toAdd = cap - value;
+                    if (toAdd < 0) {
+                        toAdd = 0;
+                    }
                 }
             } else {
-                if (value < maxOrMin*quality) {
-                    value = maxOrMin*quality;
+                if (value + toAdd < cap) {
+                    toAdd = cap - value;
+                    if (toAdd > 0) {
+                        toAdd = 0;
+                    }
                 }
             }
+            value += toAdd;
             return value;
         }
     }

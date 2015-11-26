@@ -4,12 +4,14 @@ item.ResonatingPlate.name=共振盘
 item.FilterMaterial.name=过滤材料
 item.SpentFilterMaterial.name=已用的过滤材料
 item.SpentFilterMaterial.name=已用的过滤材料
-item.radiationSuit0.name=防辐射头盔 (WIP)
-item.radiationSuit1.name=防辐射胸甲 (WIP)
-item.radiationSuit2.name=防辐射护腿 (WIP)
-item.radiationSuit3.name=防辐射靴子 (WIP)
+item.LiquidInjector.name=液体注射器
+item.Helmet0.name=防辐射头盔 (WIP)
+item.Chest1.name=防辐射胸甲 (WIP)
+item.Leggings2.name=防辐射护腿 (WIP)
+item.Boots3.name=防辐射靴子 (WIP)
 
 tile.oreResonating.name=共振矿石
+tile.blockResonating.name=Resonating Plate Block
 tile.denseObsidian.name=稠密黑曜石
 tile.denseGlass.name=稠密玻璃
 tile.poisonedDirt.name=毒泥土
@@ -24,8 +26,8 @@ tile.smelterBlock.name=冶炼炉
 tile.purifierBlock.name=净化器
 tile.pedestalBlock.name=磉
 tile.valveBlock.name=阀门
-tile.lensBlock.name=Lens (WIP)
-tile.laserBlock.name=Infusing Laser (WIP)
+tile.lensBlock.name=镜片
+tile.laserBlock.name=注入激光
 
 itemGroup.DeepResonance=Deep Resonance
 

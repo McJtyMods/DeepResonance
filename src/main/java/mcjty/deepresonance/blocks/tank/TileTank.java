@@ -4,16 +4,13 @@ import com.google.common.collect.Maps;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import elec332.core.multiblock.dynamic.IDynamicMultiBlockTile;
-import elec332.core.util.NBTHelper;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
 import mcjty.deepresonance.blocks.base.ElecTileBase;
-import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.deepresonance.grid.fluid.event.FluidTileEvent;
 import mcjty.deepresonance.grid.tank.DRTankMultiBlock;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -40,18 +37,13 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS){
             settings.put(direction, SETTING_NONE);
         }
+        this.multiBlockSaveData = new NBTTagCompound();
     }
 
     private Fluid clientRenderFluid;
-    @SideOnly(Side.CLIENT)
-    private int totalFluidAmount;
-    @SideOnly(Side.CLIENT)
-    private int tankCapacity;
-    @SideOnly(Side.CLIENT)
+
+    // Client only
     private float renderHeight; //Value from 0.0f to 1.0f
-    @SideOnly(Side.CLIENT)
-    private LiquidCrystalFluidTagData fluidData;
-    private long lastTime;
 
     private NBTTagCompound multiBlockSaveData;
 
@@ -89,21 +81,6 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         return settings;
     }
 
-    @SideOnly(Side.CLIENT)
-    public int getTotalFluidAmount() {
-        return totalFluidAmount;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public int getTankCapacity() {
-        return tankCapacity;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public LiquidCrystalFluidTagData getFluidData() {
-        return fluidData;
-    }
-
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
@@ -132,17 +109,27 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     @Override
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
         super.readRestorableFromNBT(tagCompound);
-        NBTTagCompound mbTag = multiBlockSaveData = tagCompound.getCompoundTag("multiBlockData");
-        if (tagCompound.hasKey("fluid")) { /* legacy compat */
-            this.myTank = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("fluid"));
-        } else if (mbTag.hasKey("fluid")){
-            this.myTank = FluidStack.loadFluidStackFromNBT(mbTag.getCompoundTag("fluid"));
-        }
+        this.myTank = getFluidStackFromNBT(tagCompound);
+
+        multiBlockSaveData = tagCompound.getCompoundTag("multiBlockData");
         if (tagCompound.hasKey("lastSeenFluid")) { /* legacy compat */
             this.lastSeenFluid = FluidRegistry.getFluid(tagCompound.getString("lastSeenFluid"));
-        } else if (mbTag.hasKey("lastSeenFluid")){
-            this.lastSeenFluid = FluidRegistry.getFluid(mbTag.getString("lastSeenFluid"));
+        } else if (multiBlockSaveData.hasKey("lastSeenFluid")){
+            this.lastSeenFluid = FluidRegistry.getFluid(multiBlockSaveData.getString("lastSeenFluid"));
         }
+    }
+
+    public static FluidStack getFluidStackFromNBT(NBTTagCompound tagCompound) {
+        NBTTagCompound mbTag = tagCompound.getCompoundTag("multiBlockData");
+        FluidStack s;
+        if (tagCompound.hasKey("fluid")) { /* legacy compat */
+            s = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("fluid"));
+        } else if (mbTag.hasKey("fluid")){
+            s = FluidStack.loadFluidStackFromNBT(mbTag.getCompoundTag("fluid"));
+        } else {
+            s = null;
+        }
+        return s;
     }
 
     @Override
@@ -267,7 +254,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         return clientRenderFluid;
     }
 
-    @SideOnly(Side.CLIENT)
+    // Client only
     public float getRenderHeight() {
         return renderHeight;
     }
@@ -319,28 +306,12 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     }
 
     @Override
-    public void onPacketReceivedFromClient(EntityPlayerMP sender, int ID, NBTTagCompound data) {
-        switch (ID){
-            case 1:
-                sendPacket(2, new NBTHelper()
-                        .addToTag(getFluidAmount(), "totalFluid")
-                        .addToTag(getCapacity(), "capacity")
-                        .addToTag(getFluidTag(), "fluidTag")
-                        .toNBT());
-        }
-    }
-
-    @Override
     public void onDataPacket(int id, NBTTagCompound tag) {
         switch (id){
             case 1:
                 this.clientRenderFluid = FluidRegistry.getFluid(tag.getString("fluid"));
                 return;
             case 2:
-                this.totalFluidAmount = tag.getInteger("totalFluid");
-                this.tankCapacity = tag.getInteger("capacity");
-                NBTTagCompound fluidTag = (NBTTagCompound) tag.getTag("fluidTag");
-                fluidData = LiquidCrystalFluidTagData.fromNBT(fluidTag);
                 return;
             case 3:
                 this.renderHeight = tag.getFloat("render");

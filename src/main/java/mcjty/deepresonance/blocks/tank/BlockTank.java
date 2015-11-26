@@ -2,15 +2,18 @@ package mcjty.deepresonance.blocks.tank;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.base.ElecGenericBlockBase;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.deepresonance.network.PacketGetTankInfo;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,9 +23,12 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.input.Keyboard;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -48,10 +54,12 @@ public class BlockTank extends ElecGenericBlockBase {
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
         super.addInformation(itemStack, player, list, whatIsThis);
         NBTTagCompound tagCompound = itemStack.getTagCompound();
-        if (tagCompound != null && tagCompound.hasKey("fluid")) {
-            FluidStack fluidStack = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("fluid"));
-            list.add(EnumChatFormatting.GREEN + "Fluid: "+ DRFluidRegistry.getFluidName(fluidStack));
-            list.add(EnumChatFormatting.GREEN + "Amount: "+ DRFluidRegistry.getAmount(fluidStack) + " mb");
+        if (tagCompound != null) {
+            FluidStack fluidStack = TileTank.getFluidStackFromNBT(tagCompound);
+            if (fluidStack != null) {
+                list.add(EnumChatFormatting.GREEN + "Fluid: " + DRFluidRegistry.getFluidName(fluidStack));
+                list.add(EnumChatFormatting.GREEN + "Amount: " + DRFluidRegistry.getAmount(fluidStack) + " mb");
+            }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
             list.add("This tank can hold up to 16 buckets of liquid.");
@@ -64,7 +72,12 @@ public class BlockTank extends ElecGenericBlockBase {
         }
     }
 
+    // For Waila:
     private long lastTime;
+    public int totalFluidAmount = 0;
+    public int tankCapacity = 0;
+    public LiquidCrystalFluidTagData fluidData = null;
+    public Fluid clientRenderFluid = null;
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -73,18 +86,18 @@ public class BlockTank extends ElecGenericBlockBase {
         Map<ForgeDirection, Integer> settings = tankTile.getSettings();
         int i = settings.get(accessor.getSide());
         currentTip.add("Mode: "+(i == TileTank.SETTING_NONE ? "none" : (i == TileTank.SETTING_ACCEPT ? "accept" : "provide")));
-        currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(tankTile.getClientRenderFluid()));
-        currentTip.add("Amount: "+tankTile.getTotalFluidAmount() + " (" + tankTile.getTankCapacity() + ")");
-        LiquidCrystalFluidTagData fluidData = tankTile.getFluidData();
+        currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(clientRenderFluid));
+        currentTip.add("Amount: "+totalFluidAmount + " (" + tankCapacity + ")");
         if (fluidData != null) {
-            currentTip.add(EnumChatFormatting.YELLOW + "Quality: " + (int)(fluidData.getQuality() * 100) + "%");
-            currentTip.add(EnumChatFormatting.YELLOW + "Purity: " + (int)(fluidData.getPurity() * 100) + "%");
-            currentTip.add(EnumChatFormatting.YELLOW + "Power: " + (int)(fluidData.getStrength() * 100) + "%");
-            currentTip.add(EnumChatFormatting.YELLOW + "Efficiency: " + (int)(fluidData.getEfficiency() * 100) + "%");
+            DecimalFormat decimalFormat = new DecimalFormat("#.#");
+            currentTip.add(EnumChatFormatting.YELLOW + "Quality: " + decimalFormat.format(fluidData.getQuality() * 100) + "%");
+            currentTip.add(EnumChatFormatting.YELLOW + "Purity: " + decimalFormat.format(fluidData.getPurity() * 100) + "%");
+            currentTip.add(EnumChatFormatting.YELLOW + "Power: " + decimalFormat.format(fluidData.getStrength() * 100) + "%");
+            currentTip.add(EnumChatFormatting.YELLOW + "Efficiency: " + decimalFormat.format(fluidData.getEfficiency() * 100) + "%");
         }
-        if (System.currentTimeMillis() - lastTime > 100){
+        if (System.currentTimeMillis() - lastTime > 100) {
             lastTime = System.currentTimeMillis();
-            tankTile.sendPacketToServer(1, new NBTTagCompound());
+            DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetTankInfo(tankTile.xCoord, tankTile.yCoord, tankTile.zCoord));
         }
         return currentTip;
     }
@@ -121,6 +134,21 @@ public class BlockTank extends ElecGenericBlockBase {
         TileEntity tile = world.getTileEntity(x, y, z);
         if (tile instanceof TileTank){
             TileTank tank = (TileTank)tile;
+
+            if (player.getHeldItem() != null) {
+                if (FluidContainerRegistry.isEmptyContainer(player.getHeldItem())) {
+                    if (!world.isRemote) {
+                        extractIntoContainer(player, tank);
+                    }
+                    return true;
+                } else if (FluidContainerRegistry.isFilledContainer(player.getHeldItem())) {
+                    if (!world.isRemote) {
+                        fillFromContainer(player, tank);
+                    }
+                    return true;
+                }
+            }
+
             ForgeDirection direction = ForgeDirection.getOrientation(side);
             int i = tank.settings.get(direction);
             if (i < TileTank.SETTING_MAX) {
@@ -134,6 +162,45 @@ public class BlockTank extends ElecGenericBlockBase {
             return true;
         }
         return super.onBlockActivated(world, x, y, z, player, side, sidex, sidey, sidez);
+    }
+
+    private void fillFromContainer(EntityPlayer player, TileTank tank) {
+        FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(player.getHeldItem());
+        if (fluidStack != null) {
+            int fill = tank.fill(ForgeDirection.UNKNOWN, fluidStack, false);
+            if (fill == fluidStack.amount) {
+                tank.fill(ForgeDirection.UNKNOWN, fluidStack, true);
+                if (!player.capabilities.isCreativeMode) {
+                    ItemStack emptyContainer = FluidContainerRegistry.drainFluidContainer(player.getHeldItem());
+                    player.inventory.setInventorySlotContents(player.inventory.currentItem, emptyContainer);
+                }
+            }
+        }
+    }
+
+    private void extractIntoContainer(EntityPlayer player, TileTank tank) {
+        FluidStack fluidStack = tank.drain(ForgeDirection.UNKNOWN, 1, false);
+        if (fluidStack != null) {
+            int capacity = FluidContainerRegistry.getContainerCapacity(fluidStack, player.getHeldItem());
+            if (capacity != 0) {
+                fluidStack = tank.drain(ForgeDirection.UNKNOWN, capacity, false);
+                if (fluidStack != null && fluidStack.amount == capacity) {
+                    fluidStack = tank.drain(ForgeDirection.UNKNOWN, capacity, true);
+                    ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(fluidStack, player.getHeldItem());
+                    if (filledContainer != null) {
+                        player.inventory.decrStackSize(player.inventory.currentItem, 1);
+                        if (!player.inventory.addItemStackToInventory(filledContainer)) {
+                            EntityItem entityItem = new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, filledContainer);
+                            player.worldObj.spawnEntityInWorld(entityItem);
+                        }
+                        player.openContainer.detectAndSendChanges();
+                    } else {
+                        // Try to insert the fluid back into the tank
+                        tank.fill(ForgeDirection.UNKNOWN, fluidStack, true);
+                    }
+                }
+            }
+        }
     }
 
     @Override

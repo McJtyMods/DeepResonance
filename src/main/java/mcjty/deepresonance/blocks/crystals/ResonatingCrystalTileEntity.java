@@ -1,7 +1,7 @@
 package mcjty.deepresonance.blocks.crystals;
 
 import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.deepresonance.config.ConfigGenerator;
+import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.lib.entity.GenericTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -116,7 +116,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     }
 
     public static float getTotalPower(float strength, float purity) {
-        return ConfigGenerator.Crystal.maximumRF * strength / 100.0f * (purity + 30.0f) / 130.0f;
+        return 1000.0f * ConfigMachines.Power.maximumKiloRF * strength / 100.0f * (purity + 30.0f) / 130.0f;
     }
 
     public int getRfPerTick() {
@@ -127,7 +127,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     }
 
     public static int getRfPerTick(float efficiency, float purity) {
-        return (int) (ConfigGenerator.Crystal.maximumRFPerTick * efficiency / 100.1f * (purity + 2.0f) / 102.0f + 1);
+        return (int) (ConfigMachines.Power.maximumRFPerTick * efficiency / 100.1f * (purity + 2.0f) / 102.0f + 1);
     }
 
     @Override

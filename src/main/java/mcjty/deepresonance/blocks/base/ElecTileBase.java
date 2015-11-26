@@ -33,14 +33,14 @@ public abstract class ElecTileBase extends GenericTileEntity implements IInvento
     @Override
     public void validate() {
         super.validate();
-        ElecCore.tickHandler.registerCall(new IRunOnce() {
+        ElecCore.tickHandler.registerCall(new Runnable() {
             @Override
             public void run() {
                 if (getWorldObj().blockExists(xCoord, yCoord, zCoord)) {
                     onTileLoaded();
                 }
             }
-        });
+        }, getWorldObj());
     }
 
     @Override
@@ -100,11 +100,6 @@ public abstract class ElecTileBase extends GenericTileEntity implements IInvento
 
     public void syncData() {
         this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void sendPacketToServer(int ID, NBTTagCompound data) {
-        ElecCore.networkHandler.getNetworkWrapper().sendToServer(new PacketTileDataToServer(this, ID, data));
     }
 
     @Override

@@ -28,11 +28,13 @@ public final class ModCrafting {
         GameRegistry.addRecipe(new ItemStack(ModItems.filterMaterialItem, 8), "gcg", "csc", "gcg", 'g', Blocks.gravel, 'c', new ItemStack(Items.coal, 1, 1), 's', Blocks.sand);
         GameRegistry.addRecipe(new ItemStack(ModBlocks.denseObsidianBlock, 4), "sos", "oso", "sos", 's', ModItems.spentFilterMaterialItem, 'o', Blocks.obsidian);
         GameRegistry.addRecipe(new ItemStack(ModBlocks.denseGlassBlock, 4), "sgs", "gog", "sgs", 's', ModItems.spentFilterMaterialItem, 'o', Blocks.obsidian, 'g', Blocks.glass);
+        GameRegistry.addRecipe(new ItemStack(ModBlocks.resonatingPlateBlock), "ppp", "ppp", "ppp", 'p', ModItems.resonatingPlateItem);
+        GameRegistry.addRecipe(new ItemStack(ModItems.resonatingPlateItem, 9), "p", 'p', ModBlocks.resonatingPlateBlock);
 
         GameRegistry.addSmelting(ModBlocks.resonatingOreBlock, new ItemStack(ModItems.resonatingPlateItem, 8), 0.0f);
 
         GameRegistry.addRecipe(new ItemStack(ModItems.helmet), "ppp", "p p", "   ", 'p', ModItems.resonatingPlateItem);
-        GameRegistry.addRecipe(new ItemStack(ModItems.chestplate), "ppp", "ppp", "p p", 'p', ModItems.resonatingPlateItem);
+        GameRegistry.addRecipe(new ItemStack(ModItems.chestplate), "p p", "ppp", "ppp", 'p', ModItems.resonatingPlateItem);
         GameRegistry.addRecipe(new ItemStack(ModItems.boots), "   ", "p p", "p p", 'p', ModItems.resonatingPlateItem);
         GameRegistry.addRecipe(new ItemStack(ModItems.leggings), "ppp", "p p", "p p", 'p', ModItems.resonatingPlateItem);
 

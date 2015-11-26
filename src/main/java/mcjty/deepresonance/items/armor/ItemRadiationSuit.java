@@ -1,6 +1,9 @@
-package mcjty.deepresonance.items;
+package mcjty.deepresonance.items.armor;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,7 +36,19 @@ public class ItemRadiationSuit extends ItemArmor {
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
-        return DeepResonance.MODID+":textures/items/suitTexture"+textureSuffix+".png";
+        return DeepResonance.MODID+":textures/items/texture"+textureSuffix+".png";
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot) {
+        switch (armorType) {
+            case 0: return HelmetModel.helmetModel;
+            case 1: return ChestModel.chestModel;
+            case 2: return LegsModel.legsModel;
+            case 3: return BootsModel.bootsModel;
+        }
+        return super.getArmorModel(entityLiving, itemStack, armorSlot);
     }
 
     @Override

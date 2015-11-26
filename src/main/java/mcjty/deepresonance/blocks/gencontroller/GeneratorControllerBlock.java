@@ -1,7 +1,9 @@
 package mcjty.deepresonance.blocks.gencontroller;
 
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import crazypants.enderio.api.redstone.IRedstoneConnectable;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.lib.container.GenericBlock;
@@ -15,11 +17,14 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-public class GeneratorControllerBlock extends GenericBlock {
+@Optional.InterfaceList({
+        @Optional.Interface(iface = "crazypants.enderio.api.redstone.IRedstoneConnectable", modid = "EnderIO")})
+public class GeneratorControllerBlock extends GenericBlock implements IRedstoneConnectable {
 
     private IIcon iconOn;
     private IIcon iconOff;
@@ -66,6 +71,11 @@ public class GeneratorControllerBlock extends GenericBlock {
     @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
         checkRedstone(world, x, y, z);
+    }
+
+    @Override
+    public boolean shouldRedstoneConduitConnect(World world, int x, int y, int z, ForgeDirection from) {
+        return true;
     }
 
     @Override

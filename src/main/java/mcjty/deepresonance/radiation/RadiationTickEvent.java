@@ -3,7 +3,7 @@ package mcjty.deepresonance.radiation;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.deepresonance.items.ItemRadiationSuit;
+import mcjty.deepresonance.items.armor.ItemRadiationSuit;
 import mcjty.deepresonance.varia.QuadTree;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;

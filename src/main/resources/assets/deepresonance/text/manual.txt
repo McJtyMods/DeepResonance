@@ -20,6 +20,7 @@ Table of contents:
 {l:tank}Tank
 {l:smelter}Smelter
 {l:purifier}Purifier
+{l:laser}Lens and Laser
 {l:valve}Valve
 {l:crystalizer}Crystalizer
 {l:pedestal}Pedestal
@@ -200,15 +201,44 @@ quality of the RCL will decrease.
 {b}Purifier
 {n:purifier}
 {rb:purifierBlock}
-With the purifier you can enhance the purity of the liquid. To do this
-you need filter material which you can insert into the purifier. Put
-the tank of RCL that you want to purify above the purifier and another
-tank below it. The purifier can only purify up to 85% purity and will do
-so in steps of 25%. When the filter material is used up it will be ejected
-in an nearby inventory (or in the world if there is no such inventory).
+With the purifier you can enhance the purity of the liquid. To do this you
+need filter material which you can insert into the purifier. Put the tank of
+RCL that you want to purify above the purifier and another tank below it.
+The purifier can only purify up to 85% purity and will do so in steps of 25%.
+When the filter material is used up it will be ejected in an nearby inventory
+if possible. The purifier can also work with a single tank on top or below it.
 
 Note that if the quality of the liquid is not very good you may not
 be able to purify it as high as 85%.
+{-------------------------------------------------------------}
+{b}Lens and Laser
+{n:laser}
+{rb:laserBlock}
+{rb:lensBlock}
+With the laser and the lens you can improve the quality of the liquid
+in a tank even more then what the purifier can do.
+{-------------------------------------------------------------}
+The lens has to be placed on the tank and the laser facing the lens.
+So you have the laser, one empty space, the lens and finally the tank.
+
+The laser needs power, spent (or unspent) crystals. Finally you also
+need some kind of catalyst item (emerald, diamond, redstone, glowstone,
+...). Then give the laser a redstone signal and it will start improving
+the liquid.
+
+Be careful though! The laser does not test if the tank actually has
+enough liquid in it (500mB) and if the liquid is actually valid liquid
+that can be infused. So be careful not to waste precious materials here.
+
+Warning! Make sure you don't infuse purity below 0% as that
+will destroy a lot of the liquid
+{-------------------------------------------------------------}
+Note that the laser does infuse 500mB per catalist item. By default
+the following catalysts are supported: diamond, emerald, ender pearl,
+redstone, gunpowder, glowstone, blaze powder, quartz, nether star,
+ghast tear, slime ball and coal. You can see what bonuses a catalyst
+has in the GUI of the laser (just turn off the laser and put the
+catalyst in the slot).
 {-------------------------------------------------------------}
 {b}Valve
 {n:valve}
@@ -219,6 +249,8 @@ better then specific values it will move liquid to the bottom tank.
 Using the valve you can make a purifier setup using a single purifier
 where you loop the RCL back through the same tank and then use the
 valve to extract the liquid when it has sufficient purity.
+The valve can also make sure the bottom tank has not more then
+a certain amount of RCL liquid in it.
 {-------------------------------------------------------------}
 {b}Crystalizer
 {n:crystalizer}

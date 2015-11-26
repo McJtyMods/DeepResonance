@@ -2,7 +2,6 @@ package mcjty.deepresonance.grid.tank;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import elec332.core.main.ElecCore;
 import elec332.core.multiblock.dynamic.AbstractDynamicMultiBlock;
 import elec332.core.util.BlockLoc;
 import elec332.core.util.NBTHelper;
@@ -15,10 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Elec332 on 10-8-2015.
@@ -31,11 +27,11 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         super(tile, worldHolder);
         this.tank = new InternalGridTank(TANK_BUCKETS * FluidContainerRegistry.BUCKET_VOLUME);
         this.renderData = Maps.newHashMap();
-        if (tile instanceof TileTank){
-            tank.fill(((TileTank) tile).myTank, true);
+        if (tile instanceof TileTank && ((TileTank)tile).getSaveData() != null){
+            tank.fill(FluidStack.loadFluidStackFromNBT(((TileTank)tile).getSaveData().getCompoundTag("fluid")), true);
         }
         needsSorting = true;
-        sendFluidData();
+        setClientRenderFluid();
         markAllBlocksForUpdate();
     }
 
@@ -48,8 +44,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     public void tick() {
         if (world.getTotalWorldTime() % 20L == 0L){
             setTankFluidHeights();
-            sendFluidData();
-            sendFluidHeight();
+            setClientRenderFluid();
             if (check != tank.getStoredFluid()){
                 markAllBlocksForUpdate();
                 check = tank.getStoredFluid();
@@ -60,7 +55,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     @Override
     protected void invalidate() {
         super.invalidate();
-        for (BlockLoc loc : allLocations){
+        for (BlockLoc loc : new ArrayList<BlockLoc>(allLocations)){
             TileTank tank = getTank(loc);
             if (tank != null)
                 setDataToTile(tank);
@@ -71,8 +66,9 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     protected void mergeWith(DRTankMultiBlock multiBlock) {
         super.mergeWith(multiBlock);
         tank.merge(multiBlock.tank);
-        sendFluidData();
+        setClientRenderFluid();
         needsSorting = true;
+        setTankFluidHeights();
         markEverythingDirty();
         markAllBlocksForUpdate();
     }
@@ -179,15 +175,20 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
 
     @Override
     public int fill(FluidStack resource, boolean doFill) {
-        sendFluidData();
-        setTankFluidHeights();
-        return tank.fill(resource, doFill);
+        int ret = tank.fill(resource, doFill);
+        if (doFill) {
+            setClientRenderFluid();
+            setTankFluidHeights();
+        }
+        return ret;
     }
 
     @Override
     public FluidStack drain(int maxDrain, boolean doDrain) {
-        setTankFluidHeights();
-        return tank.drain(maxDrain, doDrain);
+        FluidStack ret = tank.drain(maxDrain, doDrain);
+        if (doDrain)
+            setTankFluidHeights();
+        return ret;
     }
 
     public String getTankInfo(){
@@ -204,7 +205,12 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
 
     @Override
     public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
-        return fill(resource, doFill);
+        int ret = fill(resource, doFill);
+        if (doFill) {
+            setClientRenderFluid();
+            setTankFluidHeights();
+        }
+        return ret;
     }
 
     @Override
@@ -212,12 +218,18 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         if (resource == null || !resource.isFluidEqual(tank.getStoredFluidStack())) {
             return null;
         }
-        return drain(resource.amount, doDrain);
+        FluidStack ret = drain(resource.amount, doDrain);
+        if (doDrain)
+            setTankFluidHeights();
+        return ret;
     }
 
     @Override
     public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-        return drain(maxDrain, doDrain);
+        FluidStack ret = drain(maxDrain, doDrain);
+        if (doDrain)
+            setTankFluidHeights();
+        return ret;
     }
 
     @Override
@@ -237,16 +249,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         };
     }
 
-    private void sendFluidHeight(){
-        ElecCore.tickHandler.registerCall(new Runnable() {
-            @Override
-            public void run() {
-                setTankFluidHeights();
-            }
-        });
-    }
-
-    private void sendFluidData() {
+    private void setClientRenderFluid() {
         markEverythingDirty();
         for (BlockLoc loc : allLocations) {
             TileTank tank = getTank(loc);
@@ -256,4 +259,5 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
             }
         }
     }
+
 }

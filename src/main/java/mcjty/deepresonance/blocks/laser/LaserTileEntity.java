@@ -4,6 +4,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.blocks.crystals.ResonatingCrystalBlock;
+import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.blocks.lens.LensSetup;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
@@ -49,6 +51,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     private int progressCounter = 0;
     private int color = 0;          // 0 means not active, > 0 means a color laser
     private int crystalLiquid = 0;  // This is not RCL but just liquidified spent crystal
+    private int powered = 0;
 
     private static int crystalLiquidClient = 0;
 
@@ -61,6 +64,14 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         super(ConfigMachines.Laser.rfMaximum, ConfigMachines.Laser.rfPerTick);
     }
 
+    @Override
+    public void setPowered(int powered) {
+        if (this.powered != powered) {
+            this.powered = powered;
+            markDirty();
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        }
+    }
 
     @Override
     protected void checkStateServer() {
@@ -74,7 +85,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
 
         int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 
-        if (!BlockTools.getRedstoneSignalIn(meta)) {
+        if (powered == 0) {
             changeColor(0, meta);
             return;
         }
@@ -141,6 +152,9 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
                     fluidData.setStrength(strength);
                     fluidData.setEfficiency(efficiency);
                     FluidStack newStack = fluidData.makeLiquidCrystalStack();
+                    if (Math.abs(purity) < 0.01) {
+                        newStack.amount /= 10;
+                    }
                     tileTank.fill(ForgeDirection.UNKNOWN, newStack, true);
                 }
             }
@@ -151,6 +165,12 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         if (newcolor != color) {
             color = newcolor;
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            // We only have four bits so we can't represent yellow. We use red in that case.
+            if (color == COLOR_YELLOW) {
+                meta = (meta & 0x3) | (COLOR_RED<<2);
+            } else {
+                meta = (meta & 0x3) | (color<<2);
+            }
             worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, meta, 3);
             markDirty();
         }
@@ -163,7 +183,10 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     private void checkCrystal() {
         ItemStack stack = inventoryHelper.getStackInSlot(LaserContainer.SLOT_CRYSTAL);
         if (stack != null) {
-            int newAmount = crystalLiquid + ConfigMachines.Laser.crystalLiquidPerCrystal;
+            NBTTagCompound tagCompound = stack.getTagCompound();
+            float strength = tagCompound == null ? 0 : tagCompound.getFloat("strength") / 100.0f;
+            int addAmount = (int) (ConfigMachines.Laser.minCrystalLiquidPerCrystal + strength * (ConfigMachines.Laser.maxCrystalLiquidPerCrystal - ConfigMachines.Laser.minCrystalLiquidPerCrystal));
+            int newAmount = crystalLiquid + addAmount;
             if (newAmount > ConfigMachines.Laser.crystalLiquidMaximum) {
                 // Not enough room
                 return;
@@ -174,7 +197,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         }
     }
 
-    private static InfusingBonus getInfusingBonus(ItemStack item) {
+    public static InfusingBonus getInfusingBonus(ItemStack item) {
         if (item == null) {
             return null;
         }
@@ -194,36 +217,46 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
                 new InfusingBonus.Modifier(8.0f, 100.0f),
                 InfusingBonus.Modifier.NONE,
                 InfusingBonus.Modifier.NONE));
+        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.ender_pearl), new InfusingBonus(
+                COLOR_GREEN,
+                new InfusingBonus.Modifier(2.0f, 100.0f),
+                InfusingBonus.Modifier.NONE,
+                InfusingBonus.Modifier.NONE));
         infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.redstone), new InfusingBonus(
                 COLOR_RED,
                 new InfusingBonus.Modifier(-1.0f, 0.0f),
-                new InfusingBonus.Modifier(5.0f, 100.0f),
+                new InfusingBonus.Modifier(5.0f, 60.0f),
                 InfusingBonus.Modifier.NONE));
         infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.gunpowder), new InfusingBonus(
                 COLOR_RED,
-                new InfusingBonus.Modifier(-8.0f, 0.0f),
-                new InfusingBonus.Modifier(8.0f, 100.0f),
-                new InfusingBonus.Modifier(4.0f, 100.0f)));
+                new InfusingBonus.Modifier(-5.0f, 0.0f),
+                new InfusingBonus.Modifier(8.0f, 70.0f),
+                new InfusingBonus.Modifier(4.0f, 60.0f)));
         infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.glowstone_dust), new InfusingBonus(
                 COLOR_YELLOW,
                 new InfusingBonus.Modifier(-2.0f, 0.0f),
-                new InfusingBonus.Modifier(6.0f, 100.0f),
-                new InfusingBonus.Modifier(3.0f, 100.0f)));
+                new InfusingBonus.Modifier(6.0f, 50.0f),
+                new InfusingBonus.Modifier(3.0f, 50.0f)));
+        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.blaze_powder), new InfusingBonus(
+                COLOR_YELLOW,
+                new InfusingBonus.Modifier(-6.0f, 0.0f),
+                new InfusingBonus.Modifier(5.0f, 70.0f),
+                new InfusingBonus.Modifier(5.0f, 70.0f)));
         infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.quartz), new InfusingBonus(
                 COLOR_BLUE,
                 new InfusingBonus.Modifier(1.0f, 0.0f),
                 InfusingBonus.Modifier.NONE,
-                new InfusingBonus.Modifier(7.0f, 100.0f)));
+                new InfusingBonus.Modifier(7.0f, 80.0f)));
         infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.nether_star), new InfusingBonus(
                 COLOR_RED,
-                new InfusingBonus.Modifier(-80.0f, 0.0f),
-                new InfusingBonus.Modifier(80.0f, 100.0f),
-                new InfusingBonus.Modifier(80.0f, 100.0f)));
+                new InfusingBonus.Modifier(-60.0f, 0.0f),
+                new InfusingBonus.Modifier(90.0f, 100.0f),
+                new InfusingBonus.Modifier(90.0f, 100.0f)));
         infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.ghast_tear), new InfusingBonus(
                 COLOR_YELLOW,
-                new InfusingBonus.Modifier(-8.0f, 0.0f),
-                new InfusingBonus.Modifier(30.0f, 100.0f),
-                new InfusingBonus.Modifier(30.0f, 100.0f)));
+                new InfusingBonus.Modifier(-20.0f, 0.0f),
+                new InfusingBonus.Modifier(25.0f, 100.0f),
+                new InfusingBonus.Modifier(15.0f, 100.0f)));
         infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.slime_ball), new InfusingBonus(
                 COLOR_GREEN,
                 InfusingBonus.Modifier.NONE,
@@ -297,6 +330,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         super.readFromNBT(tagCompound);
         color = tagCompound.getInteger("color");
         progressCounter = tagCompound.getInteger("progress");
+        powered = tagCompound.getByte("powered");
     }
 
     @Override
@@ -318,6 +352,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("color", color);
         tagCompound.setInteger("progress", progressCounter);
+        tagCompound.setByte("powered", (byte) powered);
     }
 
     @Override
@@ -348,7 +383,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         // @todo needs a better box
-        return AxisAlignedBB.getBoundingBox(xCoord - 7, yCoord - 1, zCoord - 7, xCoord + 8, yCoord + 2, zCoord + 8);
+        return AxisAlignedBB.getBoundingBox(xCoord - 3, yCoord - 1, zCoord - 3, xCoord + 4, yCoord + 2, zCoord + 4);
     }
 
     @Override

@@ -3,12 +3,13 @@ item.RadiationMonitor.name=Дозиметр
 item.ResonatingPlate.name=Резонирующая пластина
 item.FilterMaterial.name=Отфильтрованный материал
 item.SpentFilterMaterial.name=Использованные отфильтрованный материал
-item.radiationSuit0.name=Шлем радиационно-защитного костюма (WIP)
-item.radiationSuit1.name=Кираса радиационно-защитного костюма (WIP)
-item.radiationSuit2.name=Поножи радиационно-защитного костюма (WIP)
-item.radiationSuit3.name=Ботинки радиационно-защитного костюма (WIP)
+item.Helmet0.name=Шлем радиационно-защитного костюма (WIP)
+item.Chest1.name=Кираса радиационно-защитного костюма (WIP)
+item.Leggings2.name=Поножи радиационно-защитного костюма (WIP)
+item.Boots3.name=Ботинки радиационно-защитного костюма (WIP)
 
 tile.oreResonating.name=Резонирующая руда
+tile.blockResonating.name=Resonating Plate Block
 tile.denseObsidian.name=Плотный обсидиан
 tile.denseGlass.name=Плотное стекло
 tile.poisonedDirt.name=Отравленная земля
@@ -23,8 +24,8 @@ tile.smelterBlock.name=Плавильня
 tile.purifierBlock.name=Очиститель
 tile.pedestalBlock.name=Пьедестал
 tile.valveBlock.name=Вентиль
-tile.lensBlock.name=Lens (WIP)
-tile.laserBlock.name=Laser (WIP)
+tile.lensBlock.name=Lens
+tile.laserBlock.name=Laser
 
 itemGroup.DeepResonance=Deep Resonance
 

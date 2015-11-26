@@ -5,12 +5,14 @@ item.FilterMaterial.name=Filter Material
 item.SpentFilterMaterial.name=Spent Filter Material
 item.SpentFilterMaterial.name=Spent Filter Material
 item.LiquidInjector.name=Liquid Injector
-item.radiationSuit0.name=Radiation Suit Helmet (WIP)
-item.radiationSuit1.name=Radiation Suit Chestplate (WIP)
-item.radiationSuit2.name=Radiation Suit Leggings (WIP)
-item.radiationSuit3.name=Radiation Suit Boots (WIP)
+//Maybe should be different?
+item.Helmet0.name=Radiation Suit Helmet (WIP)
+item.Chest1.name=Radiation Suit Chestplate (WIP)
+item.Leggings2.name=Radiation Suit Leggings (WIP)
+item.Boots3.name=Radiation Suit Boots (WIP)
 
 tile.oreResonating.name=Resonating Ore
+tile.blockResonating.name=Resonating Plate Block
 tile.denseObsidian.name=Dense Obsidian
 tile.denseGlass.name=Dense Glass
 tile.poisonedDirt.name=Poisoned Dirt
@@ -25,8 +27,8 @@ tile.smelterBlock.name=Smelter
 tile.purifierBlock.name=Purifier
 tile.pedestalBlock.name=Pedestal
 tile.valveBlock.name=Valve
-tile.lensBlock.name=Lens (WIP)
-tile.laserBlock.name=Infusing Laser (WIP)
+tile.lensBlock.name=Lens
+tile.laserBlock.name=Infusing Laser
 
 itemGroup.DeepResonance=Deep Resonance
 
