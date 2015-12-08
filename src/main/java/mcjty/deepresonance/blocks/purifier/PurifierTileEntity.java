@@ -49,7 +49,7 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
                     // Done. First check if we can actually insert the liquid. If not we postpone this.
                     progress = 1;
                     if (getOutputTank() != null) {
-                        if (fillOutputTank() && validSlot()) {
+                        if (testFillOutputTank() && validSlot()) {
                             if (random.nextInt(doPurify()) == 0) {
                                 consumeFilter();
                             }
@@ -86,6 +86,10 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
             addedPurity = maxPurity - purity;
             if (addedPurity < 0.0001f) {
                 // We are already very pure. Do nothing.
+                // Put back the fluid we extracted.
+                FluidStack stack = fluidData.makeLiquidCrystalStack();
+                getOutputTank().fill(ForgeDirection.UNKNOWN, stack, true);
+                fluidData = null;
                 return 1000;
             }
         }
@@ -98,7 +102,7 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
         return (int) ((maxPurityToAdd - addedPurity) * 1000 / maxPurityToAdd + 1);
     }
 
-    private boolean fillOutputTank() {
+    private boolean testFillOutputTank() {
         return getOutputTank().fill(ForgeDirection.UNKNOWN, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Purifier.rclPerPurify), false) == ConfigMachines.Purifier.rclPerPurify;
     }
 
@@ -127,7 +131,7 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
             // Same tank so operation is possible.
             return true;
         }
-        if (!fillOutputTank()) {
+        if (!testFillOutputTank()) {
             return false;
         }
         return true;
