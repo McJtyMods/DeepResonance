@@ -38,6 +38,11 @@ public class RadiationConfiguration {
 
     public static float suitProtection[] = new float[] { 0, .25f, .50f, .75f, .95f };
 
+    public static int radiationOverlayColor = 0xffff0000;
+    public static int radiationOverlayColorNoRadiation = 0xff00ff00;
+    public static int radiationOverlayX = 10;
+    public static int radiationOverlayY = 10;
+
     public static void init(Configuration cfg) {
         minRadiationRadius = (float) cfg.get(CATEGORY_RADIATION, "minRadiationRadius", minRadiationRadius,
                 "The minimum radiation radius").getDouble();
@@ -99,6 +104,15 @@ public class RadiationConfiguration {
                 "How much protection you get from radiation with 3 radiation suit pieces equipped").getDouble();
         suitProtection[4] = (float) cfg.get(CATEGORY_RADIATION, "suitProtection4", suitProtection[4],
                 "How much protection you get from radiation with 4 radiation suit pieces equipped").getDouble();
+
+        radiationOverlayColor = cfg.get(CATEGORY_RADIATION, "radiationOverlayColor", radiationOverlayColor,
+                "The color for the radiation overlay text in case the radiation monitor is in the players hand").getInt();
+        radiationOverlayColorNoRadiation = cfg.get(CATEGORY_RADIATION, "radiationOverlayColorNoRadiation", radiationOverlayColorNoRadiation,
+                "The color for the radiation overlay text in case the radiation monitor is in the players hand (in case there is no radiation)").getInt();
+        radiationOverlayX = cfg.get(CATEGORY_RADIATION, "radiationOverlayX", radiationOverlayX,
+                "The X coordinate (with 0 being left) for the radiation overlay text. Use -1 to disable").getInt();
+        radiationOverlayY = cfg.get(CATEGORY_RADIATION, "radiationOverlayY", radiationOverlayY,
+                "The Y coordinate (with 0 being top) for the radiation overlay text. Use -1 to disable").getInt();
     }
 
 }

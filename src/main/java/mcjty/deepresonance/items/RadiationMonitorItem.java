@@ -132,8 +132,8 @@ public class RadiationMonitorItem extends Item {
         }
     }
 
-    private void fetchRadiation(EntityPlayer player) {
-        if (System.currentTimeMillis() - lastTime > 500) {
+    public static void fetchRadiation(EntityPlayer player) {
+        if (System.currentTimeMillis() - lastTime > 250) {
             int id = player.worldObj.provider.dimensionId;
             lastTime = System.currentTimeMillis();
             GlobalCoordinate c = new GlobalCoordinate(new Coordinate((int) player.posX, (int) player.posY, (int) player.posZ), id);
