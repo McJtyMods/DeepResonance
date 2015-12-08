@@ -155,9 +155,9 @@ public class DRRadiationManager extends WorldSavedData {
         public QuadTree getRadiationTree(World world, int centerX, int centerY, int centerZ) {
             if (radiationTree == null) {
                 radiationTree = new QuadTree((int) (centerX-radius - 1), (int) (centerY-radius - 1), (int) (centerZ-radius-1), (int) (centerX+radius + 1), (int) (centerY+radius + 1), (int) (centerZ+radius + 1));
-                for (int x = (int) (centerX-radius); x <= centerX+radius ; x++) {
-                    for (int y = (int) (centerY-radius); y <= centerY+radius ; y++) {
-                        for (int z = (int) (centerZ-radius); z <= centerZ+radius ; z++) {
+                for (int x = (int) (centerX-radius); x < centerX+radius ; x++) {
+                    for (int y = (int) (centerY-radius); y < centerY+radius ; y++) {
+                        for (int z = (int) (centerZ-radius); z < centerZ+radius ; z++) {
                             Block block = world.getBlock(x, y, z);
                             float blocker = RadiationShieldRegistry.getBlocker(block);
                             if (blocker < 0.99f) {

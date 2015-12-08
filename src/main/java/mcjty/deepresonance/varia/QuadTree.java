@@ -1,7 +1,6 @@
 package mcjty.deepresonance.varia;
 
 import mcjty.lib.varia.Coordinate;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 
 public class QuadTree {
@@ -51,10 +50,10 @@ public class QuadTree {
                 return -1;
             }
         } else {
-            double lx = box.maxX - box.minX;
-            double ly = box.maxY - box.minY;
-            double lz = box.maxZ - box.minZ;
-            double largest;
+            int lx = box.maxX - box.minX;
+            int ly = box.maxY - box.minY;
+            int lz = box.maxZ - box.minZ;
+            int largest;
             int axis;
             if (lx >= ly && lx >= lz) {
                 largest = lx;
@@ -66,7 +65,7 @@ public class QuadTree {
                 largest = lz;
                 axis = 2;
             }
-            if (largest > 1.0) {
+            if (largest > 1) {
                 switch (axis) {
                     case 0: {
                         int middle = (box.maxX + box.minX) / 2;
@@ -166,10 +165,6 @@ public class QuadTree {
             return true;
         }
         return false;
-    }
-
-    private static boolean isVecInside(AxisAlignedBB box, Vec3 point) {
-        return point.xCoord >= box.minX && point.xCoord <= box.maxX && (point.yCoord >= box.minY && point.yCoord <= box.maxY && point.zCoord >= box.minZ && point.zCoord <= box.maxZ);
     }
 
     private void dump(int indent) {
