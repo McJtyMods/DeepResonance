@@ -244,7 +244,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
                 new InfusingBonus.Modifier(5.0f, 70.0f)));
         infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.quartz), new InfusingBonus(
                 COLOR_BLUE,
-                new InfusingBonus.Modifier(1.0f, 0.0f),
+                new InfusingBonus.Modifier(-1.0f, 0.0f),
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(7.0f, 80.0f)));
         infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.nether_star), new InfusingBonus(
