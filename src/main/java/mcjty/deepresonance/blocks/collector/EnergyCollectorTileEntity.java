@@ -97,7 +97,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
             markDirty();
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 
-            if (doFind) {
+            if (doFind && te instanceof GeneratorTileEntity) {
                 findCrystals(network);
             }
         }
