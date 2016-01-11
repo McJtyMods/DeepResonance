@@ -39,7 +39,7 @@ public class InventoryLocator {
         for (ForgeDirection dir : directions) {
             IInventory inventory = getInventoryAtDirection(worldObj, thisCoordinate, dir);
             if (inventory != null) {
-                if (InventoryHelper.mergeItemStackSafe(inventory, getInventorySide(), spentMaterial, 0, inventory.getSizeInventory(), null) == 0) {
+                if (InventoryHelper.mergeItemStackSafe(inventory, false, getInventorySide(), spentMaterial, 0, inventory.getSizeInventory(), null) == 0) {
                     spawnInWorld = false;
                     break;
                 }
