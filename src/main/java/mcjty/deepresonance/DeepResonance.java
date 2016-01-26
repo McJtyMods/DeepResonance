@@ -1,10 +1,5 @@
 package mcjty.deepresonance;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import elec332.core.config.ConfigWrapper;
 import elec332.core.network.NetworkHandler;
 import mcjty.deepresonance.blocks.ModBlocks;
