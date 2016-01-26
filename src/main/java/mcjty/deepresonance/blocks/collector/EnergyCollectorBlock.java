@@ -1,33 +1,35 @@
 package mcjty.deepresonance.blocks.collector;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
-import mcjty.lib.container.GenericBlock;
-import net.minecraft.block.Block;
+import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-public class EnergyCollectorBlock extends GenericBlock {
+public class EnergyCollectorBlock extends GenericDRBlock<EnergyCollectorTileEntity, EmptyContainer> {
 
     public EnergyCollectorBlock() {
-        super(DeepResonance.instance, Material.iron, EnergyCollectorTileEntity.class, false);
-        setBlockName("energyCollectorBlock");
-        setHorizRotation(true);
-        setCreativeTab(DeepResonance.tabDeepResonance);
+        super(Material.iron, EnergyCollectorTileEntity.class, EmptyContainer.class, "energy_collector", false);
+    }
+
+    @Override
+    public boolean isHorizRotation() {
+        return true;
     }
 
     @Override
@@ -51,10 +53,10 @@ public class EnergyCollectorBlock extends GenericBlock {
     }
 
     @Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLivingBase, ItemStack itemStack) {
-        super.onBlockPlacedBy(world, x, y, z, entityLivingBase, itemStack);
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+        super.onBlockPlacedBy(world, pos, state, placer, stack);
         if (!world.isRemote) {
-            TileEntity te = world.getTileEntity(x, y-1, z);
+            TileEntity te = world.getTileEntity(pos.down());
             if (te instanceof GeneratorTileEntity) {
                 GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) te;
                 DRGeneratorNetwork.Network network = generatorTileEntity.getNetwork();
@@ -62,7 +64,7 @@ public class EnergyCollectorBlock extends GenericBlock {
                     network.incCollectorBlocks();
                     DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(world);
                     generatorNetwork.save(world);
-                    EnergyCollectorTileEntity energyCollectorTileEntity = (EnergyCollectorTileEntity) world.getTileEntity(x, y, z);
+                    EnergyCollectorTileEntity energyCollectorTileEntity = (EnergyCollectorTileEntity) world.getTileEntity(pos);
                     energyCollectorTileEntity.setNetworkID(generatorTileEntity.getNetworkId());
                 }
             }
@@ -70,17 +72,17 @@ public class EnergyCollectorBlock extends GenericBlock {
     }
 
     @Override
-    public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
-        TileEntity te = world.getTileEntity(x, y, z);
+    public void breakBlock(World world, BlockPos pos, IBlockState state) {
+        TileEntity te = world.getTileEntity(pos);
         if (te instanceof EnergyCollectorTileEntity) {
             EnergyCollectorTileEntity energyCollectorTileEntity = (EnergyCollectorTileEntity) te;
             energyCollectorTileEntity.disableCrystalGlow();
         }
 
-        super.breakBlock(world, x, y, z, block, meta);
+        super.breakBlock(world, pos, state);
         if (!world.isRemote) {
-            if (world.getBlock(x, y - 1, z) == GeneratorSetup.generatorBlock) {
-                te = world.getTileEntity(x, y-1, z);
+            if (world.getBlockState(pos.down()).getBlock() == GeneratorSetup.generatorBlock) {
+                te = world.getTileEntity(pos.down());
                 if (te instanceof GeneratorTileEntity) {
                     DRGeneratorNetwork.Network network = ((GeneratorTileEntity) te).getNetwork();
                     if (network != null) {
@@ -94,17 +96,7 @@ public class EnergyCollectorBlock extends GenericBlock {
     }
 
     @Override
-    public String getSideIconName() {
-        return "energyCollector";
-    }
-
-    @Override
-    public boolean shouldSideBeRendered(IBlockAccess blockAccess, int x, int y, int z, int side) {
-        return false;
-    }
-
-    @Override
-    public boolean renderAsNormalBlock() {
+    public boolean isBlockNormalCube() {
         return false;
     }
 

@@ -1,8 +1,5 @@
 package mcjty.deepresonance.blocks.crystalizer;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.base.ElecEnergyReceiverTileBase;
@@ -11,6 +8,7 @@ import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
@@ -20,14 +18,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Map;
 
-public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements ITankHook, ISidedInventory {
+public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements ITankHook, DefaultSidedInventory, ITickable {
 
     public static final String CMD_GETPROGRESS = "getProgress";
     public static final String CLIENTCMD_GETPROGRESS = "getProgress";
@@ -53,13 +52,24 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
     }
 
     @Override
-    protected void checkStateServer() {
+    public InventoryHelper getInventoryHelper() {
+        return inventoryHelper;
+    }
+
+    @Override
+    public void update() {
+        if (!worldObj.isRemote) {
+            checkStateServer();
+        }
+    }
+
+    private void checkStateServer() {
         if (!canCrystalize()) {
             return;
         }
 
         storage.extractEnergy(ConfigMachines.Crystalizer.rfPerRcl, false);
-        FluidStack fluidStack = rclTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Crystalizer.rclPerTick, true);
+        FluidStack fluidStack = rclTank.drain(null, ConfigMachines.Crystalizer.rclPerTick, true);
         LiquidCrystalFluidTagData data = LiquidCrystalFluidTagData.fromStack(fluidStack);
         if (mergedData == null) {
             mergedData = data;
@@ -74,13 +84,13 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
         progress++;
         if (progress == 1) {
             // We just started to work. Notify client
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(getPos());
         }
 
         if (progress >= getTotalProgress()) {
             progress = 0;
             makeCrystal();
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);    // To make sure client can update
+            markDirtyClient();
         }
 
         markDirty();
@@ -107,7 +117,7 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
             return false;
         }
 
-        FluidStack fluidStack = rclTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Crystalizer.rclPerTick, false);
+        FluidStack fluidStack = rclTank.drain(null, ConfigMachines.Crystalizer.rclPerTick, false);
         if (fluidStack == null || fluidStack.amount != ConfigMachines.Crystalizer.rclPerTick) {
             return false;
         }
@@ -150,20 +160,7 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
     @Override
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
         super.writeRestorableToNBT(tagCompound);
-        writeBufferToNBT(tagCompound);
-    }
-
-    private void writeBufferToNBT(NBTTagCompound tagCompound) {
-        NBTTagList bufferTagList = new NBTTagList();
-        for (int i = 0 ; i < inventoryHelper.getCount() ; i++) {
-            ItemStack stack = inventoryHelper.getStackInSlot(i);
-            NBTTagCompound nbtTagCompound = new NBTTagCompound();
-            if (stack != null) {
-                stack.writeToNBT(nbtTagCompound);
-            }
-            bufferTagList.appendTag(nbtTagCompound);
-        }
-        tagCompound.setTag("Items", bufferTagList);
+        writeBufferToNBT(tagCompound, inventoryHelper);
     }
 
     @Override
@@ -182,21 +179,12 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
     @Override
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
         super.readRestorableFromNBT(tagCompound);
-        readBufferFromNBT(tagCompound);
+        readBufferFromNBT(tagCompound, inventoryHelper);
     }
-
-    private void readBufferFromNBT(NBTTagCompound tagCompound) {
-        NBTTagList bufferTagList = tagCompound.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0 ; i < bufferTagList.tagCount() ; i++) {
-            NBTTagCompound nbtTagCompound = bufferTagList.getCompoundTagAt(i);
-            inventoryHelper.setStackInSlot(i, ItemStack.loadItemStackFromNBT(nbtTagCompound));
-        }
-    }
-
 
     @Override
-    public void hook(TileTank tank, ForgeDirection direction) {
-        if (direction != ForgeDirection.DOWN) {
+    public void hook(TileTank tank, EnumFacing direction) {
+        if (direction != EnumFacing.DOWN) {
             return;
         } else if (rclTank == null){
             if (validRCLTank(tank)){
@@ -206,7 +194,7 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
     }
 
     @Override
-    public void unHook(TileTank tank, ForgeDirection direction) {
+    public void unHook(TileTank tank, EnumFacing direction) {
         if (tilesEqual(rclTank, tank)){
             rclTank = null;
             notifyNeighboursOfDataChange();
@@ -214,7 +202,7 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
     }
 
     @Override
-    public void onContentChanged(TileTank tank, ForgeDirection direction) {
+    public void onContentChanged(TileTank tank, EnumFacing direction) {
         if (tilesEqual(rclTank, tank)){
             if (!validRCLTank(tank)) {
                 rclTank = null;
@@ -232,52 +220,17 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
     }
 
     @Override
-    public int[] getAccessibleSlotsFromSide(int side) {
+    public int[] getSlotsForFace(EnumFacing side) {
         return new int[] { CrystalizerContainer.SLOT_CRYSTAL };
     }
 
     @Override
-    public boolean canInsertItem(int index, ItemStack item, int side) {
-        return false;
-    }
-
-    @Override
-    public boolean canExtractItem(int index, ItemStack item, int side) {
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
         return index == CrystalizerContainer.SLOT_CRYSTAL;
     }
 
     @Override
-    public int getSizeInventory() {
-        return inventoryHelper.getCount();
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int index) {
-        return inventoryHelper.getStackInSlot(index);
-    }
-
-    @Override
-    public ItemStack decrStackSize(int index, int amount) {
-        return inventoryHelper.decrStackSize(index, amount);
-    }
-
-    @Override
-    public ItemStack getStackInSlotOnClosing(int index) {
-        return null;
-    }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
-        inventoryHelper.setInventorySlotContents(getInventoryStackLimit(), index, stack);
-    }
-
-    @Override
-    public String getInventoryName() {
-        return "Crystalizer Inventory";
-    }
-
-    @Override
-    public boolean hasCustomInventoryName() {
+    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
         return false;
     }
 
@@ -289,16 +242,6 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
     @Override
     public boolean isUseableByPlayer(EntityPlayer player) {
         return canPlayerAccess(player);
-    }
-
-    @Override
-    public void openInventory() {
-
-    }
-
-    @Override
-    public void closeInventory() {
-
     }
 
     @Override

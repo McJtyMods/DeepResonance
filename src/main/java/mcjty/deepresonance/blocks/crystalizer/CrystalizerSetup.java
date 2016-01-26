@@ -1,17 +1,16 @@
 package mcjty.deepresonance.blocks.crystalizer;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import mcjty.deepresonance.blocks.ModBlocks;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class CrystalizerSetup {
     public static CrystalizerBlock crystalizer;
 
     public static void setupBlocks() {
-        crystalizer = new CrystalizerBlock("crystalizerBlock");
-        crystalizer.registerTile().register();
+        crystalizer = new CrystalizerBlock();
     }
 
     public static void setupCrafting() {

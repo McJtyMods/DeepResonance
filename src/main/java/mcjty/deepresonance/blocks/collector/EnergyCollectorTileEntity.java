@@ -1,7 +1,5 @@
 package mcjty.deepresonance.blocks.collector;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
@@ -11,17 +9,20 @@ import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.varia.Broadcaster;
 import mcjty.lib.entity.GenericTileEntity;
-import mcjty.lib.varia.Coordinate;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.ITickable;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class EnergyCollectorTileEntity extends GenericTileEntity {
+public class EnergyCollectorTileEntity extends GenericTileEntity implements ITickable {
 
     // Minimum power before we stop using a crystal.
     public static final float CRYSTAL_MIN_POWER = .00001f;
@@ -29,7 +30,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
     public static int MAXTICKS = 20;        // Update radiation every second.
 
     // Relative coordinates of active crystals.
-    private Set<Coordinate> crystals = new HashSet<Coordinate>();
+    private Set<BlockPos> crystals = new HashSet<>();
     private boolean lasersActive = false;
     private int laserStartup = 0;        // A mirror (for the client) of the network startup counter.
     private int radiationUpdateCount = MAXTICKS;
@@ -40,12 +41,18 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
     }
 
     @Override
-    protected void checkStateServer() {
+    public void update() {
+        if (!worldObj.isRemote) {
+            checkStateServer();
+        }
+    }
+
+    private void checkStateServer() {
         boolean active = false;
         int startup = 0;
         DRGeneratorNetwork.Network network = null;
 
-        TileEntity te = worldObj.getTileEntity(xCoord, yCoord-1, zCoord);
+        TileEntity te = worldObj.getTileEntity(getPos().down());
         if (te instanceof GeneratorTileEntity) {
             GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) te;
             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
@@ -94,8 +101,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
             boolean doFind = lasersActive != active || (laserStartup > (GeneratorConfiguration.startupTime - 5));
             lasersActive = active;
             laserStartup = startup;
-            markDirty();
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            markDirtyClient();
 
             if (doFind && te instanceof GeneratorTileEntity) {
                 findCrystals(network);
@@ -104,8 +110,8 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
     }
 
     public void disableCrystalGlow() {
-        for (Coordinate coordinate : crystals) {
-            TileEntity te = worldObj.getTileEntity(coordinate.getX() + xCoord, coordinate.getY() + yCoord, coordinate.getZ() + zCoord);
+        for (BlockPos coordinate : crystals) {
+            TileEntity te = worldObj.getTileEntity(new BlockPos(getPos().getX() + coordinate.getX(), getPos().getY() + coordinate.getY(), getPos().getZ() + coordinate.getZ()));
             if (te instanceof ResonatingCrystalTileEntity) {
                 ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
                 resonatingCrystalTileEntity.setGlowing(false);
@@ -114,7 +120,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
     }
 
     private int calculateRF() {
-        Set<Coordinate> tokeep = new HashSet<Coordinate>();
+        Set<BlockPos> tokeep = new HashSet<>();
         boolean dirty = false;
 
         float radiationRadius = 0;
@@ -128,8 +134,8 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         }
 
         int rf = 0;
-        for (Coordinate coordinate : crystals) {
-            TileEntity te = worldObj.getTileEntity(coordinate.getX() + xCoord, coordinate.getY() + yCoord, coordinate.getZ() + zCoord);
+        for (BlockPos coordinate : crystals) {
+            TileEntity te = worldObj.getTileEntity(new BlockPos(getPos().getX() + coordinate.getX(), getPos().getY() + coordinate.getY(), getPos().getZ() + coordinate.getZ()));
             if (te instanceof ResonatingCrystalTileEntity) {
                 ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
                 if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
@@ -169,13 +175,12 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         }
         if (dirty) {
             crystals = tokeep;
-            markDirty();
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            markDirtyClient();
         }
 
         if (doRadiation && radiationRadius > 0.1f) {
             DRRadiationManager radiationManager = DRRadiationManager.getManager(worldObj);
-            GlobalCoordinate thisCoordinate = new GlobalCoordinate(new Coordinate(xCoord, yCoord, zCoord), worldObj.provider.dimensionId);
+            GlobalCoordinate thisCoordinate = new GlobalCoordinate(getPos(), worldObj.provider.getDimensionId());
             if (radiationManager.getRadiationSource(thisCoordinate) == null) {
                 Logging.log("Created radiation source with radius " + radiationRadius + " and strength " + radiationStrength);
             }
@@ -199,8 +204,8 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         }
 
         int maxSupportedRF = network.getGeneratorBlocks() * GeneratorConfiguration.maxRFInputPerBlock;
-        for (Coordinate crystal : crystals) {
-            TileEntity te = worldObj.getTileEntity(crystal.getX(), crystal.getY(), crystal.getZ());
+        for (BlockPos coordinate : crystals) {
+            TileEntity te = worldObj.getTileEntity(new BlockPos(getPos().getX() + coordinate.getX(), getPos().getY() + coordinate.getY(), getPos().getZ() + coordinate.getZ()));
             if (te instanceof ResonatingCrystalTileEntity) {
                 ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
                 if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
@@ -211,8 +216,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
 
         if (addCrystal(x, y, z, network, crystals, crystals, maxSupportedRF) >= 0) {
             // Success.
-            markDirty();
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            markDirtyClient();
         }
     }
 
@@ -220,14 +224,14 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
     private static int ERROR_TOOMUCHPOWER = -2;
 
     // Returns remaining RF that is supported if crystal could be added. Otherwise one of the errors above.
-    private int addCrystal(int x, int y, int z, DRGeneratorNetwork.Network network, Set<Coordinate> newCrystals, Set<Coordinate> oldCrystals, int maxSupportedRF) {
+    private int addCrystal(int x, int y, int z, DRGeneratorNetwork.Network network, Set<BlockPos> newCrystals, Set<BlockPos> oldCrystals, int maxSupportedRF) {
         int maxSupportedCrystals = network.getGeneratorBlocks() * GeneratorConfiguration.maxCrystalsPerBlock;
 
-        TileEntity te = worldObj.getTileEntity(x, y, z);
+        TileEntity te = worldObj.getTileEntity(new BlockPos(x, y, z));
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
             if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
-                Coordinate crystalCoordinate = new Coordinate(x - xCoord, y - yCoord, z - zCoord);
+                BlockPos crystalCoordinate = new BlockPos(x - getPos().getX(), y - getPos().getY(), z - getPos().getZ());
                 if (resonatingCrystalTileEntity.isGlowing() && !oldCrystals.contains(crystalCoordinate)) {
                     // The crystal is already glowing and is not in our 'old' crystal set. That means that it
                     // is currently being managed by another generator. We ignore it then.
@@ -253,7 +257,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
     }
 
     private void findCrystals(DRGeneratorNetwork.Network network) {
-        Set<Coordinate> newCrystals = new HashSet<Coordinate>();
+        Set<BlockPos> newCrystals = new HashSet<>();
 
         int maxSupportedRF = network.getGeneratorBlocks() * GeneratorConfiguration.maxRFInputPerBlock;
 
@@ -261,12 +265,15 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         boolean tooMuchPower = false;
 
         // @todo this is not a good algorithm. It should find the closest first.
+        int xCoord = getPos().getX();
+        int yCoord = getPos().getY();
+        int zCoord = getPos().getZ();
         for (int y = yCoord - ConfigMachines.Collector.maxVerticalCrystalDistance ; y <= yCoord + ConfigMachines.Collector.maxVerticalCrystalDistance ; y++) {
             if (y >= 0 && y < worldObj.getHeight()) {
                 int maxhordist = ConfigMachines.Collector.maxHorizontalCrystalDistance;
                 for (int x = xCoord - maxhordist; x <= xCoord + maxhordist; x++) {
                     for (int z = zCoord - maxhordist; z <= zCoord + maxhordist; z++) {
-                        if (worldObj.getBlock(x, y, z) == ModBlocks.resonatingCrystalBlock) {
+                        if (worldObj.getBlockState(new BlockPos(x, y, z)).getBlock() == ModBlocks.resonatingCrystalBlock) {
                             maxSupportedRF = addCrystal(x, y, z, network, newCrystals, crystals, maxSupportedRF);
                             if (maxSupportedRF == ERROR_TOOMANYCRYSTALS) {
                                 tooManyCrystals = true;
@@ -280,8 +287,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         }
         if (!newCrystals.equals(crystals)) {
             crystals = newCrystals;
-            markDirty();
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            markDirtyClient();
         }
 
         if (lasersActive && (tooManyCrystals || tooMuchPower)) {
@@ -296,7 +302,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
 
     }
 
-    public Set<Coordinate> getCrystals() {
+    public Set<BlockPos> getCrystals() {
         return crystals;
     }
 
@@ -325,7 +331,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         byte[] crystalZ = tagCompound.getByteArray("crystalsZ");
         crystals.clear();
         for (int i = 0 ; i < crystalX.length ; i++) {
-            crystals.add(new Coordinate(crystalX[i], crystalY[i], crystalZ[i]));
+            crystals.add(new BlockPos(crystalX[i], crystalY[i], crystalZ[i]));
         }
         lasersActive = tagCompound.getBoolean("lasersActive");
         laserStartup = tagCompound.getInteger("laserStartup");
@@ -343,7 +349,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
         byte[] crystalY = new byte[crystals.size()];
         byte[] crystalZ = new byte[crystals.size()];
         int i = 0;
-        for (Coordinate crystal : crystals) {
+        for (BlockPos crystal : crystals) {
             crystalX[i] = (byte) crystal.getX();
             crystalY[i] = (byte) crystal.getY();
             crystalZ[i] = (byte) crystal.getZ();
@@ -367,7 +373,11 @@ public class EnergyCollectorTileEntity extends GenericTileEntity {
     @SideOnly(Side.CLIENT)
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return AxisAlignedBB.getBoundingBox(xCoord - 7, yCoord - 1, zCoord - 7, xCoord + 8, yCoord + 2, zCoord + 8);
+        int xCoord = getPos().getX();
+        int yCoord = getPos().getY();
+        int zCoord = getPos().getZ();
+
+        return AxisAlignedBB.fromBounds(xCoord - 7, yCoord - 1, zCoord - 7, xCoord + 8, yCoord + 2, zCoord + 8);
     }
 
 }

@@ -3,7 +3,6 @@ package mcjty.deepresonance.client.render;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.deepresonance.blocks.collector.EnergyCollectorItemRenderer;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorTESR;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;

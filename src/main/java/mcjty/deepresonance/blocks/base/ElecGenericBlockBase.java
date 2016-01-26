@@ -1,20 +1,20 @@
 package mcjty.deepresonance.blocks.base;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import mcjty.deepresonance.DeepResonance;
-import mcjty.lib.container.GenericBlock;
-import mcjty.lib.container.GenericItemBlock;
+import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.lib.entity.GenericTileEntity;
 import net.minecraft.block.material.Material;
+import net.minecraft.inventory.Container;
 
 /**
  * Created by Elec332 on 20-8-2015.
  */
-public class ElecGenericBlockBase extends GenericBlock {
+public class ElecGenericBlockBase<T extends GenericTileEntity, C extends Container> extends GenericDRBlock<T, C> {
 
-    public ElecGenericBlockBase(Material material, Class<? extends GenericTileEntity> tileEntityClass, String blockName) {
-        super(DeepResonance.instance, material, tileEntityClass, false);
-        this.blockName = blockName;
+    public ElecGenericBlockBase(Material material,
+                                Class<? extends T> tileEntityClass,
+                                Class<? extends C> containerClass,
+                                String blockName) {
+        super(material, tileEntityClass, containerClass, blockName, false);
         setup();
     }
 
@@ -32,20 +32,5 @@ public class ElecGenericBlockBase extends GenericBlock {
         this.setResistance(4.5F);
         this.setHardness(2.0F);
         this.setStepSound(soundTypeStone);
-        this.setBlockName(blockName);
-        setCreativeTab(DeepResonance.tabDeepResonance);
     }
-
-    private final String blockName;
-
-    public ElecGenericBlockBase registerTile() {
-        GameRegistry.registerTileEntity(this.tileEntityClass, this.blockName);
-        return this;
-    }
-
-    public ElecGenericBlockBase register() {
-        GameRegistry.registerBlock(this, GenericItemBlock.class, this.blockName);
-        return this;
-    }
-
 }

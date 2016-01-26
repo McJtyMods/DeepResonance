@@ -1,9 +1,5 @@
 package mcjty.deepresonance.blocks.base;
 
-import elec332.core.baseclasses.tileentity.IInventoryTile;
-import elec332.core.main.ElecCore;
-import elec332.core.network.IElecCoreNetworkTile;
-import elec332.core.util.IRunOnce;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
