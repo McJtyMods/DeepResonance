@@ -1,14 +1,17 @@
 package mcjty.deepresonance.blocks.lens;
 
+import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.tank.TankSetup;
 import mcjty.lib.container.GenericItemBlock;
 import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.Logging;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class LensItemBlock extends GenericItemBlock {
     public LensItemBlock(Block block) {
@@ -16,16 +19,15 @@ public class LensItemBlock extends GenericItemBlock {
     }
 
     @Override
-    public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata) {
-        ForgeDirection direction = ForgeDirection.values()[side];
-        if (direction == ForgeDirection.UP || direction == ForgeDirection.DOWN) {
+    public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing direction, float hitX, float hitY, float hitZ, IBlockState newState) {
+        if (direction == EnumFacing.UP || direction == EnumFacing.DOWN) {
             if (world.isRemote) {
                 Logging.warn(player, "You can only place this vertical!");
             }
             return false;
         }
         direction = direction.getOpposite();
-        Block block = world.getBlock(x + direction.offsetX, y + direction.offsetY, z + direction.offsetZ);
+        Block block = WorldHelper.getBlockAt(world, pos.offset(direction));
         if (block != TankSetup.tank) {
             if (world.isRemote) {
                 Logging.warn(player, "You can only place this against a tank!");
@@ -33,7 +35,7 @@ public class LensItemBlock extends GenericItemBlock {
             return false;
         }
 
-        metadata = BlockTools.setOrientationHoriz(metadata, direction);
-        return super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
+        //metadata = BlockTools.setOrientationHoriz(metadata, direction); //TODO: McJty: Rotation
+        return super.placeBlockAt(stack, player, world, pos, direction, hitX, hitY, hitZ, newState);
     }
 }

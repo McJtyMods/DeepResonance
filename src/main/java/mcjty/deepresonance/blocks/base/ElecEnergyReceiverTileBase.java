@@ -1,5 +1,9 @@
 package mcjty.deepresonance.blocks.base;
 
+import elec332.core.main.ElecCore;
+import elec332.core.network.IElecCoreNetworkTile;
+import elec332.core.tile.IInventoryTile;
+import elec332.core.world.WorldHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -26,11 +30,11 @@ public abstract class ElecEnergyReceiverTileBase extends GenericEnergyReceiverTi
         ElecCore.tickHandler.registerCall(new Runnable() {
             @Override
             public void run() {
-                if (getWorldObj().blockExists(xCoord, yCoord, zCoord)) {
+                if (WorldHelper.chunkExists(worldObj, pos)) {
                     onTileLoaded();
                 }
             }
-        }, getWorldObj());
+        }, worldObj);
     }
 
     @Override
@@ -58,7 +62,7 @@ public abstract class ElecEnergyReceiverTileBase extends GenericEnergyReceiverTi
 
     public void notifyNeighboursOfDataChange(){
         this.markDirty();
-        this.worldObj.notifyBlockChange(xCoord, yCoord, zCoord, blockType);
+        this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
     }
 
     @Override

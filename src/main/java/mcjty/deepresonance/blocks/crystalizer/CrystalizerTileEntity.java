@@ -1,5 +1,6 @@
 package mcjty.deepresonance.blocks.crystalizer;
 
+import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.base.ElecEnergyReceiverTileBase;
@@ -216,7 +217,7 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
     }
 
     private boolean tilesEqual(TileTank first, TileTank second){
-        return first != null && second != null && first.myLocation().equals(second.myLocation()) && WorldHelper.getDimID(first.getWorldObj()) == WorldHelper.getDimID(second.getWorldObj());
+        return first != null && second != null && first.getPos().equals(second.getPos()) && WorldHelper.getDimID(first.getWorld()) == WorldHelper.getDimID(second.getWorld());
     }
 
     @Override
@@ -257,9 +258,7 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
 
     // Request the researching amount from the server. This has to be called on the client side.
     public void requestProgressFromServer() {
-        DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketRequestIntegerFromServer(xCoord, yCoord, zCoord,
-                CMD_GETPROGRESS,
-                CLIENTCMD_GETPROGRESS));
+        DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketRequestIntegerFromServer(DeepResonance.MODID, pos, CMD_GETPROGRESS, CLIENTCMD_GETPROGRESS));
     }
 
     @Override

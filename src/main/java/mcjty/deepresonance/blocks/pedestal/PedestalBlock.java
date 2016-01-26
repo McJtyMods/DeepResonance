@@ -1,7 +1,7 @@
 package mcjty.deepresonance.blocks.pedestal;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.gui.GuiProxy;
@@ -21,7 +21,7 @@ public class PedestalBlock extends GenericBlock {
 
     public PedestalBlock() {
         super(DeepResonance.instance, Material.iron, PedestalTileEntity.class, false);
-        setBlockName("pedestalBlock");
+        setUnlocalizedName(DeepResonance.MODID + ".pedestalBlock");
         setCreativeTab(DeepResonance.tabDeepResonance);
     }
 

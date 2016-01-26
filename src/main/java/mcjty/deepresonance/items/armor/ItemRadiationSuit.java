@@ -1,7 +1,7 @@
 package mcjty.deepresonance.items.armor;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
@@ -23,7 +23,7 @@ public class ItemRadiationSuit extends ItemArmor {
         super(material, renderIndex, armorType);
         setUnlocalizedName(name);
         this.textureSuffix = name;
-        setTextureName(DeepResonance.MODID+":radiationSuit"+name);
+        //setTextureName(DeepResonance.MODID+":radiationSuit"+name);
         setCreativeTab(DeepResonance.tabDeepResonance);
     }
 

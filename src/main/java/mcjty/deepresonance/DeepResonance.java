@@ -1,5 +1,7 @@
 package mcjty.deepresonance;
 
+import elec332.core.config.ConfigWrapper;
+import elec332.core.network.NetworkHandler;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.commands.CommandDRGen;
 import mcjty.deepresonance.compat.CompatHandler;
@@ -125,4 +127,5 @@ public class DeepResonance implements ModBase {
         GuiDeepResonanceManual.locatePage = page;
         player.openGui(DeepResonance.instance, bookIndex, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
     }
+
 }

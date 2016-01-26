@@ -1,22 +1,25 @@
 package mcjty.deepresonance.proxy;
 
+import elec332.core.client.IIconRegistrar;
+import elec332.core.client.ITextureLoader;
+import elec332.core.client.model.RenderingRegistry;
 import mcjty.deepresonance.RadiationOverlayRenderer;
 import mcjty.deepresonance.client.gui.NoRFFoundException;
 import mcjty.deepresonance.client.render.ModRenderers;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class ClientProxy extends CommonProxy {
+public class ClientProxy extends CommonProxy implements ITextureLoader{
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
         super.preInit(e);
+        RenderingRegistry.instance().registerTextureLoader(this);
     }
 
     @Override
@@ -42,14 +45,13 @@ public class ClientProxy extends CommonProxy {
     }
 
     @SubscribeEvent
-    public void registerIcons(TextureStitchEvent.Pre event){
-        if (event.map.getTextureType() == 0)
-            DRFluidRegistry.registerIcons(event.map);
-    }
-
-    @SubscribeEvent
     public void renderGameOverlayEvent(RenderGameOverlayEvent evt) {
         RadiationOverlayRenderer.onRender(evt);
+    }
+
+    @Override
+    public void registerTextures(IIconRegistrar iIconRegistrar) {
+        DRFluidRegistry.registerIcons(iIconRegistrar);
     }
 
 }

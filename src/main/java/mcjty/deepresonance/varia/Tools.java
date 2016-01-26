@@ -2,7 +2,7 @@ package mcjty.deepresonance.varia;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S29PacketSoundEffect;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 public class Tools {
@@ -12,10 +12,10 @@ public class Tools {
 
         for (int j = 0; j < worldObj.playerEntities.size(); ++j) {
             EntityPlayerMP entityplayermp = (EntityPlayerMP)worldObj.playerEntities.get(j);
-            ChunkCoordinates chunkcoordinates = entityplayermp.getPlayerCoordinates();
-            double d7 = x - chunkcoordinates.posX;
-            double d8 = y - chunkcoordinates.posY;
-            double d9 = z - chunkcoordinates.posZ;
+            BlockPos chunkcoordinates = entityplayermp.getPosition();
+            double d7 = x - chunkcoordinates.getX();
+            double d8 = y - chunkcoordinates.getY();
+            double d9 = z - chunkcoordinates.getZ();
             double d10 = d7 * d7 + d8 * d8 + d9 * d9;
 
             if (d10 <= 256.0D) {

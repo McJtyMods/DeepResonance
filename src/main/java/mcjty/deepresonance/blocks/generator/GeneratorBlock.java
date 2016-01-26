@@ -1,7 +1,7 @@
 package mcjty.deepresonance.blocks.generator;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
@@ -12,17 +12,15 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import org.lwjgl.input.Keyboard;
 
 import java.text.DecimalFormat;
@@ -30,9 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GeneratorBlock extends GenericBlock {
-
-    private IIcon iconUpDown;
-    private IIcon icons[] = new IIcon[8];
 
     public static final int META_ON = 1;
     public static final int META_OFF = 0;
@@ -47,8 +42,8 @@ public class GeneratorBlock extends GenericBlock {
 
     public GeneratorBlock() {
         super(DeepResonance.instance, Material.iron, GeneratorTileEntity.class, false);
-        setBlockName("generatorBlock");
-        setHorizRotation(true);
+        setUnlocalizedName(DeepResonance.MODID + ".generatorBlock");
+        //setHorizRotation(true); TODO: McJty: HorizRotation
         setCreativeTab(DeepResonance.tabDeepResonance);
     }
 
@@ -93,17 +88,7 @@ public class GeneratorBlock extends GenericBlock {
         return currenttip;
     }
 
-    @Override
-    public String getSideIconName() {
-        return "machineGenerator";
-    }
-
-    @Override
-    protected ForgeDirection getOrientation(int x, int y, int z, EntityLivingBase entityLivingBase) {
-        return ForgeDirection.NORTH;
-    }
-
-    private void updateMeta(World world, int x, int y, int z) {
+    /*private void updateMeta(World world, int x, int y, int z) {
         int meta = world.getBlockMetadata(x, y, z) & BlockTools.MASK_REDSTONE_IN;
         if (world.getBlock(x, y+1, z) == GeneratorSetup.generatorBlock) {
             meta |= META_HASUPPER;
@@ -185,47 +170,6 @@ public class GeneratorBlock extends GenericBlock {
                 updateMeta(world, x, y - 1, z);
             }
         }
-    }
+    }*/
 
-    @Override
-    public void registerBlockIcons(IIconRegister iconRegister) {
-        iconUpDown = iconRegister.registerIcon(DeepResonance.MODID + ":machineBase");
-
-        IIcon iconFull[] = new IIcon[2];
-        IIcon iconTop[] = new IIcon[2];
-        IIcon iconBottom[] = new IIcon[2];
-        IIcon iconMiddle[] = new IIcon[2];
-        for (int i = 0 ; i < 2 ; i++) {
-            iconFull[i] = iconRegister.registerIcon(DeepResonance.MODID + ":generatorSideFull" + (i==0 ? "Off" : "On"));
-            iconTop[i] = iconRegister.registerIcon(DeepResonance.MODID + ":generatorSideTop" + (i==0 ? "Off" : "On"));
-            iconBottom[i] = iconRegister.registerIcon(DeepResonance.MODID + ":generatorSideBottom" + (i==0 ? "Off" : "On"));
-            iconMiddle[i] = iconRegister.registerIcon(DeepResonance.MODID + ":generatorSideMiddle" + (i==0 ? "Off" : "On"));
-        }
-
-        icons[META_OFF] = iconFull[0];
-        icons[META_ON] = iconFull[1];
-        icons[META_OFF + META_HASUPPER] = iconBottom[0];
-        icons[META_ON + META_HASUPPER] = iconBottom[1];
-        icons[META_OFF + META_HASLOWER] = iconTop[0];
-        icons[META_ON + META_HASLOWER] = iconTop[1];
-        icons[META_OFF + META_HASUPPER + META_HASLOWER] = iconMiddle[0];
-        icons[META_ON + META_HASUPPER + META_HASLOWER] = iconMiddle[1];
-    }
-
-    @Override
-    public IIcon getIcon(int side, int meta) {
-        if (side == ForgeDirection.DOWN.ordinal() || side == ForgeDirection.UP.ordinal()) {
-            return iconUpDown;
-        }
-        return icons[meta & 0x7];
-    }
-
-    @Override
-    public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side) {
-        if (side == ForgeDirection.DOWN.ordinal() || side == ForgeDirection.UP.ordinal()) {
-            return iconUpDown;
-        }
-        int meta = blockAccess.getBlockMetadata(x, y, z);
-        return icons[meta & 0x7];
-    }
 }

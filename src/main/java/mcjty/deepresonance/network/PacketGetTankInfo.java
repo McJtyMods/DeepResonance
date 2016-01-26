@@ -1,8 +1,10 @@
 package mcjty.deepresonance.network;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import elec332.core.world.WorldHelper;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
@@ -31,6 +33,10 @@ public class PacketGetTankInfo implements IMessage,IMessageHandler<PacketGetTank
     public PacketGetTankInfo() {
     }
 
+    public PacketGetTankInfo(BlockPos pos){
+        this(pos.getX(), pos.getY(), pos.getZ());
+    }
+
     public PacketGetTankInfo(int x, int y, int z) {
         this.x = x;
         this.y = y;
@@ -40,7 +46,7 @@ public class PacketGetTankInfo implements IMessage,IMessageHandler<PacketGetTank
     @Override
     public PacketReturnTankInfo onMessage(PacketGetTankInfo message, MessageContext ctx) {
         World world = ctx.getServerHandler().playerEntity.worldObj;
-        TileEntity tileEntity = world.getTileEntity(message.x, message.y, message.z);
+        TileEntity tileEntity = WorldHelper.getTileAt(world, new BlockPos(x, y, z));
         if (tileEntity instanceof TileTank) {
             TileTank tileTank = (TileTank) tileEntity;
             return new PacketReturnTankInfo(tileTank.getFluidAmount(), tileTank.getCapacity(), DRFluidRegistry.getFluidName(tileTank.getFluid()), tileTank.getFluidTag());

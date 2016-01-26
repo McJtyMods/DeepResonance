@@ -1,6 +1,6 @@
 package mcjty.deepresonance.blocks.purifier;
 
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.items.ModItems;
 import net.minecraft.init.Items;
@@ -11,7 +11,6 @@ public class PurifierSetup {
 
     public static void setupBlocks() {
         purifierBlock = new PurifierBlock("purifierBlock");
-        purifierBlock.registerTile().register();
     }
 
     public static void setupCrafting() {

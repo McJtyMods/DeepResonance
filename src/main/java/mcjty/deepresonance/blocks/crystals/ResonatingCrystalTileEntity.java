@@ -1,11 +1,13 @@
 package mcjty.deepresonance.blocks.crystals;
 
+import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.lib.entity.GenericTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -32,11 +34,6 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     private boolean glowing = false;
 
-    @Override
-    public boolean canUpdate() {
-        return false;
-    }
-
     public float getStrength() {
         return strength;
     }
@@ -60,7 +57,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     public void setStrength(float strength) {
         this.strength = strength;
         markDirty();
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        worldObj.markBlockForUpdate(pos);
     }
 
     public void setPower(float power) {
@@ -73,13 +70,13 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     public void setEfficiency(float efficiency) {
         this.efficiency = efficiency;
         markDirty();
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        worldObj.markBlockForUpdate(pos);
     }
 
     public void setPurity(float purity) {
         this.purity = purity;
         markDirty();
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        worldObj.markBlockForUpdate(pos);
     }
 
     public void setGlowing(boolean glowing) {
@@ -88,7 +85,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         }
         this.glowing = glowing;
         markDirty();
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        worldObj.markBlockForUpdate(pos);
     }
 
     @Override
@@ -170,9 +167,9 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     // Special == 1, average random
     // Special == 2, best random
     // Special == 3, best non-overcharged
-    public static void spawnRandomCrystal(World world, Random random, int x, int y, int z, int special) {
-        world.setBlock(x, y, z, ModBlocks.resonatingCrystalBlock, 0, 3);
-        TileEntity te = world.getTileEntity(x, y, z);
+    public static void spawnRandomCrystal(World world, Random random, BlockPos pos, int special) {
+        WorldHelper.setBlockState(world, pos, ModBlocks.resonatingCrystalBlock.getStateFromMeta(0), 3);
+        TileEntity te = WorldHelper.getTileAt(world, pos);
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
             if (special >= 3) {

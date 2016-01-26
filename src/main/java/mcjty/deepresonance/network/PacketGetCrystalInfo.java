@@ -1,8 +1,10 @@
 package mcjty.deepresonance.network;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import elec332.core.world.WorldHelper;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -30,6 +32,10 @@ public class PacketGetCrystalInfo implements IMessage,IMessageHandler<PacketGetC
     public PacketGetCrystalInfo() {
     }
 
+    public PacketGetCrystalInfo(BlockPos pos){
+        this(pos.getX(), pos.getY(), pos.getZ());
+    }
+
     public PacketGetCrystalInfo(int x, int y, int z) {
         this.x = x;
         this.y = y;
@@ -39,7 +45,7 @@ public class PacketGetCrystalInfo implements IMessage,IMessageHandler<PacketGetC
     @Override
     public PacketReturnCrystalInfo onMessage(PacketGetCrystalInfo message, MessageContext ctx) {
         World world = ctx.getServerHandler().playerEntity.worldObj;
-        TileEntity tileEntity = world.getTileEntity(message.x, message.y, message.z);
+        TileEntity tileEntity = WorldHelper.getTileAt(world, new BlockPos(x, y, z));
         if (tileEntity instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
             return new PacketReturnCrystalInfo(resonatingCrystalTileEntity.getRfPerTick(), resonatingCrystalTileEntity.getPower());

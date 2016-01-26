@@ -1,14 +1,13 @@
 package mcjty.deepresonance.blocks.base;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import elec332.core.baseclasses.tileentity.IInventoryTile;
 import elec332.core.main.ElecCore;
 import elec332.core.network.IElecCoreNetworkTile;
 import elec332.core.network.PacketTileDataToServer;
 import elec332.core.server.ServerHelper;
+import elec332.core.tile.IInventoryTile;
 import elec332.core.util.BlockLoc;
 import elec332.core.util.IRunOnce;
+import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.lib.entity.GenericTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,11 +35,11 @@ public abstract class ElecTileBase extends GenericTileEntity implements IInvento
         ElecCore.tickHandler.registerCall(new Runnable() {
             @Override
             public void run() {
-                if (getWorldObj().blockExists(xCoord, yCoord, zCoord)) {
+                if (WorldHelper.chunkExists(worldObj, pos)) {
                     onTileLoaded();
                 }
             }
-        }, getWorldObj());
+        }, worldObj);
     }
 
     @Override
@@ -68,15 +67,11 @@ public abstract class ElecTileBase extends GenericTileEntity implements IInvento
 
     public void notifyNeighboursOfDataChange(){
         this.markDirty();
-        this.worldObj.notifyBlockChange(xCoord, yCoord, zCoord, blockType);
-    }
-
-    public BlockLoc myLocation(){
-        return new BlockLoc(this.xCoord, this.yCoord, this.zCoord);
+        this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
     }
 
     public boolean openGui(EntityPlayer player, int ID){
-        player.openGui(DeepResonance.instance, ID, worldObj, xCoord, yCoord, zCoord);
+        player.openGui(DeepResonance.instance, ID, worldObj, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
 
@@ -99,7 +94,7 @@ public abstract class ElecTileBase extends GenericTileEntity implements IInvento
     }
 
     public void syncData() {
-        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+        this.worldObj.markBlockForUpdate(this.pos);
     }
 
     @Override
@@ -107,28 +102,28 @@ public abstract class ElecTileBase extends GenericTileEntity implements IInvento
     }
 
     public void sendPacket(int ID, NBTTagCompound data) {
-        for (Object player : ServerHelper.instance.getAllPlayersWatchingBlock(this.worldObj, this.xCoord, this.zCoord)) {
+        for (Object player : ServerHelper.instance.getAllPlayersWatchingBlock(this.worldObj, this.pos)) {
             this.sendPacketTo((EntityPlayerMP) player, ID, data);
         }
     }
 
     public void sendPacketTo(EntityPlayerMP player, int ID, NBTTagCompound data) {
-        player.playerNetServerHandler.sendPacket(new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, ID, data));
+        player.playerNetServerHandler.sendPacket(new S35PacketUpdateTileEntity(this.pos, ID, data));
     }
 
     @Override
     public Packet getDescriptionPacket() {
         NBTTagCompound nbtTag = new NBTTagCompound();
         this.writeToNBT(nbtTag);
-        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, nbtTag);
+        return new S35PacketUpdateTileEntity(this.pos, 0, nbtTag);
     }
 
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
-        if(packet.func_148853_f() == 0) {
-            this.readFromNBT(packet.func_148857_g());
+        if(packet.getTileEntityType() == 0) {
+            this.readFromNBT(packet.getNbtCompound());
         } else {
-            this.onDataPacket(packet.func_148853_f(), packet.func_148857_g());
+            this.onDataPacket(packet.getTileEntityType(), packet.getNbtCompound());
         }
 
     }
@@ -136,4 +131,5 @@ public abstract class ElecTileBase extends GenericTileEntity implements IInvento
     @Override
     public void onDataPacket(int id, NBTTagCompound tag) {
     }
+
 }

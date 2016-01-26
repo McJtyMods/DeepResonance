@@ -1,5 +1,6 @@
 package mcjty.deepresonance.blocks.pedestal;
 
+import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
@@ -9,9 +10,6 @@ import mcjty.deepresonance.varia.InventoryLocator;
 import mcjty.deepresonance.varia.Tools;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericTileEntity;
-import mcjty.lib.varia.BlockTools;
-import mcjty.lib.varia.Coordinate;
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -20,12 +18,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.util.ITickable;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
-public class PedestalTileEntity extends GenericTileEntity implements IInventory {
+public class PedestalTileEntity extends GenericTileEntity implements IInventory, ITickable {
     private InventoryHelper inventoryHelper = new InventoryHelper(this, PedestalContainer.factory, 1);
 
     private int checkCounter = 0;
@@ -33,14 +34,15 @@ public class PedestalTileEntity extends GenericTileEntity implements IInventory 
     // Cache for the inventory used to put the spent crystal material in.
     private InventoryLocator inventoryLocator = new InventoryLocator();
 
-    private Coordinate cachedLocator = null;
+    private BlockPos cachedLocator = null;
 
     @Override
-    public boolean canUpdate() {
-        return true;
+    public void update() {
+        if (!worldObj.isRemote){
+            checkStateServer();
+        }
     }
 
-    @Override
     protected void checkStateServer() {
         checkCounter--;
         if (checkCounter > 0) {
@@ -48,48 +50,45 @@ public class PedestalTileEntity extends GenericTileEntity implements IInventory 
         }
         checkCounter = 20;
 
-        ForgeDirection orientation = BlockTools.getOrientation(worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
-        int xx = xCoord + orientation.offsetX;
-        int yy = yCoord + orientation.offsetY;
-        int zz = zCoord + orientation.offsetZ;
-        Block block = worldObj.getBlock(xx, yy, zz);
-        if (block.isAir(worldObj, xx, yy, zz)) {
+        EnumFacing orientation = EnumFacing.NORTH;//BlockTools.getOrientation(worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
+        BlockPos b = pos.offset(orientation);
+        if (worldObj.isAirBlock(b)) {
             // Nothing in front. We can place a new crystal if we have one.
-            placeCrystal(xx, yy, zz);
-        } else if (block == ModBlocks.resonatingCrystalBlock) {
+            placeCrystal(b);
+        } else if (WorldHelper.getBlockAt(worldObj, b) == ModBlocks.resonatingCrystalBlock) {
             // Check if the crystal in front of us still has power.
             // If not we will remove it.
-            checkCrystal(xx, yy, zz);
+            checkCrystal(b);
         } // else we can do nothing.
     }
 
-    private void placeCrystal(int xx, int yy, int zz) {
+    private void placeCrystal(BlockPos pos) {
         ItemStack crystalStack = inventoryHelper.getStackInSlot(PedestalContainer.SLOT_CRYSTAL);
         if (crystalStack != null && crystalStack.stackSize > 0) {
             if (crystalStack.getItem() instanceof ItemBlock) {
                 ItemBlock itemBlock = (ItemBlock) (crystalStack.getItem());
-                itemBlock.placeBlockAt(crystalStack, FakePlayerFactory.getMinecraft((WorldServer) worldObj), worldObj, xx, yy, zz, 0, 0, 0, 0, 0);
+                itemBlock.placeBlockAt(crystalStack, FakePlayerFactory.getMinecraft((WorldServer) worldObj), worldObj, pos, null, 0, 0, 0, itemBlock.getBlock().getStateFromMeta(0));
                 inventoryHelper.decrStackSize(PedestalContainer.SLOT_CRYSTAL, 1);
-                Tools.playSound(worldObj, ModBlocks.resonatingCrystalBlock.stepSound.getBreakSound(), xx, yy, zz, 1.0f, 1.0f);
+                Tools.playSound(worldObj, ModBlocks.resonatingCrystalBlock.stepSound.getBreakSound(), getPos().getX(), getPos().getY(), getPos().getZ(), 1.0f, 1.0f);
 
-                if (findCollector(xx, yy, zz)) {
-                    TileEntity tileEntity = worldObj.getTileEntity(cachedLocator.getX(), cachedLocator.getY(), cachedLocator.getZ());
+                if (findCollector(pos)) {
+                    TileEntity tileEntity = WorldHelper.getTileAt(worldObj, new BlockPos(cachedLocator));
                     if (tileEntity instanceof EnergyCollectorTileEntity) {
                         EnergyCollectorTileEntity energyCollectorTileEntity = (EnergyCollectorTileEntity) tileEntity;
-                        energyCollectorTileEntity.addCrystal(xx, yy, zz);
+                        energyCollectorTileEntity.addCrystal(pos.getX(), pos.getY(), pos.getZ());
                     }
                 }
             }
         }
     }
 
-    private static ForgeDirection[] directions = new ForgeDirection[] { ForgeDirection.UNKNOWN,
-            ForgeDirection.EAST, ForgeDirection.WEST, ForgeDirection.NORTH, ForgeDirection.SOUTH,
-            ForgeDirection.UP, ForgeDirection.DOWN
+    private static EnumFacing[] directions = new EnumFacing[] {
+            EnumFacing.EAST, EnumFacing.WEST, EnumFacing.NORTH, EnumFacing.SOUTH,
+            EnumFacing.UP, EnumFacing.DOWN
     };
 
-    private void checkCrystal(int xx, int yy, int zz) {
-        TileEntity tileEntity = worldObj.getTileEntity(xx, yy, zz);
+    private void checkCrystal(BlockPos p) {
+        TileEntity tileEntity = WorldHelper.getTileAt(worldObj, p);
         if (tileEntity instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
             if (resonatingCrystalTileEntity.getPower() <= EnergyCollectorTileEntity.CRYSTAL_MIN_POWER) {
@@ -97,35 +96,35 @@ public class PedestalTileEntity extends GenericTileEntity implements IInventory 
                 NBTTagCompound tagCompound = new NBTTagCompound();
                 resonatingCrystalTileEntity.writeToNBT(tagCompound);
                 spentCrystal.setTagCompound(tagCompound);
-                inventoryLocator.ejectStack(worldObj, xCoord, yCoord, zCoord, spentCrystal, getCoordinate(), directions);
-                worldObj.setBlockToAir(xx, yy, zz);
-                Tools.playSound(worldObj, ModBlocks.resonatingCrystalBlock.stepSound.getBreakSound(), xx, yy, zz, 1.0f, 1.0f);
+                inventoryLocator.ejectStack(worldObj, getPos().getX(), getPos().getY(), getPos().getZ(), spentCrystal, pos, directions);
+                worldObj.setBlockToAir(p);
+                Tools.playSound(worldObj, ModBlocks.resonatingCrystalBlock.stepSound.getBreakSound(), p.getX(), p.getY(), p.getZ(), 1.0f, 1.0f);
             }
         }
     }
 
-    private boolean findCollector(int xx, int yy, int zz) {
+    private boolean findCollector(BlockPos crystalLocation) {
         if (cachedLocator != null) {
-            if (worldObj.getBlock(xx, yy, zz) == EnergyCollectorSetup.energyCollectorBlock) {
+            if (WorldHelper.getBlockAt(worldObj, crystalLocation) == EnergyCollectorSetup.energyCollectorBlock) {
                 return true;
             }
             cachedLocator = null;
         }
 
-        Coordinate crystalLocation = new Coordinate(xx, yy, zz);
         float closestDistance = Float.MAX_VALUE;
 
+        int yy = crystalLocation.getY(), xx = crystalLocation.getX(), zz = crystalLocation.getZ();
         for (int y = yy - ConfigMachines.Collector.maxVerticalCrystalDistance ; y <= yy + ConfigMachines.Collector.maxVerticalCrystalDistance ; y++) {
             if (y >= 0 && y < worldObj.getHeight()) {
                 int maxhordist = ConfigMachines.Collector.maxHorizontalCrystalDistance;
                 for (int x = xx - maxhordist; x <= xx + maxhordist; x++) {
                     for (int z = zz - maxhordist; z <= zz + maxhordist; z++) {
-                        if (worldObj.getBlock(x, y, z) == EnergyCollectorSetup.energyCollectorBlock) {
-                            Coordinate locator = new Coordinate(x, y, z);
-                            float sqdist = locator.squaredDistance(crystalLocation);
+                        BlockPos pos = new BlockPos(x, y, z);
+                        if (WorldHelper.getBlockAt(worldObj, pos) == EnergyCollectorSetup.energyCollectorBlock) {
+                            double sqdist = pos.distanceSq(crystalLocation);
                             if (sqdist < closestDistance) {
-                                closestDistance = sqdist;
-                                cachedLocator = locator;
+                                closestDistance = (float)sqdist;
+                                cachedLocator = pos;
                             }
                         }
                     }
@@ -194,7 +193,7 @@ public class PedestalTileEntity extends GenericTileEntity implements IInventory 
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int index) {
+    public ItemStack removeStackFromSlot(int index) {
         return null;
     }
 
@@ -204,13 +203,21 @@ public class PedestalTileEntity extends GenericTileEntity implements IInventory 
     }
 
     @Override
-    public String getInventoryName() {
+    public String getName() {
         return "Pedestal Inventory";
     }
 
     @Override
-    public boolean hasCustomInventoryName() {
+    public boolean hasCustomName() {
         return false;
+    }
+
+    /**
+     * Get the formatted ChatComponent that will be used for the sender's username in chat
+     */
+    @Override
+    public IChatComponent getDisplayName() {
+        return null;
     }
 
     @Override
@@ -224,16 +231,36 @@ public class PedestalTileEntity extends GenericTileEntity implements IInventory 
     }
 
     @Override
-    public void openInventory() {
+    public void openInventory(EntityPlayer player) {
     }
 
     @Override
-    public void closeInventory() {
+    public void closeInventory(EntityPlayer player) {
     }
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         return stack.getItem() == Item.getItemFromBlock(ModBlocks.resonatingCrystalBlock);
+    }
+
+    @Override
+    public int getField(int id) {
+        return 0;
+    }
+
+    @Override
+    public void setField(int id, int value) {
+
+    }
+
+    @Override
+    public int getFieldCount() {
+        return 0;
+    }
+
+    @Override
+    public void clear() {
+
     }
 
 

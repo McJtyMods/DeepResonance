@@ -1,9 +1,16 @@
 package mcjty.deepresonance.blocks.tank;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import elec332.core.client.IIconRegistrar;
+import elec332.core.client.ITextureLoader;
+import elec332.core.world.WorldHelper;
+import mcjty.deepresonance.blocks.GenericDRBlock;
+import mcjty.deepresonance.client.DRResourceLocation;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.blocks.base.ElecGenericBlockBase;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
@@ -12,17 +19,15 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -35,18 +40,15 @@ import java.util.Map;
 /**
  * Created by Elec332 on 20-8-2015.
  */
-public class BlockTank extends ElecGenericBlockBase {
+public class BlockTank extends GenericDRBlock implements ITextureLoader {
 
-    private IIcon iconSideProvide;
-    private IIcon iconSideAccept;
-    private IIcon iconTopProvide;
-    private IIcon iconTopAccept;
-    private IIcon iconBottomProvide;
-    private IIcon iconBottomAccept;
-
+    @SuppressWarnings("unchecked")
     public BlockTank(String name) {
-        super(Material.rock, TileTank.class, name);
+        super(Material.rock, TileTank.class, null, name, true);
     }
+
+    @SideOnly(Side.CLIENT)
+    private TextureAtlasSprite iconSide, iconTop, iconBottom;
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -72,6 +74,11 @@ public class BlockTank extends ElecGenericBlockBase {
         }
     }
 
+    @Override
+    public int getGuiID() {
+        return -1;
+    }
+
     // For Waila:
     private long lastTime;
     public int totalFluidAmount = 0;
@@ -83,7 +90,7 @@ public class BlockTank extends ElecGenericBlockBase {
     @SideOnly(Side.CLIENT)
     public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
         TileTank tankTile = (TileTank) accessor.getTileEntity();
-        Map<ForgeDirection, Integer> settings = tankTile.getSettings();
+        Map<EnumFacing, Integer> settings = tankTile.getSettings();
         int i = settings.get(accessor.getSide());
         currentTip.add("Mode: "+(i == TileTank.SETTING_NONE ? "none" : (i == TileTank.SETTING_ACCEPT ? "accept" : "provide")));
         currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(clientRenderFluid));
@@ -97,14 +104,14 @@ public class BlockTank extends ElecGenericBlockBase {
         }
         if (System.currentTimeMillis() - lastTime > 100) {
             lastTime = System.currentTimeMillis();
-            DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetTankInfo(tankTile.xCoord, tankTile.yCoord, tankTile.zCoord));
+            DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetTankInfo(tankTile.getPos()));
         }
         return currentTip;
     }
 
     @Override
-    public int getComparatorInputOverride(World world, int x, int y, int z, int side) {
-        TileEntity tile = world.getTileEntity(x, y, z);
+    public int getComparatorInputOverride(World world, BlockPos pos) {
+        TileEntity tile = WorldHelper.getTileAt(world, pos);
         if (tile instanceof TileTank) {
             TileTank tank = (TileTank) tile;
             if (tank.getMultiBlock() != null)
@@ -119,19 +126,19 @@ public class BlockTank extends ElecGenericBlockBase {
     }
 
     @Override
-    public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
-        TileEntity tile = world.getTileEntity(x, y, z);
+    public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block block) {
+        TileEntity tile = WorldHelper.getTileAt(world, pos);
         if (tile instanceof TileTank) {
             TileTank tank = (TileTank) tile;
-            for (Map.Entry<ITankHook, ForgeDirection> entry : tank.getConnectedHooks().entrySet()) {
+            for (Map.Entry<ITankHook, EnumFacing> entry : tank.getConnectedHooks().entrySet()) {
                 entry.getKey().hook(tank, entry.getValue());
             }
         }
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float sidex, float sidey, float sidez) {
-        TileEntity tile = world.getTileEntity(x, y, z);
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float sidex, float sidey, float sidez) {
+        TileEntity tile = WorldHelper.getTileAt(world, pos);
         if (tile instanceof TileTank){
             TileTank tank = (TileTank)tile;
 
@@ -148,28 +155,26 @@ public class BlockTank extends ElecGenericBlockBase {
                     return true;
                 }
             }
-
-            ForgeDirection direction = ForgeDirection.getOrientation(side);
-            int i = tank.settings.get(direction);
+            int i = tank.settings.get(side);
             if (i < TileTank.SETTING_MAX) {
                 i++;
             } else {
                 i = TileTank.SETTING_NONE;
             }
-            tank.settings.put(direction, i);
+            tank.settings.put(side, i);
             tank.markDirty();
-            world.markBlockForUpdate(x, y, z);
+            WorldHelper.markBlockForUpdate(world, pos);
             return true;
         }
-        return super.onBlockActivated(world, x, y, z, player, side, sidex, sidey, sidez);
+        return super.onBlockActivated(world, pos, state, player, side, sidex, sidey, sidez);
     }
 
     private void fillFromContainer(EntityPlayer player, TileTank tank) {
         FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(player.getHeldItem());
         if (fluidStack != null) {
-            int fill = tank.fill(ForgeDirection.UNKNOWN, fluidStack, false);
+            int fill = tank.fill(null, fluidStack, false);
             if (fill == fluidStack.amount) {
-                tank.fill(ForgeDirection.UNKNOWN, fluidStack, true);
+                tank.fill(null, fluidStack, true);
                 if (!player.capabilities.isCreativeMode) {
                     ItemStack emptyContainer = FluidContainerRegistry.drainFluidContainer(player.getHeldItem());
                     player.inventory.setInventorySlotContents(player.inventory.currentItem, emptyContainer);
@@ -179,13 +184,13 @@ public class BlockTank extends ElecGenericBlockBase {
     }
 
     private void extractIntoContainer(EntityPlayer player, TileTank tank) {
-        FluidStack fluidStack = tank.drain(ForgeDirection.UNKNOWN, 1, false);
+        FluidStack fluidStack = tank.drain(null, 1, false);
         if (fluidStack != null) {
             int capacity = FluidContainerRegistry.getContainerCapacity(fluidStack, player.getHeldItem());
             if (capacity != 0) {
-                fluidStack = tank.drain(ForgeDirection.UNKNOWN, capacity, false);
+                fluidStack = tank.drain(null, capacity, false);
                 if (fluidStack != null && fluidStack.amount == capacity) {
-                    fluidStack = tank.drain(ForgeDirection.UNKNOWN, capacity, true);
+                    fluidStack = tank.drain(null, capacity, true);
                     ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(fluidStack, player.getHeldItem());
                     if (filledContainer != null) {
                         player.inventory.decrStackSize(player.inventory.currentItem, 1);
@@ -196,7 +201,7 @@ public class BlockTank extends ElecGenericBlockBase {
                         player.openContainer.detectAndSendChanges();
                     } else {
                         // Try to insert the fluid back into the tank
-                        tank.fill(ForgeDirection.UNKNOWN, fluidStack, true);
+                        tank.fill(null, fluidStack, true);
                     }
                 }
             }
@@ -204,19 +209,19 @@ public class BlockTank extends ElecGenericBlockBase {
     }
 
     @Override
-    public int getLightValue(IBlockAccess world, int x, int y, int z) {
-        TileEntity tile = world.getTileEntity(x, y, z);
+    public int getLightValue(IBlockAccess world, BlockPos pos) {
+        TileEntity tile = WorldHelper.getTileAt(world, pos);
         if (tile instanceof TileTank){
             TileTank tank = (TileTank) tile;
             if (tank.getClientRenderFluid() != null)
                 return tank.getClientRenderFluid().getLuminosity();
         }
-        return super.getLightValue(world, x, y, z);
+        return super.getLightValue(world, pos);
     }
 
     @Override
-    public boolean renderAsNormalBlock() {
-        return false;
+    public int getRenderType() {
+        return 2;
     }
 
     @Override
@@ -224,96 +229,32 @@ public class BlockTank extends ElecGenericBlockBase {
         return false;
     }
 
-    @Override
-    public int getRenderBlockPass() {
-        return 1;
-    }
-
-    @Override
-    public String getTopIconName() {
-        return "tankTop";
-    }
-
-    @Override
-    public String getBottomIconName() {
-        return "tankBottom";
-    }
-
-    @Override
-    public String getSideIconName() {
-        return "tankSide";
-    }
-
-    public IIcon getSideIcon() {
+    @SideOnly(Side.CLIENT)
+    public TextureAtlasSprite getSideIcon() {
         return iconSide;
     }
 
-    public IIcon getBottomIcon() {
+    @SideOnly(Side.CLIENT)
+    public TextureAtlasSprite getBottomIcon() {
         return iconBottom;
     }
 
-    public IIcon getTopIcon() {
+    @SideOnly(Side.CLIENT)
+    public TextureAtlasSprite getTopIcon() {
         return iconTop;
     }
 
     @Override
-    public void registerBlockIcons(IIconRegister iconRegister) {
-        super.registerBlockIcons(iconRegister);
-        iconSideAccept = iconRegister.registerIcon(modBase.getModId() + ":tankSideAccept");
-        iconSideProvide = iconRegister.registerIcon(modBase.getModId() + ":tankSideProvide");
-        iconTopAccept = iconRegister.registerIcon(modBase.getModId() + ":tankTopAccept");
-        iconTopProvide = iconRegister.registerIcon(modBase.getModId() + ":tankTopProvide");
-        iconBottomAccept = iconRegister.registerIcon(modBase.getModId() + ":tankBottomAccept");
-        iconBottomProvide = iconRegister.registerIcon(modBase.getModId() + ":tankBottomProvide");
+    public boolean shouldSideBeRendered(IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
+        return WorldHelper.getBlockAt(worldIn, pos) != this;
     }
 
     @Override
-    public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side) {
-        return world.getBlock(x, y, z) != this;
+    @SideOnly(Side.CLIENT)
+    public void registerTextures(IIconRegistrar iIconRegistrar) {
+        iconSide = iIconRegistrar.registerSprite(new DRResourceLocation("blocks/tankSide"));
+        iconTop = iIconRegistrar.registerSprite(new DRResourceLocation("blocks/tankTop"));
+        iconBottom = iIconRegistrar.registerSprite(new DRResourceLocation("blocks/tankBottom"));
     }
 
-    @Override
-    public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side) {
-        TileEntity te = blockAccess.getTileEntity(x, y, z);
-        if (te instanceof TileTank) {
-            TileTank tileTank = (TileTank) te;
-            ForgeDirection dir = ForgeDirection.getOrientation(side);
-            if (dir == ForgeDirection.DOWN) {
-                if (tileTank.isInput(dir)) {
-                    return iconBottomAccept;
-                } else if (tileTank.isOutput(dir)) {
-                    return iconBottomProvide;
-                }
-                return iconBottom;
-            } else if (dir == ForgeDirection.UP) {
-                if (tileTank.isInput(dir)) {
-                    return iconTopAccept;
-                } else if (tileTank.isOutput(dir)) {
-                    return iconTopProvide;
-                }
-                return iconTop;
-            } else {
-                if (tileTank.isInput(dir)) {
-                    return iconSideAccept;
-                } else if (tileTank.isOutput(dir)) {
-                    return iconSideProvide;
-                }
-                return iconSide;
-            }
-        } else {
-            return getIcon(side, 0);
-        }
-    }
-
-    @Override
-    public IIcon getIcon(int side, int meta) {
-        ForgeDirection dir = ForgeDirection.getOrientation(side);
-        if (dir == ForgeDirection.DOWN) {
-            return iconBottom;
-        } else if (dir == ForgeDirection.UP) {
-            return iconTop;
-        } else {
-            return iconSide;
-        }
-    }
 }

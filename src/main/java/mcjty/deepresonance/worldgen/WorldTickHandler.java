@@ -1,8 +1,9 @@
 package mcjty.deepresonance.worldgen;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.relauncher.Side;
+import elec332.core.world.WorldHelper;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.hash.THashSet;
 import mcjty.lib.varia.Logging;
@@ -27,7 +28,7 @@ public class WorldTickHandler {
             return;
         }
         World world = event.world;
-        int dim = world.provider.dimensionId;
+        int dim = WorldHelper.getDimID(world);
 
         if (event.phase == TickEvent.Phase.END) {
             ArrayDeque<RetroChunkCoord> chunks = chunksToGen.get(dim);

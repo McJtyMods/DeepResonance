@@ -1,17 +1,6 @@
 package mcjty.deepresonance.blocks.crystals;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.client.model.AdvancedModelLoader;
-import net.minecraftforge.client.model.IModelCustom;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
-public class ResonatingCrystalItemRenderer implements IItemRenderer {
+public class ResonatingCrystalItemRenderer{}/* implements IItemRenderer {
     IModelCustom model = AdvancedModelLoader.loadModel(new ResourceLocation(DeepResonance.MODID, "obj/crystal.obj"));
     ResourceLocation crystal = new ResourceLocation(DeepResonance.MODID, "textures/blocks/crystal.png");
     ResourceLocation emptyCrystal = new ResourceLocation(DeepResonance.MODID, "textures/blocks/emptycrystal.png");
@@ -57,4 +46,4 @@ public class ResonatingCrystalItemRenderer implements IItemRenderer {
             GL11.glDisable(GL11.GL_BLEND);
         }
     }
-}
+}*/

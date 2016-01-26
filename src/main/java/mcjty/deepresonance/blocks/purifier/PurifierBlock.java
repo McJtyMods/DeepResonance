@@ -1,8 +1,8 @@
 package mcjty.deepresonance.blocks.purifier;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import mcjty.deepresonance.blocks.base.ElecGenericBlockBase;
+import mcjty.deepresonance.blocks.GenericDRBlock;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.gui.GuiProxy;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -18,10 +18,10 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-public class PurifierBlock extends ElecGenericBlockBase {
+public class PurifierBlock extends GenericDRBlock {
 
     public PurifierBlock(String blockName) {
-        super(Material.rock, PurifierTileEntity.class, blockName);
+        super(Material.rock, PurifierTileEntity.class, null, blockName, true);
     }
 
     @Override
@@ -62,8 +62,4 @@ public class PurifierBlock extends ElecGenericBlockBase {
         return GuiProxy.GUI_PURIFIER;
     }
 
-    @Override
-    public String getSideIconName() {
-        return "purifier";
-    }
 }

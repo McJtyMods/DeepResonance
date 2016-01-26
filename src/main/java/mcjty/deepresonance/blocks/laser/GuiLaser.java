@@ -13,7 +13,7 @@ import mcjty.lib.gui.widgets.Panel;
 import mcjty.lib.gui.widgets.Widget;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import java.awt.*;
 import java.text.DecimalFormat;
@@ -32,7 +32,7 @@ public class GuiLaser extends GenericGuiContainer<LaserTileEntity> {
 
     public GuiLaser(LaserTileEntity laserTileEntity, LaserContainer container) {
         super(DeepResonance.instance, DeepResonance.networkHandler.getNetworkWrapper(), laserTileEntity, container, 0, "laser");
-        laserTileEntity.setCurrentRF(laserTileEntity.getEnergyStored(ForgeDirection.DOWN));
+        laserTileEntity.setCurrentRF(laserTileEntity.getEnergyStored(EnumFacing.DOWN));
 
         xSize = LASER_WIDTH;
         ySize = LASER_HEIGHT;
@@ -42,7 +42,7 @@ public class GuiLaser extends GenericGuiContainer<LaserTileEntity> {
     public void initGui() {
         super.initGui();
 
-        int maxEnergyStored = tileEntity.getMaxEnergyStored(ForgeDirection.DOWN);
+        int maxEnergyStored = tileEntity.getMaxEnergyStored(EnumFacing.DOWN);
         energyBar = new EnergyBar(mc, this).setVertical().setMaxValue(maxEnergyStored).setLayoutHint(new PositionalLayout.PositionalHint(10, 7, 8, 59)).setShowText(false);
         energyBar.setValue(tileEntity.getCurrentRF());
 
@@ -70,7 +70,7 @@ public class GuiLaser extends GenericGuiContainer<LaserTileEntity> {
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
 
         window = new Window(this, toplevel);
-        tileEntity.requestRfFromServer(DeepResonance.networkHandler.getNetworkWrapper());
+        tileEntity.requestRfFromServer(DeepResonance.MODID);
         tileEntity.requestCrystalLiquidFromServer();
     }
 
@@ -101,7 +101,7 @@ public class GuiLaser extends GenericGuiContainer<LaserTileEntity> {
         energyBar.setValue(tileEntity.getCurrentRF());
         crystalBar.setValue(LaserTileEntity.getCrystalLiquidClient());
 
-        tileEntity.requestRfFromServer(DeepResonance.networkHandler.getNetworkWrapper());
+        tileEntity.requestRfFromServer(DeepResonance.MODID);
         tileEntity.requestCrystalLiquidFromServer();
     }
 

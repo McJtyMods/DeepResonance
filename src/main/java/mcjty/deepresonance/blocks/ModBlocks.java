@@ -1,6 +1,6 @@
 package mcjty.deepresonance.blocks;
 
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
 import mcjty.deepresonance.blocks.crystalizer.CrystalizerSetup;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalBlock;

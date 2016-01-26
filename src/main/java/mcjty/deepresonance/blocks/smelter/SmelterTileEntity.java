@@ -1,7 +1,9 @@
 package mcjty.deepresonance.blocks.smelter;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.util.ITickable;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
@@ -22,7 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -32,7 +34,7 @@ import java.util.Map;
 /**
  * Created by Elec332 on 9-8-2015.
  */
-public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITankHook, ISidedInventory {
+public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITankHook, ISidedInventory, ITickable {
 
     public static final String CMD_GETPROGRESS = "getProgress";
     public static final String CLIENTCMD_GETPROGRESS = "getProgress";
@@ -55,6 +57,12 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     private static int progressPercentage = 0;
 
     @Override
+    public void update() {
+        if (!worldObj.isRemote){
+            checkStateServer();
+        }
+    }
+
     protected void checkStateServer() {
         if (progress > 0) {
             if (canWork()) {
@@ -66,7 +74,8 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
                 }
             }
         } else {
-            int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+            //TODO: McJty, decide what this is supposed to do.
+            /*int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
             int meta2;
             if (canWork() && validSlot()) {
                 startSmelting();
@@ -76,7 +85,7 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
             }
             if (meta != meta2) {
                 worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, meta2, 3);
-            }
+            }*/
         }
     }
 
@@ -99,7 +108,7 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
         return lavaTank != null && rclTank != null
                 && DRFluidRegistry.getFluidFromStack(lavaTank.getFluid()) == FluidRegistry.LAVA
                 && lavaTank.getFluidAmount() > lavaTank.getCapacity()*0.25f
-                && rclTank.fill(ForgeDirection.UNKNOWN, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), false) == ConfigMachines.Smelter.rclPerOre;
+                && rclTank.fill(null, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), false) == ConfigMachines.Smelter.rclPerOre;
     }
 
     private boolean validSlot(){
@@ -128,7 +137,7 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
             finalPurity = 0.1f;
         }
 
-        lavaTank.drain(ForgeDirection.UNKNOWN, new FluidStack(FluidRegistry.LAVA, ConfigMachines.Smelter.lavaCost), true);
+        lavaTank.drain(null, new FluidStack(FluidRegistry.LAVA, ConfigMachines.Smelter.lavaCost), true);
 
         progress = ConfigMachines.Smelter.processTime + (int) ((percentage - 0.5f) * ConfigMachines.Smelter.processTime);
         totalProgress = progress;
@@ -137,7 +146,7 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     private void stopSmelting() {
         if (finalQuality > 0.0f) {
             FluidStack stack = LiquidCrystalFluidTagData.makeLiquidCrystalStack(ConfigMachines.Smelter.rclPerOre, finalQuality, finalPurity, 0.1f, 0.1f);
-            rclTank.fill(ForgeDirection.UNKNOWN, stack, true);
+            rclTank.fill(null, stack, true);
         }
     }
 
@@ -196,8 +205,8 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
 
 
     @Override
-    public void hook(TileTank tank, ForgeDirection direction) {
-        if (direction == ForgeDirection.DOWN){
+    public void hook(TileTank tank, EnumFacing direction) {
+        if (direction == EnumFacing.DOWN){
             this.lavaTank = tank;
         } else if (rclTank == null){
             if (validRCLTank(tank)){
@@ -208,7 +217,7 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     }
 
     @Override
-    public void unHook(TileTank tank, ForgeDirection direction) {
+    public void unHook(TileTank tank, EnumFacing direction) {
         if (tilesEqual(lavaTank, tank)){
             lavaTank = null;
         } else if (tilesEqual(rclTank, tank)){
@@ -219,7 +228,7 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     }
 
     @Override
-    public void onContentChanged(TileTank tank, ForgeDirection direction) {
+    public void onContentChanged(TileTank tank, EnumFacing direction) {
         if (tilesEqual(rclTank, tank)){
             if (!validRCLTank(tank)) {
                 rclTank = null;
@@ -234,21 +243,21 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     }
 
     private boolean tilesEqual(TileTank first, TileTank second){
-        return first != null && second != null && first.myLocation().equals(second.myLocation()) && WorldHelper.getDimID(first.getWorldObj()) == WorldHelper.getDimID(second.getWorldObj());
+        return first != null && second != null && first.getPos().equals(second.getPos()) && WorldHelper.getDimID(first.getWorld()) == WorldHelper.getDimID(second.getWorld());
     }
 
     @Override
-    public int[] getAccessibleSlotsFromSide(int side) {
+    public int[] getSlotsForFace(EnumFacing side) {
         return new int[] { SmelterContainer.SLOT_OREINPUT };
     }
 
     @Override
-    public boolean canInsertItem(int index, ItemStack item, int side) {
+    public boolean canInsertItem(int index, ItemStack item, EnumFacing side) {
         return SmelterContainer.factory.isInputSlot(index) || SmelterContainer.factory.isSpecificItemSlot(index);
     }
 
     @Override
-    public boolean canExtractItem(int index, ItemStack item, int side) {
+    public boolean canExtractItem(int index, ItemStack item, EnumFacing side) {
         return SmelterContainer.factory.isOutputSlot(index);
     }
 
@@ -268,7 +277,7 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int index) {
+    public ItemStack removeStackFromSlot(int index) {
         return null;
     }
 
@@ -278,13 +287,21 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     }
 
     @Override
-    public String getInventoryName() {
+    public String getName() {
         return "Smelter Inventory";
     }
 
     @Override
-    public boolean hasCustomInventoryName() {
+    public boolean hasCustomName() {
         return false;
+    }
+
+    /**
+     * Get the formatted ChatComponent that will be used for the sender's username in chat
+     */
+    @Override
+    public IChatComponent getDisplayName() {
+        return null;
     }
 
     @Override
@@ -298,12 +315,12 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     }
 
     @Override
-    public void openInventory() {
+    public void openInventory(EntityPlayer player) {
 
     }
 
     @Override
-    public void closeInventory() {
+    public void closeInventory(EntityPlayer player) {
 
     }
 
@@ -312,11 +329,29 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
         return true;
     }
 
+    @Override
+    public int getField(int id) {
+        return 0;
+    }
+
+    @Override
+    public void setField(int id, int value) {
+
+    }
+
+    @Override
+    public int getFieldCount() {
+        return 0;
+    }
+
+    @Override
+    public void clear() {
+
+    }
+
     // Request the researching amount from the server. This has to be called on the client side.
     public void requestProgressFromServer() {
-        DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketRequestIntegerFromServer(xCoord, yCoord, zCoord,
-                CMD_GETPROGRESS,
-                CLIENTCMD_GETPROGRESS));
+        DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketRequestIntegerFromServer(DeepResonance.MODID, pos, CMD_GETPROGRESS, CLIENTCMD_GETPROGRESS));
     }
 
     @Override

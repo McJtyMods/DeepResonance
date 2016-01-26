@@ -1,6 +1,6 @@
 package mcjty.deepresonance.varia;
 
-import mcjty.lib.varia.Coordinate;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 
 public class QuadTree {
@@ -14,11 +14,11 @@ public class QuadTree {
     }
 
     public void addBlocker(int x, int y, int z, float blocker) {
-        addBlocker(new Coordinate(x, y, z), blocker);
+        addBlocker(new BlockPos(x, y, z), blocker);
     }
 
     // Return -1 if blockers inside this are different. Otherwise blocker value.
-    private float addBlocker(Coordinate coordinate, float blocker) {
+    private float addBlocker(BlockPos coordinate, float blocker) {
         if (child1 != null) {
             if (child1.box.isVecInside(coordinate)) {
                 float b = child1.addBlocker(coordinate, blocker);
@@ -100,8 +100,8 @@ public class QuadTree {
 
 
     public double factor(int x1, int y1, int z1, int x2, int y2, int z2) {
-        Vec3 p1 = Vec3.createVectorHelper(x1 + .5, y1 + .5, z1 + .5);
-        Vec3 p2 = Vec3.createVectorHelper(x2 + .5, y2 + .5, z2 + .5);
+        Vec3 p1 = new Vec3(x1 + .5, y1 + .5, z1 + .5);
+        Vec3 p2 = new Vec3(x2 + .5, y2 + .5, z2 + .5);
         return factor(new Ray(p1, p2));
     }
 
@@ -196,7 +196,7 @@ public class QuadTree {
             this.dir = start.subtract(end);
             length = this.dir.lengthVector();
             this.dir = this.dir.normalize();
-            this.invDir = Vec3.createVectorHelper(1.0 / this.dir.xCoord, 1.0 / this.dir.yCoord, 1.0 / this.dir.zCoord);
+            this.invDir = new Vec3(1.0 / this.dir.xCoord, 1.0 / this.dir.yCoord, 1.0 / this.dir.zCoord);
         }
 
         public Vec3 getDir() {

@@ -1,7 +1,9 @@
 package mcjty.deepresonance.blocks.gencontroller;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import elec332.core.world.WorldHelper;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import net.minecraft.block.Block;
@@ -14,30 +16,26 @@ import net.minecraft.world.World;
 public class GeneratorShutdownSound extends MovingSound {
     private final EntityPlayer player;
     private final World world;
-    private final int x;
-    private final int y;
-    private final int z;
+    private final BlockPos pos;
 
     public GeneratorShutdownSound(EntityPlayer player, World world, int x, int y, int z) {
         super(new ResourceLocation(DeepResonance.MODID + ":engine_shutdown"));
         this.player = player;
         this.world = world;
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.pos = new BlockPos(x, y, z);
 
         this.xPosF = x;
         this.yPosF = y;
         this.zPosF = z;
 
-        this.field_147666_i = AttenuationType.LINEAR;
+        this.attenuationType = AttenuationType.LINEAR;
         this.repeat = true;
-        this.field_147665_h = 0;
+        this.repeatDelay = 0;
     }
 
     @Override
     public void update() {
-        Block block = world.getBlock(x, y, z);
+        Block block = WorldHelper.getBlockAt(world, pos);
         if (block != GeneratorControllerSetup.generatorControllerBlock) {
             donePlaying = true;
             return;

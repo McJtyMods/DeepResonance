@@ -5,6 +5,7 @@ import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.lib.gui.RenderHelper;
 import mcjty.lib.gui.RenderHelper.Vector;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -18,7 +19,7 @@ import java.util.Random;
 
 @SideOnly(Side.CLIENT)
 public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
-    IModelCustom model = AdvancedModelLoader.loadModel(new ResourceLocation(DeepResonance.MODID, "obj/collector.obj"));
+    //IModelCustom model = AdvancedModelLoader.loadModel(new ResourceLocation(DeepResonance.MODID, "obj/collector.obj"));
     ResourceLocation blockTexture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/energyCollector.png");
     ResourceLocation halo = new ResourceLocation(DeepResonance.MODID, "textures/effects/halo.png");
     ResourceLocation laserbeams[] = new ResourceLocation[4];
@@ -34,7 +35,7 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
     }
 
     @Override
-    public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float time) {
+    public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float time, int breakTime) {
         GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
 
         if (currentPass == 0) {
@@ -47,7 +48,7 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
 
             GL11.glTranslatef((float) x + 0.5F, (float) y + 0.0F, (float) z + 0.5F);
 
-            model.renderAll();
+            //model.renderAll();
             GL11.glPopMatrix();
         }
 
@@ -67,17 +68,17 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
                 GL11.glPopMatrix();
 
                 Minecraft mc = Minecraft.getMinecraft();
-                EntityClientPlayerMP p = mc.thePlayer;
+                EntityPlayerSP p = mc.thePlayer;
                 double doubleX = p.lastTickPosX + (p.posX - p.lastTickPosX) * time;
                 double doubleY = p.lastTickPosY + (p.posY - p.lastTickPosY) * time;
                 double doubleZ = p.lastTickPosZ + (p.posZ - p.lastTickPosZ) * time;
 
-                Vector start = new Vector(tileEntity.xCoord + .5f, tileEntity.yCoord + .5f + .3f, tileEntity.zCoord + .5f);
+                Vector start = new Vector(tileEntity.getPos().getX() + .5f, tileEntity.getPos().getY() + .5f + .3f, tileEntity.getPos().getZ() + .5f);
                 Vector player = new Vector((float) doubleX, (float) doubleY, (float) doubleZ);
 
                 GL11.glPushMatrix();
                 GL11.glTranslated(-doubleX, -doubleY, -doubleZ);
-
+/*
                 Tessellator tessellator = Tessellator.instance;
 
                 // ----------------------------------------
@@ -107,7 +108,7 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer {
                 }
 
                 tessellator.draw();
-
+*/
                 GL11.glPopMatrix();
             }
         }

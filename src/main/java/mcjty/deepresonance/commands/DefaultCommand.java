@@ -1,17 +1,20 @@
 package mcjty.deepresonance.commands;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public abstract class DefaultCommand implements ICommand {
-    protected final Map<String,DRCommand> commands = new HashMap<String, DRCommand>();
+
+    protected final Map<String,DRCommand> commands = Maps.newHashMap();
 
     public DefaultCommand() {
         registerCommand(new CmdHelp());
@@ -61,8 +64,8 @@ public abstract class DefaultCommand implements ICommand {
     }
 
     @Override
-    public List getCommandAliases() {
-        return null;
+    public List<String> getCommandAliases() {
+        return ImmutableList.of();
     }
 
     @Override
@@ -102,8 +105,8 @@ public abstract class DefaultCommand implements ICommand {
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender sender, String[] args) {
-        return null;
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
+        return ImmutableList.of();
     }
 
     @Override
@@ -117,7 +120,10 @@ public abstract class DefaultCommand implements ICommand {
     }
 
     @Override
-    public int compareTo(Object o) {
-        return getCommandName().compareTo(((ICommand)o).getCommandName());
+    @SuppressWarnings("all")
+    //TODO: Param seems to be nullable, NPE catcher.
+    public int compareTo(ICommand command) {
+        return getCommandName().compareTo(command.getCommandName());
     }
+
 }

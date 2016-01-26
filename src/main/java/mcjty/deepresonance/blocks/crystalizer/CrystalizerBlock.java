@@ -1,6 +1,6 @@
 package mcjty.deepresonance.blocks.crystalizer;
 
-import mcjty.deepresonance.blocks.base.ElecGenericBlockBase;
+import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.gui.GuiProxy;
 import mcjty.lib.container.GenericGuiContainer;
@@ -17,10 +17,10 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-public class CrystalizerBlock extends ElecGenericBlockBase<CrystalizerTileEntity, CrystalizerContainer> {
+public class CrystalizerBlock extends GenericDRBlock<CrystalizerTileEntity, CrystalizerContainer> {
 
     public CrystalizerBlock() {
-        super(Material.rock, CrystalizerTileEntity.class, CrystalizerContainer.class, "crystalizer");
+        super(Material.rock, CrystalizerTileEntity.class, CrystalizerContainer.class, "crystalizer", true);
     }
 
     @SideOnly(Side.CLIENT)
@@ -58,7 +58,7 @@ public class CrystalizerBlock extends ElecGenericBlockBase<CrystalizerTileEntity
     }
 
     @Override
-    public boolean isBlockNormalCube() {
+    public boolean isFullCube() {
         return false;
     }
 

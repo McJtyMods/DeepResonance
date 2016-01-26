@@ -45,7 +45,7 @@ public class CmdInfoCrystal extends AbstractDRCommand {
             return;
         }
 
-        if (heldItem.getItem() instanceof ItemBlock && ((ItemBlock) heldItem.getItem()).field_150939_a == ModBlocks.resonatingCrystalBlock) {
+        if (heldItem.getItem() instanceof ItemBlock && ((ItemBlock) heldItem.getItem()).getBlock() == ModBlocks.resonatingCrystalBlock) {
             NBTTagCompound tagCompound = heldItem.getTagCompound();
             float strength = tagCompound.getFloat("strength");
             float efficiency = tagCompound.getFloat("efficiency");

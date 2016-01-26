@@ -1,7 +1,7 @@
 package mcjty.deepresonance.network;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalBlock;
 
 @SideOnly(Side.CLIENT)

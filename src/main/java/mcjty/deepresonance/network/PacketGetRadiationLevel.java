@@ -1,16 +1,17 @@
 package mcjty.deepresonance.network;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import mcjty.deepresonance.items.RadiationMonitorItem;
-import mcjty.lib.varia.Coordinate;
 import mcjty.lib.varia.GlobalCoordinate;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 
 public class PacketGetRadiationLevel implements IMessage,IMessageHandler<PacketGetRadiationLevel, PacketReturnRadiation> {
+
     private GlobalCoordinate coordinate;
 
     @Override
@@ -19,7 +20,7 @@ public class PacketGetRadiationLevel implements IMessage,IMessageHandler<PacketG
         int x = buf.readInt();
         int y = buf.readInt();
         int z = buf.readInt();
-        coordinate = new GlobalCoordinate(new Coordinate(x, y, z), dim);
+        coordinate = new GlobalCoordinate(new BlockPos(x, y, z), dim);
     }
 
     @Override

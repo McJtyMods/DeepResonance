@@ -1,6 +1,6 @@
 package mcjty.deepresonance.blocks.lens;
 
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorBlock;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;

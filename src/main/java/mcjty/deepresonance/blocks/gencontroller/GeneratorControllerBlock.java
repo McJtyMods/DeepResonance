@@ -1,38 +1,34 @@
 package mcjty.deepresonance.blocks.gencontroller;
 
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import crazypants.enderio.api.redstone.IRedstoneConnectable;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.lib.container.GenericBlock;
 import mcjty.lib.varia.BlockTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-@Optional.InterfaceList({
-        @Optional.Interface(iface = "crazypants.enderio.api.redstone.IRedstoneConnectable", modid = "EnderIO")})
-public class GeneratorControllerBlock extends GenericBlock implements IRedstoneConnectable {
-
-    private IIcon iconOn;
-    private IIcon iconOff;
+//@Optional.InterfaceList({
+       // @Optional.Interface(iface = "crazypants.enderio.api.redstone.IRedstoneConnectable", modid = "EnderIO")})
+public class GeneratorControllerBlock extends GenericBlock {
 
     public GeneratorControllerBlock() {
         super(DeepResonance.instance, Material.iron, GeneratorControllerTileEntity.class, false);
-        setBlockName("generatorControllerBlock");
-        setHorizRotation(true);
+        setUnlocalizedName(DeepResonance.MODID + ".generatorControllerBlock");
+        //TODO: McJty: HorizRotation
         setCreativeTab(DeepResonance.tabDeepResonance);
     }
 
@@ -62,19 +58,12 @@ public class GeneratorControllerBlock extends GenericBlock implements IRedstoneC
     }
 
     @Override
-    public void registerBlockIcons(IIconRegister iconRegister) {
-        super.registerBlockIcons(iconRegister);
-        iconOn = iconRegister.registerIcon(DeepResonance.MODID + ":generatorControllerOn");
-        iconOff = iconRegister.registerIcon(DeepResonance.MODID + ":generatorControllerOff");
+    public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block block) {
+        checkRedstone(world, pos);
     }
 
-    @Override
-    public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
-        checkRedstone(world, x, y, z);
-    }
-
-    @Override
-    public boolean shouldRedstoneConduitConnect(World world, int x, int y, int z, ForgeDirection from) {
+    /*@Override
+    public boolean shouldRedstoneConduitConnect(World world, int x, int y, int z, EnumFacing from) {
         return true;
     }
 
@@ -85,5 +74,5 @@ public class GeneratorControllerBlock extends GenericBlock implements IRedstoneC
         } else {
             return iconOff;
         }
-    }
+    }*/
 }

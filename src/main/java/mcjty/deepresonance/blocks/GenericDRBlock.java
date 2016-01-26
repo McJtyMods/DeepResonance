@@ -27,6 +27,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.reflect.Constructor;
 
+@SuppressWarnings("unchecked")
 public abstract class GenericDRBlock<T extends GenericTileEntity, C extends Container> extends GenericBlock {
 
     private final Class<? extends C> containerClass;

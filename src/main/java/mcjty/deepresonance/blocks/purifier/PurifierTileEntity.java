@@ -15,14 +15,16 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Random;
 
-public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISidedInventory {
+public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISidedInventory, ITickable {
 
     private InventoryHelper inventoryHelper = new InventoryHelper(this, PurifierContainer.factory, 1);
 
@@ -41,6 +43,12 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
     private static Random random = new Random();
 
     @Override
+    public void update() {
+        if (!worldObj.isRemote){
+            checkStateServer();
+        }
+    }
+
     protected void checkStateServer() {
         if (progress > 0) {
             progress--;
@@ -62,18 +70,18 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
         } else {
             if (canWork() && validSlot()) {
                 progress = ConfigMachines.Purifier.ticksPerPurify;
-                fluidData = LiquidCrystalFluidTagData.fromStack(getInputTank().drain(ForgeDirection.UNKNOWN, ConfigMachines.Purifier.rclPerPurify, true));
+                fluidData = LiquidCrystalFluidTagData.fromStack(getInputTank().drain(null, ConfigMachines.Purifier.rclPerPurify, true));
                 markDirty();
             }
         }
     }
 
-    private static ForgeDirection[] directions = new ForgeDirection[] { ForgeDirection.UNKNOWN, ForgeDirection.EAST, ForgeDirection.WEST, ForgeDirection.NORTH, ForgeDirection.SOUTH };
+    private static EnumFacing[] directions = new EnumFacing[] { null, EnumFacing.EAST, EnumFacing.WEST, EnumFacing.NORTH, EnumFacing.SOUTH };
 
     private void consumeFilter() {
         inventoryHelper.decrStackSize(PurifierContainer.SLOT_FILTERINPUT, 1);
         ItemStack spentMaterial = new ItemStack(ModItems.spentFilterMaterialItem, 1);
-        inventoryLocator.ejectStack(worldObj, xCoord, yCoord, zCoord, spentMaterial, getCoordinate(), directions);
+        inventoryLocator.ejectStack(worldObj, pos.getX(), pos.getY(), pos.getZ(), spentMaterial, pos, directions);
     }
 
     private int doPurify() {
@@ -88,7 +96,7 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
                 // We are already very pure. Do nothing.
                 // Put back the fluid we extracted.
                 FluidStack stack = fluidData.makeLiquidCrystalStack();
-                getOutputTank().fill(ForgeDirection.UNKNOWN, stack, true);
+                getOutputTank().fill(null, stack, true);
                 fluidData = null;
                 return 1000;
             }
@@ -97,13 +105,13 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
         purity += addedPurity;
         fluidData.setPurity(purity);
         FluidStack stack = fluidData.makeLiquidCrystalStack();
-        getOutputTank().fill(ForgeDirection.UNKNOWN, stack, true);
+        getOutputTank().fill(null, stack, true);
         fluidData = null;
         return (int) ((maxPurityToAdd - addedPurity) * 1000 / maxPurityToAdd + 1);
     }
 
     private boolean testFillOutputTank() {
-        return getOutputTank().fill(ForgeDirection.UNKNOWN, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Purifier.rclPerPurify), false) == ConfigMachines.Purifier.rclPerPurify;
+        return getOutputTank().fill(null, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Purifier.rclPerPurify), false) == ConfigMachines.Purifier.rclPerPurify;
     }
 
     private TileTank getInputTank() {
@@ -127,14 +135,8 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
         if (getInputTank().getFluidAmount() < ConfigMachines.Purifier.rclPerPurify) {
             return false;
         }
-        if (getInputTank().getMultiBlock().equals(getOutputTank().getMultiBlock())) {
-            // Same tank so operation is possible.
-            return true;
-        }
-        if (!testFillOutputTank()) {
-            return false;
-        }
-        return true;
+        // Same tank so operation is possible.
+        return getInputTank().getMultiBlock().equals(getOutputTank().getMultiBlock()) || testFillOutputTank();
     }
 
     private boolean validSlot(){
@@ -204,8 +206,8 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
 
 
     @Override
-    public void hook(TileTank tank, ForgeDirection direction) {
-        if (direction == ForgeDirection.DOWN){
+    public void hook(TileTank tank, EnumFacing direction) {
+        if (direction == EnumFacing.DOWN){
             if (validRCLTank(tank)) {
                 bottomTank = tank;
             }
@@ -217,7 +219,7 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
     }
 
     @Override
-    public void unHook(TileTank tank, ForgeDirection direction) {
+    public void unHook(TileTank tank, EnumFacing direction) {
         if (tilesEqual(bottomTank, tank)){
             bottomTank = null;
             notifyNeighboursOfDataChange();
@@ -228,7 +230,7 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
     }
 
     @Override
-    public void onContentChanged(TileTank tank, ForgeDirection direction) {
+    public void onContentChanged(TileTank tank, EnumFacing direction) {
         if (tilesEqual(topTank, tank)){
             if (!validRCLTank(tank)) {
                 topTank = null;
@@ -247,21 +249,21 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
     }
 
     private boolean tilesEqual(TileTank first, TileTank second){
-        return first != null && second != null && first.myLocation().equals(second.myLocation()) && WorldHelper.getDimID(first.getWorldObj()) == WorldHelper.getDimID(second.getWorldObj());
+        return first != null && second != null && first.getPos().equals(second.getPos()) && WorldHelper.getDimID(first.getWorld()) == WorldHelper.getDimID(second.getWorld());
     }
 
     @Override
-    public int[] getAccessibleSlotsFromSide(int side) {
+    public int[] getSlotsForFace(EnumFacing side) {
         return new int[] { PurifierContainer.SLOT_FILTERINPUT };
     }
 
     @Override
-    public boolean canInsertItem(int index, ItemStack item, int side) {
+    public boolean canInsertItem(int index, ItemStack item, EnumFacing side) {
         return PurifierContainer.factory.isInputSlot(index) || PurifierContainer.factory.isSpecificItemSlot(index);
     }
 
     @Override
-    public boolean canExtractItem(int index, ItemStack item, int side) {
+    public boolean canExtractItem(int index, ItemStack item, EnumFacing side) {
         return PurifierContainer.factory.isOutputSlot(index);
     }
 
@@ -281,7 +283,7 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int index) {
+    public ItemStack removeStackFromSlot(int index) {
         return null;
     }
 
@@ -291,13 +293,21 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
     }
 
     @Override
-    public String getInventoryName() {
+    public String getName() {
         return "Purifier Inventory";
     }
 
     @Override
-    public boolean hasCustomInventoryName() {
+    public boolean hasCustomName() {
         return false;
+    }
+
+    /**
+     * Get the formatted ChatComponent that will be used for the sender's username in chat
+     */
+    @Override
+    public IChatComponent getDisplayName() {
+        return null;
     }
 
     @Override
@@ -311,17 +321,37 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
     }
 
     @Override
-    public void openInventory() {
+    public void openInventory(EntityPlayer player) {
 
     }
 
     @Override
-    public void closeInventory() {
+    public void closeInventory(EntityPlayer player) {
 
     }
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         return true;
+    }
+
+    @Override
+    public int getField(int id) {
+        return 0;
+    }
+
+    @Override
+    public void setField(int id, int value) {
+
+    }
+
+    @Override
+    public int getFieldCount() {
+        return 0;
+    }
+
+    @Override
+    public void clear() {
+
     }
 }

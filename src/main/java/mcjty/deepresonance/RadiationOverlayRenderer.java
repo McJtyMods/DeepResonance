@@ -1,10 +1,11 @@
 package mcjty.deepresonance;
 
+import elec332.core.client.RenderHelper;
 import mcjty.deepresonance.items.ModItems;
 import mcjty.deepresonance.items.RadiationMonitorItem;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
 
@@ -19,7 +20,7 @@ public class RadiationOverlayRenderer {
             return;
         }
 
-        EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
         if (player.getHeldItem() == null) {
             return;
         }
@@ -35,12 +36,12 @@ public class RadiationOverlayRenderer {
 
         int radiation = new Float(RadiationMonitorItem.radiationStrength).intValue();
         if (radiation != 0) {
-            Minecraft.getMinecraft().fontRenderer.drawString(
+            RenderHelper.getMCFontrenderer().drawString(
                     "Radiation: " + radiation,
                     RadiationConfiguration.radiationOverlayX, RadiationConfiguration.radiationOverlayY,
                     RadiationConfiguration.radiationOverlayColor);
         } else {
-            Minecraft.getMinecraft().fontRenderer.drawString(
+            RenderHelper.getMCFontrenderer().drawString(
                     "No radiation detected",
                     RadiationConfiguration.radiationOverlayX, RadiationConfiguration.radiationOverlayY,
                     RadiationConfiguration.radiationOverlayColorNoRadiation);

@@ -1,29 +1,31 @@
 package mcjty.deepresonance.blocks.gencontroller;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 public class ControllerSounds {
+
     private GeneratorStartupSound generatorStartupSound;
     private GeneratorLoopSound generatorLoopSound;
     private GeneratorShutdownSound generatorShutdownSound;
 
-    public void playStartup(World worldObj, int xCoord, int yCoord, int zCoord) {
-        EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
-        generatorStartupSound = new GeneratorStartupSound(player, worldObj, xCoord, yCoord, zCoord);
+    public void playStartup(World worldObj, BlockPos pos) {
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        generatorStartupSound = new GeneratorStartupSound(player, worldObj, pos.getX(), pos.getY(), pos.getZ());
         Minecraft.getMinecraft().getSoundHandler().playSound(generatorStartupSound);
     }
 
-    public void playLoop(World worldObj, int xCoord, int yCoord, int zCoord) {
-        EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
-        generatorLoopSound = new GeneratorLoopSound(player, worldObj, xCoord, yCoord, zCoord);
+    public void playLoop(World worldObj, BlockPos pos) {
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        generatorLoopSound = new GeneratorLoopSound(player, worldObj, pos.getX(), pos.getY(), pos.getZ());
         Minecraft.getMinecraft().getSoundHandler().playSound(generatorLoopSound);
     }
 
-    public void playShutdown(World worldObj, int xCoord, int yCoord, int zCoord) {
-        EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
-        generatorShutdownSound = new GeneratorShutdownSound(player, worldObj, xCoord, yCoord, zCoord);
+    public void playShutdown(World worldObj, BlockPos pos) {
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        generatorShutdownSound = new GeneratorShutdownSound(player, worldObj, pos.getX(), pos.getY(), pos.getZ());
         Minecraft.getMinecraft().getSoundHandler().playSound(generatorShutdownSound);
     }
 

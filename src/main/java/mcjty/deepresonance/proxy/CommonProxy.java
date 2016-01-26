@@ -37,7 +37,6 @@ public abstract class CommonProxy {
         mainConfig = DeepResonance.config;
         readMainConfig();
         DRMessages.registerNetworkMessages();
-        DRFluidRegistry.preInitFluids();
         ModItems.init();
         ModBlocks.init();
         ModCrafting.init();
@@ -71,6 +70,7 @@ public abstract class CommonProxy {
         FMLCommonHandler.instance().bus().register(new RadiationTickEvent());
         MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
         FMLCommonHandler.instance().bus().register(new FMLEventHandlers());
+        DRFluidRegistry.initFluids();
     }
 
     public void postInit(FMLPostInitializationEvent e) {

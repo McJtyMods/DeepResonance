@@ -3,6 +3,7 @@ package mcjty.deepresonance.commands;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
@@ -47,6 +48,6 @@ public class CmdSpawnCrystal extends AbstractDRCommand {
         Random random = new Random(System.currentTimeMillis());
         random.nextFloat();
 
-        ResonatingCrystalTileEntity.spawnRandomCrystal(world, random, x, y, z, special);
+        ResonatingCrystalTileEntity.spawnRandomCrystal(world, random, new BlockPos(x, y, z), special);
     }
 }

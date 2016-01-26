@@ -4,7 +4,7 @@ import elec332.core.multiblock.dynamic.AbstractDynamicMultiBlockWorldHolder;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 
 /**
@@ -22,7 +22,7 @@ public class DRTankWorldHolder extends AbstractDynamicMultiBlockWorldHolder<DRTa
     }
 
     @Override
-    public boolean canConnect(TileEntity main, ForgeDirection direction, TileEntity otherTile) {
+    public boolean canConnect(TileEntity main, EnumFacing direction, TileEntity otherTile) {
         Fluid fluid1 = ((TileTank)main).lastSeenFluid;
         Fluid fluid2 = ((TileTank)otherTile).lastSeenFluid;
         return fluid1 == fluid2 || (fluid1 == null || fluid2 == null);

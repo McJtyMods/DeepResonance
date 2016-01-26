@@ -1,7 +1,9 @@
 package mcjty.deepresonance.blocks.lens;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.*;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.lib.container.GenericBlock;
@@ -10,11 +12,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
@@ -23,8 +22,8 @@ public class LensBlock extends GenericBlock {
 
     public LensBlock() {
         super(DeepResonance.instance, Material.iron, LensTileEntity.class, false);
-        setBlockName("lensBlock");
-        setHorizRotation(true);
+        setUnlocalizedName(DeepResonance.MODID + ".lensBlock");
+        //setHorizRotation(true); TODO: McJty: HorizRotation
         setCreativeTab(DeepResonance.tabDeepResonance);
     }
 
@@ -49,14 +48,16 @@ public class LensBlock extends GenericBlock {
     }
 
     @Override
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
+    public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state) {
         return null;
     }
+
+    /* TODO: McJty: Meta stuff
 
     @Override
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
         int meta = world.getBlockMetadata(x, y, z);
-        ForgeDirection direction = BlockTools.getOrientationHoriz(meta);
+        EnumFacing direction = BlockTools.getOrientationHoriz(meta);
         switch (direction) {
             case DOWN:
             case UP:
@@ -81,24 +82,14 @@ public class LensBlock extends GenericBlock {
     protected boolean wrenchUse(World world, int x, int y, int z, EntityPlayer player) {
         // Do not rotate
         return true;
+    }*/
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
     }
 
     @Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLivingBase, ItemStack itemStack) {
-    }
-
-    @Override
-    public String getSideIconName() {
-        return "lens";
-    }
-
-    @Override
-    public boolean shouldSideBeRendered(IBlockAccess blockAccess, int x, int y, int z, int side) {
-        return false;
-    }
-
-    @Override
-    public boolean renderAsNormalBlock() {
+    public boolean shouldSideBeRendered(IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
         return false;
     }
 
@@ -106,4 +97,10 @@ public class LensBlock extends GenericBlock {
     public boolean isOpaqueCube() {
         return false;
     }
+
+    @Override
+    public EnumWorldBlockLayer getBlockLayer() {
+        return EnumWorldBlockLayer.CUTOUT;
+    }
+
 }

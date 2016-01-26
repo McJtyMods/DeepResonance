@@ -2,14 +2,16 @@ package mcjty.deepresonance.blocks.generator;
 
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
+import com.google.common.collect.Sets;
+import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.varia.EnergyTools;
 import mcjty.lib.entity.GenericTileEntity;
-import mcjty.lib.varia.Coordinate;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,13 +26,11 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
 
     public void addBlockToNetwork() {
         Set<Integer> adjacentGeneratorIds = new HashSet<Integer>();
-        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
-            int ox = xCoord + direction.offsetX;
-            int oy = yCoord + direction.offsetY;
-            int oz = zCoord + direction.offsetZ;
-            Block block = worldObj.getBlock(ox, oy, oz);
+        for (EnumFacing direction : EnumFacing.VALUES) {
+            BlockPos pos = getPos().offset(direction);
+            Block block = WorldHelper.getBlockAt(worldObj, pos);
             if (block == GeneratorSetup.generatorBlock) {
-                GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) worldObj.getTileEntity(ox, oy, oz);
+                GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) WorldHelper.getTileAt(worldObj, pos);
                 adjacentGeneratorIds.add(generatorTileEntity.getNetworkId());
             }
         }
@@ -59,8 +59,8 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
             }
 
             int id = adjacentGeneratorIds.iterator().next();
-            Set<Coordinate> done = new HashSet<Coordinate>();
-            setBlocksToNetwork(new Coordinate(xCoord, yCoord, zCoord), done, id);
+            Set<BlockPos> done = Sets.newHashSet();
+            setBlocksToNetwork(pos, done, id);
 
             DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(networkId);
             network.setEnergy(energy);
@@ -69,11 +69,11 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         generatorNetwork.save(worldObj);
     }
 
-    private void setBlocksToNetwork(Coordinate c, Set<Coordinate> done, int newId) {
+    private void setBlocksToNetwork(BlockPos c, Set<BlockPos> done, int newId) {
         done.add(c);
 
         DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
-        GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) worldObj.getTileEntity(c.getX(), c.getY(), c.getZ());
+        GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) WorldHelper.getTileAt(worldObj, c);
         int oldNetworkId = generatorTileEntity.getNetworkId();
         if (oldNetworkId != newId) {
             if (oldNetworkId != -1) {
@@ -85,10 +85,10 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
             }
         }
 
-        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
-            Coordinate newC = c.addDirection(direction);
+        for (EnumFacing direction : EnumFacing.VALUES) {
+            BlockPos newC = c.offset(direction);
             if (!done.contains(newC)) {
-                Block block = worldObj.getBlock(newC.getX(), newC.getY(), newC.getZ());
+                Block block = WorldHelper.getBlockAt(worldObj, newC);
                 if (block == GeneratorSetup.generatorBlock) {
                     setBlocksToNetwork(newC, done, newId);
                 }
@@ -97,7 +97,6 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
     }
 
     public void removeBlockFromNetwork() {
-        Coordinate thisCoord = new Coordinate(xCoord, yCoord, zCoord);
 
         int totalEnergy = 0;
         int totalBlocks = 0;
@@ -119,29 +118,28 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
 
         // Clear all networks adjacent to this one.
-        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
-            Coordinate newC = thisCoord.addDirection(direction);
-            Block block = worldObj.getBlock(newC.getX(), newC.getY(), newC.getZ());
+        for (EnumFacing direction : EnumFacing.VALUES) {
+            BlockPos newC = getPos().offset(direction);
+            Block block = WorldHelper.getBlockAt(worldObj, newC);
             if (block == GeneratorSetup.generatorBlock) {
-                Set<Coordinate> done = new HashSet<Coordinate>();
-                done.add(thisCoord);
+                Set<BlockPos> done = Sets.newHashSet();
+                done.add(pos);
                 setBlocksToNetwork(newC, done, -1);
             }
         }
 
         // Now assign new ones.
         int idToUse = networkId;
-        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
-            Coordinate newC = thisCoord.addDirection(direction);
-            Block block = worldObj.getBlock(newC.getX(), newC.getY(), newC.getZ());
+        for (EnumFacing direction : EnumFacing.VALUES) {
+            BlockPos newC = getPos().offset(direction);
+            Block block = WorldHelper.getBlockAt(worldObj, newC);
             if (block == GeneratorSetup.generatorBlock) {
-                GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) worldObj.getTileEntity(newC.getX(), newC.getY(), newC.getZ());
-                if (generatorTileEntity.getNetworkId() == -1) {
+                GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) WorldHelper.getTileAt(worldObj, newC);                if (generatorTileEntity.getNetworkId() == -1) {
                     if (idToUse == -1) {
                         idToUse = generatorNetwork.newChannel();
                     }
-                    Set<Coordinate> done = new HashSet<Coordinate>();
-                    done.add(thisCoord);
+                    Set<BlockPos> done = Sets.newHashSet();
+                    done.add(getPos());
                     setBlocksToNetwork(newC, done, idToUse);
                     generatorNetwork.getOrCreateNetwork(idToUse).setEnergy(-1);      // Marker so we know what energy to set later.
 
@@ -153,11 +151,11 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         // Now we need to redistribute the total energy based on the size of the adjacent networks.
         int energy = totalEnergy / totalBlocks;
         int remainder = totalEnergy % totalBlocks;
-        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
-            Coordinate newC = thisCoord.addDirection(direction);
-            Block block = worldObj.getBlock(newC.getX(), newC.getY(), newC.getZ());
+        for (EnumFacing direction : EnumFacing.VALUES) {
+            BlockPos newC = getPos().offset(direction);
+            Block block = WorldHelper.getBlockAt(worldObj, newC);
             if (block == GeneratorSetup.generatorBlock) {
-                GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) worldObj.getTileEntity(newC.getX(), newC.getY(), newC.getZ());
+                GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) WorldHelper.getTileAt(worldObj, newC);
                 DRGeneratorNetwork.Network network = generatorTileEntity.getNetwork();
                 if (network.getEnergy() == -1) {
                     network.setEnergy(energy * network.getGeneratorBlocks() + remainder);
@@ -172,7 +170,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
     public void setNetworkId(int newId) {
         networkId = newId;
         markDirty();
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        worldObj.markBlockForUpdate(pos);
     }
 
     public int getNetworkId() {
@@ -193,15 +191,15 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
             network.setActive(active);
             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
             generatorNetwork.save(worldObj);
-            Set<Coordinate> done = new HashSet<Coordinate> ();
-            activateBlocks(new Coordinate(xCoord, yCoord, zCoord), done, active);
+            Set<BlockPos> done = Sets.newHashSet();
+            activateBlocks(getPos(), done, active);
         }
     }
 
-    private void activateBlocks(Coordinate c, Set<Coordinate> done, boolean active) {
+    private void activateBlocks(BlockPos c, Set<BlockPos> done, boolean active) {
         done.add(c);
 
-        int meta = worldObj.getBlockMetadata(c.getX(), c.getY(), c.getZ());
+       /* int meta = worldObj.getBlockMetadata(c.getX(), c.getY(), c.getZ());
 
         if (((meta & GeneratorBlock.META_ON) == 0) == active) {
             if (active) {
@@ -209,12 +207,12 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
             } else {
                 worldObj.setBlockMetadataWithNotify(c.getX(), c.getY(), c.getZ(), meta & ~GeneratorBlock.META_ON, 3);
             }
-        }
+        }*/ //TODO: McJty: Meta stuff
 
-        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
-            Coordinate newC = c.addDirection(direction);
+        for (EnumFacing direction : EnumFacing.VALUES) {
+            BlockPos newC = c.offset(direction);
             if (!done.contains(newC)) {
-                Block block = worldObj.getBlock(newC.getX(), newC.getY(), newC.getZ());
+                Block block = WorldHelper.getBlockAt(worldObj, newC);
                 if (block == GeneratorSetup.generatorBlock) {
                     activateBlocks(newC, done, active);
                 }
@@ -234,23 +232,19 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         tagCompound.setInteger("networkId", networkId);
     }
 
-    @Override
     protected void checkStateServer() {
-        int energyStored = getEnergyStored(ForgeDirection.DOWN);
+        int energyStored = getEnergyStored(EnumFacing.DOWN);
 
         if (energyStored <= 0) {
             return;
         }
 
         for (int i = 0 ; i < 6 ; i++) {
-            ForgeDirection dir = ForgeDirection.getOrientation(i);
-            int x = xCoord + dir.offsetX;
-            int y = yCoord + dir.offsetY;
-            int z = zCoord + dir.offsetZ;
-            TileEntity te = worldObj.getTileEntity(x, y, z);
+            BlockPos pos = getPos().offset(EnumFacing.VALUES[i]);
+            TileEntity te = WorldHelper.getTileAt(worldObj, pos);
             if (EnergyTools.isEnergyTE(te)) {
                 IEnergyConnection connection = (IEnergyConnection) te;
-                ForgeDirection opposite = dir.getOpposite();
+                EnumFacing opposite = EnumFacing.VALUES[i].getOpposite();
                 if (connection.canConnectEnergy(opposite)) {
                     int rfToGive;
                     if (GeneratorConfiguration.rfPerTickGenerator <= energyStored) {
@@ -260,7 +254,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
                     }
 
                     int received = EnergyTools.receiveEnergy(te, opposite, rfToGive);
-                    energyStored -= extractEnergy(ForgeDirection.DOWN, received, false);
+                    energyStored -= extractEnergy(EnumFacing.DOWN, received, false);
                     if (energyStored <= 0) {
                         break;
                     }
@@ -271,7 +265,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
 
 
     @Override
-    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
+    public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
         if (networkId == -1) {
             return 0;
         }
@@ -291,7 +285,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
     }
 
     @Override
-    public int getEnergyStored(ForgeDirection from) {
+    public int getEnergyStored(EnumFacing from) {
         if (networkId == -1) {
             return 0;
         }
@@ -300,7 +294,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
     }
 
     @Override
-    public int getMaxEnergyStored(ForgeDirection from) {
+    public int getMaxEnergyStored(EnumFacing from) {
         if (networkId == -1) {
             return 0;
         }
@@ -309,7 +303,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
     }
 
     @Override
-    public boolean canConnectEnergy(ForgeDirection from) {
+    public boolean canConnectEnergy(EnumFacing from) {
         return true;
     }
 }

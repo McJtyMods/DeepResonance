@@ -1,65 +1,65 @@
 package mcjty.deepresonance.blocks.tank;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import elec332.core.client.render.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
+import elec332.core.client.ElecTessellator;
+import elec332.core.client.ITessellator;
+import elec332.core.client.RenderHelper;
+import elec332.core.world.WorldHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
-public class TankTESR extends TileEntitySpecialRenderer {
+public class TankTESR extends TileEntitySpecialRenderer<TileTank> {
 
     @Override
-    public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float time) {
-        if (tileEntity instanceof TileTank) {
-            GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
+    public void renderTileEntityAt(TileTank tileTank, double x, double y, double z, float time, int breakTime) {
+        GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
 
-            TileTank tileTank = (TileTank) tileEntity;
+        ITessellator tessellator = RenderHelper.getTessellator();
 
-            Tessellator tessellator = Tessellator.instance;
+        net.minecraft.client.renderer.RenderHelper.disableStandardItemLighting();
 
-            net.minecraft.client.renderer.RenderHelper.disableStandardItemLighting();
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glDisable(GL11.GL_BLEND);
 
-            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            GL11.glDisable(GL11.GL_BLEND);
+        GL11.glPushMatrix();
+        GL11.glTranslated(x, y, z);
 
-            GL11.glPushMatrix();
-            GL11.glTranslated(x, y, z);
+        bindTexture(TextureMap.locationBlocksTexture);
+        World world = tileTank.getWorld();
+        renderTankInside(tessellator, world, tileTank.getPos(), tileTank);
 
-            bindTexture(TextureMap.locationBlocksTexture);
-            World world = tileEntity.getWorldObj();
-            renderTankInside(tessellator, world, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileTank);
-
-            Fluid renderFluid = tileTank.getClientRenderFluid();
-            if (renderFluid != null) {
-                renderFluid(tileTank, tessellator, renderFluid);
-            }
-
-            GL11.glPopMatrix();
-
-            GL11.glPopAttrib();
+        Fluid renderFluid = tileTank.getClientRenderFluid();
+        if (renderFluid != null) {
+            renderFluid(tileTank, tessellator, renderFluid);
         }
+
+        GL11.glPopMatrix();
+
+        GL11.glPopAttrib();
     }
 
     // ---------------------------------------------------------------
     // Render the fluid inside the tank
     // ---------------------------------------------------------------
-    private void renderFluid(TileTank tileTank, Tessellator tessellator, Fluid renderFluid) {
+    private void renderFluid(TileTank tileTank, ITessellator tessellator, Fluid renderFluid) {
 
         float offset = 0.002f;
 
-        IIcon fluid = renderFluid.getStillIcon();
+        TextureAtlasSprite fluid = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(renderFluid.getStill().toString());
         fluid = RenderHelper.checkIcon(fluid);
 
-        tessellator.startDrawingQuads();
+        ((ElecTessellator)tessellator).startDrawingWorldBlock();
 
         tessellator.setColorRGBA(255, 255, 255, 128);
         tessellator.setBrightness(240);
@@ -110,20 +110,21 @@ public class TankTESR extends TileEntitySpecialRenderer {
                 tessellator.addVertexWithUV(1 + offset, scale, 3 / 16f, u2, v1);
             }
         }
-        tessellator.draw();
+        tessellator.getMCTessellator().draw();
     }
 
-    private void renderTankInside(Tessellator tessellator, World world, int ix, int iy, int iz, TileTank tank) {
+    private void renderTankInside(ITessellator tessellator, World world, BlockPos pos, TileTank tank) {
         float offset = 0.002f;
+        int ix = pos.getX(), iy = pos.getY(), iz = pos.getZ();
 
-        tessellator.startDrawingQuads();
+        ((ElecTessellator)tessellator).startDrawingWorldBlock();
         tessellator.setColorRGBA(255, 255, 255, 128);
         tessellator.setBrightness(100);
 
         // ---------------------------------------------------------------
         // Render the inside of the tank
         // ---------------------------------------------------------------
-        IIcon blockIcon = TankSetup.tank.getSideIcon();
+        TextureAtlasSprite blockIcon = TankSetup.tank.getSideIcon();
 
         //NORTH other side
         if (doRenderToSide(world, ix, iy, iz-1, tank)) {
@@ -175,11 +176,11 @@ public class TankTESR extends TileEntitySpecialRenderer {
             tessellator.addVertexWithUV(0, 1 - offset, 1, blockIcon.getMaxU(), blockIcon.getMinV());
         }
 
-        tessellator.draw();
+        tessellator.getMCTessellator().draw();
     }
 
     private boolean doRenderToSide(World world, int x, int y ,int z, TileTank tank){
-        TileEntity tile = world.getTileEntity(x, y, z);
+        TileEntity tile = WorldHelper.getTileAt(world, new BlockPos(x, y, z));
         return !(tile instanceof TileTank && ((TileTank)tile).getClientRenderFluid() == tank.getClientRenderFluid());
     }
 }

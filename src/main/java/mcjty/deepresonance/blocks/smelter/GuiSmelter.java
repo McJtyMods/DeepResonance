@@ -8,7 +8,7 @@ import mcjty.lib.gui.widgets.*;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import java.awt.*;
 
@@ -25,7 +25,7 @@ public class GuiSmelter extends GenericGuiContainer<SmelterTileEntity> {
 
     public GuiSmelter(SmelterTileEntity smelterTileEntity, SmelterContainer container) {
         super(DeepResonance.instance, DeepResonance.networkHandler.getNetworkWrapper(), smelterTileEntity, container, 0, "smelter");
-        smelterTileEntity.setCurrentRF(smelterTileEntity.getEnergyStored(ForgeDirection.DOWN));
+        smelterTileEntity.setCurrentRF(smelterTileEntity.getEnergyStored(EnumFacing.DOWN));
 
         xSize = SMELTER_WIDTH;
         ySize = SMELTER_HEIGHT;
@@ -35,7 +35,7 @@ public class GuiSmelter extends GenericGuiContainer<SmelterTileEntity> {
     public void initGui() {
         super.initGui();
 
-        int maxEnergyStored = tileEntity.getMaxEnergyStored(ForgeDirection.DOWN);
+        int maxEnergyStored = tileEntity.getMaxEnergyStored(EnumFacing.DOWN);
         energyBar = new EnergyBar(mc, this).setVertical().setMaxValue(maxEnergyStored).setLayoutHint(new PositionalLayout.PositionalHint(10, 7, 8, 54)).setShowText(false);
         energyBar.setValue(tileEntity.getCurrentRF());
 
@@ -49,7 +49,7 @@ public class GuiSmelter extends GenericGuiContainer<SmelterTileEntity> {
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
 
         window = new Window(this, toplevel);
-        tileEntity.requestRfFromServer(DeepResonance.networkHandler.getNetworkWrapper());
+        tileEntity.requestRfFromServer(DeepResonance.MODID);
         tileEntity.requestProgressFromServer();
     }
 
@@ -71,7 +71,7 @@ public class GuiSmelter extends GenericGuiContainer<SmelterTileEntity> {
 
         energyBar.setValue(tileEntity.getCurrentRF());
 
-        tileEntity.requestRfFromServer(DeepResonance.networkHandler.getNetworkWrapper());
+        tileEntity.requestRfFromServer(DeepResonance.MODID);
         tileEntity.requestProgressFromServer();
     }
 }

@@ -1,6 +1,6 @@
 package mcjty.deepresonance.network;
 
-import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.Side;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.lib.network.PacketHandler;
 

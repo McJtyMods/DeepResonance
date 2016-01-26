@@ -1,6 +1,6 @@
 package mcjty.deepresonance.blocks.laser;
 
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.lib.container.GenericItemBlock;
 import net.minecraft.init.Blocks;

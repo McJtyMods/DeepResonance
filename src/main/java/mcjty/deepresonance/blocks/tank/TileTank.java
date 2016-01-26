@@ -1,8 +1,9 @@
 package mcjty.deepresonance.blocks.tank;
 
 import com.google.common.collect.Maps;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import elec332.core.api.annotations.RegisterTile;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import elec332.core.multiblock.dynamic.IDynamicMultiBlockTile;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
@@ -16,7 +17,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
 
 import java.util.Map;
@@ -24,6 +25,7 @@ import java.util.Map;
 /**
  * Created by Elec332 on 9-8-2015.
  */
+@RegisterTile(name = "DeepResonanceTankTileEntity")
 public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IDeepResonanceFluidProvider {
 
     public static final int SETTING_NONE = 0;
@@ -34,7 +36,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     public TileTank(){
         super();
         this.settings = Maps.newHashMap();
-        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS){
+        for (EnumFacing direction : EnumFacing.VALUES){
             settings.put(direction, SETTING_NONE);
         }
         this.multiBlockSaveData = new NBTTagCompound();
@@ -47,15 +49,15 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
 
     private NBTTagCompound multiBlockSaveData;
 
-    protected Map<ForgeDirection, Integer> settings;
+    protected Map<EnumFacing, Integer> settings;
 
     @Override
     public void onTileLoaded() {
         super.onTileLoaded();
         if (!worldObj.isRemote) {
-            DeepResonance.worldGridRegistry.getTankRegistry().get(getWorldObj()).addTile(this);
+            DeepResonance.worldGridRegistry.getTankRegistry().get(worldObj).addTile(this);
             MinecraftForge.EVENT_BUS.post(new FluidTileEvent.Load(this));
-            for (Map.Entry<ITankHook, ForgeDirection> entry : getConnectedHooks().entrySet()){
+            for (Map.Entry<ITankHook, EnumFacing> entry : getConnectedHooks().entrySet()){
                 entry.getKey().hook(this, entry.getValue());
             }
         }
@@ -65,9 +67,9 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     public void onTileUnloaded() {
         super.onTileUnloaded();
         if (!worldObj.isRemote) {
-            DeepResonance.worldGridRegistry.getTankRegistry().get(getWorldObj()).removeTile(this);
+            DeepResonance.worldGridRegistry.getTankRegistry().get(worldObj).removeTile(this);
             MinecraftForge.EVENT_BUS.post(new FluidTileEvent.Unload(this));
-            for (Map.Entry<ITankHook, ForgeDirection> entry : getConnectedHooks().entrySet()){
+            for (Map.Entry<ITankHook, EnumFacing> entry : getConnectedHooks().entrySet()){
                 entry.getKey().unHook(this, entry.getValue());
             }
         }
@@ -77,7 +79,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     public FluidStack myTank;
     public Fluid lastSeenFluid;
 
-    public Map<ForgeDirection, Integer> getSettings() {
+    public Map<EnumFacing, Integer> getSettings() {
         return settings;
     }
 
@@ -88,7 +90,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         if (tagList != null){
             for (int i = 0; i < tagList.tagCount(); i++) {
                 NBTTagCompound tag = tagList.getCompoundTagAt(i);
-                settings.put(ForgeDirection.valueOf(tag.getString("dir")), tag.getInteger("n"));
+                settings.put(EnumFacing.valueOf(tag.getString("dir")), tag.getInteger("n"));
             }
         }
     }
@@ -97,7 +99,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     public void writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         NBTTagList tagList = new NBTTagList();
-        for (Map.Entry<ForgeDirection, Integer> entry : settings.entrySet()){
+        for (Map.Entry<EnumFacing, Integer> entry : settings.entrySet()){
             NBTTagCompound tag = new NBTTagCompound();
             tag.setString("dir", entry.getKey().toString());
             tag.setInteger("n", entry.getValue());
@@ -152,11 +154,6 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     }
 
     @Override
-    public boolean canUpdate() {
-        return false;
-    }
-
-    @Override
     public void setMultiBlock(DRTankMultiBlock multiBlock) {
         this.multiBlock = multiBlock;
     }
@@ -177,7 +174,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     }
 
     @Override
-    public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
         if (!isInput(from))
             return 0;
         notifyChanges(doFill);
@@ -185,7 +182,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     }
 
     @Override
-    public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
         if (!isOutput(from))
             return null;
         notifyChanges(doDrain);
@@ -193,7 +190,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     }
 
     @Override
-    public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
         if (!isOutput(from))
             return null;
         notifyChanges(doDrain);
@@ -201,46 +198,46 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     }
 
     @Override
-    public boolean canFill(ForgeDirection from, Fluid fluid) {
+    public boolean canFill(EnumFacing from, Fluid fluid) {
         return isInput(from) && multiBlock != null && multiBlock.canFill(from, fluid);
     }
 
     @Override
-    public boolean canDrain(ForgeDirection from, Fluid fluid) {
+    public boolean canDrain(EnumFacing from, Fluid fluid) {
         return isOutput(from) && multiBlock != null && multiBlock.canDrain(from, fluid);
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+    public FluidTankInfo[] getTankInfo(EnumFacing from) {
         return multiBlock == null ? new FluidTankInfo[0] : multiBlock.getTankInfo(from);
     }
 
     @Override
-    public boolean canAcceptFrom(ForgeDirection direction) {
+    public boolean canAcceptFrom(EnumFacing direction) {
         return isInput(direction);
     }
 
     @Override
-    public boolean canProvideTo(ForgeDirection direction) {
+    public boolean canProvideTo(EnumFacing direction) {
         return isOutput(direction);
     }
 
     @Override
-    public FluidStack getProvidedFluid(int maxProvided, ForgeDirection from) {
+    public FluidStack getProvidedFluid(int maxProvided, EnumFacing from) {
         if (!isOutput(from))
             return null;
         return getMultiBlock() == null ? null : getMultiBlock().drain(maxProvided, true);
     }
 
     @Override
-    public int getRequestedAmount(ForgeDirection from) {
+    public int getRequestedAmount(EnumFacing from) {
         if (!isInput(from))
             return 0;
         return multiBlock == null ? 0 : Math.min(multiBlock.getFreeSpace(), 1000);
     }
 
     @Override
-    public FluidStack acceptFluid(FluidStack fluidStack, ForgeDirection from) {
+    public FluidStack acceptFluid(FluidStack fluidStack, EnumFacing from) {
         if (!isInput(from)) {
             fill(from, fluidStack, true);
             notifyChanges(true);
@@ -277,17 +274,17 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
 
     private void notifyChanges(boolean b){
         if (multiBlock != null && b){
-            for (Map.Entry<ITankHook, ForgeDirection> entry : getConnectedHooks().entrySet()){
+            for (Map.Entry<ITankHook, EnumFacing> entry : getConnectedHooks().entrySet()){
                 entry.getKey().onContentChanged(this, entry.getValue());
             }
         }
     }
 
-    protected Map<ITankHook, ForgeDirection> getConnectedHooks(){
-        Map<ITankHook, ForgeDirection> ret = Maps.newHashMap();
-        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS){
+    protected Map<ITankHook, EnumFacing> getConnectedHooks(){
+        Map<ITankHook, EnumFacing> ret = Maps.newHashMap();
+        for (EnumFacing direction : EnumFacing.VALUES){
             try {
-                TileEntity tile = WorldHelper.getTileAt(worldObj, myLocation().atSide(direction));
+                TileEntity tile = WorldHelper.getTileAt(worldObj, getPos().offset(direction));
                 if (tile instanceof ITankHook)
                     ret.put((ITankHook) tile, direction.getOpposite());
             } catch (Exception e){
@@ -297,12 +294,12 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         return ret;
     }
 
-    public boolean isInput(ForgeDirection direction){
-        return direction == ForgeDirection.UNKNOWN || settings.get(direction) == SETTING_ACCEPT;
+    public boolean isInput(EnumFacing direction){
+        return direction == null || settings.get(direction) == SETTING_ACCEPT;
     }
 
-    public boolean isOutput(ForgeDirection direction){
-        return direction == ForgeDirection.UNKNOWN || settings.get(direction) == SETTING_PROVIDE;
+    public boolean isOutput(EnumFacing direction){
+        return direction == null || settings.get(direction) == SETTING_PROVIDE;
     }
 
     @Override

@@ -23,7 +23,7 @@ public class DRGeneratorNetwork extends WorldSavedData {
     }
 
     public void save(World world) {
-        world.mapStorage.setData(GENERATOR_NETWORK_NAME, this);
+        world.setItemData(GENERATOR_NETWORK_NAME, this);
         markDirty();
     }
 
@@ -45,7 +45,7 @@ public class DRGeneratorNetwork extends WorldSavedData {
         if (instance != null) {
             return instance;
         }
-        instance = (DRGeneratorNetwork) world.mapStorage.loadData(DRGeneratorNetwork.class, GENERATOR_NETWORK_NAME);
+        instance = (DRGeneratorNetwork) world.loadItemData(DRGeneratorNetwork.class, GENERATOR_NETWORK_NAME);
         if (instance == null) {
             instance = new DRGeneratorNetwork(GENERATOR_NETWORK_NAME);
         }

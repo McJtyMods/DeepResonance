@@ -1,5 +1,6 @@
 package mcjty.deepresonance.blocks.valve;
 
+import elec332.core.api.annotations.RegisterTile;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.base.ElecTileBase;
 import mcjty.deepresonance.blocks.tank.ITankHook;
@@ -10,13 +11,15 @@ import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.lib.network.Argument;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Map;
 
-public class ValveTileEntity extends ElecTileBase implements ITankHook {
+@RegisterTile(name = "DeepResonanceValveTileEntity")
+public class ValveTileEntity extends ElecTileBase implements ITankHook, ITickable {
 
     public static String CMD_SETTINGS = "settings";
 
@@ -33,6 +36,12 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
     private int maxMb = 0;
 
     @Override
+    public void update() {
+        if (!worldObj.isRemote){
+            checkStateServer();
+        }
+    }
+
     protected void checkStateServer() {
         progress--;
         markDirty();
@@ -45,7 +54,7 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
             return;
         }
 
-        FluidStack fluidStack = topTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Valve.rclPerOperation, false);
+        FluidStack fluidStack = topTank.drain(null, ConfigMachines.Valve.rclPerOperation, false);
         if (fluidStack != null && fillBottomTank(fluidStack.amount)) {
             LiquidCrystalFluidTagData data = LiquidCrystalFluidTagData.fromStack(fluidStack);
             if (data == null) {
@@ -66,12 +75,12 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
                 int fluidAmount = bottomTank.getFluidAmount();
                 if (fluidAmount < maxMb) {
                     int toDrain = Math.min(maxMb - fluidAmount, ConfigMachines.Valve.rclPerOperation);
-                    fluidStack = topTank.drain(ForgeDirection.UNKNOWN, toDrain, true);
-                    bottomTank.fill(ForgeDirection.UNKNOWN, fluidStack, true);
+                    fluidStack = topTank.drain(null, toDrain, true);
+                    bottomTank.fill(null, fluidStack, true);
                 }
             } else {
-                fluidStack = topTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Valve.rclPerOperation, true);
-                bottomTank.fill(ForgeDirection.UNKNOWN, fluidStack, true);
+                fluidStack = topTank.drain(null, ConfigMachines.Valve.rclPerOperation, true);
+                bottomTank.fill(null, fluidStack, true);
             }
         }
     }
@@ -113,7 +122,7 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
     }
 
     private boolean fillBottomTank(int amount) {
-        return bottomTank.fill(ForgeDirection.UNKNOWN, new FluidStack(DRFluidRegistry.liquidCrystal, amount), false) == amount;
+        return bottomTank.fill(null, new FluidStack(DRFluidRegistry.liquidCrystal, amount), false) == amount;
     }
 
     @Override
@@ -147,8 +156,8 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
     }
 
     @Override
-    public void hook(TileTank tank, ForgeDirection direction) {
-        if (direction == ForgeDirection.DOWN){
+    public void hook(TileTank tank, EnumFacing direction) {
+        if (direction == EnumFacing.DOWN){
             if (validRCLTank(tank)) {
                 bottomTank = tank;
             }
@@ -160,7 +169,7 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
     }
 
     @Override
-    public void unHook(TileTank tank, ForgeDirection direction) {
+    public void unHook(TileTank tank, EnumFacing direction) {
         if (tilesEqual(bottomTank, tank)){
             bottomTank = null;
             notifyNeighboursOfDataChange();
@@ -171,7 +180,7 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
     }
 
     @Override
-    public void onContentChanged(TileTank tank, ForgeDirection direction) {
+    public void onContentChanged(TileTank tank, EnumFacing direction) {
         if (tilesEqual(topTank, tank)){
             if (!validRCLTank(tank)) {
                 topTank = null;
@@ -190,7 +199,7 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
     }
 
     private boolean tilesEqual(TileTank first, TileTank second){
-        return first != null && second != null && first.myLocation().equals(second.myLocation()) && WorldHelper.getDimID(first.getWorldObj()) == WorldHelper.getDimID(second.getWorldObj());
+        return first != null && second != null && first.getPos().equals(second.getPos()) && WorldHelper.getDimID(first.getWorld()) == WorldHelper.getDimID(second.getWorld());
     }
 
     @Override
@@ -212,4 +221,5 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
         }
         return false;
     }
+
 }

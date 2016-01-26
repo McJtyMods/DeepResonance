@@ -1,7 +1,9 @@
 package mcjty.deepresonance.blocks.laser;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import elec332.core.world.WorldHelper;
+import net.minecraft.util.*;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalBlock;
@@ -16,7 +18,6 @@ import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
 import mcjty.lib.varia.BlockTools;
-import mcjty.lib.varia.Coordinate;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -26,16 +27,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements ISidedInventory {
+public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements ISidedInventory, ITickable {
 
     public static final String CMD_GETLIQUID = "getLiquid";
     public static final String CLIENTCMD_GETLIQUID = "getLiquid";
@@ -69,11 +68,17 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         if (this.powered != powered) {
             this.powered = powered;
             markDirty();
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(pos);
         }
     }
 
     @Override
+    public void update() {
+        if (!worldObj.isRemote){
+            checkStateServer();
+        }
+    }
+
     protected void checkStateServer() {
         tickCounter--;
         if (tickCounter > 0) {
@@ -83,7 +88,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
 
         checkCrystal();
 
-        int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+        int meta = WorldHelper.getBlockMeta(worldObj, pos);
 
         if (powered == 0) {
             changeColor(0, meta);
@@ -97,7 +102,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
             return;
         }
 
-        if (getEnergyStored(ForgeDirection.UNKNOWN) < ConfigMachines.Laser.rfUsePerCatalyst) {
+        if (getEnergyStored(null) < ConfigMachines.Laser.rfUsePerCatalyst) {
             changeColor(0, meta);
             return;
         }
@@ -107,7 +112,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
             return;
         }
 
-        Coordinate tankCoordinate = findLens(meta);
+        BlockPos tankCoordinate = findLens(meta);
         if (tankCoordinate != null) {
             changeColor(bonus.getColor(), meta);
         } else {
@@ -131,19 +136,19 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
 
-    private void infuseLiquid(Coordinate tankCoordinate, InfusingBonus bonus) {
+    private void infuseLiquid(BlockPos tankCoordinate, InfusingBonus bonus) {
         // We consume stuff even if the tank does not have enough liquid. Player has to be careful
         decrStackSize(LaserContainer.SLOT_CATALYST, 1);
         consumeEnergy(ConfigMachines.Laser.rfUsePerCatalyst);
         crystalLiquid -= ConfigMachines.Laser.crystalLiquidPerCatalyst;
 
-        TileEntity te = worldObj.getTileEntity(tankCoordinate.getX(), tankCoordinate.getY(), tankCoordinate.getZ());
+        TileEntity te = WorldHelper.getTileAt(worldObj, tankCoordinate);
         if (te instanceof TileTank) {
             TileTank tileTank = (TileTank) te;
             if (validRCLTank(tileTank)) {
-                FluidStack stack = tileTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Laser.rclPerCatalyst, false);
+                FluidStack stack = tileTank.drain(null, ConfigMachines.Laser.rclPerCatalyst, false);
                 if (stack != null) {
-                    stack = tileTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Laser.rclPerCatalyst, true);
+                    stack = tileTank.drain(null, ConfigMachines.Laser.rclPerCatalyst, true);
                     LiquidCrystalFluidTagData fluidData = LiquidCrystalFluidTagData.fromStack(stack);
                     float purity = bonus.getPurityModifier().modify(fluidData.getPurity(), fluidData.getQuality());
                     float strength = bonus.getStrengthModifier().modify(fluidData.getStrength(), fluidData.getQuality());
@@ -155,7 +160,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
                     if (Math.abs(purity) < 0.01) {
                         newStack.amount /= 10;
                     }
-                    tileTank.fill(ForgeDirection.UNKNOWN, newStack, true);
+                    tileTank.fill(null, newStack, true);
                 }
             }
         }
@@ -163,8 +168,8 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
 
     private void changeColor(int newcolor, int meta) {
         if (newcolor != color) {
-            color = newcolor;
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            /*color = newcolor;
+            worldObj.markBlockForUpdate(pos);
             // We only have four bits so we can't represent yellow. We use red in that case.
             if (color == COLOR_YELLOW) {
                 meta = (meta & 0x3) | (COLOR_RED<<2);
@@ -172,7 +177,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
                 meta = (meta & 0x3) | (color<<2);
             }
             worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, meta, 3);
-            markDirty();
+            markDirty();*/ //TODO: McJty: Meta colour stuff
         }
     }
 
@@ -201,95 +206,95 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         if (item == null) {
             return null;
         }
-        String name = Item.itemRegistry.getNameForObject(item.getItem());
+        String name = Item.itemRegistry.getNameForObject(item.getItem()).toString();
         return infusingBonusMap.get(name);
     }
 
     public static void createDefaultInfusionBonusMap() {
         infusingBonusMap = new HashMap<String, InfusingBonus>();
-        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.diamond), new InfusingBonus(
+        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.diamond).toString(), new InfusingBonus(
                 COLOR_BLUE,
                 new InfusingBonus.Modifier(5.0f, 100.0f),
                 InfusingBonus.Modifier.NONE,
                 InfusingBonus.Modifier.NONE));
-        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.emerald), new InfusingBonus(
+        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.emerald).toString(), new InfusingBonus(
                 COLOR_GREEN,
                 new InfusingBonus.Modifier(8.0f, 100.0f),
                 InfusingBonus.Modifier.NONE,
                 InfusingBonus.Modifier.NONE));
-        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.ender_pearl), new InfusingBonus(
+        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.ender_pearl).toString(), new InfusingBonus(
                 COLOR_GREEN,
                 new InfusingBonus.Modifier(2.0f, 100.0f),
                 InfusingBonus.Modifier.NONE,
                 InfusingBonus.Modifier.NONE));
-        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.redstone), new InfusingBonus(
+        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.redstone).toString(), new InfusingBonus(
                 COLOR_RED,
                 new InfusingBonus.Modifier(-1.0f, 0.0f),
                 new InfusingBonus.Modifier(5.0f, 60.0f),
                 InfusingBonus.Modifier.NONE));
-        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.gunpowder), new InfusingBonus(
+        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.gunpowder).toString(), new InfusingBonus(
                 COLOR_RED,
                 new InfusingBonus.Modifier(-5.0f, 0.0f),
                 new InfusingBonus.Modifier(8.0f, 70.0f),
                 new InfusingBonus.Modifier(4.0f, 60.0f)));
-        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.glowstone_dust), new InfusingBonus(
+        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.glowstone_dust).toString(), new InfusingBonus(
                 COLOR_YELLOW,
                 new InfusingBonus.Modifier(-2.0f, 0.0f),
                 new InfusingBonus.Modifier(6.0f, 50.0f),
                 new InfusingBonus.Modifier(3.0f, 50.0f)));
-        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.blaze_powder), new InfusingBonus(
+        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.blaze_powder).toString(), new InfusingBonus(
                 COLOR_YELLOW,
                 new InfusingBonus.Modifier(-6.0f, 0.0f),
                 new InfusingBonus.Modifier(5.0f, 70.0f),
                 new InfusingBonus.Modifier(5.0f, 70.0f)));
-        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.quartz), new InfusingBonus(
+        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.quartz).toString(), new InfusingBonus(
                 COLOR_BLUE,
                 new InfusingBonus.Modifier(-1.0f, 0.0f),
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(7.0f, 80.0f)));
-        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.nether_star), new InfusingBonus(
+        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.nether_star).toString(), new InfusingBonus(
                 COLOR_RED,
                 new InfusingBonus.Modifier(-60.0f, 0.0f),
                 new InfusingBonus.Modifier(90.0f, 100.0f),
                 new InfusingBonus.Modifier(90.0f, 100.0f)));
-        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.ghast_tear), new InfusingBonus(
+        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.ghast_tear).toString(), new InfusingBonus(
                 COLOR_YELLOW,
                 new InfusingBonus.Modifier(-20.0f, 0.0f),
                 new InfusingBonus.Modifier(25.0f, 100.0f),
                 new InfusingBonus.Modifier(15.0f, 100.0f)));
-        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.slime_ball), new InfusingBonus(
+        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.slime_ball).toString(), new InfusingBonus(
                 COLOR_GREEN,
                 InfusingBonus.Modifier.NONE,
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(-10.0f, 1.0f)));
-        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.coal), new InfusingBonus(
+        infusingBonusMap.put(Item.itemRegistry.getNameForObject(Items.coal).toString(), new InfusingBonus(
                 COLOR_RED,
                 new InfusingBonus.Modifier(-1.0f, 0.0f),
                 new InfusingBonus.Modifier(-10.0f, 0.0f),
                 InfusingBonus.Modifier.NONE));
     }
 
-    private Coordinate findLens(int meta) {
-        ForgeDirection direction = BlockTools.getOrientationHoriz(meta);
-        Coordinate shouldBeAir = getCoordinate().addDirection(direction);
-        if (!worldObj.isAirBlock(shouldBeAir.getX(), shouldBeAir.getY(), shouldBeAir.getZ())) {
+    private BlockPos findLens(int meta) {
+        EnumFacing direction = BlockTools.getOrientationHoriz(meta);
+        BlockPos shouldBeAir = getPos().offset(direction);
+        if (!worldObj.isAirBlock(shouldBeAir)) {
             return null;
         }
-        Coordinate shouldBeLens = shouldBeAir.addDirection(direction);
-        Block lensBlock = worldObj.getBlock(shouldBeLens.getX(), shouldBeLens.getY(),shouldBeLens.getZ());
+        BlockPos shouldBeLens = shouldBeAir.offset(direction);
+        Block lensBlock = WorldHelper.getBlockAt(worldObj, shouldBeLens);
         if (lensBlock != LensSetup.lensBlock) {
             return null;
         }
-        ForgeDirection lensDirection = BlockTools.getOrientationHoriz(worldObj.getBlockMetadata(shouldBeLens.getX(), shouldBeLens.getY(), shouldBeLens.getZ()));
+        EnumFacing lensDirection = BlockTools.getOrientationHoriz(WorldHelper.getBlockMeta(worldObj, shouldBeLens));
         if (lensDirection != direction) {
             return null;
         }
 
-        return shouldBeLens.addDirection(direction);
+        return shouldBeLens.offset(direction);
     }
 
     public void requestCrystalLiquidFromServer() {
-        DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketRequestIntegerFromServer(xCoord, yCoord, zCoord,
+        DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketRequestIntegerFromServer(DeepResonance.MODID, pos,
                 CMD_GETLIQUID,
                 CLIENTCMD_GETLIQUID));
     }
@@ -383,21 +388,21 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         // @todo needs a better box
-        return AxisAlignedBB.getBoundingBox(xCoord - 3, yCoord - 1, zCoord - 3, xCoord + 4, yCoord + 2, zCoord + 4);
+        return new AxisAlignedBB(getPos().getX()- 3, getPos().getY() - 1, getPos().getZ() - 3, getPos().getX() + 4, getPos().getY() + 2, getPos().getZ() + 4);
     }
 
     @Override
-    public boolean canExtractItem(int index, ItemStack item, int side) {
+    public boolean canExtractItem(int index, ItemStack item, EnumFacing side) {
         return false;
     }
 
     @Override
-    public int[] getAccessibleSlotsFromSide(int side) {
+    public int[] getSlotsForFace(EnumFacing side) {
         return new int[] { LaserContainer.SLOT_CATALYST, LaserContainer.SLOT_CRYSTAL };
     }
 
     @Override
-    public boolean canInsertItem(int index, ItemStack item, int side) {
+    public boolean canInsertItem(int index, ItemStack item, EnumFacing side) {
         switch (index) {
             case LaserContainer.SLOT_CRYSTAL:
                 return item.isItemEqual(new ItemStack(ModBlocks.resonatingCrystalBlock));
@@ -423,7 +428,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int index) {
+    public ItemStack removeStackFromSlot(int index) {
         return null;
     }
 
@@ -433,13 +438,21 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     @Override
-    public String getInventoryName() {
+    public String getName() {
         return "Laser Inventory";
     }
 
     @Override
-    public boolean hasCustomInventoryName() {
+    public boolean hasCustomName() {
         return false;
+    }
+
+    /**
+     * Get the formatted ChatComponent that will be used for the sender's username in chat
+     */
+    @Override
+    public IChatComponent getDisplayName() {
+        return null;
     }
 
     @Override
@@ -453,12 +466,12 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     @Override
-    public void openInventory() {
+    public void openInventory(EntityPlayer player) {
 
     }
 
     @Override
-    public void closeInventory() {
+    public void closeInventory(EntityPlayer player) {
 
     }
 
@@ -469,5 +482,25 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         } else {
             return true;
         }
+    }
+
+    @Override
+    public int getField(int id) {
+        return 0;
+    }
+
+    @Override
+    public void setField(int id, int value) {
+
+    }
+
+    @Override
+    public int getFieldCount() {
+        return 0;
+    }
+
+    @Override
+    public void clear() {
+
     }
 }

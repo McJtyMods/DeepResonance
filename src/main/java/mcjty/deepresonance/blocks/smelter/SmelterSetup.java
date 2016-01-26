@@ -1,6 +1,6 @@
 package mcjty.deepresonance.blocks.smelter;
 
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.items.ModItems;
 import net.minecraft.block.Block;
@@ -12,7 +12,7 @@ public class SmelterSetup {
     public static Block smelter;
 
     public static void setupBlocks() {
-        smelter = new SmelterBlock("smelterBlock").registerTile().register();
+        smelter = new SmelterBlock("smelterBlock");
     }
 
     public static void setupCrafting() {

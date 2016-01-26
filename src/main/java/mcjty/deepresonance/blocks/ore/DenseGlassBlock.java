@@ -1,16 +1,17 @@
 package mcjty.deepresonance.blocks.ore;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import elec332.core.world.WorldHelper;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 
 public class DenseGlassBlock extends Block {
-    private IIcon icon;
 
     public DenseGlassBlock() {
         super(Material.glass);
@@ -18,36 +19,13 @@ public class DenseGlassBlock extends Block {
         setResistance(500.0f);
         setStepSound(soundTypeGlass);
         setHarvestLevel("pickaxe", 2);
-        setBlockName("denseGlass");
+        setUnlocalizedName(DeepResonance.MODID+".denseGlass");
         setCreativeTab(DeepResonance.tabDeepResonance);
     }
 
     @Override
-    public void registerBlockIcons(IIconRegister iconRegister) {
-        icon = iconRegister.registerIcon(DeepResonance.MODID + ":denseglass");
-    }
-
-    @Override
-    public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
-        return icon;
-    }
-
-    @Override
-    public IIcon getIcon(int side, int meta) {
-        return icon;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public int getRenderBlockPass()
-    {
-        return 0;
-    }
-
-    @Override
-    public boolean renderAsNormalBlock()
-    {
-        return false;
+    public EnumWorldBlockLayer getBlockLayer() {
+        return EnumWorldBlockLayer.CUTOUT;
     }
 
     @Override
@@ -58,13 +36,9 @@ public class DenseGlassBlock extends Block {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)    {
-        Block block = world.getBlock(x, y, z);
-
-        if (block == this) {
-            return false;
-        }
-
-        return super.shouldSideBeRendered(world, x, y, z, side);
+    public boolean shouldSideBeRendered(IBlockAccess world, BlockPos pos, EnumFacing side) {
+        Block block = WorldHelper.getBlockAt(world, pos);
+        return block != this && super.shouldSideBeRendered(world, pos, side);
     }
+
 }

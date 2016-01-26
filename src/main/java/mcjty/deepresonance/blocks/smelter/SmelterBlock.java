@@ -1,9 +1,9 @@
 package mcjty.deepresonance.blocks.smelter;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import mcjty.deepresonance.blocks.GenericDRBlock;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.blocks.base.ElecGenericBlockBase;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.gui.GuiProxy;
 import mcjty.lib.varia.BlockTools;
@@ -11,13 +11,11 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import org.lwjgl.input.Keyboard;
 
@@ -26,13 +24,10 @@ import java.util.List;
 /**
  * Created by Elec332 on 20-8-2015.
  */
-public class SmelterBlock extends ElecGenericBlockBase {
-
-    private IIcon iconActive;
-    private IIcon iconInactive;
+public class SmelterBlock extends GenericDRBlock {
 
     public SmelterBlock(String blockName) {
-        super(Material.rock, SmelterTileEntity.class, blockName);
+        super(Material.rock, SmelterTileEntity.class, null, blockName, true);
     }
 
     @Override
@@ -72,25 +67,9 @@ public class SmelterBlock extends ElecGenericBlockBase {
         return GuiProxy.GUI_SMELTER;
     }
 
-    @Override
-    public void registerBlockIcons(IIconRegister iconRegister) {
-        super.registerBlockIcons(iconRegister);
-        iconActive = iconRegister.registerIcon(DeepResonance.MODID + ":smelterActive");
-        iconInactive = iconRegister.registerIcon(DeepResonance.MODID + ":smelterInactive");
-    }
-
-    @Override
+    @Override //TODO: McJty: This isn't needed anymore, cuz JSON
     public String getIdentifyingIconName() {
         return "smelterActive";
-    }
-
-    @Override
-    public IIcon getIconInd(IBlockAccess blockAccess, int x, int y, int z, int meta) {
-        if (BlockTools.getRedstoneSignalIn(meta)) {
-            return iconActive;
-        } else {
-            return iconInactive;
-        }
     }
 
 }

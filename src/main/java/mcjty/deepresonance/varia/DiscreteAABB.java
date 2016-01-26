@@ -1,6 +1,6 @@
 package mcjty.deepresonance.varia;
 
-import mcjty.lib.varia.Coordinate;
+import net.minecraft.util.BlockPos;
 
 public class DiscreteAABB {
     public int minX;
@@ -26,7 +26,7 @@ public class DiscreteAABB {
     /**
      * Returns if the supplied Coordinate is completely inside the bounding box
      */
-    public boolean isVecInside(Coordinate c) {
+    public boolean isVecInside(BlockPos c) {
         return c.getX() >= this.minX && c.getX() < this.maxX && (c.getY() >= this.minY && c.getY() < this.maxY && c.getZ() >= this.minZ && c.getZ() < this.maxZ);
     }
 

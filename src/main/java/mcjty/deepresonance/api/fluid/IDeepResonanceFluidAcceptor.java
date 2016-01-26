@@ -1,6 +1,6 @@
 package mcjty.deepresonance.api.fluid;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -12,7 +12,7 @@ public interface IDeepResonanceFluidAcceptor {
      * @param direction The direction
      * @return Weather the tile can connect to the given side
      */
-    public boolean canAcceptFrom(ForgeDirection direction);
+    public boolean canAcceptFrom(EnumFacing direction);
 
     /**
      * This gets called right before IDeepResonanceFluidAcceptor#acceptFluid,
@@ -22,7 +22,7 @@ public interface IDeepResonanceFluidAcceptor {
      * @param from from where the fluid will be provided
      * @return the requested amount of RS
      */
-    public int getRequestedAmount(ForgeDirection from);
+    public int getRequestedAmount(EnumFacing from);
 
     /**
      * This gets called right after IDeepResonanceFluidAcceptor#getRequestedAmount,
@@ -33,6 +33,6 @@ public interface IDeepResonanceFluidAcceptor {
      * @param from From where the fluid was provided
      * @return The amount of fluid that wasn't used
      */
-    public FluidStack acceptFluid(FluidStack fluidStack, ForgeDirection from);
+    public FluidStack acceptFluid(FluidStack fluidStack, EnumFacing from);
 
 }

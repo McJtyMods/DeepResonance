@@ -3,7 +3,7 @@ package mcjty.deepresonance.blocks.base;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Created by Elec332 on 10-8-2015.
@@ -29,19 +29,19 @@ public abstract class TileEnergyReceiver extends ElecTileBase implements IEnergy
     }
 
     @Override
-    public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
+    public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
         if (canConnectEnergy(from))
             return energyStorage.receiveEnergy(maxReceive, simulate);
         return 0;
     }
 
     @Override
-    public int getEnergyStored(ForgeDirection from) {
+    public int getEnergyStored(EnumFacing from) {
         return energyStorage.getEnergyStored();
     }
 
     @Override
-    public int getMaxEnergyStored(ForgeDirection from) {
+    public int getMaxEnergyStored(EnumFacing from) {
         return energyStorage.getMaxEnergyStored();
     }
 

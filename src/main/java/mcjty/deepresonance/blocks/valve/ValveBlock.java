@@ -1,8 +1,8 @@
 package mcjty.deepresonance.blocks.valve;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import mcjty.deepresonance.blocks.base.ElecGenericBlockBase;
+import mcjty.deepresonance.blocks.GenericDRBlock;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.gui.GuiProxy;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -14,17 +14,15 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-public class ValveBlock extends ElecGenericBlockBase {
+@SuppressWarnings("unchecked")
+public class ValveBlock extends GenericDRBlock {
 
     public ValveBlock(String blockName) {
-        super(Material.rock, ValveTileEntity.class, blockName);
+        super(Material.rock, ValveTileEntity.class, null, blockName, true);
     }
 
     @Override
@@ -63,24 +61,4 @@ public class ValveBlock extends ElecGenericBlockBase {
         return GuiProxy.GUI_VALVE;
     }
 
-    @Override
-    public String getSideIconName() {
-        return "valve";
-    }
-
-    @Override
-    public IIcon getIcon(int side, int meta) {
-        if (side == ForgeDirection.DOWN.ordinal()) {
-            return iconBottom;
-        }
-        if (side == ForgeDirection.UP.ordinal()) {
-            return iconTop;
-        }
-        return iconSide;
-    }
-
-    @Override
-    public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side) {
-        return getIcon(side, 0);
-    }
 }

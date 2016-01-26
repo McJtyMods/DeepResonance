@@ -1,23 +1,10 @@
 package mcjty.deepresonance.items;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import elec332.core.baseclasses.item.BaseItem;
-import elec332.core.player.PlayerHelper;
-import elec332.core.util.NBTHelper;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.blocks.duct.TileBasicFluidDuct;
-import mcjty.deepresonance.blocks.tank.TileTank;
-import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.items.armor.ItemRadiationSuit;
 import mcjty.deepresonance.items.manual.DeepResonanceManualItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
-
-import java.util.Random;
 
 public final class ModItems {
     public static DeepResonanceManualItem deepResonanceManualItem;
@@ -32,7 +19,7 @@ public final class ModItems {
         deepResonanceManualItem = new DeepResonanceManualItem();
         deepResonanceManualItem.setUnlocalizedName("DeepResonanceManual");
         deepResonanceManualItem.setCreativeTab(DeepResonance.tabDeepResonance);
-        deepResonanceManualItem.setTextureName(DeepResonance.MODID + ":deepResonanceManual");
+        //deepResonanceManualItem.setTextureName(DeepResonance.MODID + ":deepResonanceManual");
         GameRegistry.registerItem(deepResonanceManualItem, "deepResonanceManualItem");
 
         radiationMonitorItem = new RadiationMonitorItem();
@@ -43,25 +30,25 @@ public final class ModItems {
         resonatingPlateItem = new ResonatingPlateItem();
         resonatingPlateItem.setUnlocalizedName("ResonatingPlate");
         resonatingPlateItem.setCreativeTab(DeepResonance.tabDeepResonance);
-        resonatingPlateItem.setTextureName(DeepResonance.MODID + ":resonatingPlate");
+        //resonatingPlateItem.setTextureName(DeepResonance.MODID + ":resonatingPlate");
         GameRegistry.registerItem(resonatingPlateItem, "resonatingPlateItem");
 
         filterMaterialItem = new FilterMaterialItem();
         filterMaterialItem.setUnlocalizedName("FilterMaterial");
         filterMaterialItem.setCreativeTab(DeepResonance.tabDeepResonance);
-        filterMaterialItem.setTextureName(DeepResonance.MODID + ":filterMaterial");
+        //filterMaterialItem.setTextureName(DeepResonance.MODID + ":filterMaterial");
         GameRegistry.registerItem(filterMaterialItem, "filterMaterialItem");
 
         spentFilterMaterialItem = new SpentFilterMaterialItem();
         spentFilterMaterialItem.setUnlocalizedName("SpentFilterMaterial");
         spentFilterMaterialItem.setCreativeTab(DeepResonance.tabDeepResonance);
-        spentFilterMaterialItem.setTextureName(DeepResonance.MODID + ":spentFilterMaterial");
+        //spentFilterMaterialItem.setTextureName(DeepResonance.MODID + ":spentFilterMaterial");
         GameRegistry.registerItem(spentFilterMaterialItem, "spentFilterMaterialItem");
 
         insertLiquidItem = new InsertLiquidItem();
         insertLiquidItem.setUnlocalizedName("LiquidInjector");
         insertLiquidItem.setCreativeTab(DeepResonance.tabDeepResonance);
-        insertLiquidItem.setTextureName(DeepResonance.MODID + ":liquidInjector");
+        //insertLiquidItem.setTextureName(DeepResonance.MODID + ":liquidInjector");
         GameRegistry.registerItem(insertLiquidItem, "liquidInjector");
 
         helmet = newRadiationSuitPart(0, "Helmet");
@@ -80,7 +67,7 @@ public final class ModItems {
 
     /**
      * Testing only, will be removed soon *TM*
-     */
+     *
     private static class TestItem extends BaseItem {
 
         public TestItem() {
@@ -110,5 +97,5 @@ public final class ModItems {
             return super.onItemUseFirst(stack, player, world, x, y, z, side, hitX, hitY, hitZ);
         }
 
-    }
+    }*/
 }

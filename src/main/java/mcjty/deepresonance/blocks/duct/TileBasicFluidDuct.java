@@ -1,5 +1,6 @@
 package mcjty.deepresonance.blocks.duct;
 
+import elec332.core.util.BlockLoc;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.base.ElecTileBase;
 import mcjty.deepresonance.grid.fluid.DRFluidDuctGrid;
@@ -61,18 +62,13 @@ public class TileBasicFluidDuct extends ElecTileBase {
             tagCompound.setString("lastSeenFluid", FluidRegistry.getFluidName(lastSeenFluid));
     }
 
-    @Override
-    public boolean canUpdate() {
-        return false;
-    }
-
     public int getTankStorageMax(){
         return 200;
     }
 
     public DRFluidDuctGrid getGrid(){
         if (!worldObj.isRemote)
-            return DeepResonance.worldGridRegistry.getFluidRegistry().get(worldObj).getPowerTile(myLocation()).getGrid();
+            return DeepResonance.worldGridRegistry.getFluidRegistry().get(worldObj).getPowerTile(new BlockLoc(pos)).getGrid();
         return null;
     }
 
