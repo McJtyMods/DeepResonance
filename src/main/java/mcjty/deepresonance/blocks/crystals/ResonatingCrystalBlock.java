@@ -1,6 +1,8 @@
 package mcjty.deepresonance.blocks.crystals;
 
 import elec332.core.world.WorldHelper;
+import mcjty.deepresonance.blocks.GenericDRBlock;
+import mcjty.lib.container.EmptyContainer;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -29,7 +31,7 @@ import net.minecraft.world.World;
 import java.text.DecimalFormat;
 import java.util.List;
 
-public class ResonatingCrystalBlock extends GenericBlock {
+public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTileEntity, EmptyContainer> {
 
     public static int tooltipRFTick = 0;
     public static float tooltipPower = 0;
@@ -37,13 +39,11 @@ public class ResonatingCrystalBlock extends GenericBlock {
     private static long lastTime = 0;
 
     public ResonatingCrystalBlock() {
-        super(DeepResonance.instance, Material.glass, ResonatingCrystalTileEntity.class, false);
-        setUnlocalizedName(DeepResonance.MODID + ".resonatingCrystalBlock");
+        super(Material.glass, ResonatingCrystalTileEntity.class, EmptyContainer.class, "resonating_crystal", false);
         setHardness(3.0f);
         setResistance(5.0f);
         setHarvestLevel("pickaxe", 2);
         setStepSound(soundTypeGlass);
-        setCreativeTab(DeepResonance.tabDeepResonance);
     }
 
     @SideOnly(Side.CLIENT)

@@ -8,25 +8,22 @@ import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.varia.InventoryLocator;
 import mcjty.deepresonance.varia.Tools;
+import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraft.util.EnumFacing;
 
-public class PedestalTileEntity extends GenericTileEntity implements IInventory, ITickable {
+public class PedestalTileEntity extends GenericTileEntity implements DefaultSidedInventory, ITickable {
     private InventoryHelper inventoryHelper = new InventoryHelper(this, PedestalContainer.factory, 1);
 
     private int checkCounter = 0;
@@ -35,6 +32,11 @@ public class PedestalTileEntity extends GenericTileEntity implements IInventory,
     private InventoryLocator inventoryLocator = new InventoryLocator();
 
     private BlockPos cachedLocator = null;
+
+    @Override
+    public InventoryHelper getInventoryHelper() {
+        return inventoryHelper;
+    }
 
     @Override
     public void update() {
@@ -142,15 +144,7 @@ public class PedestalTileEntity extends GenericTileEntity implements IInventory,
     @Override
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
         super.readRestorableFromNBT(tagCompound);
-        readBufferFromNBT(tagCompound);
-    }
-
-    private void readBufferFromNBT(NBTTagCompound tagCompound) {
-        NBTTagList bufferTagList = tagCompound.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0 ; i < bufferTagList.tagCount() ; i++) {
-            NBTTagCompound nbtTagCompound = bufferTagList.getCompoundTagAt(i);
-            inventoryHelper.setStackInSlot(i, ItemStack.loadItemStackFromNBT(nbtTagCompound));
-        }
+        readBufferFromNBT(tagCompound, inventoryHelper);
     }
 
     @Override
@@ -161,63 +155,22 @@ public class PedestalTileEntity extends GenericTileEntity implements IInventory,
     @Override
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
         super.writeRestorableToNBT(tagCompound);
-        writeBufferToNBT(tagCompound);
-    }
-
-    private void writeBufferToNBT(NBTTagCompound tagCompound) {
-        NBTTagList bufferTagList = new NBTTagList();
-        for (int i = 0 ; i < inventoryHelper.getCount() ; i++) {
-            ItemStack stack = inventoryHelper.getStackInSlot(i);
-            NBTTagCompound nbtTagCompound = new NBTTagCompound();
-            if (stack != null) {
-                stack.writeToNBT(nbtTagCompound);
-            }
-            bufferTagList.appendTag(nbtTagCompound);
-        }
-        tagCompound.setTag("Items", bufferTagList);
+        writeBufferToNBT(tagCompound, inventoryHelper);
     }
 
     @Override
-    public int getSizeInventory() {
-        return inventoryHelper.getCount();
+    public int[] getSlotsForFace(EnumFacing side) {
+        return new int[PedestalContainer.SLOT_CRYSTAL];
     }
 
     @Override
-    public ItemStack getStackInSlot(int index) {
-        return inventoryHelper.getStackInSlot(index);
-    }
-
-    @Override
-    public ItemStack decrStackSize(int index, int amount) {
-        return inventoryHelper.decrStackSize(index, amount);
-    }
-
-    @Override
-    public ItemStack removeStackFromSlot(int index) {
-        return null;
-    }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
-        inventoryHelper.setInventorySlotContents(getInventoryStackLimit(), index, stack);
-    }
-
-    @Override
-    public String getName() {
-        return "Pedestal Inventory";
-    }
-
-    @Override
-    public boolean hasCustomName() {
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
         return false;
     }
 
-    /**
-     * Get the formatted ChatComponent that will be used for the sender's username in chat
-     */
     @Override
-    public IChatComponent getDisplayName() {
-        return null;
+    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
+        return isItemValidForSlot(index, itemStackIn);
     }
 
     @Override
@@ -231,37 +184,7 @@ public class PedestalTileEntity extends GenericTileEntity implements IInventory,
     }
 
     @Override
-    public void openInventory(EntityPlayer player) {
-    }
-
-    @Override
-    public void closeInventory(EntityPlayer player) {
-    }
-
-    @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         return stack.getItem() == Item.getItemFromBlock(ModBlocks.resonatingCrystalBlock);
     }
-
-    @Override
-    public int getField(int id) {
-        return 0;
-    }
-
-    @Override
-    public void setField(int id, int value) {
-
-    }
-
-    @Override
-    public int getFieldCount() {
-        return 0;
-    }
-
-    @Override
-    public void clear() {
-
-    }
-
-
 }

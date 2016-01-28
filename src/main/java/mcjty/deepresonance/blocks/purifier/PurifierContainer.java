@@ -6,6 +6,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.SlotDefinition;
 import mcjty.lib.container.SlotType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 public class PurifierContainer extends GenericContainer {
@@ -21,7 +22,7 @@ public class PurifierContainer extends GenericContainer {
         }
     };
 
-    public PurifierContainer(EntityPlayer player, PurifierTileEntity containerInventory) {
+    public PurifierContainer(EntityPlayer player, IInventory containerInventory) {
         super(factory);
         addInventory(CONTAINER_INVENTORY, containerInventory);
         addInventory(ContainerFactory.CONTAINER_PLAYER, player.inventory);

@@ -3,34 +3,35 @@ package mcjty.deepresonance.blocks.tank;
 import elec332.core.client.IIconRegistrar;
 import elec332.core.client.ITextureLoader;
 import elec332.core.world.WorldHelper;
-import mcjty.deepresonance.blocks.GenericDRBlock;
-import mcjty.deepresonance.client.DRResourceLocation;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
+import mcjty.deepresonance.client.DRResourceLocation;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.deepresonance.network.PacketGetTankInfo;
+import mcjty.lib.container.EmptyContainer;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.text.DecimalFormat;
@@ -40,11 +41,10 @@ import java.util.Map;
 /**
  * Created by Elec332 on 20-8-2015.
  */
-public class BlockTank extends GenericDRBlock implements ITextureLoader {
+public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implements ITextureLoader {
 
-    @SuppressWarnings("unchecked")
-    public BlockTank(String name) {
-        super(Material.rock, TileTank.class, null, name, true);
+    public BlockTank() {
+        super(Material.rock, TileTank.class, EmptyContainer.class, "tank", true);
     }
 
     @SideOnly(Side.CLIENT)

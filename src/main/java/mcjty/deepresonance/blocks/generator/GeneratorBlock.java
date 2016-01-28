@@ -1,5 +1,7 @@
 package mcjty.deepresonance.blocks.generator;
 
+import mcjty.deepresonance.blocks.GenericDRBlock;
+import mcjty.lib.container.EmptyContainer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
@@ -27,7 +29,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GeneratorBlock extends GenericBlock {
+public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyContainer> {
 
     public static final int META_ON = 1;
     public static final int META_OFF = 0;
@@ -41,10 +43,12 @@ public class GeneratorBlock extends GenericBlock {
     private static long lastTime = 0;
 
     public GeneratorBlock() {
-        super(DeepResonance.instance, Material.iron, GeneratorTileEntity.class, false);
-        setUnlocalizedName(DeepResonance.MODID + ".generatorBlock");
-        //setHorizRotation(true); TODO: McJty: HorizRotation
-        setCreativeTab(DeepResonance.tabDeepResonance);
+        super(Material.iron, GeneratorTileEntity.class, EmptyContainer.class, "generator", false);
+    }
+
+    @Override
+    public boolean isHorizRotation() {
+        return true;
     }
 
     @Override

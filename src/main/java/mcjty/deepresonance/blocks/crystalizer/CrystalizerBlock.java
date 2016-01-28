@@ -48,11 +48,6 @@ public class CrystalizerBlock extends GenericDRBlock<CrystalizerTileEntity, Crys
     }
 
     @Override
-    public String getIdentifyingIconName() {
-        return "crystalizer";
-    }
-
-    @Override
     public int getGuiID() {
         return GuiProxy.GUI_CRYSTALIZER;
     }

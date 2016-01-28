@@ -1,28 +1,31 @@
 package mcjty.deepresonance.blocks.valve;
 
 import mcjty.deepresonance.blocks.GenericDRBlock;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.gui.GuiProxy;
+import mcjty.lib.container.GenericGuiContainer;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-@SuppressWarnings("unchecked")
-public class ValveBlock extends GenericDRBlock {
+public class ValveBlock extends GenericDRBlock<ValveTileEntity, ValveContainer> {
 
-    public ValveBlock(String blockName) {
-        super(Material.rock, ValveTileEntity.class, null, blockName, true);
+    public ValveBlock() {
+        super(Material.rock, ValveTileEntity.class, ValveContainer.class, "valve", true);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public Class<? extends GenericGuiContainer> getGuiClass() {
+        return GuiValve.class;
     }
 
     @Override
@@ -41,19 +44,6 @@ public class ValveBlock extends GenericDRBlock {
         } else {
             list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
         }
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public GuiContainer createClientGui(EntityPlayer entityPlayer, TileEntity tileEntity) {
-        ValveTileEntity valveTileEntity = (ValveTileEntity) tileEntity;
-        ValveContainer valveContainer = new ValveContainer(entityPlayer);
-        return new GuiValve(valveTileEntity, valveContainer);
-    }
-
-    @Override
-    public Container createServerContainer(EntityPlayer entityPlayer, TileEntity tileEntity) {
-        return new ValveContainer(entityPlayer);
     }
 
     @Override

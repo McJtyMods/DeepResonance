@@ -1,52 +1,34 @@
 package mcjty.deepresonance.blocks.laser;
 
-import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.gui.GuiProxy;
-import mcjty.lib.container.GenericBlock;
-import mcjty.lib.varia.BlockTools;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
 //@Optional.InterfaceList({
       //  @Optional.Interface(iface = "crazypants.enderio.api.redstone.IRedstoneConnectable", modid = "EnderIO")})
-public class LaserBlock extends GenericBlock{
+public class LaserBlock extends GenericDRBlock<LaserTileEntity, LaserContainer> {
 
     public LaserBlock() {
-        super(DeepResonance.instance, Material.iron, LaserTileEntity.class, false);
-        setUnlocalizedName(DeepResonance.MODID + ".laserBlock");
-        //setHorizRotation(true); TODO: McJty: HorizRotation
-        setCreativeTab(DeepResonance.tabDeepResonance);
+        super(Material.iron, LaserTileEntity.class, LaserContainer.class, "laser", false);
+    }
+
+    @Override
+    public boolean isHorizRotation() {
+        return true;
     }
 
     @Override
     public int getGuiID() {
         return GuiProxy.GUI_LASER;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public GuiContainer createClientGui(EntityPlayer entityPlayer, TileEntity tileEntity) {
-        LaserTileEntity laserTileEntity = (LaserTileEntity) tileEntity;
-        LaserContainer laserContainer = new LaserContainer(entityPlayer, laserTileEntity);
-        return new GuiLaser(laserTileEntity, laserContainer);
-    }
-
-    @Override
-    public Container createServerContainer(EntityPlayer entityPlayer, TileEntity tileEntity) {
-        return new LaserContainer(entityPlayer, (LaserTileEntity) tileEntity);
     }
 
     @Override
@@ -62,11 +44,6 @@ public class LaserBlock extends GenericBlock{
         } else {
             list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
         }
-    }
-
-    @Override
-    public String getIdentifyingIconName() {
-        return "laserBlockFront";
     }
 
    /*

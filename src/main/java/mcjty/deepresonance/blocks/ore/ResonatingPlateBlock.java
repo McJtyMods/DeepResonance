@@ -11,6 +11,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.util.Random;
 
@@ -21,11 +22,14 @@ public class ResonatingPlateBlock extends Block {
         setHardness(3.0f);
         setResistance(5.0f);
         setHarvestLevel("pickaxe", 2);
-        setUnlocalizedName(DeepResonance.MODID + ".blockResonating");
         if (ConfigMachines.PlateBlock.radiationStrength > 0) {
             setTickRandomly(true);
         }
+        setUnlocalizedName("resonating_block");
+        setRegistryName("resonating_block");
         setCreativeTab(DeepResonance.tabDeepResonance);
+        GameRegistry.registerBlock(this);
+
     }
 
     @Override

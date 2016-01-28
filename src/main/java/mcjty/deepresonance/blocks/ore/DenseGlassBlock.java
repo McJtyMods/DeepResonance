@@ -4,6 +4,7 @@ import elec332.core.world.WorldHelper;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
@@ -19,8 +20,10 @@ public class DenseGlassBlock extends Block {
         setResistance(500.0f);
         setStepSound(soundTypeGlass);
         setHarvestLevel("pickaxe", 2);
-        setUnlocalizedName(DeepResonance.MODID+".denseGlass");
+        setUnlocalizedName("dense_glass");
+        setRegistryName("dense_glass");
         setCreativeTab(DeepResonance.tabDeepResonance);
+        GameRegistry.registerBlock(this);
     }
 
     @Override

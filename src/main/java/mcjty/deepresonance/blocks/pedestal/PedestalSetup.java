@@ -6,14 +6,19 @@ import mcjty.lib.container.GenericItemBlock;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PedestalSetup {
     public static PedestalBlock pedestalBlock;
 
     public static void setupBlocks() {
         pedestalBlock = new PedestalBlock();
-        GameRegistry.registerBlock(pedestalBlock, GenericItemBlock.class, "pedestalBlock");
-        GameRegistry.registerTileEntity(PedestalTileEntity.class, "PedestalTileEntity");
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void setupModels() {
+        pedestalBlock.initModel();
     }
 
     public static void setupCrafting() {

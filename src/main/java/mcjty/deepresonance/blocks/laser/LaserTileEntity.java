@@ -1,18 +1,14 @@
 package mcjty.deepresonance.blocks.laser;
 
 import elec332.core.world.WorldHelper;
-import net.minecraft.util.*;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.deepresonance.blocks.crystals.ResonatingCrystalBlock;
-import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.blocks.lens.LensSetup;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
@@ -21,20 +17,23 @@ import mcjty.lib.varia.BlockTools;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements ISidedInventory, ITickable {
+public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements DefaultSidedInventory, ITickable {
 
     public static final String CMD_GETLIQUID = "getLiquid";
     public static final String CLIENTCMD_GETLIQUID = "getLiquid";
@@ -73,8 +72,13 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     @Override
+    public InventoryHelper getInventoryHelper() {
+        return inventoryHelper;
+    }
+
+    @Override
     public void update() {
-        if (!worldObj.isRemote){
+        if (!worldObj.isRemote) {
             checkStateServer();
         }
     }
@@ -130,7 +134,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         infuseLiquid(tankCoordinate, bonus);
     }
 
-    private boolean validRCLTank(TileTank tank){
+    private boolean validRCLTank(TileTank tank) {
         Fluid fluid = DRFluidRegistry.getFluidFromStack(tank.getFluid());
         return fluid == null || fluid == DRFluidRegistry.liquidCrystal;
     }
@@ -295,8 +299,8 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
 
     public void requestCrystalLiquidFromServer() {
         DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketRequestIntegerFromServer(DeepResonance.MODID, pos,
-                CMD_GETLIQUID,
-                CLIENTCMD_GETLIQUID));
+                                                                                                         CMD_GETLIQUID,
+                                                                                                         CLIENTCMD_GETLIQUID));
     }
 
     @SideOnly(Side.CLIENT)
@@ -340,16 +344,8 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
 
     @Override
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
-        readBufferFromNBT(tagCompound);
+        readBufferFromNBT(tagCompound, inventoryHelper);
         crystalLiquid = tagCompound.getInteger("liquid");
-    }
-
-    private void readBufferFromNBT(NBTTagCompound tagCompound) {
-        NBTTagList bufferTagList = tagCompound.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0 ; i < bufferTagList.tagCount() ; i++) {
-            NBTTagCompound nbtTagCompound = bufferTagList.getCompoundTagAt(i);
-            inventoryHelper.setStackInSlot(i, ItemStack.loadItemStackFromNBT(nbtTagCompound));
-        }
     }
 
     @Override
@@ -362,21 +358,8 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
 
     @Override
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
-        writeBufferToNBT(tagCompound);
+        writeBufferToNBT(tagCompound, inventoryHelper);
         tagCompound.setInteger("liquid", crystalLiquid);
-    }
-
-    private void writeBufferToNBT(NBTTagCompound tagCompound) {
-        NBTTagList bufferTagList = new NBTTagList();
-        for (int i = 0 ; i < inventoryHelper.getCount() ; i++) {
-            ItemStack stack = inventoryHelper.getStackInSlot(i);
-            NBTTagCompound nbtTagCompound = new NBTTagCompound();
-            if (stack != null) {
-                stack.writeToNBT(nbtTagCompound);
-            }
-            bufferTagList.appendTag(nbtTagCompound);
-        }
-        tagCompound.setTag("Items", bufferTagList);
     }
 
     @Override
@@ -388,7 +371,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         // @todo needs a better box
-        return new AxisAlignedBB(getPos().getX()- 3, getPos().getY() - 1, getPos().getZ() - 3, getPos().getX() + 4, getPos().getY() + 2, getPos().getZ() + 4);
+        return new AxisAlignedBB(getPos().getX() - 3, getPos().getY() - 1, getPos().getZ() - 3, getPos().getX() + 4, getPos().getY() + 2, getPos().getZ() + 4);
     }
 
     @Override
@@ -398,7 +381,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
 
     @Override
     public int[] getSlotsForFace(EnumFacing side) {
-        return new int[] { LaserContainer.SLOT_CATALYST, LaserContainer.SLOT_CRYSTAL };
+        return new int[]{LaserContainer.SLOT_CATALYST, LaserContainer.SLOT_CRYSTAL};
     }
 
     @Override
@@ -413,49 +396,6 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     @Override
-    public int getSizeInventory() {
-        return inventoryHelper.getCount();
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int index) {
-        return inventoryHelper.getStackInSlot(index);
-    }
-
-    @Override
-    public ItemStack decrStackSize(int index, int amount) {
-        return inventoryHelper.decrStackSize(index, amount);
-    }
-
-    @Override
-    public ItemStack removeStackFromSlot(int index) {
-        return null;
-    }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
-        inventoryHelper.setInventorySlotContents(index == LaserContainer.SLOT_CRYSTAL ? 1 : 64, index, stack);
-    }
-
-    @Override
-    public String getName() {
-        return "Laser Inventory";
-    }
-
-    @Override
-    public boolean hasCustomName() {
-        return false;
-    }
-
-    /**
-     * Get the formatted ChatComponent that will be used for the sender's username in chat
-     */
-    @Override
-    public IChatComponent getDisplayName() {
-        return null;
-    }
-
-    @Override
     public int getInventoryStackLimit() {
         return 64;
     }
@@ -466,41 +406,11 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     @Override
-    public void openInventory(EntityPlayer player) {
-
-    }
-
-    @Override
-    public void closeInventory(EntityPlayer player) {
-
-    }
-
-    @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         if (index == LaserContainer.SLOT_CRYSTAL) {
             return stack.getItem() == Item.getItemFromBlock(ModBlocks.resonatingCrystalBlock);
         } else {
             return true;
         }
-    }
-
-    @Override
-    public int getField(int id) {
-        return 0;
-    }
-
-    @Override
-    public void setField(int id, int value) {
-
-    }
-
-    @Override
-    public int getFieldCount() {
-        return 0;
-    }
-
-    @Override
-    public void clear() {
-
     }
 }

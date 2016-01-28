@@ -56,8 +56,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     public void setStrength(float strength) {
         this.strength = strength;
-        markDirty();
-        worldObj.markBlockForUpdate(pos);
+        markDirtyClient();
     }
 
     public void setPower(float power) {
@@ -69,14 +68,12 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     public void setEfficiency(float efficiency) {
         this.efficiency = efficiency;
-        markDirty();
-        worldObj.markBlockForUpdate(pos);
+        markDirtyClient();
     }
 
     public void setPurity(float purity) {
         this.purity = purity;
-        markDirty();
-        worldObj.markBlockForUpdate(pos);
+        markDirtyClient();
     }
 
     public void setGlowing(boolean glowing) {
@@ -84,8 +81,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
             return;
         }
         this.glowing = glowing;
-        markDirty();
-        worldObj.markBlockForUpdate(pos);
+        markDirtyClient();
     }
 
     @Override

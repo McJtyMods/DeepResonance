@@ -1,5 +1,7 @@
 package mcjty.deepresonance.blocks.gencontroller;
 
+import mcjty.deepresonance.blocks.GenericDRBlock;
+import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.common.Optional;
@@ -23,13 +25,15 @@ import java.util.List;
 
 //@Optional.InterfaceList({
        // @Optional.Interface(iface = "crazypants.enderio.api.redstone.IRedstoneConnectable", modid = "EnderIO")})
-public class GeneratorControllerBlock extends GenericBlock {
+public class GeneratorControllerBlock extends GenericDRBlock<GeneratorControllerTileEntity, EmptyContainer> {
 
     public GeneratorControllerBlock() {
-        super(DeepResonance.instance, Material.iron, GeneratorControllerTileEntity.class, false);
-        setUnlocalizedName(DeepResonance.MODID + ".generatorControllerBlock");
-        //TODO: McJty: HorizRotation
-        setCreativeTab(DeepResonance.tabDeepResonance);
+        super(Material.iron, GeneratorControllerTileEntity.class, EmptyContainer.class, "generator_controller", false);
+    }
+
+    @Override
+    public boolean isHorizRotation() {
+        return true;
     }
 
     @Override
@@ -50,11 +54,6 @@ public class GeneratorControllerBlock extends GenericBlock {
         } else {
             list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
         }
-    }
-
-    @Override
-    public String getIdentifyingIconName() {
-        return "generatorControllerOn";
     }
 
     @Override

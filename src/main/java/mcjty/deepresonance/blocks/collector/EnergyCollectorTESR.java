@@ -1,12 +1,10 @@
 package mcjty.deepresonance.blocks.collector;
 
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.lib.gui.RenderHelper;
 import mcjty.lib.gui.RenderHelper.Vector;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;

@@ -1,6 +1,7 @@
 package mcjty.deepresonance.blocks.smelter;
 
 import mcjty.deepresonance.blocks.GenericDRBlock;
+import mcjty.lib.container.GenericGuiContainer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
@@ -24,10 +25,16 @@ import java.util.List;
 /**
  * Created by Elec332 on 20-8-2015.
  */
-public class SmelterBlock extends GenericDRBlock {
+public class SmelterBlock extends GenericDRBlock<SmelterTileEntity, SmelterContainer> {
 
-    public SmelterBlock(String blockName) {
-        super(Material.rock, SmelterTileEntity.class, null, blockName, true);
+    public SmelterBlock() {
+        super(Material.rock, SmelterTileEntity.class, SmelterContainer.class, "smelter", true);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public Class<? extends GenericGuiContainer> getGuiClass() {
+        return GuiSmelter.class;
     }
 
     @Override
@@ -50,26 +57,7 @@ public class SmelterBlock extends GenericDRBlock {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public GuiContainer createClientGui(EntityPlayer entityPlayer, TileEntity tileEntity) {
-        SmelterTileEntity smelterTile = (SmelterTileEntity) tileEntity;
-        SmelterContainer smelterContainer = new SmelterContainer(entityPlayer, smelterTile);
-        return new GuiSmelter(smelterTile, smelterContainer);
-    }
-
-    @Override
-    public Container createServerContainer(EntityPlayer entityPlayer, TileEntity tileEntity) {
-        return new SmelterContainer(entityPlayer, (SmelterTileEntity) tileEntity);
-    }
-
-    @Override
     public int getGuiID() {
         return GuiProxy.GUI_SMELTER;
     }
-
-    @Override //TODO: McJty: This isn't needed anymore, cuz JSON
-    public String getIdentifyingIconName() {
-        return "smelterActive";
-    }
-
 }

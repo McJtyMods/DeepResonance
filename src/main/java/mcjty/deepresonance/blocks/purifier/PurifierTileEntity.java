@@ -9,22 +9,19 @@ import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.deepresonance.items.ModItems;
 import mcjty.deepresonance.varia.InventoryLocator;
+import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.ITickable;
-import net.minecraftforge.common.util.Constants;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Random;
 
-public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISidedInventory, ITickable {
+public class PurifierTileEntity extends ElecTileBase implements ITankHook, DefaultSidedInventory, ITickable {
 
     private InventoryHelper inventoryHelper = new InventoryHelper(this, PurifierContainer.factory, 1);
 
@@ -41,6 +38,11 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
     private LiquidCrystalFluidTagData fluidData = null;
 
     private static Random random = new Random();
+
+    @Override
+    public InventoryHelper getInventoryHelper() {
+        return inventoryHelper;
+    }
 
     @Override
     public void update() {
@@ -159,23 +161,8 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
     @Override
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
         super.writeRestorableToNBT(tagCompound);
-
-        writeBufferToNBT(tagCompound);
+        writeBufferToNBT(tagCompound, inventoryHelper);
     }
-
-    private void writeBufferToNBT(NBTTagCompound tagCompound) {
-        NBTTagList bufferTagList = new NBTTagList();
-        for (int i = 0 ; i < inventoryHelper.getCount() ; i++) {
-            ItemStack stack = inventoryHelper.getStackInSlot(i);
-            NBTTagCompound nbtTagCompound = new NBTTagCompound();
-            if (stack != null) {
-                stack.writeToNBT(nbtTagCompound);
-            }
-            bufferTagList.appendTag(nbtTagCompound);
-        }
-        tagCompound.setTag("Items", bufferTagList);
-    }
-
 
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
@@ -193,17 +180,8 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
     @Override
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
         super.readRestorableFromNBT(tagCompound);
-        readBufferFromNBT(tagCompound);
+        readBufferFromNBT(tagCompound, inventoryHelper);
     }
-
-    private void readBufferFromNBT(NBTTagCompound tagCompound) {
-        NBTTagList bufferTagList = tagCompound.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0 ; i < bufferTagList.tagCount() ; i++) {
-            NBTTagCompound nbtTagCompound = bufferTagList.getCompoundTagAt(i);
-            inventoryHelper.setStackInSlot(i, ItemStack.loadItemStackFromNBT(nbtTagCompound));
-        }
-    }
-
 
     @Override
     public void hook(TileTank tank, EnumFacing direction) {
@@ -268,49 +246,6 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
     }
 
     @Override
-    public int getSizeInventory() {
-        return inventoryHelper.getCount();
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int index) {
-        return inventoryHelper.getStackInSlot(index);
-    }
-
-    @Override
-    public ItemStack decrStackSize(int index, int amount) {
-        return inventoryHelper.decrStackSize(index, amount);
-    }
-
-    @Override
-    public ItemStack removeStackFromSlot(int index) {
-        return null;
-    }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
-        inventoryHelper.setInventorySlotContents(getInventoryStackLimit(), index, stack);
-    }
-
-    @Override
-    public String getName() {
-        return "Purifier Inventory";
-    }
-
-    @Override
-    public boolean hasCustomName() {
-        return false;
-    }
-
-    /**
-     * Get the formatted ChatComponent that will be used for the sender's username in chat
-     */
-    @Override
-    public IChatComponent getDisplayName() {
-        return null;
-    }
-
-    @Override
     public int getInventoryStackLimit() {
         return 64;
     }
@@ -321,37 +256,7 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, ISide
     }
 
     @Override
-    public void openInventory(EntityPlayer player) {
-
-    }
-
-    @Override
-    public void closeInventory(EntityPlayer player) {
-
-    }
-
-    @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         return true;
-    }
-
-    @Override
-    public int getField(int id) {
-        return 0;
-    }
-
-    @Override
-    public void setField(int id, int value) {
-
-    }
-
-    @Override
-    public int getFieldCount() {
-        return 0;
-    }
-
-    @Override
-    public void clear() {
-
     }
 }

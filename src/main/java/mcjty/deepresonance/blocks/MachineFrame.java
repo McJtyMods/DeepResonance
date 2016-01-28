@@ -5,13 +5,16 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class MachineFrame extends Block {
 
     public MachineFrame() {
         super(Material.iron);
-        setUnlocalizedName(DeepResonance.MODID + ".machineFrame");
+        setUnlocalizedName("machine_frame");
+        setRegistryName("machine_frame");
         setCreativeTab(DeepResonance.tabDeepResonance);
+        GameRegistry.registerBlock(this);
     }
 
     @Override

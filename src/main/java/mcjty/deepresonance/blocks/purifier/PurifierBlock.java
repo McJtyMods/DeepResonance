@@ -1,6 +1,7 @@
 package mcjty.deepresonance.blocks.purifier;
 
 import mcjty.deepresonance.blocks.GenericDRBlock;
+import mcjty.lib.container.GenericGuiContainer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.client.ClientHandler;
@@ -18,10 +19,16 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-public class PurifierBlock extends GenericDRBlock {
+public class PurifierBlock extends GenericDRBlock<PurifierTileEntity, PurifierContainer> {
 
-    public PurifierBlock(String blockName) {
-        super(Material.rock, PurifierTileEntity.class, null, blockName, true);
+    public PurifierBlock() {
+        super(Material.rock, PurifierTileEntity.class, PurifierContainer.class, "purifier", true);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public Class<? extends GenericGuiContainer> getGuiClass() {
+        return GuiPurifier.class;
     }
 
     @Override
@@ -42,19 +49,6 @@ public class PurifierBlock extends GenericDRBlock {
         } else {
             list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
         }
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public GuiContainer createClientGui(EntityPlayer entityPlayer, TileEntity tileEntity) {
-        PurifierTileEntity purifierTileEntity = (PurifierTileEntity) tileEntity;
-        PurifierContainer purifierContainer = new PurifierContainer(entityPlayer, purifierTileEntity);
-        return new GuiPurifier(purifierTileEntity, purifierContainer);
-    }
-
-    @Override
-    public Container createServerContainer(EntityPlayer entityPlayer, TileEntity tileEntity) {
-        return new PurifierContainer(entityPlayer, (PurifierTileEntity) tileEntity);
     }
 
     @Override

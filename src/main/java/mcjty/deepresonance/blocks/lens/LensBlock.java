@@ -1,30 +1,31 @@
 package mcjty.deepresonance.blocks.lens;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.*;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
-import mcjty.lib.container.GenericBlock;
-import mcjty.lib.varia.BlockTools;
+import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-public class LensBlock extends GenericBlock {
+public class LensBlock extends GenericDRBlock<LensTileEntity, EmptyContainer> {
 
     public LensBlock() {
-        super(DeepResonance.instance, Material.iron, LensTileEntity.class, false);
-        setUnlocalizedName(DeepResonance.MODID + ".lensBlock");
-        //setHorizRotation(true); TODO: McJty: HorizRotation
-        setCreativeTab(DeepResonance.tabDeepResonance);
+        super(Material.iron, LensTileEntity.class, EmptyContainer.class, "lens", false);
+    }
+
+    @Override
+    public boolean isHorizRotation() {
+        return true;
     }
 
     @Override

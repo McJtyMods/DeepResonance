@@ -1,9 +1,5 @@
 package mcjty.deepresonance.blocks.smelter;
 
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.ITickable;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
@@ -13,18 +9,16 @@ import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
-import mcjty.lib.varia.BlockTools;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.util.Constants;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -34,7 +28,7 @@ import java.util.Map;
 /**
  * Created by Elec332 on 9-8-2015.
  */
-public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITankHook, ISidedInventory, ITickable {
+public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITankHook, DefaultSidedInventory, ITickable {
 
     public static final String CMD_GETPROGRESS = "getProgress";
     public static final String CLIENTCMD_GETPROGRESS = "getProgress";
@@ -55,6 +49,11 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     private float finalPurity = 0.1f;   // Calculated quality based on the amount of lava in the lava tank
 
     private static int progressPercentage = 0;
+
+    @Override
+    public InventoryHelper getInventoryHelper() {
+        return inventoryHelper;
+    }
 
     @Override
     public void update() {
@@ -162,23 +161,8 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     @Override
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
         super.writeRestorableToNBT(tagCompound);
-
-        writeBufferToNBT(tagCompound);
+        writeBufferToNBT(tagCompound, inventoryHelper);
     }
-
-    private void writeBufferToNBT(NBTTagCompound tagCompound) {
-        NBTTagList bufferTagList = new NBTTagList();
-        for (int i = 0 ; i < inventoryHelper.getCount() ; i++) {
-            ItemStack stack = inventoryHelper.getStackInSlot(i);
-            NBTTagCompound nbtTagCompound = new NBTTagCompound();
-            if (stack != null) {
-                stack.writeToNBT(nbtTagCompound);
-            }
-            bufferTagList.appendTag(nbtTagCompound);
-        }
-        tagCompound.setTag("Items", bufferTagList);
-    }
-
 
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
@@ -192,17 +176,8 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     @Override
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
         super.readRestorableFromNBT(tagCompound);
-        readBufferFromNBT(tagCompound);
+        readBufferFromNBT(tagCompound, inventoryHelper);
     }
-
-    private void readBufferFromNBT(NBTTagCompound tagCompound) {
-        NBTTagList bufferTagList = tagCompound.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0 ; i < bufferTagList.tagCount() ; i++) {
-            NBTTagCompound nbtTagCompound = bufferTagList.getCompoundTagAt(i);
-            inventoryHelper.setStackInSlot(i, ItemStack.loadItemStackFromNBT(nbtTagCompound));
-        }
-    }
-
 
     @Override
     public void hook(TileTank tank, EnumFacing direction) {
@@ -262,49 +237,6 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     }
 
     @Override
-    public int getSizeInventory() {
-        return inventoryHelper.getCount();
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int index) {
-        return inventoryHelper.getStackInSlot(index);
-    }
-
-    @Override
-    public ItemStack decrStackSize(int index, int amount) {
-        return inventoryHelper.decrStackSize(index, amount);
-    }
-
-    @Override
-    public ItemStack removeStackFromSlot(int index) {
-        return null;
-    }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
-        inventoryHelper.setInventorySlotContents(getInventoryStackLimit(), index, stack);
-    }
-
-    @Override
-    public String getName() {
-        return "Smelter Inventory";
-    }
-
-    @Override
-    public boolean hasCustomName() {
-        return false;
-    }
-
-    /**
-     * Get the formatted ChatComponent that will be used for the sender's username in chat
-     */
-    @Override
-    public IChatComponent getDisplayName() {
-        return null;
-    }
-
-    @Override
     public int getInventoryStackLimit() {
         return 64;
     }
@@ -315,38 +247,8 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     }
 
     @Override
-    public void openInventory(EntityPlayer player) {
-
-    }
-
-    @Override
-    public void closeInventory(EntityPlayer player) {
-
-    }
-
-    @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         return true;
-    }
-
-    @Override
-    public int getField(int id) {
-        return 0;
-    }
-
-    @Override
-    public void setField(int id, int value) {
-
-    }
-
-    @Override
-    public int getFieldCount() {
-        return 0;
-    }
-
-    @Override
-    public void clear() {
-
     }
 
     // Request the researching amount from the server. This has to be called on the client side.
