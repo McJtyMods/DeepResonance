@@ -3,23 +3,28 @@ package mcjty.deepresonance.proxy;
 import elec332.core.client.IIconRegistrar;
 import elec332.core.client.ITextureLoader;
 import elec332.core.client.model.RenderingRegistry;
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.RadiationOverlayRenderer;
+import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.client.gui.NoRFFoundException;
 import mcjty.deepresonance.client.render.ModRenderers;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class ClientProxy extends CommonProxy implements ITextureLoader{
+public class ClientProxy extends CommonProxy implements ITextureLoader {
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
         super.preInit(e);
         RenderingRegistry.instance().registerTextureLoader(this);
+        OBJLoader.instance.addDomain(DeepResonance.MODID);
+        ModBlocks.initModels();
     }
 
     @Override

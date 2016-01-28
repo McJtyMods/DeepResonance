@@ -1,117 +1,172 @@
 package mcjty.deepresonance.blocks.crystalizer;
 
 import mcjty.deepresonance.DeepResonance;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.model.TRSRTransformation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import java.io.IOException;
+
 @SideOnly(Side.CLIENT)
 public class CrystalizerTESR extends TileEntitySpecialRenderer<CrystalizerTileEntity> {
 
-    //IModelCustom model = AdvancedModelLoader.loadModel(new ResourceLocation(DeepResonance.MODID, "obj/crystal.obj"));
+    private IModel model;
+    private IBakedModel bakedModel;
+
     ResourceLocation texture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/crystal.png");
+    ResourceLocation sideTexture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/crystalizer.png");
+    ResourceLocation topTexture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/machineTop.png");
+    ResourceLocation bottomTexture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/machineBottom.png");
+
+    public CrystalizerTESR() {
+        try {
+            // Manually load our rotating crystal here
+            model = ModelLoaderRegistry.getModel(new ResourceLocation(DeepResonance.MODID, "block/crystal.obj"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private IBakedModel getBakedModel() {
+        // Since we cannot bake in preInit() we do lazy baking of the model as soon as we need it
+        // for rendering
+        if (bakedModel == null) {
+            bakedModel = model.bake(TRSRTransformation.identity(), DefaultVertexFormats.ITEM,
+                                    location -> Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString()));
+        }
+        return bakedModel;
+    }
+
 
     @Override
-    public void renderTileEntityAt(CrystalizerTileEntity tileEntity, double x, double y, double z, float time, int breakTime) {
-        GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
+    public void renderTileEntityAt(CrystalizerTileEntity te, double x, double y, double z, float time, int breakTime) {
+//        GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
+        GlStateManager.pushAttrib();
 
-        CrystalizerTileEntity crystalizerTileEntity = (CrystalizerTileEntity) tileEntity;
-        int progress = crystalizerTileEntity.getProgress();
-        boolean hasCrystal = crystalizerTileEntity.hasCrystal();
+        int progress = te.getProgress();
+        boolean hasCrystal = te.hasCrystal();
 
         if (hasCrystal || progress > 0) {
             bindTexture(texture);
 
-            GL11.glPushMatrix();
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            //        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.pushMatrix();
+            GlStateManager.enableRescaleNormal();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            GL11.glTranslatef((float) x + 0.5F, (float) y + 0.4F, (float) z + 0.5F);
-            GL11.glScalef(0.4f, 0.4f, 0.4f);
+            GlStateManager.translate((float) x + 0.5F, (float) y + 0.4F, (float) z + 0.5F);
+            GlStateManager.scale(0.4f, 0.4f, 0.4f);
 
             if (0 < progress && progress < CrystalizerTileEntity.getTotalProgress()) {
                 float t = (System.currentTimeMillis() % 10000) / 10000.0f;
-                GL11.glRotatef(t * 360.0f, 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(t * 360.0f, 0.0F, 1.0F, 0.0F);
             }
 
-            //  model.renderAll();
+            World world = te.getWorld();
+            // Translate back to local view coordinates so that we can do the acual rendering here
+            GlStateManager.translate(-te.getPos().getX(), -te.getPos().getY(), -te.getPos().getZ());
 
-            GL11.glPopMatrix();
+            Tessellator tessellator = Tessellator.getInstance();
+            tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+            Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModel(
+                    world,
+                    getBakedModel(),
+                    world.getBlockState(te.getPos()),
+                    te.getPos(),
+                    Tessellator.getInstance().getWorldRenderer());
+            tessellator.draw();
 
-            GL11.glDisable(GL11.GL_BLEND);
+            RenderHelper.enableStandardItemLighting();
+
+            GlStateManager.popMatrix();
+
+            GlStateManager.disableBlend();
         }
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef((float) x, (float) y, (float) z);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate((float) x, (float) y, (float) z);
         bindTexture(TextureMap.locationBlocksTexture);
-        // renderInside(Tessellator.instance);
-        GL11.glPopMatrix();
+        renderInside(Tessellator.getInstance());
+        GlStateManager.popMatrix();
 
-        GL11.glPopAttrib();
+//        GL11.glPopAttrib();
+        GlStateManager.popAttrib();
     }
-/*
+
     private void renderInside(Tessellator tessellator) {
         float offset = 0.002f;
 
-        tessellator.startDrawingQuads();
-        tessellator.setColorRGBA(255, 255, 255, 128);
-        tessellator.setBrightness(100);
+        WorldRenderer renderer = tessellator.getWorldRenderer();
+        renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
+//        tessellator.setColorRGBA(255, 255, 255, 128);
+//        tessellator.setBrightness(100);
+        int brightness = 100;
+        int b1 = brightness >> 16 & 65535;
+        int b2 = brightness & 65535;
 
         // ---------------------------------------------------------------
         // Render the inside of the tank
         // ---------------------------------------------------------------
-        IIcon blockIcon;
+
+        bindTexture(TextureMap.locationBlocksTexture);
+        TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(sideTexture.toString());
 
         //NORTH other side
-        blockIcon = CrystalizerSetup.crystalizer.getSideIcon();
-        tessellator.addVertexWithUV(1, 0, offset, blockIcon.getMinU(), blockIcon.getMinV());
-        tessellator.addVertexWithUV(1, 1, offset, blockIcon.getMinU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(0, 1, offset, blockIcon.getMaxU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(0, 0, offset, blockIcon.getMaxU(), blockIcon.getMinV());
+        renderer.pos(1, 0, offset).tex(sprite.getMinU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
+        renderer.pos(1, 1, offset).tex(sprite.getMinU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
+        renderer.pos(0, 1, offset).tex(sprite.getMaxU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
+        renderer.pos(0, 0, offset).tex(sprite.getMaxU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
 
         //SOUTH other side
-        blockIcon = CrystalizerSetup.crystalizer.getSouthIcon();
-        tessellator.addVertexWithUV(1, 1, 1 - offset, blockIcon.getMinU(), blockIcon.getMinV());
-        tessellator.addVertexWithUV(1, 0, 1 - offset, blockIcon.getMinU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(0, 0, 1 - offset, blockIcon.getMaxU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(0, 1, 1 - offset, blockIcon.getMaxU(), blockIcon.getMinV());
+        renderer.pos(1, 1, 1 - offset).tex(sprite.getMinU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
+        renderer.pos(1, 0, 1 - offset).tex(sprite.getMinU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
+        renderer.pos(0, 0, 1 - offset).tex(sprite.getMaxU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
+        renderer.pos(0, 1, 1 - offset).tex(sprite.getMaxU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
 
         //EAST other side
-        blockIcon = CrystalizerSetup.crystalizer.getSideIcon();
-        tessellator.addVertexWithUV(offset, 1, 1, blockIcon.getMinU(), blockIcon.getMinV());
-        tessellator.addVertexWithUV(offset, 0, 1, blockIcon.getMinU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(offset, 0, 0, blockIcon.getMaxU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(offset, 1, 0, blockIcon.getMaxU(), blockIcon.getMinV());
+        renderer.pos(offset, 1, 1).tex(sprite.getMinU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
+        renderer.pos(offset, 0, 1).tex(sprite.getMinU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
+        renderer.pos(offset, 0, 0).tex(sprite.getMaxU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
+        renderer.pos(offset, 1, 0).tex(sprite.getMaxU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
 
         //WEST other side
-        blockIcon = CrystalizerSetup.crystalizer.getSideIcon();
-        tessellator.addVertexWithUV(1 - offset, 0, 1, blockIcon.getMinU(), blockIcon.getMinV());
-        tessellator.addVertexWithUV(1 - offset, 1, 1, blockIcon.getMinU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(1 - offset, 1, 0, blockIcon.getMaxU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(1 - offset, 0, 0, blockIcon.getMaxU(), blockIcon.getMinV());
+        renderer.pos(1 - offset, 0, 1).tex(sprite.getMinU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
+        renderer.pos(1 - offset, 1, 1).tex(sprite.getMinU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
+        renderer.pos(1 - offset, 1, 0).tex(sprite.getMaxU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
+        renderer.pos(1 - offset, 0, 0).tex(sprite.getMaxU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
 
         // Bottom other side. Raised a bit
-        blockIcon = CrystalizerSetup.crystalizer.getBottomIcon();
-        tessellator.addVertexWithUV(0, .4f, 0, blockIcon.getMinU(), blockIcon.getMinV());
-        tessellator.addVertexWithUV(0, .4f, 1, blockIcon.getMinU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(1, .4f, 1, blockIcon.getMaxU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(1, .4f, 0, blockIcon.getMaxU(), blockIcon.getMinV());
+        sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(bottomTexture.toString());
+        renderer.pos(0, .4f, 0).tex(sprite.getMinU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
+        renderer.pos(0, .4f, 1).tex(sprite.getMinU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
+        renderer.pos(1, .4f, 1).tex(sprite.getMaxU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
+        renderer.pos(1, .4f, 0).tex(sprite.getMaxU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
 
         // Top other side
-        blockIcon = CrystalizerSetup.crystalizer.getTopIcon();
-        tessellator.addVertexWithUV(0, 1 - offset, 0, blockIcon.getMinU(), blockIcon.getMinV());
-        tessellator.addVertexWithUV(1, 1 - offset, 0, blockIcon.getMinU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(1, 1 - offset, 1, blockIcon.getMaxU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(0, 1 - offset, 1, blockIcon.getMaxU(), blockIcon.getMinV());
+        sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(topTexture.toString());
+        renderer.pos(0, 1 - offset, 0).tex(sprite.getMinU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
+        renderer.pos(1, 1 - offset, 0).tex(sprite.getMinU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
+        renderer.pos(1, 1 - offset, 1).tex(sprite.getMaxU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
+        renderer.pos(0, 1 - offset, 1).tex(sprite.getMaxU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
 
         tessellator.draw();
-    }*/
+    }
 }

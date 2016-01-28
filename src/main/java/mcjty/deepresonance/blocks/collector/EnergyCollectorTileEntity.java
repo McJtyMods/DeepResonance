@@ -364,10 +364,11 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         tagCompound.setInteger("networkId", networkID);
     }
 
+
+
     @Override
     public boolean shouldRenderInPass(int pass) {
-        EnergyCollectorTESR.currentPass = pass;
-        return pass == 0 || pass == 1;
+        return pass == 1;
     }
 
     @SideOnly(Side.CLIENT)
