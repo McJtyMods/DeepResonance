@@ -1,28 +1,5 @@
 package mcjty.deepresonance.client.render;
 
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
-import mcjty.deepresonance.blocks.collector.EnergyCollectorTESR;
-import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
-import mcjty.deepresonance.blocks.crystalizer.CrystalizerTESR;
-import mcjty.deepresonance.blocks.crystalizer.CrystalizerTileEntity;
-import mcjty.deepresonance.blocks.crystals.ResonatingCrystalItemRenderer;
-import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTESR;
-import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
-import mcjty.deepresonance.blocks.laser.LaserRenderer;
-import mcjty.deepresonance.blocks.laser.LaserTileEntity;
-import mcjty.deepresonance.blocks.lens.LensItemRenderer;
-import mcjty.deepresonance.blocks.lens.LensSetup;
-import mcjty.deepresonance.blocks.lens.LensTESR;
-import mcjty.deepresonance.blocks.lens.LensTileEntity;
-import mcjty.deepresonance.blocks.tank.TankTESR;
-import mcjty.deepresonance.blocks.tank.TileTank;
-import mcjty.deepresonance.client.render.duct.FluidDuctISBHR;
-import net.minecraft.item.Item;
-import net.minecraftforge.client.MinecraftForgeClient;
-
 public final class ModRenderers {
 
     public static void init() {

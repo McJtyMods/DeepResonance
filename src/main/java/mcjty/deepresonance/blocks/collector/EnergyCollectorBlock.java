@@ -16,6 +16,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -32,7 +34,7 @@ public class EnergyCollectorBlock extends GenericDRBlock<EnergyCollectorTileEnti
     }
 
     @Override
-    public boolean isHorizRotation() {
+    public boolean hasNoRotation() {
         return true;
     }
 
@@ -105,6 +107,13 @@ public class EnergyCollectorBlock extends GenericDRBlock<EnergyCollectorTileEnti
             }
         }
     }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean shouldSideBeRendered(IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
+        return false;
+    }
+
 
     @Override
     public boolean isBlockNormalCube() {
