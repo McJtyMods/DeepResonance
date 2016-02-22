@@ -12,16 +12,14 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
-public class ResonatingCrystalTESR extends TileEntitySpecialRenderer {
-    //IModelCustom model = AdvancedModelLoader.loadModel(new ResourceLocation(DeepResonance.MODID, "obj/crystal.obj"));
+public class ResonatingCrystalTESR extends TileEntitySpecialRenderer<ResonatingCrystalTileEntity> {
     ResourceLocation crystal = new ResourceLocation(DeepResonance.MODID, "textures/blocks/crystal.png");
     ResourceLocation emptyCrystal = new ResourceLocation(DeepResonance.MODID, "textures/blocks/emptycrystal.png");
     ResourceLocation redhalo = new ResourceLocation(DeepResonance.MODID, "textures/effects/redhalo.png");
 
     @Override
-    public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float time, int breakTime) {
-        ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
-        if (resonatingCrystalTileEntity.getPower() > EnergyCollectorTileEntity.CRYSTAL_MIN_POWER) {
+    public void renderTileEntityAt(ResonatingCrystalTileEntity tileEntity, double x, double y, double z, float time, int breakTime) {
+        if (tileEntity.getPower() > EnergyCollectorTileEntity.CRYSTAL_MIN_POWER) {
             bindTexture(crystal);
         } else {
             bindTexture(emptyCrystal);
@@ -40,7 +38,7 @@ public class ResonatingCrystalTESR extends TileEntitySpecialRenderer {
 
        // model.renderAll();
 
-        if (resonatingCrystalTileEntity.isGlowing()) {
+        if (tileEntity.isGlowing()) {
             GL11.glTranslatef(0.0f, 0.5f, 0.0f);
             GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
             this.bindTexture(redhalo);

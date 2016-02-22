@@ -1,37 +1,43 @@
 package mcjty.deepresonance.blocks.crystals;
 
-import elec332.core.world.WorldHelper;
-import mcjty.deepresonance.blocks.GenericDRBlock;
-import mcjty.lib.container.EmptyContainer;
-import net.minecraft.util.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import elec332.core.explosion.Elexplosion;
 import elec332.core.main.ElecCore;
+import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.deepresonance.boom.TestExplosion;
 import mcjty.deepresonance.network.PacketGetCrystalInfo;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
-import mcjty.lib.container.GenericBlock;
+import mcjty.lib.container.EmptyContainer;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.text.DecimalFormat;
 import java.util.List;
 
 public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTileEntity, EmptyContainer> {
+
+    public static PropertyBool EMPTY = PropertyBool.create("empty");
 
     public static int tooltipRFTick = 0;
     public static float tooltipPower = 0;
@@ -46,9 +52,19 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
         setStepSound(soundTypeGlass);
     }
 
+    @Override
+    public void initModel() {
+        super.initModel();
+//        ClientRegistry.bindTileEntitySpecialRenderer(ResonatingCrystalTileEntity.class, new ResonatingCrystalTESR());
+    }
+
+    @Override
+    public boolean isHorizRotation() {
+        return true;
+    }
+
     @SideOnly(Side.CLIENT)
     @Override
-    @SuppressWarnings("unchecked")
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean advancedToolTips) {
         NBTTagCompound tagCompound = itemStack.getTagCompound();
         if (tagCompound != null) {
@@ -128,17 +144,40 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
     }
 
     @Override
-    public int getGuiID() {
-        return -1;
+    public EnumWorldBlockLayer getBlockLayer() {
+        return EnumWorldBlockLayer.TRANSLUCENT;
     }
 
     @Override
-    public int getRenderType() {
-        return 2;
+    public int getGuiID() {
+        return -1;
     }
 
     @Override
     public boolean isOpaqueCube() {
         return false;
     }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean shouldSideBeRendered(IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
+        return false;
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return ((state.getValue(FACING_HORIZ)).getIndex() - 2) + (state.getValue(EMPTY) ? 8 : 0);
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return getDefaultState().withProperty(FACING_HORIZ, getFacingHoriz(meta)).withProperty(EMPTY, (meta & 8) != 0);
+    }
+
+    @Override
+    protected BlockState createBlockState() {
+        return new BlockState(this, FACING_HORIZ, EMPTY);
+    }
+
+
 }
