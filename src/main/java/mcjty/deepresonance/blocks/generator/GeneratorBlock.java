@@ -57,7 +57,6 @@ public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyCon
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
         super.addInformation(itemStack, player, list, whatIsThis);
