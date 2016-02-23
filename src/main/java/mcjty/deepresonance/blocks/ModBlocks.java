@@ -35,10 +35,10 @@ public final class ModBlocks {
     public static void init() {
         resonatingOreBlock = new ResonatingOreBlock();
 
-        resonatingPlateBlock = new ResonatingPlateBlock();
-        denseObsidianBlock = new DenseObsidianBlock();
-        denseGlassBlock = new DenseGlassBlock();
-        poisonedDirtBlock = new PoisonedDirtBlock();
+//        resonatingPlateBlock = new ResonatingPlateBlock();
+//        denseObsidianBlock = new DenseObsidianBlock();
+//        denseGlassBlock = new DenseGlassBlock();
+//        poisonedDirtBlock = new PoisonedDirtBlock();
         resonatingCrystalBlock = new ResonatingCrystalBlock();
 
 //        duct = new BlockDuct(TileBasicFluidDuct.class, "basicFluidDuct").registerTile().register();
@@ -46,16 +46,16 @@ public final class ModBlocks {
         machineFrame = new MachineFrame();
 
         GeneratorSetup.setupBlocks();
-        GeneratorControllerSetup.setupBlocks();
+//        GeneratorControllerSetup.setupBlocks();
         EnergyCollectorSetup.setupBlocks();
-        CrystalizerSetup.setupBlocks();
-        SmelterSetup.setupBlocks();
-        TankSetup.setupBlocks();
-        PurifierSetup.setupBlocks();
-        PedestalSetup.setupBlocks();
-        ValveSetup.setupBlocks();
-        LensSetup.setupBlocks();
-        LaserSetup.setupBlocks();
+//        CrystalizerSetup.setupBlocks();
+//        SmelterSetup.setupBlocks();
+//        TankSetup.setupBlocks();
+//        PurifierSetup.setupBlocks();
+//        PedestalSetup.setupBlocks();
+//        ValveSetup.setupBlocks();
+//        LensSetup.setupBlocks();
+//        LaserSetup.setupBlocks();
     }
 
     @SideOnly(Side.CLIENT)
@@ -65,18 +65,18 @@ public final class ModBlocks {
 //        denseGlassBlock
 //        denseObsidianBlock
 //        poisonedDirtBlock
-//        resonatingOreBlock
+        resonatingOreBlock.initModel();
 //        machine_frame
         GeneratorSetup.setupModels();
-        GeneratorControllerSetup.setupModels();
+//        GeneratorControllerSetup.setupModels();
         EnergyCollectorSetup.setupModels();
-        CrystalizerSetup.setupModels();
-        SmelterSetup.setupModels();
-        TankSetup.setupModels();
-        PurifierSetup.setupModels();
-        PedestalSetup.setupModels();
-        ValveSetup.setupModels();
-        LensSetup.setupModels();
-        LaserSetup.setupModels();
+//        CrystalizerSetup.setupModels();
+//        SmelterSetup.setupModels();
+//        TankSetup.setupModels();
+//        PurifierSetup.setupModels();
+//        PedestalSetup.setupModels();
+//        ValveSetup.setupModels();
+//        LensSetup.setupModels();
+//        LaserSetup.setupModels();
     }
 }

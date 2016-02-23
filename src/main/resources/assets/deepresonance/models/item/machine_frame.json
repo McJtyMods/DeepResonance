@@ -1,5 +1,5 @@
 {
-  "parent":"deepresonance:block/generator_item",
+  "parent": "deepresonance:block/machine_frame",
   "display": {
     "thirdperson": {
       "rotation": [ 10, -45, 170 ],

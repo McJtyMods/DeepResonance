@@ -110,6 +110,12 @@ public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyCon
     }
 
     @Override
+    protected BlockState createBlockState() {
+        return new BlockState(this, UPPER, LOWER, ENABLED);
+    }
+
+
+    @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
         return state.withProperty(UPPER, world.getBlockState(pos.up()).getBlock() == GeneratorSetup.generatorBlock)
                 .withProperty(LOWER, world.getBlockState(pos.down()).getBlock() == GeneratorSetup.generatorBlock);
@@ -123,11 +129,6 @@ public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyCon
     @Override
     public int getMetaFromState(IBlockState state) {
         return state.getValue(ENABLED) ? 1 : 0;
-    }
-
-    @Override
-    protected BlockState createBlockState() {
-        return new BlockState(this, ENABLED, UPPER, LOWER);
     }
 
     @Override

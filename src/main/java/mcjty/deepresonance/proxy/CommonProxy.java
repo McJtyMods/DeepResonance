@@ -37,7 +37,7 @@ public abstract class CommonProxy {
         mainConfig = DeepResonance.config;
         readMainConfig();
         DRMessages.registerNetworkMessages();
-        ModItems.init();
+//        ModItems.init();
         ModBlocks.init();
         ModCrafting.init();
         WorldGen.init();
