@@ -1,24 +1,22 @@
 package mcjty.deepresonance.blocks.gencontroller;
 
 import mcjty.deepresonance.blocks.GenericDRBlock;
-import mcjty.lib.container.EmptyContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
-import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.client.ClientHandler;
-import mcjty.lib.container.GenericBlock;
-import mcjty.lib.varia.BlockTools;
+import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
@@ -26,6 +24,8 @@ import java.util.List;
 //@Optional.InterfaceList({
        // @Optional.Interface(iface = "crazypants.enderio.api.redstone.IRedstoneConnectable", modid = "EnderIO")})
 public class GeneratorControllerBlock extends GenericDRBlock<GeneratorControllerTileEntity, EmptyContainer> {
+
+    public static final PropertyBool POWERED = PropertyBool.create("powered");
 
     public GeneratorControllerBlock() {
         super(Material.iron, GeneratorControllerTileEntity.class, EmptyContainer.class, "generator_controller", false);
@@ -58,20 +58,21 @@ public class GeneratorControllerBlock extends GenericDRBlock<GeneratorController
 
     @Override
     public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block block) {
-        checkRedstone(world, pos);
-    }
-
-    /*@Override
-    public boolean shouldRedstoneConduitConnect(World world, int x, int y, int z, EnumFacing from) {
-        return true;
+        checkRedstoneWithTE(world, pos);
     }
 
     @Override
-    public IIcon getIconInd(IBlockAccess blockAccess, int x, int y, int z, int meta) {
-        if (BlockTools.getRedstoneSignalIn(meta)) {
-            return iconOn;
-        } else {
-            return iconOff;
+    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
+        TileEntity te = world.getTileEntity(pos);
+        boolean working = false;
+        if (te instanceof GeneratorControllerTileEntity) {
+            working = ((GeneratorControllerTileEntity)te).isPowered();
         }
-    }*/
+        return state.withProperty(POWERED, working);
+    }
+
+    @Override
+    protected BlockState createBlockState() {
+        return new BlockState(this, FACING_HORIZ, POWERED);
+    }
 }

@@ -39,7 +39,7 @@ public final class ModCrafting {
 //        GameRegistry.addRecipe(new ItemStack(ModItems.leggings), "ppp", "p p", "p p", 'p', ModItems.resonatingPlateItem);
 
         GeneratorSetup.setupCrafting();
-//        GeneratorControllerSetup.setupCrafting();
+        GeneratorControllerSetup.setupCrafting();
         EnergyCollectorSetup.setupCrafting();
 //        CrystalizerSetup.setupCrafting();
 //        SmelterSetup.setupCrafting();

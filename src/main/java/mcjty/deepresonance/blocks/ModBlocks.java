@@ -46,7 +46,7 @@ public final class ModBlocks {
         machineFrame = new MachineFrame();
 
         GeneratorSetup.setupBlocks();
-//        GeneratorControllerSetup.setupBlocks();
+        GeneratorControllerSetup.setupBlocks();
         EnergyCollectorSetup.setupBlocks();
 //        CrystalizerSetup.setupBlocks();
 //        SmelterSetup.setupBlocks();
@@ -68,7 +68,7 @@ public final class ModBlocks {
         resonatingOreBlock.initModel();
 //        machine_frame
         GeneratorSetup.setupModels();
-//        GeneratorControllerSetup.setupModels();
+        GeneratorControllerSetup.setupModels();
         EnergyCollectorSetup.setupModels();
 //        CrystalizerSetup.setupModels();
 //        SmelterSetup.setupModels();

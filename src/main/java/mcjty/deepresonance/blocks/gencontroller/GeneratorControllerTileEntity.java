@@ -10,6 +10,8 @@ import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.varia.BlockTools;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -26,6 +28,8 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
     private int shutdown = 0;
     private boolean active = false;
 
+    private int powered;
+
     public GeneratorControllerTileEntity() {
         super();
     }
@@ -36,6 +40,32 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
         }
         return controllerSounds;
     }
+
+    @Override
+    public void setPowered(int powered) {
+        this.powered = powered;
+        markDirty();
+    }
+
+    public boolean isPowered() {
+        return powered > 0;
+    }
+
+
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+        boolean working = isPowered();
+
+        super.onDataPacket(net, packet);
+
+        if (worldObj.isRemote) {
+            // If needed send a render update.
+            if (isPowered() != working) {
+                worldObj.markBlockRangeForRenderUpdate(getPos(), getPos());
+            }
+        }
+    }
+
 
 
     @Override
@@ -92,9 +122,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
     }
 
     protected void checkStateServer() {
-        //TODO: McJty: Redstone checking with meta?
-        //int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-        boolean active = true;//BlockTools.getRedstoneSignalIn(meta);
+        boolean active = powered > 0;
 
         // @todo optimize this?
         boolean dirty = false;
@@ -203,6 +231,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
         startup = tagCompound.getInteger("startup");
         shutdown = tagCompound.getInteger("shutdown");
         active = tagCompound.getBoolean("active");
+        powered = tagCompound.getInteger("powered");
     }
 
     @Override
@@ -211,5 +240,6 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
         tagCompound.setInteger("startup", startup);
         tagCompound.setInteger("shutdown", shutdown);
         tagCompound.setBoolean("active", active);
+        tagCompound.setInteger("powered", powered);
     }
 }
