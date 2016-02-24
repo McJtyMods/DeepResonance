@@ -9,6 +9,7 @@ public class DRMessages {
     public static void registerNetworkMessages() {
 
         int i = PacketHandler.registerMessages(DeepResonance.networkHandler.getNetworkWrapper());
+        PacketHandler.modNetworking.put(DeepResonance.MODID, DeepResonance.networkHandler.getNetworkWrapper());
         DeepResonance.networkHandler.setMessageIndex(i);
 
         // Server side

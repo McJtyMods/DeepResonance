@@ -82,7 +82,8 @@ public class DeepResonance implements ModBase {
         configWrapper.refresh();
         proxy.preInit(e);
         MainCompatHandler.registerWaila();
-        FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
+        //@todo
+//        FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
     }
 
 

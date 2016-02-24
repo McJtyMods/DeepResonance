@@ -15,7 +15,7 @@ public class WorldGenConfiguration {
     public static int minY = 2;
     public static int maxY = 30;
 
-    public static int crystalSpawnChance = 40;
+    public static int crystalSpawnChance = 30;
     public static int crystalSpawnTries = 10;
 
     public static void init(Configuration cfg) {
