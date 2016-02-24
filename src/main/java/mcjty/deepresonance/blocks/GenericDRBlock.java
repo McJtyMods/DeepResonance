@@ -49,7 +49,7 @@ public abstract class GenericDRBlock<T extends GenericTileEntity, C extends Cont
         setRegistryName(name);
         setCreativeTab(DeepResonance.tabDeepResonance);
         GameRegistry.registerBlock(this, itemBlockClass, name);
-        GameRegistry.registerTileEntity(tileEntityClass, name);
+        GameRegistry.registerTileEntity(tileEntityClass, DeepResonance.MODID + "_" + name);
     }
 
     @SideOnly(Side.CLIENT)

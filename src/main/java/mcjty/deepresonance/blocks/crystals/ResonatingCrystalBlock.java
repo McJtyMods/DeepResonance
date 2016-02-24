@@ -29,6 +29,7 @@ import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -55,7 +56,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
     @Override
     public void initModel() {
         super.initModel();
-//        ClientRegistry.bindTileEntitySpecialRenderer(ResonatingCrystalTileEntity.class, new ResonatingCrystalTESR());
+        ClientRegistry.bindTileEntitySpecialRenderer(ResonatingCrystalTileEntity.class, new ResonatingCrystalTESR());
     }
 
     @Override

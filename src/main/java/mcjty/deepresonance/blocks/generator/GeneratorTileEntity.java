@@ -8,6 +8,7 @@ import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.varia.EnergyTools;
 import mcjty.lib.entity.GenericTileEntity;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -199,15 +200,10 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
     private void activateBlocks(BlockPos c, Set<BlockPos> done, boolean active) {
         done.add(c);
 
-       /* int meta = worldObj.getBlockMetadata(c.getX(), c.getY(), c.getZ());
-
-        if (((meta & GeneratorBlock.META_ON) == 0) == active) {
-            if (active) {
-                worldObj.setBlockMetadataWithNotify(c.getX(), c.getY(), c.getZ(), meta | GeneratorBlock.META_ON, 3);
-            } else {
-                worldObj.setBlockMetadataWithNotify(c.getX(), c.getY(), c.getZ(), meta & ~GeneratorBlock.META_ON, 3);
-            }
-        }*/ //TODO: McJty: Meta stuff
+        IBlockState state = worldObj.getBlockState(c);
+        if (state.getValue(GeneratorBlock.ENABLED) != active) {
+            worldObj.setBlockState(c, state.withProperty(GeneratorBlock.ENABLED, active), 3);
+        }
 
         for (EnumFacing direction : EnumFacing.VALUES) {
             BlockPos newC = c.offset(direction);

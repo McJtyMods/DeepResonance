@@ -44,7 +44,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
     @Override
     public void setPowered(int powered) {
         this.powered = powered;
-        markDirty();
+        markDirtyClient();
     }
 
     public boolean isPowered() {

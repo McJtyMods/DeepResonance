@@ -15,7 +15,7 @@
     },
     "powered": {
       "false": {},
-      "true": { "textures": {"side": "deepresonance:blocks/generatorControllerOn"}}
+      "true": { "textures": {"front": "deepresonance:blocks/generatorControllerOn"}}
     }
   }
 }

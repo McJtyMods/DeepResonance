@@ -118,7 +118,9 @@ public class DeepWorldGenerator implements IWorldGenerator {
         if (tag != null) {
             boolean generated = WorldGenConfiguration.retrogen && !tag.hasKey("generated");
             if (generated) {
-                Logging.log("Queuing Retrogen for chunk: " + cCoord.toString() + ".");
+                if (WorldGenConfiguration.verboseSpawn) {
+                    Logging.log("Queuing Retrogen for chunk: " + cCoord.toString() + ".");
+                }
                 regen = true;
             }
         } else {
