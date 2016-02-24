@@ -7,7 +7,6 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.RadiationOverlayRenderer;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.client.gui.NoRFFoundException;
-import mcjty.deepresonance.client.render.ModRenderers;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.items.ModItems;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -32,7 +31,6 @@ public class ClientProxy extends CommonProxy implements ITextureLoader {
     @Override
     public void init(FMLInitializationEvent e) {
         super.init(e);
-        ModRenderers.init();
         MinecraftForge.EVENT_BUS.register(this);
     }
 
