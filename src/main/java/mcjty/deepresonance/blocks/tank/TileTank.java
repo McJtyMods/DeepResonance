@@ -165,6 +165,11 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
             tagCompound.setString("lastSeenFluid", FluidRegistry.getFluidName(lastSeenFluid));*/
     }
 
+//    @Override
+//    public boolean shouldRenderInPass(int pass) {
+//        return pass == 1;
+//    }
+
     @Override
     public void setMultiBlock(DRTankMultiBlock multiBlock) {
         this.multiBlock = multiBlock;

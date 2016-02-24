@@ -1,8 +1,6 @@
 package mcjty.deepresonance.items;
 
 import elec332.core.world.WorldHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.network.PacketGetRadiationLevel;
 import mcjty.deepresonance.radiation.DRRadiationManager;
@@ -11,11 +9,17 @@ import mcjty.deepresonance.varia.QuadTree;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 import java.util.Map;
@@ -28,6 +32,31 @@ public class RadiationMonitorItem extends GenericDRItem {
         super("radiation_monitor");
         setMaxStackSize(1);
     }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void initModel() {
+        for (int i = 0 ; i <= 9 ; i++) {
+            ModelBakery.addVariantName(this, getRegistryName() + i);
+//            ModelBakery.addVariantName(this, "l" + i);
+        }
+
+        ModelLoader.setCustomMeshDefinition(this, new ItemMeshDefinition() {
+            @Override
+            public ModelResourceLocation getModelLocation(ItemStack stack) {
+                EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+                fetchRadiation(player);
+                int level = (int) ((10*radiationStrength) / RadiationConfiguration.maxRadiationMeter);
+                if (level < 0) {
+                    level = 0;
+                } else if (level > 9) {
+                    level = 9;
+                }
+                return new ModelResourceLocation(getRegistryName() + level, "inventory");
+            }
+        });
+    }
+
 
     @Override
     public int getMaxItemUseDuration(ItemStack stack) {
