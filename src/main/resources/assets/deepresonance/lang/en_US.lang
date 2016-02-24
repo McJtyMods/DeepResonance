@@ -10,6 +10,8 @@ item.Chest1.name=Radiation Suit Chestplate (WIP)
 item.Leggings2.name=Radiation Suit Leggings (WIP)
 item.Boots3.name=Radiation Suit Boots (WIP)
 
+tile.liquid_crystal.name=Liquid Crystal
+
 tile.resonating_ore.name=Resonating Ore
 tile.resonating_block.name=Resonating Plate Block
 tile.dense_obsidian.name=Dense Obsidian

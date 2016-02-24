@@ -13,8 +13,8 @@ import net.minecraftforge.fluids.FluidStack;
 public class DRFluidRegistry {
 
 
-    private static ResourceLocation rclFluid = new ResourceLocation(DeepResonance.MODID + ":rclfluid");
-    public static Fluid liquidCrystal = new Fluid("liquidCrystal", rclFluid, rclFluid);
+    private static ResourceLocation rclFluid = new ResourceLocation(DeepResonance.MODID, "textures/blocks/rclfluid.png");
+    public static Fluid liquidCrystal = new Fluid("liquid_crystal", rclFluid, rclFluid);
 
     public static void initFluids(){
         FluidRegistry.registerFluid(liquidCrystal);

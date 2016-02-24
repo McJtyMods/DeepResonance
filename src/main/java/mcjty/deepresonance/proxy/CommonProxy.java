@@ -41,6 +41,7 @@ public abstract class CommonProxy {
         ModBlocks.init();
         ModCrafting.init();
         WorldGen.init();
+        DRFluidRegistry.initFluids();
     }
 
     private void readMainConfig() {
@@ -70,7 +71,6 @@ public abstract class CommonProxy {
         FMLCommonHandler.instance().bus().register(new RadiationTickEvent());
         MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
         FMLCommonHandler.instance().bus().register(new FMLEventHandlers());
-        DRFluidRegistry.initFluids();
     }
 
     public void postInit(FMLPostInitializationEvent e) {
