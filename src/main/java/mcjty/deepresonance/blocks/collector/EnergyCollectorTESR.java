@@ -2,6 +2,7 @@ package mcjty.deepresonance.blocks.collector;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
+import mcjty.deepresonance.client.render.DrRenderHelper;
 import mcjty.lib.gui.RenderHelper;
 import mcjty.lib.gui.RenderHelper.Vector;
 import net.minecraft.client.Minecraft;
@@ -11,13 +12,11 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import java.util.Random;
 
@@ -48,7 +47,7 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer<EnergyCollect
             GlStateManager.pushMatrix();
             GlStateManager.translate((float) x + 0.5F, (float) y + 0.85F, (float) z + 0.5F);
             this.bindTexture(halo);
-            RenderHelper.renderBillboardQuad(1.0f);
+            DrRenderHelper.renderBillboardQuadBright(1.0f);
             GlStateManager.popMatrix();
 
             Minecraft mc = Minecraft.getMinecraft();
@@ -58,7 +57,7 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer<EnergyCollect
             double doubleZ = p.lastTickPosZ + (p.posZ - p.lastTickPosZ) * time;
 
             Vector start = new Vector(te.getPos().getX() + .5f, te.getPos().getY() + .5f + .3f, te.getPos().getZ() + .5f);
-            Vector player = new Vector((float) doubleX, (float) doubleY, (float) doubleZ);
+            Vector player = new Vector((float) doubleX, (float) doubleY + p.getEyeHeight(), (float) doubleZ);
 
             GlStateManager.pushMatrix();
             GlStateManager.translate(-doubleX, -doubleY, -doubleZ);
@@ -70,7 +69,7 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer<EnergyCollect
 
             this.bindTexture(laserbeams[random.nextInt(4)]);
 
-            renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+            renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
 //            tessellator.setBrightness(240);
 
             float startupFactor = te.getLaserStartup() / (float) GeneratorConfiguration.startupTime;
@@ -85,10 +84,10 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer<EnergyCollect
                     // Do nothing
                 } else if (startupFactor > .001f) {
                     Vector middle = new Vector(jitter(startupFactor, start.x, end.x), jitter(startupFactor, start.y, end.y), jitter(startupFactor, start.z, end.z));
-                    RenderHelper.drawBeam(start, middle, player, .1f);
-                    RenderHelper.drawBeam(middle, end, player, .1f);
+                    DrRenderHelper.drawBeam(start, middle, player, .1f);
+                    DrRenderHelper.drawBeam(middle, end, player, .1f);
                 } else {
-                    RenderHelper.drawBeam(start, end, player, .1f);
+                    DrRenderHelper.drawBeam(start, end, player, .1f);
                 }
             }
 

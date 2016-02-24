@@ -1,6 +1,7 @@
 package mcjty.deepresonance.blocks.laser;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.client.render.DrRenderHelper;
 import mcjty.lib.gui.RenderHelper;
 import mcjty.lib.varia.BlockTools;
 import net.minecraft.client.Minecraft;
@@ -34,13 +35,11 @@ public class LaserRenderer extends TileEntitySpecialRenderer<LaserTileEntity> {
             GlStateManager.pushAttrib();
 //            GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
 
-            tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+            tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
             GlStateManager.enableDepth();
             GlStateManager.depthMask(false);
-       //     tessellator.setColorRGBA(255, 255, 255, 128);
-      //      tessellator.setBrightness(240);
             GlStateManager.pushMatrix();
             switch (color) {
                 case LaserTileEntity.COLOR_BLUE: this.bindTexture(bluelaser); break;
@@ -58,8 +57,8 @@ public class LaserRenderer extends TileEntitySpecialRenderer<LaserTileEntity> {
 
             RenderHelper.Vector start = new RenderHelper.Vector(tileEntity.getPos().getX() + .5f, tileEntity.getPos().getY() + .5f, tileEntity.getPos().getZ() + .5f);
             RenderHelper.Vector end = new RenderHelper.Vector(destX, destY, destZ);
-            RenderHelper.Vector player = new RenderHelper.Vector((float) doubleX, (float) doubleY, (float) doubleZ);
-            RenderHelper.drawBeam(start, end, player, .2f);
+            RenderHelper.Vector player = new RenderHelper.Vector((float) doubleX, (float) doubleY + p.getEyeHeight(), (float) doubleZ);
+            DrRenderHelper.drawBeam(start, end, player, .2f);
 
             tessellator.draw();
             GlStateManager.popMatrix();
