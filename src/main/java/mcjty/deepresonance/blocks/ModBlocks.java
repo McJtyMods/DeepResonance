@@ -14,6 +14,7 @@ import mcjty.deepresonance.blocks.poisondirt.PoisonedDirtBlock;
 import mcjty.deepresonance.blocks.purifier.PurifierSetup;
 import mcjty.deepresonance.blocks.smelter.SmelterSetup;
 import mcjty.deepresonance.blocks.tank.TankSetup;
+import mcjty.deepresonance.blocks.valve.ValveSetup;
 import net.minecraft.block.Block;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -50,7 +51,7 @@ public final class ModBlocks {
         TankSetup.setupBlocks();
         PurifierSetup.setupBlocks();
         PedestalSetup.setupBlocks();
-//        ValveSetup.setupBlocks();
+        ValveSetup.setupBlocks();
 //        LensSetup.setupBlocks();
 //        LaserSetup.setupBlocks();
     }
@@ -72,7 +73,7 @@ public final class ModBlocks {
         TankSetup.setupModels();
         PurifierSetup.setupModels();
         PedestalSetup.setupModels();
-//        ValveSetup.setupModels();
+        ValveSetup.setupModels();
 //        LensSetup.setupModels();
 //        LaserSetup.setupModels();
     }

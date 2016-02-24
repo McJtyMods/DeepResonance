@@ -9,6 +9,7 @@ import mcjty.deepresonance.blocks.pedestal.PedestalSetup;
 import mcjty.deepresonance.blocks.purifier.PurifierSetup;
 import mcjty.deepresonance.blocks.smelter.SmelterSetup;
 import mcjty.deepresonance.blocks.tank.TankSetup;
+import mcjty.deepresonance.blocks.valve.ValveSetup;
 import mcjty.deepresonance.items.ModItems;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -43,7 +44,7 @@ public final class ModCrafting {
         TankSetup.setupCrafting();
         PurifierSetup.setupCrafting();
         PedestalSetup.setupCrafting();
-//        ValveSetup.setupCrafting();
+        ValveSetup.setupCrafting();
 //        LensSetup.setupCrafting();
 //        LaserSetup.setupCrafting();
     }

@@ -22,6 +22,11 @@ public class ValveBlock extends GenericDRBlock<ValveTileEntity, ValveContainer> 
         super(Material.rock, ValveTileEntity.class, ValveContainer.class, "valve", true);
     }
 
+    @Override
+    public boolean isHorizRotation() {
+        return true;
+    }
+
     @SideOnly(Side.CLIENT)
     @Override
     public Class<? extends GenericGuiContainer> getGuiClass() {

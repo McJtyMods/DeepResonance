@@ -1,6 +1,5 @@
 package mcjty.deepresonance.blocks.valve;
 
-import elec332.core.api.annotations.RegisterTile;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.base.ElecTileBase;
 import mcjty.deepresonance.blocks.tank.ITankHook;
@@ -18,7 +17,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Map;
 
-@RegisterTile(name = "DeepResonanceValveTileEntity")
 public class ValveTileEntity extends ElecTileBase implements ITankHook, ITickable {
 
     public static String CMD_SETTINGS = "settings";
