@@ -15,6 +15,7 @@ import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
 import mcjty.lib.varia.BlockTools;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -45,7 +46,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     public static final int COLOR_BLUE = 1;
     public static final int COLOR_RED = 2;
     public static final int COLOR_GREEN = 3;
-    public static final int COLOR_YELLOW = 4;
+    public static final int COLOR_YELLOW = 4;       // This is rendered as off in meta
 
     // Transient
     private int tickCounter = 10;
@@ -96,35 +97,33 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
 
         checkCrystal();
 
-        int meta = WorldHelper.getBlockMeta(worldObj, pos);
-
         if (powered == 0) {
-            changeColor(0, meta);
+            changeColor(0);
             return;
         }
 
         ItemStack stack = inventoryHelper.getStackInSlot(LaserContainer.SLOT_CATALYST);
         InfusingBonus bonus = getInfusingBonus(stack);
         if (bonus == null) {
-            changeColor(0, meta);
+            changeColor(0);
             return;
         }
 
         if (getEnergyStored(null) < ConfigMachines.Laser.rfUsePerCatalyst) {
-            changeColor(0, meta);
+            changeColor(0);
             return;
         }
 
         if (crystalLiquid < ConfigMachines.Laser.crystalLiquidPerCatalyst) {
-            changeColor(0, meta);
+            changeColor(0);
             return;
         }
 
-        BlockPos tankCoordinate = findLens(meta);
+        BlockPos tankCoordinate = findLens();
         if (tankCoordinate != null) {
-            changeColor(bonus.getColor(), meta);
+            changeColor(bonus.getColor());
         } else {
-            changeColor(0, meta);
+            changeColor(0);
             return;
         }
 
@@ -174,18 +173,17 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         }
     }
 
-    private void changeColor(int newcolor, int meta) {
+    private void changeColor(int newcolor) {
         if (newcolor != color) {
-            /*color = newcolor;
-            worldObj.markBlockForUpdate(pos);
-            // We only have four bits so we can't represent yellow. We use red in that case.
+            color = newcolor;
+            int mcolor = color;
             if (color == COLOR_YELLOW) {
-                meta = (meta & 0x3) | (COLOR_RED<<2);
-            } else {
-                meta = (meta & 0x3) | (color<<2);
+                mcolor = COLOR_RED;
+            } else if (color == 0) {
+                mcolor = 0;    // Off
             }
-            worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, meta, 3);
-            markDirty();*/ //TODO: McJty: Meta colour stuff
+            worldObj.setBlockState(getPos(), worldObj.getBlockState(getPos()).withProperty(LaserBlock.COLOR, mcolor), 3);
+            markDirty();
         }
     }
 
@@ -282,7 +280,9 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
                 InfusingBonus.Modifier.NONE));
     }
 
-    private BlockPos findLens(int meta) {
+    private BlockPos findLens() {
+        IBlockState state = worldObj.getBlockState(getPos());
+        int meta = state.getBlock().getMetaFromState(state);
         EnumFacing direction = BlockTools.getOrientationHoriz(meta);
         BlockPos shouldBeAir = getPos().offset(direction);
         if (!worldObj.isAirBlock(shouldBeAir)) {
