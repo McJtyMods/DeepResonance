@@ -10,6 +10,7 @@ import mcjty.deepresonance.blocks.ore.DenseObsidianBlock;
 import mcjty.deepresonance.blocks.ore.ResonatingOreBlock;
 import mcjty.deepresonance.blocks.ore.ResonatingPlateBlock;
 import mcjty.deepresonance.blocks.poisondirt.PoisonedDirtBlock;
+import mcjty.deepresonance.blocks.purifier.PurifierSetup;
 import mcjty.deepresonance.blocks.smelter.SmelterSetup;
 import mcjty.deepresonance.blocks.tank.TankSetup;
 import net.minecraft.block.Block;
@@ -46,7 +47,7 @@ public final class ModBlocks {
         CrystalizerSetup.setupBlocks();
         SmelterSetup.setupBlocks();
         TankSetup.setupBlocks();
-//        PurifierSetup.setupBlocks();
+        PurifierSetup.setupBlocks();
 //        PedestalSetup.setupBlocks();
 //        ValveSetup.setupBlocks();
 //        LensSetup.setupBlocks();
@@ -68,7 +69,7 @@ public final class ModBlocks {
         CrystalizerSetup.setupModels();
         SmelterSetup.setupModels();
         TankSetup.setupModels();
-//        PurifierSetup.setupModels();
+        PurifierSetup.setupModels();
 //        PedestalSetup.setupModels();
 //        ValveSetup.setupModels();
 //        LensSetup.setupModels();

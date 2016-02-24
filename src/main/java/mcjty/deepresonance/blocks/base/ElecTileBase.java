@@ -70,11 +70,6 @@ public abstract class ElecTileBase extends GenericTileEntity implements IInvento
         this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
     }
 
-    public boolean openGui(EntityPlayer player, int ID){
-        player.openGui(DeepResonance.instance, ID, worldObj, pos.getX(), pos.getY(), pos.getZ());
-        return true;
-    }
-
     @Override
     public Container getGuiServer(EntityPlayer entityPlayer) {
         return (Container) getGui(entityPlayer, false);
