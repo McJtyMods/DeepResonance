@@ -20,11 +20,12 @@ import net.minecraft.world.World;
 import java.util.List;
 import java.util.Map;
 
-public class RadiationMonitorItem extends Item {
+public class RadiationMonitorItem extends GenericDRItem {
     private static long lastTime = 0;
     public static float radiationStrength = 0.0f;
 
     public RadiationMonitorItem() {
+        super("radiation_monitor");
         setMaxStackSize(1);
     }
 

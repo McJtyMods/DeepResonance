@@ -16,9 +16,10 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
-public class InsertLiquidItem extends Item {
+public class InsertLiquidItem extends GenericDRItem {
 
     public InsertLiquidItem() {
+        super("insert_liquid");
         setMaxStackSize(1);
     }
 

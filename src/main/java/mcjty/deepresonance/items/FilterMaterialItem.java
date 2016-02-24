@@ -1,12 +1,16 @@
 package mcjty.deepresonance.items;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
-public class FilterMaterialItem extends Item {
+public class FilterMaterialItem extends GenericDRItem {
+
+    public FilterMaterialItem() {
+        super("filter");
+    }
+
     @Override
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
         super.addInformation(itemStack, player, list, whatIsThis);

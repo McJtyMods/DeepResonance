@@ -5,6 +5,8 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.items.armor.ItemRadiationSuit;
 import mcjty.deepresonance.items.manual.DeepResonanceManualItem;
 import net.minecraft.item.ItemArmor;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public final class ModItems {
     public static DeepResonanceManualItem deepResonanceManualItem;
@@ -12,51 +14,31 @@ public final class ModItems {
     public static ResonatingPlateItem resonatingPlateItem;
     public static FilterMaterialItem filterMaterialItem;
     public static SpentFilterMaterialItem spentFilterMaterialItem;
-    public static ItemRadiationSuit helmet, chestplate, leggings, boots;
+//    public static ItemRadiationSuit helmet, chestplate, leggings, boots;
     public static InsertLiquidItem insertLiquidItem;
 
     public static void init() {
         deepResonanceManualItem = new DeepResonanceManualItem();
-        deepResonanceManualItem.setUnlocalizedName("DeepResonanceManual");
-        deepResonanceManualItem.setCreativeTab(DeepResonance.tabDeepResonance);
-        //deepResonanceManualItem.setTextureName(DeepResonance.MODID + ":deepResonanceManual");
-        GameRegistry.registerItem(deepResonanceManualItem, "deepResonanceManualItem");
-
         radiationMonitorItem = new RadiationMonitorItem();
-        radiationMonitorItem.setUnlocalizedName("RadiationMonitor");
-        radiationMonitorItem.setCreativeTab(DeepResonance.tabDeepResonance);
-        GameRegistry.registerItem(radiationMonitorItem, "radiationMonitorItem");
-
         resonatingPlateItem = new ResonatingPlateItem();
-        resonatingPlateItem.setUnlocalizedName("ResonatingPlate");
-        resonatingPlateItem.setCreativeTab(DeepResonance.tabDeepResonance);
-        //resonatingPlateItem.setTextureName(DeepResonance.MODID + ":resonatingPlate");
-        GameRegistry.registerItem(resonatingPlateItem, "resonatingPlateItem");
-
         filterMaterialItem = new FilterMaterialItem();
-        filterMaterialItem.setUnlocalizedName("FilterMaterial");
-        filterMaterialItem.setCreativeTab(DeepResonance.tabDeepResonance);
-        //filterMaterialItem.setTextureName(DeepResonance.MODID + ":filterMaterial");
-        GameRegistry.registerItem(filterMaterialItem, "filterMaterialItem");
-
         spentFilterMaterialItem = new SpentFilterMaterialItem();
-        spentFilterMaterialItem.setUnlocalizedName("SpentFilterMaterial");
-        spentFilterMaterialItem.setCreativeTab(DeepResonance.tabDeepResonance);
-        //spentFilterMaterialItem.setTextureName(DeepResonance.MODID + ":spentFilterMaterial");
-        GameRegistry.registerItem(spentFilterMaterialItem, "spentFilterMaterialItem");
-
         insertLiquidItem = new InsertLiquidItem();
-        insertLiquidItem.setUnlocalizedName("LiquidInjector");
-        insertLiquidItem.setCreativeTab(DeepResonance.tabDeepResonance);
-        //insertLiquidItem.setTextureName(DeepResonance.MODID + ":liquidInjector");
-        GameRegistry.registerItem(insertLiquidItem, "liquidInjector");
 
-        helmet = newRadiationSuitPart(0, "Helmet");
-        chestplate = newRadiationSuitPart(1, "Chest");
-        leggings = newRadiationSuitPart(2, "Leggings");
-        boots = newRadiationSuitPart(3, "Boots");
+//        helmet = newRadiationSuitPart(0, "Helmet");
+//        chestplate = newRadiationSuitPart(1, "Chest");
+//        leggings = newRadiationSuitPart(2, "Leggings");
+//        boots = newRadiationSuitPart(3, "Boots");
+    }
 
-//        new TestItem(); //Auto-registers
+    @SideOnly(Side.CLIENT)
+    public static void initModels() {
+        deepResonanceManualItem.initModel();
+        radiationMonitorItem.initModel();
+        resonatingPlateItem.initModel();
+        filterMaterialItem.initModel();
+        spentFilterMaterialItem.initModel();
+        insertLiquidItem.initModel();
     }
 
     private static ItemRadiationSuit newRadiationSuitPart(int i, String texture) {

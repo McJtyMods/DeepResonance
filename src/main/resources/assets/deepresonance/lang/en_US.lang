@@ -1,10 +1,9 @@
-item.DeepResonanceManual.name=Deep Resonance Manual
-item.RadiationMonitor.name=Radiation Monitor
-item.ResonatingPlate.name=Resonating Plate
-item.FilterMaterial.name=Filter Material
-item.SpentFilterMaterial.name=Spent Filter Material
-item.SpentFilterMaterial.name=Spent Filter Material
-item.LiquidInjector.name=Liquid Injector
+item.dr_manual.name=Deep Resonance Manual
+item.radiation_monitor.name=Radiation Monitor
+item.resonating_plate.name=Resonating Plate
+item.filter.name=Filter Material
+item.spent_filter.name=Spent Filter Material
+item.insert_liquid.name=Liquid Injector
 //Maybe should be different?
 item.Helmet0.name=Radiation Suit Helmet (WIP)
 item.Chest1.name=Radiation Suit Chestplate (WIP)

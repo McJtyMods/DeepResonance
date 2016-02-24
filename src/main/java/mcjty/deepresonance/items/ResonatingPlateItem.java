@@ -1,6 +1,8 @@
 package mcjty.deepresonance.items;
 
-import net.minecraft.item.Item;
+public class ResonatingPlateItem extends GenericDRItem {
 
-public class ResonatingPlateItem extends Item {
+    public ResonatingPlateItem() {
+        super("resonating_plate");
+    }
 }

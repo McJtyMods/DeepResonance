@@ -22,6 +22,7 @@ public class ItemRadiationSuit extends ItemArmor {
     public ItemRadiationSuit(ArmorMaterial material, int renderIndex, int armorType, String name) {
         super(material, renderIndex, armorType);
         setUnlocalizedName(name);
+        setRegistryName(name);
         this.textureSuffix = name;
         //setTextureName(DeepResonance.MODID+":radiationSuit"+name);
         setCreativeTab(DeepResonance.tabDeepResonance);

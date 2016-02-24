@@ -9,6 +9,7 @@ import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.client.gui.NoRFFoundException;
 import mcjty.deepresonance.client.render.ModRenderers;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
+import mcjty.deepresonance.items.ModItems;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
@@ -25,6 +26,7 @@ public class ClientProxy extends CommonProxy implements ITextureLoader {
         RenderingRegistry.instance().registerTextureLoader(this);
         OBJLoader.instance.addDomain(DeepResonance.MODID);
         ModBlocks.initModels();
+        ModItems.initModels();
     }
 
     @Override

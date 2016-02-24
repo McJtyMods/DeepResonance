@@ -1,6 +1,8 @@
 package mcjty.deepresonance.items;
 
-import net.minecraft.item.Item;
+public class SpentFilterMaterialItem extends GenericDRItem {
 
-public class SpentFilterMaterialItem extends Item {
+    public SpentFilterMaterialItem() {
+        super("spent_filter");
+    }
 }
