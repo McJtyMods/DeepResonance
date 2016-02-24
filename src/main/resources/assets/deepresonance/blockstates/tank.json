@@ -1,0 +1,41 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "deepresonance:tank",
+    "textures": { "particle": "deepresonance:blocks/tankBottom" }
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "down": {
+      "none": { "textures": { "down": "deepresonance:blocks/tankBottom" } },
+      "accept": { "textures": { "down": "deepresonance:blocks/tankBottomAccept" } },
+      "provide": { "textures": { "down": "deepresonance:blocks/tankBottomProvide" } }
+    },
+    "east": {
+      "none": { "textures": { "east": "deepresonance:blocks/tankSide" } },
+      "accept": { "textures": { "east": "deepresonance:blocks/tankSideAccept" } },
+      "provide": { "textures": { "east": "deepresonance:blocks/tankSideProvide" } }
+    },
+    "north": {
+      "none": { "textures": { "north": "deepresonance:blocks/tankSide" } },
+      "accept": { "textures": { "north": "deepresonance:blocks/tankSideAccept" } },
+      "provide": { "textures": { "north": "deepresonance:blocks/tankSideProvide" } }
+    },
+    "south": {
+      "none": { "textures": { "south": "deepresonance:blocks/tankSide" } },
+      "accept": { "textures": { "south": "deepresonance:blocks/tankSideAccept" } },
+      "provide": { "textures": { "south": "deepresonance:blocks/tankSideProvide" } }
+    },
+    "up": {
+      "none": { "textures": { "up": "deepresonance:blocks/tankTop" } },
+      "accept": { "textures": { "up": "deepresonance:blocks/tankTopAccept" } },
+      "provide": { "textures": { "up": "deepresonance:blocks/tankTopProvide" } }
+    },
+    "west": {
+      "none": { "textures": { "west": "deepresonance:blocks/tankSide" } },
+      "accept": { "textures": { "west": "deepresonance:blocks/tankSideAccept" } },
+      "provide": { "textures": { "west": "deepresonance:blocks/tankSideProvide" } }
+    }
+  }
+}

@@ -5,6 +5,7 @@ import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
 import mcjty.deepresonance.blocks.gencontroller.GeneratorControllerSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.smelter.SmelterSetup;
+import mcjty.deepresonance.blocks.tank.TankSetup;
 import mcjty.deepresonance.items.ModItems;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -36,7 +37,7 @@ public final class ModCrafting {
         EnergyCollectorSetup.setupCrafting();
 //        CrystalizerSetup.setupCrafting();
         SmelterSetup.setupCrafting();
-//        TankSetup.setupCrafting();
+        TankSetup.setupCrafting();
 //        PurifierSetup.setupCrafting();
 //        PedestalSetup.setupCrafting();
 //        ValveSetup.setupCrafting();

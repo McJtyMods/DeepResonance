@@ -1,9 +1,6 @@
 package mcjty.deepresonance.blocks.tank;
 
 import com.google.common.collect.Maps;
-import elec332.core.api.annotations.RegisterTile;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import elec332.core.multiblock.dynamic.IDynamicMultiBlockTile;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
@@ -15,9 +12,10 @@ import mcjty.deepresonance.grid.tank.DRTankMultiBlock;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IStringSerializable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
 
 import java.util.Map;
@@ -25,19 +23,13 @@ import java.util.Map;
 /**
  * Created by Elec332 on 9-8-2015.
  */
-@RegisterTile(name = "DeepResonanceTankTileEntity")
 public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IDeepResonanceFluidProvider {
-
-    public static final int SETTING_NONE = 0;
-    public static final int SETTING_ACCEPT = 1;
-    public static final int SETTING_PROVIDE = 2;
-    public static final int SETTING_MAX = 2;
 
     public TileTank(){
         super();
         this.settings = Maps.newHashMap();
         for (EnumFacing direction : EnumFacing.VALUES){
-            settings.put(direction, SETTING_NONE);
+            settings.put(direction, Mode.SETTING_NONE);
         }
         this.multiBlockSaveData = new NBTTagCompound();
     }
@@ -49,7 +41,25 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
 
     private NBTTagCompound multiBlockSaveData;
 
-    protected Map<EnumFacing, Integer> settings;
+    protected Map<EnumFacing, Mode> settings;
+
+    public static enum Mode implements IStringSerializable {
+        SETTING_NONE("none"),
+        SETTING_ACCEPT("accept"),   // Blue
+        SETTING_PROVIDE("provide"); // Yellow
+
+        private final String name;
+
+        Mode(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+    }
+
 
     @Override
     public void onTileLoaded() {
@@ -79,7 +89,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     public FluidStack myTank;
     public Fluid lastSeenFluid;
 
-    public Map<EnumFacing, Integer> getSettings() {
+    public Map<EnumFacing, Mode> getSettings() {
         return settings;
     }
 
@@ -90,7 +100,9 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         if (tagList != null){
             for (int i = 0; i < tagList.tagCount(); i++) {
                 NBTTagCompound tag = tagList.getCompoundTagAt(i);
-                settings.put(EnumFacing.valueOf(tag.getString("dir")), tag.getInteger("n"));
+                EnumFacing side = EnumFacing.values()[tag.getInteger("dir")];
+                Mode mode = Mode.values()[tag.getInteger("n")];
+                settings.put(side, mode);
             }
         }
     }
@@ -99,10 +111,10 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     public void writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         NBTTagList tagList = new NBTTagList();
-        for (Map.Entry<EnumFacing, Integer> entry : settings.entrySet()){
+        for (Map.Entry<EnumFacing, Mode> entry : settings.entrySet()){
             NBTTagCompound tag = new NBTTagCompound();
-            tag.setString("dir", entry.getKey().toString());
-            tag.setInteger("n", entry.getValue());
+            tag.setInteger("dir", entry.getKey().ordinal());
+            tag.setInteger("n", entry.getValue().ordinal());
             tagList.appendTag(tag);
         }
         tagCompound.setTag("settings", tagList);
@@ -295,11 +307,11 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     }
 
     public boolean isInput(EnumFacing direction){
-        return direction == null || settings.get(direction) == SETTING_ACCEPT;
+        return direction == null || settings.get(direction) == Mode.SETTING_ACCEPT;
     }
 
     public boolean isOutput(EnumFacing direction){
-        return direction == null || settings.get(direction) == SETTING_PROVIDE;
+        return direction == null || settings.get(direction) == Mode.SETTING_PROVIDE;
     }
 
     @Override

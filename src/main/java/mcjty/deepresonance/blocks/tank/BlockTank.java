@@ -15,6 +15,8 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.item.EntityItem;
@@ -25,11 +27,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -43,6 +47,13 @@ import java.util.Map;
  */
 public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implements ITextureLoader {
 
+    public static final PropertyEnum<TileTank.Mode> NORTH = PropertyEnum.create("north", TileTank.Mode.class);
+    public static final PropertyEnum<TileTank.Mode> SOUTH = PropertyEnum.create("south", TileTank.Mode.class);
+    public static final PropertyEnum<TileTank.Mode> WEST = PropertyEnum.create("west", TileTank.Mode.class);
+    public static final PropertyEnum<TileTank.Mode> EAST = PropertyEnum.create("east", TileTank.Mode.class);
+    public static final PropertyEnum<TileTank.Mode> UP = PropertyEnum.create("up", TileTank.Mode.class);
+    public static final PropertyEnum<TileTank.Mode> DOWN = PropertyEnum.create("down", TileTank.Mode.class);
+
     public BlockTank() {
         super(Material.rock, TileTank.class, EmptyContainer.class, "tank", true);
     }
@@ -51,9 +62,19 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     private TextureAtlasSprite iconSide, iconTop, iconBottom;
 
     @Override
+    public boolean hasNoRotation() {
+        return true;
+    }
+
+    @Override
+    public void initModel() {
+        super.initModel();
+        ClientRegistry.bindTileEntitySpecialRenderer(TileTank.class, new TankTESR());
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
-    @SuppressWarnings("unchecked")
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean whatIsThis) {
         super.addInformation(itemStack, player, list, whatIsThis);
         NBTTagCompound tagCompound = itemStack.getTagCompound();
         if (tagCompound != null) {
@@ -90,9 +111,9 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     @SideOnly(Side.CLIENT)
     public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
         TileTank tankTile = (TileTank) accessor.getTileEntity();
-        Map<EnumFacing, Integer> settings = tankTile.getSettings();
-        int i = settings.get(accessor.getSide());
-        currentTip.add("Mode: "+(i == TileTank.SETTING_NONE ? "none" : (i == TileTank.SETTING_ACCEPT ? "accept" : "provide")));
+        Map<EnumFacing, TileTank.Mode> settings = tankTile.getSettings();
+        TileTank.Mode i = settings.get(accessor.getSide());
+        currentTip.add("Mode: "+(i == TileTank.Mode.SETTING_NONE ? "none" : (i == TileTank.Mode.SETTING_ACCEPT ? "accept" : "provide")));
         currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(clientRenderFluid));
         currentTip.add("Amount: "+totalFluidAmount + " (" + tankCapacity + ")");
         if (fluidData != null) {
@@ -155,11 +176,17 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
                     return true;
                 }
             }
-            int i = tank.settings.get(side);
-            if (i < TileTank.SETTING_MAX) {
-                i++;
-            } else {
-                i = TileTank.SETTING_NONE;
+            TileTank.Mode i = tank.settings.get(side);
+            switch (i) {
+                case SETTING_NONE:
+                    i = TileTank.Mode.SETTING_ACCEPT;
+                    break;
+                case SETTING_ACCEPT:
+                    i = TileTank.Mode.SETTING_PROVIDE;
+                    break;
+                case SETTING_PROVIDE:
+                    i = TileTank.Mode.SETTING_NONE;
+                    break;
             }
             tank.settings.put(side, i);
             tank.markDirty();
@@ -213,15 +240,22 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
         TileEntity tile = WorldHelper.getTileAt(world, pos);
         if (tile instanceof TileTank){
             TileTank tank = (TileTank) tile;
-            if (tank.getClientRenderFluid() != null)
+            if (tank.getClientRenderFluid() != null) {
                 return tank.getClientRenderFluid().getLuminosity();
+            }
         }
         return super.getLightValue(world, pos);
     }
 
+//    @Override
+//    public int getRenderType() {
+//        return 2;
+//    }
+
+
     @Override
-    public int getRenderType() {
-        return 2;
+    public EnumWorldBlockLayer getBlockLayer() {
+        return EnumWorldBlockLayer.TRANSLUCENT;
     }
 
     @Override
@@ -247,6 +281,34 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     @Override
     public boolean shouldSideBeRendered(IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
         return WorldHelper.getBlockAt(worldIn, pos) != this;
+    }
+
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
+        TileTank te = (TileTank) world.getTileEntity(pos);
+        Map<EnumFacing, TileTank.Mode> settings = te.getSettings();
+        TileTank.Mode north = settings.get(EnumFacing.NORTH);
+        TileTank.Mode south = settings.get(EnumFacing.SOUTH);
+        TileTank.Mode west = settings.get(EnumFacing.WEST);
+        TileTank.Mode east = settings.get(EnumFacing.EAST);
+        TileTank.Mode down = settings.get(EnumFacing.DOWN);
+        TileTank.Mode up = settings.get(EnumFacing.UP);
+        return state.withProperty(NORTH, north).withProperty(SOUTH, south).withProperty(WEST, west).withProperty(EAST, east).withProperty(UP, up).withProperty(DOWN, down);
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return getDefaultState();
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return 0;
+    }
+
+    @Override
+    protected BlockState createBlockState() {
+        return new BlockState(this, NORTH, SOUTH, WEST, EAST, UP, DOWN);
     }
 
     @Override

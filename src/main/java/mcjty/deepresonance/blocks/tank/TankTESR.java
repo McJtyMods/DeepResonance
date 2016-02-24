@@ -1,39 +1,41 @@
 package mcjty.deepresonance.blocks.tank;
 
-import elec332.core.client.ElecTessellator;
-import elec332.core.client.ITessellator;
 import elec332.core.client.RenderHelper;
 import elec332.core.world.WorldHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
 public class TankTESR extends TileEntitySpecialRenderer<TileTank> {
 
     @Override
     public void renderTileEntityAt(TileTank tileTank, double x, double y, double z, float time, int breakTime) {
-        GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
+//        GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
+        GlStateManager.pushAttrib();
 
-        ITessellator tessellator = RenderHelper.getTessellator();
+        Tessellator tessellator = Tessellator.getInstance();
 
         net.minecraft.client.renderer.RenderHelper.disableStandardItemLighting();
 
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glDisable(GL11.GL_BLEND);
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.disableBlend();
 
-        GL11.glPushMatrix();
-        GL11.glTranslated(x, y, z);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x, y, z);
 
         bindTexture(TextureMap.locationBlocksTexture);
         World world = tileTank.getWorld();
@@ -44,25 +46,27 @@ public class TankTESR extends TileEntitySpecialRenderer<TileTank> {
             renderFluid(tileTank, tessellator, renderFluid);
         }
 
-        GL11.glPopMatrix();
+        net.minecraft.client.renderer.RenderHelper.enableStandardItemLighting();
 
-        GL11.glPopAttrib();
+        GlStateManager.popMatrix();
+        GlStateManager.popAttrib();
     }
 
     // ---------------------------------------------------------------
     // Render the fluid inside the tank
     // ---------------------------------------------------------------
-    private void renderFluid(TileTank tileTank, ITessellator tessellator, Fluid renderFluid) {
+    private void renderFluid(TileTank tileTank, Tessellator tessellator, Fluid renderFluid) {
+        WorldRenderer renderer = tessellator.getWorldRenderer();
 
         float offset = 0.002f;
 
         TextureAtlasSprite fluid = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(renderFluid.getStill().toString());
         fluid = RenderHelper.checkIcon(fluid);
 
-        ((ElecTessellator)tessellator).startDrawingWorldBlock();
+        renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 
-        tessellator.setColorRGBA(255, 255, 255, 128);
-        tessellator.setBrightness(240);
+//        tessellator.setColorRGBA(255, 255, 255, 128);
+//        tessellator.setBrightness(240);
 
         float scale = tileTank.getRenderHeight();
         float u1 = fluid.getMinU();
@@ -73,10 +77,10 @@ public class TankTESR extends TileEntitySpecialRenderer<TileTank> {
         if (scale > 0.0f) {
 
             // Top
-            tessellator.addVertexWithUV(0, scale - offset, 0, u1, v1);
-            tessellator.addVertexWithUV(0, scale - offset, 1, u1, v2);
-            tessellator.addVertexWithUV(1, scale - offset, 1, u2, v2);
-            tessellator.addVertexWithUV(1, scale - offset, 0, u2, v1);
+            renderer.pos(0, scale - offset, 0).tex(u1, v1).color(255, 255, 255, 128).endVertex();
+            renderer.pos(0, scale - offset, 1).tex(u1, v2).color(255, 255, 255, 128).endVertex();
+            renderer.pos(1, scale - offset, 1).tex(u2, v2).color(255, 255, 255, 128).endVertex();
+            renderer.pos(1, scale - offset, 0).tex(u2, v1).color(255, 255, 255, 128).endVertex();
             
             if (scale > 3/16f) {
 
@@ -86,40 +90,42 @@ public class TankTESR extends TileEntitySpecialRenderer<TileTank> {
                 v2 -= (fluid.getMaxV() - fluid.getMinV()) * (1 - scale);
 
                 //NORTH
-                tessellator.addVertexWithUV(1 - 3 / 16f, scale, -offset, u1, v1);
-                tessellator.addVertexWithUV(1 - 3 / 16f, 3 / 16f, -offset, u1, v2);
-                tessellator.addVertexWithUV(3 / 16f, 3 / 16f, -offset, u2, v2);
-                tessellator.addVertexWithUV(3 / 16f, scale, -offset, u2, v1);
+                renderer.pos(1 - 3 / 16f, scale, -offset).tex(u1, v1).color(255, 255, 255, 128).endVertex();
+                renderer.pos(1 - 3 / 16f, 3 / 16f, -offset).tex(u1, v2).color(255, 255, 255, 128).endVertex();
+                renderer.pos(3 / 16f, 3 / 16f, -offset).tex(u2, v2).color(255, 255, 255, 128).endVertex();
+                renderer.pos(3 / 16f, scale, -offset).tex(u2, v1).color(255, 255, 255, 128).endVertex();
 
                 //EAST
-                tessellator.addVertexWithUV(-offset, 3 / 16f, 1 - 3 / 16f, u1, v2);
-                tessellator.addVertexWithUV(-offset, scale, 1 - 3 / 16f, u1, v1);
-                tessellator.addVertexWithUV(-offset, scale, 3 / 16f, u2, v1);
-                tessellator.addVertexWithUV(-offset, 3 / 16f, 3 / 16f, u2, v2);
+                renderer.pos(-offset, 3 / 16f, 1 - 3 / 16f).tex(u1, v2).color(255, 255, 255, 128).endVertex();
+                renderer.pos(-offset, scale, 1 - 3 / 16f).tex(u1, v1).color(255, 255, 255, 128).endVertex();
+                renderer.pos(-offset, scale, 3 / 16f).tex(u2, v1).color(255, 255, 255, 128).endVertex();
+                renderer.pos(-offset, 3 / 16f, 3 / 16f).tex(u2, v2).color(255, 255, 255, 128).endVertex();
 
                 //SOUTH
-                tessellator.addVertexWithUV(1 - 3 / 16f, 3 / 16f, 1 + offset, u1, v2);
-                tessellator.addVertexWithUV(1 - 3 / 16f, scale, 1 + offset, u1, v1);
-                tessellator.addVertexWithUV(3 / 16f, scale, 1 + offset, u2, v1);
-                tessellator.addVertexWithUV(3 / 16f, 3 / 16f, 1 + offset, u2, v2);
+                renderer.pos(1 - 3 / 16f, 3 / 16f, 1 + offset).tex(u1, v2).color(255, 255, 255, 128).endVertex();
+                renderer.pos(1 - 3 / 16f, scale, 1 + offset).tex(u1, v1).color(255, 255, 255, 128).endVertex();
+                renderer.pos(3 / 16f, scale, 1 + offset).tex(u2, v1).color(255, 255, 255, 128).endVertex();
+                renderer.pos(3 / 16f, 3 / 16f, 1 + offset).tex(u2, v2).color(255, 255, 255, 128).endVertex();
 
                 //WEST
-                tessellator.addVertexWithUV(1 + offset, scale, 1 - 3 / 16f, u1, v1);
-                tessellator.addVertexWithUV(1 + offset, 3 / 16f, 1 - 3 / 16f, u1, v2);
-                tessellator.addVertexWithUV(1 + offset, 3 / 16f, 3 / 16f, u2, v2);
-                tessellator.addVertexWithUV(1 + offset, scale, 3 / 16f, u2, v1);
+                renderer.pos(1 + offset, scale, 1 - 3 / 16f).tex(u1, v1).color(255, 255, 255, 128).endVertex();
+                renderer.pos(1 + offset, 3 / 16f, 1 - 3 / 16f).tex(u1, v2).color(255, 255, 255, 128).endVertex();
+                renderer.pos(1 + offset, 3 / 16f, 3 / 16f).tex(u2, v2).color(255, 255, 255, 128).endVertex();
+                renderer.pos(1 + offset, scale, 3 / 16f).tex(u2, v1).color(255, 255, 255, 128).endVertex();
             }
         }
-        tessellator.getMCTessellator().draw();
+        tessellator.draw();
     }
 
-    private void renderTankInside(ITessellator tessellator, World world, BlockPos pos, TileTank tank) {
+    private void renderTankInside(Tessellator tessellator, World world, BlockPos pos, TileTank tank) {
+        WorldRenderer renderer = tessellator.getWorldRenderer();
+
         float offset = 0.002f;
         int ix = pos.getX(), iy = pos.getY(), iz = pos.getZ();
 
-        ((ElecTessellator)tessellator).startDrawingWorldBlock();
-        tessellator.setColorRGBA(255, 255, 255, 128);
-        tessellator.setBrightness(100);
+        renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+//        tessellator.setColorRGBA(255, 255, 255, 128);
+//        tessellator.setBrightness(100);
 
         // ---------------------------------------------------------------
         // Render the inside of the tank
@@ -128,55 +134,55 @@ public class TankTESR extends TileEntitySpecialRenderer<TileTank> {
 
         //NORTH other side
         if (doRenderToSide(world, ix, iy, iz-1, tank)) {
-            tessellator.addVertexWithUV(1, 0, offset, blockIcon.getMinU(), blockIcon.getMinV());
-            tessellator.addVertexWithUV(1, 1, offset, blockIcon.getMinU(), blockIcon.getMaxV());
-            tessellator.addVertexWithUV(0, 1, offset, blockIcon.getMaxU(), blockIcon.getMaxV());
-            tessellator.addVertexWithUV(0, 0, offset, blockIcon.getMaxU(), blockIcon.getMinV());
+            renderer.pos(1, 0, offset).tex(blockIcon.getMinU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
+            renderer.pos(1, 1, offset).tex(blockIcon.getMinU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            renderer.pos(0, 1, offset).tex(blockIcon.getMaxU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            renderer.pos(0, 0, offset).tex(blockIcon.getMaxU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
         }
 
         //SOUTH other side
         if (doRenderToSide(world, ix, iy, iz+1, tank)) {
-            tessellator.addVertexWithUV(1, 1, 1 - offset, blockIcon.getMinU(), blockIcon.getMinV());
-            tessellator.addVertexWithUV(1, 0, 1 - offset, blockIcon.getMinU(), blockIcon.getMaxV());
-            tessellator.addVertexWithUV(0, 0, 1 - offset, blockIcon.getMaxU(), blockIcon.getMaxV());
-            tessellator.addVertexWithUV(0, 1, 1 - offset, blockIcon.getMaxU(), blockIcon.getMinV());
+            renderer.pos(1, 1, 1 - offset).tex(blockIcon.getMinU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
+            renderer.pos(1, 0, 1 - offset).tex(blockIcon.getMinU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            renderer.pos(0, 0, 1 - offset).tex(blockIcon.getMaxU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            renderer.pos(0, 1, 1 - offset).tex(blockIcon.getMaxU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
         }
 
         //EAST other side
         if (doRenderToSide(world, ix-1, iy, iz, tank)) {
-            tessellator.addVertexWithUV(offset, 1, 1, blockIcon.getMinU(), blockIcon.getMinV());
-            tessellator.addVertexWithUV(offset, 0, 1, blockIcon.getMinU(), blockIcon.getMaxV());
-            tessellator.addVertexWithUV(offset, 0, 0, blockIcon.getMaxU(), blockIcon.getMaxV());
-            tessellator.addVertexWithUV(offset, 1, 0, blockIcon.getMaxU(), blockIcon.getMinV());
+            renderer.pos(offset, 1, 1).tex(blockIcon.getMinU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
+            renderer.pos(offset, 0, 1).tex(blockIcon.getMinU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            renderer.pos(offset, 0, 0).tex(blockIcon.getMaxU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            renderer.pos(offset, 1, 0).tex(blockIcon.getMaxU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
         }
 
         //WEST other side
         if (doRenderToSide(world, ix+1, iy, iz, tank)) {
-            tessellator.addVertexWithUV(1 - offset, 0, 1, blockIcon.getMinU(), blockIcon.getMinV());
-            tessellator.addVertexWithUV(1 - offset, 1, 1, blockIcon.getMinU(), blockIcon.getMaxV());
-            tessellator.addVertexWithUV(1 - offset, 1, 0, blockIcon.getMaxU(), blockIcon.getMaxV());
-            tessellator.addVertexWithUV(1 - offset, 0, 0, blockIcon.getMaxU(), blockIcon.getMinV());
+            renderer.pos(1 - offset, 0, 1).tex(blockIcon.getMinU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
+            renderer.pos(1 - offset, 1, 1).tex(blockIcon.getMinU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            renderer.pos(1 - offset, 1, 0).tex(blockIcon.getMaxU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            renderer.pos(1 - offset, 0, 0).tex(blockIcon.getMaxU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
         }
 
         // Bottom other side
         if (doRenderToSide(world, ix, iy-1, iz, tank)) {
             blockIcon = TankSetup.tank.getBottomIcon();
-            tessellator.addVertexWithUV(0, offset, 0, blockIcon.getMinU(), blockIcon.getMinV());
-            tessellator.addVertexWithUV(0, offset, 1, blockIcon.getMinU(), blockIcon.getMaxV());
-            tessellator.addVertexWithUV(1, offset, 1, blockIcon.getMaxU(), blockIcon.getMaxV());
-            tessellator.addVertexWithUV(1, offset, 0, blockIcon.getMaxU(), blockIcon.getMinV());
+            renderer.pos(0, offset, 0).tex(blockIcon.getMinU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
+            renderer.pos(0, offset, 1).tex(blockIcon.getMinU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            renderer.pos(1, offset, 1).tex(blockIcon.getMaxU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            renderer.pos(1, offset, 0).tex(blockIcon.getMaxU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
         }
 
         // Top other side
         if (doRenderToSide(world, ix, iy+1, iz, tank)) {
             blockIcon = TankSetup.tank.getTopIcon();
-            tessellator.addVertexWithUV(0, 1 - offset, 0, blockIcon.getMinU(), blockIcon.getMinV());
-            tessellator.addVertexWithUV(1, 1 - offset, 0, blockIcon.getMinU(), blockIcon.getMaxV());
-            tessellator.addVertexWithUV(1, 1 - offset, 1, blockIcon.getMaxU(), blockIcon.getMaxV());
-            tessellator.addVertexWithUV(0, 1 - offset, 1, blockIcon.getMaxU(), blockIcon.getMinV());
+            renderer.pos(0, 1 - offset, 0).tex(blockIcon.getMinU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
+            renderer.pos(1, 1 - offset, 0).tex(blockIcon.getMinU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            renderer.pos(1, 1 - offset, 1).tex(blockIcon.getMaxU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            renderer.pos(0, 1 - offset, 1).tex(blockIcon.getMaxU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
         }
 
-        tessellator.getMCTessellator().draw();
+        tessellator.draw();
     }
 
     private boolean doRenderToSide(World world, int x, int y ,int z, TileTank tank){
