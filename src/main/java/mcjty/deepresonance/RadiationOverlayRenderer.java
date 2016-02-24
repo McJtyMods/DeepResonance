@@ -35,7 +35,7 @@ public class RadiationOverlayRenderer {
         GL11.glDisable(GL11.GL_LIGHTING);
 
         int radiation = new Float(RadiationMonitorItem.radiationStrength).intValue();
-        if (radiation != 0) {
+        if (radiation > 0) {
             RenderHelper.getMCFontrenderer().drawString(
                     "Radiation: " + radiation,
                     RadiationConfiguration.radiationOverlayX, RadiationConfiguration.radiationOverlayY,
