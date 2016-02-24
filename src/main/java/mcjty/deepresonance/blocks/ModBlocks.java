@@ -35,7 +35,7 @@ public final class ModBlocks {
     public static void init() {
         resonatingOreBlock = new ResonatingOreBlock();
 
-//        resonatingPlateBlock = new ResonatingPlateBlock();
+        resonatingPlateBlock = new ResonatingPlateBlock();
 //        denseObsidianBlock = new DenseObsidianBlock();
 //        denseGlassBlock = new DenseGlassBlock();
 //        poisonedDirtBlock = new PoisonedDirtBlock();
@@ -49,7 +49,7 @@ public final class ModBlocks {
         GeneratorControllerSetup.setupBlocks();
         EnergyCollectorSetup.setupBlocks();
 //        CrystalizerSetup.setupBlocks();
-//        SmelterSetup.setupBlocks();
+        SmelterSetup.setupBlocks();
 //        TankSetup.setupBlocks();
 //        PurifierSetup.setupBlocks();
 //        PedestalSetup.setupBlocks();
@@ -61,7 +61,7 @@ public final class ModBlocks {
     @SideOnly(Side.CLIENT)
     public static void initModels() {
         resonatingCrystalBlock.initModel();
-//        resonatingPlateBlock
+//        resonatingPlateBlock.initModel();
 //        denseGlassBlock
 //        denseObsidianBlock
 //        poisonedDirtBlock
@@ -71,7 +71,7 @@ public final class ModBlocks {
         GeneratorControllerSetup.setupModels();
         EnergyCollectorSetup.setupModels();
 //        CrystalizerSetup.setupModels();
-//        SmelterSetup.setupModels();
+        SmelterSetup.setupModels();
 //        TankSetup.setupModels();
 //        PurifierSetup.setupModels();
 //        PedestalSetup.setupModels();

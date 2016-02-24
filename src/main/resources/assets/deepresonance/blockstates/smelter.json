@@ -1,7 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "textures": { "front" : "deepresonance:blocks/generatorControllerOff" },
+    "textures": { "front" : "deepresonance:blocks/smelterInactive" },
     "model": "deepresonance:frontblock"
   },
   "variants": {
@@ -15,7 +15,7 @@
     },
     "powered": {
       "false": {},
-      "true": { "textures": {"front": "deepresonance:blocks/generatorControllerOn"}}
+      "true": { "textures": {"front": "deepresonance:blocks/smelterActive"}}
     }
   }
 }

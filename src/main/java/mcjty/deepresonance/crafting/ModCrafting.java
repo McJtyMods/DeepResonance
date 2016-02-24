@@ -1,22 +1,15 @@
 package mcjty.deepresonance.crafting;
 
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
-import mcjty.deepresonance.blocks.crystalizer.CrystalizerSetup;
 import mcjty.deepresonance.blocks.gencontroller.GeneratorControllerSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
-import mcjty.deepresonance.blocks.laser.LaserSetup;
-import mcjty.deepresonance.blocks.lens.LensSetup;
-import mcjty.deepresonance.blocks.pedestal.PedestalSetup;
-import mcjty.deepresonance.blocks.purifier.PurifierSetup;
 import mcjty.deepresonance.blocks.smelter.SmelterSetup;
-import mcjty.deepresonance.blocks.tank.TankSetup;
-import mcjty.deepresonance.blocks.valve.ValveSetup;
 import mcjty.deepresonance.items.ModItems;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public final class ModCrafting {
     public static void init() {
@@ -28,8 +21,8 @@ public final class ModCrafting {
         GameRegistry.addRecipe(new ItemStack(ModItems.filterMaterialItem, 8), "gcg", "csc", "gcg", 'g', Blocks.gravel, 'c', new ItemStack(Items.coal, 1, 1), 's', Blocks.sand);
 //        GameRegistry.addRecipe(new ItemStack(ModBlocks.denseObsidianBlock, 4), "sos", "oso", "sos", 's', ModItems.spentFilterMaterialItem, 'o', Blocks.obsidian);
 //        GameRegistry.addRecipe(new ItemStack(ModBlocks.denseGlassBlock, 4), "sgs", "gog", "sgs", 's', ModItems.spentFilterMaterialItem, 'o', Blocks.obsidian, 'g', Blocks.glass);
-//        GameRegistry.addRecipe(new ItemStack(ModBlocks.resonatingPlateBlock), "ppp", "ppp", "ppp", 'p', ModItems.resonatingPlateItem);
-//        GameRegistry.addRecipe(new ItemStack(ModItems.resonatingPlateItem, 9), "p", 'p', ModBlocks.resonatingPlateBlock);
+        GameRegistry.addRecipe(new ItemStack(ModBlocks.resonatingPlateBlock), "ppp", "ppp", "ppp", 'p', ModItems.resonatingPlateItem);
+        GameRegistry.addRecipe(new ItemStack(ModItems.resonatingPlateItem, 9), "p", 'p', ModBlocks.resonatingPlateBlock);
 
         GameRegistry.addSmelting(ModBlocks.resonatingOreBlock, new ItemStack(ModItems.resonatingPlateItem, 8), 0.0f);
 
@@ -42,7 +35,7 @@ public final class ModCrafting {
         GeneratorControllerSetup.setupCrafting();
         EnergyCollectorSetup.setupCrafting();
 //        CrystalizerSetup.setupCrafting();
-//        SmelterSetup.setupCrafting();
+        SmelterSetup.setupCrafting();
 //        TankSetup.setupCrafting();
 //        PurifierSetup.setupCrafting();
 //        PedestalSetup.setupCrafting();

@@ -21,14 +21,14 @@ tile.generator.name=Generator
 tile.generator_controller.name=Generator Controller
 tile.energy_collector.name=Energy Collector
 tile.machineFrame.name=Machine Frame
-tile.tankBlock.name=Tank
+tile.tank.name=Tank
 tile.crystalizerBlock.name=Crystalizer
-tile.smelterBlock.name=Smelter
-tile.purifierBlock.name=Purifier
-tile.pedestalBlock.name=Pedestal
-tile.valveBlock.name=Valve
-tile.lensBlock.name=Lens
-tile.laserBlock.name=Infusing Laser
+tile.smelter.name=Smelter
+tile.purifier.name=Purifier
+tile.pedestal.name=Pedestal
+tile.valve.name=Valve
+tile.lens.name=Lens
+tile.laser.name=Infusing Laser
 
 itemGroup.DeepResonance=Deep Resonance
 

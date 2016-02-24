@@ -13,6 +13,7 @@ import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -73,18 +74,19 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
                 }
             }
         } else {
-            //TODO: McJty, decide what this is supposed to do.
-            /*int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-            int meta2;
+            IBlockState state = worldObj.getBlockState(getPos());
+            boolean oldworking = state.getValue(SmelterBlock.WORKING);
+            boolean newworking;
             if (canWork() && validSlot()) {
                 startSmelting();
-                meta2 = BlockTools.setRedstoneSignalIn(meta, true);
+                newworking = true;
             } else {
-                meta2 = BlockTools.setRedstoneSignalIn(meta, false);
+                newworking = false;
             }
-            if (meta != meta2) {
-                worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, meta2, 3);
-            }*/
+            if (newworking != oldworking) {
+                state = state.withProperty(SmelterBlock.WORKING, newworking);
+                worldObj.setBlockState(getPos(), state, 3);
+            }
         }
     }
 

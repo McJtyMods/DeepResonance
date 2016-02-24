@@ -2,6 +2,11 @@ package mcjty.deepresonance.blocks.smelter;
 
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.lib.container.GenericGuiContainer;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
@@ -22,10 +27,9 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-/**
- * Created by Elec332 on 20-8-2015.
- */
 public class SmelterBlock extends GenericDRBlock<SmelterTileEntity, SmelterContainer> {
+
+    public static final PropertyBool WORKING = PropertyBool.create("working");
 
     public SmelterBlock() {
         super(Material.rock, SmelterTileEntity.class, SmelterContainer.class, "smelter", true);
@@ -45,7 +49,7 @@ public class SmelterBlock extends GenericDRBlock<SmelterTileEntity, SmelterConta
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean whatIsThis) {
         super.addInformation(itemStack, player, list, whatIsThis);
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
             list.add("This machine smelts resonating ore and produces liquid");
@@ -59,5 +63,20 @@ public class SmelterBlock extends GenericDRBlock<SmelterTileEntity, SmelterConta
     @Override
     public int getGuiID() {
         return GuiProxy.GUI_SMELTER;
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return this.getDefaultState().withProperty(FACING, getFacing(meta)).withProperty(WORKING, (meta & 8) != 0);
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return state.getValue(FACING).getIndex() + (state.getValue(WORKING) ? 8 : 0);
+    }
+
+    @Override
+    protected BlockState createBlockState() {
+        return new BlockState(this, FACING, WORKING);
     }
 }
