@@ -33,7 +33,7 @@ public final class ModBlocks {
         resonatingPlateBlock = new ResonatingPlateBlock();
         denseObsidianBlock = new DenseObsidianBlock();
         denseGlassBlock = new DenseGlassBlock();
-//        poisonedDirtBlock = new PoisonedDirtBlock();
+        poisonedDirtBlock = new PoisonedDirtBlock();
         resonatingCrystalBlock = new ResonatingCrystalBlock();
 
 //        duct = new BlockDuct(TileBasicFluidDuct.class, "basicFluidDuct").registerTile().register();
@@ -59,9 +59,7 @@ public final class ModBlocks {
         resonatingPlateBlock.initModel();
         denseObsidianBlock.initModel();
         denseGlassBlock.initModel();
-//        denseGlassBlock
-//        denseObsidianBlock
-//        poisonedDirtBlock
+        poisonedDirtBlock.initModel();
         resonatingOreBlock.initModel();
         machineFrame.initModel();
         GeneratorSetup.setupModels();
