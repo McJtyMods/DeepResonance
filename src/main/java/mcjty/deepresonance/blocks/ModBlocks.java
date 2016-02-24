@@ -61,7 +61,7 @@ public final class ModBlocks {
 //        denseObsidianBlock
 //        poisonedDirtBlock
         resonatingOreBlock.initModel();
-//        machine_frame
+        machineFrame.initModel();
         GeneratorSetup.setupModels();
         GeneratorControllerSetup.setupModels();
         EnergyCollectorSetup.setupModels();
