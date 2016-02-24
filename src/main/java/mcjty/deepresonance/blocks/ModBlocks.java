@@ -31,8 +31,8 @@ public final class ModBlocks {
         resonatingOreBlock = new ResonatingOreBlock();
 
         resonatingPlateBlock = new ResonatingPlateBlock();
-//        denseObsidianBlock = new DenseObsidianBlock();
-//        denseGlassBlock = new DenseGlassBlock();
+        denseObsidianBlock = new DenseObsidianBlock();
+        denseGlassBlock = new DenseGlassBlock();
 //        poisonedDirtBlock = new PoisonedDirtBlock();
         resonatingCrystalBlock = new ResonatingCrystalBlock();
 
@@ -56,7 +56,9 @@ public final class ModBlocks {
     @SideOnly(Side.CLIENT)
     public static void initModels() {
         resonatingCrystalBlock.initModel();
-//        resonatingPlateBlock.initModel();
+        resonatingPlateBlock.initModel();
+        denseObsidianBlock.initModel();
+        denseGlassBlock.initModel();
 //        denseGlassBlock
 //        denseObsidianBlock
 //        poisonedDirtBlock

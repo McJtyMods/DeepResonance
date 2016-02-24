@@ -1,9 +1,12 @@
 package mcjty.deepresonance.blocks.ore;
 
 import elec332.core.world.WorldHelper;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.item.Item;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -24,6 +27,11 @@ public class DenseGlassBlock extends Block {
         setRegistryName("dense_glass");
         setCreativeTab(DeepResonance.tabDeepResonance);
         GameRegistry.registerBlock(this);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void initModel() {
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "inventory"));
     }
 
     @Override
