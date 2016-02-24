@@ -5,6 +5,7 @@ import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
 import mcjty.deepresonance.blocks.crystalizer.CrystalizerSetup;
 import mcjty.deepresonance.blocks.gencontroller.GeneratorControllerSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
+import mcjty.deepresonance.blocks.lens.LensSetup;
 import mcjty.deepresonance.blocks.pedestal.PedestalSetup;
 import mcjty.deepresonance.blocks.purifier.PurifierSetup;
 import mcjty.deepresonance.blocks.smelter.SmelterSetup;
@@ -45,7 +46,7 @@ public final class ModCrafting {
         PurifierSetup.setupCrafting();
         PedestalSetup.setupCrafting();
         ValveSetup.setupCrafting();
-//        LensSetup.setupCrafting();
+        LensSetup.setupCrafting();
 //        LaserSetup.setupCrafting();
     }
 }

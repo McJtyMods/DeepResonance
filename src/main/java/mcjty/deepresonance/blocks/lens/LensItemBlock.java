@@ -3,15 +3,14 @@ package mcjty.deepresonance.blocks.lens;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.tank.TankSetup;
 import mcjty.lib.container.GenericItemBlock;
-import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.Logging;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
-import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 
 public class LensItemBlock extends GenericItemBlock {
     public LensItemBlock(Block block) {
@@ -35,7 +34,6 @@ public class LensItemBlock extends GenericItemBlock {
             return false;
         }
 
-        //metadata = BlockTools.setOrientationHoriz(metadata, direction); //TODO: McJty: Rotation
-        return super.placeBlockAt(stack, player, world, pos, direction, hitX, hitY, hitZ, newState);
+        return super.placeBlockAt(stack, player, world, pos, direction, hitX, hitY, hitZ, newState.withProperty(LensBlock.FACING_HORIZ, direction));
     }
 }

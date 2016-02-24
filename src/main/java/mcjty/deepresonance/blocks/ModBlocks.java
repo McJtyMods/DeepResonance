@@ -5,6 +5,7 @@ import mcjty.deepresonance.blocks.crystalizer.CrystalizerSetup;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalBlock;
 import mcjty.deepresonance.blocks.gencontroller.GeneratorControllerSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
+import mcjty.deepresonance.blocks.lens.LensSetup;
 import mcjty.deepresonance.blocks.ore.DenseGlassBlock;
 import mcjty.deepresonance.blocks.ore.DenseObsidianBlock;
 import mcjty.deepresonance.blocks.ore.ResonatingOreBlock;
@@ -52,7 +53,7 @@ public final class ModBlocks {
         PurifierSetup.setupBlocks();
         PedestalSetup.setupBlocks();
         ValveSetup.setupBlocks();
-//        LensSetup.setupBlocks();
+        LensSetup.setupBlocks();
 //        LaserSetup.setupBlocks();
     }
 
@@ -74,7 +75,7 @@ public final class ModBlocks {
         PurifierSetup.setupModels();
         PedestalSetup.setupModels();
         ValveSetup.setupModels();
-//        LensSetup.setupModels();
+        LensSetup.setupModels();
 //        LaserSetup.setupModels();
     }
 }

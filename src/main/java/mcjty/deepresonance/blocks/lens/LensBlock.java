@@ -3,6 +3,7 @@ package mcjty.deepresonance.blocks.lens;
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.lib.container.EmptyContainer;
+import mcjty.lib.varia.BlockTools;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -20,7 +21,7 @@ import java.util.List;
 public class LensBlock extends GenericDRBlock<LensTileEntity, EmptyContainer> {
 
     public LensBlock() {
-        super(Material.iron, LensTileEntity.class, EmptyContainer.class, "lens", false);
+        super(Material.iron, LensTileEntity.class, EmptyContainer.class, LensItemBlock.class, "lens", false);
     }
 
     @Override
@@ -34,9 +35,8 @@ public class LensBlock extends GenericDRBlock<LensTileEntity, EmptyContainer> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean whatIsThis) {
         super.addInformation(itemStack, player, list, whatIsThis);
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
@@ -53,16 +53,14 @@ public class LensBlock extends GenericDRBlock<LensTileEntity, EmptyContainer> {
         return null;
     }
 
-    /* TODO: McJty: Meta stuff
-
     @Override
-    public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
-        int meta = world.getBlockMetadata(x, y, z);
+    public void setBlockBoundsBasedOnState(IBlockAccess world, BlockPos pos) {
+        IBlockState state = world.getBlockState(pos);
+        int meta = state.getBlock().getMetaFromState(state);
         EnumFacing direction = BlockTools.getOrientationHoriz(meta);
         switch (direction) {
             case DOWN:
             case UP:
-            case UNKNOWN:
                 break;
             case NORTH:
                 this.setBlockBounds(0.1F, 0.1F, 0.0F, 0.9F, 0.9F, 0.1F);
@@ -79,6 +77,7 @@ public class LensBlock extends GenericDRBlock<LensTileEntity, EmptyContainer> {
         }
     }
 
+    /*
     @Override
     protected boolean wrenchUse(World world, int x, int y, int z, EntityPlayer player) {
         // Do not rotate
