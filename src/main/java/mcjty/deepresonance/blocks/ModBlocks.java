@@ -9,6 +9,7 @@ import mcjty.deepresonance.blocks.ore.DenseGlassBlock;
 import mcjty.deepresonance.blocks.ore.DenseObsidianBlock;
 import mcjty.deepresonance.blocks.ore.ResonatingOreBlock;
 import mcjty.deepresonance.blocks.ore.ResonatingPlateBlock;
+import mcjty.deepresonance.blocks.pedestal.PedestalSetup;
 import mcjty.deepresonance.blocks.poisondirt.PoisonedDirtBlock;
 import mcjty.deepresonance.blocks.purifier.PurifierSetup;
 import mcjty.deepresonance.blocks.smelter.SmelterSetup;
@@ -48,7 +49,7 @@ public final class ModBlocks {
         SmelterSetup.setupBlocks();
         TankSetup.setupBlocks();
         PurifierSetup.setupBlocks();
-//        PedestalSetup.setupBlocks();
+        PedestalSetup.setupBlocks();
 //        ValveSetup.setupBlocks();
 //        LensSetup.setupBlocks();
 //        LaserSetup.setupBlocks();
@@ -70,7 +71,7 @@ public final class ModBlocks {
         SmelterSetup.setupModels();
         TankSetup.setupModels();
         PurifierSetup.setupModels();
-//        PedestalSetup.setupModels();
+        PedestalSetup.setupModels();
 //        ValveSetup.setupModels();
 //        LensSetup.setupModels();
 //        LaserSetup.setupModels();

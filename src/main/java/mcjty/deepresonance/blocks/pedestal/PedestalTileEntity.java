@@ -11,6 +11,8 @@ import mcjty.deepresonance.varia.Tools;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.varia.BlockTools;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -56,7 +58,8 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
         }
         checkCounter = 20;
 
-        EnumFacing orientation = EnumFacing.NORTH;//BlockTools.getOrientation(worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
+        IBlockState state = worldObj.getBlockState(getPos());
+        EnumFacing orientation = BlockTools.getOrientation(state.getBlock().getMetaFromState(state));
         BlockPos b = pos.offset(orientation);
         if (worldObj.isAirBlock(b)) {
             // Nothing in front. We can place a new crystal if we have one.
