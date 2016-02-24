@@ -82,6 +82,6 @@ public class CrystalizerBlock extends GenericDRBlock<CrystalizerTileEntity, Crys
     @SideOnly(Side.CLIENT)
     @Override
     public EnumWorldBlockLayer getBlockLayer() {
-        return EnumWorldBlockLayer.CUTOUT;
+        return EnumWorldBlockLayer.TRANSLUCENT;
     }
 }

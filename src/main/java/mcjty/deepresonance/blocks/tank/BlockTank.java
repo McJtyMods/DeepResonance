@@ -253,6 +253,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
 //    }
 
 
+    @SideOnly(Side.CLIENT)
     @Override
     public EnumWorldBlockLayer getBlockLayer() {
         return EnumWorldBlockLayer.TRANSLUCENT;

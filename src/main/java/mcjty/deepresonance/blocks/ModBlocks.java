@@ -1,6 +1,7 @@
 package mcjty.deepresonance.blocks;
 
 import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
+import mcjty.deepresonance.blocks.crystalizer.CrystalizerSetup;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalBlock;
 import mcjty.deepresonance.blocks.gencontroller.GeneratorControllerSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
@@ -42,7 +43,7 @@ public final class ModBlocks {
         GeneratorSetup.setupBlocks();
         GeneratorControllerSetup.setupBlocks();
         EnergyCollectorSetup.setupBlocks();
-//        CrystalizerSetup.setupBlocks();
+        CrystalizerSetup.setupBlocks();
         SmelterSetup.setupBlocks();
         TankSetup.setupBlocks();
 //        PurifierSetup.setupBlocks();
@@ -64,7 +65,7 @@ public final class ModBlocks {
         GeneratorSetup.setupModels();
         GeneratorControllerSetup.setupModels();
         EnergyCollectorSetup.setupModels();
-//        CrystalizerSetup.setupModels();
+        CrystalizerSetup.setupModels();
         SmelterSetup.setupModels();
         TankSetup.setupModels();
 //        PurifierSetup.setupModels();
