@@ -2,6 +2,8 @@ package mcjty.deepresonance.network;
 
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketReturnCrystalInfo implements IMessage {
     private int rfPerTick;
@@ -34,4 +36,13 @@ public class PacketReturnCrystalInfo implements IMessage {
         this.rfPerTick = rfPerTick;
         this.power = power;
     }
+
+    public static class Handler implements IMessageHandler<PacketReturnCrystalInfo, IMessage> {
+        @Override
+        public IMessage onMessage(PacketReturnCrystalInfo message, MessageContext ctx) {
+            ReturnCrystalInfoHelper.setEnergyLevel(message);
+            return null;
+        }
+    }
+
 }

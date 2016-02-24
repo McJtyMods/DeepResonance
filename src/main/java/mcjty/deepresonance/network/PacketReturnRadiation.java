@@ -2,6 +2,8 @@ package mcjty.deepresonance.network;
 
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketReturnRadiation implements IMessage {
     private float strength;
@@ -25,5 +27,14 @@ public class PacketReturnRadiation implements IMessage {
 
     public PacketReturnRadiation(float strength) {
         this.strength = strength;
+    }
+
+    public static class Handler implements IMessageHandler<PacketReturnRadiation, IMessage> {
+        @Override
+        public IMessage onMessage(PacketReturnRadiation message, MessageContext ctx) {
+            ReturnRadiationHelper.setRadiationLevel(message);
+            return null;
+        }
+
     }
 }

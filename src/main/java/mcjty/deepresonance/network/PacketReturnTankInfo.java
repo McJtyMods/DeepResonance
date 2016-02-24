@@ -5,6 +5,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
 import mcjty.lib.network.NetworkTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketReturnTankInfo implements IMessage {
     private int amount;
@@ -52,5 +54,14 @@ public class PacketReturnTankInfo implements IMessage {
         this.capacity = capacity;
         this.fluidName = fluidName;
         this.tag = tag;
+    }
+
+    public static class Handler implements IMessageHandler<PacketReturnTankInfo, IMessage> {
+        @Override
+        public IMessage onMessage(PacketReturnTankInfo message, MessageContext ctx) {
+            ReturnTankInfoHelper.setEnergyLevel(message);
+            return null;
+        }
+
     }
 }

@@ -66,7 +66,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean advancedToolTips) {
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedToolTips) {
         NBTTagCompound tagCompound = itemStack.getTagCompound();
         if (tagCompound != null) {
             tagCompound.removeTag("owner");
