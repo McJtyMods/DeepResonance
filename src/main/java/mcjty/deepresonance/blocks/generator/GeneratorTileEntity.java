@@ -13,11 +13,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class GeneratorTileEntity extends GenericTileEntity implements IEnergyProvider {
+public class GeneratorTileEntity extends GenericTileEntity implements IEnergyProvider, ITickable {
 
     private int networkId = -1;
 
@@ -228,7 +229,14 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         tagCompound.setInteger("networkId", networkId);
     }
 
-    protected void checkStateServer() {
+    @Override
+    public void update() {
+        if (!worldObj.isRemote) {
+            checkStateServer();
+        }
+    }
+
+    private void checkStateServer() {
         int energyStored = getEnergyStored(EnumFacing.DOWN);
 
         if (energyStored <= 0) {

@@ -29,10 +29,10 @@ public class CrystalizerTESR extends TileEntitySpecialRenderer<CrystalizerTileEn
     private IModel model;
     private IBakedModel bakedModel;
 
-    ResourceLocation texture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/crystal.png");
-    ResourceLocation sideTexture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/crystalizer.png");
-    ResourceLocation topTexture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/machineTop.png");
-    ResourceLocation bottomTexture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/machineBottom.png");
+    ResourceLocation texture = new ResourceLocation(DeepResonance.MODID, "blocks/crystal");
+    ResourceLocation sideTexture = new ResourceLocation(DeepResonance.MODID, "blocks/crystalizer");
+    ResourceLocation topTexture = new ResourceLocation(DeepResonance.MODID, "blocks/machineTop");
+    ResourceLocation bottomTexture = new ResourceLocation(DeepResonance.MODID, "blocks/machineBottom");
 
     public CrystalizerTESR() {
         try {
@@ -83,6 +83,8 @@ public class CrystalizerTESR extends TileEntitySpecialRenderer<CrystalizerTileEn
             World world = te.getWorld();
             // Translate back to local view coordinates so that we can do the acual rendering here
             GlStateManager.translate(-te.getPos().getX(), -te.getPos().getY(), -te.getPos().getZ());
+
+            bindTexture(TextureMap.locationBlocksTexture);
 
             Tessellator tessellator = Tessellator.getInstance();
             tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
