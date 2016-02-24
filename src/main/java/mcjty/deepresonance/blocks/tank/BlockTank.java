@@ -16,6 +16,7 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -53,6 +54,8 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     public static final PropertyEnum<TileTank.Mode> EAST = PropertyEnum.create("east", TileTank.Mode.class);
     public static final PropertyEnum<TileTank.Mode> UP = PropertyEnum.create("up", TileTank.Mode.class);
     public static final PropertyEnum<TileTank.Mode> DOWN = PropertyEnum.create("down", TileTank.Mode.class);
+
+    public static final PropertyInteger DUMMY_RCL = PropertyInteger.create("dummy_rcl", 0, 1);
 
     public BlockTank() {
         super(Material.rock, TileTank.class, EmptyContainer.class, "tank", true);
@@ -294,7 +297,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
         TileTank.Mode east = settings.get(EnumFacing.EAST);
         TileTank.Mode down = settings.get(EnumFacing.DOWN);
         TileTank.Mode up = settings.get(EnumFacing.UP);
-        return state.withProperty(NORTH, north).withProperty(SOUTH, south).withProperty(WEST, west).withProperty(EAST, east).withProperty(UP, up).withProperty(DOWN, down);
+        return state.withProperty(NORTH, north).withProperty(SOUTH, south).withProperty(WEST, west).withProperty(EAST, east).withProperty(UP, up).withProperty(DOWN, down).withProperty(DUMMY_RCL, 0);
     }
 
     @Override
@@ -309,7 +312,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
 
     @Override
     protected BlockState createBlockState() {
-        return new BlockState(this, NORTH, SOUTH, WEST, EAST, UP, DOWN);
+        return new BlockState(this, NORTH, SOUTH, WEST, EAST, UP, DOWN, DUMMY_RCL);
     }
 
     @Override

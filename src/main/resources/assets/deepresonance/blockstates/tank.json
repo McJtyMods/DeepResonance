@@ -36,6 +36,10 @@
       "none": { "textures": { "west": "deepresonance:blocks/tankSide" } },
       "accept": { "textures": { "west": "deepresonance:blocks/tankSideAccept" } },
       "provide": { "textures": { "west": "deepresonance:blocks/tankSideProvide" } }
+    },
+    "dummy_rcl": {
+      "0": { "fluid": "liquid_crystal" },
+      "1": { "model": "forge:fluid", "custom": { "fluid": "liquid_crystal" } }
     }
   }
 }
