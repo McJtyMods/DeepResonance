@@ -2,7 +2,6 @@ package mcjty.deepresonance.proxy;
 
 import elec332.core.client.IIconRegistrar;
 import elec332.core.client.ITextureLoader;
-import elec332.core.client.model.RenderingRegistry;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.RadiationOverlayRenderer;
 import mcjty.deepresonance.blocks.ModBlocks;
@@ -22,7 +21,6 @@ public class ClientProxy extends CommonProxy implements ITextureLoader {
     @Override
     public void preInit(FMLPreInitializationEvent e) {
         super.preInit(e);
-        RenderingRegistry.instance().registerTextureLoader(this);
         OBJLoader.instance.addDomain(DeepResonance.MODID);
         ModBlocks.initModels();
         ModItems.initModels();
