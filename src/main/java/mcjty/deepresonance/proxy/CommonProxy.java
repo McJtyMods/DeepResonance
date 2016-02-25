@@ -20,7 +20,6 @@ import mcjty.lib.base.GeneralConfig;
 import mcjty.lib.varia.WrenchChecker;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -67,10 +66,10 @@ public abstract class CommonProxy {
 
     public void init(FMLInitializationEvent e) {
         NetworkRegistry.INSTANCE.registerGuiHandler(DeepResonance.instance, new GuiProxy());
-        FMLCommonHandler.instance().bus().register(WorldTickHandler.instance);
-        FMLCommonHandler.instance().bus().register(new RadiationTickEvent());
+        MinecraftForge.EVENT_BUS.register(WorldTickHandler.instance);
+        MinecraftForge.EVENT_BUS.register(new RadiationTickEvent());
         MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
-        FMLCommonHandler.instance().bus().register(new FMLEventHandlers());
+        MinecraftForge.EVENT_BUS.register(new FMLEventHandlers());
     }
 
     public void postInit(FMLPostInitializationEvent e) {
