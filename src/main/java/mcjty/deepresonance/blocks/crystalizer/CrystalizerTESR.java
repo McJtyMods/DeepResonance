@@ -35,7 +35,7 @@ public class CrystalizerTESR extends TileEntitySpecialRenderer<CrystalizerTileEn
     public CrystalizerTESR() {
         try {
             // Manually load our rotating crystal here
-            model = ModelLoaderRegistry.getModel(new ResourceLocation(DeepResonance.MODID, "block/crystal.obj"));
+            model = ModelLoaderRegistry.getModel(new ResourceLocation(DeepResonance.MODID, "block/crystal_inside.obj"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
