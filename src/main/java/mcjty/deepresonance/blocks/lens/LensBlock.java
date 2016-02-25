@@ -36,8 +36,8 @@ public class LensBlock extends GenericDRBlock<LensTileEntity, EmptyContainer> {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean whatIsThis) {
-        super.addInformation(itemStack, player, list, whatIsThis);
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedToolTip) {
+        super.addInformation(itemStack, player, list, advancedToolTip);
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
             list.add("Place this block on a tank and aim an");
@@ -49,6 +49,7 @@ public class LensBlock extends GenericDRBlock<LensTileEntity, EmptyContainer> {
     }
 
     @Override
+    @SuppressWarnings("all")
     public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state) {
         return null;
     }

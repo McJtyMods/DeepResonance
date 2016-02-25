@@ -78,8 +78,8 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean whatIsThis) {
-        super.addInformation(itemStack, player, list, whatIsThis);
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedToolTip) {
+        super.addInformation(itemStack, player, list, advancedToolTip);
         NBTTagCompound tagCompound = itemStack.getTagCompound();
         if (tagCompound != null) {
             FluidStack fluidStack = TileTank.getFluidStackFromNBT(tagCompound);

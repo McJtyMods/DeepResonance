@@ -23,8 +23,8 @@ public class InsertLiquidItem extends GenericDRItem {
     }
 
     @Override
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
-        super.addInformation(itemStack, player, list, whatIsThis);
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedToolTip) {
+        super.addInformation(itemStack, player, list, advancedToolTip);
         list.add("Creative only item to inject 100mb of liquid");
         list.add("crystal to a tank");
     }

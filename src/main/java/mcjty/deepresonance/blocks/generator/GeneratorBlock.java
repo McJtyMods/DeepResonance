@@ -56,8 +56,8 @@ public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyCon
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean whatIsThis) {
-        super.addInformation(itemStack, player, list, whatIsThis);
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedToolTip) {
+        super.addInformation(itemStack, player, list, advancedToolTip);
 
         NBTTagCompound tagCompound = itemStack.getTagCompound();
         if (tagCompound != null) {

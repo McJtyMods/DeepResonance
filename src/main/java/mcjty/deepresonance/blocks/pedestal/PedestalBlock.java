@@ -35,8 +35,8 @@ public class PedestalBlock extends GenericDRBlock<PedestalTileEntity, PedestalCo
     @Override
     @SuppressWarnings("unchecked")
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
-        super.addInformation(itemStack, player, list, whatIsThis);
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean advancedToolTip) {
+        super.addInformation(itemStack, player, list, advancedToolTip);
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
             list.add("This block can place crystals and pick up spent.");

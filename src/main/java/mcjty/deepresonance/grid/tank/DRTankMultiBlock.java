@@ -22,6 +22,7 @@ import java.util.Map;
 /**
  * Created by Elec332 on 10-8-2015.
  */
+@SuppressWarnings("unused")
 public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolder, DRTankMultiBlock> implements IFluidHandler, IFluidTank{
 
     public static final int TANK_BUCKETS = 16;
@@ -105,9 +106,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     }
 
     public void markAllBlocksForUpdate(){
-        for (BlockPos loc : allLocations){
-            world.markBlockForUpdate(loc);
-        }
+        allLocations.forEach(world::markBlockForUpdate);
     }
 
     private void setTankFluidHeights(){
@@ -143,7 +142,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
             for (BlockPos loc : list) {
                 TileTank tank = getTank(loc);
                 if (tank != null)
-                    tank.sendPacket(3, new NBTHelper().addToTag(filled, "render").toNBT());
+                    tank.sendPacket(3, new NBTHelper().addToTag(filled, "render").serializeNBT());
             }
         }
     }
@@ -259,7 +258,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
             TileTank tank = getTank(loc);
             if (tank != null) {
                 tank.lastSeenFluid = getStoredFluid();
-                tank.sendPacket(1, new NBTHelper().addToTag(DRFluidRegistry.getFluidName(getFluid()), "fluid").toNBT());
+                tank.sendPacket(1, new NBTHelper().addToTag(DRFluidRegistry.getFluidName(getFluid()), "fluid").serializeNBT());
             }
         }
     }

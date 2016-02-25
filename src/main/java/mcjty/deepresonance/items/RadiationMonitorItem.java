@@ -10,12 +10,12 @@ import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
@@ -37,23 +37,19 @@ public class RadiationMonitorItem extends GenericDRItem {
     @SideOnly(Side.CLIENT)
     public void initModel() {
         for (int i = 0 ; i <= 9 ; i++) {
-            ModelBakery.addVariantName(this, getRegistryName() + i);
-//            ModelBakery.addVariantName(this, "l" + i);
+            ModelBakery.registerItemVariants(this, new ResourceLocation(getRegistryName() + i));
         }
 
-        ModelLoader.setCustomMeshDefinition(this, new ItemMeshDefinition() {
-            @Override
-            public ModelResourceLocation getModelLocation(ItemStack stack) {
-                EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-                fetchRadiation(player);
-                int level = (int) ((10*radiationStrength) / RadiationConfiguration.maxRadiationMeter);
-                if (level < 0) {
-                    level = 0;
-                } else if (level > 9) {
-                    level = 9;
-                }
-                return new ModelResourceLocation(getRegistryName() + level, "inventory");
+        ModelLoader.setCustomMeshDefinition(this, stack -> {
+            EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+            fetchRadiation(player);
+            int level = (int) ((10*radiationStrength) / RadiationConfiguration.maxRadiationMeter);
+            if (level < 0) {
+                level = 0;
+            } else if (level > 9) {
+                level = 9;
             }
+            return new ModelResourceLocation(getRegistryName() + level, "inventory");
         });
     }
 
@@ -106,8 +102,8 @@ public class RadiationMonitorItem extends GenericDRItem {
     }
 
     @Override
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
-        super.addInformation(itemStack, player, list, whatIsThis);
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedToolTip) {
+        super.addInformation(itemStack, player, list, advancedToolTip);
         fetchRadiation(player);
         if (radiationStrength <= 0.0f) {
             list.add(EnumChatFormatting.GREEN + "No radiation detected");

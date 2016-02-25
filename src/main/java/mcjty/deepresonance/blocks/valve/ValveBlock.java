@@ -41,8 +41,8 @@ public class ValveBlock extends GenericDRBlock<ValveTileEntity, ValveContainer> 
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
-        super.addInformation(itemStack, player, list, whatIsThis);
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedToolTip) {
+        super.addInformation(itemStack, player, list,advancedToolTip);
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
             list.add("This machine will transfer fluids from the upper tank");
             list.add("to a tank below if the fluid matches certain conditions");

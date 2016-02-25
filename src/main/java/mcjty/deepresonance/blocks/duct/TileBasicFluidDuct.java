@@ -1,6 +1,5 @@
 package mcjty.deepresonance.blocks.duct;
 
-import elec332.core.util.BlockLoc;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.base.ElecTileBase;
 import mcjty.deepresonance.grid.fluid.DRFluidDuctGrid;
@@ -67,8 +66,9 @@ public class TileBasicFluidDuct extends ElecTileBase {
     }
 
     public DRFluidDuctGrid getGrid(){
-        if (!worldObj.isRemote)
-            return DeepResonance.worldGridRegistry.getFluidRegistry().get(worldObj).getPowerTile(new BlockLoc(pos)).getGrid();
+        if (!worldObj.isRemote) {
+            return DeepResonance.worldGridRegistry.getFluidRegistry().get(worldObj).getPowerTile(getPos()).getGrid();
+        }
         return null;
     }
 

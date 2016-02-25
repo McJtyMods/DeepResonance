@@ -24,13 +24,12 @@ public class ItemRadiationSuit extends ItemArmor {
         setUnlocalizedName(name);
         setRegistryName(name);
         this.textureSuffix = name;
-        //setTextureName(DeepResonance.MODID+":radiationSuit"+name);
         setCreativeTab(DeepResonance.tabDeepResonance);
     }
 
     @Override
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
-        super.addInformation(itemStack, player, list, whatIsThis);
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedToolTip) {
+        super.addInformation(itemStack, player, list, advancedToolTip);
         list.add("Every chest piece of the radiation suit");
         list.add("adds a bit of protection for radiation");
     }
@@ -42,14 +41,14 @@ public class ItemRadiationSuit extends ItemArmor {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot) {
+    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot, ModelBiped _default) {
         switch (armorType) {
             case 0: return HelmetModel.helmetModel;
             case 1: return ChestModel.chestModel;
             case 2: return LegsModel.legsModel;
             case 3: return BootsModel.bootsModel;
+            default: return _default;
         }
-        return super.getArmorModel(entityLiving, itemStack, armorSlot);
     }
 
     @Override
