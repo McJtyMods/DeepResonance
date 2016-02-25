@@ -1,7 +1,6 @@
 package mcjty.deepresonance.blocks.purifier;
 
 import elec332.core.world.WorldHelper;
-import mcjty.deepresonance.blocks.base.ElecTileBase;
 import mcjty.deepresonance.blocks.tank.ITankHook;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
@@ -11,6 +10,7 @@ import mcjty.deepresonance.items.ModItems;
 import mcjty.deepresonance.varia.InventoryLocator;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
+import mcjty.lib.entity.GenericTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,7 +25,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 import java.util.Random;
 
-public class PurifierTileEntity extends ElecTileBase implements ITankHook, DefaultSidedInventory, ITickable {
+public class PurifierTileEntity extends GenericTileEntity implements ITankHook, DefaultSidedInventory, ITickable {
 
     private InventoryHelper inventoryHelper = new InventoryHelper(this, PurifierContainer.factory, 1);
 
@@ -204,10 +204,12 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, Defau
     public void unHook(TileTank tank, EnumFacing direction) {
         if (tilesEqual(bottomTank, tank)){
             bottomTank = null;
-            notifyNeighboursOfDataChange();
+            this.markDirty();
+            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
         } else if (tilesEqual(topTank, tank)){
             topTank = null;
-            notifyNeighboursOfDataChange();
+            this.markDirty();
+            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
         }
     }
 
@@ -264,17 +266,15 @@ public class PurifierTileEntity extends ElecTileBase implements ITankHook, Defau
         return true;
     }
 
-    IItemHandler invHandler = new InvWrapper(this);
+    private IItemHandler invHandler = new InvWrapper(this);
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return true;
-        }
-        return super.hasCapability(capability, facing);
+        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, net.minecraft.util.EnumFacing facing) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return (T) invHandler;

@@ -1,14 +1,14 @@
 package mcjty.deepresonance.gui;
 
 import elec332.core.world.WorldHelper;
-import net.minecraft.util.BlockPos;
-import net.minecraftforge.fml.common.network.IGuiHandler;
 import mcjty.deepresonance.items.manual.GuiDeepResonanceManual;
 import mcjty.lib.container.GenericBlock;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.IGuiHandler;
 
 public class GuiProxy implements IGuiHandler {
 

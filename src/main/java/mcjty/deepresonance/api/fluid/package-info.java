@@ -4,5 +4,5 @@
 @API(owner = DeepResonanceAPIProps.owner, provides = DeepResonanceAPIProps.provides, apiVersion = DeepResonanceAPIProps.version)
 package mcjty.deepresonance.api.fluid;
 
-import net.minecraftforge.fml.common.API;
 import mcjty.deepresonance.api.DeepResonanceAPIProps;
+import net.minecraftforge.fml.common.API;

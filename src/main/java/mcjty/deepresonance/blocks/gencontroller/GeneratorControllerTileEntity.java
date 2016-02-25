@@ -7,7 +7,6 @@ import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.varia.Broadcaster;
 import mcjty.lib.entity.GenericTileEntity;
-import mcjty.lib.varia.BlockTools;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;

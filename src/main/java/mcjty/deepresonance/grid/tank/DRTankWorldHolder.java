@@ -3,8 +3,8 @@ package mcjty.deepresonance.grid.tank;
 import elec332.core.multiblock.dynamic.AbstractDynamicMultiBlockWorldHolder;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 
 /**

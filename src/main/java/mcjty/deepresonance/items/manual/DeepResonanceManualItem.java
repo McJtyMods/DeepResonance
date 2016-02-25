@@ -4,7 +4,6 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.gui.GuiProxy;
 import mcjty.deepresonance.items.GenericDRItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 

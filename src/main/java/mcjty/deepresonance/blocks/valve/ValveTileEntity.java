@@ -1,12 +1,12 @@
 package mcjty.deepresonance.blocks.valve;
 
 import elec332.core.world.WorldHelper;
-import mcjty.deepresonance.blocks.base.ElecTileBase;
 import mcjty.deepresonance.blocks.tank.ITankHook;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.network.Argument;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,7 +17,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Map;
 
-public class ValveTileEntity extends ElecTileBase implements ITankHook, ITickable {
+public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITickable {
 
     public static String CMD_SETTINGS = "settings";
 
@@ -170,10 +170,12 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook, ITickabl
     public void unHook(TileTank tank, EnumFacing direction) {
         if (tilesEqual(bottomTank, tank)){
             bottomTank = null;
-            notifyNeighboursOfDataChange();
+            this.markDirty();
+            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
         } else if (tilesEqual(topTank, tank)){
             topTank = null;
-            notifyNeighboursOfDataChange();
+            this.markDirty();
+            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
         }
     }
 

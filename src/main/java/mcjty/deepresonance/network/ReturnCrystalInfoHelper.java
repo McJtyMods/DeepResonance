@@ -1,8 +1,8 @@
 package mcjty.deepresonance.network;
 
+import mcjty.deepresonance.blocks.crystals.ResonatingCrystalBlock;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import mcjty.deepresonance.blocks.crystals.ResonatingCrystalBlock;
 
 @SideOnly(Side.CLIENT)
 public class ReturnCrystalInfoHelper {

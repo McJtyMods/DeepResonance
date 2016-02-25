@@ -1,8 +1,8 @@
 package mcjty.deepresonance.network;
 
+import mcjty.deepresonance.items.RadiationMonitorItem;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import mcjty.deepresonance.items.RadiationMonitorItem;
 
 @SideOnly(Side.CLIENT)
 public class ReturnRadiationHelper {

@@ -3,7 +3,6 @@ package mcjty.deepresonance.blocks.smelter;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.deepresonance.blocks.base.ElecEnergyReceiverTileBase;
 import mcjty.deepresonance.blocks.tank.ITankHook;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
@@ -11,6 +10,7 @@ import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
+import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
 import net.minecraft.block.state.IBlockState;
@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  * Created by Elec332 on 9-8-2015.
  */
-public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITankHook, DefaultSidedInventory, ITickable {
+public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implements ITankHook, DefaultSidedInventory, ITickable {
 
     public static final String CMD_GETPROGRESS = "getProgress";
     public static final String CLIENTCMD_GETPROGRESS = "getProgress";
@@ -203,7 +203,8 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
             lavaTank = null;
         } else if (tilesEqual(rclTank, tank)){
             rclTank = null;
-            notifyNeighboursOfDataChange();
+            this.markDirty();
+            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
         }
         checkTanks = true;
     }
@@ -295,13 +296,11 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return true;
-        }
-        return super.hasCapability(capability, facing);
+        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, net.minecraft.util.EnumFacing facing) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return (T) invHandler;

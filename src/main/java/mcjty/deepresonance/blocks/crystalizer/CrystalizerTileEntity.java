@@ -3,7 +3,6 @@ package mcjty.deepresonance.blocks.crystalizer;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.deepresonance.blocks.base.ElecEnergyReceiverTileBase;
 import mcjty.deepresonance.blocks.tank.ITankHook;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
@@ -11,18 +10,16 @@ import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
+import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -31,7 +28,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 import java.util.Map;
 
-public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements ITankHook, DefaultSidedInventory, ITickable {
+public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity implements ITankHook, DefaultSidedInventory, ITickable {
 
     public static final String CMD_GETPROGRESS = "getProgress";
     public static final String CLIENTCMD_GETPROGRESS = "getProgress";
@@ -123,18 +120,12 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
         }
 
         FluidStack fluidStack = rclTank.drain(null, ConfigMachines.Crystalizer.rclPerTick, false);
-        if (fluidStack == null || fluidStack.amount != ConfigMachines.Crystalizer.rclPerTick) {
-            return false;
-        }
-        return true;
+        return !(fluidStack == null || fluidStack.amount != ConfigMachines.Crystalizer.rclPerTick);
     }
 
     public boolean hasCrystal() {
         ItemStack crystalStack = inventoryHelper.getStackInSlot(CrystalizerContainer.SLOT_CRYSTAL);
-        if (crystalStack != null) {
-            return true;
-        }
-        return false;
+        return crystalStack != null;
     }
 
     private void makeCrystal() {
@@ -189,9 +180,7 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
 
     @Override
     public void hook(TileTank tank, EnumFacing direction) {
-        if (direction != EnumFacing.DOWN) {
-            return;
-        } else if (rclTank == null){
+        if (direction == EnumFacing.DOWN && rclTank == null){
             if (validRCLTank(tank)){
                 rclTank = tank;
             }
@@ -202,7 +191,8 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
     public void unHook(TileTank tank, EnumFacing direction) {
         if (tilesEqual(rclTank, tank)){
             rclTank = null;
-            notifyNeighboursOfDataChange();
+            this.markDirty();
+            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
         }
     }
 
@@ -294,13 +284,11 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return true;
-        }
-        return super.hasCapability(capability, facing);
+        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, net.minecraft.util.EnumFacing facing) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return (T) invHandler;

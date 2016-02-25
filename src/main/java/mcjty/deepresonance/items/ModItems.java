@@ -1,10 +1,9 @@
 package mcjty.deepresonance.items;
 
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.items.armor.ItemRadiationSuit;
 import mcjty.deepresonance.items.manual.DeepResonanceManualItem;
 import net.minecraft.item.ItemArmor;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
