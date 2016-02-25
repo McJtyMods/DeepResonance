@@ -53,6 +53,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
         setStepSound(soundTypeGlass);
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void initModel() {
         super.initModel();

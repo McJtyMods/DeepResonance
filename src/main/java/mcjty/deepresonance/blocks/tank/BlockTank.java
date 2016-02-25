@@ -69,6 +69,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
         return true;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void initModel() {
         super.initModel();
