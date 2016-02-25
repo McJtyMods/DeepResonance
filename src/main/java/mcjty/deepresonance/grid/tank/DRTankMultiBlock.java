@@ -61,8 +61,9 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         super.invalidate();
         for (BlockPos loc : Lists.newArrayList(allLocations)){
             TileTank tank = getTank(loc);
-            if (tank != null)
+            if (tank != null) {
                 setDataToTile(tank);
+            }
         }
     }
 
@@ -86,8 +87,9 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
             myTank.writeToNBT(fluidTag);
             tagCompound.setTag("fluid", fluidTag);
         }
-        if (lastSeenFluid != null)
+        if (lastSeenFluid != null) {
             tagCompound.setString("lastSeenFluid", FluidRegistry.getFluidName(lastSeenFluid));
+        }
         tile.setSaveData(tagCompound);
         tile.markDirty();
     }
@@ -100,8 +102,9 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     public void markEverythingDirty(){
         for (BlockPos loc : allLocations){
             TileTank tank = getTank(loc);
-            if (tank != null)
+            if (tank != null) {
                 tank.markDirty();
+            }
         }
     }
 
@@ -141,8 +144,9 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
             }
             for (BlockPos loc : list) {
                 TileTank tank = getTank(loc);
-                if (tank != null)
+                if (tank != null) {
                     tank.sendPacket(3, new NBTHelper().addToTag(filled, "render").serializeNBT());
+                }
             }
         }
     }

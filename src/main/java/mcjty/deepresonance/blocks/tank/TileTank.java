@@ -7,6 +7,7 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
 import mcjty.deepresonance.blocks.base.ElecTileBase;
+import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.grid.fluid.event.FluidTileEvent;
 import mcjty.deepresonance.grid.tank.DRTankMultiBlock;
 import net.minecraft.nbt.NBTTagCompound;
@@ -66,7 +67,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         super.onTileLoaded();
         if (!worldObj.isRemote) {
             DeepResonance.worldGridRegistry.getTankRegistry().get(worldObj).addTile(this);
-            MinecraftForge.EVENT_BUS.post(new FluidTileEvent.Load(this));
+            //MinecraftForge.EVENT_BUS.post(new FluidTileEvent.Load(this));
             for (Map.Entry<ITankHook, EnumFacing> entry : getConnectedHooks().entrySet()){
                 entry.getKey().hook(this, entry.getValue());
             }
@@ -78,7 +79,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         super.onTileUnloaded();
         if (!worldObj.isRemote) {
             DeepResonance.worldGridRegistry.getTankRegistry().get(worldObj).removeTile(this);
-            MinecraftForge.EVENT_BUS.post(new FluidTileEvent.Unload(this));
+            //MinecraftForge.EVENT_BUS.post(new FluidTileEvent.Unload(this));
             for (Map.Entry<ITankHook, EnumFacing> entry : getConnectedHooks().entrySet()){
                 entry.getKey().unHook(this, entry.getValue());
             }
