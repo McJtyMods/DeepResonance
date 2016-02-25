@@ -235,6 +235,9 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
 
     @Override
     public boolean canInsertItem(int index, ItemStack item, EnumFacing side) {
+        if (!isItemValidForSlot(index, item)) {
+            return false;
+        }
         return SmelterContainer.factory.isInputSlot(index) || SmelterContainer.factory.isSpecificItemSlot(index);
     }
 
@@ -255,7 +258,7 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return true;
+        return stack.getItem() == Item.getItemFromBlock(ModBlocks.resonatingOreBlock);
     }
 
     // Request the researching amount from the server. This has to be called on the client side.

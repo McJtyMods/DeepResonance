@@ -28,7 +28,6 @@ public class CrystalizerTESR extends TileEntitySpecialRenderer<CrystalizerTileEn
     private IModel model;
     private IBakedModel bakedModel;
 
-    ResourceLocation texture = new ResourceLocation(DeepResonance.MODID, "blocks/crystal");
     ResourceLocation sideTexture = new ResourceLocation(DeepResonance.MODID, "blocks/crystalizer");
     ResourceLocation topTexture = new ResourceLocation(DeepResonance.MODID, "blocks/machineTop");
     ResourceLocation bottomTexture = new ResourceLocation(DeepResonance.MODID, "blocks/machineBottom");
@@ -62,8 +61,6 @@ public class CrystalizerTESR extends TileEntitySpecialRenderer<CrystalizerTileEn
         boolean hasCrystal = te.hasCrystal();
 
         if (hasCrystal || progress > 0) {
-            bindTexture(texture);
-
             GlStateManager.pushMatrix();
             GlStateManager.enableRescaleNormal();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

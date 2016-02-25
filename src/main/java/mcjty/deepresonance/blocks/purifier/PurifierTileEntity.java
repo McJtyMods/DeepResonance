@@ -243,6 +243,9 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
 
     @Override
     public boolean canInsertItem(int index, ItemStack item, EnumFacing side) {
+        if (!isItemValidForSlot(index, item)) {
+            return false;
+        }
         return PurifierContainer.factory.isInputSlot(index) || PurifierContainer.factory.isSpecificItemSlot(index);
     }
 
@@ -263,7 +266,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return true;
+        return stack.getItem() == ModItems.filterMaterialItem;
     }
 
     private IItemHandler invHandler = new InvWrapper(this);
