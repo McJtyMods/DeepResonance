@@ -10,6 +10,7 @@ import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,16 +41,19 @@ public class RadiationMonitorItem extends GenericDRItem {
             ModelBakery.registerItemVariants(this, new ResourceLocation(getRegistryName() + i));
         }
 
-        ModelLoader.setCustomMeshDefinition(this, stack -> {
-            EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-            fetchRadiation(player);
-            int level = (int) ((10*radiationStrength) / RadiationConfiguration.maxRadiationMeter);
-            if (level < 0) {
-                level = 0;
-            } else if (level > 9) {
-                level = 9;
+        ModelLoader.setCustomMeshDefinition(this, new ItemMeshDefinition() {
+            @Override
+            public ModelResourceLocation getModelLocation(ItemStack stack) {
+                EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+                fetchRadiation(player);
+                int level = (int) ((10 * radiationStrength) / RadiationConfiguration.maxRadiationMeter);
+                if (level < 0) {
+                    level = 0;
+                } else if (level > 9) {
+                    level = 9;
+                }
+                return new ModelResourceLocation(RadiationMonitorItem.this.getRegistryName() + level, "inventory");
             }
-            return new ModelResourceLocation(getRegistryName() + level, "inventory");
         });
     }
 
