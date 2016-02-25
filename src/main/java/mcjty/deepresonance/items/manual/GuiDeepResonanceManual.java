@@ -93,6 +93,12 @@ public class GuiDeepResonanceManual extends GuiScreen {
     }
 
     @Override
+    protected void mouseReleased(int mouseX, int mouseY, int state) {
+        super.mouseReleased(mouseX, mouseY, state);
+        window.mouseMovedOrUp(mouseX, mouseY, state);
+    }
+
+    @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
         window.handleMouseInput();
