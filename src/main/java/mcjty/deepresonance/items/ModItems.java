@@ -1,7 +1,9 @@
 package mcjty.deepresonance.items;
 
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.items.armor.ItemRadiationSuit;
 import mcjty.deepresonance.items.manual.DeepResonanceManualItem;
+import mcjty.deepresonance.items.rftoolsmodule.RadiationModuleItem;
 import net.minecraft.item.ItemArmor;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -15,6 +17,7 @@ public final class ModItems {
     public static SpentFilterMaterialItem spentFilterMaterialItem;
 //    public static ItemRadiationSuit helmet, chestplate, leggings, boots;
     public static InsertLiquidItem insertLiquidItem;
+    public static RadiationModuleItem radiationModuleItem;
 
     public static void init() {
         deepResonanceManualItem = new DeepResonanceManualItem();
@@ -23,6 +26,9 @@ public final class ModItems {
         filterMaterialItem = new FilterMaterialItem();
         spentFilterMaterialItem = new SpentFilterMaterialItem();
         insertLiquidItem = new InsertLiquidItem();
+        if (DeepResonance.instance.rftools) {
+            radiationModuleItem = new RadiationModuleItem();
+        }
 
 //        helmet = newRadiationSuitPart(0, "Helmet");
 //        chestplate = newRadiationSuitPart(1, "Chest");
@@ -38,6 +44,9 @@ public final class ModItems {
         filterMaterialItem.initModel();
         spentFilterMaterialItem.initModel();
         insertLiquidItem.initModel();
+        if (radiationModuleItem != null) {
+            radiationModuleItem.initModel();
+        }
     }
 
     private static ItemRadiationSuit newRadiationSuitPart(int i, String texture) {

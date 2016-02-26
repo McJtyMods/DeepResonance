@@ -19,6 +19,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
@@ -55,6 +56,8 @@ public class DeepResonance implements ModBase {
     public static ConfigWrapper configWrapper;
     public static NetworkHandler networkHandler;
 
+    public boolean rftools = false;
+
     public static CreativeTabs tabDeepResonance = new CreativeTabs("DeepResonance") {
         @Override
         @SideOnly(Side.CLIENT)
@@ -69,6 +72,8 @@ public class DeepResonance implements ModBase {
      */
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
+        rftools = Loader.isModLoaded("rftools");
+
         logger = e.getModLog();
         mainConfigDir = e.getModConfigurationDirectory();
         modConfigDir = new File(mainConfigDir.getPath() + File.separator + "deepresonance");
@@ -82,6 +87,11 @@ public class DeepResonance implements ModBase {
         configWrapper.refresh();
         proxy.preInit(e);
         MainCompatHandler.registerWaila();
+
+        if (rftools) {
+            Logging.log("Detected RFTools: enabling support");
+        }
+
         //@todo
 //        FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
     }

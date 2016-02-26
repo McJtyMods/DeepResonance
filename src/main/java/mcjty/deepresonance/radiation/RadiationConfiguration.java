@@ -43,6 +43,9 @@ public class RadiationConfiguration {
     public static int radiationOverlayX = 10;
     public static int radiationOverlayY = 10;
 
+    public static int RADIATIONMODULE_RFPERTICK = 6;
+
+
     public static void init(Configuration cfg) {
         minRadiationRadius = (float) cfg.get(CATEGORY_RADIATION, "minRadiationRadius", minRadiationRadius,
                 "The minimum radiation radius").getDouble();
@@ -113,6 +116,9 @@ public class RadiationConfiguration {
                 "The X coordinate (with 0 being left) for the radiation overlay text. Use -1 to disable").getInt();
         radiationOverlayY = cfg.get(CATEGORY_RADIATION, "radiationOverlayY", radiationOverlayY,
                 "The Y coordinate (with 0 being top) for the radiation overlay text. Use -1 to disable").getInt();
+
+        RADIATIONMODULE_RFPERTICK = cfg.get(CATEGORY_RADIATION, "radiationModuleRFPerTick", RADIATIONMODULE_RFPERTICK,
+                                            "RF per tick/per block for the radiation screen module (if rftools is present)").getInt();
     }
 
 }

@@ -33,6 +33,14 @@ public final class ModCrafting {
 
         GameRegistry.addSmelting(ModBlocks.resonatingOreBlock, new ItemStack(ModItems.resonatingPlateItem, 8), 0.0f);
 
+        if (ModBlocks.radiationSensorBlock != null) {
+            GameRegistry.addRecipe(new ItemStack(ModBlocks.radiationSensorBlock), "qcq", "tot", "qrq", 'r', Items.redstone, 'q', Items.quartz, 'o', ModBlocks.machineFrame,
+                                   'c', Items.clock, 't', Items.compass);
+            ItemStack inkSac = new ItemStack(Items.dye, 1, 0);
+            GameRegistry.addRecipe(new ItemStack(ModItems.radiationModuleItem), " c ", "rir", " b ", 'c', Items.ender_pearl, 'r', ModItems.resonatingPlateItem, 'i', Items.iron_ingot,
+                                   'b', inkSac);
+        }
+
 //        GameRegistry.addRecipe(new ItemStack(ModItems.helmet), "ppp", "p p", "   ", 'p', ModItems.resonatingPlateItem);
 //        GameRegistry.addRecipe(new ItemStack(ModItems.chestplate), "p p", "ppp", "ppp", 'p', ModItems.resonatingPlateItem);
 //        GameRegistry.addRecipe(new ItemStack(ModItems.boots), "   ", "p p", "p p", 'p', ModItems.resonatingPlateItem);

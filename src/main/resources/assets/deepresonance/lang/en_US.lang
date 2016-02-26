@@ -1,4 +1,5 @@
 item.dr_manual.name=Deep Resonance Manual
+item.radiation_module.name=Radiation Screen Module
 item.radiation_monitor.name=Radiation Monitor
 item.resonating_plate.name=Resonating Plate
 item.filter.name=Filter Material
@@ -12,6 +13,7 @@ item.Boots3.name=Radiation Suit Boots (WIP)
 
 tile.liquid_crystal.name=Liquid Crystal
 
+tile.radiation_sensor.name=Radiation Sensor
 tile.resonating_ore.name=Resonating Ore
 tile.resonating_block.name=Resonating Plate Block
 tile.dense_obsidian.name=Dense Obsidian
