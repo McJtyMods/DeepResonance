@@ -4,6 +4,7 @@ import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.lib.entity.GenericTileEntity;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -62,8 +63,11 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     public void setPower(float power) {
         this.power = power;
         markDirty();
-        // Don't do block update. We query power on demand from the tooltip of the crystal.
-//        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        boolean empty = power < 0.00001;
+        IBlockState state = worldObj.getBlockState(getPos());
+        if (state.getValue(ResonatingCrystalBlock.EMPTY) != empty) {
+            worldObj.setBlockState(getPos(), state.withProperty(ResonatingCrystalBlock.EMPTY, empty), 3);
+        }
     }
 
     public void setEfficiency(float efficiency) {

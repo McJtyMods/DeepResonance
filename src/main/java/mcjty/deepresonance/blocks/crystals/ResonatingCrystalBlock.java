@@ -170,7 +170,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(FACING_HORIZ, getFacingHoriz(meta)).withProperty(EMPTY, (meta & 8) != 0);
+        return getDefaultState().withProperty(FACING_HORIZ, getFacingHoriz(meta & 3)).withProperty(EMPTY, (meta & 8) != 0);
     }
 
     @Override
