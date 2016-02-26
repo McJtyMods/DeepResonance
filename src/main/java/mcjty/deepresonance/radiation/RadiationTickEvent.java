@@ -178,13 +178,16 @@ public class RadiationTickEvent {
                         }
                     }
                     if (random.nextFloat() < setOnFireChance * str) {
-                        if ((!world.isAirBlock(currentPos))){
-                            currentPos.set(x, y+1, z);
-                            if(world.isAirBlock(currentPos)) {
-                                Logging.logDebug("Set fire at: " + x + "," + y + "," + z);
-                                WorldHelper.setBlockState(world, currentPos, Blocks.fire.getDefaultState(), 3);
-                            }
-                        }
+                        // @todo temporarily disabled fire because it causes 'TickNextTick list out of synch' for some reason
+//                        if ((!world.isAirBlock(currentPos))){
+//                            currentPos.set(x, y+1, z);
+//                            if(world.isAirBlock(currentPos)) {
+//                                Logging.logDebug("Set fire at: " + x + "," + y + "," + z);
+//                                System.out.println("RadiationTickEvent.handleDestructionEvent: FIRE");
+//                                System.out.flush();
+//                                WorldHelper.setBlockState(world, currentPos, Blocks.fire.getDefaultState(), 2);
+//                            }
+//                        }
                     }
                 }
             }
