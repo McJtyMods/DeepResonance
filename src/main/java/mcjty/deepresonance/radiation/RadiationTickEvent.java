@@ -132,22 +132,26 @@ public class RadiationTickEvent {
         int eventradius = 8;
         int damage;
         float poisonBlockChance;
+        float removeLeafChance;
         float setOnFireChance;
 
         if (strength > RadiationConfiguration.radiationDestructionEventLevel/2) {
             // Worst destruction event
             damage = 30;
             poisonBlockChance = 0.9f;
+            removeLeafChance = 9.0f;
             setOnFireChance = 0.03f;
         } else if (strength > RadiationConfiguration.radiationDestructionEventLevel/3) {
             // Moderate
             damage = 5;
             poisonBlockChance = 0.6f;
+            removeLeafChance = 4.0f;
             setOnFireChance = 0.001f;
         } else if (strength > RadiationConfiguration.radiationDestructionEventLevel/4) {
             // Minor
             damage = 1;
             poisonBlockChance = 0.3f;
+            removeLeafChance = 1.2f;
             setOnFireChance = 0.0f;
         } else {
             return;
@@ -173,7 +177,8 @@ public class RadiationTickEvent {
                             WorldHelper.setBlockState(world, currentPos, ModBlocks.poisonedDirtBlock.getDefaultState(), 2);
                         }
                     } else if (block.isLeaves(world, currentPos)) {
-                        if (random.nextFloat() < poisonBlockChance * str) {
+                        if (random.nextFloat() < removeLeafChance * str) {
+                            System.out.println("RadiationTickEvent.handleDestructionEvent: REMOVE LEAVE");
                             world.setBlockToAir(currentPos);
                         }
                     }
