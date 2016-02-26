@@ -28,7 +28,7 @@ public class CrystalizerTESR extends TileEntitySpecialRenderer<CrystalizerTileEn
     private IModel model;
     private IBakedModel bakedModel;
 
-    ResourceLocation sideTexture = new ResourceLocation(DeepResonance.MODID, "blocks/crystalizer");
+    ResourceLocation sideTexture = new ResourceLocation(DeepResonance.MODID, "blocks/machineSide");
     ResourceLocation topTexture = new ResourceLocation(DeepResonance.MODID, "blocks/machineTop");
     ResourceLocation bottomTexture = new ResourceLocation(DeepResonance.MODID, "blocks/machineBottom");
 
