@@ -2,11 +2,14 @@ package mcjty.deepresonance.blocks.crystals;
 
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.lib.entity.GenericTileEntity;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
@@ -60,13 +63,27 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         markDirtyClient();
     }
 
+    public boolean isEmpty() {
+        return power < EnergyCollectorTileEntity.CRYSTAL_MIN_POWER;
+    }
+
     public void setPower(float power) {
+        boolean oldempty = isEmpty();
         this.power = power;
         markDirty();
-        boolean empty = power < 0.00001;
-        IBlockState state = worldObj.getBlockState(getPos());
-        if (state.getValue(ResonatingCrystalBlock.EMPTY) != empty) {
-            worldObj.setBlockState(getPos(), state.withProperty(ResonatingCrystalBlock.EMPTY, empty), 3);
+        boolean newempty = isEmpty();
+        if (oldempty != newempty) {
+            markDirtyClient();
+        }
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+        boolean oldempty = isEmpty();
+        super.onDataPacket(net, packet);
+        boolean newempty = isEmpty();
+        if (oldempty != newempty) {
+            worldObj.markBlockRangeForRenderUpdate(getPos(), getPos());
         }
     }
 
