@@ -17,6 +17,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -176,9 +177,8 @@ public class RadiationTickEvent {
                         if (random.nextFloat() < poisonBlockChance * str) {
                             WorldHelper.setBlockState(world, currentPos, ModBlocks.poisonedDirtBlock.getDefaultState(), 2);
                         }
-                    } else if (block.isLeaves(world, currentPos)) {
+                    } else if (block.isLeaves(world, currentPos) || block instanceof IPlantable) {
                         if (random.nextFloat() < removeLeafChance * str) {
-                            System.out.println("RadiationTickEvent.handleDestructionEvent: REMOVE LEAVE");
                             world.setBlockToAir(currentPos);
                         }
                     }
