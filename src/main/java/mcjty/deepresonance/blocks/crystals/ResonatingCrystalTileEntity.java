@@ -167,12 +167,18 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     // Special == 1, average random
     // Special == 2, best random
     // Special == 3, best non-overcharged
+    // Special == 4, almost depleted
     public static void spawnRandomCrystal(World world, Random random, BlockPos pos, int special) {
         WorldHelper.setBlockState(world, pos, ModBlocks.resonatingCrystalBlock.getStateFromMeta(0), 3);
         TileEntity te = WorldHelper.getTileAt(world, pos);
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
-            if (special >= 3) {
+            if (special >= 5) {
+                resonatingCrystalTileEntity.setStrength(1);
+                resonatingCrystalTileEntity.setPower(.05f);
+                resonatingCrystalTileEntity.setEfficiency(1);
+                resonatingCrystalTileEntity.setPurity(100);
+            } else if (special >= 3) {
                 resonatingCrystalTileEntity.setStrength(100);
                 resonatingCrystalTileEntity.setPower(100);
                 resonatingCrystalTileEntity.setEfficiency(100);

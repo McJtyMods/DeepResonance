@@ -18,7 +18,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -29,12 +31,14 @@ import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Random;
 
 public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTileEntity, EmptyContainer> {
 
@@ -46,7 +50,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
     private static long lastTime = 0;
 
     public ResonatingCrystalBlock() {
-        super(Material.glass, ResonatingCrystalTileEntity.class, EmptyContainer.class, "resonating_crystal", false);
+        super(Material.glass, ResonatingCrystalTileEntity.class, EmptyContainer.class, ResonatingCrystalItemBlock.class, "resonating_crystal", false);
         setHardness(3.0f);
         setResistance(5.0f);
         setHarvestLevel("pickaxe", 2);
@@ -57,6 +61,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
     @Override
     public void initModel() {
         super.initModel();
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 8, new ModelResourceLocation(getRegistryName(), "empty=true"));
         ClientRegistry.bindTileEntitySpecialRenderer(ResonatingCrystalTileEntity.class, new ResonatingCrystalTESR());
     }
 
@@ -178,5 +183,15 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
         return new BlockState(this, FACING_HORIZ, EMPTY);
     }
 
+    @Override
+    public int damageDropped(IBlockState state) {
+        int i = state.getValue(EMPTY) ? 8 : 0;
+        System.out.println("i = " + i);
+        return i;
+    }
 
+//    @Override
+//    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+//        return super.getItemDropped(state, rand, fortune);
+//    }
 }
