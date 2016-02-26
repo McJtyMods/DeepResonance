@@ -88,6 +88,11 @@ not as good as dense obsidian. Dense glass is about as good as lead.
 A radiation suit also helps. If you have a complete set then nearly
 95% of the radiation will be prevented.
 {-------------------------------------------------------------}
+{b}Radiation Module
+If RFTools is installed you can also use a radiation sensor block
+and a radiation screen module to display the amount of radiation at
+a given pointon an RFTools screen.
+{-------------------------------------------------------------}
 {b}Machine Frame
 {n:frame}
 Nearly everything in this mod requires a machine frame as a basic

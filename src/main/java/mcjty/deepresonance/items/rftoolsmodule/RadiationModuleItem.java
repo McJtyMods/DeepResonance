@@ -45,7 +45,7 @@ public class RadiationModuleItem extends GenericDRItem implements IModuleProvide
 
     @Override
     public String getName() {
-        return "Dim";
+        return "Rad";
     }
 
     @SideOnly(Side.CLIENT)
