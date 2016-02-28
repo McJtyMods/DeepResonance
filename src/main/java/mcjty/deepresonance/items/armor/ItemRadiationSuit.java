@@ -51,15 +51,15 @@ public class ItemRadiationSuit extends ItemArmor {
         }
     }
 
-    @Override
-    public String getUnlocalizedName() {
-        return super.getUnlocalizedName() + armorType;
-    }
-
-    @Override
-    public String getUnlocalizedName(ItemStack stack) {
-        return getUnlocalizedName();
-    }
+//    @Override
+//    public String getUnlocalizedName() {
+//        return super.getUnlocalizedName() + armorType;
+//    }
+//
+//    @Override
+//    public String getUnlocalizedName(ItemStack stack) {
+//        return getUnlocalizedName();
+//    }
 
     @Override
     public boolean getIsRepairable(ItemStack p_82789_1_, ItemStack p_82789_2_) {

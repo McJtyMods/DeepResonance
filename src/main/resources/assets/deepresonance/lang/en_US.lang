@@ -6,10 +6,10 @@ item.filter.name=Filter Material
 item.spent_filter.name=Spent Filter Material
 item.insert_liquid.name=Liquid Injector
 //Maybe should be different?
-item.Helmet0.name=Radiation Suit Helmet (WIP)
-item.Chest1.name=Radiation Suit Chestplate (WIP)
-item.Leggings2.name=Radiation Suit Leggings (WIP)
-item.Boots3.name=Radiation Suit Boots (WIP)
+item.helmet.name=Radiation Suit Helmet (WIP)
+item.chest.name=Radiation Suit Chestplate (WIP)
+item.leggings.name=Radiation Suit Leggings (WIP)
+item.boots.name=Radiation Suit Boots (WIP)
 
 tile.liquid_crystal.name=Liquid Crystal
 

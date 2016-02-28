@@ -6,10 +6,10 @@ item.filter.name=过滤材料
 item.spent_filter.name=已用的过滤材料
 item.insert_liquid.name=液体注射器
 //Maybe should be different?
-item.Helmet0.name=防辐射头盔 (WIP)
-item.Chest1.name=防辐射胸甲 (WIP)
-item.Leggings2.name=防辐射护腿 (WIP)
-item.Boots3.name=防辐射靴子 (WIP)
+item.helmet.name=防辐射头盔 (WIP)
+item.chest.name=防辐射胸甲 (WIP)
+item.leggings.name=防辐射护腿 (WIP)
+item.boots.name=防辐射靴子 (WIP)
 
 tile.liquid_crystal.name=液态共振水晶
 

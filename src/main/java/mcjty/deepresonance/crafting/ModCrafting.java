@@ -41,10 +41,10 @@ public final class ModCrafting {
                                    'b', inkSac);
         }
 
-//        GameRegistry.addRecipe(new ItemStack(ModItems.helmet), "ppp", "p p", "   ", 'p', ModItems.resonatingPlateItem);
-//        GameRegistry.addRecipe(new ItemStack(ModItems.chestplate), "p p", "ppp", "ppp", 'p', ModItems.resonatingPlateItem);
-//        GameRegistry.addRecipe(new ItemStack(ModItems.boots), "   ", "p p", "p p", 'p', ModItems.resonatingPlateItem);
-//        GameRegistry.addRecipe(new ItemStack(ModItems.leggings), "ppp", "p p", "p p", 'p', ModItems.resonatingPlateItem);
+        GameRegistry.addRecipe(new ItemStack(ModItems.helmet), "ppp", "p p", "   ", 'p', ModItems.resonatingPlateItem);
+        GameRegistry.addRecipe(new ItemStack(ModItems.chestplate), "p p", "ppp", "ppp", 'p', ModItems.resonatingPlateItem);
+        GameRegistry.addRecipe(new ItemStack(ModItems.boots), "   ", "p p", "p p", 'p', ModItems.resonatingPlateItem);
+        GameRegistry.addRecipe(new ItemStack(ModItems.leggings), "ppp", "p p", "p p", 'p', ModItems.resonatingPlateItem);
 
         GeneratorSetup.setupCrafting();
         GeneratorControllerSetup.setupCrafting();

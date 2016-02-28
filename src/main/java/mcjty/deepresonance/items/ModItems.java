@@ -4,7 +4,9 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.items.armor.ItemRadiationSuit;
 import mcjty.deepresonance.items.manual.DeepResonanceManualItem;
 import mcjty.deepresonance.items.rftoolsmodule.RadiationModuleItem;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.ItemArmor;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -15,7 +17,7 @@ public final class ModItems {
     public static ResonatingPlateItem resonatingPlateItem;
     public static FilterMaterialItem filterMaterialItem;
     public static SpentFilterMaterialItem spentFilterMaterialItem;
-//    public static ItemRadiationSuit helmet, chestplate, leggings, boots;
+    public static ItemRadiationSuit helmet, chestplate, leggings, boots;
     public static InsertLiquidItem insertLiquidItem;
     public static RadiationModuleItem radiationModuleItem;
 
@@ -30,10 +32,10 @@ public final class ModItems {
             radiationModuleItem = new RadiationModuleItem();
         }
 
-//        helmet = newRadiationSuitPart(0, "Helmet");
-//        chestplate = newRadiationSuitPart(1, "Chest");
-//        leggings = newRadiationSuitPart(2, "Leggings");
-//        boots = newRadiationSuitPart(3, "Boots");
+        helmet = newRadiationSuitPart(0, "helmet");
+        chestplate = newRadiationSuitPart(1, "chest");
+        leggings = newRadiationSuitPart(2, "leggings");
+        boots = newRadiationSuitPart(3, "boots");
     }
 
     @SideOnly(Side.CLIENT)
@@ -47,11 +49,17 @@ public final class ModItems {
         if (radiationModuleItem != null) {
             radiationModuleItem.initModel();
         }
+
+        ModelLoader.setCustomModelResourceLocation(helmet, 0, new ModelResourceLocation(helmet.getRegistryName(), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(chestplate, 0, new ModelResourceLocation(chestplate.getRegistryName(), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(leggings, 0, new ModelResourceLocation(leggings.getRegistryName(), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(boots, 0, new ModelResourceLocation(boots.getRegistryName(), "inventory"));
+
     }
 
     private static ItemRadiationSuit newRadiationSuitPart(int i, String texture) {
         ItemRadiationSuit ret = new ItemRadiationSuit(ItemArmor.ArmorMaterial.IRON, 0, i, texture);
-        GameRegistry.registerItem(ret, "radiationSuit"+i);
+        GameRegistry.registerItem(ret);
         return ret;
     }
 
