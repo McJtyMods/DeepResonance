@@ -99,6 +99,17 @@ public class LensBlock extends GenericDRBlock<LensTileEntity, EmptyContainer> {
         return false;
     }
 
+
+    @Override
+    public boolean isFullBlock() {
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube() {
+        return false;
+    }
+
     @Override
     public EnumWorldBlockLayer getBlockLayer() {
         return EnumWorldBlockLayer.CUTOUT;
