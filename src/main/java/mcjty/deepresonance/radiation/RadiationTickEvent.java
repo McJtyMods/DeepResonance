@@ -223,7 +223,7 @@ public class RadiationTickEvent {
                 QuadTree radiationTree = radiationSource.getRadiationTree(world, cx, cy, cz);
                 float strength = (float) (baseStrength * (radius-distance) / radius);
                 strength = strength * (1.0f-protection);
-                strength = strength * (float) radiationTree.factor(cx, cy, cz, (int) entityLivingBase.posX, (int) entityLivingBase.posY, (int) entityLivingBase.posZ);
+                strength = strength * (float) radiationTree.factor(cx, cy, cz, (int) entityLivingBase.posX, (int) entityLivingBase.posY+1, (int) entityLivingBase.posZ);
 
                 if (strength < RadiationConfiguration.radiationStrenghLevel0) {
                     entityLivingBase.addPotionEffect(new PotionEffect(Potion.hunger.getId(), EFFECTS_MAX * MAXTICKS, 1, true, true));

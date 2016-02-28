@@ -95,7 +95,7 @@ public class RadiationMonitorItem extends GenericDRItem {
                     int cy = coordinate.getCoordinate().getY();
                     int cz = coordinate.getCoordinate().getZ();
                     QuadTree radiationTree = radiationSource.getRadiationTree(world, cx, cy, cz);
-                    strength = strength * (float) radiationTree.factor(cx, cy, cz, player.getCoordinate().getX(), player.getCoordinate().getY(), player.getCoordinate().getZ());
+                    strength = strength * (float) radiationTree.factor(cx, cy, cz, player.getCoordinate().getX(), player.getCoordinate().getY()+1, player.getCoordinate().getZ());
                     if (strength > maxStrength) {
                         maxStrength = strength;
                     }
