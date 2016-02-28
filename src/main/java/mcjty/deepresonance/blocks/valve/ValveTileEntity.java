@@ -40,7 +40,7 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
         }
     }
 
-    protected void checkStateServer() {
+    private void checkStateServer() {
         progress--;
         markDirty();
         if (progress > 0) {
