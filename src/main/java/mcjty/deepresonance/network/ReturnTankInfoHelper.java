@@ -1,10 +1,10 @@
 package mcjty.deepresonance.network;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.blocks.tank.TankSetup;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ReturnTankInfoHelper {

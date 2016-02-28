@@ -6,7 +6,7 @@ public class WorldGenConfiguration {
 
     public static final String CATEGORY_WORLDGEN = "worldgen";
 
-    public static boolean retrogen = false;
+    public static boolean retrogen = true;
     public static boolean verboseSpawn = false;
 
     public static int minVeinSize = 5;
@@ -15,7 +15,7 @@ public class WorldGenConfiguration {
     public static int minY = 2;
     public static int maxY = 30;
 
-    public static int crystalSpawnChance = 50;
+    public static int crystalSpawnChance = 30;
     public static int crystalSpawnTries = 10;
 
     public static void init(Configuration cfg) {

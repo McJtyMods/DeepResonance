@@ -1,18 +1,22 @@
 package mcjty.deepresonance.blocks.collector;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.lib.container.GenericItemBlock;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class EnergyCollectorSetup {
     public static EnergyCollectorBlock energyCollectorBlock;
 
     public static void setupBlocks() {
         energyCollectorBlock = new EnergyCollectorBlock();
-        GameRegistry.registerBlock(energyCollectorBlock, GenericItemBlock.class, "energyCollectorBlock");
-        GameRegistry.registerTileEntity(EnergyCollectorTileEntity.class, "EnergyCollectorTileEntity");
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void setupModels() {
+        energyCollectorBlock.initModel();
     }
 
     public static void setupCrafting() {

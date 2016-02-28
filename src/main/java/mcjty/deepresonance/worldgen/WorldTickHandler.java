@@ -1,13 +1,13 @@
 package mcjty.deepresonance.worldgen;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.relauncher.Side;
+import elec332.core.world.WorldHelper;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.hash.THashSet;
-import mcjty.lib.varia.Logging;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayDeque;
@@ -27,7 +27,7 @@ public class WorldTickHandler {
             return;
         }
         World world = event.world;
-        int dim = world.provider.dimensionId;
+        int dim = WorldHelper.getDimID(world);
 
         if (event.phase == TickEvent.Phase.END) {
             ArrayDeque<RetroChunkCoord> chunks = chunksToGen.get(dim);
@@ -35,7 +35,7 @@ public class WorldTickHandler {
             if (chunks != null && !chunks.isEmpty()) {
                 RetroChunkCoord r = chunks.pollFirst();
                 Pair<Integer,Integer> c = r.coord;
-                Logging.log("Retrogen " + c.toString() + ".");
+//                Logging.log("Retrogen " + c.toString() + ".");
                 long worldSeed = world.getSeed();
                 Random rand = new Random(worldSeed);
                 long xSeed = rand.nextLong() >> 2 + 1L;
@@ -51,7 +51,7 @@ public class WorldTickHandler {
 
             if (chunks != null && !chunks.isEmpty()) {
                 Pair<Integer,Integer> c = chunks.pollFirst();
-                Logging.log("Pregen " + c.toString() + ".");
+//                Logging.log("Pregen " + c.toString() + ".");
                 world.getChunkFromChunkCoords(c.getLeft(), c.getRight());
             } else if (chunks != null) {
                 chunksToPreGen.remove(dim);

@@ -80,7 +80,7 @@ disappears.
 {b}Radiation Monitor
 Using the radiation monitor you can measure how much radiation there
 is in a certain area:
-{ri:radiationMonitorItem}
+{ri:radiation_monitor}
 Obsidian helps to block some of the radiation but dense obsidian is even
 better. You can also use lead blocks. These are better then obsidian but
 not as good as dense obsidian. Dense glass is about as good as lead.
@@ -88,17 +88,22 @@ not as good as dense obsidian. Dense glass is about as good as lead.
 A radiation suit also helps. If you have a complete set then nearly
 95% of the radiation will be prevented.
 {-------------------------------------------------------------}
+{b}Radiation Module
+If RFTools is installed you can also use a radiation sensor block
+and a radiation screen module to display the amount of radiation at
+a given pointon an RFTools screen.
+{-------------------------------------------------------------}
 {b}Machine Frame
 {n:frame}
 Nearly everything in this mod requires a machine frame as a basic
 crafting ingredient:
-{rb:machineFrame}
+{rb:machine_frame}
 {-------------------------------------------------------------}
 {b}Generator Block
 {n:generator}
 To generate power you need a generator multiblock. The basis of this block
 is the generator which you craft as follows:
-{rb:generatorBlock}
+{rb:generator}
 
 A single block supports up to 2 crystals and maximum 10KRF/tick. If you
 need to handle more or more powerful crystals you will have to add blocks
@@ -111,13 +116,13 @@ The generator on its own cannot get the power out of the crystals. For that
 you need one energy collector on top of the generator multiblock. Only
 one collector can be put on a single generator multiblock. You can make
 this collector as follows:
-{rb:energyCollectorBlock}
+{rb:energy_collector}
 {-------------------------------------------------------------}
 {b}Generator Controller
 {n:controller}
 The generator can only work if it is turned on. You can do that with
 the generator controller:
-{rb:generatorControllerBlock}
+{rb:generator_controller}
 
 To turn on the generator simply give this block a redstone signal.
 {-------------------------------------------------------------}
@@ -168,7 +173,7 @@ will always produce liquid with efficiency 10%.
 {-------------------------------------------------------------}
 {b}Tank
 {n:tank}
-{rb:tankBlock}
+{rb:tank}
 The tanks from Deep Resonance have room for 16 buckets of liquid.
 If you place multiple tanks connected to each other they will form a
 multiblock capable of holding more liquid. They are normal tanks so they
@@ -188,7 +193,7 @@ the correct filling of the lava tank under the smelter.
 {-------------------------------------------------------------}
 {b}Smelter
 {n:smelter}
-{rb:smelterBlock}
+{rb:smelter}
 To use the smelter you need a tank below it filled with lava and a tank
 above it which will be filled with RCL. In addition you need to give the
 smelter power and supply it with resonating ore (either with automation
@@ -200,7 +205,7 @@ quality of the RCL will decrease.
 {-------------------------------------------------------------}
 {b}Purifier
 {n:purifier}
-{rb:purifierBlock}
+{rb:purifier}
 With the purifier you can enhance the purity of the liquid. To do this you
 need filter material which you can insert into the purifier. Put the tank of
 RCL that you want to purify above the purifier and another tank below it.
@@ -213,8 +218,8 @@ be able to purify it as high as 85%.
 {-------------------------------------------------------------}
 {b}Lens and Laser
 {n:laser}
-{rb:laserBlock}
-{rb:lensBlock}
+{rb:laser}
+{rb:lens}
 With the laser and the lens you can improve the quality of the liquid
 in a tank even more then what the purifier can do.
 {-------------------------------------------------------------}
@@ -242,7 +247,7 @@ catalyst in the slot).
 {-------------------------------------------------------------}
 {b}Valve
 {n:valve}
-{rb:valveBlock}
+{rb:valve}
 The valve is an advanced filter that can measure various attributes
 of the RCL liquid in a tank above it and if these attributes are
 better then specific values it will move liquid to the bottom tank.
@@ -254,14 +259,14 @@ a certain amount of RCL liquid in it.
 {-------------------------------------------------------------}
 {b}Crystalizer
 {n:crystalizer}
-{rb:crystalizerBlock}
+{rb:crystalizer}
 The crystalizer needs to be placed on top of a tank filled with RCL. It
 will consume the liquid in that tank and form a crystal out of it. The
 crystalizer also needs power.
 {-------------------------------------------------------------}
 {b}Pedestal
 {n:pedestal}
-{rb:pedestalBlock}
+{rb:pedestal}
 The pedestal can automatically place crystals in front of it. It will
 also break crystals if they are used up and try to place them in an
 adjacent inventory. If it can't find one it will eject it into the

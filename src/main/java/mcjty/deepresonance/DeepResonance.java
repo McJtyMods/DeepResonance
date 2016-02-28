@@ -1,10 +1,5 @@
 package mcjty.deepresonance;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import elec332.core.config.ConfigWrapper;
 import elec332.core.network.NetworkHandler;
 import mcjty.deepresonance.blocks.ModBlocks;
@@ -24,6 +19,12 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
@@ -36,10 +37,10 @@ import java.io.File;
         version = DeepResonance.VERSION)
 public class DeepResonance implements ModBase {
     public static final String MODID = "deepresonance";
-    public static final String VERSION = "1.1.2";
-    public static final String MIN_FORGE_VER = "10.13.2.1291";
-    public static final String MIN_MCJTYLIB_VER = "1.7.0";
-    public static final String MIN_ELECCORE_VER = "1.4.176";
+    public static final String VERSION = "1.1.4beta3";
+    public static final String MIN_FORGE_VER = "11.15.1.1722";
+    public static final String MIN_MCJTYLIB_VER = "1.8.9-1.8.1beta6";
+    public static final String MIN_ELECCORE_VER = "1.4.228";
 
     @SidedProxy(clientSide="mcjty.deepresonance.proxy.ClientProxy", serverSide="mcjty.deepresonance.proxy.ServerProxy")
     public static CommonProxy proxy;
@@ -55,6 +56,8 @@ public class DeepResonance implements ModBase {
     public static ConfigWrapper configWrapper;
     public static NetworkHandler networkHandler;
 
+    public boolean rftools = false;
+
     public static CreativeTabs tabDeepResonance = new CreativeTabs("DeepResonance") {
         @Override
         @SideOnly(Side.CLIENT)
@@ -69,6 +72,8 @@ public class DeepResonance implements ModBase {
      */
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
+        rftools = Loader.isModLoaded("rftools");
+
         logger = e.getModLog();
         mainConfigDir = e.getModConfigurationDirectory();
         modConfigDir = new File(mainConfigDir.getPath() + File.separator + "deepresonance");
@@ -82,7 +87,13 @@ public class DeepResonance implements ModBase {
         configWrapper.refresh();
         proxy.preInit(e);
         MainCompatHandler.registerWaila();
-        FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
+
+        if (rftools) {
+            Logging.log("Detected RFTools: enabling support");
+        }
+
+        //@todo
+//        FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
     }
 
 
@@ -127,4 +138,5 @@ public class DeepResonance implements ModBase {
         GuiDeepResonanceManual.locatePage = page;
         player.openGui(DeepResonance.instance, bookIndex, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
     }
+
 }

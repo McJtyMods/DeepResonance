@@ -1,16 +1,6 @@
 package mcjty.deepresonance.blocks.lens;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import mcjty.deepresonance.DeepResonance;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.client.model.AdvancedModelLoader;
-import net.minecraftforge.client.model.IModelCustom;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
-public class LensItemRenderer implements IItemRenderer {
+public class LensItemRenderer{}/* implements IItemRenderer {
     IModelCustom model = AdvancedModelLoader.loadModel(new ResourceLocation(DeepResonance.MODID, "obj/lens.obj"));
     ResourceLocation texture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/lens.png");
 
@@ -37,4 +27,4 @@ public class LensItemRenderer implements IItemRenderer {
         model.renderAll();
         GL11.glPopMatrix();
     }
-}
+}*/

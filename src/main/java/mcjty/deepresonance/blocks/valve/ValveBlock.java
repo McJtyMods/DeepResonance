@@ -1,30 +1,36 @@
 package mcjty.deepresonance.blocks.valve;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import mcjty.deepresonance.blocks.base.ElecGenericBlockBase;
+import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.gui.GuiProxy;
+import mcjty.lib.container.GenericGuiContainer;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-public class ValveBlock extends ElecGenericBlockBase {
+public class ValveBlock extends GenericDRBlock<ValveTileEntity, ValveContainer> {
 
-    public ValveBlock(String blockName) {
-        super(Material.rock, ValveTileEntity.class, blockName);
+    public ValveBlock() {
+        super(Material.rock, ValveTileEntity.class, ValveContainer.class, "valve", true);
+    }
+
+    @Override
+    public boolean isHorizRotation() {
+        return true;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public Class<? extends GenericGuiContainer> getGuiClass() {
+        return GuiValve.class;
     }
 
     @Override
@@ -35,8 +41,8 @@ public class ValveBlock extends ElecGenericBlockBase {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
-        super.addInformation(itemStack, player, list, whatIsThis);
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedToolTip) {
+        super.addInformation(itemStack, player, list,advancedToolTip);
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
             list.add("This machine will transfer fluids from the upper tank");
             list.add("to a tank below if the fluid matches certain conditions");
@@ -46,41 +52,8 @@ public class ValveBlock extends ElecGenericBlockBase {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public GuiContainer createClientGui(EntityPlayer entityPlayer, TileEntity tileEntity) {
-        ValveTileEntity valveTileEntity = (ValveTileEntity) tileEntity;
-        ValveContainer valveContainer = new ValveContainer(entityPlayer);
-        return new GuiValve(valveTileEntity, valveContainer);
-    }
-
-    @Override
-    public Container createServerContainer(EntityPlayer entityPlayer, TileEntity tileEntity) {
-        return new ValveContainer(entityPlayer);
-    }
-
-    @Override
     public int getGuiID() {
         return GuiProxy.GUI_VALVE;
     }
 
-    @Override
-    public String getSideIconName() {
-        return "valve";
-    }
-
-    @Override
-    public IIcon getIcon(int side, int meta) {
-        if (side == ForgeDirection.DOWN.ordinal()) {
-            return iconBottom;
-        }
-        if (side == ForgeDirection.UP.ordinal()) {
-            return iconTop;
-        }
-        return iconSide;
-    }
-
-    @Override
-    public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side) {
-        return getIcon(side, 0);
-    }
 }

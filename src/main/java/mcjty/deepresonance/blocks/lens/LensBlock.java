@@ -1,31 +1,32 @@
 package mcjty.deepresonance.blocks.lens;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
-import mcjty.lib.container.GenericBlock;
+import mcjty.lib.container.EmptyContainer;
 import mcjty.lib.varia.BlockTools;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-public class LensBlock extends GenericBlock {
+public class LensBlock extends GenericDRBlock<LensTileEntity, EmptyContainer> {
 
     public LensBlock() {
-        super(DeepResonance.instance, Material.iron, LensTileEntity.class, false);
-        setBlockName("lensBlock");
-        setHorizRotation(true);
-        setCreativeTab(DeepResonance.tabDeepResonance);
+        super(Material.iron, LensTileEntity.class, EmptyContainer.class, LensItemBlock.class, "lens", false);
+    }
+
+    @Override
+    public boolean isHorizRotation() {
+        return true;
     }
 
     @Override
@@ -34,10 +35,9 @@ public class LensBlock extends GenericBlock {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
-        super.addInformation(itemStack, player, list, whatIsThis);
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedToolTip) {
+        super.addInformation(itemStack, player, list, advancedToolTip);
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
             list.add("Place this block on a tank and aim an");
@@ -49,18 +49,19 @@ public class LensBlock extends GenericBlock {
     }
 
     @Override
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
+    @SuppressWarnings("all")
+    public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state) {
         return null;
     }
 
     @Override
-    public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
-        int meta = world.getBlockMetadata(x, y, z);
-        ForgeDirection direction = BlockTools.getOrientationHoriz(meta);
+    public void setBlockBoundsBasedOnState(IBlockAccess world, BlockPos pos) {
+        IBlockState state = world.getBlockState(pos);
+        int meta = state.getBlock().getMetaFromState(state);
+        EnumFacing direction = BlockTools.getOrientationHoriz(meta);
         switch (direction) {
             case DOWN:
             case UP:
-            case UNKNOWN:
                 break;
             case NORTH:
                 this.setBlockBounds(0.1F, 0.1F, 0.0F, 0.9F, 0.9F, 0.1F);
@@ -77,28 +78,19 @@ public class LensBlock extends GenericBlock {
         }
     }
 
+    /*
     @Override
     protected boolean wrenchUse(World world, int x, int y, int z, EntityPlayer player) {
         // Do not rotate
         return true;
+    }*/
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
     }
 
     @Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLivingBase, ItemStack itemStack) {
-    }
-
-    @Override
-    public String getSideIconName() {
-        return "lens";
-    }
-
-    @Override
-    public boolean shouldSideBeRendered(IBlockAccess blockAccess, int x, int y, int z, int side) {
-        return false;
-    }
-
-    @Override
-    public boolean renderAsNormalBlock() {
+    public boolean shouldSideBeRendered(IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
         return false;
     }
 
@@ -106,4 +98,10 @@ public class LensBlock extends GenericBlock {
     public boolean isOpaqueCube() {
         return false;
     }
+
+    @Override
+    public EnumWorldBlockLayer getBlockLayer() {
+        return EnumWorldBlockLayer.CUTOUT;
+    }
+
 }

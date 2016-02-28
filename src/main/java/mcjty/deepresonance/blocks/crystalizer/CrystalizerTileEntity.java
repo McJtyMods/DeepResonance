@@ -1,33 +1,34 @@
 package mcjty.deepresonance.blocks.crystalizer;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.deepresonance.blocks.base.ElecEnergyReceiverTileBase;
 import mcjty.deepresonance.blocks.tank.ITankHook;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
+import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 import java.util.Map;
 
-public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements ITankHook, ISidedInventory {
+public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity implements ITankHook, DefaultSidedInventory, ITickable {
 
     public static final String CMD_GETPROGRESS = "getProgress";
     public static final String CLIENTCMD_GETPROGRESS = "getProgress";
@@ -53,13 +54,24 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
     }
 
     @Override
-    protected void checkStateServer() {
+    public InventoryHelper getInventoryHelper() {
+        return inventoryHelper;
+    }
+
+    @Override
+    public void update() {
+        if (!worldObj.isRemote) {
+            checkStateServer();
+        }
+    }
+
+    private void checkStateServer() {
         if (!canCrystalize()) {
             return;
         }
 
         storage.extractEnergy(ConfigMachines.Crystalizer.rfPerRcl, false);
-        FluidStack fluidStack = rclTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Crystalizer.rclPerTick, true);
+        FluidStack fluidStack = rclTank.drain(null, ConfigMachines.Crystalizer.rclPerTick, true);
         LiquidCrystalFluidTagData data = LiquidCrystalFluidTagData.fromStack(fluidStack);
         if (mergedData == null) {
             mergedData = data;
@@ -74,13 +86,13 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
         progress++;
         if (progress == 1) {
             // We just started to work. Notify client
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(getPos());
         }
 
         if (progress >= getTotalProgress()) {
             progress = 0;
             makeCrystal();
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);    // To make sure client can update
+            markDirtyClient();
         }
 
         markDirty();
@@ -107,19 +119,13 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
             return false;
         }
 
-        FluidStack fluidStack = rclTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Crystalizer.rclPerTick, false);
-        if (fluidStack == null || fluidStack.amount != ConfigMachines.Crystalizer.rclPerTick) {
-            return false;
-        }
-        return true;
+        FluidStack fluidStack = rclTank.drain(null, ConfigMachines.Crystalizer.rclPerTick, false);
+        return !(fluidStack == null || fluidStack.amount != ConfigMachines.Crystalizer.rclPerTick);
     }
 
     public boolean hasCrystal() {
         ItemStack crystalStack = inventoryHelper.getStackInSlot(CrystalizerContainer.SLOT_CRYSTAL);
-        if (crystalStack != null) {
-            return true;
-        }
-        return false;
+        return crystalStack != null;
     }
 
     private void makeCrystal() {
@@ -150,20 +156,7 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
     @Override
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
         super.writeRestorableToNBT(tagCompound);
-        writeBufferToNBT(tagCompound);
-    }
-
-    private void writeBufferToNBT(NBTTagCompound tagCompound) {
-        NBTTagList bufferTagList = new NBTTagList();
-        for (int i = 0 ; i < inventoryHelper.getCount() ; i++) {
-            ItemStack stack = inventoryHelper.getStackInSlot(i);
-            NBTTagCompound nbtTagCompound = new NBTTagCompound();
-            if (stack != null) {
-                stack.writeToNBT(nbtTagCompound);
-            }
-            bufferTagList.appendTag(nbtTagCompound);
-        }
-        tagCompound.setTag("Items", bufferTagList);
+        writeBufferToNBT(tagCompound, inventoryHelper);
     }
 
     @Override
@@ -182,23 +175,12 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
     @Override
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
         super.readRestorableFromNBT(tagCompound);
-        readBufferFromNBT(tagCompound);
+        readBufferFromNBT(tagCompound, inventoryHelper);
     }
-
-    private void readBufferFromNBT(NBTTagCompound tagCompound) {
-        NBTTagList bufferTagList = tagCompound.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0 ; i < bufferTagList.tagCount() ; i++) {
-            NBTTagCompound nbtTagCompound = bufferTagList.getCompoundTagAt(i);
-            inventoryHelper.setStackInSlot(i, ItemStack.loadItemStackFromNBT(nbtTagCompound));
-        }
-    }
-
 
     @Override
-    public void hook(TileTank tank, ForgeDirection direction) {
-        if (direction != ForgeDirection.DOWN) {
-            return;
-        } else if (rclTank == null){
+    public void hook(TileTank tank, EnumFacing direction) {
+        if (direction == EnumFacing.DOWN && rclTank == null){
             if (validRCLTank(tank)){
                 rclTank = tank;
             }
@@ -206,15 +188,16 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
     }
 
     @Override
-    public void unHook(TileTank tank, ForgeDirection direction) {
+    public void unHook(TileTank tank, EnumFacing direction) {
         if (tilesEqual(rclTank, tank)){
             rclTank = null;
-            notifyNeighboursOfDataChange();
+            this.markDirty();
+            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
         }
     }
 
     @Override
-    public void onContentChanged(TileTank tank, ForgeDirection direction) {
+    public void onContentChanged(TileTank tank, EnumFacing direction) {
         if (tilesEqual(rclTank, tank)){
             if (!validRCLTank(tank)) {
                 rclTank = null;
@@ -228,56 +211,21 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
     }
 
     private boolean tilesEqual(TileTank first, TileTank second){
-        return first != null && second != null && first.myLocation().equals(second.myLocation()) && WorldHelper.getDimID(first.getWorldObj()) == WorldHelper.getDimID(second.getWorldObj());
+        return first != null && second != null && first.getPos().equals(second.getPos()) && WorldHelper.getDimID(first.getWorld()) == WorldHelper.getDimID(second.getWorld());
     }
 
     @Override
-    public int[] getAccessibleSlotsFromSide(int side) {
+    public int[] getSlotsForFace(EnumFacing side) {
         return new int[] { CrystalizerContainer.SLOT_CRYSTAL };
     }
 
     @Override
-    public boolean canInsertItem(int index, ItemStack item, int side) {
-        return false;
-    }
-
-    @Override
-    public boolean canExtractItem(int index, ItemStack item, int side) {
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
         return index == CrystalizerContainer.SLOT_CRYSTAL;
     }
 
     @Override
-    public int getSizeInventory() {
-        return inventoryHelper.getCount();
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int index) {
-        return inventoryHelper.getStackInSlot(index);
-    }
-
-    @Override
-    public ItemStack decrStackSize(int index, int amount) {
-        return inventoryHelper.decrStackSize(index, amount);
-    }
-
-    @Override
-    public ItemStack getStackInSlotOnClosing(int index) {
-        return null;
-    }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
-        inventoryHelper.setInventorySlotContents(getInventoryStackLimit(), index, stack);
-    }
-
-    @Override
-    public String getInventoryName() {
-        return "Crystalizer Inventory";
-    }
-
-    @Override
-    public boolean hasCustomInventoryName() {
+    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
         return false;
     }
 
@@ -289,16 +237,6 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
     @Override
     public boolean isUseableByPlayer(EntityPlayer player) {
         return canPlayerAccess(player);
-    }
-
-    @Override
-    public void openInventory() {
-
-    }
-
-    @Override
-    public void closeInventory() {
-
     }
 
     @Override
@@ -314,9 +252,7 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
 
     // Request the researching amount from the server. This has to be called on the client side.
     public void requestProgressFromServer() {
-        DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketRequestIntegerFromServer(xCoord, yCoord, zCoord,
-                CMD_GETPROGRESS,
-                CLIENTCMD_GETPROGRESS));
+        DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketRequestIntegerFromServer(DeepResonance.MODID, pos, CMD_GETPROGRESS, CLIENTCMD_GETPROGRESS));
     }
 
     @Override
@@ -342,5 +278,21 @@ public class CrystalizerTileEntity extends ElecEnergyReceiverTileBase implements
             return true;
         }
         return false;
+    }
+
+    IItemHandler invHandler = new InvWrapper(this);
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, net.minecraft.util.EnumFacing facing) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return (T) invHandler;
+        }
+        return super.getCapability(capability, facing);
     }
 }

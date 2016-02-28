@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "deepresonance:blocks/machineBottom",
+    "down": "deepresonance:blocks/machineBottom",
+    "up": "deepresonance:blocks/machineTop",
+    "north": "deepresonance:blocks/generatorControllerOff",
+    "east": "deepresonance:blocks/machineSide",
+    "south": "deepresonance:blocks/machineSide",
+    "west": "deepresonance:blocks/machineSide"
+  }
+}

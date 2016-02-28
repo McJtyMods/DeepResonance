@@ -6,6 +6,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.SlotDefinition;
 import mcjty.lib.container.SlotType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 public class CrystalizerContainer extends GenericContainer {
@@ -21,7 +22,7 @@ public class CrystalizerContainer extends GenericContainer {
         }
     };
 
-    public CrystalizerContainer(EntityPlayer player, CrystalizerTileEntity containerInventory) {
+    public CrystalizerContainer(EntityPlayer player, IInventory containerInventory) {
         super(factory);
         addInventory(CONTAINER_INVENTORY, containerInventory);
         addInventory(ContainerFactory.CONTAINER_PLAYER, player.inventory);

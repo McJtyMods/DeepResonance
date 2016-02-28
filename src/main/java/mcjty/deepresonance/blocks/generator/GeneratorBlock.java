@@ -1,43 +1,38 @@
 package mcjty.deepresonance.blocks.generator;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.network.PacketGetGeneratorInfo;
-import mcjty.lib.container.GenericBlock;
-import mcjty.lib.varia.BlockTools;
+import mcjty.lib.container.EmptyContainer;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 
-public class GeneratorBlock extends GenericBlock {
+public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyContainer> {
 
-    private IIcon iconUpDown;
-    private IIcon icons[] = new IIcon[8];
-
-    public static final int META_ON = 1;
-    public static final int META_OFF = 0;
-    public static final int META_HASUPPER = 2;
-    public static final int META_HASLOWER = 4;
+    public static PropertyBool ENABLED = PropertyBool.create("enabled");
+    public static PropertyBool UPPER = PropertyBool.create("upper");
+    public static PropertyBool LOWER = PropertyBool.create("lower");
 
     public static int tooltipEnergy = 0;
     public static int tooltipRefCount = 0;
@@ -46,10 +41,12 @@ public class GeneratorBlock extends GenericBlock {
     private static long lastTime = 0;
 
     public GeneratorBlock() {
-        super(DeepResonance.instance, Material.iron, GeneratorTileEntity.class, false);
-        setBlockName("generatorBlock");
-        setHorizRotation(true);
-        setCreativeTab(DeepResonance.tabDeepResonance);
+        super(Material.iron, GeneratorTileEntity.class, EmptyContainer.class, "generator", false);
+    }
+
+    @Override
+    public boolean hasNoRotation() {
+        return true;
     }
 
     @Override
@@ -58,10 +55,9 @@ public class GeneratorBlock extends GenericBlock {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
-        super.addInformation(itemStack, player, list, whatIsThis);
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedToolTip) {
+        super.addInformation(itemStack, player, list, advancedToolTip);
 
         NBTTagCompound tagCompound = itemStack.getTagCompound();
         if (tagCompound != null) {
@@ -94,38 +90,11 @@ public class GeneratorBlock extends GenericBlock {
     }
 
     @Override
-    public String getSideIconName() {
-        return "machineGenerator";
-    }
-
-    @Override
-    protected ForgeDirection getOrientation(int x, int y, int z, EntityLivingBase entityLivingBase) {
-        return ForgeDirection.NORTH;
-    }
-
-    private void updateMeta(World world, int x, int y, int z) {
-        int meta = world.getBlockMetadata(x, y, z) & BlockTools.MASK_REDSTONE_IN;
-        if (world.getBlock(x, y+1, z) == GeneratorSetup.generatorBlock) {
-            meta |= META_HASUPPER;
-        }
-        if (world.getBlock(x, y-1, z) == GeneratorSetup.generatorBlock) {
-            meta |= META_HASLOWER;
-        }
-        world.setBlockMetadataWithNotify(x, y, z, meta, 3);
-    }
-
-    @Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLivingBase, ItemStack itemStack) {
-        super.onBlockPlacedBy(world, x, y, z, entityLivingBase, itemStack);
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack itemStack) {
+        super.onBlockPlacedBy(world, pos, state, placer, itemStack);
         if (!world.isRemote) {
-            updateMeta(world, x, y, z);
-            if (world.getBlock(x, y+1, z) == GeneratorSetup.generatorBlock) {
-                updateMeta(world, x, y+1, z);
-            }
-            if (world.getBlock(x, y-1, z) == GeneratorSetup.generatorBlock) {
-                updateMeta(world, x, y-1, z);
-            }
-            TileEntity te = world.getTileEntity(x, y, z);
+
+            TileEntity te = world.getTileEntity(pos);
             if (te instanceof GeneratorTileEntity) {
                 ((GeneratorTileEntity) te).addBlockToNetwork();
                 DRGeneratorNetwork.Network network = ((GeneratorTileEntity) te).getNetwork();
@@ -137,25 +106,46 @@ public class GeneratorBlock extends GenericBlock {
                 }
             }
         }
+
     }
 
     @Override
-    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
-        ArrayList<ItemStack> drops = super.getDrops(world, x, y, z, metadata, fortune);
-        if (!world.isRemote) {
-            TileEntity te = world.getTileEntity(x, y, z);
-            if (te instanceof GeneratorTileEntity) {
-                DRGeneratorNetwork.Network network = ((GeneratorTileEntity) te).getNetwork();
-                if (network != null) {
-                    int energy = network.getEnergy() / network.getGeneratorBlocks();
-                    if (!drops.isEmpty()) {
-                        NBTTagCompound tagCompound = drops.get(0).getTagCompound();
-                        if (tagCompound == null) {
-                            tagCompound = new NBTTagCompound();
-                            drops.get(0).setTagCompound(tagCompound);
-                        }
-                        tagCompound.setInteger("energy", energy);
+    protected BlockState createBlockState() {
+        return new BlockState(this, UPPER, LOWER, ENABLED);
+    }
+
+
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
+        return state.withProperty(UPPER, world.getBlockState(pos.up()).getBlock() == GeneratorSetup.generatorBlock)
+                .withProperty(LOWER, world.getBlockState(pos.down()).getBlock() == GeneratorSetup.generatorBlock);
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return super.getDefaultState().withProperty(ENABLED, (meta & 1) != 0);
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return state.getValue(ENABLED) ? 1 : 0;
+    }
+
+    @Override
+    public List<ItemStack> getDrops(IBlockAccess access, BlockPos pos, IBlockState metadata, int fortune) {
+        List<ItemStack> drops = super.getDrops(access, pos, metadata, fortune);
+        TileEntity te = access.getTileEntity(pos);
+        if (te instanceof GeneratorTileEntity) {
+            DRGeneratorNetwork.Network network = ((GeneratorTileEntity) te).getNetwork();
+            if (network != null) {
+                int energy = network.getEnergy() / network.getGeneratorBlocks();
+                if (!drops.isEmpty()) {
+                    NBTTagCompound tagCompound = drops.get(0).getTagCompound();
+                    if (tagCompound == null) {
+                        tagCompound = new NBTTagCompound();
+                        drops.get(0).setTagCompound(tagCompound);
                     }
+                    tagCompound.setInteger("energy", energy);
                 }
             }
         }
@@ -163,9 +153,9 @@ public class GeneratorBlock extends GenericBlock {
     }
 
     @Override
-    public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
+    public void breakBlock(World world, BlockPos pos, IBlockState state) {
         if (!world.isRemote) {
-            TileEntity te = world.getTileEntity(x, y, z);
+            TileEntity te = world.getTileEntity(pos);
             if (te instanceof GeneratorTileEntity) {
                 DRGeneratorNetwork.Network network = ((GeneratorTileEntity) te).getNetwork();
                 if (network != null) {
@@ -176,56 +166,17 @@ public class GeneratorBlock extends GenericBlock {
                 ((GeneratorTileEntity) te).removeBlockFromNetwork();
             }
         }
-        super.breakBlock(world, x, y, z, block, meta);
+        super.breakBlock(world, pos, state);
         if (!world.isRemote) {
-            if (world.getBlock(x, y+1, z) == GeneratorSetup.generatorBlock) {
-                updateMeta(world, x, y+1, z);
+            if (world.getBlockState(pos.up()).getBlock() == GeneratorSetup.generatorBlock) {
+                world.markBlockForUpdate(pos.up());
             }
-            if (world.getBlock(x, y-1, z) == GeneratorSetup.generatorBlock) {
-                updateMeta(world, x, y - 1, z);
+            if (world.getBlockState(pos.down()).getBlock() == GeneratorSetup.generatorBlock) {
+                world.markBlockForUpdate(pos.down());
             }
         }
     }
 
-    @Override
-    public void registerBlockIcons(IIconRegister iconRegister) {
-        iconUpDown = iconRegister.registerIcon(DeepResonance.MODID + ":machineBase");
 
-        IIcon iconFull[] = new IIcon[2];
-        IIcon iconTop[] = new IIcon[2];
-        IIcon iconBottom[] = new IIcon[2];
-        IIcon iconMiddle[] = new IIcon[2];
-        for (int i = 0 ; i < 2 ; i++) {
-            iconFull[i] = iconRegister.registerIcon(DeepResonance.MODID + ":generatorSideFull" + (i==0 ? "Off" : "On"));
-            iconTop[i] = iconRegister.registerIcon(DeepResonance.MODID + ":generatorSideTop" + (i==0 ? "Off" : "On"));
-            iconBottom[i] = iconRegister.registerIcon(DeepResonance.MODID + ":generatorSideBottom" + (i==0 ? "Off" : "On"));
-            iconMiddle[i] = iconRegister.registerIcon(DeepResonance.MODID + ":generatorSideMiddle" + (i==0 ? "Off" : "On"));
-        }
 
-        icons[META_OFF] = iconFull[0];
-        icons[META_ON] = iconFull[1];
-        icons[META_OFF + META_HASUPPER] = iconBottom[0];
-        icons[META_ON + META_HASUPPER] = iconBottom[1];
-        icons[META_OFF + META_HASLOWER] = iconTop[0];
-        icons[META_ON + META_HASLOWER] = iconTop[1];
-        icons[META_OFF + META_HASUPPER + META_HASLOWER] = iconMiddle[0];
-        icons[META_ON + META_HASUPPER + META_HASLOWER] = iconMiddle[1];
-    }
-
-    @Override
-    public IIcon getIcon(int side, int meta) {
-        if (side == ForgeDirection.DOWN.ordinal() || side == ForgeDirection.UP.ordinal()) {
-            return iconUpDown;
-        }
-        return icons[meta & 0x7];
-    }
-
-    @Override
-    public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side) {
-        if (side == ForgeDirection.DOWN.ordinal() || side == ForgeDirection.UP.ordinal()) {
-            return iconUpDown;
-        }
-        int meta = blockAccess.getBlockMetadata(x, y, z);
-        return icons[meta & 0x7];
-    }
 }

@@ -1,11 +1,5 @@
 package mcjty.deepresonance.proxy;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.FMLEventHandlers;
 import mcjty.deepresonance.ForgeEventHandlers;
@@ -26,6 +20,11 @@ import mcjty.lib.base.GeneralConfig;
 import mcjty.lib.varia.WrenchChecker;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.Level;
 
 public abstract class CommonProxy {
@@ -37,11 +36,11 @@ public abstract class CommonProxy {
         mainConfig = DeepResonance.config;
         readMainConfig();
         DRMessages.registerNetworkMessages();
-        DRFluidRegistry.preInitFluids();
         ModItems.init();
         ModBlocks.init();
         ModCrafting.init();
         WorldGen.init();
+        DRFluidRegistry.initFluids();
     }
 
     private void readMainConfig() {
@@ -67,10 +66,10 @@ public abstract class CommonProxy {
 
     public void init(FMLInitializationEvent e) {
         NetworkRegistry.INSTANCE.registerGuiHandler(DeepResonance.instance, new GuiProxy());
-        FMLCommonHandler.instance().bus().register(WorldTickHandler.instance);
-        FMLCommonHandler.instance().bus().register(new RadiationTickEvent());
+        MinecraftForge.EVENT_BUS.register(WorldTickHandler.instance);
+        MinecraftForge.EVENT_BUS.register(new RadiationTickEvent());
         MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
-        FMLCommonHandler.instance().bus().register(new FMLEventHandlers());
+        MinecraftForge.EVENT_BUS.register(new FMLEventHandlers());
     }
 
     public void postInit(FMLPostInitializationEvent e) {

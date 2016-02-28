@@ -1,18 +1,24 @@
 package mcjty.deepresonance.blocks.smelter;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.items.ModItems;
-import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class SmelterSetup {
-    public static Block smelter;
+    public static SmelterBlock smelter;
 
     public static void setupBlocks() {
-        smelter = new SmelterBlock("smelterBlock").registerTile().register();
+        smelter = new SmelterBlock();
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void setupModels() {
+        smelter.initModel();
     }
 
     public static void setupCrafting() {

@@ -1,6 +1,5 @@
 package mcjty.deepresonance.crafting;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
 import mcjty.deepresonance.blocks.crystalizer.CrystalizerSetup;
@@ -17,6 +16,7 @@ import mcjty.deepresonance.items.ModItems;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public final class ModCrafting {
     public static void init() {
@@ -33,10 +33,18 @@ public final class ModCrafting {
 
         GameRegistry.addSmelting(ModBlocks.resonatingOreBlock, new ItemStack(ModItems.resonatingPlateItem, 8), 0.0f);
 
-        GameRegistry.addRecipe(new ItemStack(ModItems.helmet), "ppp", "p p", "   ", 'p', ModItems.resonatingPlateItem);
-        GameRegistry.addRecipe(new ItemStack(ModItems.chestplate), "p p", "ppp", "ppp", 'p', ModItems.resonatingPlateItem);
-        GameRegistry.addRecipe(new ItemStack(ModItems.boots), "   ", "p p", "p p", 'p', ModItems.resonatingPlateItem);
-        GameRegistry.addRecipe(new ItemStack(ModItems.leggings), "ppp", "p p", "p p", 'p', ModItems.resonatingPlateItem);
+        if (ModBlocks.radiationSensorBlock != null) {
+            GameRegistry.addRecipe(new ItemStack(ModBlocks.radiationSensorBlock), "qcq", "tot", "qrq", 'r', Items.redstone, 'q', Items.quartz, 'o', ModBlocks.machineFrame,
+                                   'c', Items.clock, 't', Items.compass);
+            ItemStack inkSac = new ItemStack(Items.dye, 1, 0);
+            GameRegistry.addRecipe(new ItemStack(ModItems.radiationModuleItem), " c ", "rir", " b ", 'c', Items.ender_pearl, 'r', ModItems.resonatingPlateItem, 'i', Items.iron_ingot,
+                                   'b', inkSac);
+        }
+
+//        GameRegistry.addRecipe(new ItemStack(ModItems.helmet), "ppp", "p p", "   ", 'p', ModItems.resonatingPlateItem);
+//        GameRegistry.addRecipe(new ItemStack(ModItems.chestplate), "p p", "ppp", "ppp", 'p', ModItems.resonatingPlateItem);
+//        GameRegistry.addRecipe(new ItemStack(ModItems.boots), "   ", "p p", "p p", 'p', ModItems.resonatingPlateItem);
+//        GameRegistry.addRecipe(new ItemStack(ModItems.leggings), "ppp", "p p", "p p", 'p', ModItems.resonatingPlateItem);
 
         GeneratorSetup.setupCrafting();
         GeneratorControllerSetup.setupCrafting();

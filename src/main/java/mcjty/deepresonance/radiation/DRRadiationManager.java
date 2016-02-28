@@ -1,16 +1,17 @@
 package mcjty.deepresonance.radiation;
 
+import com.google.common.collect.Maps;
+import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.varia.QuadTree;
-import mcjty.lib.varia.Coordinate;
 import mcjty.lib.varia.GlobalCoordinate;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class DRRadiationManager extends WorldSavedData {
@@ -18,7 +19,7 @@ public class DRRadiationManager extends WorldSavedData {
     public static final String RADIATION_MANAGER_NAME = "DRRadiationManager";
     private static DRRadiationManager instance = null;
 
-    private final Map<GlobalCoordinate, RadiationSource> sources = new HashMap<GlobalCoordinate, RadiationSource>();
+    private final Map<GlobalCoordinate, RadiationSource> sources = Maps.newHashMap();
 
     public DRRadiationManager(String identifier) {
         super(identifier);
@@ -39,7 +40,7 @@ public class DRRadiationManager extends WorldSavedData {
     }
 
     public void save(World world) {
-        world.mapStorage.setData(RADIATION_MANAGER_NAME, this);
+        world.setItemData(RADIATION_MANAGER_NAME, this);
         markDirty();
     }
 
@@ -65,7 +66,7 @@ public class DRRadiationManager extends WorldSavedData {
         if (instance != null) {
             return instance;
         }
-        instance = (DRRadiationManager) world.mapStorage.loadData(DRRadiationManager.class, RADIATION_MANAGER_NAME);
+        instance = (DRRadiationManager) world.loadItemData(DRRadiationManager.class, RADIATION_MANAGER_NAME);
         if (instance == null) {
             instance = new DRRadiationManager(RADIATION_MANAGER_NAME);
         }
@@ -99,7 +100,7 @@ public class DRRadiationManager extends WorldSavedData {
         NBTTagList lst = tagCompound.getTagList("radiation", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < lst.tagCount(); i++) {
             NBTTagCompound tc = lst.getCompoundTagAt(i);
-            GlobalCoordinate coordinate = new GlobalCoordinate(new Coordinate(tc.getInteger("sourceX"), tc.getInteger("sourceY"), tc.getInteger("sourceZ")), tc.getInteger("dimension"));
+            GlobalCoordinate coordinate = new GlobalCoordinate(new BlockPos(tc.getInteger("sourceX"), tc.getInteger("sourceY"), tc.getInteger("sourceZ")), tc.getInteger("dimension"));
             RadiationSource value = new RadiationSource();
             value.readFromNBT(tc);
             sources.put(coordinate, value);
@@ -155,10 +156,12 @@ public class DRRadiationManager extends WorldSavedData {
         public QuadTree getRadiationTree(World world, int centerX, int centerY, int centerZ) {
             if (radiationTree == null) {
                 radiationTree = new QuadTree((int) (centerX-radius - 1), (int) (centerY-radius - 1), (int) (centerZ-radius-1), (int) (centerX+radius + 1), (int) (centerY+radius + 1), (int) (centerZ+radius + 1));
-                for (int x = (int) (centerX-radius); x <= centerX+radius ; x++) {
-                    for (int y = (int) (centerY-radius); y <= centerY+radius ; y++) {
-                        for (int z = (int) (centerZ-radius); z <= centerZ+radius ; z++) {
-                            Block block = world.getBlock(x, y, z);
+                BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+                for (int x = (int) (centerX-radius); x < centerX+radius ; x++) {
+                    for (int y = (int) (centerY-radius); y < centerY+radius ; y++) {
+                        for (int z = (int) (centerZ-radius); z < centerZ+radius ; z++) {
+                            pos.set(x, y, z);
+                            IBlockState block = WorldHelper.getBlockState(world, pos);
                             float blocker = RadiationShieldRegistry.getBlocker(block);
                             if (blocker < 0.99f) {
                                 radiationTree.addBlocker(x, y, z, blocker);

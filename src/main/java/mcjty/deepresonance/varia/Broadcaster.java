@@ -1,14 +1,15 @@
 package mcjty.deepresonance.varia;
 
+import com.google.common.collect.Maps;
 import mcjty.lib.varia.Logging;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class Broadcaster {
-    private static Map<String,Long> messages = new HashMap<String, Long>();
+
+    private static Map<String,Long> messages = Maps.newHashMap();
 
     public static void broadcast(World worldObj, int x, int y, int z, String message, float radius) {
         long time = System.currentTimeMillis();

@@ -10,8 +10,8 @@ import net.minecraftforge.event.world.WorldEvent;
 public class FluidTileEvent extends WorldEvent {
 
     private FluidTileEvent(TileEntity tile){
-        super(tile.getWorldObj());
-        if (tile.getWorldObj() == null)
+        super(tile.getWorld());
+        if (tile.getWorld() == null)
             throw new IllegalStateException("Tile tried to fire event but has a null world!?!?");
         if (!DRGridTypeHelper.instance.isTileValid(tile))
             throw new IllegalArgumentException("Invalid tile: "+tile.getClass().getName());

@@ -1,8 +1,8 @@
 package mcjty.deepresonance.client.gui;
 
-import cpw.mods.fml.client.CustomModLoadingErrorDisplayException;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiErrorScreen;
+import net.minecraftforge.fml.client.CustomModLoadingErrorDisplayException;
 
 /**
  * Created by Elec332 on 3-10-2015.

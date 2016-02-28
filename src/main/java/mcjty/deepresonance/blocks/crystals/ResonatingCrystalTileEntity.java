@@ -1,11 +1,17 @@
 package mcjty.deepresonance.blocks.crystals;
 
+import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.lib.entity.GenericTileEntity;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -32,11 +38,6 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     private boolean glowing = false;
 
-    @Override
-    public boolean canUpdate() {
-        return false;
-    }
-
     public float getStrength() {
         return strength;
     }
@@ -59,27 +60,41 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     public void setStrength(float strength) {
         this.strength = strength;
-        markDirty();
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        markDirtyClient();
+    }
+
+    public boolean isEmpty() {
+        return power < EnergyCollectorTileEntity.CRYSTAL_MIN_POWER;
     }
 
     public void setPower(float power) {
+        boolean oldempty = isEmpty();
         this.power = power;
         markDirty();
-        // Don't do block update. We query power on demand from the tooltip of the crystal.
-//        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        boolean newempty = isEmpty();
+        if (oldempty != newempty) {
+            markDirtyClient();
+        }
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+        boolean oldempty = isEmpty();
+        super.onDataPacket(net, packet);
+        boolean newempty = isEmpty();
+        if (oldempty != newempty) {
+            worldObj.markBlockRangeForRenderUpdate(getPos(), getPos());
+        }
     }
 
     public void setEfficiency(float efficiency) {
         this.efficiency = efficiency;
-        markDirty();
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        markDirtyClient();
     }
 
     public void setPurity(float purity) {
         this.purity = purity;
-        markDirty();
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        markDirtyClient();
     }
 
     public void setGlowing(boolean glowing) {
@@ -87,8 +102,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
             return;
         }
         this.glowing = glowing;
-        markDirty();
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        markDirtyClient();
     }
 
     @Override
@@ -170,12 +184,18 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     // Special == 1, average random
     // Special == 2, best random
     // Special == 3, best non-overcharged
-    public static void spawnRandomCrystal(World world, Random random, int x, int y, int z, int special) {
-        world.setBlock(x, y, z, ModBlocks.resonatingCrystalBlock, 0, 3);
-        TileEntity te = world.getTileEntity(x, y, z);
+    // Special == 4, almost depleted
+    public static void spawnRandomCrystal(World world, Random random, BlockPos pos, int special) {
+        WorldHelper.setBlockState(world, pos, ModBlocks.resonatingCrystalBlock.getStateFromMeta(0), 3);
+        TileEntity te = WorldHelper.getTileAt(world, pos);
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
-            if (special >= 3) {
+            if (special >= 5) {
+                resonatingCrystalTileEntity.setStrength(1);
+                resonatingCrystalTileEntity.setPower(.05f);
+                resonatingCrystalTileEntity.setEfficiency(1);
+                resonatingCrystalTileEntity.setPurity(100);
+            } else if (special >= 3) {
                 resonatingCrystalTileEntity.setStrength(100);
                 resonatingCrystalTileEntity.setPower(100);
                 resonatingCrystalTileEntity.setEfficiency(100);

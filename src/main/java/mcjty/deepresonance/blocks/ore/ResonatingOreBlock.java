@@ -3,36 +3,30 @@ package mcjty.deepresonance.blocks.ore;
 import mcjty.deepresonance.DeepResonance;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.item.Item;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class ResonatingOreBlock extends Block {
-    private IIcon icon;
 
     public ResonatingOreBlock() {
         super(Material.rock);
         setHardness(3.0f);
         setResistance(5.0f);
         setHarvestLevel("pickaxe", 2);
-        setBlockName("oreResonating");
+        setUnlocalizedName("resonating_ore");
+        setRegistryName("resonating_ore");
         setCreativeTab(DeepResonance.tabDeepResonance);
+        GameRegistry.registerBlock(this);
+        OreDictionary.registerOre("oreResonating", this);
     }
 
-    @Override
-    public void registerBlockIcons(IIconRegister iconRegister) {
-        icon = iconRegister.registerIcon(DeepResonance.MODID + ":resonatingOre");
+    @SideOnly(Side.CLIENT)
+    public void initModel() {
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "inventory"));
     }
-
-    @Override
-    public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
-        return icon;
-    }
-
-    @Override
-    public IIcon getIcon(int side, int meta) {
-        return icon;
-    }
-
-
 }

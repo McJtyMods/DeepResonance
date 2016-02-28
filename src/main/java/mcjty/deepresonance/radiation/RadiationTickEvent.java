@@ -1,7 +1,7 @@
 package mcjty.deepresonance.radiation;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import com.google.common.collect.Sets;
+import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.items.armor.ItemRadiationSuit;
 import mcjty.deepresonance.varia.QuadTree;
@@ -14,12 +14,20 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 public class RadiationTickEvent {
+
     public static final int MAXTICKS = 10;
     private int counter = MAXTICKS;
     private static Random random = new Random();
@@ -50,7 +58,7 @@ public class RadiationTickEvent {
         World entityWorld = MinecraftServer.getServer().getEntityWorld();
         DRRadiationManager radiationManager = DRRadiationManager.getManager(entityWorld);
 
-        Set<GlobalCoordinate> toRemove = new HashSet<GlobalCoordinate>();
+        Set<GlobalCoordinate> toRemove = Sets.newHashSet();
         boolean dirty = false;
 
         for (Map.Entry<GlobalCoordinate, DRRadiationManager.RadiationSource> source : radiationManager.getRadiationSources().entrySet()) {
@@ -109,7 +117,7 @@ public class RadiationTickEvent {
         double destz = centerz + dist * Math.sin(theta) * cosphi;
         double desty;
         if (random.nextFloat() > 0.5f) {
-            desty = world.getTopSolidOrLiquidBlock((int) destx, (int) destz);
+            desty = world.getTopSolidOrLiquidBlock(new BlockPos((int) destx, world.getActualHeight(),(int) destz)).getY();
         } else {
             desty = centery + dist * Math.sin(phi);
         }
@@ -125,55 +133,66 @@ public class RadiationTickEvent {
         int eventradius = 8;
         int damage;
         float poisonBlockChance;
+        float removeLeafChance;
         float setOnFireChance;
 
         if (strength > RadiationConfiguration.radiationDestructionEventLevel/2) {
             // Worst destruction event
             damage = 30;
             poisonBlockChance = 0.9f;
+            removeLeafChance = 9.0f;
             setOnFireChance = 0.03f;
         } else if (strength > RadiationConfiguration.radiationDestructionEventLevel/3) {
             // Moderate
             damage = 5;
             poisonBlockChance = 0.6f;
+            removeLeafChance = 4.0f;
             setOnFireChance = 0.001f;
         } else if (strength > RadiationConfiguration.radiationDestructionEventLevel/4) {
             // Minor
             damage = 1;
             poisonBlockChance = 0.3f;
+            removeLeafChance = 1.2f;
             setOnFireChance = 0.0f;
         } else {
             return;
         }
 
-        List list = world.selectEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(destx - eventradius, desty - eventradius, destz - eventradius, destx + eventradius, desty + eventradius, destz + eventradius), null);
-        for (Object o : list) {
-            EntityLivingBase entityLivingBase = (EntityLivingBase) o;
+        List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(destx - eventradius, desty - eventradius, destz - eventradius, destx + eventradius, desty + eventradius, destz + eventradius), null);
+        for (EntityLivingBase entityLivingBase : list) {
             entityLivingBase.addPotionEffect(new PotionEffect(Potion.harm.getId(), 10, damage));
         }
 
+        BlockPos.MutableBlockPos currentPos = new BlockPos.MutableBlockPos();
         for (int x = (int) (destx-eventradius); x <= destx+eventradius ; x++) {
             for (int y = (int) (desty-eventradius); y <= desty+eventradius ; y++) {
                 for (int z = (int) (destz-eventradius); z <= destz+eventradius ; z++) {
                     double dSq = (x-destx) * (x-destx) + (y-desty) * (y-desty) + (z-destz) * (z-destz);
                     double d = Math.sqrt(dSq);
                     double str = (eventradius-d) / eventradius;
+                    currentPos = currentPos.set(x, y, z);
 
-                    Block block = world.getBlock(x, y, z);
+                    Block block = WorldHelper.getBlockAt(world, currentPos);
                     if (block == Blocks.dirt || block == Blocks.farmland || block == Blocks.grass) {
                         if (random.nextFloat() < poisonBlockChance * str) {
-                            world.setBlock(x, y, z, ModBlocks.poisonedDirtBlock, 0, 2);
+                            WorldHelper.setBlockState(world, currentPos, ModBlocks.poisonedDirtBlock.getDefaultState(), 2);
                         }
-                    } else if (block.isLeaves(world, x, y, z)) {
-                        if (random.nextFloat() < poisonBlockChance * str) {
-                            world.setBlockToAir(x, y, z);
+                    } else if (block.isLeaves(world, currentPos) || block instanceof IPlantable) {
+                        if (random.nextFloat() < removeLeafChance * str) {
+                            world.setBlockToAir(currentPos);
                         }
                     }
                     if (random.nextFloat() < setOnFireChance * str) {
-                        if ((!world.isAirBlock(x, y, z)) && world.isAirBlock(x, y+1, z)) {
-                            Logging.logDebug("Set fire at: " + x + "," + y + "," + z);
-                            world.setBlock(x, y+1, z, Blocks.fire, 0, 3);
-                        }
+                        // @todo temporarily disabled fire because it causes 'TickNextTick list out of synch' for some reason
+//                        if ((!world.isAirBlock(currentPos))){
+//                            currentPos.set(x, y+1, z);
+//                            if(world.isAirBlock(currentPos)) {
+//                                Logging.logDebug("Set fire at: " + x + "," + y + "," + z);
+//                                System.out.println("RadiationTickEvent.handleDestructionEvent: FIRE");
+//                                System.out.flush();
+//                                WorldHelper.setBlockState(world, currentPos, Blocks.fire.getDefaultState(), 2);
+//                            }
+//                        }
                     }
                 }
             }
@@ -191,9 +210,8 @@ public class RadiationTickEvent {
         double radiusSq = radius * radius;
         float baseStrength = radiationSource.getStrength();
 
-        List list = world.selectEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(centerx - radius, centery - radius, centerz - radius, centerx + radius, centery + radius, centerz + radius), null);
-        for (Object o : list) {
-            EntityLivingBase entityLivingBase = (EntityLivingBase) o;
+        List<EntityLivingBase> list  = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(centerx - radius, centery - radius, centerz - radius, centerx + radius, centery + radius, centerz + radius), null);
+        for (EntityLivingBase entityLivingBase : list) {
 
             int pieces = ItemRadiationSuit.countSuitPieces(entityLivingBase);
             float protection = RadiationConfiguration.suitProtection[pieces];
@@ -208,30 +226,30 @@ public class RadiationTickEvent {
                 strength = strength * (float) radiationTree.factor(cx, cy, cz, (int) entityLivingBase.posX, (int) entityLivingBase.posY, (int) entityLivingBase.posZ);
 
                 if (strength < RadiationConfiguration.radiationStrenghLevel0) {
-                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.hunger.getId(), EFFECTS_MAX * MAXTICKS, 1, true));
+                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.hunger.getId(), EFFECTS_MAX * MAXTICKS, 1, true, true));
                 } else if (strength < RadiationConfiguration.radiationStrenghLevel1) {
-                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.hunger.getId(), EFFECTS_MAX * MAXTICKS, 2, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), EFFECTS_MAX * MAXTICKS, 1, true));
+                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.hunger.getId(), EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), EFFECTS_MAX * MAXTICKS, 1, true, true));
                 } else if (strength < RadiationConfiguration.radiationStrenghLevel2) {
-                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.hunger.getId(), EFFECTS_MAX * MAXTICKS, 2, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), EFFECTS_MAX * MAXTICKS, 2, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.weakness.getId(), EFFECTS_MAX * MAXTICKS, 1, true));
+                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.hunger.getId(), EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.weakness.getId(), EFFECTS_MAX * MAXTICKS, 1, true, true));
                 } else if (strength < RadiationConfiguration.radiationStrenghLevel3) {
-                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.hunger.getId(), EFFECTS_MAX * MAXTICKS, 2, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), EFFECTS_MAX * MAXTICKS, 2, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.weakness.getId(), EFFECTS_MAX * MAXTICKS, 2, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.poison.getId(), EFFECTS_MAX * MAXTICKS, 1, true));
+                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.hunger.getId(), EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.weakness.getId(), EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.poison.getId(), EFFECTS_MAX * MAXTICKS, 1, true, true));
                 } else if (strength < RadiationConfiguration.radiationStrenghLevel4) {
-                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.hunger.getId(), EFFECTS_MAX * MAXTICKS, 2, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), EFFECTS_MAX * MAXTICKS, 2, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.weakness.getId(), EFFECTS_MAX * MAXTICKS, 3, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.poison.getId(), EFFECTS_MAX * MAXTICKS, 2, true));
+                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.hunger.getId(), EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.weakness.getId(), EFFECTS_MAX * MAXTICKS, 3, true, true));
+                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.poison.getId(), EFFECTS_MAX * MAXTICKS, 2, true, true));
                 } else {
-                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.hunger.getId(), EFFECTS_MAX * MAXTICKS, 2, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), EFFECTS_MAX * MAXTICKS, 2, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.weakness.getId(), EFFECTS_MAX * MAXTICKS, 3, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.poison.getId(), EFFECTS_MAX * MAXTICKS, 3, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.wither.getId(), EFFECTS_MAX * MAXTICKS, 2, true));
+                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.hunger.getId(), EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.weakness.getId(), EFFECTS_MAX * MAXTICKS, 3, true, true));
+                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.poison.getId(), EFFECTS_MAX * MAXTICKS, 3, true, true));
+                    entityLivingBase.addPotionEffect(new PotionEffect(Potion.wither.getId(), EFFECTS_MAX * MAXTICKS, 2, true, true));
                 }
             }
         }

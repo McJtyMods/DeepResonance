@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class LaserBonusConfiguration {
-    public static final String CATEGORY_LASERBONUS = "laserbonus";
+    public static final String CATEGORY_LASERBONUS = "lasercatalysts";
 
     private static String toString(InfusingBonus.Modifier modifier) {
         return modifier.getBonus() + ":" + modifier.getMaxOrMin();
@@ -51,7 +51,7 @@ public class LaserBonusConfiguration {
                 String key = entry.getKey();
                 if (key.endsWith("_color")) {
                     String name = key.substring(0, key.indexOf("_color"));
-                    System.out.println("name = " + name);
+                    Logging.log("Found infusion bonus for: " + name);
                     items.add(name);
                 }
             }

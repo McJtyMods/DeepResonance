@@ -1,7 +1,5 @@
 package mcjty.deepresonance.items.armor;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
@@ -9,6 +7,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -22,14 +22,14 @@ public class ItemRadiationSuit extends ItemArmor {
     public ItemRadiationSuit(ArmorMaterial material, int renderIndex, int armorType, String name) {
         super(material, renderIndex, armorType);
         setUnlocalizedName(name);
+        setRegistryName(name);
         this.textureSuffix = name;
-        setTextureName(DeepResonance.MODID+":radiationSuit"+name);
         setCreativeTab(DeepResonance.tabDeepResonance);
     }
 
     @Override
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
-        super.addInformation(itemStack, player, list, whatIsThis);
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedToolTip) {
+        super.addInformation(itemStack, player, list, advancedToolTip);
         list.add("Every chest piece of the radiation suit");
         list.add("adds a bit of protection for radiation");
     }
@@ -41,14 +41,14 @@ public class ItemRadiationSuit extends ItemArmor {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot) {
+    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot, ModelBiped _default) {
         switch (armorType) {
             case 0: return HelmetModel.helmetModel;
             case 1: return ChestModel.chestModel;
             case 2: return LegsModel.legsModel;
             case 3: return BootsModel.bootsModel;
+            default: return _default;
         }
-        return super.getArmorModel(entityLiving, itemStack, armorSlot);
     }
 
     @Override

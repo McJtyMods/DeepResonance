@@ -3,6 +3,7 @@ package mcjty.deepresonance.blocks.valve;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 
 public class ValveContainer extends GenericContainer {
     public static final ContainerFactory factory = new ContainerFactory() {
@@ -12,7 +13,7 @@ public class ValveContainer extends GenericContainer {
         }
     };
 
-    public ValveContainer(EntityPlayer player) {
+    public ValveContainer(EntityPlayer player, IInventory inventory) {
         super(factory);
         addInventory(ContainerFactory.CONTAINER_PLAYER, player.inventory);
         generateSlots();

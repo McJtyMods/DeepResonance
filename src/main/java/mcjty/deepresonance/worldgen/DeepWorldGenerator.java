@@ -1,24 +1,28 @@
 package mcjty.deepresonance.worldgen;
 
-import cpw.mods.fml.common.IWorldGenerator;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.lib.varia.Logging;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.pattern.BlockHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraftforge.event.world.ChunkDataEvent;
+import net.minecraftforge.fml.common.IWorldGenerator;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayDeque;
 import java.util.Random;
 
 public class DeepWorldGenerator implements IWorldGenerator {
+
     public static final String RETRO_NAME = "DeepResGen";
     public static DeepWorldGenerator instance = new DeepWorldGenerator();
 
@@ -49,28 +53,31 @@ public class DeepWorldGenerator implements IWorldGenerator {
         for (int i = 0 ; i < WorldGenConfiguration.crystalSpawnTries ; i++) {
             int x = chunkX * 16 + random.nextInt(16);
             int z = chunkZ * 16 + random.nextInt(16);
-            int y = world.getTopSolidOrLiquidBlock(x, z)-1;
+            int y = world.getTopSolidOrLiquidBlock(new BlockPos(x, world.provider.getActualHeight(), z)).getY()-1;
             boolean air = false;
+            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
             while (y > 1 && !air) {
-                if (world.isAirBlock(x, y, z)) {
+                if (world.isAirBlock(pos)) {
                     air = true;
                 }
                 y--;
+                pos.set(x, y, z);
             }
             if (air) {
                 while (y > 1 && air) {
-                    if (!world.isAirBlock(x, y, z)) {
+                    if (!world.isAirBlock(pos)) {
                         air = false;
                     } else {
                         y--;
+                        pos.set(x, y, z);
                     }
                 }
                 if (!air) {
-                    if (world.getBlock(x, y, z) == Blocks.stone) {
+                    if (WorldHelper.getBlockAt(world, pos) == Blocks.stone) {
                         if (WorldGenConfiguration.verboseSpawn) {
                             Logging.log("Spawned a crystal at: " + x + "," + y + "," + z);
                         }
-                        ResonatingCrystalTileEntity.spawnRandomCrystal(world, random, x, y+1, z, 0);
+                        ResonatingCrystalTileEntity.spawnRandomCrystal(world, random, pos.set(x, y+1, z), 0);
                         return;
                     }
                 }
@@ -78,14 +85,13 @@ public class DeepWorldGenerator implements IWorldGenerator {
         }
     }
 
-    public void addOreSpawn(Block block, byte blockMeta, Block targetBlock,
-                            World world, Random random, int blockXPos, int blockZPos, int minVeinSize, int maxVeinSize, int chancesToSpawn, int minY, int maxY) {
-        WorldGenMinable minable = new WorldGenMinable(block, blockMeta, (minVeinSize - random.nextInt(maxVeinSize - minVeinSize)), targetBlock);
+    public void addOreSpawn(Block block, byte blockMeta, Block targetBlock, World world, Random random, int blockXPos, int blockZPos, int minVeinSize, int maxVeinSize, int chancesToSpawn, int minY, int maxY) {
+        WorldGenMinable minable = new WorldGenMinable(block.getStateFromMeta(blockMeta), (minVeinSize - random.nextInt(maxVeinSize - minVeinSize)), BlockHelper.forBlock(targetBlock));
         for (int i = 0 ; i < chancesToSpawn ; i++) {
             int posX = blockXPos + random.nextInt(16);
             int posY = minY + random.nextInt(maxY - minY);
             int posZ = blockZPos + random.nextInt(16);
-            minable.generate(world, random, posX, posY, posZ);
+            minable.generate(world, random, new BlockPos(posX, posY, posZ));
         }
     }
 
@@ -102,7 +108,7 @@ public class DeepWorldGenerator implements IWorldGenerator {
 
     @SubscribeEvent
     public void handleChunkLoadEvent(ChunkDataEvent.Load event) {
-        int dim = event.world.provider.dimensionId;
+        int dim = WorldHelper.getDimID(event.world);
 
         boolean regen = false;
         NBTTagCompound tag = (NBTTagCompound) event.getData().getTag(RETRO_NAME);
@@ -112,7 +118,9 @@ public class DeepWorldGenerator implements IWorldGenerator {
         if (tag != null) {
             boolean generated = WorldGenConfiguration.retrogen && !tag.hasKey("generated");
             if (generated) {
-                Logging.log("Queuing Retrogen for chunk: " + cCoord.toString() + ".");
+                if (WorldGenConfiguration.verboseSpawn) {
+                    Logging.log("Queuing Retrogen for chunk: " + cCoord.toString() + ".");
+                }
                 regen = true;
             }
         } else {

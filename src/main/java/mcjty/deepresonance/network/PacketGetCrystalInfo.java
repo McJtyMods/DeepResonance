@@ -1,50 +1,54 @@
 package mcjty.deepresonance.network;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import elec332.core.world.WorldHelper;
 import io.netty.buffer.ByteBuf;
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
+import mcjty.lib.network.NetworkTools;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketGetCrystalInfo implements IMessage,IMessageHandler<PacketGetCrystalInfo, PacketReturnCrystalInfo> {
-    private int x;
-    private int y;
-    private int z;
+public class PacketGetCrystalInfo implements IMessage {
+    private BlockPos pos;
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        x = buf.readInt();
-        y = buf.readInt();
-        z = buf.readInt();
+        pos = NetworkTools.readPos(buf);
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeInt(x);
-        buf.writeInt(y);
-        buf.writeInt(z);
+        NetworkTools.writePos(buf, pos);
     }
 
     public PacketGetCrystalInfo() {
     }
 
-    public PacketGetCrystalInfo(int x, int y, int z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public PacketGetCrystalInfo(BlockPos pos) {
+        this.pos = pos;
     }
 
-    @Override
-    public PacketReturnCrystalInfo onMessage(PacketGetCrystalInfo message, MessageContext ctx) {
-        World world = ctx.getServerHandler().playerEntity.worldObj;
-        TileEntity tileEntity = world.getTileEntity(message.x, message.y, message.z);
-        if (tileEntity instanceof ResonatingCrystalTileEntity) {
-            ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
-            return new PacketReturnCrystalInfo(resonatingCrystalTileEntity.getRfPerTick(), resonatingCrystalTileEntity.getPower());
+    public static class Handler implements IMessageHandler<PacketGetCrystalInfo, IMessage> {
+        @Override
+        public IMessage onMessage(PacketGetCrystalInfo message, MessageContext ctx) {
+            MinecraftServer.getServer().addScheduledTask(() -> handle(message, ctx));
+            return null;
         }
-        return null;
+
+        private void handle(PacketGetCrystalInfo message, MessageContext ctx) {
+            World world = ctx.getServerHandler().playerEntity.worldObj;
+            TileEntity tileEntity = WorldHelper.getTileAt(world, message.pos);
+            if (tileEntity instanceof ResonatingCrystalTileEntity) {
+                ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
+                PacketReturnCrystalInfo packet = new PacketReturnCrystalInfo(resonatingCrystalTileEntity.getRfPerTick(), resonatingCrystalTileEntity.getPower());
+                DeepResonance.networkHandler.getNetworkWrapper().sendTo(packet, ctx.getServerHandler().playerEntity);
+            }
+        }
     }
 
 }

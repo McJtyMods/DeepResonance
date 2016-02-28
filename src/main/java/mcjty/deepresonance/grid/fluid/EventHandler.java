@@ -1,8 +1,8 @@
 package mcjty.deepresonance.grid.fluid;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.grid.fluid.event.FluidTileEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Created by Elec332 on 3-8-2015.

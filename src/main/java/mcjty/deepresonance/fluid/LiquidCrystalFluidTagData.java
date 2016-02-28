@@ -14,8 +14,7 @@ public final class LiquidCrystalFluidTagData {
 
     public static FluidStack makeLiquidCrystalStack(int amount, float quality, float purity, float strength, float efficiency) {
         FluidStack stack = new FluidStack(DRFluidRegistry.liquidCrystal, amount);
-        NBTTagCompound tagCompound = new NBTTagCompound();
-        stack.tag = tagCompound;
+        stack.tag = new NBTTagCompound();
         stack.tag.setFloat("quality", quality);
         stack.tag.setFloat("purity", purity);
         stack.tag.setFloat("strength", strength);
@@ -25,8 +24,7 @@ public final class LiquidCrystalFluidTagData {
 
     public FluidStack makeLiquidCrystalStack() {
         FluidStack stack = new FluidStack(DRFluidRegistry.liquidCrystal, referenceStack.amount);
-        NBTTagCompound tagCompound = new NBTTagCompound();
-        stack.tag = tagCompound;
+        stack.tag = new NBTTagCompound();
         stack.tag.setFloat("quality", quality);
         stack.tag.setFloat("purity", purity);
         stack.tag.setFloat("strength", strength);

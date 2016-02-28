@@ -1,14 +1,9 @@
 package mcjty.deepresonance.blocks.duct;
 
-import mcjty.deepresonance.blocks.base.ElecGenericBlockBase;
-import mcjty.deepresonance.client.render.ModRenderers;
-import mcjty.lib.entity.GenericTileEntity;
-import net.minecraft.block.material.Material;
-
 /**
  * Created by Elec332 on 3-8-2015.
  */
-public class BlockDuct extends ElecGenericBlockBase {
+public class BlockDuct {}/*extends ElecGenericBlockBase {
 
     public BlockDuct(Class<? extends GenericTileEntity> tileClass, String blockName) {
         super(Material.rock, tileClass, blockName);
@@ -18,4 +13,4 @@ public class BlockDuct extends ElecGenericBlockBase {
     public int getRenderType() {
         return ModRenderers.ductRenderID;
     }
-}
+}*/

@@ -1,34 +1,37 @@
-item.DeepResonanceManual.name=Deep Resonance Manual
-item.RadiationMonitor.name=Radiation Monitor
-item.ResonatingPlate.name=Resonating Plate
-item.FilterMaterial.name=Filter Material
-item.SpentFilterMaterial.name=Spent Filter Material
-item.SpentFilterMaterial.name=Spent Filter Material
-item.LiquidInjector.name=Liquid Injector
+item.dr_manual.name=Deep Resonance Manual
+item.radiation_module.name=Radiation Screen Module
+item.radiation_monitor.name=Radiation Monitor
+item.resonating_plate.name=Resonating Plate
+item.filter.name=Filter Material
+item.spent_filter.name=Spent Filter Material
+item.insert_liquid.name=Liquid Injector
 //Maybe should be different?
 item.Helmet0.name=Radiation Suit Helmet (WIP)
 item.Chest1.name=Radiation Suit Chestplate (WIP)
 item.Leggings2.name=Radiation Suit Leggings (WIP)
 item.Boots3.name=Radiation Suit Boots (WIP)
 
-tile.oreResonating.name=Resonating Ore
-tile.blockResonating.name=Resonating Plate Block
-tile.denseObsidian.name=Dense Obsidian
-tile.denseGlass.name=Dense Glass
-tile.poisonedDirt.name=Poisoned Dirt
-tile.resonatingCrystalBlock.name=Resonating Crystal
-tile.generatorBlock.name=Generator
-tile.generatorControllerBlock.name=Generator Controller
-tile.energyCollectorBlock.name=Energy Collector
-tile.machineFrame.name=Machine Frame
-tile.tankBlock.name=Tank
-tile.crystalizerBlock.name=Crystalizer
-tile.smelterBlock.name=Smelter
-tile.purifierBlock.name=Purifier
-tile.pedestalBlock.name=Pedestal
-tile.valveBlock.name=Valve
-tile.lensBlock.name=Lens
-tile.laserBlock.name=Infusing Laser
+tile.liquid_crystal.name=Liquid Crystal
+
+tile.radiation_sensor.name=Radiation Sensor
+tile.resonating_ore.name=Resonating Ore
+tile.resonating_block.name=Resonating Plate Block
+tile.dense_obsidian.name=Dense Obsidian
+tile.dense_glass.name=Dense Glass
+tile.poisoned_dirt.name=Poisoned Dirt
+tile.resonating_crystal.name=Resonating Crystal
+tile.generator.name=Generator
+tile.generator_controller.name=Generator Controller
+tile.energy_collector.name=Energy Collector
+tile.machine_frame.name=Machine Frame
+tile.tank.name=Tank
+tile.crystalizer.name=Crystalizer
+tile.smelter.name=Smelter
+tile.purifier.name=Purifier
+tile.pedestal.name=Pedestal
+tile.valve.name=Valve
+tile.lens.name=Lens
+tile.laser.name=Infusing Laser
 
 itemGroup.DeepResonance=Deep Resonance
 
