@@ -1,33 +1,37 @@
-item.DeepResonanceManual.name=Deep Resonance 手册
-item.RadiationMonitor.name=辐射显示器
-item.ResonatingPlate.name=共振板
-item.FilterMaterial.name=过滤材料
-item.SpentFilterMaterial.name=已用的过滤材料
-item.SpentFilterMaterial.name=已用的过滤材料
-item.LiquidInjector.name=液体注射器
+item.dr_manual.name=Deep Resonance手册
+item.radiation_module.name=辐射屏幕模块
+item.radiation_monitor.name=辐射显示器
+item.resonating_plate.name=共振板
+item.filter.name=过滤材料
+item.spent_filter.name=已用的过滤材料
+item.insert_liquid.name=液体注射器
+//Maybe should be different?
 item.Helmet0.name=防辐射头盔 (WIP)
 item.Chest1.name=防辐射胸甲 (WIP)
 item.Leggings2.name=防辐射护腿 (WIP)
 item.Boots3.name=防辐射靴子 (WIP)
 
-tile.oreResonating.name=共振矿石
-tile.blockResonating.name=共振板块
-tile.denseObsidian.name=致密黑曜石
-tile.denseGlass.name=致密玻璃
-tile.poisonedDirt.name=毒泥土
-tile.resonatingCrystalBlock.name=共振水晶
-tile.generatorBlock.name=发电机
-tile.generatorControllerBlock.name=发电机控制器
-tile.energyCollectorBlock.name=能源收集器
-tile.machineFrame.name=机器框架
-tile.tankBlock.name=储罐
-tile.crystalizerBlock.name=结晶器
-tile.smelterBlock.name=冶炼炉
-tile.purifierBlock.name=净化器
-tile.pedestalBlock.name=磉
-tile.valveBlock.name=阀门
-tile.lensBlock.name=镜片
-tile.laserBlock.name=注入激光
+tile.liquid_crystal.name=液态共振水晶
+
+tile.radiation_sensor.name=辐射传感器
+tile.resonating_ore.name=共振矿石
+tile.resonating_block.name=共振板块
+tile.dense_obsidian.name=致密黑曜石
+tile.dense_glass.name=致密玻璃
+tile.poisoned_dirt.name=毒泥土
+tile.resonating_crystal.name=共振水晶
+tile.generator.name=发电机
+tile.generator_controller.name=发电机控制器
+tile.energy_collector.name=能源收集器
+tile.machine_frame.name=机器框架
+tile.tank.name=储罐
+tile.crystalizer.name=结晶器
+tile.smelter.name=冶炼炉
+tile.purifier.name=净化器
+tile.pedestal.name=磉
+tile.valve.name=阀门
+tile.lens.name=镜片
+tile.laser.name=注射激光
 
 itemGroup.DeepResonance=Deep Resonance
 
