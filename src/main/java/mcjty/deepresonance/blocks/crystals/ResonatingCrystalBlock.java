@@ -177,6 +177,17 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
         return false;
     }
 
+
+    @Override
+    public boolean isFullBlock() {
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube() {
+        return false;
+    }
+
     @Override
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
