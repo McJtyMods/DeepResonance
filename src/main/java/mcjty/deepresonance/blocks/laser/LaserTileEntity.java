@@ -312,6 +312,9 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     private BlockPos findLens() {
+        if (!worldObj.isBlockLoaded(getPos())) {
+            return null;
+        }
         IBlockState state = worldObj.getBlockState(getPos());
         int meta = state.getBlock().getMetaFromState(state);
         EnumFacing direction = BlockTools.getOrientationHoriz(meta);
@@ -379,6 +382,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
 
     @Override
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
+        super.readRestorableFromNBT(tagCompound);
         readBufferFromNBT(tagCompound, inventoryHelper);
         crystalLiquid = tagCompound.getInteger("liquid");
     }
@@ -393,6 +397,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
 
     @Override
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
+        super.writeRestorableToNBT(tagCompound);
         writeBufferToNBT(tagCompound, inventoryHelper);
         tagCompound.setInteger("liquid", crystalLiquid);
     }
