@@ -102,7 +102,11 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
             return;
         }
         this.glowing = glowing;
-        markDirtyClient();
+        if (hasWorldObj()) {
+            markDirtyClient();
+        } else {
+            markDirty();
+        }
     }
 
     @Override
