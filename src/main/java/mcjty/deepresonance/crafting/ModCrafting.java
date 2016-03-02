@@ -13,6 +13,7 @@ import mcjty.deepresonance.blocks.smelter.SmelterSetup;
 import mcjty.deepresonance.blocks.tank.TankSetup;
 import mcjty.deepresonance.blocks.valve.ValveSetup;
 import mcjty.deepresonance.items.ModItems;
+import mcjty.deepresonance.items.rftoolsmodule.RFToolsSupport;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -33,11 +34,11 @@ public final class ModCrafting {
 
         GameRegistry.addSmelting(ModBlocks.resonatingOreBlock, new ItemStack(ModItems.resonatingPlateItem, 8), 0.0f);
 
-        if (ModBlocks.radiationSensorBlock != null) {
-            GameRegistry.addRecipe(new ItemStack(ModBlocks.radiationSensorBlock), "qcq", "tot", "qrq", 'r', Items.redstone, 'q', Items.quartz, 'o', ModBlocks.machineFrame,
+        if (RFToolsSupport.radiationSensorBlock != null) {
+            GameRegistry.addRecipe(new ItemStack(RFToolsSupport.radiationSensorBlock), "qcq", "tot", "qrq", 'r', Items.redstone, 'q', Items.quartz, 'o', ModBlocks.machineFrame,
                                    'c', Items.clock, 't', Items.compass);
             ItemStack inkSac = new ItemStack(Items.dye, 1, 0);
-            GameRegistry.addRecipe(new ItemStack(ModItems.radiationModuleItem), " c ", "rir", " b ", 'c', Items.ender_pearl, 'r', ModItems.resonatingPlateItem, 'i', Items.iron_ingot,
+            GameRegistry.addRecipe(new ItemStack(RFToolsSupport.radiationModuleItem), " c ", "rir", " b ", 'c', Items.ender_pearl, 'r', ModItems.resonatingPlateItem, 'i', Items.iron_ingot,
                                    'b', inkSac);
         }
 

@@ -1,6 +1,5 @@
 package mcjty.deepresonance.items.rftoolsmodule;
 
-import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.items.GenericDRItem;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
 import mcjty.deepresonance.varia.BlockInfo;
@@ -80,7 +79,7 @@ public class RadiationModuleItem extends GenericDRItem implements IModuleProvide
             tagCompound = new NBTTagCompound();
         }
 
-        if (block == ModBlocks.radiationSensorBlock) {
+        if (block == RFToolsSupport.radiationSensorBlock) {
             tagCompound.setInteger("monitordim", world.provider.getDimensionId());
             tagCompound.setInteger("monitorx", pos.getX());
             tagCompound.setInteger("monitory", pos.getY());

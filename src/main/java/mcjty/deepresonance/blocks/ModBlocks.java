@@ -15,10 +15,10 @@ import mcjty.deepresonance.blocks.ore.ResonatingPlateBlock;
 import mcjty.deepresonance.blocks.pedestal.PedestalSetup;
 import mcjty.deepresonance.blocks.poisondirt.PoisonedDirtBlock;
 import mcjty.deepresonance.blocks.purifier.PurifierSetup;
-import mcjty.deepresonance.blocks.radiationsensor.RadiationSensorBlock;
 import mcjty.deepresonance.blocks.smelter.SmelterSetup;
 import mcjty.deepresonance.blocks.tank.TankSetup;
 import mcjty.deepresonance.blocks.valve.ValveSetup;
+import mcjty.deepresonance.items.rftoolsmodule.RFToolsSupport;
 import net.minecraft.block.Block;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -33,7 +33,6 @@ public final class ModBlocks {
     public static PoisonedDirtBlock poisonedDirtBlock;
     public static Block duct;
     public static MachineFrame machineFrame;
-    public static RadiationSensorBlock radiationSensorBlock;
 
     public static void init() {
         resonatingOreBlock = new ResonatingOreBlock();
@@ -44,7 +43,7 @@ public final class ModBlocks {
         poisonedDirtBlock = new PoisonedDirtBlock();
         resonatingCrystalBlock = new ResonatingCrystalBlock();
         if (DeepResonance.instance.rftools) {
-            radiationSensorBlock = new RadiationSensorBlock();
+            RFToolsSupport.initBlocks();
         }
 
 //        duct = new BlockDuct(TileBasicFluidDuct.class, "basicFluidDuct").registerTile().register();
@@ -84,8 +83,8 @@ public final class ModBlocks {
         ValveSetup.setupModels();
         LensSetup.setupModels();
         LaserSetup.setupModels();
-        if (radiationSensorBlock != null) {
-            radiationSensorBlock.initModel();
+        if (DeepResonance.instance.rftools) {
+            RFToolsSupport.initBlockModels();
         }
     }
 }

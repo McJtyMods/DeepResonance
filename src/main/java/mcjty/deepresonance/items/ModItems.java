@@ -3,7 +3,7 @@ package mcjty.deepresonance.items;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.items.armor.ItemRadiationSuit;
 import mcjty.deepresonance.items.manual.DeepResonanceManualItem;
-import mcjty.deepresonance.items.rftoolsmodule.RadiationModuleItem;
+import mcjty.deepresonance.items.rftoolsmodule.RFToolsSupport;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.ItemArmor;
 import net.minecraftforge.client.model.ModelLoader;
@@ -19,7 +19,6 @@ public final class ModItems {
     public static SpentFilterMaterialItem spentFilterMaterialItem;
     public static ItemRadiationSuit helmet, chestplate, leggings, boots;
     public static InsertLiquidItem insertLiquidItem;
-    public static RadiationModuleItem radiationModuleItem;
 
     public static void init() {
         deepResonanceManualItem = new DeepResonanceManualItem();
@@ -29,7 +28,7 @@ public final class ModItems {
         spentFilterMaterialItem = new SpentFilterMaterialItem();
         insertLiquidItem = new InsertLiquidItem();
         if (DeepResonance.instance.rftools) {
-            radiationModuleItem = new RadiationModuleItem();
+            RFToolsSupport.initItems();
         }
 
         helmet = newRadiationSuitPart(0, "helmet");
@@ -46,8 +45,8 @@ public final class ModItems {
         filterMaterialItem.initModel();
         spentFilterMaterialItem.initModel();
         insertLiquidItem.initModel();
-        if (radiationModuleItem != null) {
-            radiationModuleItem.initModel();
+        if (DeepResonance.instance.rftools) {
+            RFToolsSupport.initItemModels();
         }
 
         ModelLoader.setCustomModelResourceLocation(helmet, 0, new ModelResourceLocation(helmet.getRegistryName(), "inventory"));

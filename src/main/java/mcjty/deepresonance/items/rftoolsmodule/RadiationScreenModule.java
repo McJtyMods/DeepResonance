@@ -1,6 +1,5 @@
 package mcjty.deepresonance.items.rftoolsmodule;
 
-import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.items.RadiationMonitorItem;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
 import mcjty.lib.varia.BlockPosTools;
@@ -30,7 +29,7 @@ public class RadiationScreenModule implements IScreenModule<IModuleDataInteger> 
         }
 
         Block block = world.getBlockState(coordinate).getBlock();
-        if (block != ModBlocks.radiationSensorBlock) {
+        if (block != RFToolsSupport.radiationSensorBlock) {
             return null;
         }
         float strength = RadiationMonitorItem.calculateRadiationStrength(world, new GlobalCoordinate(coordinate, dim));
