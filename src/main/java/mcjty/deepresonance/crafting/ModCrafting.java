@@ -1,5 +1,6 @@
 package mcjty.deepresonance.crafting;
 
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
 import mcjty.deepresonance.blocks.crystalizer.CrystalizerSetup;
@@ -34,12 +35,8 @@ public final class ModCrafting {
 
         GameRegistry.addSmelting(ModBlocks.resonatingOreBlock, new ItemStack(ModItems.resonatingPlateItem, 8), 0.0f);
 
-        if (RFToolsSupport.radiationSensorBlock != null) {
-            GameRegistry.addRecipe(new ItemStack(RFToolsSupport.radiationSensorBlock), "qcq", "tot", "qrq", 'r', Items.redstone, 'q', Items.quartz, 'o', ModBlocks.machineFrame,
-                                   'c', Items.clock, 't', Items.compass);
-            ItemStack inkSac = new ItemStack(Items.dye, 1, 0);
-            GameRegistry.addRecipe(new ItemStack(RFToolsSupport.radiationModuleItem), " c ", "rir", " b ", 'c', Items.ender_pearl, 'r', ModItems.resonatingPlateItem, 'i', Items.iron_ingot,
-                                   'b', inkSac);
+        if (DeepResonance.instance.rftools) {
+            RFToolsSupport.initCrafting();
         }
 
         GameRegistry.addRecipe(new ItemStack(ModItems.helmet), "ppp", "p p", "   ", 'p', ModItems.resonatingPlateItem);
