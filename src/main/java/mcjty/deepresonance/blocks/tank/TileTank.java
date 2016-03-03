@@ -150,26 +150,11 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     @Override
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
         super.writeRestorableToNBT(tagCompound);
-        if (multiBlock != null)
+        if (multiBlock != null) {
             getMultiBlock().setDataToTile(this);
+        }
         tagCompound.setTag("multiBlockData", multiBlockSaveData);
-        /*if (multiBlock != null) {
-            myTank = multiBlock.getFluidShare(this);
-            lastSeenFluid = multiBlock.getStoredFluid();
-        }
-        if (myTank != null) {
-            NBTTagCompound fluidTag = new NBTTagCompound();
-            myTank.writeToNBT(fluidTag);
-            tagCompound.setTag("fluid", fluidTag);
-        }
-        if (lastSeenFluid != null)
-            tagCompound.setString("lastSeenFluid", FluidRegistry.getFluidName(lastSeenFluid));*/
     }
-
-//    @Override
-//    public boolean shouldRenderInPass(int pass) {
-//        return pass == 1;
-//    }
 
     @Override
     public void setMultiBlock(DRTankMultiBlock multiBlock) {

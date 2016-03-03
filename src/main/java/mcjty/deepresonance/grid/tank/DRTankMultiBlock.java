@@ -262,7 +262,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
             TileTank tank = getTank(loc);
             if (tank != null) {
                 tank.lastSeenFluid = getStoredFluid();
-                tank.sendPacket(1, new NBTHelper().addToTag(DRFluidRegistry.getFluidName(getFluid()), "fluid").serializeNBT());
+                tank.sendPacket(1, new NBTHelper().addToTag(DRFluidRegistry.getFluidName(getStoredFluid()), "fluid").serializeNBT());
             }
         }
     }
