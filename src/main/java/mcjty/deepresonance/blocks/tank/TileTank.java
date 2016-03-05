@@ -92,13 +92,13 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
             ITankHook tankHook = hookMap.get(facing);
             BlockPos pos = getPos().offset(facing);
             TileEntity tile = WorldHelper.chunkLoaded(worldObj, pos) ? WorldHelper.getTileAt(worldObj, pos) : null;
-            if (tile != tankHook){
+            if ((tile == null && tankHook != null) || (tile != null && tankHook == null) || (tile != tankHook)){
                 hookMap.remove(facing);
                 if (tile instanceof ITankHook){
                     ((ITankHook) tile).hook(this, facing.getOpposite());
                     hookMap.put(facing, (ITankHook) tile);
                 }
-            } else {
+            } else if (tankHook != null){
                 tankHook.onContentChanged(this, facing.getOpposite());
             }
         }
