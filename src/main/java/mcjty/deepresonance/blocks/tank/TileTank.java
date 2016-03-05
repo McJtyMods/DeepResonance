@@ -1,6 +1,7 @@
 package mcjty.deepresonance.blocks.tank;
 
 import com.google.common.collect.Maps;
+import elec332.core.main.ElecCore;
 import elec332.core.multiblock.dynamic.IDynamicMultiBlockTile;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
@@ -182,7 +183,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         if (multiBlock != null) {
             getMultiBlock().setDataToTile(this);
         }
-        System.out.println("Writing restorable NBT @ "+pos);
+        ElecCore.systemPrintDebug("Writing restorable NBT @ " + pos);
         tagCompound.setTag("multiBlockData", multiBlockSaveData);
     }
 
@@ -198,7 +199,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
 
     @Override
     public void setSaveData(NBTTagCompound nbtTagCompound) {
-        System.out.println("Setting MB save data @ "+pos);
+        ElecCore.systemPrintDebug("Setting MB save data @ " + pos);
         this.multiBlockSaveData = nbtTagCompound;
     }
 
