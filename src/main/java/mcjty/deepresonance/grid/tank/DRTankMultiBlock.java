@@ -206,7 +206,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     }
 
     private TileTank getTank(BlockPos loc){
-        TileEntity tile = WorldHelper.getTileAt(world, loc);
+        TileEntity tile = WorldHelper.chunkLoaded(world, loc) ? WorldHelper.getTileAt(world, loc) : null;
         return tile instanceof TileTank ? (TileTank) tile : null;
     }
 

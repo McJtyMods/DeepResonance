@@ -154,10 +154,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block block) {
         TileEntity tile = WorldHelper.getTileAt(world, pos);
         if (tile instanceof TileTank) {
-            TileTank tank = (TileTank) tile;
-            for (Map.Entry<ITankHook, EnumFacing> entry : tank.getConnectedHooks().entrySet()) {
-                entry.getKey().hook(tank, entry.getValue());
-            }
+            ((TileTank) tile).onNeighborChange();
         }
     }
 
