@@ -20,7 +20,7 @@ public abstract class ElecTileBase extends GenericTileEntity implements IElecCor
     public void validate() {
         super.validate();
         ElecCore.tickHandler.registerCall(() -> {
-            if (WorldHelper.chunkExists(worldObj, pos)) {
+            if (WorldHelper.chunkLoaded(worldObj, pos)) {
                 onTileLoaded();
             }
         }, worldObj);
