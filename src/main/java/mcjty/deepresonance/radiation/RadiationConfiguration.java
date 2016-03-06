@@ -14,11 +14,13 @@ public class RadiationConfiguration {
     public static float strengthGrowthFactor = 0.001f;
     public static float strengthDecreasePerTick = 5.0f;
 
-    public static float radiationStrenghLevel0 = 50000.0f;
-    public static float radiationStrenghLevel1 = 100000.0f;
-    public static float radiationStrenghLevel2 = 200000.0f;
-    public static float radiationStrenghLevel3 = 500000.0f;
-    public static float radiationStrenghLevel4 = 1000000.0f;
+    public static float radiationEffectLevelNone = 2000.0f;
+    public static float radiationEffectLevel0 = 20000.0f;
+    public static float radiationEffectLevel1 = 50000.0f;
+    public static float radiationEffectLevel2 = 100000.0f;
+    public static float radiationEffectLevel3 = 200000.0f;
+    public static float radiationEffectLevel4 = 500000.0f;
+    public static float radiationEffectLevel5 = 1000000.0f;
 
     public static float radiationDestructionEventLevel = 200000.0f;
     public static float destructionEventChance = 0.02f;
@@ -62,16 +64,20 @@ public class RadiationConfiguration {
         strengthDecreasePerTick = (float) cfg.get(CATEGORY_RADIATION, "strengthDecreasePerTick", strengthDecreasePerTick,
                 "How much the radiation strength decreases every tick").getDouble();
 
-        radiationStrenghLevel0 = (float) cfg.get(CATEGORY_RADIATION, "radiationStrenghLevel0", radiationStrenghLevel0,
+        radiationEffectLevelNone = (float) cfg.get(CATEGORY_RADIATION, "radiationEffectLevelNone", radiationEffectLevelNone,
+                "Below this level no effects occur").getDouble();
+        radiationEffectLevel0 = (float) cfg.get(CATEGORY_RADIATION, "radiationEffectLevel0", radiationEffectLevel0,
                 "Radiation strength level 0").getDouble();
-        radiationStrenghLevel1 = (float) cfg.get(CATEGORY_RADIATION, "radiationStrenghLevel1", radiationStrenghLevel1,
+        radiationEffectLevel1 = (float) cfg.get(CATEGORY_RADIATION, "radiationEffectLevel1", radiationEffectLevel1,
                 "Radiation strength level 1").getDouble();
-        radiationStrenghLevel2 = (float) cfg.get(CATEGORY_RADIATION, "radiationStrenghLevel2", radiationStrenghLevel2,
+        radiationEffectLevel2 = (float) cfg.get(CATEGORY_RADIATION, "radiationEffectLevel2", radiationEffectLevel2,
                 "Radiation strength level 2").getDouble();
-        radiationStrenghLevel3 = (float) cfg.get(CATEGORY_RADIATION, "radiationStrenghLevel3", radiationStrenghLevel3,
+        radiationEffectLevel3 = (float) cfg.get(CATEGORY_RADIATION, "radiationEffectLevel3", radiationEffectLevel3,
                 "Radiation strength level 3").getDouble();
-        radiationStrenghLevel4 = (float) cfg.get(CATEGORY_RADIATION, "radiationStrenghLevel4", radiationStrenghLevel4,
+        radiationEffectLevel4 = (float) cfg.get(CATEGORY_RADIATION, "radiationEffectLevel4", radiationEffectLevel4,
                 "Radiation strength level 4").getDouble();
+        radiationEffectLevel5 = (float) cfg.get(CATEGORY_RADIATION, "radiationEffectLevel5", radiationEffectLevel5,
+                "Radiation strength level 5").getDouble();
 
         radiationDestructionEventLevel = (float) cfg.get(CATEGORY_RADIATION, "radiationDestructionEventLevel", radiationDestructionEventLevel,
                 "The radiation strength at which point destruction events can happen").getDouble();
