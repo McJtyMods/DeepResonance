@@ -91,7 +91,9 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
             tagCompound.setString("lastSeenFluid", FluidRegistry.getFluidName(lastSeenFluid));
         }
         tile.setSaveData(tagCompound);
-        tile.markDirty();
+        if (WorldHelper.chunkLoaded(world, tile.getPos())) {
+            tile.markDirty();
+        }
     }
 
     public int getComparatorInputOverride(){
