@@ -125,7 +125,7 @@ public class ConfigMachines {
         public static int rclPerCatalyst = 500;
 
         @Configurable(category = category, minValue = 1, maxValue = 10000000, comment = "The amount of crystal liquid we consume per catalyst item")
-        public static int crystalLiquidPerCatalyst = 50;
+        public static int crystalLiquidPerCatalyst = 25;
     }
 
     public static class Power {
