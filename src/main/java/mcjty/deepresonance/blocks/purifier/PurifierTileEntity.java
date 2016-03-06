@@ -204,10 +204,15 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
     public void unHook(TileTank tank, EnumFacing direction) {
         if (tilesEqual(bottomTank, tank)){
             bottomTank = null;
-            this.markDirty();
-            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+            notifyAndMB();
         } else if (tilesEqual(topTank, tank)){
             topTank = null;
+            notifyAndMB();
+        }
+    }
+
+    private void notifyAndMB(){
+        if (WorldHelper.chunkLoaded(worldObj, pos)){
             this.markDirty();
             this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
         }
