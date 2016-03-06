@@ -170,12 +170,10 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
     public void unHook(TileTank tank, EnumFacing direction) {
         if (tilesEqual(bottomTank, tank)){
             bottomTank = null;
-            this.markDirty();
-            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+            notifyAndMarkDirty();
         } else if (tilesEqual(topTank, tank)){
             topTank = null;
-            this.markDirty();
-            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+            notifyAndMarkDirty();
         }
     }
 
@@ -220,6 +218,13 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
             return true;
         }
         return false;
+    }
+
+    protected void notifyAndMarkDirty(){
+        if (WorldHelper.chunkLoaded(worldObj, pos)){
+            this.markDirty();
+            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+        }
     }
 
 }

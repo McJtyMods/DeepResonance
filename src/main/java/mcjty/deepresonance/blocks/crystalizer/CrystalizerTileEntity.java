@@ -191,8 +191,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
     public void unHook(TileTank tank, EnumFacing direction) {
         if (tilesEqual(rclTank, tank)){
             rclTank = null;
-            this.markDirty();
-            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+            notifyAndMarkDirty();
         }
     }
 
@@ -295,4 +294,12 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
         }
         return super.getCapability(capability, facing);
     }
+
+    protected void notifyAndMarkDirty(){
+        if (WorldHelper.chunkLoaded(worldObj, pos)){
+            this.markDirty();
+            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+        }
+    }
+
 }

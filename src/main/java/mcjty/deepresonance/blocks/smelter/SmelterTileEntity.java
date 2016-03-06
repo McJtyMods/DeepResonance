@@ -203,8 +203,7 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
             lavaTank = null;
         } else if (tilesEqual(rclTank, tank)){
             rclTank = null;
-            this.markDirty();
-            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+            notifyAndMarkDirty();
         }
         checkTanks = true;
     }
@@ -309,6 +308,13 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
             return (T) invHandler;
         }
         return super.getCapability(capability, facing);
+    }
+
+    protected void notifyAndMarkDirty(){
+        if (WorldHelper.chunkLoaded(worldObj, pos)){
+            this.markDirty();
+            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+        }
     }
 
 }
