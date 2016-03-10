@@ -18,7 +18,7 @@ public class RadiationSensorBlock extends Block {
         setResistance(500.0f);
         setStepSound(soundTypeGlass);
         setHarvestLevel("pickaxe", 0);
-        setUnlocalizedName("radiation_sensor");
+        setUnlocalizedName(DeepResonance.MODID + ".radiation_sensor");
         setRegistryName("radiation_sensor");
         setCreativeTab(DeepResonance.tabDeepResonance);
         GameRegistry.registerBlock(this);

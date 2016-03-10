@@ -23,7 +23,7 @@ public class DenseGlassBlock extends Block {
         setResistance(500.0f);
         setStepSound(soundTypeGlass);
         setHarvestLevel("pickaxe", 2);
-        setUnlocalizedName("dense_glass");
+        setUnlocalizedName(DeepResonance.MODID + ".dense_glass");
         setRegistryName("dense_glass");
         setCreativeTab(DeepResonance.tabDeepResonance);
         GameRegistry.registerBlock(this);

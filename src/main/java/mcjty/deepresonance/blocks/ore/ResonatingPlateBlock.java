@@ -30,7 +30,7 @@ public class ResonatingPlateBlock extends Block {
         if (ConfigMachines.PlateBlock.radiationStrength > 0) {
             setTickRandomly(true);
         }
-        setUnlocalizedName("resonating_block");
+        setUnlocalizedName(DeepResonance.MODID + ".resonating_block");
         setRegistryName("resonating_block");
         setCreativeTab(DeepResonance.tabDeepResonance);
         GameRegistry.registerBlock(this);

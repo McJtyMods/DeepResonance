@@ -11,7 +11,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class GenericDRItem extends Item {
 
     public GenericDRItem(String name) {
-        setUnlocalizedName(name);
+        setUnlocalizedName(DeepResonance.MODID + "." + name);
         setRegistryName(name);
         setCreativeTab(DeepResonance.tabDeepResonance);
         GameRegistry.registerItem(this, name);

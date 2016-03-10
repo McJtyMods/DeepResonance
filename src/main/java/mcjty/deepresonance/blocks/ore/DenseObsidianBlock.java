@@ -18,7 +18,7 @@ public class DenseObsidianBlock extends Block {
         setResistance(2000.0f);
         setStepSound(soundTypePiston);
         setHarvestLevel("pickaxe", 3);
-        setUnlocalizedName("dense_obsidian");
+        setUnlocalizedName(DeepResonance.MODID + ".dense_obsidian");
         setRegistryName("dense_obsidian");
         setCreativeTab(DeepResonance.tabDeepResonance);
         GameRegistry.registerBlock(this);
