@@ -90,7 +90,7 @@ public class DeepResonance implements ModBase {
 
         if (rftools) {
             Logging.log("Detected RFTools: enabling support");
-        }
+            FMLInterModComms.sendFunctionMessage("rftools", "getScreenModuleRegistry", "mcjty.deepresonance.items.rftoolsmodule.RFToolsSupport$GetScreenModuleRegistry");        }
 
         //@todo
 //        FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
