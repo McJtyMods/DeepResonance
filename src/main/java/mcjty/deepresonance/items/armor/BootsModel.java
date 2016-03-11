@@ -147,8 +147,8 @@ public class BootsModel extends ModelBiped {
     }
 
     public static void copyAngles(ModelRenderer source, ModelRenderer dest) {
-        dest.rotateAngleX = source.rotateAngleX;
-        dest.rotateAngleY = source.rotateAngleY;
-        dest.rotateAngleZ = source.rotateAngleZ;
+//        dest.rotateAngleX = source.rotateAngleX;
+//        dest.rotateAngleY = source.rotateAngleY;
+//        dest.rotateAngleZ = source.rotateAngleZ;
     }
 }
