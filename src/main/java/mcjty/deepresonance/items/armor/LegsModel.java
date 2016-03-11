@@ -79,17 +79,19 @@ public class LegsModel extends ModelBiped {
         setRotation(rightside2, 0F, 0F, 0F);
     }
 
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(entity, f, f1, f2, f3, f4, f5);
-        leftfront.render(f5);
-        rightfront.render(f5);
-        leftback.render(f5);
-        rightback.render(f5);
-        leftside1.render(f5);
-        rightside1.render(f5);
-        leftside2.render(f5);
-        rightside2.render(f5);
+    @Override
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float scale) {
+        super.render(entity, f, f1, f2, f3, f4, scale);
+        setRotationAngles(entity, f, f1, f2, f3, f4, scale);
+
+        leftfront.render(scale);
+        rightfront.render(scale);
+        leftback.render(scale);
+        rightback.render(scale);
+        leftside1.render(scale);
+        rightside1.render(scale);
+        leftside2.render(scale);
+        rightside2.render(scale);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {
@@ -100,6 +102,21 @@ public class LegsModel extends ModelBiped {
 
     public void setRotationAngles(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+
+        copyAngles(bipedLeftLeg, leftfront);
+        copyAngles(bipedLeftLeg, leftback);
+        copyAngles(bipedLeftLeg, leftside1);
+        copyAngles(bipedLeftLeg, leftside2);
+        copyAngles(bipedRightLeg, rightfront);
+        copyAngles(bipedRightLeg, rightback);
+        copyAngles(bipedRightLeg, rightside1);
+        copyAngles(bipedRightLeg, rightside2);
+    }
+
+    public static void copyAngles(ModelRenderer source, ModelRenderer dest) {
+        dest.rotateAngleX = source.rotateAngleX;
+        dest.rotateAngleY = source.rotateAngleY;
+        dest.rotateAngleZ = source.rotateAngleZ;
     }
 
 }
