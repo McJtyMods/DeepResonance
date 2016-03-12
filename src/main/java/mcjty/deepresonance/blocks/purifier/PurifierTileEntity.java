@@ -55,7 +55,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
         }
     }
 
-    protected void checkStateServer() {
+    private void checkStateServer() {
         if (progress > 0) {
             progress--;
             if (progress == 0) {

@@ -46,6 +46,7 @@ public class RadiationConfiguration {
     public static int radiationOverlayY = 10;
 
     public static int RADIATIONMODULE_RFPERTICK = 6;
+    public static int RCLMODULE_RFPERTICK = 6;
 
 
     public static void init(Configuration cfg) {
@@ -125,6 +126,8 @@ public class RadiationConfiguration {
 
         RADIATIONMODULE_RFPERTICK = cfg.get(CATEGORY_RADIATION, "radiationModuleRFPerTick", RADIATIONMODULE_RFPERTICK,
                                             "RF per tick/per block for the radiation screen module (if rftools is present)").getInt();
+        RCLMODULE_RFPERTICK = cfg.get(CATEGORY_RADIATION, "rclModuleRFPerTick", RCLMODULE_RFPERTICK,
+                                            "RF per tick/per block for the RCL screen module (if rftools is present)").getInt();
     }
 
 }

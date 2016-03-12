@@ -17,6 +17,7 @@ public class DRFluidRegistry {
     public static Fluid liquidCrystal = new Fluid("liquid_crystal", rclFluid, rclFluid);
 
     public static void initFluids(){
+        liquidCrystal.setUnlocalizedName(DeepResonance.MODID + "." + "liquid_crystal");
         FluidRegistry.registerFluid(liquidCrystal);
     }
 

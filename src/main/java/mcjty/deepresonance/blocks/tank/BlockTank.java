@@ -124,7 +124,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
             DecimalFormat decimalFormat = new DecimalFormat("#.#");
             currentTip.add(EnumChatFormatting.YELLOW + "Quality: " + decimalFormat.format(fluidData.getQuality() * 100) + "%");
             currentTip.add(EnumChatFormatting.YELLOW + "Purity: " + decimalFormat.format(fluidData.getPurity() * 100) + "%");
-            currentTip.add(EnumChatFormatting.YELLOW + "Power: " + decimalFormat.format(fluidData.getStrength() * 100) + "%");
+            currentTip.add(EnumChatFormatting.YELLOW + "Strength: " + decimalFormat.format(fluidData.getStrength() * 100) + "%");
             currentTip.add(EnumChatFormatting.YELLOW + "Efficiency: " + decimalFormat.format(fluidData.getEfficiency() * 100) + "%");
         }
         if (System.currentTimeMillis() - lastTime > 100) {

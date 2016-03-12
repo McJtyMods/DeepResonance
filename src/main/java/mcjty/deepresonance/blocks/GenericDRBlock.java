@@ -45,7 +45,7 @@ public abstract class GenericDRBlock<T extends GenericTileEntity, C extends Cont
                           String name, boolean isContainer) {
         super(DeepResonance.instance, material, tileEntityClass, isContainer);
         this.containerClass = containerClass;
-        setUnlocalizedName(name);
+        setUnlocalizedName(DeepResonance.MODID + "." + name);
         setRegistryName(name);
         setCreativeTab(DeepResonance.tabDeepResonance);
         GameRegistry.registerBlock(this, itemBlockClass, name);

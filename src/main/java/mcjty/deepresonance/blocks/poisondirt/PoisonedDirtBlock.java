@@ -17,7 +17,7 @@ public class PoisonedDirtBlock extends Block {
         setHardness(3.0f);
         setResistance(5.0f);
         setHarvestLevel("pickaxe", 2);
-        setUnlocalizedName("poisoned_dirt");
+        setUnlocalizedName(DeepResonance.MODID + ".poisoned_dirt");
         setRegistryName("poisoned_dirt");
         setCreativeTab(DeepResonance.tabDeepResonance);
         GameRegistry.registerBlock(this);
