@@ -94,7 +94,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
         float purity = fluidData.getPurity();
         float maxPurityToAdd = ConfigMachines.Purifier.addedPurity / 100.0f;
         float addedPurity = maxPurityToAdd;
-        float maxPurity = ConfigMachines.Purifier.maxPurity / 100.0f;
+        float maxPurity = (ConfigMachines.Purifier.maxPurity + .1f) / 100.0f;
         maxPurity *= fluidData.getQuality();
         if (purity + addedPurity > maxPurity) {
             addedPurity = maxPurity - purity;
