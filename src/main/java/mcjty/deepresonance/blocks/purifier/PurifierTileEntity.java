@@ -39,8 +39,6 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
     // Cache for the inventory used to put the spent filter material in.
     private InventoryLocator inventoryLocator = new InventoryLocator();
 
-    private LiquidCrystalFluidTagData fluidData = null;
-
     private static Random random = new Random();
 
     @Override
@@ -59,24 +57,24 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
         if (progress > 0) {
             progress--;
             if (progress == 0) {
-                if (fluidData != null) {
-                    // Done. First check if we can actually insert the liquid. If not we postpone this.
-                    progress = 1;
-                    if (getOutputTank() != null) {
-                        if (testFillOutputTank() && validSlot()) {
-                            if (random.nextInt(doPurify()) == 0) {
+                // Done. First check if we can actually insert the liquid. If not we postpone this.
+                progress = 1;
+                if (getOutputTank() != null) {
+                    if (canWork()) {
+                        LiquidCrystalFluidTagData fluidData = LiquidCrystalFluidTagData.fromStack(getInputTank().drain(null, ConfigMachines.Purifier.rclPerPurify, true));
+                        if (fluidData != null) {
+                            if (random.nextInt(doPurify(fluidData)) == 0) {
                                 consumeFilter();
                             }
-                            progress = 0;   // Really done
                         }
+                        progress = 0;   // Really done
                     }
                 }
             }
             markDirty();
         } else {
-            if (canWork() && validSlot()) {
+            if (canWork()) {
                 progress = ConfigMachines.Purifier.ticksPerPurify;
-                fluidData = LiquidCrystalFluidTagData.fromStack(getInputTank().drain(null, ConfigMachines.Purifier.rclPerPurify, true));
                 markDirty();
             }
         }
@@ -90,7 +88,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
         inventoryLocator.ejectStack(worldObj, pos.getX(), pos.getY(), pos.getZ(), spentMaterial, pos, directions);
     }
 
-    private int doPurify() {
+    private int doPurify(LiquidCrystalFluidTagData fluidData) {
         float purity = fluidData.getPurity();
         float maxPurityToAdd = ConfigMachines.Purifier.addedPurity / 100.0f;
         float addedPurity = maxPurityToAdd;
@@ -103,7 +101,6 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
                 // Put back the fluid we extracted.
                 FluidStack stack = fluidData.makeLiquidCrystalStack();
                 getOutputTank().fill(null, stack, true);
-                fluidData = null;
                 return 1000;
             }
         }
@@ -112,7 +109,6 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
         fluidData.setPurity(purity);
         FluidStack stack = fluidData.makeLiquidCrystalStack();
         getOutputTank().fill(null, stack, true);
-        fluidData = null;
         return (int) ((maxPurityToAdd - addedPurity) * 1000 / maxPurityToAdd + 1);
     }
 
@@ -141,6 +137,9 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
         if (getInputTank().getFluidAmount() < ConfigMachines.Purifier.rclPerPurify) {
             return false;
         }
+        if (!validSlot()) {
+            return false;
+        }
         // Same tank so operation is possible.
         return getInputTank().getMultiBlock().equals(getOutputTank().getMultiBlock()) || testFillOutputTank();
     }
@@ -154,12 +153,6 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
     public void writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("progress", progress);
-        if (fluidData != null) {
-            NBTTagCompound dataCompound = new NBTTagCompound();
-            fluidData.writeDataToNBT(dataCompound);
-            tagCompound.setTag("data", dataCompound);
-            tagCompound.setInteger("amount", fluidData.getInternalTankAmount());
-        }
     }
 
     @Override
@@ -172,13 +165,6 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
         progress = tagCompound.getInteger("progress");
-        if (tagCompound.hasKey("data")) {
-            NBTTagCompound dataCompound = (NBTTagCompound) tagCompound.getTag("data");
-            int amount = dataCompound.getInteger("amount");
-            fluidData = LiquidCrystalFluidTagData.fromNBT(dataCompound, amount);
-        } else {
-            fluidData = null;
-        }
     }
 
     @Override
