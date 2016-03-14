@@ -18,7 +18,7 @@ public class QuadTree {
     }
 
     // Return -1 if blockers inside this are different. Otherwise blocker value.
-    private float addBlocker(BlockPos coordinate, float blocker) {
+    public float addBlocker(BlockPos coordinate, float blocker) {
         if (child1 != null) {
             if (child1.box.isVecInside(coordinate)) {
                 float b = child1.addBlocker(coordinate, blocker);

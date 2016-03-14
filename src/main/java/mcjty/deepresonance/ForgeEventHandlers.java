@@ -43,7 +43,7 @@ public class ForgeEventHandlers {
             if (Math.abs(c.getX()-x) < radius && Math.abs(c.getY()-y) < radius && Math.abs(c.getZ()-z) < radius) {
                 Logging.logDebug("Removed blocker at: " + x + "," + y + "," + z);
                 QuadTree radiationTree = source.getRadiationTree(world, c.getX(), c.getY(), c.getZ());
-                radiationTree.addBlocker(x, y, z, 1.0f);
+                radiationTree.addBlocker(c, 1.0f);
             }
         }
     }
@@ -73,7 +73,7 @@ public class ForgeEventHandlers {
             if (Math.abs(c.getX()-x) < radius && Math.abs(c.getY()-y) < radius && Math.abs(c.getZ()-z) < radius) {
                 Logging.logDebug("Add blocker at: " + x + "," + y + "," + z);
                 QuadTree radiationTree = source.getRadiationTree(world, c.getX(), c.getY(), c.getZ());
-                radiationTree.addBlocker(x, y, z, blocker);
+                radiationTree.addBlocker(c, blocker);
             }
         }
 

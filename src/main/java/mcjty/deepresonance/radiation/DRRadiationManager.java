@@ -167,7 +167,7 @@ public class DRRadiationManager extends WorldSavedData {
                             IBlockState block = WorldHelper.getBlockState(world, pos);
                             float blocker = RadiationShieldRegistry.getBlocker(block);
                             if (blocker < 0.99f) {
-                                radiationTree.addBlocker(x, y, z, blocker);
+                                radiationTree.addBlocker(pos, blocker);
                             }
                         }
                     }
