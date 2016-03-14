@@ -44,6 +44,7 @@ import java.util.List;
 public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTileEntity, EmptyContainer> {
 
     public static PropertyBool EMPTY = PropertyBool.create("empty");
+    public static PropertyBool GENERATED = PropertyBool.create("generated");
 
     public static int tooltipRFTick = 0;
     public static float tooltipPower = 0;
@@ -56,6 +57,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
         setResistance(5.0f);
         setHarvestLevel("pickaxe", 2);
         setStepSound(soundTypeGlass);
+        setBlockBounds(0.1F, 0.0F, 0.1F, 0.9F, 0.8F, 0.9F);
     }
 
     @SideOnly(Side.CLIENT)
@@ -63,18 +65,29 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
     public void initModel() {
         ClientRegistry.bindTileEntitySpecialRenderer(ResonatingCrystalTileEntity.class, new ResonatingCrystalTESR());
 
-        ModelResourceLocation emptyModel = new ModelResourceLocation(getRegistryName(), "empty=true,facing=north");
-        ModelResourceLocation fullModel = new ModelResourceLocation(getRegistryName(), "empty=false,facing=north");
+        ModelResourceLocation emptyNaturalModel = new ModelResourceLocation(getRegistryName(), "empty=true,facing=north,generated=false");
+        ModelResourceLocation fullNaturalModel = new ModelResourceLocation(getRegistryName(), "empty=false,facing=north,generated=false");
+        ModelResourceLocation emptyGeneratedModel = new ModelResourceLocation(getRegistryName(), "empty=true,facing=north,generated=true");
+        ModelResourceLocation fullGeneratedModel = new ModelResourceLocation(getRegistryName(), "empty=false,facing=north,generated=true");
 
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(this), emptyModel, fullModel);
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(this), emptyNaturalModel, fullNaturalModel);
         ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(this), new ItemMeshDefinition() {
             @Override
             public ModelResourceLocation getModelLocation(ItemStack stack) {
                 float power = stack.getTagCompound() == null ? 1.0f : stack.getTagCompound().getFloat("power");
+                float purity = stack.getTagCompound() == null ? 1.0f : stack.getTagCompound().getFloat("purity");
                 if (power < EnergyCollectorTileEntity.CRYSTAL_MIN_POWER) {
-                    return emptyModel;
+                    if (purity > 30.0f) {
+                        return emptyGeneratedModel;
+                    } else {
+                        return emptyNaturalModel;
+                    }
                 } else {
-                    return fullModel;
+                    if (purity > 30.0f) {
+                        return fullGeneratedModel;
+                    } else {
+                        return fullNaturalModel;
+                    }
                 }
             }
         });
@@ -206,17 +219,19 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
 
     @Override
     protected BlockState createBlockState() {
-        return new BlockState(this, FACING_HORIZ, EMPTY);
+        return new BlockState(this, FACING_HORIZ, EMPTY, GENERATED);
     }
 
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity te = worldIn.getTileEntity(pos);
         boolean empty = false;
+        boolean generated = false;
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
             empty = resonatingCrystalTileEntity.isEmpty();
+            generated = resonatingCrystalTileEntity.getPurity() > 30.0f;
         }
-        return super.getActualState(state, worldIn, pos).withProperty(EMPTY, empty);
+        return super.getActualState(state, worldIn, pos).withProperty(EMPTY, empty).withProperty(GENERATED, generated);
     }
 }
