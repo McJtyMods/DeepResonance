@@ -10,15 +10,15 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class CmdSpawnCrystal extends AbstractDRCommand {
+public class CmdCrystal extends AbstractDRCommand {
     @Override
     public String getHelp() {
-        return "[0=nor, 1=avg, 2=maxrnd, 3=max, 4=dirty, 5=near empty]";
+        return "<purity> <strength> <efficiency> <power>";
     }
 
     @Override
     public String getCommand() {
-        return "spawncrystal";
+        return "crystal";
     }
 
     @Override
@@ -28,8 +28,12 @@ public class CmdSpawnCrystal extends AbstractDRCommand {
 
     @Override
     public void execute(ICommandSender sender, String[] args) {
-        if (args.length > 2) {
+        if (args.length > 5) {
             sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Too many parameters!"));
+            return;
+        }
+        if (args.length < 5) {
+            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Too few parameters!"));
             return;
         }
 
@@ -38,16 +42,17 @@ public class CmdSpawnCrystal extends AbstractDRCommand {
             return;
         }
 
-        int special = fetchInt(sender, args, 1, 0);
+        int purity = fetchInt(sender, args, 1, 0);
+        int strength = fetchInt(sender, args, 2, 0);
+        int efficiency = fetchInt(sender, args, 3, 0);
+        int power = fetchInt(sender, args, 4, 0);
 
         EntityPlayer player = (EntityPlayer) sender;
         World world = player.worldObj;
         int x = (int) (player.posX - .5);
         int y = (int) player.posY;
         int z = (int) (player.posZ - .5);
-        Random random = new Random(System.currentTimeMillis());
-        random.nextFloat();
 
-        ResonatingCrystalTileEntity.spawnRandomCrystal(world, random, new BlockPos(x, y, z), special);
+        ResonatingCrystalTileEntity.spawnCrystal(world, new BlockPos(x, y, z), purity, strength, efficiency, power);
     }
 }

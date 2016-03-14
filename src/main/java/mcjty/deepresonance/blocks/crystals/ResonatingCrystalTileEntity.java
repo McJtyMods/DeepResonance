@@ -184,6 +184,18 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         tagCompound.setByte("version", (byte) 2);      // Legacy support to support older crystals.
     }
 
+    public static void spawnCrystal(World world, BlockPos pos, int purity, int strength, int efficiency, int power) {
+        WorldHelper.setBlockState(world, pos, ModBlocks.resonatingCrystalBlock.getStateFromMeta(0), 3);
+        TileEntity te = WorldHelper.getTileAt(world, pos);
+        if (te instanceof ResonatingCrystalTileEntity) {
+            ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
+            resonatingCrystalTileEntity.setPurity(purity);
+            resonatingCrystalTileEntity.setStrength(strength);
+            resonatingCrystalTileEntity.setEfficiency(efficiency);
+            resonatingCrystalTileEntity.setPower(power);
+        }
+    }
+
     // Special == 0, normal
     // Special == 1, average random
     // Special == 2, best random
