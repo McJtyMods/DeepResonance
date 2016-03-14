@@ -1,6 +1,7 @@
 package mcjty.deepresonance.blocks.crystalizer;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.lib.varia.BlockTools;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -11,6 +12,8 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.IModel;
@@ -25,12 +28,10 @@ import java.io.IOException;
 @SideOnly(Side.CLIENT)
 public class CrystalizerTESR extends TileEntitySpecialRenderer<CrystalizerTileEntity> {
 
+    ResourceLocation frontTexture = new ResourceLocation(DeepResonance.MODID, "blocks/crystalizer");
+
     private IModel model;
     private IBakedModel bakedModel;
-
-    ResourceLocation sideTexture = new ResourceLocation(DeepResonance.MODID, "blocks/machineSide");
-    ResourceLocation topTexture = new ResourceLocation(DeepResonance.MODID, "blocks/machineTop");
-    ResourceLocation bottomTexture = new ResourceLocation(DeepResonance.MODID, "blocks/machineBottom");
 
     public CrystalizerTESR() {
         try {
@@ -54,8 +55,8 @@ public class CrystalizerTESR extends TileEntitySpecialRenderer<CrystalizerTileEn
 
     @Override
     public void renderTileEntityAt(CrystalizerTileEntity te, double x, double y, double z, float time, int breakTime) {
-//        GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
         GlStateManager.pushAttrib();
+//        GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
 
         int progress = te.getProgress();
         boolean hasCrystal = te.hasCrystal();
@@ -99,72 +100,78 @@ public class CrystalizerTESR extends TileEntitySpecialRenderer<CrystalizerTileEn
             GlStateManager.disableBlend();
         }
 
+        // @todo remove once the multi layer thing works
+        EnumFacing orientation = BlockTools.getOrientationHoriz(CrystalizerSetup.crystalizer.getMetaFromState(getWorld().getBlockState(te.getPos())));
+
         GlStateManager.pushMatrix();
         GlStateManager.translate((float) x, (float) y, (float) z);
         bindTexture(TextureMap.locationBlocksTexture);
-        renderInside(Tessellator.getInstance());
+        renderFront(Tessellator.getInstance(), orientation, te.getPos());
         GlStateManager.popMatrix();
 
-//        GL11.glPopAttrib();
         GlStateManager.popAttrib();
     }
 
-    private void renderInside(Tessellator tessellator) {
-        float offset = 0.002f;
+    private void renderFront(Tessellator tessellator, EnumFacing orientation, BlockPos pos) {
 
         WorldRenderer renderer = tessellator.getWorldRenderer();
         renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
 //        tessellator.setColorRGBA(255, 255, 255, 128);
 //        tessellator.setBrightness(100);
-        int brightness = 100;
+//        int brightness = 240;
+        int brightness = CrystalizerSetup.crystalizer.getMixedBrightnessForBlock(getWorld(), pos);
         int b1 = brightness >> 16 & 65535;
         int b2 = brightness & 65535;
+
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+        float offset = .05f;
 
         // ---------------------------------------------------------------
         // Render the inside of the tank
         // ---------------------------------------------------------------
 
         bindTexture(TextureMap.locationBlocksTexture);
-        TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(sideTexture.toString());
+        TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(frontTexture.toString());
 
-        //NORTH other side
-        renderer.pos(1, 0, offset).tex(sprite.getMinU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-        renderer.pos(1, 1, offset).tex(sprite.getMinU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-        renderer.pos(0, 1, offset).tex(sprite.getMaxU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-        renderer.pos(0, 0, offset).tex(sprite.getMaxU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-
-        //SOUTH other side
-        renderer.pos(1, 1, 1 - offset).tex(sprite.getMinU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-        renderer.pos(1, 0, 1 - offset).tex(sprite.getMinU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-        renderer.pos(0, 0, 1 - offset).tex(sprite.getMaxU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-        renderer.pos(0, 1, 1 - offset).tex(sprite.getMaxU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-
-        //EAST other side
-        renderer.pos(offset, 1, 1).tex(sprite.getMinU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-        renderer.pos(offset, 0, 1).tex(sprite.getMinU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-        renderer.pos(offset, 0, 0).tex(sprite.getMaxU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-        renderer.pos(offset, 1, 0).tex(sprite.getMaxU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-
-        //WEST other side
-        renderer.pos(1 - offset, 0, 1).tex(sprite.getMinU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-        renderer.pos(1 - offset, 1, 1).tex(sprite.getMinU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-        renderer.pos(1 - offset, 1, 0).tex(sprite.getMaxU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-        renderer.pos(1 - offset, 0, 0).tex(sprite.getMaxU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-
-        // Bottom other side. Raised a bit
-        sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(bottomTexture.toString());
-        renderer.pos(0, .4f, 0).tex(sprite.getMinU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-        renderer.pos(0, .4f, 1).tex(sprite.getMinU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-        renderer.pos(1, .4f, 1).tex(sprite.getMaxU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-        renderer.pos(1, .4f, 0).tex(sprite.getMaxU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-
-        // Top other side
-        sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(topTexture.toString());
-        renderer.pos(0, 1 - offset, 0).tex(sprite.getMinU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-        renderer.pos(1, 1 - offset, 0).tex(sprite.getMinU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-        renderer.pos(1, 1 - offset, 1).tex(sprite.getMaxU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
-        renderer.pos(0, 1 - offset, 1).tex(sprite.getMaxU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 128).endVertex();
+        switch (orientation) {
+            case NORTH:
+                //NORTH other side
+                renderer.pos(1, 1, offset).tex(sprite.getMinU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 255).endVertex();
+                renderer.pos(1, 0, offset).tex(sprite.getMinU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 255).endVertex();
+                renderer.pos(0, 0, offset).tex(sprite.getMaxU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 255).endVertex();
+                renderer.pos(0, 1, offset).tex(sprite.getMaxU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 255).endVertex();
+                break;
+            case SOUTH:
+                //SOUTH other side
+                renderer.pos(1, 0, 1-offset).tex(sprite.getMinU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 255).endVertex();
+                renderer.pos(1, 1, 1-offset).tex(sprite.getMinU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 255).endVertex();
+                renderer.pos(0, 1, 1-offset).tex(sprite.getMaxU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 255).endVertex();
+                renderer.pos(0, 0, 1-offset).tex(sprite.getMaxU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 255).endVertex();
+                break;
+            case WEST:
+                //EAST other side
+                renderer.pos(offset, 1, 0).tex(sprite.getMaxU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 255).endVertex();
+                renderer.pos(offset, 0, 0).tex(sprite.getMaxU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 255).endVertex();
+                renderer.pos(offset, 0, 1).tex(sprite.getMinU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 255).endVertex();
+                renderer.pos(offset, 1, 1).tex(sprite.getMinU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 255).endVertex();
+                break;
+            case EAST:
+                //WEST other side
+                renderer.pos(1-offset, 0, 0).tex(sprite.getMaxU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 255).endVertex();
+                renderer.pos(1-offset, 1, 0).tex(sprite.getMaxU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 255).endVertex();
+                renderer.pos(1-offset, 1, 1).tex(sprite.getMinU(), sprite.getMinV()).lightmap(b1, b2).color(255, 255, 255, 255).endVertex();
+                renderer.pos(1-offset, 0, 1).tex(sprite.getMinU(), sprite.getMaxV()).lightmap(b1, b2).color(255, 255, 255, 255).endVertex();
+                break;
+            case DOWN:
+            case UP:
+            default:
+                break;
+        }
 
         tessellator.draw();
+
+        GlStateManager.disableBlend();
     }
 }

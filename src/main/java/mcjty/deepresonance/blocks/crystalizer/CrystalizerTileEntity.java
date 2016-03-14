@@ -106,6 +106,8 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
         return clientProgress;
     }
 
+
+
     private boolean canCrystalize() {
         if (rclTank == null) {
             return false;

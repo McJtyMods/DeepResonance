@@ -1,0 +1,30 @@
+# Blender MTL File: 'crystalizer.blend'
+# Material Count: 4
+
+newmtl None
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+map_Kd deepresonance:blocks/crystalizer
+
+newmtl None_machineBottom.png
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+map_Kd deepresonance:blocks/machineBottom
+
+newmtl None_machineSide.png
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+map_Kd deepresonance:blocks/machineSide
+
+newmtl None_machineTop.png
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+map_Kd deepresonance:blocks/machineTop

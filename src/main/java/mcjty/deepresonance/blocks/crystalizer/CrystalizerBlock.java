@@ -7,12 +7,17 @@ import mcjty.lib.container.GenericGuiContainer;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -22,6 +27,8 @@ import org.lwjgl.input.Keyboard;
 import java.util.List;
 
 public class CrystalizerBlock extends GenericDRBlock<CrystalizerTileEntity, CrystalizerContainer> {
+
+    public static final PropertyBool FRONTDUMMY = PropertyBool.create("frontdummy");
 
     public CrystalizerBlock() {
         super(Material.rock, CrystalizerTileEntity.class, CrystalizerContainer.class, "crystalizer", true);
@@ -41,7 +48,7 @@ public class CrystalizerBlock extends GenericDRBlock<CrystalizerTileEntity, Crys
     @Override
     @SideOnly(Side.CLIENT)
     public void initModel() {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "facing=north,frontdummy=true"));
         ClientRegistry.bindTileEntitySpecialRenderer(CrystalizerTileEntity.class, new CrystalizerTESR());
     }
 
@@ -79,9 +86,20 @@ public class CrystalizerBlock extends GenericDRBlock<CrystalizerTileEntity, Crys
         return false;
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
-    public EnumWorldBlockLayer getBlockLayer() {
-        return EnumWorldBlockLayer.TRANSLUCENT;
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        // @todo change to true as soon as the submodel translucent mode works properly
+        return state.withProperty(FRONTDUMMY, false);
     }
+
+    @Override
+    protected BlockState createBlockState() {
+        return new BlockState(this, FACING_HORIZ, FRONTDUMMY);
+    }
+
+    // @todo uncomment this as soon as the submodel translucent mode works properly
+//    @Override
+//    public boolean canRenderInLayer(EnumWorldBlockLayer layer) {
+//        return layer == EnumWorldBlockLayer.SOLID || layer == EnumWorldBlockLayer.TRANSLUCENT;
+//    }
 }
