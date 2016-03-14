@@ -21,8 +21,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class GeneratorControllerTileEntity extends GenericTileEntity implements ITickable {
-    private ControllerSounds controllerSounds;
-
     private int startup = 0;
     private int shutdown = 0;
     private boolean active = false;
@@ -31,13 +29,6 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
 
     public GeneratorControllerTileEntity() {
         super();
-    }
-
-    private ControllerSounds getControllerSounds() {
-        if (controllerSounds == null) {
-            controllerSounds = new ControllerSounds();
-        }
-        return controllerSounds;
     }
 
     @Override
@@ -66,7 +57,6 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
     }
 
 
-
     @Override
     public void invalidate() {
         super.invalidate();
@@ -76,9 +66,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
     }
 
     private void stopSounds() {
-        getControllerSounds().stopStartup();
-        getControllerSounds().stopLoop();
-        getControllerSounds().stopShutdown();
+        ControllerSounds.stopSound(worldObj, getPos());
     }
 
     @Override
@@ -96,24 +84,17 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
             // No sounds.
             return;
         }
-        ControllerSounds sounds = getControllerSounds();
         if (startup != 0) {
-            sounds.stopLoop();
-            sounds.stopShutdown();
-            if (!sounds.isStartupPlaying()) {
-                sounds.playStartup(worldObj, pos);
+            if (!ControllerSounds.isStartupPlaying(worldObj, pos)) {
+                ControllerSounds.playStartup(worldObj, pos);
             }
         } else if (shutdown != 0) {
-            sounds.stopLoop();
-            sounds.stopStartup();
-            if (!sounds.isShutdownPlaying()) {
-                sounds.playShutdown(worldObj, pos);
+            if (!ControllerSounds.isShutdownPlaying(worldObj, pos)) {
+                ControllerSounds.playShutdown(worldObj, pos);
             }
         } else if (active) {
-            sounds.stopShutdown();
-            sounds.stopStartup();
-            if (!sounds.isLoopPlaying()) {
-                sounds.playLoop(worldObj, pos);
+            if (!ControllerSounds.isLoopPlaying(worldObj, pos)) {
+                ControllerSounds.playLoop(worldObj, pos);
             }
         } else {
             stopSounds();
