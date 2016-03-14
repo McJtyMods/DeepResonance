@@ -5,14 +5,14 @@ import net.minecraftforge.common.config.Configuration;
 public class RadiationConfiguration {
     public static final String CATEGORY_RADIATION = "radiation";
 
-    public static float minRadiationRadius = 5.0f;
-    public static float maxRadiationRadius = 30.0f;
+    public static float minRadiationRadius = 7.0f;
+    public static float maxRadiationRadius = 50.0f;
 
-    public static float minRadiationStrength = 100.0f;
-    public static float maxRadiationStrength = 1000000.0f;
+    public static float minRadiationStrength = 3000.0f;
+    public static float maxRadiationStrength = 600000.0f;
 
-    public static float strengthGrowthFactor = 0.001f;
-    public static float strengthDecreasePerTick = 5.0f;
+    public static float strengthGrowthFactor = 0.002f;
+    public static float strengthDecreasePerTick = 3.0f;
 
     public static float radiationEffectLevelNone = 2000.0f;
     public static float radiationEffectLevel0 = 20000.0f;

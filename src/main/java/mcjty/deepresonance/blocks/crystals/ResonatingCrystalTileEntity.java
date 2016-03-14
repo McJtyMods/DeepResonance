@@ -4,7 +4,9 @@ import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.deepresonance.config.ConfigMachines;
+import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.varia.Logging;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -184,7 +186,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         tagCompound.setByte("version", (byte) 2);      // Legacy support to support older crystals.
     }
 
-    public static void spawnCrystal(World world, BlockPos pos, int purity, int strength, int efficiency, int power) {
+    public static void spawnCrystal(EntityPlayer player, World world, BlockPos pos, int purity, int strength, int efficiency, int power) {
         WorldHelper.setBlockState(world, pos, ModBlocks.resonatingCrystalBlock.getStateFromMeta(0), 3);
         TileEntity te = WorldHelper.getTileAt(world, pos);
         if (te instanceof ResonatingCrystalTileEntity) {
@@ -193,6 +195,11 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
             resonatingCrystalTileEntity.setStrength(strength);
             resonatingCrystalTileEntity.setEfficiency(efficiency);
             resonatingCrystalTileEntity.setPower(power);
+
+            float radPurity = resonatingCrystalTileEntity.getPurity();
+            float radRadius = DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getStrength(), resonatingCrystalTileEntity.getEfficiency(), radPurity);
+            float radStrength = DRRadiationManager.calculateRadiationStrength(resonatingCrystalTileEntity.getStrength(), radPurity);
+            Logging.message(player, "Crystal would produce " + radStrength + " radiation with a radius of " + radRadius);
         }
     }
 

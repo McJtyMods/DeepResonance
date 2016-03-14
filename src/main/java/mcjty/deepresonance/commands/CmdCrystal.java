@@ -53,6 +53,6 @@ public class CmdCrystal extends AbstractDRCommand {
         int y = (int) player.posY;
         int z = (int) (player.posZ - .5);
 
-        ResonatingCrystalTileEntity.spawnCrystal(world, new BlockPos(x, y, z), purity, strength, efficiency, power);
+        ResonatingCrystalTileEntity.spawnCrystal(player, world, new BlockPos(x, y, z), purity, strength, efficiency, power);
     }
 }

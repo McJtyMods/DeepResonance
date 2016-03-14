@@ -155,14 +155,12 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
 
                         if (doRadiation) {
                             float purity = resonatingCrystalTileEntity.getPurity();
-                            if (purity < 99.0f) {
-                                float radius = DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getEfficiency(), purity);
-                                if (radius > radiationRadius) {
-                                    radiationRadius = radius;
-                                }
-                                float strength = DRRadiationManager.calculateRadiationStrength(resonatingCrystalTileEntity.getStrength(), purity);
-                                radiationStrength += strength;
+                            float radius = DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getStrength(), resonatingCrystalTileEntity.getEfficiency(), purity);
+                            if (radius > radiationRadius) {
+                                radiationRadius = radius;
                             }
+                            float strength = DRRadiationManager.calculateRadiationStrength(resonatingCrystalTileEntity.getStrength(), purity);
+                            radiationStrength += strength;
                         }
                     }
                 } else {
