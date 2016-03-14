@@ -101,7 +101,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
                 // Put back the fluid we extracted.
                 FluidStack stack = fluidData.makeLiquidCrystalStack();
                 getOutputTank().fill(null, stack, true);
-                return 1000;
+                return 1000000;
             }
         }
 
@@ -109,7 +109,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
         fluidData.setPurity(purity);
         FluidStack stack = fluidData.makeLiquidCrystalStack();
         getOutputTank().fill(null, stack, true);
-        return (int) ((maxPurityToAdd - addedPurity) * 1000 / maxPurityToAdd + 1);
+        return (int) ((maxPurityToAdd - addedPurity) * 100 / maxPurityToAdd + 1);
     }
 
     private boolean testFillOutputTank() {
