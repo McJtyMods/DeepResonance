@@ -105,6 +105,16 @@ public class QuadTree {
         return factor(new Ray(p1, p2));
     }
 
+    // Calculate radiation for a 2-high character
+    public double factor2(int x1, int y1, int z1, int x2, int y2, int z2) {
+        Vec3 p1 = new Vec3(x1 + .5, y1 + .5, z1 + .5);
+        Vec3 p2 = new Vec3(x2 + .5, y2 + .5, z2 + .5);
+        double f1 = factor(new Ray(p1, p2));
+        Vec3 p3 = new Vec3(x2 + .5, y2 + 1.1, z2 + .5);
+        double f2 = factor(new Ray(p1, p3));
+        return Math.max(f1, f2);
+    }
+
     private double factor(Ray ray) {
         if (child1 != null) {
             double factor = 1.0;
@@ -193,7 +203,7 @@ public class QuadTree {
 
         public Ray(Vec3 start, Vec3 end) {
             this.start = start;
-            this.dir = start.subtract(end);
+            this.dir = end.subtract(start);
             length = this.dir.lengthVector();
             this.dir = this.dir.normalize();
             this.invDir = new Vec3(1.0 / this.dir.xCoord, 1.0 / this.dir.yCoord, 1.0 / this.dir.zCoord);
