@@ -22,7 +22,7 @@ public class RadiationConfiguration {
     public static float radiationEffectLevel4 = 500000.0f;
     public static float radiationEffectLevel5 = 1000000.0f;
 
-    public static float radiationDestructionEventLevel = 200000.0f;
+    public static float radiationDestructionEventLevel = 300000.0f;
     public static float destructionEventChance = 0.02f;
 
     public static float maxRadiationMeter = 200000.0f;
