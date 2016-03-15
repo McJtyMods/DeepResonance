@@ -33,8 +33,10 @@ public abstract class CommonProxy {
 
     public void preInit(FMLPreInitializationEvent e) {
         GeneralConfig.preInit(e);
+
         mainConfig = DeepResonance.config;
         readMainConfig();
+
         DRMessages.registerNetworkMessages();
         ModItems.init();
         ModBlocks.init();
@@ -47,6 +49,7 @@ public abstract class CommonProxy {
         Configuration cfg = mainConfig;
         try {
             cfg.load();
+
             cfg.addCustomCategoryComment(WorldGenConfiguration.CATEGORY_WORLDGEN, "Configuration for wodlgen");
             cfg.addCustomCategoryComment(GeneratorConfiguration.CATEGORY_GENERATOR, "Configuration for the generator multiblock");
             cfg.addCustomCategoryComment(RadiationConfiguration.CATEGORY_RADIATION, "Configuration for the radiation");
