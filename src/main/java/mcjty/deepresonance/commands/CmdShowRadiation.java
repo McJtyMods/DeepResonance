@@ -63,12 +63,20 @@ public class CmdShowRadiation extends AbstractDRCommand {
                                 double distanceSq = pos.distanceSq(c.getCoordinate());
                                 double distance = Math.sqrt(distanceSq);
                                 float strength = (float) (source.getStrength() * (radius - distance) / radius) * rad;
-                                if (strength >= level * 2) {
-                                    world.setBlockState(pos, ModBlocks.debugBlock.getDefaultState().withProperty(DebugBlock.STATUS, DebugBlock.STATUS_RED), 3);
-                                } else if (strength >= level) {
-                                    world.setBlockState(pos, ModBlocks.debugBlock.getDefaultState().withProperty(DebugBlock.STATUS, DebugBlock.STATUS_YELLOW), 3);
+                                if (level < 0) {
+                                    if (strength < -level && strength > 10) {
+                                        world.setBlockState(pos, ModBlocks.debugBlock.getDefaultState().withProperty(DebugBlock.STATUS, DebugBlock.STATUS_BLUE), 3);
+                                    } else {
+                                        world.setBlockToAir(pos);
+                                    }
                                 } else {
-                                    world.setBlockToAir(pos);
+                                    if (strength >= level * 2) {
+                                        world.setBlockState(pos, ModBlocks.debugBlock.getDefaultState().withProperty(DebugBlock.STATUS, DebugBlock.STATUS_RED), 3);
+                                    } else if (strength >= level) {
+                                        world.setBlockState(pos, ModBlocks.debugBlock.getDefaultState().withProperty(DebugBlock.STATUS, DebugBlock.STATUS_YELLOW), 3);
+                                    } else {
+                                        world.setBlockToAir(pos);
+                                    }
                                 }
                             }
                         }
