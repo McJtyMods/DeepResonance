@@ -48,7 +48,7 @@ public class CrystalizerBlock extends GenericDRBlock<CrystalizerTileEntity, Crys
     @Override
     @SideOnly(Side.CLIENT)
     public void initModel() {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "facing=north,frontdummy=true"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "inventory"));
         ClientRegistry.bindTileEntitySpecialRenderer(CrystalizerTileEntity.class, new CrystalizerTESR());
     }
 
@@ -86,20 +86,20 @@ public class CrystalizerBlock extends GenericDRBlock<CrystalizerTileEntity, Crys
         return false;
     }
 
-    @Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        // @todo change to true as soon as the submodel translucent mode works properly
-        return state.withProperty(FRONTDUMMY, false);
-    }
+//    @Override
+//    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+//        // @todo change to true as soon as the submodel translucent mode works properly
+//        return state.withProperty(FRONTDUMMY, false);
+//    }
 
-    @Override
-    protected BlockState createBlockState() {
-        return new BlockState(this, FACING_HORIZ, FRONTDUMMY);
-    }
+//    @Override
+//    protected BlockState createBlockState() {
+//        return new BlockState(this, FACING_HORIZ, FRONTDUMMY);
+//    }
 
     // @todo uncomment this as soon as the submodel translucent mode works properly
-//    @Override
-//    public boolean canRenderInLayer(EnumWorldBlockLayer layer) {
-//        return layer == EnumWorldBlockLayer.SOLID || layer == EnumWorldBlockLayer.TRANSLUCENT;
-//    }
+    @Override
+    public boolean canRenderInLayer(EnumWorldBlockLayer layer) {
+        return layer == EnumWorldBlockLayer.SOLID || layer == EnumWorldBlockLayer.TRANSLUCENT;
+    }
 }
