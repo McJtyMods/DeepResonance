@@ -4,6 +4,7 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
 import mcjty.deepresonance.blocks.crystalizer.CrystalizerSetup;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalBlock;
+import mcjty.deepresonance.blocks.debug.DebugBlock;
 import mcjty.deepresonance.blocks.gencontroller.GeneratorControllerSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.laser.LaserSetup;
@@ -33,6 +34,7 @@ public final class ModBlocks {
     public static PoisonedDirtBlock poisonedDirtBlock;
     public static Block duct;
     public static MachineFrame machineFrame;
+    public static DebugBlock debugBlock;
 
     public static void init() {
         resonatingOreBlock = new ResonatingOreBlock();
@@ -49,6 +51,7 @@ public final class ModBlocks {
 //        duct = new BlockDuct(TileBasicFluidDuct.class, "basicFluidDuct").registerTile().register();
 
         machineFrame = new MachineFrame();
+        debugBlock = new DebugBlock();
 
         GeneratorSetup.setupBlocks();
         GeneratorControllerSetup.setupBlocks();
@@ -72,6 +75,7 @@ public final class ModBlocks {
         poisonedDirtBlock.initModel();
         resonatingOreBlock.initModel();
         machineFrame.initModel();
+        debugBlock.initModel();
         GeneratorSetup.setupModels();
         GeneratorControllerSetup.setupModels();
         EnergyCollectorSetup.setupModels();

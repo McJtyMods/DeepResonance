@@ -9,6 +9,7 @@ public class CommandDRGen extends DefaultCommand {
         registerCommand(new CmdInfoCrystal());
         registerCommand(new CmdListRadiation());
         registerCommand(new CmdCleanRadiation());
+        registerCommand(new CmdShowRadiation());
     }
 
     @Override
