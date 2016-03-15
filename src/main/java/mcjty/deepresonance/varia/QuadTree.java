@@ -17,12 +17,13 @@ public class QuadTree {
         addBlocker(new BlockPos(x, y, z), blocker);
     }
 
+
     // Return -1 if blockers inside this are different. Otherwise blocker value.
     public float addBlocker(BlockPos coordinate, float blocker) {
         if (child1 != null) {
             if (child1.box.isVecInside(coordinate)) {
                 float b = child1.addBlocker(coordinate, blocker);
-                if (child2.blocker >= 0.0 && Math.abs(b-child2.blocker) < 0.01) {
+                if (child2.blocker >= 0.0 && Math.abs(b - child2.blocker) < 0.01) {
                     // Blockers are almost the same. Optimize
                     this.blocker = b;
                     this.child1 = null;
@@ -33,7 +34,7 @@ public class QuadTree {
                 return -1;
             } else if (child2.box.isVecInside(coordinate)) {
                 float b = child2.addBlocker(coordinate, blocker);
-                if (child1.blocker >= 0.0 && Math.abs(b-child1.blocker) < 0.01) {
+                if (child1.blocker >= 0.0 && Math.abs(b - child1.blocker) < 0.01) {
                     // Blockers are almost the same. Optimize
                     this.blocker = b;
                     this.child1 = null;
@@ -69,20 +70,20 @@ public class QuadTree {
                 switch (axis) {
                     case 0: {
                         int middle = (box.maxX + box.minX) / 2;
-                        child1 = new QuadTree(box.minX, box.minY, box.minZ, middle,   box.maxY, box.maxZ);
-                        child2 = new QuadTree(middle,   box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
+                        child1 = new QuadTree(box.minX, box.minY, box.minZ, middle, box.maxY, box.maxZ);
+                        child2 = new QuadTree(middle, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
                         break;
                     }
                     case 1: {
                         int middle = (box.maxY + box.minY) / 2;
-                        child1 = new QuadTree(box.minX, box.minY, box.minZ, box.maxX, middle,   box.maxZ);
-                        child2 = new QuadTree(box.minX, middle,   box.minZ, box.maxX, box.maxY, box.maxZ);
+                        child1 = new QuadTree(box.minX, box.minY, box.minZ, box.maxX, middle, box.maxZ);
+                        child2 = new QuadTree(box.minX, middle, box.minZ, box.maxX, box.maxY, box.maxZ);
                         break;
                     }
                     case 2: {
                         int middle = (box.maxZ + box.minZ) / 2;
                         child1 = new QuadTree(box.minX, box.minY, box.minZ, box.maxX, box.maxY, middle);
-                        child2 = new QuadTree(box.minX, box.minY, middle,   box.maxX, box.maxY, box.maxZ);
+                        child2 = new QuadTree(box.minX, box.minY, middle, box.maxX, box.maxY, box.maxZ);
                         break;
                     }
                 }
@@ -230,8 +231,8 @@ public class QuadTree {
     public static void main(String[] args) {
         int dim = 100;
         QuadTree tree = new QuadTree(0, 0, 0, dim, dim, dim);
-        for (int y = 0 ; y <= 5 ; y++) {
-            for (int z = 0 ; z <= dim; z++) {
+        for (int y = 0; y <= 5; y++) {
+            for (int z = 0; z <= dim; z++) {
                 tree.addBlocker(3, y, z, 0.5f);
                 tree.addBlocker(20, y, z, 0.5f);
                 tree.addBlocker(21, y, z, 0.5f);
@@ -244,8 +245,8 @@ public class QuadTree {
 
         System.out.println("tree.treeSize() = " + tree.treeSize());
 
-        for (int y = 0 ; y <= 5 ; y++) {
-            for (int z = 0 ; z <= dim; z++) {
+        for (int y = 0; y <= 5; y++) {
+            for (int z = 0; z <= dim; z++) {
                 tree.addBlocker(3, y, z, 0.5f);
                 tree.addBlocker(20, y, z, 1.0f);
                 tree.addBlocker(21, y, z, 0.5f);
