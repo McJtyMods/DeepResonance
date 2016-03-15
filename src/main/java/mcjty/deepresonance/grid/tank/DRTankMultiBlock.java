@@ -154,7 +154,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     }
 
     public FluidStack getFluidShare(TileTank tile){
-        return tank.getShare(allLocations.size());
+        return tank.getShare(allLocations.size(), allLocations.indexOf(tile.getPos()) == 0);
     }
 
     public Fluid getStoredFluid(){

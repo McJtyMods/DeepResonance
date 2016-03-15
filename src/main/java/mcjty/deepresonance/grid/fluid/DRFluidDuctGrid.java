@@ -17,6 +17,8 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
+import java.util.OptionalInt;
+import java.util.stream.IntStream;
 
 /**
  * Created by Elec332 on 3-8-2015.
@@ -115,7 +117,10 @@ public class DRFluidDuctGrid extends AbstractCableGrid<DRFluidDuctGrid, DRFluidT
 
     public FluidStack getFluidShare(TileEntity tile){
         if (tile instanceof TileBasicFluidDuct){
-            return tank.getShare(transmitters.size());
+            OptionalInt first = IntStream.range(0, transmitters.size())
+                    .filter(i -> tile.getPos().equals(transmitters.get(i).getLoc()))
+                    .findFirst();
+            return tank.getShare(transmitters.size(), first.isPresent() ? first.getAsInt() == 0 : false);
         }
         return null;
     }
