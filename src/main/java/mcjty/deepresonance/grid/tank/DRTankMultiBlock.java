@@ -218,6 +218,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         if (doFill) {
             setClientRenderFluid();
             setTankFluidHeights();
+            markEverythingDirty();
         }
         return ret;
     }
@@ -228,16 +229,20 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
             return null;
         }
         FluidStack ret = drain(resource.amount, doDrain);
-        if (doDrain)
+        if (doDrain) {
             setTankFluidHeights();
+            markEverythingDirty();
+        }
         return ret;
     }
 
     @Override
     public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
         FluidStack ret = drain(maxDrain, doDrain);
-        if (doDrain)
+        if (doDrain) {
             setTankFluidHeights();
+            markEverythingDirty();
+        }
         return ret;
     }
 
