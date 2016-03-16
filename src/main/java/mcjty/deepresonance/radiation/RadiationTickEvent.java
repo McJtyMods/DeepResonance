@@ -213,8 +213,7 @@ public class RadiationTickEvent {
         List<EntityLivingBase> list  = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(centerx - radius, centery - radius, centerz - radius, centerx + radius, centery + radius, centerz + radius), null);
         for (EntityLivingBase entityLivingBase : list) {
 
-            int pieces = ItemRadiationSuit.countSuitPieces(entityLivingBase);
-            float protection = RadiationConfiguration.suitProtection[pieces];
+            float protection = ItemRadiationSuit.getRadiationProtection(entityLivingBase);
 
             double distanceSq = entityLivingBase.getDistanceSq(centerx, centery, centerz);
 
