@@ -1,6 +1,8 @@
 package mcjty.deepresonance.items.armor;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.api.IRadiationArmor;
+import mcjty.deepresonance.radiation.RadiationConfiguration;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,7 +17,7 @@ import java.util.List;
 /**
  * Created by Elec332 on 29-9-2015.
  */
-public class ItemRadiationSuit extends ItemArmor {
+public class ItemRadiationSuit extends ItemArmor implements IRadiationArmor{
 
     private final String textureSuffix;
 
@@ -70,10 +72,29 @@ public class ItemRadiationSuit extends ItemArmor {
         int cnt = 0;
         for (int i = 1; i < 5; i++) {
             ItemStack stack = entity.getEquipmentInSlot(i);
-            if (stack != null && (stack.getItem() instanceof ItemRadiationSuit)) {
+            if (stack != null && (stack.getItem() instanceof IRadiationArmor)) {
                 cnt++;
             }
         }
         return cnt;
+    }
+
+    public static float getRadiationProtection(EntityLivingBase entity){
+        for (int i = 1; i < 5; i++) {
+            ItemStack stack = entity.getEquipmentInSlot(i);
+            if (stack != null){
+                if(stack.getItem() instanceof IRadiationArmor){
+                    return ((IRadiationArmor) stack.getItem()).protection()[countSuitPieces(entity)];
+                } else if (stack.getTagCompound().hasKey("AntiRadiationArmor")){
+                    return RadiationConfiguration.suitProtection[countSuitPieces(entity)];
+                }
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public float[] protection() {
+        return RadiationConfiguration.suitProtection;
     }
 }
