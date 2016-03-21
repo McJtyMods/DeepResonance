@@ -3,7 +3,7 @@ package mcjty.deepresonance.commands;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;

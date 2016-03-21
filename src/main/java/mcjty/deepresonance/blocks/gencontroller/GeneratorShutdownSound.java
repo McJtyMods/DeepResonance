@@ -6,7 +6,7 @@ import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import net.minecraft.block.Block;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;

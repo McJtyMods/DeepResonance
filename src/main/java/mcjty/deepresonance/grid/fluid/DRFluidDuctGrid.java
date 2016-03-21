@@ -10,7 +10,7 @@ import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
 import mcjty.deepresonance.blocks.duct.TileBasicFluidDuct;
 import mcjty.deepresonance.grid.InternalGridTank;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;

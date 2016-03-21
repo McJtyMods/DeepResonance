@@ -1,6 +1,6 @@
 package mcjty.deepresonance.varia;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.Vec3;
 
 public class QuadTree {
