@@ -3,13 +3,10 @@ package mcjty.deepresonance;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.RadiationShieldRegistry;
 import mcjty.deepresonance.varia.QuadTree;
-import mcjty.lib.preferences.PlayerPreferencesProperties;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -78,16 +75,4 @@ public class ForgeEventHandlers {
         }
 
     }
-
-    @SubscribeEvent
-    public void onEntityConstructingEvent(EntityEvent.EntityConstructing event) {
-        if (event.entity instanceof EntityPlayer) {
-            PlayerPreferencesProperties preferencesProperties = (PlayerPreferencesProperties) event.entity.getExtendedProperties(PlayerPreferencesProperties.ID);
-            if (preferencesProperties == null) {
-                preferencesProperties = new PlayerPreferencesProperties();
-                event.entity.registerExtendedProperties(PlayerPreferencesProperties.ID, preferencesProperties);
-            }
-        }
-    }
-
 }

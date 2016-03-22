@@ -7,6 +7,7 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -21,7 +22,7 @@ public class ItemRadiationSuit extends ItemArmor implements IRadiationArmor{
 
     private final String textureSuffix;
 
-    public ItemRadiationSuit(ArmorMaterial material, int renderIndex, int armorType, String name) {
+    public ItemRadiationSuit(ArmorMaterial material, int renderIndex, EntityEquipmentSlot armorType, String name) {
         super(material, renderIndex, armorType);
         setUnlocalizedName(DeepResonance.MODID + "." + name);
         setRegistryName(name);
@@ -37,19 +38,26 @@ public class ItemRadiationSuit extends ItemArmor implements IRadiationArmor{
     }
 
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
+    public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
         return DeepResonance.MODID+":textures/items/texture"+textureSuffix+".png";
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot, ModelBiped _default) {
+    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
         switch (armorType) {
-            case 0: return HelmetModel.helmetModel;
-            case 1: return ChestModel.chestModel;
-            case 2: return LegsModel.legsModel;
-            case 3: return BootsModel.bootsModel;
-            default: return _default;
+            case FEET:
+                return BootsModel.bootsModel;
+            case LEGS:
+                return LegsModel.legsModel;
+            case CHEST:
+                return ChestModel.chestModel;
+            case HEAD:
+                return HelmetModel.helmetModel;
+            case MAINHAND:
+            case OFFHAND:
+            default:
+                return _default;
         }
     }
 
@@ -70,23 +78,28 @@ public class ItemRadiationSuit extends ItemArmor implements IRadiationArmor{
 
     public static int countSuitPieces(EntityLivingBase entity){
         int cnt = 0;
-        for (int i = 1; i < 5; i++) {
-            ItemStack stack = entity.getEquipmentInSlot(i);
-            if (stack != null && (stack.getItem() instanceof IRadiationArmor)) {
-                cnt++;
+        for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
+            if (slot.getSlotType() == EntityEquipmentSlot.Type.ARMOR) {
+                ItemStack stack = entity.getItemStackFromSlot(slot);
+                if (stack != null && (stack.getItem() instanceof IRadiationArmor)) {
+                    cnt++;
+                }
             }
         }
+
         return cnt;
     }
 
     public static float getRadiationProtection(EntityLivingBase entity){
-        for (int i = 1; i < 5; i++) {
-            ItemStack stack = entity.getEquipmentInSlot(i);
-            if (stack != null){
-                if(stack.getItem() instanceof IRadiationArmor){
-                    return ((IRadiationArmor) stack.getItem()).protection()[countSuitPieces(entity)];
-                } else if (stack.getTagCompound().hasKey("AntiRadiationArmor")){
-                    return RadiationConfiguration.suitProtection[countSuitPieces(entity)];
+        for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
+            if (slot.getSlotType() == EntityEquipmentSlot.Type.ARMOR) {
+                ItemStack stack = entity.getItemStackFromSlot(slot);
+                if (stack != null) {
+                    if (stack.getItem() instanceof IRadiationArmor) {
+                        return ((IRadiationArmor) stack.getItem()).protection()[countSuitPieces(entity)];
+                    } else if (stack.getTagCompound().hasKey("AntiRadiationArmor")) {
+                        return RadiationConfiguration.suitProtection[countSuitPieces(entity)];
+                    }
                 }
             }
         }

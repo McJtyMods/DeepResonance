@@ -1,5 +1,6 @@
 package mcjty.deepresonance.items.rftoolsmodule;
 
+import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.tank.TankSetup;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
@@ -26,7 +27,7 @@ public class RCLScreenModule implements IScreenModule<ModuleDataRCL> {
             return null;
         }
 
-        if (!world.getChunkProvider().chunkExists(coordinate.getX() >> 4, coordinate.getZ() >> 4)) {
+        if (!WorldHelper.chunkLoaded(world, coordinate)) {
             return null;
         }
 

@@ -74,8 +74,7 @@ public class RadiationTickEvent {
             GlobalCoordinate coordinate = source.getKey();
             World world = DimensionManager.getWorld(coordinate.getDimension());
             if (world != null) {
-//                if (world.getChunkProvider().chunkExists(coordinate.getCoordinate().getX() >> 4, coordinate.getCoordinate().getZ() >> 4)) {
-                if (world.getChunkProvider().getLoadedChunk(coordinate.getCoordinate().getX() >> 4, coordinate.getCoordinate().getZ() >> 4) != null) {
+                if (WorldHelper.chunkLoaded(world, coordinate.getCoordinate())) {
                     // The world is loaded and the chunk containing the radiation source is also loaded.
                     DRRadiationManager.RadiationSource radiationSource = source.getValue();
                     float strength = radiationSource.getStrength();

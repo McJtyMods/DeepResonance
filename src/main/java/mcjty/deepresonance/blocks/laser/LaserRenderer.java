@@ -35,7 +35,7 @@ public class LaserRenderer extends TileEntitySpecialRenderer<LaserTileEntity> {
             GlStateManager.pushAttrib();
 //            GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
 
-            tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
+            tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
             GlStateManager.enableDepth();
