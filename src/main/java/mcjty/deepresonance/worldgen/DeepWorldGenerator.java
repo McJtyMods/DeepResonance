@@ -78,7 +78,7 @@ public class DeepWorldGenerator implements IWorldGenerator {
                         if (WorldGenConfiguration.verboseSpawn) {
                             Logging.log("Spawned a crystal at: " + x + "," + y + "," + z);
                         }
-                        ResonatingCrystalTileEntity.spawnRandomCrystal(world, random, pos.set(x, y+1, z), 0);
+                        ResonatingCrystalTileEntity.spawnRandomCrystal(world, random, new BlockPos(pos.set(x, y+1, z)), 0);
                         return;
                     }
                 }

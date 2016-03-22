@@ -21,7 +21,7 @@ public class ClientProxy extends CommonProxy implements ITextureLoader {
     @Override
     public void preInit(FMLPreInitializationEvent e) {
         super.preInit(e);
-        OBJLoader.instance.addDomain(DeepResonance.MODID);
+        OBJLoader.INSTANCE.addDomain(DeepResonance.MODID);
         ModBlocks.initModels();
         ModItems.initModels();
     }

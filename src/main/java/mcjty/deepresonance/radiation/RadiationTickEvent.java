@@ -12,6 +12,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -64,7 +65,11 @@ public class RadiationTickEvent {
 
     private void serverTick(boolean doEffects) {
         // @todo improve
-        World entityWorld = FMLServerHandler.instance().getServer().getEntityWorld();
+        MinecraftServer server = FMLServerHandler.instance().getServer();
+        if (server == null) {
+            return;
+        }
+        World entityWorld = server.getEntityWorld();
         DRRadiationManager radiationManager = DRRadiationManager.getManager(entityWorld);
 
         Set<GlobalCoordinate> toRemove = Sets.newHashSet();
