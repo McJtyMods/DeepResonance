@@ -7,7 +7,6 @@ import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.varia.Logging;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -62,7 +61,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     public void setStrength(float strength) {
         this.strength = strength;
-        markDirtyClient();
+        markDirtyC();
     }
 
     public boolean isEmpty() {
@@ -75,7 +74,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         markDirty();
         boolean newempty = isEmpty();
         if (oldempty != newempty) {
-            markDirtyClient();
+            markDirtyC();
         }
     }
 
@@ -91,12 +90,12 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     public void setEfficiency(float efficiency) {
         this.efficiency = efficiency;
-        markDirtyClient();
+        markDirtyC();
     }
 
     public void setPurity(float purity) {
         this.purity = purity;
-        markDirtyClient();
+        markDirtyC();
     }
 
     public void setGlowing(boolean glowing) {
@@ -104,6 +103,10 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
             return;
         }
         this.glowing = glowing;
+        markDirtyC();
+    }
+
+    private void markDirtyC() {
         if (hasWorldObj()) {
             markDirtyClient();
         } else {
