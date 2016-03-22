@@ -3,7 +3,6 @@ package mcjty.deepresonance.blocks.gencontroller;
 import mcjty.lib.varia.GlobalCoordinate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSound;
-import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -16,7 +15,7 @@ public class ControllerSounds {
     private static final Map<GlobalCoordinate, MovingSound> sounds = new HashMap<>();
 
     public static void stopSound(World worldObj, BlockPos pos) {
-        GlobalCoordinate g = new GlobalCoordinate(pos, worldObj.provider.getDimensionId());
+        GlobalCoordinate g = new GlobalCoordinate(pos, worldObj.provider.getDimension());
         if (sounds.containsKey(g)) {
             MovingSound movingSound = sounds.get(g);
             Minecraft.getMinecraft().getSoundHandler().stopSound(movingSound);
@@ -27,7 +26,7 @@ public class ControllerSounds {
     private static void playSound(World worldObj, BlockPos pos, MovingSound sound) {
         stopSound(worldObj, pos);
         Minecraft.getMinecraft().getSoundHandler().playSound(sound);
-        GlobalCoordinate g = new GlobalCoordinate(pos, worldObj.provider.getDimensionId());
+        GlobalCoordinate g = new GlobalCoordinate(pos, worldObj.provider.getDimension());
         sounds.put(g, sound);
     }
 
@@ -51,19 +50,19 @@ public class ControllerSounds {
     }
 
     public static boolean isStartupPlaying(World worldObj, BlockPos pos) {
-        GlobalCoordinate g = new GlobalCoordinate(pos, worldObj.provider.getDimensionId());
+        GlobalCoordinate g = new GlobalCoordinate(pos, worldObj.provider.getDimension());
         MovingSound movingSound = sounds.get(g);
         return movingSound instanceof GeneratorStartupSound;
     }
 
     public static boolean isLoopPlaying(World worldObj, BlockPos pos) {
-        GlobalCoordinate g = new GlobalCoordinate(pos, worldObj.provider.getDimensionId());
+        GlobalCoordinate g = new GlobalCoordinate(pos, worldObj.provider.getDimension());
         MovingSound movingSound = sounds.get(g);
         return movingSound instanceof GeneratorLoopSound;
     }
 
     public static boolean isShutdownPlaying(World worldObj, BlockPos pos) {
-        GlobalCoordinate g = new GlobalCoordinate(pos, worldObj.provider.getDimensionId());
+        GlobalCoordinate g = new GlobalCoordinate(pos, worldObj.provider.getDimension());
         MovingSound movingSound = sounds.get(g);
         return movingSound instanceof GeneratorShutdownSound;
     }

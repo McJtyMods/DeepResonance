@@ -5,6 +5,9 @@ import mcjty.deepresonance.gui.GuiProxy;
 import mcjty.deepresonance.items.GenericDRItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
 public class DeepResonanceManualItem extends GenericDRItem {
@@ -20,12 +23,12 @@ public class DeepResonanceManualItem extends GenericDRItem {
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
         if (world.isRemote) {
             player.openGui(DeepResonance.instance, GuiProxy.GUI_MANUAL_MAIN, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
-            return stack;
+            return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }
-        return stack;
+        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
     }
 
 }

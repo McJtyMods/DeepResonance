@@ -4,15 +4,13 @@ import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.gui.GuiProxy;
 import mcjty.lib.container.GenericGuiContainer;
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -33,11 +31,12 @@ public class SmelterBlock extends GenericDRBlock<SmelterTileEntity, SmelterConta
         return GuiSmelter.class;
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        return currentTip;
-    }
+    //@todo
+//    @Override
+//    @SideOnly(Side.CLIENT)
+//    public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+//        return currentTip;
+//    }
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -48,7 +47,7 @@ public class SmelterBlock extends GenericDRBlock<SmelterTileEntity, SmelterConta
             list.add("crystal in a tank placed on top of this.");
             list.add("Below the smelter place a tank about half-filled with lava");
         } else {
-            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
+            list.add(TextFormatting.WHITE + ClientHandler.getShiftMessage());
         }
     }
 
@@ -68,7 +67,7 @@ public class SmelterBlock extends GenericDRBlock<SmelterTileEntity, SmelterConta
     }
 
     @Override
-    protected BlockState createBlockState() {
-        return new BlockState(this, FACING, WORKING);
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, FACING, WORKING);
     }
 }

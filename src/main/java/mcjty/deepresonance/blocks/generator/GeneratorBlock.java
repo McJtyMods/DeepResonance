@@ -1,16 +1,12 @@
 package mcjty.deepresonance.blocks.generator;
 
-import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
-import mcjty.deepresonance.network.PacketGetGeneratorInfo;
 import mcjty.lib.container.EmptyContainer;
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,14 +14,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyContainer> {
@@ -61,33 +56,34 @@ public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyCon
 
         NBTTagCompound tagCompound = itemStack.getTagCompound();
         if (tagCompound != null) {
-            list.add(EnumChatFormatting.YELLOW + "Energy: " + tagCompound.getInteger("energy"));
+            list.add(TextFormatting.YELLOW + "Energy: " + tagCompound.getInteger("energy"));
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
             list.add("Part of a generator multi-block.");
             list.add("You can place these in any configuration.");
         } else {
-            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
+            list.add(TextFormatting.WHITE + ClientHandler.getShiftMessage());
         }
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        TileEntity tileEntity = accessor.getTileEntity();
-        if (tileEntity instanceof GeneratorTileEntity) {
-            GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) tileEntity;
-            currenttip.add(EnumChatFormatting.GREEN + "ID: " + new DecimalFormat("#.##").format(generatorTileEntity.getNetworkId()));
-            if (System.currentTimeMillis() - lastTime > 250) {
-                lastTime = System.currentTimeMillis();
-                DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetGeneratorInfo(generatorTileEntity.getNetworkId()));
-            }
-            currenttip.add(EnumChatFormatting.GREEN + "Energy: " + tooltipEnergy + "/" + (tooltipRefCount*GeneratorConfiguration.rfPerGeneratorBlock) + " RF");
-            currenttip.add(EnumChatFormatting.YELLOW + Integer.toString(tooltipRfPerTick) + " RF/t");
-        }
-        return currenttip;
-    }
+    //@todo
+//    @Override
+//    @SideOnly(Side.CLIENT)
+//    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+//        TileEntity tileEntity = accessor.getTileEntity();
+//        if (tileEntity instanceof GeneratorTileEntity) {
+//            GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) tileEntity;
+//            currenttip.add(TextFormatting.GREEN + "ID: " + new DecimalFormat("#.##").format(generatorTileEntity.getNetworkId()));
+//            if (System.currentTimeMillis() - lastTime > 250) {
+//                lastTime = System.currentTimeMillis();
+//                DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetGeneratorInfo(generatorTileEntity.getNetworkId()));
+//            }
+//            currenttip.add(TextFormatting.GREEN + "Energy: " + tooltipEnergy + "/" + (tooltipRefCount*GeneratorConfiguration.rfPerGeneratorBlock) + " RF");
+//            currenttip.add(TextFormatting.YELLOW + Integer.toString(tooltipRfPerTick) + " RF/t");
+//        }
+//        return currenttip;
+//    }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack itemStack) {
@@ -110,8 +106,8 @@ public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyCon
     }
 
     @Override
-    protected BlockState createBlockState() {
-        return new BlockState(this, UPPER, LOWER, ENABLED);
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, UPPER, LOWER, ENABLED);
     }
 
 
@@ -168,11 +164,13 @@ public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyCon
         }
         super.breakBlock(world, pos, state);
         if (!world.isRemote) {
-            if (world.getBlockState(pos.up()).getBlock() == GeneratorSetup.generatorBlock) {
-                world.markBlockForUpdate(pos.up());
+            IBlockState stateUp = world.getBlockState(pos.up());
+            if (stateUp.getBlock() == GeneratorSetup.generatorBlock) {
+                world.notifyBlockUpdate(pos.up(), stateUp, stateUp, 3);
             }
-            if (world.getBlockState(pos.down()).getBlock() == GeneratorSetup.generatorBlock) {
-                world.markBlockForUpdate(pos.down());
+            IBlockState stateDown = world.getBlockState(pos.down());
+            if (stateDown.getBlock() == GeneratorSetup.generatorBlock) {
+                world.notifyBlockUpdate(pos.down(), stateDown, stateDown, 3);
             }
         }
     }

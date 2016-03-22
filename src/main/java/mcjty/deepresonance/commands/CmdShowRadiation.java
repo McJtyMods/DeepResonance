@@ -8,8 +8,8 @@ import mcjty.lib.varia.GlobalCoordinate;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 import java.util.Map;
@@ -33,7 +33,7 @@ public class CmdShowRadiation extends AbstractDRCommand {
     @Override
     public void execute(ICommandSender sender, String[] args) {
         if (args.length > 2) {
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Too many parameters!"));
+            sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Too many parameters!"));
             return;
         }
 
@@ -45,7 +45,7 @@ public class CmdShowRadiation extends AbstractDRCommand {
         Map<GlobalCoordinate, DRRadiationManager.RadiationSource> sources = manager.getRadiationSources();
         for (Map.Entry<GlobalCoordinate, DRRadiationManager.RadiationSource> entry : sources.entrySet()) {
             GlobalCoordinate c = entry.getKey();
-            if (c.getDimension() == world.provider.getDimensionId()) {
+            if (c.getDimension() == world.provider.getDimension()) {
                 DRRadiationManager.RadiationSource source = entry.getValue();
                 int cx = c.getCoordinate().getX();
                 int cy = c.getCoordinate().getY();

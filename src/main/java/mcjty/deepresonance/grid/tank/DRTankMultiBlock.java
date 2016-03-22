@@ -8,10 +8,11 @@ import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.grid.InternalGridTank;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.*;
 
 import java.util.Collections;
@@ -111,7 +112,10 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     }
 
     public void markAllBlocksForUpdate(){
-        allLocations.forEach(world::markBlockForUpdate);
+        allLocations.forEach(p -> {
+            IBlockState state = world.getBlockState(p);
+            world.notifyBlockUpdate(p, state, state, 3);
+        });
     }
 
     private void setTankFluidHeights(){

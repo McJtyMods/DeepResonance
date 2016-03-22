@@ -4,20 +4,14 @@ import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.gui.GuiProxy;
 import mcjty.lib.container.GenericGuiContainer;
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.EnumWorldBlockLayer;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -27,8 +21,6 @@ import org.lwjgl.input.Keyboard;
 import java.util.List;
 
 public class CrystalizerBlock extends GenericDRBlock<CrystalizerTileEntity, CrystalizerContainer> {
-
-    public static final PropertyBool FRONTDUMMY = PropertyBool.create("frontdummy");
 
     public CrystalizerBlock() {
         super(Material.rock, CrystalizerTileEntity.class, CrystalizerContainer.class, "crystalizer", true);
@@ -53,11 +45,12 @@ public class CrystalizerBlock extends GenericDRBlock<CrystalizerTileEntity, Crys
     }
 
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        return currentTip;
-    }
+    //@todo
+//    @Override
+//    @SideOnly(Side.CLIENT)
+//    public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+//        return currentTip;
+//    }
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -67,7 +60,7 @@ public class CrystalizerBlock extends GenericDRBlock<CrystalizerTileEntity, Crys
             list.add("This machine will crystalize the liquid crystal");
             list.add("from the tank below it and eventually produce a crystal");
         } else {
-            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
+            list.add(TextFormatting.WHITE + ClientHandler.getShiftMessage());
         }
     }
 
@@ -77,29 +70,17 @@ public class CrystalizerBlock extends GenericDRBlock<CrystalizerTileEntity, Crys
     }
 
     @Override
-    public boolean isFullCube() {
+    public boolean isFullCube(IBlockState state) {
         return false;
     }
 
     @Override
-    public boolean isOpaqueCube() {
+    public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
-//    @Override
-//    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-//        // @todo change to true as soon as the submodel translucent mode works properly
-//        return state.withProperty(FRONTDUMMY, false);
-//    }
-
-//    @Override
-//    protected BlockState createBlockState() {
-//        return new BlockState(this, FACING_HORIZ, FRONTDUMMY);
-//    }
-
-    // @todo uncomment this as soon as the submodel translucent mode works properly
     @Override
-    public boolean canRenderInLayer(EnumWorldBlockLayer layer) {
-        return layer == EnumWorldBlockLayer.SOLID || layer == EnumWorldBlockLayer.TRANSLUCENT;
+    public boolean canRenderInLayer(BlockRenderLayer layer) {
+        return layer == BlockRenderLayer.SOLID || layer == BlockRenderLayer.TRANSLUCENT;
     }
 }

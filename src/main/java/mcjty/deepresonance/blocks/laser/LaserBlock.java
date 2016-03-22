@@ -7,13 +7,13 @@ import mcjty.lib.container.GenericGuiContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -66,7 +66,7 @@ public class LaserBlock extends GenericDRBlock<LaserTileEntity, LaserContainer> 
             list.add("It will infuse the liquid in the tank");
             list.add("depending on the materials used.");
         } else {
-            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
+            list.add(TextFormatting.WHITE + ClientHandler.getShiftMessage());
         }
     }
 
@@ -75,7 +75,8 @@ public class LaserBlock extends GenericDRBlock<LaserTileEntity, LaserContainer> 
         boolean rc = super.rotateBlock(world, pos, axis);
         if (world.isRemote) {
             // Make sure rendering is up to date.
-            world.markBlockForUpdate(pos);
+            IBlockState state = world.getBlockState(pos);
+            world.notifyBlockUpdate(pos, state, state, 3);
         }
         return rc;
     }
@@ -103,7 +104,7 @@ public class LaserBlock extends GenericDRBlock<LaserTileEntity, LaserContainer> 
     }
 
     @Override
-    protected BlockState createBlockState() {
-        return new BlockState(this, FACING_HORIZ, COLOR);
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, FACING_HORIZ, COLOR);
     }
 }

@@ -19,9 +19,9 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.FakePlayerFactory;
@@ -78,7 +78,7 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
                 ItemBlock itemBlock = (ItemBlock) (crystalStack.getItem());
                 itemBlock.placeBlockAt(crystalStack, FakePlayerFactory.getMinecraft((WorldServer) worldObj), worldObj, pos, null, 0, 0, 0, itemBlock.getBlock().getStateFromMeta(0));
                 inventoryHelper.decrStackSize(PedestalContainer.SLOT_CRYSTAL, 1);
-                Tools.playSound(worldObj, ModBlocks.resonatingCrystalBlock.stepSound.getBreakSound(), getPos().getX(), getPos().getY(), getPos().getZ(), 1.0f, 1.0f);
+                Tools.playSound(worldObj, ModBlocks.resonatingCrystalBlock.getSoundType().getBreakSound(), getPos().getX(), getPos().getY(), getPos().getZ(), 1.0f, 1.0f);
 
                 if (findCollector(pos)) {
                     TileEntity tileEntity = WorldHelper.getTileAt(worldObj, new BlockPos(cachedLocator));
@@ -107,7 +107,7 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
                 spentCrystal.setTagCompound(tagCompound);
                 inventoryLocator.ejectStack(worldObj, getPos().getX(), getPos().getY(), getPos().getZ(), spentCrystal, pos, directions);
                 worldObj.setBlockToAir(p);
-                Tools.playSound(worldObj, ModBlocks.resonatingCrystalBlock.stepSound.getBreakSound(), p.getX(), p.getY(), p.getZ(), 1.0f, 1.0f);
+                Tools.playSound(worldObj, ModBlocks.resonatingCrystalBlock.getSoundType().getBreakSound(), p.getX(), p.getY(), p.getZ(), 1.0f, 1.0f);
             }
         }
     }

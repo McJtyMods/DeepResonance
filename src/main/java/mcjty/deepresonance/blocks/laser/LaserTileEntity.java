@@ -22,10 +22,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -72,7 +72,8 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         if (this.powered != powered) {
             this.powered = powered;
             markDirty();
-            worldObj.markBlockForUpdate(pos);
+            IBlockState state = worldObj.getBlockState(pos);
+            worldObj.notifyBlockUpdate(pos, state, state, 3);
         }
     }
 

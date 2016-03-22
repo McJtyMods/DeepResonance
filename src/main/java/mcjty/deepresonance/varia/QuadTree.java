@@ -1,7 +1,7 @@
 package mcjty.deepresonance.varia;
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 
 public class QuadTree {
     private DiscreteAABB box;
@@ -101,17 +101,17 @@ public class QuadTree {
 
 
     public double factor(int x1, int y1, int z1, int x2, int y2, int z2) {
-        Vec3 p1 = new Vec3(x1 + .5, y1 + .5, z1 + .5);
-        Vec3 p2 = new Vec3(x2 + .5, y2 + .5, z2 + .5);
+        Vec3d p1 = new Vec3d(x1 + .5, y1 + .5, z1 + .5);
+        Vec3d p2 = new Vec3d(x2 + .5, y2 + .5, z2 + .5);
         return factor(new Ray(p1, p2));
     }
 
     // Calculate radiation for a 2-high character
     public double factor2(int x1, int y1, int z1, int x2, int y2, int z2) {
-        Vec3 p1 = new Vec3(x1 + .5, y1 + .5, z1 + .5);
-        Vec3 p2 = new Vec3(x2 + .5, y2 + .5, z2 + .5);
+        Vec3d p1 = new Vec3d(x1 + .5, y1 + .5, z1 + .5);
+        Vec3d p2 = new Vec3d(x2 + .5, y2 + .5, z2 + .5);
         double f1 = factor(new Ray(p1, p2));
-        Vec3 p3 = new Vec3(x2 + .5, y2 + 1.1, z2 + .5);
+        Vec3d p3 = new Vec3d(x2 + .5, y2 + 1.1, z2 + .5);
         double f2 = factor(new Ray(p1, p3));
         return Math.max(f1, f2);
     }
@@ -132,7 +132,7 @@ public class QuadTree {
     }
 
     private static boolean testIntersect(DiscreteAABB box, Ray ray) {
-        Vec3 invDir = ray.getInvDir();
+        Vec3d invDir = ray.getInvDir();
 
         boolean signDirX = invDir.xCoord < 0;
         boolean signDirY = invDir.yCoord < 0;
@@ -197,28 +197,28 @@ public class QuadTree {
     }
 
     private static class Ray {
-        private Vec3 start;
-        private Vec3 dir;
-        private Vec3 invDir;
+        private Vec3d start;
+        private Vec3d dir;
+        private Vec3d invDir;
         private double length;
 
-        public Ray(Vec3 start, Vec3 end) {
+        public Ray(Vec3d start, Vec3d end) {
             this.start = start;
             this.dir = end.subtract(start);
             length = this.dir.lengthVector();
             this.dir = this.dir.normalize();
-            this.invDir = new Vec3(1.0 / this.dir.xCoord, 1.0 / this.dir.yCoord, 1.0 / this.dir.zCoord);
+            this.invDir = new Vec3d(1.0 / this.dir.xCoord, 1.0 / this.dir.yCoord, 1.0 / this.dir.zCoord);
         }
 
-        public Vec3 getDir() {
+        public Vec3d getDir() {
             return dir;
         }
 
-        public Vec3 getInvDir() {
+        public Vec3d getInvDir() {
             return invDir;
         }
 
-        public Vec3 getStart() {
+        public Vec3d getStart() {
             return start;
         }
 

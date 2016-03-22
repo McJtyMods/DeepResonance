@@ -13,6 +13,7 @@ import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -86,7 +87,8 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
         progress++;
         if (progress == 1) {
             // We just started to work. Notify client
-            worldObj.markBlockForUpdate(getPos());
+            IBlockState state = worldObj.getBlockState(getPos());
+            worldObj.notifyBlockUpdate(getPos(), state, state, 3);
         }
 
         if (progress >= getTotalProgress()) {

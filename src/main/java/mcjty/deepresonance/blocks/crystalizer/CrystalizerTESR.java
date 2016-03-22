@@ -5,10 +5,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.IModel;
@@ -17,8 +17,6 @@ import net.minecraftforge.client.model.TRSRTransformation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-
-import java.io.IOException;
 
 @SideOnly(Side.CLIENT)
 public class CrystalizerTESR extends TileEntitySpecialRenderer<CrystalizerTileEntity> {
@@ -29,10 +27,10 @@ public class CrystalizerTESR extends TileEntitySpecialRenderer<CrystalizerTileEn
     private IBakedModel bakedModel;
 
     public CrystalizerTESR() {
+        // Manually load our rotating crystal here
         try {
-            // Manually load our rotating crystal here
             model = ModelLoaderRegistry.getModel(new ResourceLocation(DeepResonance.MODID, "block/crystal_inside.obj"));
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -79,13 +77,13 @@ public class CrystalizerTESR extends TileEntitySpecialRenderer<CrystalizerTileEn
             bindTexture(TextureMap.locationBlocksTexture);
 
             Tessellator tessellator = Tessellator.getInstance();
-            tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+            tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
             Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModel(
                     world,
                     getBakedModel(),
                     world.getBlockState(te.getPos()),
                     te.getPos(),
-                    Tessellator.getInstance().getWorldRenderer());
+                    Tessellator.getInstance().getBuffer(), false);
             tessellator.draw();
 
             RenderHelper.enableStandardItemLighting();

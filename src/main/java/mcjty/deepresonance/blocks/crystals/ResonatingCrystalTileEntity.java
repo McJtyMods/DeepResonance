@@ -7,11 +7,10 @@ import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.varia.Logging;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -80,7 +79,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
         boolean oldempty = isEmpty();
         super.onDataPacket(net, packet);
         boolean newempty = isEmpty();

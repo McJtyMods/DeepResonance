@@ -8,12 +8,13 @@ import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.varia.Broadcaster;
 import mcjty.lib.entity.GenericTileEntity;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -43,7 +44,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
 
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
         boolean working = isPowered();
 
         super.onDataPacket(net, packet);
@@ -167,11 +168,13 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
         network.setShutdownCounter(0);
         network.setStartupCounter(startup);
         markDirty();
-        worldObj.markBlockForUpdate(pos);
+        IBlockState state = worldObj.getBlockState(pos);
+        worldObj.notifyBlockUpdate(pos, state, state, 3);
         return true;
     }
 
     private boolean handleDeactivate(int id, BlockPos coordinate) {
+        IBlockState state = worldObj.getBlockState(getPos());
         DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
         DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(id);
         if ((!network.isActive()) && network.getShutdownCounter() == 0 && network.getStartupCounter() == 0) {
@@ -180,7 +183,8 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
                 startup = network.getStartupCounter();
                 active = network.isActive();
                 markDirty();
-                worldObj.markBlockForUpdate(getPos());
+
+                worldObj.notifyBlockUpdate(getPos(), state, state, 3);
             }
             return false;   // Nothing to do.
         }
@@ -200,7 +204,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
         network.setStartupCounter(0);
         network.setShutdownCounter(shutdown);
         markDirty();
-        worldObj.markBlockForUpdate(getPos());
+        worldObj.notifyBlockUpdate(getPos(), state, state, 3);
 
         return true;
     }

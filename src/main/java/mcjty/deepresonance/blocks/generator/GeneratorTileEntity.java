@@ -11,9 +11,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -172,7 +172,8 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
     public void setNetworkId(int newId) {
         networkId = newId;
         markDirty();
-        worldObj.markBlockForUpdate(pos);
+        IBlockState state = worldObj.getBlockState(pos);
+        worldObj.notifyBlockUpdate(pos, state, state, 3);
     }
 
     public int getNetworkId() {

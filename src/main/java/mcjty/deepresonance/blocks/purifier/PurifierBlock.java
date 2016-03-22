@@ -4,12 +4,10 @@ import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.gui.GuiProxy;
 import mcjty.lib.container.GenericGuiContainer;
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -28,11 +26,12 @@ public class PurifierBlock extends GenericDRBlock<PurifierTileEntity, PurifierCo
         return GuiPurifier.class;
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        return currentTip;
-    }
+    //@todo
+//    @Override
+//    @SideOnly(Side.CLIENT)
+//    public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+//        return currentTip;
+//    }
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -44,7 +43,7 @@ public class PurifierBlock extends GenericDRBlock<PurifierTileEntity, PurifierCo
             list.add("another tank below this block.");
             list.add("The spent filter will be ejected in a nearby inventory.");
         } else {
-            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
+            list.add(TextFormatting.WHITE + ClientHandler.getShiftMessage());
         }
     }
 

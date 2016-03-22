@@ -7,7 +7,7 @@ import mcjty.lib.container.GenericGuiContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -42,7 +42,7 @@ public class PedestalBlock extends GenericDRBlock<PedestalTileEntity, PedestalCo
             list.add("This block can place crystals and pick up spent.");
             list.add("crystals");
         } else {
-            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
+            list.add(TextFormatting.WHITE + ClientHandler.getShiftMessage());
         }
     }
 }

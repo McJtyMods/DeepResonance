@@ -3,8 +3,8 @@ package mcjty.deepresonance.network;
 import io.netty.buffer.ByteBuf;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -33,7 +33,7 @@ public class PacketGetGeneratorInfo implements IMessage {
     public static class Handler implements IMessageHandler<PacketGetGeneratorInfo, IMessage> {
         @Override
         public IMessage onMessage(PacketGetGeneratorInfo message, MessageContext ctx) {
-            MinecraftServer.getServer().addScheduledTask(() -> handle(message, ctx));
+            FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> handle(message, ctx));
             return null;
         }
 

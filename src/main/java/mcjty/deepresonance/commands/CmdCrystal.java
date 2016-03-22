@@ -4,11 +4,9 @@ import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-
-import java.util.Random;
 
 public class CmdCrystal extends AbstractDRCommand {
     @Override
@@ -29,16 +27,16 @@ public class CmdCrystal extends AbstractDRCommand {
     @Override
     public void execute(ICommandSender sender, String[] args) {
         if (args.length > 5) {
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Too many parameters!"));
+            sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Too many parameters!"));
             return;
         }
         if (args.length < 5) {
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Too few parameters!"));
+            sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Too few parameters!"));
             return;
         }
 
         if (!(sender instanceof EntityPlayer)) {
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "This command only works as a player!"));
+            sender.addChatMessage(new TextComponentString(TextFormatting.RED + "This command only works as a player!"));
             return;
         }
 

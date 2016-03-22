@@ -4,7 +4,7 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.items.armor.ItemRadiationSuit;
 import mcjty.deepresonance.items.manual.DeepResonanceManualItem;
 import mcjty.deepresonance.items.rftoolsmodule.RFToolsSupport;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemArmor;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;

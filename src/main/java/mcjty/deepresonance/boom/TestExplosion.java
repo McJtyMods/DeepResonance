@@ -3,9 +3,14 @@ package mcjty.deepresonance.boom;
 import elec332.core.explosion.Elexplosion;
 import elec332.core.world.WorldHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -23,16 +28,18 @@ public class TestExplosion extends Elexplosion{
         damageEntities(getRadius(), 4.0f);
     }
 
-    protected void doExplode() {
+    @Override
+    public void explode() {
         if(!this.getWorld().isRemote) {
             for(int x = (int)(-this.getRadius()); (float)x < this.getRadius(); ++x) {
                 for(int y = (int)(-this.getRadius()); (float)y < this.getRadius(); ++y) {
                     for(int z = (int)(-this.getRadius()); (float)z < this.getRadius(); ++z) {
                         BlockPos targetPosition = this.getLocation().add(x, y, z);
                         double dist = Math.sqrt(getLocation().distanceSq(targetPosition));
-                        if(dist < (double)this.getRadius()) {
+                        if(dist < this.getRadius()) {
                             Block block = WorldHelper.getBlockAt(this.getWorld(), targetPosition);
-                            if(block != null && !block.isAir(this.getWorld(), targetPosition) && block.getBlockHardness(getWorld(), targetPosition) > 0 && (dist < (double)(this.getRadius() - 1.0F) || (double)this.getWorld().rand.nextFloat() > 0.7D)) {
+                            IBlockState state = this.getWorld().getBlockState(targetPosition);
+                            if(block != null && !block.isAir(state, this.getWorld(), targetPosition) && block.getBlockHardness(state, getWorld(), targetPosition) > 0 && (dist < (double)(this.getRadius() - 1.0F) || (double)this.getWorld().rand.nextFloat() > 0.7D)) {
                                 block.onBlockExploded(getWorld(), targetPosition, this);
                             }
                         }
@@ -65,10 +72,11 @@ public class TestExplosion extends Elexplosion{
                     xDifference /= d1;
                     yDifference /= d1;
                     zDifference /= d1;
-                    double density = (double) this.getWorld().getBlockDensity(new Vec3((double) this.getLocation().getX(), (double) this.getLocation().getY(), (double) this.getLocation().getZ()), entity.getEntityBoundingBox());
+                    double density = (double) this.getWorld().getBlockDensity(new Vec3d((double) this.getLocation().getX(), (double) this.getLocation().getY(), (double) this.getLocation().getZ()), entity.getEntityBoundingBox());
                     double d2 = (1.0D - distance) * density;
                     int damage = (int) ((d2 * d2 + d2) / 2.0D * 8.0D * (double) power + 1.0D);
-                    entity.attackEntityFrom(DamageSource.setExplosionSource(this), (float) damage);
+                    //@todo
+//                    entity.attackEntityFrom(DamageSource.setExplosionSource(this), (float) damage);
                     entity.motionX += xDifference * d2;
                     entity.motionY += yDifference * d2;
                     entity.motionZ += zDifference * d2;

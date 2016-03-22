@@ -5,7 +5,7 @@ import elec332.core.world.WorldHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -56,14 +56,14 @@ public class TankTESR extends TileEntitySpecialRenderer<TileTank> {
     // Render the fluid inside the tank
     // ---------------------------------------------------------------
     private void renderFluid(TileTank tileTank, Tessellator tessellator, Fluid renderFluid) {
-        WorldRenderer renderer = tessellator.getWorldRenderer();
+        VertexBuffer buffer = tessellator.getBuffer();
 
         float offset = 0.002f;
 
         TextureAtlasSprite fluid = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(renderFluid.getStill().toString());
         fluid = RenderHelper.checkIcon(fluid);
 
-        renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 
 //        tessellator.setColorRGBA(255, 255, 255, 128);
 //        tessellator.setBrightness(240);
@@ -77,10 +77,10 @@ public class TankTESR extends TileEntitySpecialRenderer<TileTank> {
         if (scale > 0.0f) {
 
             // Top
-            renderer.pos(0, scale - offset, 0).tex(u1, v1).color(255, 255, 255, 128).endVertex();
-            renderer.pos(0, scale - offset, 1).tex(u1, v2).color(255, 255, 255, 128).endVertex();
-            renderer.pos(1, scale - offset, 1).tex(u2, v2).color(255, 255, 255, 128).endVertex();
-            renderer.pos(1, scale - offset, 0).tex(u2, v1).color(255, 255, 255, 128).endVertex();
+            buffer.pos(0, scale - offset, 0).tex(u1, v1).color(255, 255, 255, 128).endVertex();
+            buffer.pos(0, scale - offset, 1).tex(u1, v2).color(255, 255, 255, 128).endVertex();
+            buffer.pos(1, scale - offset, 1).tex(u2, v2).color(255, 255, 255, 128).endVertex();
+            buffer.pos(1, scale - offset, 0).tex(u2, v1).color(255, 255, 255, 128).endVertex();
             
             if (scale > 3/16f) {
 
@@ -90,40 +90,40 @@ public class TankTESR extends TileEntitySpecialRenderer<TileTank> {
                 v2 -= (fluid.getMaxV() - fluid.getMinV()) * (1 - scale);
 
                 //NORTH
-                renderer.pos(1 - 3 / 16f, scale, -offset).tex(u1, v1).color(255, 255, 255, 128).endVertex();
-                renderer.pos(1 - 3 / 16f, 3 / 16f, -offset).tex(u1, v2).color(255, 255, 255, 128).endVertex();
-                renderer.pos(3 / 16f, 3 / 16f, -offset).tex(u2, v2).color(255, 255, 255, 128).endVertex();
-                renderer.pos(3 / 16f, scale, -offset).tex(u2, v1).color(255, 255, 255, 128).endVertex();
+                buffer.pos(1 - 3 / 16f, scale, -offset).tex(u1, v1).color(255, 255, 255, 128).endVertex();
+                buffer.pos(1 - 3 / 16f, 3 / 16f, -offset).tex(u1, v2).color(255, 255, 255, 128).endVertex();
+                buffer.pos(3 / 16f, 3 / 16f, -offset).tex(u2, v2).color(255, 255, 255, 128).endVertex();
+                buffer.pos(3 / 16f, scale, -offset).tex(u2, v1).color(255, 255, 255, 128).endVertex();
 
                 //EAST
-                renderer.pos(-offset, 3 / 16f, 1 - 3 / 16f).tex(u1, v2).color(255, 255, 255, 128).endVertex();
-                renderer.pos(-offset, scale, 1 - 3 / 16f).tex(u1, v1).color(255, 255, 255, 128).endVertex();
-                renderer.pos(-offset, scale, 3 / 16f).tex(u2, v1).color(255, 255, 255, 128).endVertex();
-                renderer.pos(-offset, 3 / 16f, 3 / 16f).tex(u2, v2).color(255, 255, 255, 128).endVertex();
+                buffer.pos(-offset, 3 / 16f, 1 - 3 / 16f).tex(u1, v2).color(255, 255, 255, 128).endVertex();
+                buffer.pos(-offset, scale, 1 - 3 / 16f).tex(u1, v1).color(255, 255, 255, 128).endVertex();
+                buffer.pos(-offset, scale, 3 / 16f).tex(u2, v1).color(255, 255, 255, 128).endVertex();
+                buffer.pos(-offset, 3 / 16f, 3 / 16f).tex(u2, v2).color(255, 255, 255, 128).endVertex();
 
                 //SOUTH
-                renderer.pos(1 - 3 / 16f, 3 / 16f, 1 + offset).tex(u1, v2).color(255, 255, 255, 128).endVertex();
-                renderer.pos(1 - 3 / 16f, scale, 1 + offset).tex(u1, v1).color(255, 255, 255, 128).endVertex();
-                renderer.pos(3 / 16f, scale, 1 + offset).tex(u2, v1).color(255, 255, 255, 128).endVertex();
-                renderer.pos(3 / 16f, 3 / 16f, 1 + offset).tex(u2, v2).color(255, 255, 255, 128).endVertex();
+                buffer.pos(1 - 3 / 16f, 3 / 16f, 1 + offset).tex(u1, v2).color(255, 255, 255, 128).endVertex();
+                buffer.pos(1 - 3 / 16f, scale, 1 + offset).tex(u1, v1).color(255, 255, 255, 128).endVertex();
+                buffer.pos(3 / 16f, scale, 1 + offset).tex(u2, v1).color(255, 255, 255, 128).endVertex();
+                buffer.pos(3 / 16f, 3 / 16f, 1 + offset).tex(u2, v2).color(255, 255, 255, 128).endVertex();
 
                 //WEST
-                renderer.pos(1 + offset, scale, 1 - 3 / 16f).tex(u1, v1).color(255, 255, 255, 128).endVertex();
-                renderer.pos(1 + offset, 3 / 16f, 1 - 3 / 16f).tex(u1, v2).color(255, 255, 255, 128).endVertex();
-                renderer.pos(1 + offset, 3 / 16f, 3 / 16f).tex(u2, v2).color(255, 255, 255, 128).endVertex();
-                renderer.pos(1 + offset, scale, 3 / 16f).tex(u2, v1).color(255, 255, 255, 128).endVertex();
+                buffer.pos(1 + offset, scale, 1 - 3 / 16f).tex(u1, v1).color(255, 255, 255, 128).endVertex();
+                buffer.pos(1 + offset, 3 / 16f, 1 - 3 / 16f).tex(u1, v2).color(255, 255, 255, 128).endVertex();
+                buffer.pos(1 + offset, 3 / 16f, 3 / 16f).tex(u2, v2).color(255, 255, 255, 128).endVertex();
+                buffer.pos(1 + offset, scale, 3 / 16f).tex(u2, v1).color(255, 255, 255, 128).endVertex();
             }
         }
         tessellator.draw();
     }
 
     private void renderTankInside(Tessellator tessellator, World world, BlockPos pos, TileTank tank) {
-        WorldRenderer renderer = tessellator.getWorldRenderer();
+        VertexBuffer buffer = tessellator.getBuffer();
 
         float offset = 0.002f;
         int ix = pos.getX(), iy = pos.getY(), iz = pos.getZ();
 
-        renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 //        tessellator.setColorRGBA(255, 255, 255, 128);
 //        tessellator.setBrightness(100);
 
@@ -134,52 +134,52 @@ public class TankTESR extends TileEntitySpecialRenderer<TileTank> {
 
         //NORTH other side
         if (doRenderToSide(world, ix, iy, iz-1, tank)) {
-            renderer.pos(1, 0, offset).tex(blockIcon.getMinU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
-            renderer.pos(1, 1, offset).tex(blockIcon.getMinU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
-            renderer.pos(0, 1, offset).tex(blockIcon.getMaxU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
-            renderer.pos(0, 0, offset).tex(blockIcon.getMaxU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(1, 0, offset).tex(blockIcon.getMinU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(1, 1, offset).tex(blockIcon.getMinU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(0, 1, offset).tex(blockIcon.getMaxU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(0, 0, offset).tex(blockIcon.getMaxU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
         }
 
         //SOUTH other side
         if (doRenderToSide(world, ix, iy, iz+1, tank)) {
-            renderer.pos(1, 1, 1 - offset).tex(blockIcon.getMinU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
-            renderer.pos(1, 0, 1 - offset).tex(blockIcon.getMinU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
-            renderer.pos(0, 0, 1 - offset).tex(blockIcon.getMaxU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
-            renderer.pos(0, 1, 1 - offset).tex(blockIcon.getMaxU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(1, 1, 1 - offset).tex(blockIcon.getMinU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(1, 0, 1 - offset).tex(blockIcon.getMinU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(0, 0, 1 - offset).tex(blockIcon.getMaxU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(0, 1, 1 - offset).tex(blockIcon.getMaxU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
         }
 
         //EAST other side
         if (doRenderToSide(world, ix-1, iy, iz, tank)) {
-            renderer.pos(offset, 1, 1).tex(blockIcon.getMinU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
-            renderer.pos(offset, 0, 1).tex(blockIcon.getMinU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
-            renderer.pos(offset, 0, 0).tex(blockIcon.getMaxU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
-            renderer.pos(offset, 1, 0).tex(blockIcon.getMaxU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(offset, 1, 1).tex(blockIcon.getMinU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(offset, 0, 1).tex(blockIcon.getMinU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(offset, 0, 0).tex(blockIcon.getMaxU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(offset, 1, 0).tex(blockIcon.getMaxU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
         }
 
         //WEST other side
         if (doRenderToSide(world, ix+1, iy, iz, tank)) {
-            renderer.pos(1 - offset, 0, 1).tex(blockIcon.getMinU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
-            renderer.pos(1 - offset, 1, 1).tex(blockIcon.getMinU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
-            renderer.pos(1 - offset, 1, 0).tex(blockIcon.getMaxU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
-            renderer.pos(1 - offset, 0, 0).tex(blockIcon.getMaxU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(1 - offset, 0, 1).tex(blockIcon.getMinU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(1 - offset, 1, 1).tex(blockIcon.getMinU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(1 - offset, 1, 0).tex(blockIcon.getMaxU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(1 - offset, 0, 0).tex(blockIcon.getMaxU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
         }
 
         // Bottom other side
         if (doRenderToSide(world, ix, iy-1, iz, tank)) {
             blockIcon = TankSetup.tank.getBottomIcon();
-            renderer.pos(0, offset, 0).tex(blockIcon.getMinU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
-            renderer.pos(0, offset, 1).tex(blockIcon.getMinU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
-            renderer.pos(1, offset, 1).tex(blockIcon.getMaxU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
-            renderer.pos(1, offset, 0).tex(blockIcon.getMaxU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(0, offset, 0).tex(blockIcon.getMinU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(0, offset, 1).tex(blockIcon.getMinU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(1, offset, 1).tex(blockIcon.getMaxU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(1, offset, 0).tex(blockIcon.getMaxU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
         }
 
         // Top other side
         if (doRenderToSide(world, ix, iy+1, iz, tank)) {
             blockIcon = TankSetup.tank.getTopIcon();
-            renderer.pos(0, 1 - offset, 0).tex(blockIcon.getMinU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
-            renderer.pos(1, 1 - offset, 0).tex(blockIcon.getMinU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
-            renderer.pos(1, 1 - offset, 1).tex(blockIcon.getMaxU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
-            renderer.pos(0, 1 - offset, 1).tex(blockIcon.getMaxU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(0, 1 - offset, 0).tex(blockIcon.getMinU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(1, 1 - offset, 0).tex(blockIcon.getMinU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(1, 1 - offset, 1).tex(blockIcon.getMaxU(), blockIcon.getMaxV()).color(255, 255, 255, 128).endVertex();
+            buffer.pos(0, 1 - offset, 1).tex(blockIcon.getMaxU(), blockIcon.getMinV()).color(255, 255, 255, 128).endVertex();
         }
 
         tessellator.draw();

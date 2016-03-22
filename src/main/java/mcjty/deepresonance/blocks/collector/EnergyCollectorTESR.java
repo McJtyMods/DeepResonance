@@ -8,11 +8,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -62,13 +62,13 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer<EnergyCollect
             GlStateManager.translate(-doubleX, -doubleY, -doubleZ);
 
             Tessellator tessellator = Tessellator.getInstance();
-            WorldRenderer renderer = tessellator.getWorldRenderer();
+            VertexBuffer buffer = tessellator.getBuffer();
 
             // ----------------------------------------
 
             this.bindTexture(laserbeams[random.nextInt(4)]);
 
-            renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
+            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
 //            tessellator.setBrightness(240);
 
             float startupFactor = te.getLaserStartup() / (float) GeneratorConfiguration.startupTime;

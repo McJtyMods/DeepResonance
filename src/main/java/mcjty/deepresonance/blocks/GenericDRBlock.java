@@ -10,7 +10,7 @@ import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.varia.Logging;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -126,7 +126,7 @@ public abstract class GenericDRBlock<T extends GenericTileEntity, C extends Cont
 //                    SecurityChannels.SecurityChannel channel = securityChannels.getChannel(securityChannel);
 //                    boolean playerListed = channel.getPlayers().contains(player.getDisplayName());
 //                    if (channel.isWhitelist() != playerListed) {
-//                        Logging.message(player, EnumChatFormatting.RED + "You have no permission to use this block!");
+//                        Logging.message(player, TextFormatting.RED + "You have no permission to use this block!");
 //                        return true;
 //                    }
 //                }

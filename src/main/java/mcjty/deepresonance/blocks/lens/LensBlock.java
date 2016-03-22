@@ -9,7 +9,11 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -44,37 +48,38 @@ public class LensBlock extends GenericDRBlock<LensTileEntity, EmptyContainer> {
             list.add("infusion laser at it to enhance the liquid");
             list.add("in the tank");
         } else {
-            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
+            list.add(TextFormatting.WHITE + ClientHandler.getShiftMessage());
         }
     }
 
     @Override
-    @SuppressWarnings("all")
-    public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state) {
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
         return null;
     }
 
+    public static final AxisAlignedBB BLOCK_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+    public static final AxisAlignedBB NORTH_BLOCK_AABB = new AxisAlignedBB(0.1F, 0.1F, 0.0F, 0.9F, 0.9F, 0.1F);
+    public static final AxisAlignedBB SOUTH_BLOCK_AABB = new AxisAlignedBB(0.1F, 0.1F, 0.9F, 0.9F, 0.9F, 1.0F);
+    public static final AxisAlignedBB WEST_BLOCK_AABB = new AxisAlignedBB(0.0F, 0.1F, 0.1F, 0.1F, 0.9F, 0.9F);
+    public static final AxisAlignedBB EAST_BLOCK_AABB = new AxisAlignedBB(0.9F, 0.1F, 0.1F, 1.0F, 0.9F, 0.9F);
+
     @Override
-    public void setBlockBoundsBasedOnState(IBlockAccess world, BlockPos pos) {
-        IBlockState state = world.getBlockState(pos);
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         int meta = state.getBlock().getMetaFromState(state);
         EnumFacing direction = BlockTools.getOrientationHoriz(meta);
         switch (direction) {
+            case NORTH:
+                return NORTH_BLOCK_AABB;
+            case SOUTH:
+                return SOUTH_BLOCK_AABB;
+            case WEST:
+                return WEST_BLOCK_AABB;
+            case EAST:
+                return EAST_BLOCK_AABB;
             case DOWN:
             case UP:
-                break;
-            case NORTH:
-                this.setBlockBounds(0.1F, 0.1F, 0.0F, 0.9F, 0.9F, 0.1F);
-                break;
-            case SOUTH:
-                this.setBlockBounds(0.1F, 0.1F, 0.9F, 0.9F, 0.9F, 1.0F);
-                break;
-            case WEST:
-                this.setBlockBounds(0.0F, 0.1F, 0.1F, 0.1F, 0.9F, 0.9F);
-                break;
-            case EAST:
-                this.setBlockBounds(0.9F, 0.1F, 0.1F, 1.0F, 0.9F, 0.9F);
-                break;
+            default:
+                return BLOCK_AABB;
         }
     }
 
@@ -90,29 +95,30 @@ public class LensBlock extends GenericDRBlock<LensTileEntity, EmptyContainer> {
     }
 
     @Override
-    public boolean shouldSideBeRendered(IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
+    public boolean shouldSideBeRendered(IBlockState state, IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
         return false;
     }
 
     @Override
-    public boolean isOpaqueCube() {
+    public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
 
     @Override
-    public boolean isFullBlock() {
+    public boolean isFullBlock(IBlockState state) {
         return false;
     }
 
     @Override
-    public boolean isFullCube() {
+    public boolean isFullCube(IBlockState state) {
         return false;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
-    public EnumWorldBlockLayer getBlockLayer() {
-        return EnumWorldBlockLayer.CUTOUT;
+    public BlockRenderLayer getBlockLayer() {
+        return BlockRenderLayer.CUTOUT;
     }
 
 }
