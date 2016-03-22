@@ -1,5 +1,6 @@
 package mcjty.deepresonance.items.rftoolsmodule;
 
+import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.items.RadiationMonitorItem;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
 import mcjty.lib.varia.BlockPosTools;
@@ -24,7 +25,7 @@ public class RadiationScreenModule implements IScreenModule<IModuleDataInteger> 
             return null;
         }
 
-        if (!world.getChunkProvider().chunkExists(coordinate.getX() >> 4, coordinate.getZ() >> 4)) {
+        if (!WorldHelper.chunkLoaded(world, coordinate)) {
             return null;
         }
 
