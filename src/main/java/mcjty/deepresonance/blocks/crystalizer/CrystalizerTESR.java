@@ -28,17 +28,17 @@ public class CrystalizerTESR extends TileEntitySpecialRenderer<CrystalizerTileEn
 
     public CrystalizerTESR() {
         // Manually load our rotating crystal here
-        try {
-            model = ModelLoaderRegistry.getModel(new ResourceLocation(DeepResonance.MODID, "block/crystal_inside.obj"));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private IBakedModel getBakedModel() {
         // Since we cannot bake in preInit() we do lazy baking of the model as soon as we need it
         // for rendering
         if (bakedModel == null) {
+            try {
+                model = ModelLoaderRegistry.getModel(new ResourceLocation(DeepResonance.MODID, "block/crystal_inside.obj"));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             bakedModel = model.bake(TRSRTransformation.identity(), DefaultVertexFormats.ITEM,
                                     location -> Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString()));
         }
