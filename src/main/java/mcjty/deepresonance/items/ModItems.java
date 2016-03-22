@@ -5,6 +5,7 @@ import mcjty.deepresonance.items.armor.ItemRadiationSuit;
 import mcjty.deepresonance.items.manual.DeepResonanceManualItem;
 import mcjty.deepresonance.items.rftoolsmodule.RFToolsSupport;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -31,10 +32,10 @@ public final class ModItems {
             RFToolsSupport.initItems();
         }
 
-        helmet = newRadiationSuitPart(0, "helmet");
-        chestplate = newRadiationSuitPart(1, "chest");
-        leggings = newRadiationSuitPart(2, "leggings");
-        boots = newRadiationSuitPart(3, "boots");
+        helmet = newRadiationSuitPart(EntityEquipmentSlot.HEAD, "helmet");
+        chestplate = newRadiationSuitPart(EntityEquipmentSlot.CHEST, "chest");
+        leggings = newRadiationSuitPart(EntityEquipmentSlot.LEGS, "leggings");
+        boots = newRadiationSuitPart(EntityEquipmentSlot.FEET, "boots");
     }
 
     @SideOnly(Side.CLIENT)
@@ -56,7 +57,7 @@ public final class ModItems {
 
     }
 
-    private static ItemRadiationSuit newRadiationSuitPart(int i, String texture) {
+    private static ItemRadiationSuit newRadiationSuitPart(EntityEquipmentSlot i, String texture) {
         ItemRadiationSuit ret = new ItemRadiationSuit(ItemArmor.ArmorMaterial.IRON, 0, i, texture);
         GameRegistry.registerItem(ret);
         return ret;

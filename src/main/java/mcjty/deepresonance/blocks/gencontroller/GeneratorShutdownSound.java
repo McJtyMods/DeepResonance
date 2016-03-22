@@ -6,6 +6,8 @@ import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import net.minecraft.block.Block;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -19,7 +21,7 @@ public class GeneratorShutdownSound extends MovingSound {
     private final BlockPos pos;
 
     public GeneratorShutdownSound(EntityPlayer player, World world, int x, int y, int z) {
-        super(new ResourceLocation(DeepResonance.MODID + ":engine_shutdown"));
+        super(SoundEvent.soundEventRegistry.getObject(new ResourceLocation(DeepResonance.MODID + ":engine_shutdown")), SoundCategory.BLOCKS);
         this.player = player;
         this.world = world;
         this.pos = new BlockPos(x, y, z);
