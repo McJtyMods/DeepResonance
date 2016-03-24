@@ -22,9 +22,7 @@ public class GeneratorLoopSound extends MovingSound {
     private float scaleDown = 1.0f;
 
     public GeneratorLoopSound(World world, int x, int y, int z) {
-        super(SoundEvent.soundEventRegistry.getObject(new ResourceLocation("block.stone_button.click_on")), SoundCategory.BLOCKS);
-//@todo
-//        super(SoundEvent.soundEventRegistry.getObject(new ResourceLocation(DeepResonance.MODID + ":engine_loop")), SoundCategory.BLOCKS);
+        super(SoundEvent.soundEventRegistry.getObject(new ResourceLocation(DeepResonance.MODID + ":engine_loop")), SoundCategory.BLOCKS);
         this.world = world;
         this.pos = new BlockPos(x, y, z);
 

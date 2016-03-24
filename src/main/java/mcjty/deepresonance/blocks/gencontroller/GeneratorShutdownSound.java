@@ -1,6 +1,7 @@
 package mcjty.deepresonance.blocks.gencontroller;
 
 import elec332.core.world.WorldHelper;
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import net.minecraft.block.Block;
 import net.minecraft.client.audio.MovingSound;
@@ -18,9 +19,7 @@ public class GeneratorShutdownSound extends MovingSound {
     private final BlockPos pos;
 
     public GeneratorShutdownSound(World world, int x, int y, int z) {
-        super(SoundEvent.soundEventRegistry.getObject(new ResourceLocation("block.stone_button.click_on")), SoundCategory.BLOCKS);
-//@todo
-//        super(SoundEvent.soundEventRegistry.getObject(new ResourceLocation(DeepResonance.MODID + ":engine_shutdown")), SoundCategory.BLOCKS);
+        super(SoundEvent.soundEventRegistry.getObject(new ResourceLocation(DeepResonance.MODID + ":engine_shutdown")), SoundCategory.BLOCKS);
         this.world = world;
         this.pos = new BlockPos(x, y, z);
 
