@@ -3,12 +3,20 @@ package mcjty.deepresonance;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.RadiationShieldRegistry;
 import mcjty.deepresonance.varia.QuadTree;
+import mcjty.lib.preferences.PlayerPreferencesProperties;
+import mcjty.lib.preferences.PreferencesDispatcher;
+import mcjty.lib.preferences.PreferencesProperties;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.Map;
 
@@ -74,5 +82,26 @@ public class ForgeEventHandlers {
             }
         }
 
+    }
+
+    @SubscribeEvent
+    public void onPlayerTickEvent(TickEvent.PlayerTickEvent event) {
+        if (event.phase == TickEvent.Phase.START && !event.player.worldObj.isRemote) {
+            PreferencesProperties preferencesProperties = PlayerPreferencesProperties.getProperties(event.player);
+            preferencesProperties.tick((EntityPlayerMP) event.player, DeepResonance.networkHandler.getNetworkWrapper());
+        }
+    }
+
+    @SubscribeEvent
+    public void onEntityConstructing(AttachCapabilitiesEvent.Entity event){
+        // @todo move to a mcjtylib helper
+        if (event.getEntity() instanceof EntityPlayer) {
+            ResourceLocation key = new ResourceLocation("McJtyLib", "Preferences");
+            if (!event.getCapabilities().containsKey(key)) {
+                if (!event.getEntity().hasCapability(PlayerPreferencesProperties.PREFERENCES_CAPABILITY, null)) {
+                    event.addCapability(key, new PreferencesDispatcher());
+                }
+            }
+        }
     }
 }
