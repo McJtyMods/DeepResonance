@@ -12,7 +12,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -21,7 +20,6 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.server.FMLServerHandler;
 
 import java.util.List;
 import java.util.Map;
@@ -45,8 +43,11 @@ public class RadiationTickEvent {
     public static Potion wither;
 
     @SubscribeEvent
-    public void onServerTick(TickEvent.ServerTickEvent evt) {
+    public void onTick(TickEvent.WorldTickEvent evt) {
         if (evt.phase == TickEvent.Phase.START) {
+            return;
+        }
+        if (evt.world.provider.getDimension() != 0) {
             return;
         }
         counter--;
@@ -59,17 +60,37 @@ public class RadiationTickEvent {
                 counterEffects = EFFECTS_MAX;
                 doEffects = true;
             }
-            serverTick(doEffects);
+            serverTick(evt.world, doEffects);
         }
     }
 
-    private void serverTick(boolean doEffects) {
-        // @todo improve
-        MinecraftServer server = FMLServerHandler.instance().getServer();
-        if (server == null) {
-            return;
-        }
-        World entityWorld = server.getEntityWorld();
+
+//    @SubscribeEvent
+//    public void onServerTick(TickEvent.ServerTickEvent evt) {
+//        if (evt.phase == TickEvent.Phase.START) {
+//            return;
+//        }
+//        counter--;
+//        if (counter <= 0) {
+//            counter = MAXTICKS;
+//
+//            counterEffects--;
+//            boolean doEffects = false;
+//            if (counterEffects <= 0) {
+//                counterEffects = EFFECTS_MAX;
+//                doEffects = true;
+//            }
+//            serverTick(doEffects);
+//        }
+//    }
+
+    private void serverTick(World entityWorld, boolean doEffects) {
+//        // @todo improve
+//        MinecraftServer server = FMLServerHandler.instance().getServer();
+//        if (server == null) {
+//            return;
+//        }
+//        World entityWorld = server.getEntityWorld();
         DRRadiationManager radiationManager = DRRadiationManager.getManager(entityWorld);
 
         Set<GlobalCoordinate> toRemove = Sets.newHashSet();
