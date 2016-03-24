@@ -51,7 +51,7 @@ public class DenseGlassBlock extends Block {
     @SideOnly(Side.CLIENT)
     @Override
     public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
-        Block block = WorldHelper.getBlockAt(world, pos);
+        Block block = WorldHelper.getBlockAt(world, pos.offset(side));
         return block != this && super.shouldSideBeRendered(state, world, pos, side);
     }
 

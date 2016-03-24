@@ -254,6 +254,11 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
 //    }
 
 
+//    @Override
+//    public boolean canRenderInLayer(BlockRenderLayer layer) {
+//        return layer == BlockRenderLayer.SOLID || layer == BlockRenderLayer.TRANSLUCENT;
+//    }
+//
     @SideOnly(Side.CLIENT)
     @Override
     public BlockRenderLayer getBlockLayer() {
@@ -282,7 +287,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
 
     @Override
     public boolean shouldSideBeRendered(IBlockState state, IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
-        return WorldHelper.getBlockAt(worldIn, pos) != this;
+        return WorldHelper.getBlockAt(worldIn, pos.offset(side)) != this;
     }
 
     @Override
