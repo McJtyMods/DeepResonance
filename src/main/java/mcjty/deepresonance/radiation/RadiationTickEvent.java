@@ -270,6 +270,7 @@ public class RadiationTickEvent {
                 float strength = (float) (baseStrength * (radius-distance) / radius);
                 strength = strength * (1.0f-protection);
                 strength = strength * (float) radiationTree.factor2(cx, cy, cz, (int) entityLivingBase.posX, (int) entityLivingBase.posY+1, (int) entityLivingBase.posZ);
+                getPotions();
 
                 if (strength < RadiationConfiguration.radiationEffectLevelNone) {
                 } else if (strength < RadiationConfiguration.radiationEffectLevel0) {

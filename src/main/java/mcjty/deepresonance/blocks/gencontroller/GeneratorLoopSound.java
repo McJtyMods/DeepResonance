@@ -16,15 +16,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GeneratorLoopSound extends MovingSound {
-    private final EntityPlayer player;
     private final World world;
     private final BlockPos pos;
 
     private float scaleDown = 1.0f;
 
-    public GeneratorLoopSound(EntityPlayer player, World world, int x, int y, int z) {
-        super(SoundEvent.soundEventRegistry.getObject(new ResourceLocation(DeepResonance.MODID + ":engine_loop")), SoundCategory.BLOCKS);
-        this.player = player;
+    public GeneratorLoopSound(World world, int x, int y, int z) {
+        super(SoundEvent.soundEventRegistry.getObject(new ResourceLocation("block.stone_button.click_on")), SoundCategory.BLOCKS);
+//@todo
+//        super(SoundEvent.soundEventRegistry.getObject(new ResourceLocation(DeepResonance.MODID + ":engine_loop")), SoundCategory.BLOCKS);
         this.world = world;
         this.pos = new BlockPos(x, y, z);
 

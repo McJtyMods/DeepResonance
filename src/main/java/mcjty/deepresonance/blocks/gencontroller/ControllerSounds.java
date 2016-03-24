@@ -3,7 +3,6 @@ package mcjty.deepresonance.blocks.gencontroller;
 import mcjty.lib.varia.GlobalCoordinate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSound;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -32,20 +31,18 @@ public class ControllerSounds {
 
 
     public static void playStartup(World worldObj, BlockPos pos) {
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-        MovingSound sound = new GeneratorStartupSound(player, worldObj, pos.getX(), pos.getY(), pos.getZ());
+        MovingSound sound = new GeneratorStartupSound(worldObj, pos.getX(), pos.getY(), pos.getZ());
         playSound(worldObj, pos, sound);
     }
 
     public static void playLoop(World worldObj, BlockPos pos) {
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-        MovingSound sound = new GeneratorLoopSound(player, worldObj, pos.getX(), pos.getY(), pos.getZ());
-        playSound(worldObj, pos, sound);
+        //@todo
+//        MovingSound sound = new GeneratorLoopSound(worldObj, pos.getX(), pos.getY(), pos.getZ());
+//        playSound(worldObj, pos, sound);
     }
 
     public static void playShutdown(World worldObj, BlockPos pos) {
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-        MovingSound sound = new GeneratorShutdownSound(player, worldObj, pos.getX(), pos.getY(), pos.getZ());
+        MovingSound sound = new GeneratorShutdownSound(worldObj, pos.getX(), pos.getY(), pos.getZ());
         playSound(worldObj, pos, sound);
     }
 

@@ -16,13 +16,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GeneratorStartupSound extends MovingSound {
-    private final EntityPlayer player;
     private final World world;
     private final BlockPos pos;
 
-    public GeneratorStartupSound(EntityPlayer player, World world, int x, int y, int z) {
-        super(SoundEvent.soundEventRegistry.getObject(new ResourceLocation(DeepResonance.MODID + ":engine_start")), SoundCategory.BLOCKS);
-        this.player = player;
+    public GeneratorStartupSound(World world, int x, int y, int z) {
+        super(SoundEvent.soundEventRegistry.getObject(new ResourceLocation("block.stone_button.click_on")), SoundCategory.BLOCKS);
+//@todo
+//        super(SoundEvent.soundEventRegistry.getObject(new ResourceLocation(DeepResonance.MODID + ":engine_start")), SoundCategory.BLOCKS);
         this.world = world;
         this.pos = new BlockPos(x, y, z);
 
