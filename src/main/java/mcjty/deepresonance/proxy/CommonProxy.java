@@ -15,6 +15,7 @@ import mcjty.deepresonance.radiation.RadiationTickEvent;
 import mcjty.deepresonance.worldgen.WorldGen;
 import mcjty.deepresonance.worldgen.WorldGenConfiguration;
 import mcjty.deepresonance.worldgen.WorldTickHandler;
+import mcjty.lib.McJtyLib;
 import mcjty.lib.base.GeneralConfig;
 import mcjty.lib.varia.WrenchChecker;
 import net.minecraftforge.common.MinecraftForge;
@@ -31,6 +32,7 @@ public abstract class CommonProxy {
     private Configuration mainConfig;
 
     public void preInit(FMLPreInitializationEvent e) {
+        McJtyLib.preInit(e);
         GeneralConfig.preInit(e);
 
         mainConfig = DeepResonance.config;
