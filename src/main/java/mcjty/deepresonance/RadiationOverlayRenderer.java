@@ -13,7 +13,7 @@ import org.lwjgl.opengl.GL11;
 public class RadiationOverlayRenderer {
 
     public static void onRender(RenderGameOverlayEvent event) {
-        if (event.isCancelable() || event.type != RenderGameOverlayEvent.ElementType.EXPERIENCE) {
+        if (event.isCancelable() || event.getType() != RenderGameOverlayEvent.ElementType.EXPERIENCE) {
             return;
         }
 

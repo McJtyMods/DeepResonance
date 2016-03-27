@@ -109,7 +109,7 @@ public class DeepWorldGenerator implements IWorldGenerator {
 
     @SubscribeEvent
     public void handleChunkLoadEvent(ChunkDataEvent.Load event) {
-        int dim = WorldHelper.getDimID(event.world);
+        int dim = WorldHelper.getDimID(event.getWorld());
 
         boolean regen = false;
         NBTTagCompound tag = (NBTTagCompound) event.getData().getTag(RETRO_NAME);
