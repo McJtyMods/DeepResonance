@@ -7,6 +7,7 @@ import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.deepresonance.items.ModItems;
+import mcjty.deepresonance.varia.CustomSidedInvWrapper;
 import mcjty.deepresonance.varia.InventoryLocator;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
@@ -21,7 +22,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 
 import java.util.Random;
 
@@ -255,7 +255,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
         return stack.getItem() == ModItems.filterMaterialItem;
     }
 
-    private IItemHandler invHandler = new InvWrapper(this);
+    private IItemHandler invHandler = new CustomSidedInvWrapper(this);
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {

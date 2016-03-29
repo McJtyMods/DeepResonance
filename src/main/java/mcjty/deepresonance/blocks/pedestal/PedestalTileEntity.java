@@ -6,6 +6,7 @@ import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.config.ConfigMachines;
+import mcjty.deepresonance.varia.CustomSidedInvWrapper;
 import mcjty.deepresonance.varia.InventoryLocator;
 import mcjty.deepresonance.varia.Tools;
 import mcjty.lib.container.DefaultSidedInventory;
@@ -27,7 +28,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 
 public class PedestalTileEntity extends GenericTileEntity implements DefaultSidedInventory, ITickable {
     private InventoryHelper inventoryHelper = new InventoryHelper(this, PedestalContainer.factory, 1);
@@ -195,7 +195,7 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
         return stack.getItem() == Item.getItemFromBlock(ModBlocks.resonatingCrystalBlock);
     }
 
-    IItemHandler invHandler = new InvWrapper(this);
+    IItemHandler invHandler = new CustomSidedInvWrapper(this);
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
