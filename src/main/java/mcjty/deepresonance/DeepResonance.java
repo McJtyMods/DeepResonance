@@ -39,10 +39,10 @@ import java.io.File;
         version = DeepResonance.VERSION)
 public class DeepResonance implements ModBase {
     public static final String MODID = "deepresonance";
-    public static final String VERSION = "1.1.4beta23";
-    public static final String MIN_FORGE_VER = "12.16.0.1811";
+    public static final String VERSION = "1.1.4beta24";
+    public static final String MIN_FORGE_VER = "12.16.0.1826";
     public static final String MIN_MCJTYLIB_VER = "1.8.9-1.8.1beta12";
-    public static final String MIN_ELECCORE_VER = "1.4.240";
+    public static final String MIN_ELECCORE_VER = "1.4.259";
 
     @SidedProxy(clientSide="mcjty.deepresonance.proxy.ClientProxy", serverSide="mcjty.deepresonance.proxy.ServerProxy")
     public static CommonProxy proxy;
