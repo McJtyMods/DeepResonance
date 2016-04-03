@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
@@ -19,7 +20,8 @@ public class MachineFrame extends Block {
         setUnlocalizedName("machine_frame");
         setRegistryName("machine_frame");
         setCreativeTab(DeepResonance.tabDeepResonance);
-        GameRegistry.registerBlock(this);
+        GameRegistry.register(this);
+        GameRegistry.register(new ItemBlock(this), getRegistryName());
     }
 
     @SideOnly(Side.CLIENT)

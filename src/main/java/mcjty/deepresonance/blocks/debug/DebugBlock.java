@@ -9,6 +9,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -35,7 +36,8 @@ public class DebugBlock extends Block {
         super(Material.glass);
         setUnlocalizedName(DeepResonance.MODID + "_debug_block");
         setRegistryName("debug_block");
-        GameRegistry.registerBlock(this);
+        GameRegistry.register(this);
+        GameRegistry.register(new ItemBlock(this), getRegistryName());
     }
 
     @SideOnly(Side.CLIENT)

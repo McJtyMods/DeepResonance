@@ -6,6 +6,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -22,7 +23,8 @@ public class RadiationSensorBlock extends Block {
         setUnlocalizedName(DeepResonance.MODID + ".radiation_sensor");
         setRegistryName("radiation_sensor");
         setCreativeTab(DeepResonance.tabDeepResonance);
-        GameRegistry.registerBlock(this);
+        GameRegistry.register(this);
+        GameRegistry.register(new ItemBlock(this), getRegistryName());
     }
 
     @SideOnly(Side.CLIENT)

@@ -41,7 +41,9 @@ public class RadiationMonitorItem extends GenericDRItem {
     @SideOnly(Side.CLIENT)
     public void initModel() {
         for (int i = 0 ; i <= 9 ; i++) {
-            ModelBakery.registerItemVariants(this, new ResourceLocation(getRegistryName() + i));
+            ResourceLocation registryName = getRegistryName();
+            registryName = new ResourceLocation(registryName.getResourceDomain(), registryName.getResourcePath() + i);
+            ModelBakery.registerItemVariants(this, registryName);
         }
 
         ModelLoader.setCustomMeshDefinition(this, new ItemMeshDefinition() {
@@ -55,7 +57,9 @@ public class RadiationMonitorItem extends GenericDRItem {
                 } else if (level > 9) {
                     level = 9;
                 }
-                return new ModelResourceLocation(RadiationMonitorItem.this.getRegistryName() + level, "inventory");
+                ResourceLocation registryName = getRegistryName();
+                registryName = new ResourceLocation(registryName.getResourceDomain(), registryName.getResourcePath() + level);
+                return new ModelResourceLocation(registryName, "inventory");
             }
         });
     }
