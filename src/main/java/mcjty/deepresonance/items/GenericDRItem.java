@@ -14,7 +14,7 @@ public class GenericDRItem extends Item {
         setUnlocalizedName(DeepResonance.MODID + "." + name);
         setRegistryName(name);
         setCreativeTab(DeepResonance.tabDeepResonance);
-        GameRegistry.registerItem(this, name);
+        GameRegistry.register(this);
     }
 
     @SideOnly(Side.CLIENT)

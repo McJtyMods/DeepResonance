@@ -59,7 +59,7 @@ public final class ModItems {
 
     private static ItemRadiationSuit newRadiationSuitPart(EntityEquipmentSlot i, String texture) {
         ItemRadiationSuit ret = new ItemRadiationSuit(ItemArmor.ArmorMaterial.IRON, 0, i, texture);
-        GameRegistry.registerItem(ret);
+        GameRegistry.register(ret);
         return ret;
     }
 
