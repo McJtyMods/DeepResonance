@@ -167,7 +167,7 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
 
     @Override
     public int[] getSlotsForFace(EnumFacing side) {
-        return new int[PedestalContainer.SLOT_CRYSTAL];
+        return new int[] { PedestalContainer.SLOT_CRYSTAL };
     }
 
     @Override
