@@ -4,6 +4,8 @@ import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.gui.GuiProxy;
 import mcjty.lib.container.GenericGuiContainer;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -31,12 +33,11 @@ public class ValveBlock extends GenericDRBlock<ValveTileEntity, ValveContainer> 
         return GuiValve.class;
     }
 
-    //@todo
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-//        return currentTip;
-//    }
+    @Override
+    @SideOnly(Side.CLIENT)
+    public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        return currentTip;
+    }
 
     @Override
     @SideOnly(Side.CLIENT)

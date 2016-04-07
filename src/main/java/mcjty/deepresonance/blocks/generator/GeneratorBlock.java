@@ -1,9 +1,13 @@
 package mcjty.deepresonance.blocks.generator;
 
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
+import mcjty.deepresonance.network.PacketGetGeneratorInfo;
 import mcjty.lib.container.EmptyContainer;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
@@ -21,6 +25,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyContainer> {
@@ -67,23 +72,22 @@ public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyCon
         }
     }
 
-    //@todo
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-//        TileEntity tileEntity = accessor.getTileEntity();
-//        if (tileEntity instanceof GeneratorTileEntity) {
-//            GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) tileEntity;
-//            currenttip.add(TextFormatting.GREEN + "ID: " + new DecimalFormat("#.##").format(generatorTileEntity.getNetworkId()));
-//            if (System.currentTimeMillis() - lastTime > 250) {
-//                lastTime = System.currentTimeMillis();
-//                DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetGeneratorInfo(generatorTileEntity.getNetworkId()));
-//            }
-//            currenttip.add(TextFormatting.GREEN + "Energy: " + tooltipEnergy + "/" + (tooltipRefCount*GeneratorConfiguration.rfPerGeneratorBlock) + " RF");
-//            currenttip.add(TextFormatting.YELLOW + Integer.toString(tooltipRfPerTick) + " RF/t");
-//        }
-//        return currenttip;
-//    }
+    @Override
+    @SideOnly(Side.CLIENT)
+    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        TileEntity tileEntity = accessor.getTileEntity();
+        if (tileEntity instanceof GeneratorTileEntity) {
+            GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) tileEntity;
+            currenttip.add(TextFormatting.GREEN + "ID: " + new DecimalFormat("#.##").format(generatorTileEntity.getNetworkId()));
+            if (System.currentTimeMillis() - lastTime > 250) {
+                lastTime = System.currentTimeMillis();
+                DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetGeneratorInfo(generatorTileEntity.getNetworkId()));
+            }
+            currenttip.add(TextFormatting.GREEN + "Energy: " + tooltipEnergy + "/" + (tooltipRefCount*GeneratorConfiguration.rfPerGeneratorBlock) + " RF");
+            currenttip.add(TextFormatting.YELLOW + Integer.toString(tooltipRfPerTick) + " RF/t");
+        }
+        return currenttip;
+    }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack itemStack) {

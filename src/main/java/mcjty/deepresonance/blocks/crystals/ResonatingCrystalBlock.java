@@ -3,13 +3,17 @@ package mcjty.deepresonance.blocks.crystals;
 import elec332.core.explosion.Elexplosion;
 import elec332.core.main.ElecCore;
 import elec332.core.world.WorldHelper;
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.deepresonance.boom.TestExplosion;
+import mcjty.deepresonance.network.PacketGetCrystalInfo;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
 import mcjty.lib.container.EmptyContainer;
 import mcjty.lib.varia.GlobalCoordinate;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -130,25 +134,24 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
         }
     }
 
-    //@todo
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-//        TileEntity tileEntity = accessor.getTileEntity();
-//        if (tileEntity instanceof ResonatingCrystalTileEntity) {
-//            ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
-//            DecimalFormat decimalFormat = new DecimalFormat("#.##");
-//            currenttip.add(TextFormatting.GREEN + "Strength/Efficiency/Purity: " + decimalFormat.format(resonatingCrystalTileEntity.getStrength()) + "% "
-//                    + decimalFormat.format(resonatingCrystalTileEntity.getEfficiency()) + "% "
-//                    + decimalFormat.format(resonatingCrystalTileEntity.getPurity()) + "%");
-//            currenttip.add(TextFormatting.YELLOW + "Power left: " + decimalFormat.format(tooltipPower) + "% (" + tooltipRFTick + " RF/t)");
-//            if (System.currentTimeMillis() - lastTime > 250) {
-//                lastTime = System.currentTimeMillis();
-//                DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetCrystalInfo(tileEntity.getPos()));
-//            }
-//        }
-//        return currenttip;
-//    }
+    @Override
+    @SideOnly(Side.CLIENT)
+    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        TileEntity tileEntity = accessor.getTileEntity();
+        if (tileEntity instanceof ResonatingCrystalTileEntity) {
+            ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
+            DecimalFormat decimalFormat = new DecimalFormat("#.##");
+            currenttip.add(TextFormatting.GREEN + "Strength/Efficiency/Purity: " + decimalFormat.format(resonatingCrystalTileEntity.getStrength()) + "% "
+                    + decimalFormat.format(resonatingCrystalTileEntity.getEfficiency()) + "% "
+                    + decimalFormat.format(resonatingCrystalTileEntity.getPurity()) + "%");
+            currenttip.add(TextFormatting.YELLOW + "Power left: " + decimalFormat.format(tooltipPower) + "% (" + tooltipRFTick + " RF/t)");
+            if (System.currentTimeMillis() - lastTime > 250) {
+                lastTime = System.currentTimeMillis();
+                DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetCrystalInfo(tileEntity.getPos()));
+            }
+        }
+        return currenttip;
+    }
 
     @Override
     public void onBlockExploded(final World world, final BlockPos pos, Explosion explosion) {

@@ -3,12 +3,16 @@ package mcjty.deepresonance.blocks.tank;
 import elec332.core.client.IIconRegistrar;
 import elec332.core.client.ITextureLoader;
 import elec332.core.world.WorldHelper;
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.client.DRResourceLocation;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.deepresonance.network.PacketGetTankInfo;
 import mcjty.lib.container.EmptyContainer;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -36,6 +40,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -107,30 +112,29 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     public LiquidCrystalFluidTagData fluidData = null;
     public Fluid clientRenderFluid = null;
 
-    //@todo
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-//        TileTank tankTile = (TileTank) accessor.getTileEntity();
-//        Map<EnumFacing, TileTank.Mode> settings = tankTile.getSettings();
-//        TileTank.Mode i = settings.get(accessor.getSide());
-//        currentTip.add("Mode: "+(i == TileTank.Mode.SETTING_NONE ? "none" : (i == TileTank.Mode.SETTING_ACCEPT ? "accept" : "provide")));
-//        currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(clientRenderFluid));
-//        currentTip.add("Amount: "+totalFluidAmount + " (" + tankCapacity + ")");
-//        if (fluidData != null) {
-//            DecimalFormat decimalFormat = new DecimalFormat("#.#");
-//            currentTip.add(TextFormatting.YELLOW + "Quality: " + decimalFormat.format(fluidData.getQuality() * 100) + "%");
-//            currentTip.add(TextFormatting.YELLOW + "Purity: " + decimalFormat.format(fluidData.getPurity() * 100) + "%");
-//            currentTip.add(TextFormatting.YELLOW + "Strength: " + decimalFormat.format(fluidData.getStrength() * 100) + "%");
-//            currentTip.add(TextFormatting.YELLOW + "Efficiency: " + decimalFormat.format(fluidData.getEfficiency() * 100) + "%");
-//        }
-//        if (System.currentTimeMillis() - lastTime > 100) {
-//            lastTime = System.currentTimeMillis();
-//            DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetTankInfo(tankTile.getPos()));
-//        }
-//        return currentTip;
-//    }
-//
+    @Override
+    @SideOnly(Side.CLIENT)
+    public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        TileTank tankTile = (TileTank) accessor.getTileEntity();
+        Map<EnumFacing, TileTank.Mode> settings = tankTile.getSettings();
+        TileTank.Mode i = settings.get(accessor.getSide());
+        currentTip.add("Mode: "+(i == TileTank.Mode.SETTING_NONE ? "none" : (i == TileTank.Mode.SETTING_ACCEPT ? "accept" : "provide")));
+        currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(clientRenderFluid));
+        currentTip.add("Amount: "+totalFluidAmount + " (" + tankCapacity + ")");
+        if (fluidData != null) {
+            DecimalFormat decimalFormat = new DecimalFormat("#.#");
+            currentTip.add(TextFormatting.YELLOW + "Quality: " + decimalFormat.format(fluidData.getQuality() * 100) + "%");
+            currentTip.add(TextFormatting.YELLOW + "Purity: " + decimalFormat.format(fluidData.getPurity() * 100) + "%");
+            currentTip.add(TextFormatting.YELLOW + "Strength: " + decimalFormat.format(fluidData.getStrength() * 100) + "%");
+            currentTip.add(TextFormatting.YELLOW + "Efficiency: " + decimalFormat.format(fluidData.getEfficiency() * 100) + "%");
+        }
+        if (System.currentTimeMillis() - lastTime > 100) {
+            lastTime = System.currentTimeMillis();
+            DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetTankInfo(tankTile.getPos()));
+        }
+        return currentTip;
+    }
+
 
 
     @Override
