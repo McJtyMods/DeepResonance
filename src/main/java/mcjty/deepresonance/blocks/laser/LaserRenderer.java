@@ -1,7 +1,6 @@
 package mcjty.deepresonance.blocks.laser;
 
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.client.render.DrRenderHelper;
 import mcjty.lib.gui.RenderHelper;
 import mcjty.lib.varia.BlockTools;
 import net.minecraft.client.Minecraft;
@@ -58,7 +57,7 @@ public class LaserRenderer extends TileEntitySpecialRenderer<LaserTileEntity> {
             RenderHelper.Vector start = new RenderHelper.Vector(tileEntity.getPos().getX() + .5f, tileEntity.getPos().getY() + .5f, tileEntity.getPos().getZ() + .5f);
             RenderHelper.Vector end = new RenderHelper.Vector(destX, destY, destZ);
             RenderHelper.Vector player = new RenderHelper.Vector((float) doubleX, (float) doubleY + p.getEyeHeight(), (float) doubleZ);
-            DrRenderHelper.drawBeam(start, end, player, .2f);
+            RenderHelper.drawBeam(start, end, player, .2f);
 
             tessellator.draw();
             GlStateManager.popMatrix();

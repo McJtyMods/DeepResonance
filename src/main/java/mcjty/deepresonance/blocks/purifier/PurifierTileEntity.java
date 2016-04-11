@@ -7,11 +7,11 @@ import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.deepresonance.items.ModItems;
-import mcjty.deepresonance.varia.CustomSidedInvWrapper;
-import mcjty.deepresonance.varia.InventoryLocator;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
+import mcjty.lib.container.InventoryLocator;
 import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.varia.CustomSidedInvWrapper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -85,7 +85,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
     private void consumeFilter() {
         inventoryHelper.decrStackSize(PurifierContainer.SLOT_FILTERINPUT, 1);
         ItemStack spentMaterial = new ItemStack(ModItems.spentFilterMaterialItem, 1);
-        inventoryLocator.ejectStack(worldObj, pos.getX(), pos.getY(), pos.getZ(), spentMaterial, pos, directions);
+        inventoryLocator.ejectStack(worldObj, pos, spentMaterial, pos, directions);
     }
 
     private int doPurify(LiquidCrystalFluidTagData fluidData) {

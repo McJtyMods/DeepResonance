@@ -2,7 +2,7 @@ package mcjty.deepresonance.blocks.collector;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
-import mcjty.deepresonance.client.render.DrRenderHelper;
+import mcjty.lib.gui.RenderHelper;
 import mcjty.lib.gui.RenderHelper.Vector;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -46,7 +46,7 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer<EnergyCollect
             GlStateManager.pushMatrix();
             GlStateManager.translate((float) x + 0.5F, (float) y + 0.85F, (float) z + 0.5F);
             this.bindTexture(halo);
-            DrRenderHelper.renderBillboardQuadBright(1.0f);
+            RenderHelper.renderBillboardQuadBright(1.0f);
             GlStateManager.popMatrix();
 
             Minecraft mc = Minecraft.getMinecraft();
@@ -83,10 +83,10 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer<EnergyCollect
                     // Do nothing
                 } else if (startupFactor > .001f) {
                     Vector middle = new Vector(jitter(startupFactor, start.x, end.x), jitter(startupFactor, start.y, end.y), jitter(startupFactor, start.z, end.z));
-                    DrRenderHelper.drawBeam(start, middle, player, .1f);
-                    DrRenderHelper.drawBeam(middle, end, player, .1f);
+                    RenderHelper.drawBeam(start, middle, player, .1f);
+                    RenderHelper.drawBeam(middle, end, player, .1f);
                 } else {
-                    DrRenderHelper.drawBeam(start, end, player, .1f);
+                    RenderHelper.drawBeam(start, end, player, .1f);
                 }
             }
 
