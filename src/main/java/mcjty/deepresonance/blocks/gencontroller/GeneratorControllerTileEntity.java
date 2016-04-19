@@ -66,6 +66,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
         }
     }
 
+    @SideOnly(Side.CLIENT)
     private void stopSounds() {
         ControllerSounds.stopSound(worldObj, getPos());
     }
