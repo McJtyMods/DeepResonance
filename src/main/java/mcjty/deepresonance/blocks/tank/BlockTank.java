@@ -2,6 +2,7 @@ package mcjty.deepresonance.blocks.tank;
 
 import elec332.core.client.IIconRegistrar;
 import elec332.core.client.ITextureLoader;
+import elec332.core.util.PlayerHelper;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.GenericDRBlock;
@@ -22,6 +23,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -162,6 +164,21 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     }
 
     @Override
+    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
+        super.onBlockHarvested(worldIn, pos, state, player);
+        if (PlayerHelper.isPlayerInCreative(player)){
+            TileEntity tile = WorldHelper.getTileAt(worldIn, pos);
+            if (tile instanceof TileTank) {
+                ItemStack stack = new ItemStack(Item.getItemFromBlock(this));
+                NBTTagCompound tagCompound = new NBTTagCompound();
+                ((TileTank) tile).writeRestorableToNBT(tagCompound);
+                stack.setTagCompound(tagCompound);
+                WorldHelper.dropStack(worldIn, pos, stack);
+            }
+        }
+    }
+
+    @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float sidex, float sidey, float sidez) {
         TileEntity tile = WorldHelper.getTileAt(world, pos);
         if (tile instanceof TileTank){
@@ -195,6 +212,8 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
             tank.settings.put(side, i);
             tank.markDirty();
             WorldHelper.markBlockForUpdate(world, pos);
+            world.notifyNeighborsOfStateChange(pos, this);
+            WorldHelper.markBlockForRenderUpdate(world, pos);
             return true;
         }
         return super.onBlockActivated(world, pos, state, player, hand, heldItem, side, sidex, sidey, sidez);
