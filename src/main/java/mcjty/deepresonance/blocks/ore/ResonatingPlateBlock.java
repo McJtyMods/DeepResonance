@@ -24,7 +24,7 @@ import java.util.Random;
 public class ResonatingPlateBlock extends Block {
 
     public ResonatingPlateBlock() {
-        super(Material.rock);
+        super(Material.ROCK);
         setHardness(3.0f);
         setResistance(5.0f);
         setHarvestLevel("pickaxe", 2);

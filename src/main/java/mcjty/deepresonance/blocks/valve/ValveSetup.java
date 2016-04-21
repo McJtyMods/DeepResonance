@@ -25,7 +25,7 @@ public class ValveSetup {
 
     public static void setupCrafting() {
         GameRegistry.addRecipe(new ItemStack(valveBlock), "gtg", "fMf", "gCg", 'M', ModBlocks.machineFrame, 'f', ModItems.filterMaterialItem,
-                'g', Blocks.glass, 't', Items.quartz, 'C', Items.comparator);
+                'g', Blocks.GLASS, 't', Items.QUARTZ, 'C', Items.COMPARATOR);
     }
 
 }

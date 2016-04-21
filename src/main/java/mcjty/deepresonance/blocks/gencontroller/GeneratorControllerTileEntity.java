@@ -4,6 +4,7 @@ import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
+import mcjty.deepresonance.client.sound.GeneratorSoundController;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.varia.Broadcaster;
@@ -67,7 +68,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
     }
 
     private void stopSounds() {
-        ControllerSounds.stopSound(worldObj, getPos());
+        GeneratorSoundController.stopSound(worldObj, getPos());
     }
 
     @Override
@@ -86,16 +87,16 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
             return;
         }
         if (startup != 0) {
-            if (!ControllerSounds.isStartupPlaying(worldObj, pos)) {
-                ControllerSounds.playStartup(worldObj, pos);
+            if (!GeneratorSoundController.isStartupPlaying(worldObj, pos)) {
+                GeneratorSoundController.playStartup(worldObj, pos);
             }
         } else if (shutdown != 0) {
-            if (!ControllerSounds.isShutdownPlaying(worldObj, pos)) {
-                ControllerSounds.playShutdown(worldObj, pos);
+            if (!GeneratorSoundController.isShutdownPlaying(worldObj, pos)) {
+                GeneratorSoundController.playShutdown(worldObj, pos);
             }
         } else if (active) {
-            if (!ControllerSounds.isLoopPlaying(worldObj, pos)) {
-                ControllerSounds.playLoop(worldObj, pos);
+            if (!GeneratorSoundController.isLoopPlaying(worldObj, pos)) {
+                GeneratorSoundController.playLoop(worldObj, pos);
             }
         } else {
             stopSounds();

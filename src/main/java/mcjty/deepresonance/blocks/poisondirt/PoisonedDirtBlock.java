@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class PoisonedDirtBlock extends Block {
 
     public PoisonedDirtBlock() {
-        super(Material.ground);
+        super(Material.GROUND);
         setHardness(3.0f);
         setResistance(5.0f);
         setHarvestLevel("pickaxe", 2);

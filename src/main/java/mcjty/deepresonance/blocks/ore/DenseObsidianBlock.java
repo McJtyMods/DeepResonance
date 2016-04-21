@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class DenseObsidianBlock extends Block {
 
     public DenseObsidianBlock() {
-        super(Material.rock);
+        super(Material.ROCK);
         setHardness(50.0f);
         setResistance(2000.0f);
         setSoundType(SoundType.STONE);

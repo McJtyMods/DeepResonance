@@ -39,7 +39,7 @@ public class RadiationShieldRegistry {
 
     public static float getBlocker(IBlockState state) {
         Block block = state.getBlock();
-        if (block == Blocks.obsidian) {
+        if (block == Blocks.OBSIDIAN) {
             return RadiationConfiguration.radiationShieldObsidianFactor;
         } else if (block == ModBlocks.denseObsidianBlock) {
             return RadiationConfiguration.radiationShieldDenseObsidianFactor;

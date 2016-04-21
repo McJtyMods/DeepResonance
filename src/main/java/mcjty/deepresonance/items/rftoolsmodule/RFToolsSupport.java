@@ -43,12 +43,12 @@ public class RFToolsSupport {
     }
 
     public static void initCrafting() {
-        GameRegistry.addRecipe(new ItemStack(RFToolsSupport.radiationSensorBlock), "qcq", "tot", "qrq", 'r', Items.redstone, 'q', Items.quartz, 'o', ModBlocks.machineFrame,
-                               'c', Items.clock, 't', Items.compass);
-        ItemStack inkSac = new ItemStack(Items.dye, 1, 0);
-        GameRegistry.addRecipe(new ItemStack(RFToolsSupport.radiationModuleItem), " c ", "rir", " b ", 'c', ModItems.radiationMonitorItem, 'r', ModItems.resonatingPlateItem, 'i', Items.iron_ingot,
+        GameRegistry.addRecipe(new ItemStack(RFToolsSupport.radiationSensorBlock), "qcq", "tot", "qrq", 'r', Items.REDSTONE, 'q', Items.QUARTZ, 'o', ModBlocks.machineFrame,
+                               'c', Items.CLOCK, 't', Items.COMPASS);
+        ItemStack inkSac = new ItemStack(Items.DYE, 1, 0);
+        GameRegistry.addRecipe(new ItemStack(RFToolsSupport.radiationModuleItem), " c ", "rir", " b ", 'c', ModItems.radiationMonitorItem, 'r', ModItems.resonatingPlateItem, 'i', Items.IRON_INGOT,
                                'b', inkSac);
-        GameRegistry.addRecipe(new ItemStack(RFToolsSupport.rclModuleItem), " c ", "rir", " b ", 'c', Items.comparator, 'r', ModItems.resonatingPlateItem, 'i', Items.iron_ingot,
+        GameRegistry.addRecipe(new ItemStack(RFToolsSupport.rclModuleItem), " c ", "rir", " b ", 'c', Items.COMPARATOR, 'r', ModItems.resonatingPlateItem, 'i', Items.IRON_INGOT,
                                'b', inkSac);
     }
 

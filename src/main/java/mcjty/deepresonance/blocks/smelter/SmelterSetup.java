@@ -22,7 +22,7 @@ public class SmelterSetup {
     }
 
     public static void setupCrafting() {
-        GameRegistry.addRecipe(new ItemStack(smelter), "ppp", "iMi", "nnn", 'M', ModBlocks.machineFrame, 'n', Blocks.nether_brick, 'p', ModItems.resonatingPlateItem,
-                'i', Items.iron_ingot);
+        GameRegistry.addRecipe(new ItemStack(smelter), "ppp", "iMi", "nnn", 'M', ModBlocks.machineFrame, 'n', Blocks.NETHER_BRICK, 'p', ModItems.resonatingPlateItem,
+                'i', Items.IRON_INGOT);
     }
 }
