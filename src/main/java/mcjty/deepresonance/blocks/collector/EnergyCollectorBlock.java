@@ -30,7 +30,7 @@ import java.util.List;
 public class EnergyCollectorBlock extends GenericDRBlock<EnergyCollectorTileEntity, EmptyContainer> {
 
     public EnergyCollectorBlock() {
-        super(Material.iron, EnergyCollectorTileEntity.class, EmptyContainer.class, "energy_collector", false);
+        super(Material.IRON, EnergyCollectorTileEntity.class, EmptyContainer.class, "energy_collector", false);
     }
 
     @Override

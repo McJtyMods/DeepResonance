@@ -37,7 +37,7 @@ public class DeepWorldGenerator implements IWorldGenerator {
             return;
         }
 
-        addOreSpawn(ModBlocks.resonatingOreBlock, (byte) 0, Blocks.stone, world, random, chunkX * 16, chunkZ * 16,
+        addOreSpawn(ModBlocks.resonatingOreBlock, (byte) 0, Blocks.STONE, world, random, chunkX * 16, chunkZ * 16,
                 WorldGenConfiguration.minVeinSize, WorldGenConfiguration.maxVeinSize, WorldGenConfiguration.chancesToSpawn, WorldGenConfiguration.minY, WorldGenConfiguration.maxY);
 
 
@@ -74,7 +74,7 @@ public class DeepWorldGenerator implements IWorldGenerator {
                     }
                 }
                 if (!air) {
-                    if (WorldHelper.getBlockAt(world, pos) == Blocks.stone) {
+                    if (WorldHelper.getBlockAt(world, pos) == Blocks.STONE) {
                         if (WorldGenConfiguration.verboseSpawn) {
                             Logging.log("Spawned a crystal at: " + x + "," + y + "," + z);
                         }

@@ -15,7 +15,7 @@ import net.minecraftforge.oredict.OreDictionary;
 public class ResonatingOreBlock extends Block {
 
     public ResonatingOreBlock() {
-        super(Material.rock);
+        super(Material.ROCK);
         setHardness(3.0f);
         setResistance(5.0f);
         setHarvestLevel("pickaxe", 2);

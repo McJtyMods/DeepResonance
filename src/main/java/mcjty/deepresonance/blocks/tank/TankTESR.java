@@ -37,7 +37,7 @@ public class TankTESR extends TileEntitySpecialRenderer<TileTank> {
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
 
-        bindTexture(TextureMap.locationBlocksTexture);
+        bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         World world = tileTank.getWorld();
         renderTankInside(tessellator, world, tileTank.getPos(), tileTank);
 

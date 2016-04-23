@@ -1,6 +1,7 @@
 package mcjty.deepresonance.radiation;
 
 import com.google.common.collect.Sets;
+import elec332.core.util.RegistryHelper;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.items.armor.ItemRadiationSuit;
@@ -15,11 +16,13 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.IRegistry;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.registry.FMLControlledNamespacedRegistry;
 
 import java.util.List;
 import java.util.Map;
@@ -209,7 +212,7 @@ public class RadiationTickEvent {
                     currentPos = currentPos.set(x, y, z);
 
                     Block block = WorldHelper.getBlockAt(world, currentPos);
-                    if (block == Blocks.dirt || block == Blocks.farmland || block == Blocks.grass) {
+                    if (block == Blocks.DIRT || block == Blocks.FARMLAND || block == Blocks.GRASS) {
                         if (random.nextFloat() < poisonBlockChance * str) {
                             WorldHelper.setBlockState(world, currentPos, ModBlocks.poisonedDirtBlock.getDefaultState(), 2);
                         }
@@ -236,13 +239,14 @@ public class RadiationTickEvent {
     }
 
     private static void getPotions() {
+        IRegistry<ResourceLocation, Potion> potionRegistry = RegistryHelper.getPotionRegistry();
         if (harm == null) {
-            harm = Potion.potionRegistry.getObject(new ResourceLocation("instant_damage"));
-            hunger = Potion.potionRegistry.getObject(new ResourceLocation("hunger"));
-            moveSlowdown = Potion.potionRegistry.getObject(new ResourceLocation("slowness"));
-            weakness = Potion.potionRegistry.getObject(new ResourceLocation("weakness"));
-            poison = Potion.potionRegistry.getObject(new ResourceLocation("poison"));
-            wither = Potion.potionRegistry.getObject(new ResourceLocation("wither"));
+            harm = potionRegistry.getObject(new ResourceLocation("instant_damage"));
+            hunger = potionRegistry.getObject(new ResourceLocation("hunger"));
+            moveSlowdown = potionRegistry.getObject(new ResourceLocation("slowness"));
+            weakness = potionRegistry.getObject(new ResourceLocation("weakness"));
+            poison = potionRegistry.getObject(new ResourceLocation("poison"));
+            wither = potionRegistry.getObject(new ResourceLocation("wither"));
         }
     }
 

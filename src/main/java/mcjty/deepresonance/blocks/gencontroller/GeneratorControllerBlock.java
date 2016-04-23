@@ -28,7 +28,7 @@ public class GeneratorControllerBlock extends GenericDRBlock<GeneratorController
     public static final PropertyBool POWERED = PropertyBool.create("powered");
 
     public GeneratorControllerBlock() {
-        super(Material.iron, GeneratorControllerTileEntity.class, EmptyContainer.class, "generator_controller", false);
+        super(Material.IRON, GeneratorControllerTileEntity.class, EmptyContainer.class, "generator_controller", false);
     }
 
     @Override

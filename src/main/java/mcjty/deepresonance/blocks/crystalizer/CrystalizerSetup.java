@@ -21,6 +21,6 @@ public class CrystalizerSetup {
     }
 
     public static void setupCrafting() {
-        GameRegistry.addRecipe(new ItemStack(crystalizer), "ggg", "qMq", "iii", 'M', ModBlocks.machineFrame, 'g', Blocks.glass, 'q', Items.quartz, 'i', Items.iron_ingot);
+        GameRegistry.addRecipe(new ItemStack(crystalizer), "ggg", "qMq", "iii", 'M', ModBlocks.machineFrame, 'g', Blocks.GLASS, 'q', Items.QUARTZ, 'i', Items.IRON_INGOT);
     }
 }

@@ -22,7 +22,7 @@ public class GeneratorSetup {
 
 
     public static void setupCrafting() {
-        GameRegistry.addRecipe(new ItemStack(generatorBlock), "nRn", "iMi", "nRn", 'M', ModBlocks.machineFrame, 'n', Items.gold_nugget, 'R', Blocks.redstone_block,
-                'i', Items.iron_ingot);
+        GameRegistry.addRecipe(new ItemStack(generatorBlock), "nRn", "iMi", "nRn", 'M', ModBlocks.machineFrame, 'n', Items.GOLD_NUGGET, 'R', Blocks.REDSTONE_BLOCK,
+                'i', Items.IRON_INGOT);
     }
 }

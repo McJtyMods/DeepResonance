@@ -19,7 +19,7 @@ import java.util.List;
 public class ValveBlock extends GenericDRBlock<ValveTileEntity, ValveContainer> {
 
     public ValveBlock() {
-        super(Material.rock, ValveTileEntity.class, ValveContainer.class, "valve", true);
+        super(Material.ROCK, ValveTileEntity.class, ValveContainer.class, "valve", true);
     }
 
     @Override

@@ -74,7 +74,7 @@ public class CrystalizerTESR extends TileEntitySpecialRenderer<CrystalizerTileEn
             // Translate back to local view coordinates so that we can do the acual rendering here
             GlStateManager.translate(-te.getPos().getX(), -te.getPos().getY(), -te.getPos().getZ());
 
-            bindTexture(TextureMap.locationBlocksTexture);
+            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
             Tessellator tessellator = Tessellator.getInstance();
             tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);

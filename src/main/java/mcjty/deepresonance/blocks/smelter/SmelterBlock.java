@@ -24,7 +24,7 @@ public class SmelterBlock extends GenericDRBlock<SmelterTileEntity, SmelterConta
     public static final PropertyBool WORKING = PropertyBool.create("working");
 
     public SmelterBlock() {
-        super(Material.rock, SmelterTileEntity.class, SmelterContainer.class, "smelter", true);
+        super(Material.ROCK, SmelterTileEntity.class, SmelterContainer.class, "smelter", true);
     }
 
     @SideOnly(Side.CLIENT)

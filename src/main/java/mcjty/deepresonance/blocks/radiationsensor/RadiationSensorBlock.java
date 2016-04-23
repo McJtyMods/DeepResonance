@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class RadiationSensorBlock extends Block {
 
     public RadiationSensorBlock() {
-        super(Material.glass);
+        super(Material.GLASS);
         setHardness(3.0f);
         setResistance(500.0f);
         setSoundType(SoundType.GLASS);

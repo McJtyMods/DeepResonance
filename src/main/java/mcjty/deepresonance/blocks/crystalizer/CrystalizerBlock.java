@@ -25,7 +25,7 @@ import java.util.List;
 public class CrystalizerBlock extends GenericDRBlock<CrystalizerTileEntity, CrystalizerContainer> {
 
     public CrystalizerBlock() {
-        super(Material.rock, CrystalizerTileEntity.class, CrystalizerContainer.class, "crystalizer", true);
+        super(Material.ROCK, CrystalizerTileEntity.class, CrystalizerContainer.class, "crystalizer", true);
     }
 
     @Override

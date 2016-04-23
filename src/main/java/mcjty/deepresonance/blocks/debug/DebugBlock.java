@@ -33,7 +33,7 @@ public class DebugBlock extends Block {
     public static PropertyInteger STATUS = PropertyInteger.create("status", 0, 2);
 
     public DebugBlock() {
-        super(Material.glass);
+        super(Material.GLASS);
         setUnlocalizedName(DeepResonance.MODID + "_debug_block");
         setRegistryName("debug_block");
         GameRegistry.register(this);
