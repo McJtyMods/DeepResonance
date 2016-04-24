@@ -2,7 +2,7 @@
   "forge_marker": 1,
   "defaults": {
     "custom": { "flip-v": true },
-    "model": "deepresonance:crystal.obj"
+    "model": "deepresonance:crystal_generated.obj"
   },
   "variants": {
     "normal": [{}],
@@ -20,6 +20,10 @@
           "#deepresonance:blocks/crystal": "deepresonance:blocks/emptycrystal"
         }
       }
+    },
+    "generated": {
+      "true": {},
+      "false": { "model": "deepresonance:crystal.obj" }
     }
   }
 }

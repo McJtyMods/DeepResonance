@@ -1,7 +1,7 @@
 package mcjty.deepresonance.blocks.crystals;
 
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.client.render.DrRenderHelper;
+import mcjty.lib.gui.RenderHelper;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
@@ -27,7 +27,7 @@ public class ResonatingCrystalTESR extends TileEntitySpecialRenderer<ResonatingC
             GlStateManager.translate((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
             GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
             this.bindTexture(redhalo);
-            DrRenderHelper.renderBillboardQuadBright(0.6f);
+            RenderHelper.renderBillboardQuadBright(0.6f);
 
             GlStateManager.popMatrix();
         }

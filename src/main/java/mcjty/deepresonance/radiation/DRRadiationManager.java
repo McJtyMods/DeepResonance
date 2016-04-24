@@ -7,7 +7,7 @@ import mcjty.lib.varia.GlobalCoordinate;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
@@ -26,14 +26,17 @@ public class DRRadiationManager extends WorldSavedData {
     }
 
     public static float calculateRadiationStrength(float strength, float purity) {
-        float str = RadiationConfiguration.minRadiationStrength + strength / 100.0f
+        float p = (float) Math.log10(purity / 100.0f) + 1.0f;
+        if (p < 0.01f) {
+            p = 0.01f;
+        }
+        float str = RadiationConfiguration.minRadiationStrength + strength * (1.0f - p) / 100.0f
                 * (RadiationConfiguration.maxRadiationStrength - RadiationConfiguration.minRadiationStrength);
-        str += str * (100.0f - purity) * .005f;
         return str;
     }
 
-    public static float calculateRadiationRadius(float efficiency, float purity) {
-        float radius = RadiationConfiguration.minRadiationRadius + efficiency / 100.0f
+    public static float calculateRadiationRadius(float strength, float efficiency, float purity) {
+        float radius = RadiationConfiguration.minRadiationRadius + (strength + efficiency) / 200.0f
                 * (RadiationConfiguration.maxRadiationRadius - RadiationConfiguration.minRadiationRadius);
         radius += radius * (100.0f - purity) * .002f;
         return radius;
@@ -164,7 +167,7 @@ public class DRRadiationManager extends WorldSavedData {
                             IBlockState block = WorldHelper.getBlockState(world, pos);
                             float blocker = RadiationShieldRegistry.getBlocker(block);
                             if (blocker < 0.99f) {
-                                radiationTree.addBlocker(x, y, z, blocker);
+                                radiationTree.addBlocker(pos, blocker);
                             }
                         }
                     }

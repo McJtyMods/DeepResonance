@@ -5,12 +5,13 @@ import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.lib.varia.Logging;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.pattern.BlockHelper;
+import net.minecraft.block.state.pattern.BlockMatcher;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraftforge.event.world.ChunkDataEvent;
@@ -27,7 +28,7 @@ public class DeepWorldGenerator implements IWorldGenerator {
     public static DeepWorldGenerator instance = new DeepWorldGenerator();
 
     @Override
-    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
+    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
         generateWorld(random, chunkX, chunkZ, world, true);
     }
 
@@ -36,7 +37,7 @@ public class DeepWorldGenerator implements IWorldGenerator {
             return;
         }
 
-        addOreSpawn(ModBlocks.resonatingOreBlock, (byte) 0, Blocks.stone, world, random, chunkX * 16, chunkZ * 16,
+        addOreSpawn(ModBlocks.resonatingOreBlock, (byte) 0, Blocks.STONE, world, random, chunkX * 16, chunkZ * 16,
                 WorldGenConfiguration.minVeinSize, WorldGenConfiguration.maxVeinSize, WorldGenConfiguration.chancesToSpawn, WorldGenConfiguration.minY, WorldGenConfiguration.maxY);
 
 
@@ -73,11 +74,11 @@ public class DeepWorldGenerator implements IWorldGenerator {
                     }
                 }
                 if (!air) {
-                    if (WorldHelper.getBlockAt(world, pos) == Blocks.stone) {
+                    if (WorldHelper.getBlockAt(world, pos) == Blocks.STONE) {
                         if (WorldGenConfiguration.verboseSpawn) {
                             Logging.log("Spawned a crystal at: " + x + "," + y + "," + z);
                         }
-                        ResonatingCrystalTileEntity.spawnRandomCrystal(world, random, pos.set(x, y+1, z), 0);
+                        ResonatingCrystalTileEntity.spawnRandomCrystal(world, random, new BlockPos(pos.set(x, y+1, z)), 0);
                         return;
                     }
                 }
@@ -86,7 +87,7 @@ public class DeepWorldGenerator implements IWorldGenerator {
     }
 
     public void addOreSpawn(Block block, byte blockMeta, Block targetBlock, World world, Random random, int blockXPos, int blockZPos, int minVeinSize, int maxVeinSize, int chancesToSpawn, int minY, int maxY) {
-        WorldGenMinable minable = new WorldGenMinable(block.getStateFromMeta(blockMeta), (minVeinSize - random.nextInt(maxVeinSize - minVeinSize)), BlockHelper.forBlock(targetBlock));
+        WorldGenMinable minable = new WorldGenMinable(block.getStateFromMeta(blockMeta), (minVeinSize - random.nextInt(maxVeinSize - minVeinSize)), BlockMatcher.forBlock(targetBlock));
         for (int i = 0 ; i < chancesToSpawn ; i++) {
             int posX = blockXPos + random.nextInt(16);
             int posY = minY + random.nextInt(maxY - minY);
@@ -108,7 +109,7 @@ public class DeepWorldGenerator implements IWorldGenerator {
 
     @SubscribeEvent
     public void handleChunkLoadEvent(ChunkDataEvent.Load event) {
-        int dim = WorldHelper.getDimID(event.world);
+        int dim = WorldHelper.getDimID(event.getWorld());
 
         boolean regen = false;
         NBTTagCompound tag = (NBTTagCompound) event.getData().getTag(RETRO_NAME);

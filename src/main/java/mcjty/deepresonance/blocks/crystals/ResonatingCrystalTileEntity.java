@@ -4,14 +4,15 @@ import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.deepresonance.config.ConfigMachines;
+import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.lib.entity.GenericTileEntity;
-import net.minecraft.block.state.IBlockState;
+import mcjty.lib.varia.Logging;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -78,7 +79,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
         boolean oldempty = isEmpty();
         super.onDataPacket(net, packet);
         boolean newempty = isEmpty();
@@ -102,7 +103,11 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
             return;
         }
         this.glowing = glowing;
-        markDirtyClient();
+        if (hasWorldObj()) {
+            markDirtyClient();
+        } else {
+            markDirty();
+        }
     }
 
     @Override
@@ -178,6 +183,23 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         tagCompound.setFloat("purity", purity);
         tagCompound.setBoolean("glowing", glowing);
         tagCompound.setByte("version", (byte) 2);      // Legacy support to support older crystals.
+    }
+
+    public static void spawnCrystal(EntityPlayer player, World world, BlockPos pos, int purity, int strength, int efficiency, int power) {
+        WorldHelper.setBlockState(world, pos, ModBlocks.resonatingCrystalBlock.getStateFromMeta(0), 3);
+        TileEntity te = WorldHelper.getTileAt(world, pos);
+        if (te instanceof ResonatingCrystalTileEntity) {
+            ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
+            resonatingCrystalTileEntity.setPurity(purity);
+            resonatingCrystalTileEntity.setStrength(strength);
+            resonatingCrystalTileEntity.setEfficiency(efficiency);
+            resonatingCrystalTileEntity.setPower(power);
+
+            float radPurity = resonatingCrystalTileEntity.getPurity();
+            float radRadius = DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getStrength(), resonatingCrystalTileEntity.getEfficiency(), radPurity);
+            float radStrength = DRRadiationManager.calculateRadiationStrength(resonatingCrystalTileEntity.getStrength(), radPurity);
+            Logging.message(player, "Crystal would produce " + radStrength + " radiation with a radius of " + radRadius);
+        }
     }
 
     // Special == 0, normal

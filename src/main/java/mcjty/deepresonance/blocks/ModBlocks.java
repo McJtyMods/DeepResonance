@@ -4,6 +4,7 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
 import mcjty.deepresonance.blocks.crystalizer.CrystalizerSetup;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalBlock;
+import mcjty.deepresonance.blocks.debug.DebugBlock;
 import mcjty.deepresonance.blocks.gencontroller.GeneratorControllerSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.laser.LaserSetup;
@@ -15,10 +16,10 @@ import mcjty.deepresonance.blocks.ore.ResonatingPlateBlock;
 import mcjty.deepresonance.blocks.pedestal.PedestalSetup;
 import mcjty.deepresonance.blocks.poisondirt.PoisonedDirtBlock;
 import mcjty.deepresonance.blocks.purifier.PurifierSetup;
-import mcjty.deepresonance.blocks.radiationsensor.RadiationSensorBlock;
 import mcjty.deepresonance.blocks.smelter.SmelterSetup;
 import mcjty.deepresonance.blocks.tank.TankSetup;
 import mcjty.deepresonance.blocks.valve.ValveSetup;
+import mcjty.deepresonance.items.rftoolsmodule.RFToolsSupport;
 import net.minecraft.block.Block;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -33,7 +34,7 @@ public final class ModBlocks {
     public static PoisonedDirtBlock poisonedDirtBlock;
     public static Block duct;
     public static MachineFrame machineFrame;
-    public static RadiationSensorBlock radiationSensorBlock;
+    public static DebugBlock debugBlock;
 
     public static void init() {
         resonatingOreBlock = new ResonatingOreBlock();
@@ -44,12 +45,13 @@ public final class ModBlocks {
         poisonedDirtBlock = new PoisonedDirtBlock();
         resonatingCrystalBlock = new ResonatingCrystalBlock();
         if (DeepResonance.instance.rftools) {
-            radiationSensorBlock = new RadiationSensorBlock();
+            RFToolsSupport.initBlocks();
         }
 
 //        duct = new BlockDuct(TileBasicFluidDuct.class, "basicFluidDuct").registerTile().register();
 
         machineFrame = new MachineFrame();
+        debugBlock = new DebugBlock();
 
         GeneratorSetup.setupBlocks();
         GeneratorControllerSetup.setupBlocks();
@@ -73,6 +75,7 @@ public final class ModBlocks {
         poisonedDirtBlock.initModel();
         resonatingOreBlock.initModel();
         machineFrame.initModel();
+        debugBlock.initModel();
         GeneratorSetup.setupModels();
         GeneratorControllerSetup.setupModels();
         EnergyCollectorSetup.setupModels();
@@ -84,8 +87,8 @@ public final class ModBlocks {
         ValveSetup.setupModels();
         LensSetup.setupModels();
         LaserSetup.setupModels();
-        if (radiationSensorBlock != null) {
-            radiationSensorBlock.initModel();
+        if (DeepResonance.instance.rftools) {
+            RFToolsSupport.initBlockModels();
         }
     }
 }

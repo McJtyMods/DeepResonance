@@ -11,12 +11,12 @@ public class EventHandler {
 
     @SubscribeEvent
     public void onEnergyTileAdded(FluidTileEvent.Load event){
-        DeepResonance.worldGridRegistry.getFluidRegistry().get(event.world).addTile(event.tile);
+        DeepResonance.worldGridRegistry.getFluidRegistry().get(event.getWorld()).addTile(event.tile);
     }
 
     @SubscribeEvent
     public void onEnergyTileRemoved(FluidTileEvent.Unload event){
-        DeepResonance.worldGridRegistry.getFluidRegistry().get(event.world).removeTile(event.tile);
+        DeepResonance.worldGridRegistry.getFluidRegistry().get(event.getWorld()).removeTile(event.tile);
     }
 
 }

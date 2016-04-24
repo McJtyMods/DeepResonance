@@ -1,7 +1,7 @@
 package mcjty.deepresonance.varia;
 
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 public class QuadTree {
     private DiscreteAABB box;
@@ -17,12 +17,13 @@ public class QuadTree {
         addBlocker(new BlockPos(x, y, z), blocker);
     }
 
+
     // Return -1 if blockers inside this are different. Otherwise blocker value.
-    private float addBlocker(BlockPos coordinate, float blocker) {
+    public float addBlocker(BlockPos coordinate, float blocker) {
         if (child1 != null) {
             if (child1.box.isVecInside(coordinate)) {
                 float b = child1.addBlocker(coordinate, blocker);
-                if (child2.blocker >= 0.0 && Math.abs(b-child2.blocker) < 0.01) {
+                if (child2.blocker >= 0.0 && Math.abs(b - child2.blocker) < 0.01) {
                     // Blockers are almost the same. Optimize
                     this.blocker = b;
                     this.child1 = null;
@@ -33,7 +34,7 @@ public class QuadTree {
                 return -1;
             } else if (child2.box.isVecInside(coordinate)) {
                 float b = child2.addBlocker(coordinate, blocker);
-                if (child1.blocker >= 0.0 && Math.abs(b-child1.blocker) < 0.01) {
+                if (child1.blocker >= 0.0 && Math.abs(b - child1.blocker) < 0.01) {
                     // Blockers are almost the same. Optimize
                     this.blocker = b;
                     this.child1 = null;
@@ -69,20 +70,20 @@ public class QuadTree {
                 switch (axis) {
                     case 0: {
                         int middle = (box.maxX + box.minX) / 2;
-                        child1 = new QuadTree(box.minX, box.minY, box.minZ, middle,   box.maxY, box.maxZ);
-                        child2 = new QuadTree(middle,   box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
+                        child1 = new QuadTree(box.minX, box.minY, box.minZ, middle, box.maxY, box.maxZ);
+                        child2 = new QuadTree(middle, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
                         break;
                     }
                     case 1: {
                         int middle = (box.maxY + box.minY) / 2;
-                        child1 = new QuadTree(box.minX, box.minY, box.minZ, box.maxX, middle,   box.maxZ);
-                        child2 = new QuadTree(box.minX, middle,   box.minZ, box.maxX, box.maxY, box.maxZ);
+                        child1 = new QuadTree(box.minX, box.minY, box.minZ, box.maxX, middle, box.maxZ);
+                        child2 = new QuadTree(box.minX, middle, box.minZ, box.maxX, box.maxY, box.maxZ);
                         break;
                     }
                     case 2: {
                         int middle = (box.maxZ + box.minZ) / 2;
                         child1 = new QuadTree(box.minX, box.minY, box.minZ, box.maxX, box.maxY, middle);
-                        child2 = new QuadTree(box.minX, box.minY, middle,   box.maxX, box.maxY, box.maxZ);
+                        child2 = new QuadTree(box.minX, box.minY, middle, box.maxX, box.maxY, box.maxZ);
                         break;
                     }
                 }
@@ -100,9 +101,19 @@ public class QuadTree {
 
 
     public double factor(int x1, int y1, int z1, int x2, int y2, int z2) {
-        Vec3 p1 = new Vec3(x1 + .5, y1 + .5, z1 + .5);
-        Vec3 p2 = new Vec3(x2 + .5, y2 + .5, z2 + .5);
+        Vec3d p1 = new Vec3d(x1 + .5, y1 + .5, z1 + .5);
+        Vec3d p2 = new Vec3d(x2 + .5, y2 + .5, z2 + .5);
         return factor(new Ray(p1, p2));
+    }
+
+    // Calculate radiation for a 2-high character
+    public double factor2(int x1, int y1, int z1, int x2, int y2, int z2) {
+        Vec3d p1 = new Vec3d(x1 + .5, y1 + .5, z1 + .5);
+        Vec3d p2 = new Vec3d(x2 + .5, y2 + .5, z2 + .5);
+        double f1 = factor(new Ray(p1, p2));
+        Vec3d p3 = new Vec3d(x2 + .5, y2 + 1.1, z2 + .5);
+        double f2 = factor(new Ray(p1, p3));
+        return Math.max(f1, f2);
     }
 
     private double factor(Ray ray) {
@@ -121,7 +132,7 @@ public class QuadTree {
     }
 
     private static boolean testIntersect(DiscreteAABB box, Ray ray) {
-        Vec3 invDir = ray.getInvDir();
+        Vec3d invDir = ray.getInvDir();
 
         boolean signDirX = invDir.xCoord < 0;
         boolean signDirY = invDir.yCoord < 0;
@@ -186,28 +197,28 @@ public class QuadTree {
     }
 
     private static class Ray {
-        private Vec3 start;
-        private Vec3 dir;
-        private Vec3 invDir;
+        private Vec3d start;
+        private Vec3d dir;
+        private Vec3d invDir;
         private double length;
 
-        public Ray(Vec3 start, Vec3 end) {
+        public Ray(Vec3d start, Vec3d end) {
             this.start = start;
-            this.dir = start.subtract(end);
+            this.dir = end.subtract(start);
             length = this.dir.lengthVector();
             this.dir = this.dir.normalize();
-            this.invDir = new Vec3(1.0 / this.dir.xCoord, 1.0 / this.dir.yCoord, 1.0 / this.dir.zCoord);
+            this.invDir = new Vec3d(1.0 / this.dir.xCoord, 1.0 / this.dir.yCoord, 1.0 / this.dir.zCoord);
         }
 
-        public Vec3 getDir() {
+        public Vec3d getDir() {
             return dir;
         }
 
-        public Vec3 getInvDir() {
+        public Vec3d getInvDir() {
             return invDir;
         }
 
-        public Vec3 getStart() {
+        public Vec3d getStart() {
             return start;
         }
 
@@ -220,8 +231,8 @@ public class QuadTree {
     public static void main(String[] args) {
         int dim = 100;
         QuadTree tree = new QuadTree(0, 0, 0, dim, dim, dim);
-        for (int y = 0 ; y <= 5 ; y++) {
-            for (int z = 0 ; z <= dim; z++) {
+        for (int y = 0; y <= 5; y++) {
+            for (int z = 0; z <= dim; z++) {
                 tree.addBlocker(3, y, z, 0.5f);
                 tree.addBlocker(20, y, z, 0.5f);
                 tree.addBlocker(21, y, z, 0.5f);
@@ -234,8 +245,8 @@ public class QuadTree {
 
         System.out.println("tree.treeSize() = " + tree.treeSize());
 
-        for (int y = 0 ; y <= 5 ; y++) {
-            for (int z = 0 ; z <= dim; z++) {
+        for (int y = 0; y <= 5; y++) {
+            for (int z = 0; z <= dim; z++) {
                 tree.addBlocker(3, y, z, 0.5f);
                 tree.addBlocker(20, y, z, 1.0f);
                 tree.addBlocker(21, y, z, 0.5f);

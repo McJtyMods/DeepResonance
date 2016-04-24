@@ -5,6 +5,7 @@ import elec332.core.client.ITextureLoader;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.RadiationOverlayRenderer;
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.client.sound.GeneratorSoundController;
 import mcjty.deepresonance.client.gui.NoRFFoundException;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.items.ModItems;
@@ -21,9 +22,10 @@ public class ClientProxy extends CommonProxy implements ITextureLoader {
     @Override
     public void preInit(FMLPreInitializationEvent e) {
         super.preInit(e);
-        OBJLoader.instance.addDomain(DeepResonance.MODID);
+        OBJLoader.INSTANCE.addDomain(DeepResonance.MODID);
         ModBlocks.initModels();
         ModItems.initModels();
+        GeneratorSoundController.init();
     }
 
     @Override

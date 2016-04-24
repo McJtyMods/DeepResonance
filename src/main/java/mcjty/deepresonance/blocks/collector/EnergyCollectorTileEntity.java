@@ -7,14 +7,14 @@ import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.radiation.DRRadiationManager;
-import mcjty.deepresonance.varia.Broadcaster;
 import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.varia.Broadcaster;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -155,14 +155,12 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
 
                         if (doRadiation) {
                             float purity = resonatingCrystalTileEntity.getPurity();
-                            if (purity < 99.0f) {
-                                float radius = DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getEfficiency(), purity);
-                                if (radius > radiationRadius) {
-                                    radiationRadius = radius;
-                                }
-                                float strength = DRRadiationManager.calculateRadiationStrength(resonatingCrystalTileEntity.getStrength(), purity);
-                                radiationStrength += strength;
+                            float radius = DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getStrength(), resonatingCrystalTileEntity.getEfficiency(), purity);
+                            if (radius > radiationRadius) {
+                                radiationRadius = radius;
                             }
+                            float strength = DRRadiationManager.calculateRadiationStrength(resonatingCrystalTileEntity.getStrength(), purity);
+                            radiationStrength += strength;
                         }
                     }
                 } else {
@@ -180,7 +178,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
 
         if (doRadiation && radiationRadius > 0.1f) {
             DRRadiationManager radiationManager = DRRadiationManager.getManager(worldObj);
-            GlobalCoordinate thisCoordinate = new GlobalCoordinate(getPos(), worldObj.provider.getDimensionId());
+            GlobalCoordinate thisCoordinate = new GlobalCoordinate(getPos(), worldObj.provider.getDimension());
             if (radiationManager.getRadiationSource(thisCoordinate) == null) {
                 Logging.log("Created radiation source with radius " + radiationRadius + " and strength " + radiationStrength);
             }
@@ -378,7 +376,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         int yCoord = getPos().getY();
         int zCoord = getPos().getZ();
 
-        return AxisAlignedBB.fromBounds(xCoord - 7, yCoord - 1, zCoord - 7, xCoord + 8, yCoord + 2, zCoord + 8);
+        return new AxisAlignedBB(xCoord - 7, yCoord - 1, zCoord - 7, xCoord + 8, yCoord + 2, zCoord + 8);
     }
 
 }

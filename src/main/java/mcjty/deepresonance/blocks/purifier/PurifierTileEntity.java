@@ -7,10 +7,11 @@ import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.deepresonance.items.ModItems;
-import mcjty.deepresonance.varia.InventoryLocator;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
+import mcjty.lib.container.InventoryLocator;
 import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.varia.CustomSidedInvWrapper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,7 +22,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 
 import java.util.Random;
 
@@ -39,8 +39,6 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
     // Cache for the inventory used to put the spent filter material in.
     private InventoryLocator inventoryLocator = new InventoryLocator();
 
-    private LiquidCrystalFluidTagData fluidData = null;
-
     private static Random random = new Random();
 
     @Override
@@ -55,28 +53,28 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
         }
     }
 
-    protected void checkStateServer() {
+    private void checkStateServer() {
         if (progress > 0) {
             progress--;
             if (progress == 0) {
-                if (fluidData != null) {
-                    // Done. First check if we can actually insert the liquid. If not we postpone this.
-                    progress = 1;
-                    if (getOutputTank() != null) {
-                        if (testFillOutputTank() && validSlot()) {
-                            if (random.nextInt(doPurify()) == 0) {
+                // Done. First check if we can actually insert the liquid. If not we postpone this.
+                progress = 1;
+                if (getOutputTank() != null) {
+                    if (canWork()) {
+                        LiquidCrystalFluidTagData fluidData = LiquidCrystalFluidTagData.fromStack(getInputTank().drain(null, ConfigMachines.Purifier.rclPerPurify, true));
+                        if (fluidData != null) {
+                            if (random.nextInt(doPurify(fluidData)) == 0) {
                                 consumeFilter();
                             }
-                            progress = 0;   // Really done
                         }
+                        progress = 0;   // Really done
                     }
                 }
             }
             markDirty();
         } else {
-            if (canWork() && validSlot()) {
+            if (canWork()) {
                 progress = ConfigMachines.Purifier.ticksPerPurify;
-                fluidData = LiquidCrystalFluidTagData.fromStack(getInputTank().drain(null, ConfigMachines.Purifier.rclPerPurify, true));
                 markDirty();
             }
         }
@@ -87,14 +85,14 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
     private void consumeFilter() {
         inventoryHelper.decrStackSize(PurifierContainer.SLOT_FILTERINPUT, 1);
         ItemStack spentMaterial = new ItemStack(ModItems.spentFilterMaterialItem, 1);
-        inventoryLocator.ejectStack(worldObj, pos.getX(), pos.getY(), pos.getZ(), spentMaterial, pos, directions);
+        inventoryLocator.ejectStack(worldObj, pos, spentMaterial, pos, directions);
     }
 
-    private int doPurify() {
+    private int doPurify(LiquidCrystalFluidTagData fluidData) {
         float purity = fluidData.getPurity();
         float maxPurityToAdd = ConfigMachines.Purifier.addedPurity / 100.0f;
         float addedPurity = maxPurityToAdd;
-        float maxPurity = ConfigMachines.Purifier.maxPurity / 100.0f;
+        float maxPurity = (ConfigMachines.Purifier.maxPurity + .1f) / 100.0f;
         maxPurity *= fluidData.getQuality();
         if (purity + addedPurity > maxPurity) {
             addedPurity = maxPurity - purity;
@@ -103,8 +101,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
                 // Put back the fluid we extracted.
                 FluidStack stack = fluidData.makeLiquidCrystalStack();
                 getOutputTank().fill(null, stack, true);
-                fluidData = null;
-                return 1000;
+                return 1000000;
             }
         }
 
@@ -112,8 +109,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
         fluidData.setPurity(purity);
         FluidStack stack = fluidData.makeLiquidCrystalStack();
         getOutputTank().fill(null, stack, true);
-        fluidData = null;
-        return (int) ((maxPurityToAdd - addedPurity) * 1000 / maxPurityToAdd + 1);
+        return (int) ((maxPurityToAdd - addedPurity) * 40 / maxPurityToAdd + 1);
     }
 
     private boolean testFillOutputTank() {
@@ -141,6 +137,9 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
         if (getInputTank().getFluidAmount() < ConfigMachines.Purifier.rclPerPurify) {
             return false;
         }
+        if (!validSlot()) {
+            return false;
+        }
         // Same tank so operation is possible.
         return getInputTank().getMultiBlock().equals(getOutputTank().getMultiBlock()) || testFillOutputTank();
     }
@@ -154,12 +153,6 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
     public void writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("progress", progress);
-        if (fluidData != null) {
-            NBTTagCompound dataCompound = new NBTTagCompound();
-            fluidData.writeDataToNBT(dataCompound);
-            tagCompound.setTag("data", dataCompound);
-            tagCompound.setInteger("amount", fluidData.getInternalTankAmount());
-        }
     }
 
     @Override
@@ -172,13 +165,6 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
         progress = tagCompound.getInteger("progress");
-        if (tagCompound.hasKey("data")) {
-            NBTTagCompound dataCompound = (NBTTagCompound) tagCompound.getTag("data");
-            int amount = dataCompound.getInteger("amount");
-            fluidData = LiquidCrystalFluidTagData.fromNBT(dataCompound, amount);
-        } else {
-            fluidData = null;
-        }
     }
 
     @Override
@@ -204,14 +190,14 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
     public void unHook(TileTank tank, EnumFacing direction) {
         if (tilesEqual(bottomTank, tank)){
             bottomTank = null;
-            this.markDirty();
-            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+            notifyAndMarkDirty();
         } else if (tilesEqual(topTank, tank)){
             topTank = null;
-            this.markDirty();
-            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+            notifyAndMarkDirty();
         }
     }
+
+
 
     @Override
     public void onContentChanged(TileTank tank, EnumFacing direction) {
@@ -269,7 +255,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
         return stack.getItem() == ModItems.filterMaterialItem;
     }
 
-    private IItemHandler invHandler = new InvWrapper(this);
+    private IItemHandler invHandler = new CustomSidedInvWrapper(this);
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
@@ -284,4 +270,12 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
         }
         return super.getCapability(capability, facing);
     }
+
+    protected void notifyAndMarkDirty(){
+        if (WorldHelper.chunkLoaded(worldObj, pos)){
+            this.markDirty();
+            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+        }
+    }
+
 }

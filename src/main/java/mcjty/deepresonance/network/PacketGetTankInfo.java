@@ -6,10 +6,10 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.lib.network.NetworkTools;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -37,7 +37,7 @@ public class PacketGetTankInfo implements IMessage {
     public static class Handler implements IMessageHandler<PacketGetTankInfo, IMessage> {
         @Override
         public IMessage onMessage(PacketGetTankInfo message, MessageContext ctx) {
-            MinecraftServer.getServer().addScheduledTask(() -> handle(message, ctx));
+            FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> handle(message, ctx));
             return null;
         }
 

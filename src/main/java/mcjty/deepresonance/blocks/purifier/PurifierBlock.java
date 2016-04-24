@@ -9,7 +9,7 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -19,7 +19,7 @@ import java.util.List;
 public class PurifierBlock extends GenericDRBlock<PurifierTileEntity, PurifierContainer> {
 
     public PurifierBlock() {
-        super(Material.rock, PurifierTileEntity.class, PurifierContainer.class, "purifier", true);
+        super(Material.ROCK, PurifierTileEntity.class, PurifierContainer.class, "purifier", true);
     }
 
     @SideOnly(Side.CLIENT)
@@ -44,7 +44,7 @@ public class PurifierBlock extends GenericDRBlock<PurifierTileEntity, PurifierCo
             list.add("another tank below this block.");
             list.add("The spent filter will be ejected in a nearby inventory.");
         } else {
-            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
+            list.add(TextFormatting.WHITE + ClientHandler.getShiftMessage());
         }
     }
 

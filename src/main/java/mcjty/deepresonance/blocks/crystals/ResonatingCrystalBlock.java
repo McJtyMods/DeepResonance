@@ -14,22 +14,24 @@ import mcjty.lib.container.EmptyContainer;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -44,6 +46,7 @@ import java.util.List;
 public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTileEntity, EmptyContainer> {
 
     public static PropertyBool EMPTY = PropertyBool.create("empty");
+    public static PropertyBool GENERATED = PropertyBool.create("generated");
 
     public static int tooltipRFTick = 0;
     public static float tooltipPower = 0;
@@ -51,11 +54,18 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
     private static long lastTime = 0;
 
     public ResonatingCrystalBlock() {
-        super(Material.glass, ResonatingCrystalTileEntity.class, EmptyContainer.class, "resonating_crystal", false);
+        super(Material.GLASS, ResonatingCrystalTileEntity.class, EmptyContainer.class, "resonating_crystal", false);
         setHardness(3.0f);
         setResistance(5.0f);
         setHarvestLevel("pickaxe", 2);
-        setStepSound(soundTypeGlass);
+        setSoundType(SoundType.GLASS);
+    }
+
+    public static final AxisAlignedBB BLOCK_AABB = new AxisAlignedBB(0.1F, 0.0F, 0.1F, 0.9F, 0.8F, 0.9F);
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        return BLOCK_AABB;
     }
 
     @SideOnly(Side.CLIENT)
@@ -63,18 +73,29 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
     public void initModel() {
         ClientRegistry.bindTileEntitySpecialRenderer(ResonatingCrystalTileEntity.class, new ResonatingCrystalTESR());
 
-        ModelResourceLocation emptyModel = new ModelResourceLocation(getRegistryName(), "empty=true,facing=north");
-        ModelResourceLocation fullModel = new ModelResourceLocation(getRegistryName(), "empty=false,facing=north");
+        ModelResourceLocation emptyNaturalModel = new ModelResourceLocation(getRegistryName(), "empty=true,facing=north,generated=false");
+        ModelResourceLocation fullNaturalModel = new ModelResourceLocation(getRegistryName(), "empty=false,facing=north,generated=false");
+        ModelResourceLocation emptyGeneratedModel = new ModelResourceLocation(getRegistryName(), "empty=true,facing=north,generated=true");
+        ModelResourceLocation fullGeneratedModel = new ModelResourceLocation(getRegistryName(), "empty=false,facing=north,generated=true");
 
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(this), emptyModel, fullModel);
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(this), emptyNaturalModel, fullNaturalModel);
         ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(this), new ItemMeshDefinition() {
             @Override
             public ModelResourceLocation getModelLocation(ItemStack stack) {
                 float power = stack.getTagCompound() == null ? 1.0f : stack.getTagCompound().getFloat("power");
+                float purity = stack.getTagCompound() == null ? 1.0f : stack.getTagCompound().getFloat("purity");
                 if (power < EnergyCollectorTileEntity.CRYSTAL_MIN_POWER) {
-                    return emptyModel;
+                    if (purity > 30.0f) {
+                        return emptyGeneratedModel;
+                    } else {
+                        return emptyNaturalModel;
+                    }
                 } else {
-                    return fullModel;
+                    if (purity > 30.0f) {
+                        return fullGeneratedModel;
+                    } else {
+                        return fullNaturalModel;
+                    }
                 }
             }
         });
@@ -106,10 +127,10 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
         }
         if (tagCompound != null) {
             DecimalFormat decimalFormat = new DecimalFormat("#.##");
-            list.add(EnumChatFormatting.GREEN + "Strength/Efficiency/Purity: " + decimalFormat.format(tagCompound.getFloat("strength")) + "% "
+            list.add(TextFormatting.GREEN + "Strength/Efficiency/Purity: " + decimalFormat.format(tagCompound.getFloat("strength")) + "% "
                     + decimalFormat.format(tagCompound.getFloat("efficiency")) + "% "
                     + decimalFormat.format(tagCompound.getFloat("purity")) + "%");
-            list.add(EnumChatFormatting.YELLOW + "Power left: " + decimalFormat.format(power) + "%");
+            list.add(TextFormatting.YELLOW + "Power left: " + decimalFormat.format(power) + "%");
         }
     }
 
@@ -120,10 +141,10 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
         if (tileEntity instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
             DecimalFormat decimalFormat = new DecimalFormat("#.##");
-            currenttip.add(EnumChatFormatting.GREEN + "Strength/Efficiency/Purity: " + decimalFormat.format(resonatingCrystalTileEntity.getStrength()) + "% "
+            currenttip.add(TextFormatting.GREEN + "Strength/Efficiency/Purity: " + decimalFormat.format(resonatingCrystalTileEntity.getStrength()) + "% "
                     + decimalFormat.format(resonatingCrystalTileEntity.getEfficiency()) + "% "
                     + decimalFormat.format(resonatingCrystalTileEntity.getPurity()) + "%");
-            currenttip.add(EnumChatFormatting.YELLOW + "Power left: " + decimalFormat.format(tooltipPower) + "% (" + tooltipRFTick + " RF/t)");
+            currenttip.add(TextFormatting.YELLOW + "Power left: " + decimalFormat.format(tooltipPower) + "% (" + tooltipRFTick + " RF/t)");
             if (System.currentTimeMillis() - lastTime > 250) {
                 lastTime = System.currentTimeMillis();
                 DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetCrystalInfo(tileEntity.getPos()));
@@ -148,7 +169,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
                     if (forceMultiplier > 0.001f) {
                         DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
                         DRRadiationManager.RadiationSource source = radiationManager.getOrCreateRadiationSource(new GlobalCoordinate(pos, WorldHelper.getDimID(world)));
-                        float radiationRadius = DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getEfficiency(), resonatingCrystalTileEntity.getPurity());
+                        float radiationRadius = DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getStrength(), resonatingCrystalTileEntity.getEfficiency(), resonatingCrystalTileEntity.getPurity());
                         float radiationStrength = DRRadiationManager.calculateRadiationStrength(resonatingCrystalTileEntity.getStrength(), resonatingCrystalTileEntity.getPurity());
                         source.update(radiationRadius * RadiationConfiguration.radiationExplosionFactor, radiationStrength / RadiationConfiguration.radiationExplosionFactor, 1000);
                     }
@@ -162,9 +183,10 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
         super.onBlockExploded(world, pos, explosion);
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
-    public EnumWorldBlockLayer getBlockLayer() {
-        return EnumWorldBlockLayer.TRANSLUCENT;
+    public BlockRenderLayer getBlockLayer() {
+        return BlockRenderLayer.TRANSLUCENT;
     }
 
     @Override
@@ -173,13 +195,24 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
     }
 
     @Override
-    public boolean isOpaqueCube() {
+    public boolean isOpaqueCube(IBlockState state) {
+        return false;
+    }
+
+
+    @Override
+    public boolean isFullBlock(IBlockState state) {
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube(IBlockState state) {
         return false;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean shouldSideBeRendered(IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
+    public boolean shouldSideBeRendered(IBlockState state, IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
         return false;
     }
 
@@ -194,18 +227,20 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
     }
 
     @Override
-    protected BlockState createBlockState() {
-        return new BlockState(this, FACING_HORIZ, EMPTY);
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, FACING_HORIZ, EMPTY, GENERATED);
     }
 
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity te = worldIn.getTileEntity(pos);
         boolean empty = false;
+        boolean generated = false;
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
             empty = resonatingCrystalTileEntity.isEmpty();
+            generated = resonatingCrystalTileEntity.getPurity() > 30.0f;
         }
-        return super.getActualState(state, worldIn, pos).withProperty(EMPTY, empty);
+        return super.getActualState(state, worldIn, pos).withProperty(EMPTY, empty).withProperty(GENERATED, generated);
     }
 }

@@ -13,6 +13,8 @@ import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
+import mcjty.lib.varia.CustomSidedInvWrapper;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,7 +26,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 
 import java.util.Map;
 
@@ -86,7 +87,8 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
         progress++;
         if (progress == 1) {
             // We just started to work. Notify client
-            worldObj.markBlockForUpdate(getPos());
+            IBlockState state = worldObj.getBlockState(getPos());
+            worldObj.notifyBlockUpdate(getPos(), state, state, 3);
         }
 
         if (progress >= getTotalProgress()) {
@@ -105,6 +107,8 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
     public static int getClientProgress() {
         return clientProgress;
     }
+
+
 
     private boolean canCrystalize() {
         if (rclTank == null) {
@@ -191,8 +195,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
     public void unHook(TileTank tank, EnumFacing direction) {
         if (tilesEqual(rclTank, tank)){
             rclTank = null;
-            this.markDirty();
-            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+            notifyAndMarkDirty();
         }
     }
 
@@ -280,7 +283,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
         return false;
     }
 
-    IItemHandler invHandler = new InvWrapper(this);
+    IItemHandler invHandler = new CustomSidedInvWrapper(this);
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
@@ -295,4 +298,12 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
         }
         return super.getCapability(capability, facing);
     }
+
+    protected void notifyAndMarkDirty(){
+        if (WorldHelper.chunkLoaded(worldObj, pos)){
+            this.markDirty();
+            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+        }
+    }
+
 }

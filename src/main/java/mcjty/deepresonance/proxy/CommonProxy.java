@@ -1,7 +1,6 @@
 package mcjty.deepresonance.proxy;
 
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.FMLEventHandlers;
 import mcjty.deepresonance.ForgeEventHandlers;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
@@ -16,6 +15,7 @@ import mcjty.deepresonance.radiation.RadiationTickEvent;
 import mcjty.deepresonance.worldgen.WorldGen;
 import mcjty.deepresonance.worldgen.WorldGenConfiguration;
 import mcjty.deepresonance.worldgen.WorldTickHandler;
+import mcjty.lib.McJtyLib;
 import mcjty.lib.base.GeneralConfig;
 import mcjty.lib.varia.WrenchChecker;
 import net.minecraftforge.common.MinecraftForge;
@@ -32,9 +32,12 @@ public abstract class CommonProxy {
     private Configuration mainConfig;
 
     public void preInit(FMLPreInitializationEvent e) {
+        McJtyLib.preInit(e);
         GeneralConfig.preInit(e);
+
         mainConfig = DeepResonance.config;
         readMainConfig();
+
         DRMessages.registerNetworkMessages();
         ModItems.init();
         ModBlocks.init();
@@ -47,6 +50,7 @@ public abstract class CommonProxy {
         Configuration cfg = mainConfig;
         try {
             cfg.load();
+
             cfg.addCustomCategoryComment(WorldGenConfiguration.CATEGORY_WORLDGEN, "Configuration for wodlgen");
             cfg.addCustomCategoryComment(GeneratorConfiguration.CATEGORY_GENERATOR, "Configuration for the generator multiblock");
             cfg.addCustomCategoryComment(RadiationConfiguration.CATEGORY_RADIATION, "Configuration for the radiation");
@@ -69,7 +73,6 @@ public abstract class CommonProxy {
         MinecraftForge.EVENT_BUS.register(WorldTickHandler.instance);
         MinecraftForge.EVENT_BUS.register(new RadiationTickEvent());
         MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
-        MinecraftForge.EVENT_BUS.register(new FMLEventHandlers());
     }
 
     public void postInit(FMLPostInitializationEvent e) {

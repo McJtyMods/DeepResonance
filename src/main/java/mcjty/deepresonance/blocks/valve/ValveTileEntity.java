@@ -28,7 +28,7 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
     private TileTank topTank;
     private int progress = 0;
 
-    private float minPurity = 0;
+    private float minPurity = 84.0f / 100.0f;
     private float minStrength = 0;
     private float minEfficiency = 0;
     private int maxMb = 0;
@@ -40,7 +40,7 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
         }
     }
 
-    protected void checkStateServer() {
+    private void checkStateServer() {
         progress--;
         markDirty();
         if (progress > 0) {
@@ -170,12 +170,10 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
     public void unHook(TileTank tank, EnumFacing direction) {
         if (tilesEqual(bottomTank, tank)){
             bottomTank = null;
-            this.markDirty();
-            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+            notifyAndMarkDirty();
         } else if (tilesEqual(topTank, tank)){
             topTank = null;
-            this.markDirty();
-            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+            notifyAndMarkDirty();
         }
     }
 
@@ -220,6 +218,13 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
             return true;
         }
         return false;
+    }
+
+    protected void notifyAndMarkDirty(){
+        if (WorldHelper.chunkLoaded(worldObj, pos)){
+            this.markDirty();
+            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+        }
     }
 
 }

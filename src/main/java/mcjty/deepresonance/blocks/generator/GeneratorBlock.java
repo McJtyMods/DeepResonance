@@ -10,15 +10,15 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -41,7 +41,7 @@ public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyCon
     private static long lastTime = 0;
 
     public GeneratorBlock() {
-        super(Material.iron, GeneratorTileEntity.class, EmptyContainer.class, "generator", false);
+        super(Material.IRON, GeneratorTileEntity.class, EmptyContainer.class, "generator", false);
     }
 
     @Override
@@ -61,14 +61,14 @@ public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyCon
 
         NBTTagCompound tagCompound = itemStack.getTagCompound();
         if (tagCompound != null) {
-            list.add(EnumChatFormatting.YELLOW + "Energy: " + tagCompound.getInteger("energy"));
+            list.add(TextFormatting.YELLOW + "Energy: " + tagCompound.getInteger("energy"));
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
             list.add("Part of a generator multi-block.");
             list.add("You can place these in any configuration.");
         } else {
-            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
+            list.add(TextFormatting.WHITE + ClientHandler.getShiftMessage());
         }
     }
 
@@ -78,13 +78,13 @@ public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyCon
         TileEntity tileEntity = accessor.getTileEntity();
         if (tileEntity instanceof GeneratorTileEntity) {
             GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) tileEntity;
-            currenttip.add(EnumChatFormatting.GREEN + "ID: " + new DecimalFormat("#.##").format(generatorTileEntity.getNetworkId()));
+            currenttip.add(TextFormatting.GREEN + "ID: " + new DecimalFormat("#.##").format(generatorTileEntity.getNetworkId()));
             if (System.currentTimeMillis() - lastTime > 250) {
                 lastTime = System.currentTimeMillis();
                 DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetGeneratorInfo(generatorTileEntity.getNetworkId()));
             }
-            currenttip.add(EnumChatFormatting.GREEN + "Energy: " + tooltipEnergy + "/" + (tooltipRefCount*GeneratorConfiguration.rfPerGeneratorBlock) + " RF");
-            currenttip.add(EnumChatFormatting.YELLOW + Integer.toString(tooltipRfPerTick) + " RF/t");
+            currenttip.add(TextFormatting.GREEN + "Energy: " + tooltipEnergy + "/" + (tooltipRefCount*GeneratorConfiguration.rfPerGeneratorBlock) + " RF");
+            currenttip.add(TextFormatting.YELLOW + Integer.toString(tooltipRfPerTick) + " RF/t");
         }
         return currenttip;
     }
@@ -110,8 +110,8 @@ public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyCon
     }
 
     @Override
-    protected BlockState createBlockState() {
-        return new BlockState(this, UPPER, LOWER, ENABLED);
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, UPPER, LOWER, ENABLED);
     }
 
 
@@ -168,11 +168,13 @@ public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyCon
         }
         super.breakBlock(world, pos, state);
         if (!world.isRemote) {
-            if (world.getBlockState(pos.up()).getBlock() == GeneratorSetup.generatorBlock) {
-                world.markBlockForUpdate(pos.up());
+            IBlockState stateUp = world.getBlockState(pos.up());
+            if (stateUp.getBlock() == GeneratorSetup.generatorBlock) {
+                world.notifyBlockUpdate(pos.up(), stateUp, stateUp, 3);
             }
-            if (world.getBlockState(pos.down()).getBlock() == GeneratorSetup.generatorBlock) {
-                world.markBlockForUpdate(pos.down());
+            IBlockState stateDown = world.getBlockState(pos.down());
+            if (stateDown.getBlock() == GeneratorSetup.generatorBlock) {
+                world.notifyBlockUpdate(pos.down(), stateDown, stateDown, 3);
             }
         }
     }

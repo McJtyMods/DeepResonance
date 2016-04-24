@@ -8,15 +8,15 @@ import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
@@ -30,7 +30,7 @@ import java.util.List;
 public class EnergyCollectorBlock extends GenericDRBlock<EnergyCollectorTileEntity, EmptyContainer> {
 
     public EnergyCollectorBlock() {
-        super(Material.iron, EnergyCollectorTileEntity.class, EmptyContainer.class, "energy_collector", false);
+        super(Material.IRON, EnergyCollectorTileEntity.class, EmptyContainer.class, "energy_collector", false);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class EnergyCollectorBlock extends GenericDRBlock<EnergyCollectorTileEnti
             list.add("Place this on top of a generator with");
             list.add("crystals nearby.");
         } else {
-            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
+            list.add(TextFormatting.WHITE + ClientHandler.getShiftMessage());
         }
     }
 
@@ -110,18 +110,18 @@ public class EnergyCollectorBlock extends GenericDRBlock<EnergyCollectorTileEnti
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean shouldSideBeRendered(IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
+    public boolean shouldSideBeRendered(IBlockState state, IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
         return false;
     }
 
 
     @Override
-    public boolean isBlockNormalCube() {
+    public boolean isBlockNormalCube(IBlockState state) {
         return false;
     }
 
     @Override
-    public boolean isOpaqueCube() {
+    public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 }

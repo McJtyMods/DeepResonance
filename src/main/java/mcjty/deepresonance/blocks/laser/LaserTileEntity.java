@@ -14,6 +14,7 @@ import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
 import mcjty.lib.varia.BlockTools;
+import mcjty.lib.varia.CustomSidedInvWrapper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,10 +23,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -33,7 +34,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +72,8 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         if (this.powered != powered) {
             this.powered = powered;
             markDirty();
-            worldObj.markBlockForUpdate(pos);
+            IBlockState state = worldObj.getBlockState(pos);
+            worldObj.notifyBlockUpdate(pos, state, state, 3);
         }
     }
 
@@ -212,99 +213,99 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         if (item == null) {
             return null;
         }
-        String name = item.getItem().getRegistryName();
+        String name = item.getItem().getRegistryName().getResourcePath();
 //        String name = Item.itemRegistry.getNameForObject(item.getItem()).toString();
         return infusingBonusMap.get(name);
     }
 
     public static void createDefaultInfusionBonusMap() {
         infusingBonusMap = new HashMap<String, InfusingBonus>();
-        infusingBonusMap.put(Items.diamond.getRegistryName(), new InfusingBonus(
+        infusingBonusMap.put(Items.DIAMOND.getRegistryName().getResourcePath(), new InfusingBonus(
                 COLOR_BLUE,
                 new InfusingBonus.Modifier(5.0f, 100.0f),
                 InfusingBonus.Modifier.NONE,
                 InfusingBonus.Modifier.NONE));
-        infusingBonusMap.put(Items.emerald.getRegistryName(), new InfusingBonus(
+        infusingBonusMap.put(Items.EMERALD.getRegistryName().getResourcePath(), new InfusingBonus(
                 COLOR_GREEN,
                 new InfusingBonus.Modifier(8.0f, 100.0f),
                 InfusingBonus.Modifier.NONE,
                 InfusingBonus.Modifier.NONE));
-        infusingBonusMap.put(Items.ender_pearl.getRegistryName(), new InfusingBonus(
+        infusingBonusMap.put(Items.ENDER_PEARL.getRegistryName().getResourcePath(), new InfusingBonus(
                 COLOR_GREEN,
                 new InfusingBonus.Modifier(2.0f, 100.0f),
                 InfusingBonus.Modifier.NONE,
                 InfusingBonus.Modifier.NONE));
-        infusingBonusMap.put(Items.redstone.getRegistryName(), new InfusingBonus(
+        infusingBonusMap.put(Items.REDSTONE.getRegistryName().getResourcePath(), new InfusingBonus(
                 COLOR_RED,
                 new InfusingBonus.Modifier(-1.0f, 0.0f),
                 new InfusingBonus.Modifier(5.0f, 60.0f),
                 InfusingBonus.Modifier.NONE));
-        infusingBonusMap.put(Items.gunpowder.getRegistryName(), new InfusingBonus(
+        infusingBonusMap.put(Items.GUNPOWDER.getRegistryName().getResourcePath(), new InfusingBonus(
                 COLOR_RED,
                 new InfusingBonus.Modifier(-5.0f, 0.0f),
                 new InfusingBonus.Modifier(8.0f, 70.0f),
                 new InfusingBonus.Modifier(4.0f, 60.0f)));
-        infusingBonusMap.put(Items.glowstone_dust.getRegistryName(), new InfusingBonus(
+        infusingBonusMap.put(Items.GLOWSTONE_DUST.getRegistryName().getResourcePath(), new InfusingBonus(
                 COLOR_YELLOW,
                 new InfusingBonus.Modifier(-2.0f, 0.0f),
                 new InfusingBonus.Modifier(6.0f, 50.0f),
                 new InfusingBonus.Modifier(3.0f, 50.0f)));
-        infusingBonusMap.put(Items.blaze_powder.getRegistryName(), new InfusingBonus(
+        infusingBonusMap.put(Items.BLAZE_POWDER.getRegistryName().getResourcePath(), new InfusingBonus(
                 COLOR_YELLOW,
                 new InfusingBonus.Modifier(-6.0f, 0.0f),
                 new InfusingBonus.Modifier(5.0f, 70.0f),
                 new InfusingBonus.Modifier(5.0f, 70.0f)));
-        infusingBonusMap.put(Items.quartz.getRegistryName(), new InfusingBonus(
+        infusingBonusMap.put(Items.QUARTZ.getRegistryName().getResourcePath(), new InfusingBonus(
                 COLOR_BLUE,
                 new InfusingBonus.Modifier(-1.0f, 0.0f),
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(7.0f, 80.0f)));
-        infusingBonusMap.put(Items.nether_star.getRegistryName(), new InfusingBonus(
+        infusingBonusMap.put(Items.NETHER_STAR.getRegistryName().getResourcePath(), new InfusingBonus(
                 COLOR_RED,
                 new InfusingBonus.Modifier(-60.0f, 0.0f),
                 new InfusingBonus.Modifier(90.0f, 100.0f),
                 new InfusingBonus.Modifier(90.0f, 100.0f)));
-        infusingBonusMap.put(Items.ghast_tear.getRegistryName(), new InfusingBonus(
+        infusingBonusMap.put(Items.GHAST_TEAR.getRegistryName().getResourcePath(), new InfusingBonus(
                 COLOR_YELLOW,
                 new InfusingBonus.Modifier(-20.0f, 0.0f),
                 new InfusingBonus.Modifier(25.0f, 100.0f),
                 new InfusingBonus.Modifier(15.0f, 100.0f)));
-        infusingBonusMap.put(Items.prismarine_shard.getRegistryName(), new InfusingBonus(
+        infusingBonusMap.put(Items.PRISMARINE_SHARD.getRegistryName().getResourcePath(), new InfusingBonus(
                 COLOR_YELLOW,
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(3.0f, 30.0f),
                 new InfusingBonus.Modifier(3.0f, 30.0f)));
-        infusingBonusMap.put(Items.prismarine_crystals.getRegistryName(), new InfusingBonus(
+        infusingBonusMap.put(Items.PRISMARINE_CRYSTALS.getRegistryName().getResourcePath(), new InfusingBonus(
                 COLOR_YELLOW,
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(4.0f, 35.0f),
                 new InfusingBonus.Modifier(4.0f, 35.0f)));
-        infusingBonusMap.put(Items.slime_ball.getRegistryName(), new InfusingBonus(
+        infusingBonusMap.put(Items.SLIME_BALL.getRegistryName().getResourcePath(), new InfusingBonus(
                 COLOR_GREEN,
                 InfusingBonus.Modifier.NONE,
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(-10.0f, 1.0f)));
-        infusingBonusMap.put(Items.coal.getRegistryName(), new InfusingBonus(
+        infusingBonusMap.put(Items.COAL.getRegistryName().getResourcePath(), new InfusingBonus(
                 COLOR_RED,
                 new InfusingBonus.Modifier(-1.0f, 0.0f),
                 new InfusingBonus.Modifier(-10.0f, 0.0f),
                 InfusingBonus.Modifier.NONE));
-        infusingBonusMap.put(Items.nether_wart.getRegistryName(), new InfusingBonus(
+        infusingBonusMap.put(Items.NETHER_WART.getRegistryName().getResourcePath(), new InfusingBonus(
                 COLOR_RED,
                 new InfusingBonus.Modifier(-3.0f, 0.0f),
                 new InfusingBonus.Modifier(2.0f, 35.0f),
                 new InfusingBonus.Modifier(-2.0f, 1.0f)));
-        infusingBonusMap.put(Items.gold_ingot.getRegistryName(), new InfusingBonus(
+        infusingBonusMap.put(Items.GOLD_INGOT.getRegistryName().getResourcePath(), new InfusingBonus(
                 COLOR_RED,
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(-1.0f, 0.0f),
                 new InfusingBonus.Modifier(1.0f, 30.0f)));
-        infusingBonusMap.put(Items.iron_ingot.getRegistryName(), new InfusingBonus(
+        infusingBonusMap.put(Items.IRON_INGOT.getRegistryName().getResourcePath(), new InfusingBonus(
                 COLOR_RED,
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(-2.0f, 0.0f),
                 new InfusingBonus.Modifier(1.0f, 20.0f)));
-        infusingBonusMap.put(Items.snowball.getRegistryName(), new InfusingBonus(
+        infusingBonusMap.put(Items.SNOWBALL.getRegistryName().getResourcePath(), new InfusingBonus(
                 COLOR_RED,
                 new InfusingBonus.Modifier(1.0f, 30.0f),
                 InfusingBonus.Modifier.NONE,
@@ -312,6 +313,9 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     private BlockPos findLens() {
+        if (!worldObj.isBlockLoaded(getPos())) {
+            return null;
+        }
         IBlockState state = worldObj.getBlockState(getPos());
         int meta = state.getBlock().getMetaFromState(state);
         EnumFacing direction = BlockTools.getOrientationHoriz(meta);
@@ -379,6 +383,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
 
     @Override
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
+        super.readRestorableFromNBT(tagCompound);
         readBufferFromNBT(tagCompound, inventoryHelper);
         crystalLiquid = tagCompound.getInteger("liquid");
     }
@@ -393,6 +398,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
 
     @Override
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
+        super.writeRestorableToNBT(tagCompound);
         writeBufferToNBT(tagCompound, inventoryHelper);
         tagCompound.setInteger("liquid", crystalLiquid);
     }
@@ -449,7 +455,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         }
     }
 
-    IItemHandler invHandler = new InvWrapper(this);
+    IItemHandler invHandler = new CustomSidedInvWrapper(this);
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {

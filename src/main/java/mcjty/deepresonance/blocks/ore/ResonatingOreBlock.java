@@ -3,8 +3,9 @@ package mcjty.deepresonance.blocks.ore;
 import mcjty.deepresonance.DeepResonance;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -14,14 +15,15 @@ import net.minecraftforge.oredict.OreDictionary;
 public class ResonatingOreBlock extends Block {
 
     public ResonatingOreBlock() {
-        super(Material.rock);
+        super(Material.ROCK);
         setHardness(3.0f);
         setResistance(5.0f);
         setHarvestLevel("pickaxe", 2);
-        setUnlocalizedName("resonating_ore");
+        setUnlocalizedName(DeepResonance.MODID + ".resonating_ore");
         setRegistryName("resonating_ore");
         setCreativeTab(DeepResonance.tabDeepResonance);
-        GameRegistry.registerBlock(this);
+        GameRegistry.register(this);
+        GameRegistry.register(new ItemBlock(this), getRegistryName());
         OreDictionary.registerOre("oreResonating", this);
     }
 

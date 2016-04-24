@@ -5,11 +5,12 @@ import elec332.core.network.IElecCoreNetworkTile;
 import elec332.core.server.ServerHelper;
 import elec332.core.world.WorldHelper;
 import mcjty.lib.entity.GenericTileEntity;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 
 /**
  * Created by Elec332 on 12-8-2015.
@@ -20,7 +21,7 @@ public abstract class ElecTileBase extends GenericTileEntity implements IElecCor
     public void validate() {
         super.validate();
         ElecCore.tickHandler.registerCall(() -> {
-            if (WorldHelper.chunkExists(worldObj, pos)) {
+            if (WorldHelper.chunkLoaded(worldObj, pos)) {
                 onTileLoaded();
             }
         }, worldObj);
@@ -56,7 +57,8 @@ public abstract class ElecTileBase extends GenericTileEntity implements IElecCor
     }
 
     public void syncData() {
-        this.worldObj.markBlockForUpdate(this.pos);
+        IBlockState state = worldObj.getBlockState(pos);
+        this.worldObj.notifyBlockUpdate(this.pos, state, state, 3);
     }
 
     @Override
@@ -70,18 +72,18 @@ public abstract class ElecTileBase extends GenericTileEntity implements IElecCor
     }
 
     public void sendPacketTo(EntityPlayerMP player, int ID, NBTTagCompound data) {
-        player.playerNetServerHandler.sendPacket(new S35PacketUpdateTileEntity(this.pos, ID, data));
+        player.playerNetServerHandler.sendPacket(new SPacketUpdateTileEntity(this.pos, ID, data));
     }
 
     @Override
     public Packet getDescriptionPacket() {
         NBTTagCompound nbtTag = new NBTTagCompound();
         this.writeToNBT(nbtTag);
-        return new S35PacketUpdateTileEntity(this.pos, 0, nbtTag);
+        return new SPacketUpdateTileEntity(this.pos, 0, nbtTag);
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
         if(packet.getTileEntityType() == 0) {
             this.readFromNBT(packet.getNbtCompound());
         } else {

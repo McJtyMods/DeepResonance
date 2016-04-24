@@ -1,6 +1,6 @@
 package mcjty.deepresonance.items.rftoolsmodule;
 
-import mcjty.deepresonance.blocks.ModBlocks;
+import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.items.RadiationMonitorItem;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
 import mcjty.lib.varia.BlockPosTools;
@@ -10,7 +10,7 @@ import mcjty.rftools.api.screens.IScreenModule;
 import mcjty.rftools.api.screens.data.IModuleDataInteger;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
@@ -25,12 +25,12 @@ public class RadiationScreenModule implements IScreenModule<IModuleDataInteger> 
             return null;
         }
 
-        if (!world.getChunkProvider().chunkExists(coordinate.getX() >> 4, coordinate.getZ() >> 4)) {
+        if (!WorldHelper.chunkLoaded(world, coordinate)) {
             return null;
         }
 
         Block block = world.getBlockState(coordinate).getBlock();
-        if (block != ModBlocks.radiationSensorBlock) {
+        if (block != RFToolsSupport.radiationSensorBlock) {
             return null;
         }
         float strength = RadiationMonitorItem.calculateRadiationStrength(world, new GlobalCoordinate(coordinate, dim));

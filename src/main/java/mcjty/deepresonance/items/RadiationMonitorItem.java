@@ -11,12 +11,15 @@ import mcjty.lib.varia.Logging;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
@@ -38,7 +41,9 @@ public class RadiationMonitorItem extends GenericDRItem {
     @SideOnly(Side.CLIENT)
     public void initModel() {
         for (int i = 0 ; i <= 9 ; i++) {
-            ModelBakery.registerItemVariants(this, new ResourceLocation(getRegistryName() + i));
+            String domain = getRegistryName().getResourceDomain();
+            String path = getRegistryName().getResourcePath();
+            ModelBakery.registerItemVariants(this, new ModelResourceLocation(new ResourceLocation(domain, path + i), "inventory"));
         }
 
         ModelLoader.setCustomMeshDefinition(this, new ItemMeshDefinition() {
@@ -52,7 +57,9 @@ public class RadiationMonitorItem extends GenericDRItem {
                 } else if (level > 9) {
                     level = 9;
                 }
-                return new ModelResourceLocation(RadiationMonitorItem.this.getRegistryName() + level, "inventory");
+                String domain = getRegistryName().getResourceDomain();
+                String path = getRegistryName().getResourcePath();
+                return new ModelResourceLocation(new ResourceLocation(domain, path + level), "inventory");
             }
         });
     }
@@ -64,17 +71,17 @@ public class RadiationMonitorItem extends GenericDRItem {
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
         if (!world.isRemote) {
             GlobalCoordinate c = new GlobalCoordinate(player.getPosition(), WorldHelper.getDimID(world));
             float maxStrength = calculateRadiationStrength(world, c);
             if (maxStrength <= 0.0f) {
-                Logging.message(player, EnumChatFormatting.GREEN + "No radiation detected");
+                Logging.message(player, TextFormatting.GREEN + "No radiation detected");
             } else {
-                Logging.message(player, EnumChatFormatting.RED + "Strength of Radiation " + new Float(maxStrength).intValue() + "!");
+                Logging.message(player, TextFormatting.RED + "Strength of Radiation " + new Float(maxStrength).intValue() + "!");
             }
         }
-        return stack;
+        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
     }
 
     public static float calculateRadiationStrength(World world, GlobalCoordinate player) {
@@ -95,7 +102,7 @@ public class RadiationMonitorItem extends GenericDRItem {
                     int cy = coordinate.getCoordinate().getY();
                     int cz = coordinate.getCoordinate().getZ();
                     QuadTree radiationTree = radiationSource.getRadiationTree(world, cx, cy, cz);
-                    strength = strength * (float) radiationTree.factor(cx, cy, cz, player.getCoordinate().getX(), player.getCoordinate().getY(), player.getCoordinate().getZ());
+                    strength = strength * (float) radiationTree.factor2(cx, cy, cz, player.getCoordinate().getX(), player.getCoordinate().getY()+1, player.getCoordinate().getZ());
                     if (strength > maxStrength) {
                         maxStrength = strength;
                     }
@@ -110,9 +117,9 @@ public class RadiationMonitorItem extends GenericDRItem {
         super.addInformation(itemStack, player, list, advancedToolTip);
         fetchRadiation(player);
         if (radiationStrength <= 0.0f) {
-            list.add(EnumChatFormatting.GREEN + "No radiation detected");
+            list.add(TextFormatting.GREEN + "No radiation detected");
         } else {
-            list.add(EnumChatFormatting.RED + "Radiation: " + new Float(radiationStrength).intValue() + "!");
+            list.add(TextFormatting.RED + "Radiation: " + new Float(radiationStrength).intValue() + "!");
         }
     }
 

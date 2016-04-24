@@ -1,21 +1,20 @@
 package mcjty.deepresonance.blocks.tank;
 
 import com.google.common.collect.Maps;
+import elec332.core.main.ElecCore;
 import elec332.core.multiblock.dynamic.IDynamicMultiBlockTile;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
 import mcjty.deepresonance.blocks.base.ElecTileBase;
-import mcjty.deepresonance.fluid.DRFluidRegistry;
-import mcjty.deepresonance.grid.fluid.event.FluidTileEvent;
 import mcjty.deepresonance.grid.tank.DRTankMultiBlock;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.*;
 
@@ -33,6 +32,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
             settings.put(direction, Mode.SETTING_NONE);
         }
         this.multiBlockSaveData = new NBTTagCompound();
+        this.tankHooks = Maps.newHashMap();
     }
 
     private Fluid clientRenderFluid;
@@ -43,6 +43,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     private NBTTagCompound multiBlockSaveData;
 
     protected Map<EnumFacing, Mode> settings;
+    private Map<EnumFacing, ITankHook> tankHooks;
 
     public static enum Mode implements IStringSerializable {
         SETTING_NONE("none"),
@@ -68,9 +69,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         if (!worldObj.isRemote) {
             DeepResonance.worldGridRegistry.getTankRegistry().get(worldObj).addTile(this);
             //MinecraftForge.EVENT_BUS.post(new FluidTileEvent.Load(this));
-            for (Map.Entry<ITankHook, EnumFacing> entry : getConnectedHooks().entrySet()){
-                entry.getKey().hook(this, entry.getValue());
-            }
+            initHooks();
         }
     }
 
@@ -80,8 +79,39 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         if (!worldObj.isRemote) {
             DeepResonance.worldGridRegistry.getTankRegistry().get(worldObj).removeTile(this);
             //MinecraftForge.EVENT_BUS.post(new FluidTileEvent.Unload(this));
-            for (Map.Entry<ITankHook, EnumFacing> entry : getConnectedHooks().entrySet()){
-                entry.getKey().unHook(this, entry.getValue());
+            for (Map.Entry<EnumFacing, ITankHook> entry : getConnectedHooks().entrySet()){
+                entry.getValue().unHook(this, entry.getKey().getOpposite());
+            }
+            getConnectedHooks().clear();
+        }
+    }
+
+    public void onNeighborChange(){
+        Map<EnumFacing, ITankHook> hookMap = getConnectedHooks();
+        for (EnumFacing facing : EnumFacing.VALUES){
+            ITankHook tankHook = hookMap.get(facing);
+            BlockPos pos = getPos().offset(facing);
+            TileEntity tile = WorldHelper.chunkLoaded(worldObj, pos) ? WorldHelper.getTileAt(worldObj, pos) : null;
+            if ((tile == null && tankHook != null) || (tile != null && tankHook == null) || (tile != tankHook)){
+                hookMap.remove(facing);
+                if (tile instanceof ITankHook){
+                    ((ITankHook) tile).hook(this, facing.getOpposite());
+                    hookMap.put(facing, (ITankHook) tile);
+                }
+            } else if (tankHook != null){
+                tankHook.onContentChanged(this, facing.getOpposite());
+            }
+        }
+    }
+
+    private void initHooks(){
+        tankHooks.clear();
+        for (EnumFacing facing : EnumFacing.VALUES){
+            BlockPos pos = getPos().offset(facing);
+            TileEntity tile = WorldHelper.chunkLoaded(worldObj, pos) ? WorldHelper.getTileAt(worldObj, pos) : null;
+            if (tile instanceof ITankHook){
+                tankHooks.put(facing, (ITankHook) tile);
+                ((ITankHook) tile).hook(this, facing.getOpposite());
             }
         }
     }
@@ -150,26 +180,12 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     @Override
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
         super.writeRestorableToNBT(tagCompound);
-        if (multiBlock != null)
+        if (multiBlock != null) {
             getMultiBlock().setDataToTile(this);
+        }
+        ElecCore.systemPrintDebug("Writing restorable NBT @ " + pos);
         tagCompound.setTag("multiBlockData", multiBlockSaveData);
-        /*if (multiBlock != null) {
-            myTank = multiBlock.getFluidShare(this);
-            lastSeenFluid = multiBlock.getStoredFluid();
-        }
-        if (myTank != null) {
-            NBTTagCompound fluidTag = new NBTTagCompound();
-            myTank.writeToNBT(fluidTag);
-            tagCompound.setTag("fluid", fluidTag);
-        }
-        if (lastSeenFluid != null)
-            tagCompound.setString("lastSeenFluid", FluidRegistry.getFluidName(lastSeenFluid));*/
     }
-
-//    @Override
-//    public boolean shouldRenderInPass(int pass) {
-//        return pass == 1;
-//    }
 
     @Override
     public void setMultiBlock(DRTankMultiBlock multiBlock) {
@@ -183,6 +199,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
 
     @Override
     public void setSaveData(NBTTagCompound nbtTagCompound) {
+        ElecCore.systemPrintDebug("Setting MB save data @ " + pos);
         this.multiBlockSaveData = nbtTagCompound;
     }
 
@@ -292,14 +309,14 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
 
     private void notifyChanges(boolean b){
         if (multiBlock != null && b){
-            for (Map.Entry<ITankHook, EnumFacing> entry : getConnectedHooks().entrySet()){
-                entry.getKey().onContentChanged(this, entry.getValue());
+            for (Map.Entry<EnumFacing, ITankHook> entry : getConnectedHooks().entrySet()){
+                entry.getValue().onContentChanged(this, entry.getKey().getOpposite());
             }
         }
     }
 
-    protected Map<ITankHook, EnumFacing> getConnectedHooks(){
-        Map<ITankHook, EnumFacing> ret = Maps.newHashMap();
+    private Map<EnumFacing, ITankHook> getConnectedHooks(){
+        /*Map<ITankHook, EnumFacing> ret = Maps.newHashMap();
         for (EnumFacing direction : EnumFacing.VALUES){
             try {
                 TileEntity tile = WorldHelper.getTileAt(worldObj, getPos().offset(direction));
@@ -309,7 +326,8 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
                 e.printStackTrace();
             }
         }
-        return ret;
+        return ret;*/
+        return tankHooks;
     }
 
     public boolean isInput(EnumFacing direction){

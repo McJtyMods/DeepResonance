@@ -32,7 +32,7 @@ repositories {
     }
 }
 
-version = "1.8.9-1.1.4beta3"
+version = "1.9.0-1.1.4beta28"
 def ENV = System.getenv()
 if (ENV.DRONE_BUILD_NUMBER) {
     version += ".n" + ENV.DRONE_BUILD_NUMBER
@@ -44,9 +44,9 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    version = "1.8.9-11.15.1.1758"
+    version = "1.9-12.16.0.1863-1.9"
     runDir = "run"
-    mappings = "snapshot_20160222"
+    mappings = "snapshot_20160411"
     useDepAts = true
 }
 
@@ -62,9 +62,15 @@ artifacts {
 
 
 dependencies {
-    deobfCompile "mcp.mobius.waila:Waila:1.6.0-B3_1.8.8"
-    deobfCompile "mezz.jei:jei_1.8.8:2.8.3.39"
+    deobfCompile "mcp.mobius.waila:Waila:1.7.0-B2_1.9"
+    deobfCompile "mezz.jei:jei_1.9:3.2.4.177"
 //    compile "com.github.mcjty:mcjtylib:1.8.9-1.8.1beta4-SNAPSHOT:dev"
+}
+
+jar {
+    manifest {
+        attributes 'FMLAT': 'deepresonance_at.cfg'
+    }
 }
 
 processResources

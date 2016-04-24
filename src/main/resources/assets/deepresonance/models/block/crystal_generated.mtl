@@ -1,0 +1,9 @@
+# Blender MTL File: 'crystal updated.blend'
+# Material Count: 1
+
+newmtl Cube1_auv
+Ka 0.000000 0.000000 0.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+d 1.000000
+map_Kd deepresonance:blocks/crystal

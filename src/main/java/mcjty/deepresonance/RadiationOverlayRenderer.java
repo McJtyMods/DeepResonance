@@ -6,13 +6,14 @@ import mcjty.deepresonance.items.RadiationMonitorItem;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
 
 public class RadiationOverlayRenderer {
 
     public static void onRender(RenderGameOverlayEvent event) {
-        if (event.isCancelable() || event.type != RenderGameOverlayEvent.ElementType.EXPERIENCE) {
+        if (event.isCancelable() || event.getType() != RenderGameOverlayEvent.ElementType.EXPERIENCE) {
             return;
         }
 
@@ -21,11 +22,11 @@ public class RadiationOverlayRenderer {
         }
 
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-        if (player.getHeldItem() == null) {
+        if (player.getHeldItem(EnumHand.MAIN_HAND) == null) {
             return;
         }
 
-        if (player.getHeldItem().getItem() != ModItems.radiationMonitorItem) {
+        if (player.getHeldItem(EnumHand.MAIN_HAND).getItem() != ModItems.radiationMonitorItem) {
             return;
         }
 

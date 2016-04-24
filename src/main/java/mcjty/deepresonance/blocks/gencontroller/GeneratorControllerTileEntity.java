@@ -4,16 +4,18 @@ import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
+import mcjty.deepresonance.client.sound.GeneratorSoundController;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
-import mcjty.deepresonance.varia.Broadcaster;
 import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.varia.Broadcaster;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -21,8 +23,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class GeneratorControllerTileEntity extends GenericTileEntity implements ITickable {
-    private ControllerSounds controllerSounds;
-
     private int startup = 0;
     private int shutdown = 0;
     private boolean active = false;
@@ -31,13 +31,6 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
 
     public GeneratorControllerTileEntity() {
         super();
-    }
-
-    private ControllerSounds getControllerSounds() {
-        if (controllerSounds == null) {
-            controllerSounds = new ControllerSounds();
-        }
-        return controllerSounds;
     }
 
     @Override
@@ -52,7 +45,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
 
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
         boolean working = isPowered();
 
         super.onDataPacket(net, packet);
@@ -66,7 +59,6 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
     }
 
 
-
     @Override
     public void invalidate() {
         super.invalidate();
@@ -76,9 +68,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
     }
 
     private void stopSounds() {
-        getControllerSounds().stopStartup();
-        getControllerSounds().stopLoop();
-        getControllerSounds().stopShutdown();
+        GeneratorSoundController.stopSound(worldObj, getPos());
     }
 
     @Override
@@ -96,24 +86,17 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
             // No sounds.
             return;
         }
-        ControllerSounds sounds = getControllerSounds();
         if (startup != 0) {
-            sounds.stopLoop();
-            sounds.stopShutdown();
-            if (!sounds.isStartupPlaying()) {
-                sounds.playStartup(worldObj, pos);
+            if (!GeneratorSoundController.isStartupPlaying(worldObj, pos)) {
+                GeneratorSoundController.playStartup(worldObj, pos);
             }
         } else if (shutdown != 0) {
-            sounds.stopLoop();
-            sounds.stopStartup();
-            if (!sounds.isShutdownPlaying()) {
-                sounds.playShutdown(worldObj, pos);
+            if (!GeneratorSoundController.isShutdownPlaying(worldObj, pos)) {
+                GeneratorSoundController.playShutdown(worldObj, pos);
             }
         } else if (active) {
-            sounds.stopShutdown();
-            sounds.stopStartup();
-            if (!sounds.isLoopPlaying()) {
-                sounds.playLoop(worldObj, pos);
+            if (!GeneratorSoundController.isLoopPlaying(worldObj, pos)) {
+                GeneratorSoundController.playLoop(worldObj, pos);
             }
         } else {
             stopSounds();
@@ -186,11 +169,13 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
         network.setShutdownCounter(0);
         network.setStartupCounter(startup);
         markDirty();
-        worldObj.markBlockForUpdate(pos);
+        IBlockState state = worldObj.getBlockState(pos);
+        worldObj.notifyBlockUpdate(pos, state, state, 3);
         return true;
     }
 
     private boolean handleDeactivate(int id, BlockPos coordinate) {
+        IBlockState state = worldObj.getBlockState(getPos());
         DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
         DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(id);
         if ((!network.isActive()) && network.getShutdownCounter() == 0 && network.getStartupCounter() == 0) {
@@ -199,7 +184,8 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
                 startup = network.getStartupCounter();
                 active = network.isActive();
                 markDirty();
-                worldObj.markBlockForUpdate(getPos());
+
+                worldObj.notifyBlockUpdate(getPos(), state, state, 3);
             }
             return false;   // Nothing to do.
         }
@@ -219,7 +205,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
         network.setStartupCounter(0);
         network.setShutdownCounter(shutdown);
         markDirty();
-        worldObj.markBlockForUpdate(getPos());
+        worldObj.notifyBlockUpdate(getPos(), state, state, 3);
 
         return true;
     }

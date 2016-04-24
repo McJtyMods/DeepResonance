@@ -7,8 +7,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 
 public class CmdInfoCrystal extends AbstractDRCommand {
     @Override
@@ -29,19 +30,19 @@ public class CmdInfoCrystal extends AbstractDRCommand {
     @Override
     public void execute(ICommandSender sender, String[] args) {
         if (args.length > 1) {
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Too many parameters!"));
+            sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Too many parameters!"));
             return;
         }
 
         if (!(sender instanceof EntityPlayer)) {
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "This command only works as a player!"));
+            sender.addChatMessage(new TextComponentString(TextFormatting.RED + "This command only works as a player!"));
             return;
         }
 
         EntityPlayer player = (EntityPlayer) sender;
-        ItemStack heldItem = player.getHeldItem();
+        ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
         if (heldItem == null) {
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "You must hold a crystal in your hand!"));
+            sender.addChatMessage(new TextComponentString(TextFormatting.RED + "You must hold a crystal in your hand!"));
             return;
         }
 
@@ -55,11 +56,11 @@ public class CmdInfoCrystal extends AbstractDRCommand {
             int rfPerTick = ResonatingCrystalTileEntity.getRfPerTick(efficiency, purity);
             int totalSeconds = (int) ((totalPower / rfPerTick) / 20);
             int totalMinutes = (int) ((totalPower / rfPerTick) / 1200);
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Total power: " + (int)totalPower + " RF"));
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "RF per tick: " + rfPerTick));
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Lifetime: " + totalSeconds + " seconds or " + totalMinutes + " minutes"));
+            sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + "Total power: " + (int)totalPower + " RF"));
+            sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + "RF per tick: " + rfPerTick));
+            sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + "Lifetime: " + totalSeconds + " seconds or " + totalMinutes + " minutes"));
         } else {
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "You must hold a crystal in your hand!"));
+            sender.addChatMessage(new TextComponentString(TextFormatting.RED + "You must hold a crystal in your hand!"));
         }
     }
 }

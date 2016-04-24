@@ -8,10 +8,11 @@ import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.grid.InternalGridTank;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.*;
 
 import java.util.Collections;
@@ -91,7 +92,9 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
             tagCompound.setString("lastSeenFluid", FluidRegistry.getFluidName(lastSeenFluid));
         }
         tile.setSaveData(tagCompound);
-        tile.markDirty();
+        if (WorldHelper.chunkLoaded(world, tile.getPos())) {
+            tile.markDirty();
+        }
     }
 
     public int getComparatorInputOverride(){
@@ -109,7 +112,10 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     }
 
     public void markAllBlocksForUpdate(){
-        allLocations.forEach(world::markBlockForUpdate);
+        allLocations.forEach(p -> {
+            IBlockState state = world.getBlockState(p);
+            world.notifyBlockUpdate(p, state, state, 3);
+        });
     }
 
     private void setTankFluidHeights(){
@@ -152,7 +158,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     }
 
     public FluidStack getFluidShare(TileTank tile){
-        return tank.getShare(allLocations.size());
+        return tank.getShare(allLocations.size(), allLocations.indexOf(tile.getPos()) == 0);
     }
 
     public Fluid getStoredFluid(){
@@ -206,7 +212,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
     }
 
     private TileTank getTank(BlockPos loc){
-        TileEntity tile = WorldHelper.getTileAt(world, loc);
+        TileEntity tile = WorldHelper.chunkLoaded(world, loc) ? WorldHelper.getTileAt(world, loc) : null;
         return tile instanceof TileTank ? (TileTank) tile : null;
     }
 
@@ -216,6 +222,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
         if (doFill) {
             setClientRenderFluid();
             setTankFluidHeights();
+            markEverythingDirty();
         }
         return ret;
     }
@@ -226,16 +233,20 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
             return null;
         }
         FluidStack ret = drain(resource.amount, doDrain);
-        if (doDrain)
+        if (doDrain) {
             setTankFluidHeights();
+            markEverythingDirty();
+        }
         return ret;
     }
 
     @Override
     public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
         FluidStack ret = drain(maxDrain, doDrain);
-        if (doDrain)
+        if (doDrain) {
             setTankFluidHeights();
+            markEverythingDirty();
+        }
         return ret;
     }
 
@@ -262,7 +273,7 @@ public class DRTankMultiBlock extends AbstractDynamicMultiBlock<DRTankWorldHolde
             TileTank tank = getTank(loc);
             if (tank != null) {
                 tank.lastSeenFluid = getStoredFluid();
-                tank.sendPacket(1, new NBTHelper().addToTag(DRFluidRegistry.getFluidName(getFluid()), "fluid").serializeNBT());
+                tank.sendPacket(1, new NBTHelper().addToTag(DRFluidRegistry.getFluidName(getStoredFluid()), "fluid").serializeNBT());
             }
         }
     }

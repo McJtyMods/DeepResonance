@@ -75,15 +75,21 @@ public class InternalGridTank{
         }
     }
 
-    public FluidStack getShare(int i){
+    public FluidStack getShare(int i, boolean first){
         if (tank.getInternalTankAmount() > 0) {
             NBTTagCompound tag = new NBTTagCompound();
             tank.writeDataToNBT(tag);
             int ret = getStoredAmount() / i;
+            if (first) {
+                ret += getStoredAmount() % i;
+            }
             return new FluidStack(DRFluidRegistry.liquidCrystal, ret, tag);
         } else if (extraTank.getFluidAmount() > 0){
             FluidStack ret = extraTank.getFluid().copy();
             ret.amount = extraTank.getFluidAmount() / i;
+            if (first) {
+                ret.amount += extraTank.getFluidAmount() % i;
+            }
             return ret;
         }
         return null;

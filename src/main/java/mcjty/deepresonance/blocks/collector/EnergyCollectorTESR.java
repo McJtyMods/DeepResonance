@@ -2,17 +2,17 @@ package mcjty.deepresonance.blocks.collector;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
-import mcjty.deepresonance.client.render.DrRenderHelper;
+import mcjty.lib.gui.RenderHelper;
 import mcjty.lib.gui.RenderHelper.Vector;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -46,7 +46,7 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer<EnergyCollect
             GlStateManager.pushMatrix();
             GlStateManager.translate((float) x + 0.5F, (float) y + 0.85F, (float) z + 0.5F);
             this.bindTexture(halo);
-            DrRenderHelper.renderBillboardQuadBright(1.0f);
+            RenderHelper.renderBillboardQuadBright(1.0f);
             GlStateManager.popMatrix();
 
             Minecraft mc = Minecraft.getMinecraft();
@@ -62,13 +62,13 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer<EnergyCollect
             GlStateManager.translate(-doubleX, -doubleY, -doubleZ);
 
             Tessellator tessellator = Tessellator.getInstance();
-            WorldRenderer renderer = tessellator.getWorldRenderer();
+            VertexBuffer buffer = tessellator.getBuffer();
 
             // ----------------------------------------
 
             this.bindTexture(laserbeams[random.nextInt(4)]);
 
-            renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
+            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
 //            tessellator.setBrightness(240);
 
             float startupFactor = te.getLaserStartup() / (float) GeneratorConfiguration.startupTime;
@@ -83,10 +83,10 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer<EnergyCollect
                     // Do nothing
                 } else if (startupFactor > .001f) {
                     Vector middle = new Vector(jitter(startupFactor, start.x, end.x), jitter(startupFactor, start.y, end.y), jitter(startupFactor, start.z, end.z));
-                    DrRenderHelper.drawBeam(start, middle, player, .1f);
-                    DrRenderHelper.drawBeam(middle, end, player, .1f);
+                    RenderHelper.drawBeam(start, middle, player, .1f);
+                    RenderHelper.drawBeam(middle, end, player, .1f);
                 } else {
-                    DrRenderHelper.drawBeam(start, end, player, .1f);
+                    RenderHelper.drawBeam(start, end, player, .1f);
                 }
             }
 

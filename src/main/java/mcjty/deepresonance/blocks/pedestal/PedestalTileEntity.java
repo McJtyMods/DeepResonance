@@ -6,12 +6,13 @@ import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.config.ConfigMachines;
-import mcjty.deepresonance.varia.InventoryLocator;
-import mcjty.deepresonance.varia.Tools;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
+import mcjty.lib.container.InventoryLocator;
 import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.varia.BlockTools;
+import mcjty.lib.varia.CustomSidedInvWrapper;
+import mcjty.lib.varia.SoundTools;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -19,15 +20,14 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 
 public class PedestalTileEntity extends GenericTileEntity implements DefaultSidedInventory, ITickable {
     private InventoryHelper inventoryHelper = new InventoryHelper(this, PedestalContainer.factory, 1);
@@ -78,7 +78,7 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
                 ItemBlock itemBlock = (ItemBlock) (crystalStack.getItem());
                 itemBlock.placeBlockAt(crystalStack, FakePlayerFactory.getMinecraft((WorldServer) worldObj), worldObj, pos, null, 0, 0, 0, itemBlock.getBlock().getStateFromMeta(0));
                 inventoryHelper.decrStackSize(PedestalContainer.SLOT_CRYSTAL, 1);
-                Tools.playSound(worldObj, ModBlocks.resonatingCrystalBlock.stepSound.getBreakSound(), getPos().getX(), getPos().getY(), getPos().getZ(), 1.0f, 1.0f);
+                SoundTools.playSound(worldObj, ModBlocks.resonatingCrystalBlock.getSoundType().breakSound, getPos().getX(), getPos().getY(), getPos().getZ(), 1.0f, 1.0f);
 
                 if (findCollector(pos)) {
                     TileEntity tileEntity = WorldHelper.getTileAt(worldObj, new BlockPos(cachedLocator));
@@ -105,9 +105,9 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
                 NBTTagCompound tagCompound = new NBTTagCompound();
                 resonatingCrystalTileEntity.writeToNBT(tagCompound);
                 spentCrystal.setTagCompound(tagCompound);
-                inventoryLocator.ejectStack(worldObj, getPos().getX(), getPos().getY(), getPos().getZ(), spentCrystal, pos, directions);
+                inventoryLocator.ejectStack(worldObj, getPos(), spentCrystal, pos, directions);
                 worldObj.setBlockToAir(p);
-                Tools.playSound(worldObj, ModBlocks.resonatingCrystalBlock.stepSound.getBreakSound(), p.getX(), p.getY(), p.getZ(), 1.0f, 1.0f);
+                SoundTools.playSound(worldObj, ModBlocks.resonatingCrystalBlock.getSoundType().breakSound, p.getX(), p.getY(), p.getZ(), 1.0f, 1.0f);
             }
         }
     }
@@ -167,7 +167,7 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
 
     @Override
     public int[] getSlotsForFace(EnumFacing side) {
-        return new int[PedestalContainer.SLOT_CRYSTAL];
+        return new int[] { PedestalContainer.SLOT_CRYSTAL };
     }
 
     @Override
@@ -195,7 +195,7 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
         return stack.getItem() == Item.getItemFromBlock(ModBlocks.resonatingCrystalBlock);
     }
 
-    IItemHandler invHandler = new InvWrapper(this);
+    IItemHandler invHandler = new CustomSidedInvWrapper(this);
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {

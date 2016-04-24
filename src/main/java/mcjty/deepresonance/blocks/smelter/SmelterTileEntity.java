@@ -13,6 +13,7 @@ import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
+import mcjty.lib.varia.CustomSidedInvWrapper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -26,7 +27,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 
 import java.util.Map;
 
@@ -203,8 +203,7 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
             lavaTank = null;
         } else if (tilesEqual(rclTank, tank)){
             rclTank = null;
-            this.markDirty();
-            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+            notifyAndMarkDirty();
         }
         checkTanks = true;
     }
@@ -295,7 +294,7 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
         return false;
     }
 
-    IItemHandler invHandler = new InvWrapper(this);
+    IItemHandler invHandler = new CustomSidedInvWrapper(this);
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
@@ -309,6 +308,13 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
             return (T) invHandler;
         }
         return super.getCapability(capability, facing);
+    }
+
+    protected void notifyAndMarkDirty(){
+        if (WorldHelper.chunkLoaded(worldObj, pos)){
+            this.markDirty();
+            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+        }
     }
 
 }

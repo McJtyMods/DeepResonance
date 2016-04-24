@@ -7,12 +7,13 @@ import mcjty.lib.container.GenericGuiContainer;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -24,7 +25,7 @@ import java.util.List;
 public class CrystalizerBlock extends GenericDRBlock<CrystalizerTileEntity, CrystalizerContainer> {
 
     public CrystalizerBlock() {
-        super(Material.rock, CrystalizerTileEntity.class, CrystalizerContainer.class, "crystalizer", true);
+        super(Material.ROCK, CrystalizerTileEntity.class, CrystalizerContainer.class, "crystalizer", true);
     }
 
     @Override
@@ -60,7 +61,7 @@ public class CrystalizerBlock extends GenericDRBlock<CrystalizerTileEntity, Crys
             list.add("This machine will crystalize the liquid crystal");
             list.add("from the tank below it and eventually produce a crystal");
         } else {
-            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
+            list.add(TextFormatting.WHITE + ClientHandler.getShiftMessage());
         }
     }
 
@@ -70,18 +71,17 @@ public class CrystalizerBlock extends GenericDRBlock<CrystalizerTileEntity, Crys
     }
 
     @Override
-    public boolean isFullCube() {
+    public boolean isFullCube(IBlockState state) {
         return false;
     }
 
     @Override
-    public boolean isOpaqueCube() {
+    public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
-    public EnumWorldBlockLayer getBlockLayer() {
-        return EnumWorldBlockLayer.TRANSLUCENT;
+    public boolean canRenderInLayer(BlockRenderLayer layer) {
+        return layer == BlockRenderLayer.SOLID || layer == BlockRenderLayer.TRANSLUCENT;
     }
 }

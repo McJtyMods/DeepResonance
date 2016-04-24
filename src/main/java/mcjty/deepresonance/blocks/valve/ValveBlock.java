@@ -9,7 +9,7 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -19,7 +19,7 @@ import java.util.List;
 public class ValveBlock extends GenericDRBlock<ValveTileEntity, ValveContainer> {
 
     public ValveBlock() {
-        super(Material.rock, ValveTileEntity.class, ValveContainer.class, "valve", true);
+        super(Material.ROCK, ValveTileEntity.class, ValveContainer.class, "valve", true);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class ValveBlock extends GenericDRBlock<ValveTileEntity, ValveContainer> 
             list.add("This machine will transfer fluids from the upper tank");
             list.add("to a tank below if the fluid matches certain conditions");
         } else {
-            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
+            list.add(TextFormatting.WHITE + ClientHandler.getShiftMessage());
         }
     }
 

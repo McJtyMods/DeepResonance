@@ -8,11 +8,11 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -24,7 +24,7 @@ public class SmelterBlock extends GenericDRBlock<SmelterTileEntity, SmelterConta
     public static final PropertyBool WORKING = PropertyBool.create("working");
 
     public SmelterBlock() {
-        super(Material.rock, SmelterTileEntity.class, SmelterContainer.class, "smelter", true);
+        super(Material.ROCK, SmelterTileEntity.class, SmelterContainer.class, "smelter", true);
     }
 
     @SideOnly(Side.CLIENT)
@@ -48,7 +48,7 @@ public class SmelterBlock extends GenericDRBlock<SmelterTileEntity, SmelterConta
             list.add("crystal in a tank placed on top of this.");
             list.add("Below the smelter place a tank about half-filled with lava");
         } else {
-            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
+            list.add(TextFormatting.WHITE + ClientHandler.getShiftMessage());
         }
     }
 
@@ -68,7 +68,7 @@ public class SmelterBlock extends GenericDRBlock<SmelterTileEntity, SmelterConta
     }
 
     @Override
-    protected BlockState createBlockState() {
-        return new BlockState(this, FACING, WORKING);
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, FACING, WORKING);
     }
 }

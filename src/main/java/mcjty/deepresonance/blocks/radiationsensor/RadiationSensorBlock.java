@@ -2,9 +2,11 @@ package mcjty.deepresonance.blocks.radiationsensor;
 
 import mcjty.deepresonance.DeepResonance;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -13,15 +15,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class RadiationSensorBlock extends Block {
 
     public RadiationSensorBlock() {
-        super(Material.glass);
+        super(Material.GLASS);
         setHardness(3.0f);
         setResistance(500.0f);
-        setStepSound(soundTypeGlass);
+        setSoundType(SoundType.GLASS);
         setHarvestLevel("pickaxe", 0);
-        setUnlocalizedName("radiation_sensor");
+        setUnlocalizedName(DeepResonance.MODID + ".radiation_sensor");
         setRegistryName("radiation_sensor");
         setCreativeTab(DeepResonance.tabDeepResonance);
-        GameRegistry.registerBlock(this);
+        GameRegistry.register(this);
+        GameRegistry.register(new ItemBlock(this), getRegistryName());
     }
 
     @SideOnly(Side.CLIENT)

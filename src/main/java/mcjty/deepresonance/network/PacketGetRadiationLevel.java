@@ -5,9 +5,9 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.items.RadiationMonitorItem;
 import mcjty.lib.varia.GlobalCoordinate;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -43,7 +43,7 @@ public class PacketGetRadiationLevel implements IMessage {
     public static class Handler implements IMessageHandler<PacketGetRadiationLevel, IMessage> {
         @Override
         public IMessage onMessage(PacketGetRadiationLevel message, MessageContext ctx) {
-            MinecraftServer.getServer().addScheduledTask(() -> handle(message, ctx));
+            FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> handle(message, ctx));
             return null;
         }
 

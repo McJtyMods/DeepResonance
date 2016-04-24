@@ -6,13 +6,13 @@ import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -28,7 +28,7 @@ public class GeneratorControllerBlock extends GenericDRBlock<GeneratorController
     public static final PropertyBool POWERED = PropertyBool.create("powered");
 
     public GeneratorControllerBlock() {
-        super(Material.iron, GeneratorControllerTileEntity.class, EmptyContainer.class, "generator_controller", false);
+        super(Material.IRON, GeneratorControllerTileEntity.class, EmptyContainer.class, "generator_controller", false);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class GeneratorControllerBlock extends GenericDRBlock<GeneratorController
             list.add("Use this block to turn on/off the reactor with");
             list.add("a redstone signal.");
         } else {
-            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
+            list.add(TextFormatting.WHITE + ClientHandler.getShiftMessage());
         }
     }
 
@@ -71,7 +71,7 @@ public class GeneratorControllerBlock extends GenericDRBlock<GeneratorController
     }
 
     @Override
-    protected BlockState createBlockState() {
-        return new BlockState(this, FACING_HORIZ, POWERED);
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, FACING_HORIZ, POWERED);
     }
 }

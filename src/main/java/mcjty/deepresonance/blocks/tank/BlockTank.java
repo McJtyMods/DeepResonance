@@ -2,6 +2,7 @@ package mcjty.deepresonance.blocks.tank;
 
 import elec332.core.client.IIconRegistrar;
 import elec332.core.client.ITextureLoader;
+import elec332.core.util.PlayerHelper;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.GenericDRBlock;
@@ -17,18 +18,20 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
@@ -58,7 +61,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     public static final PropertyInteger DUMMY_RCL = PropertyInteger.create("dummy_rcl", 0, 1);
 
     public BlockTank() {
-        super(Material.rock, TileTank.class, EmptyContainer.class, "tank", true);
+        super(Material.ROCK, TileTank.class, EmptyContainer.class, "tank", true);
     }
 
     @SideOnly(Side.CLIENT)
@@ -84,8 +87,8 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
         if (tagCompound != null) {
             FluidStack fluidStack = TileTank.getFluidStackFromNBT(tagCompound);
             if (fluidStack != null) {
-                list.add(EnumChatFormatting.GREEN + "Fluid: " + DRFluidRegistry.getFluidName(fluidStack));
-                list.add(EnumChatFormatting.GREEN + "Amount: " + DRFluidRegistry.getAmount(fluidStack) + " mb");
+                list.add(TextFormatting.GREEN + "Fluid: " + DRFluidRegistry.getFluidName(fluidStack));
+                list.add(TextFormatting.GREEN + "Amount: " + DRFluidRegistry.getAmount(fluidStack) + " mb");
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
@@ -95,7 +98,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
             list.add("Place a comparator next to this tank to detect");
             list.add("how filled the tank is");
         } else {
-            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
+            list.add(TextFormatting.WHITE + ClientHandler.getShiftMessage());
         }
     }
 
@@ -122,10 +125,10 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
         currentTip.add("Amount: "+totalFluidAmount + " (" + tankCapacity + ")");
         if (fluidData != null) {
             DecimalFormat decimalFormat = new DecimalFormat("#.#");
-            currentTip.add(EnumChatFormatting.YELLOW + "Quality: " + decimalFormat.format(fluidData.getQuality() * 100) + "%");
-            currentTip.add(EnumChatFormatting.YELLOW + "Purity: " + decimalFormat.format(fluidData.getPurity() * 100) + "%");
-            currentTip.add(EnumChatFormatting.YELLOW + "Power: " + decimalFormat.format(fluidData.getStrength() * 100) + "%");
-            currentTip.add(EnumChatFormatting.YELLOW + "Efficiency: " + decimalFormat.format(fluidData.getEfficiency() * 100) + "%");
+            currentTip.add(TextFormatting.YELLOW + "Quality: " + decimalFormat.format(fluidData.getQuality() * 100) + "%");
+            currentTip.add(TextFormatting.YELLOW + "Purity: " + decimalFormat.format(fluidData.getPurity() * 100) + "%");
+            currentTip.add(TextFormatting.YELLOW + "Strength: " + decimalFormat.format(fluidData.getStrength() * 100) + "%");
+            currentTip.add(TextFormatting.YELLOW + "Efficiency: " + decimalFormat.format(fluidData.getEfficiency() * 100) + "%");
         }
         if (System.currentTimeMillis() - lastTime > 100) {
             lastTime = System.currentTimeMillis();
@@ -134,8 +137,10 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
         return currentTip;
     }
 
+
+
     @Override
-    public int getComparatorInputOverride(World world, BlockPos pos) {
+    public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos) {
         TileEntity tile = WorldHelper.getTileAt(world, pos);
         if (tile instanceof TileTank) {
             TileTank tank = (TileTank) tile;
@@ -146,7 +151,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     }
 
     @Override
-    public boolean hasComparatorInputOverride() {
+    public boolean hasComparatorInputOverride(IBlockState state) {
         return true;
     }
 
@@ -154,26 +159,38 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block block) {
         TileEntity tile = WorldHelper.getTileAt(world, pos);
         if (tile instanceof TileTank) {
-            TileTank tank = (TileTank) tile;
-            for (Map.Entry<ITankHook, EnumFacing> entry : tank.getConnectedHooks().entrySet()) {
-                entry.getKey().hook(tank, entry.getValue());
+            ((TileTank) tile).onNeighborChange();
+        }
+    }
+
+    @Override
+    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
+        super.onBlockHarvested(worldIn, pos, state, player);
+        if (PlayerHelper.isPlayerInCreative(player)){
+            TileEntity tile = WorldHelper.getTileAt(worldIn, pos);
+            if (tile instanceof TileTank) {
+                ItemStack stack = new ItemStack(Item.getItemFromBlock(this));
+                NBTTagCompound tagCompound = new NBTTagCompound();
+                ((TileTank) tile).writeRestorableToNBT(tagCompound);
+                stack.setTagCompound(tagCompound);
+                WorldHelper.dropStack(worldIn, pos, stack);
             }
         }
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float sidex, float sidey, float sidez) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float sidex, float sidey, float sidez) {
         TileEntity tile = WorldHelper.getTileAt(world, pos);
         if (tile instanceof TileTank){
             TileTank tank = (TileTank)tile;
 
-            if (player.getHeldItem() != null) {
-                if (FluidContainerRegistry.isEmptyContainer(player.getHeldItem())) {
+            if (player.getHeldItem(EnumHand.MAIN_HAND) != null) {
+                if (FluidContainerRegistry.isEmptyContainer(player.getHeldItem(EnumHand.MAIN_HAND))) {
                     if (!world.isRemote) {
                         extractIntoContainer(player, tank);
                     }
                     return true;
-                } else if (FluidContainerRegistry.isFilledContainer(player.getHeldItem())) {
+                } else if (FluidContainerRegistry.isFilledContainer(player.getHeldItem(EnumHand.MAIN_HAND))) {
                     if (!world.isRemote) {
                         fillFromContainer(player, tank);
                     }
@@ -195,19 +212,21 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
             tank.settings.put(side, i);
             tank.markDirty();
             WorldHelper.markBlockForUpdate(world, pos);
+            world.notifyNeighborsOfStateChange(pos, this);
+            WorldHelper.markBlockForRenderUpdate(world, pos);
             return true;
         }
-        return super.onBlockActivated(world, pos, state, player, side, sidex, sidey, sidez);
+        return super.onBlockActivated(world, pos, state, player, hand, heldItem, side, sidex, sidey, sidez);
     }
 
     private void fillFromContainer(EntityPlayer player, TileTank tank) {
-        FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(player.getHeldItem());
+        FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(player.getHeldItem(EnumHand.MAIN_HAND));
         if (fluidStack != null) {
             int fill = tank.fill(null, fluidStack, false);
             if (fill == fluidStack.amount) {
                 tank.fill(null, fluidStack, true);
                 if (!player.capabilities.isCreativeMode) {
-                    ItemStack emptyContainer = FluidContainerRegistry.drainFluidContainer(player.getHeldItem());
+                    ItemStack emptyContainer = FluidContainerRegistry.drainFluidContainer(player.getHeldItem(EnumHand.MAIN_HAND));
                     player.inventory.setInventorySlotContents(player.inventory.currentItem, emptyContainer);
                 }
             }
@@ -217,12 +236,12 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     private void extractIntoContainer(EntityPlayer player, TileTank tank) {
         FluidStack fluidStack = tank.drain(null, 1, false);
         if (fluidStack != null) {
-            int capacity = FluidContainerRegistry.getContainerCapacity(fluidStack, player.getHeldItem());
+            int capacity = FluidContainerRegistry.getContainerCapacity(fluidStack, player.getHeldItem(EnumHand.MAIN_HAND));
             if (capacity != 0) {
                 fluidStack = tank.drain(null, capacity, false);
                 if (fluidStack != null && fluidStack.amount == capacity) {
                     fluidStack = tank.drain(null, capacity, true);
-                    ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(fluidStack, player.getHeldItem());
+                    ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(fluidStack, player.getHeldItem(EnumHand.MAIN_HAND));
                     if (filledContainer != null) {
                         player.inventory.decrStackSize(player.inventory.currentItem, 1);
                         if (!player.inventory.addItemStackToInventory(filledContainer)) {
@@ -239,8 +258,9 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
         }
     }
 
+
     @Override
-    public int getLightValue(IBlockAccess world, BlockPos pos) {
+    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntity tile = WorldHelper.getTileAt(world, pos);
         if (tile instanceof TileTank){
             TileTank tank = (TileTank) tile;
@@ -248,7 +268,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
                 return tank.getClientRenderFluid().getLuminosity();
             }
         }
-        return super.getLightValue(world, pos);
+        return super.getLightValue(state, world, pos);
     }
 
 //    @Override
@@ -257,14 +277,19 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
 //    }
 
 
+//    @Override
+//    public boolean canRenderInLayer(BlockRenderLayer layer) {
+//        return layer == BlockRenderLayer.SOLID || layer == BlockRenderLayer.TRANSLUCENT;
+//    }
+//
     @SideOnly(Side.CLIENT)
     @Override
-    public EnumWorldBlockLayer getBlockLayer() {
-        return EnumWorldBlockLayer.TRANSLUCENT;
+    public BlockRenderLayer getBlockLayer() {
+        return BlockRenderLayer.TRANSLUCENT;
     }
 
     @Override
-    public boolean isOpaqueCube() {
+    public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
@@ -284,8 +309,8 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     }
 
     @Override
-    public boolean shouldSideBeRendered(IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
-        return WorldHelper.getBlockAt(worldIn, pos) != this;
+    public boolean shouldSideBeRendered(IBlockState state, IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
+        return WorldHelper.getBlockAt(worldIn, pos.offset(side)) != this;
     }
 
     @Override
@@ -312,8 +337,8 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     }
 
     @Override
-    protected BlockState createBlockState() {
-        return new BlockState(this, NORTH, SOUTH, WEST, EAST, UP, DOWN, DUMMY_RCL);
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, NORTH, SOUTH, WEST, EAST, UP, DOWN, DUMMY_RCL);
     }
 
     @Override
