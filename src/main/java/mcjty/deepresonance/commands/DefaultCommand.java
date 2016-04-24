@@ -1,17 +1,22 @@
 package mcjty.deepresonance.commands;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public abstract class DefaultCommand implements ICommand {
-    protected final Map<String,DRCommand> commands = new HashMap<String, DRCommand>();
+
+    protected final Map<String,DRCommand> commands = Maps.newHashMap();
 
     public DefaultCommand() {
         registerCommand(new CmdHelp());
@@ -22,9 +27,9 @@ public abstract class DefaultCommand implements ICommand {
     }
 
     public void showHelp(ICommandSender sender) {
-        sender.addChatMessage(new ChatComponentText(EnumChatFormatting.BLUE + getCommandName() + " <subcommand> <args>"));
+        sender.addChatMessage(new TextComponentString(TextFormatting.BLUE + getCommandName() + " <subcommand> <args>"));
         for (Map.Entry<String,DRCommand> me : commands.entrySet()) {
-            sender.addChatMessage(new ChatComponentText("    " + me.getKey() + " " + me.getValue().getHelp()));
+            sender.addChatMessage(new TextComponentString("    " + me.getKey() + " " + me.getValue().getHelp()));
         }
     }
 
@@ -61,12 +66,12 @@ public abstract class DefaultCommand implements ICommand {
     }
 
     @Override
-    public List getCommandAliases() {
-        return null;
+    public List<String> getCommandAliases() {
+        return ImmutableList.of();
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args) {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         World world = sender.getEntityWorld();
         if (args.length <= 0) {
             if (!world.isRemote) {
@@ -76,7 +81,7 @@ public abstract class DefaultCommand implements ICommand {
             DRCommand command = commands.get(args[0]);
             if (command == null) {
                 if (!world.isRemote) {
-                    sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Unknown Deep Resonance command: " + args[0]));
+                    sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Unknown Deep Resonance command: " + args[0]));
                 }
             } else {
                 if (world.isRemote) {
@@ -87,7 +92,7 @@ public abstract class DefaultCommand implements ICommand {
                 } else {
                     // Server-side.
                     if (!sender.canCommandSenderUseCommand(command.getPermissionLevel(), getCommandName())) {
-                        sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Command is not allowed!"));
+                        sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Command is not allowed!"));
                     } else {
                         command.execute(sender, args);
                     }
@@ -97,13 +102,13 @@ public abstract class DefaultCommand implements ICommand {
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender) {
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
         return true;
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender sender, String[] args) {
-        return null;
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
+        return ImmutableList.of();
     }
 
     @Override
@@ -117,7 +122,10 @@ public abstract class DefaultCommand implements ICommand {
     }
 
     @Override
-    public int compareTo(Object o) {
-        return getCommandName().compareTo(((ICommand)o).getCommandName());
+    @SuppressWarnings("all")
+    //TODO: Param seems to be nullable, NPE catcher.
+    public int compareTo(ICommand command) {
+        return getCommandName().compareTo(command.getCommandName());
     }
+
 }

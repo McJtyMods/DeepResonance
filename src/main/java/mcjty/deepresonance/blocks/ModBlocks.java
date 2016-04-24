@@ -1,10 +1,10 @@
 package mcjty.deepresonance.blocks;
 
-import cpw.mods.fml.common.registry.GameRegistry;
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorSetup;
 import mcjty.deepresonance.blocks.crystalizer.CrystalizerSetup;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalBlock;
-import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
+import mcjty.deepresonance.blocks.debug.DebugBlock;
 import mcjty.deepresonance.blocks.gencontroller.GeneratorControllerSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.laser.LaserSetup;
@@ -12,48 +12,46 @@ import mcjty.deepresonance.blocks.lens.LensSetup;
 import mcjty.deepresonance.blocks.ore.DenseGlassBlock;
 import mcjty.deepresonance.blocks.ore.DenseObsidianBlock;
 import mcjty.deepresonance.blocks.ore.ResonatingOreBlock;
+import mcjty.deepresonance.blocks.ore.ResonatingPlateBlock;
 import mcjty.deepresonance.blocks.pedestal.PedestalSetup;
 import mcjty.deepresonance.blocks.poisondirt.PoisonedDirtBlock;
 import mcjty.deepresonance.blocks.purifier.PurifierSetup;
 import mcjty.deepresonance.blocks.smelter.SmelterSetup;
 import mcjty.deepresonance.blocks.tank.TankSetup;
 import mcjty.deepresonance.blocks.valve.ValveSetup;
-import mcjty.lib.container.GenericItemBlock;
+import mcjty.deepresonance.items.rftoolsmodule.RFToolsSupport;
 import net.minecraft.block.Block;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public final class ModBlocks {
 
     public static ResonatingOreBlock resonatingOreBlock;
+    public static ResonatingPlateBlock resonatingPlateBlock;
     public static DenseObsidianBlock denseObsidianBlock;
     public static DenseGlassBlock denseGlassBlock;
     public static ResonatingCrystalBlock resonatingCrystalBlock;
     public static PoisonedDirtBlock poisonedDirtBlock;
     public static Block duct;
     public static MachineFrame machineFrame;
+    public static DebugBlock debugBlock;
 
     public static void init() {
         resonatingOreBlock = new ResonatingOreBlock();
-        GameRegistry.registerBlock(resonatingOreBlock, "oreResonating");
-        OreDictionary.registerOre("oreResonating", resonatingOreBlock);
 
+        resonatingPlateBlock = new ResonatingPlateBlock();
         denseObsidianBlock = new DenseObsidianBlock();
-        GameRegistry.registerBlock(denseObsidianBlock, "denseObsidian");
-
         denseGlassBlock = new DenseGlassBlock();
-        GameRegistry.registerBlock(denseGlassBlock, "denseGlass");
-
         poisonedDirtBlock = new PoisonedDirtBlock();
-        GameRegistry.registerBlock(poisonedDirtBlock, "poisonedDirt");
-
         resonatingCrystalBlock = new ResonatingCrystalBlock();
-        GameRegistry.registerBlock(resonatingCrystalBlock, GenericItemBlock.class, "resonatingCrystalBlock");
-        GameRegistry.registerTileEntity(ResonatingCrystalTileEntity.class, "ResonatingCrystalTileEntity");
+        if (DeepResonance.instance.rftools) {
+            RFToolsSupport.initBlocks();
+        }
 
 //        duct = new BlockDuct(TileBasicFluidDuct.class, "basicFluidDuct").registerTile().register();
 
         machineFrame = new MachineFrame();
-        GameRegistry.registerBlock(machineFrame, "machineFrame");
+        debugBlock = new DebugBlock();
 
         GeneratorSetup.setupBlocks();
         GeneratorControllerSetup.setupBlocks();
@@ -66,5 +64,31 @@ public final class ModBlocks {
         ValveSetup.setupBlocks();
         LensSetup.setupBlocks();
         LaserSetup.setupBlocks();
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void initModels() {
+        resonatingCrystalBlock.initModel();
+        resonatingPlateBlock.initModel();
+        denseObsidianBlock.initModel();
+        denseGlassBlock.initModel();
+        poisonedDirtBlock.initModel();
+        resonatingOreBlock.initModel();
+        machineFrame.initModel();
+        debugBlock.initModel();
+        GeneratorSetup.setupModels();
+        GeneratorControllerSetup.setupModels();
+        EnergyCollectorSetup.setupModels();
+        CrystalizerSetup.setupModels();
+        SmelterSetup.setupModels();
+        TankSetup.setupModels();
+        PurifierSetup.setupModels();
+        PedestalSetup.setupModels();
+        ValveSetup.setupModels();
+        LensSetup.setupModels();
+        LaserSetup.setupModels();
+        if (DeepResonance.instance.rftools) {
+            RFToolsSupport.initBlockModels();
+        }
     }
 }

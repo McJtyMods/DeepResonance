@@ -1,79 +1,75 @@
 package mcjty.deepresonance.blocks.tank;
 
 import com.google.common.collect.Maps;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import elec332.core.compat.handlers.WailaCompatHandler;
+import elec332.core.main.ElecCore;
 import elec332.core.multiblock.dynamic.IDynamicMultiBlockTile;
-import elec332.core.util.NBTHelper;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
 import mcjty.deepresonance.blocks.base.ElecTileBase;
-import mcjty.deepresonance.fluid.DRFluidRegistry;
-import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
-import mcjty.deepresonance.grid.fluid.event.FluidTileEvent;
 import mcjty.deepresonance.grid.tank.DRTankMultiBlock;
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IStringSerializable;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
-import java.util.List;
 import java.util.Map;
 
 /**
  * Created by Elec332 on 9-8-2015.
  */
-public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IDeepResonanceFluidProvider, WailaCompatHandler.IWailaInfoTile {
-
-    public static final int SETTING_NONE = 0;
-    public static final int SETTING_ACCEPT = 1;
-    public static final int SETTING_PROVIDE = 2;
-    public static final int SETTING_MAX = 2;
+public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IDeepResonanceFluidProvider {
 
     public TileTank(){
         super();
         this.settings = Maps.newHashMap();
-        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS){
-            settings.put(direction, SETTING_NONE);
+        for (EnumFacing direction : EnumFacing.VALUES){
+            settings.put(direction, Mode.SETTING_NONE);
         }
+        this.multiBlockSaveData = new NBTTagCompound();
+        this.tankHooks = Maps.newHashMap();
     }
 
     private Fluid clientRenderFluid;
-    @SideOnly(Side.CLIENT)
-    private int totalFluidAmount;
-    @SideOnly(Side.CLIENT)
-    private int tankCapacity;
-    @SideOnly(Side.CLIENT)
+
+    // Client only
     private float renderHeight; //Value from 0.0f to 1.0f
-    @SideOnly(Side.CLIENT)
-    private LiquidCrystalFluidTagData fluidData;
-    private long lastTime;
 
     private NBTTagCompound multiBlockSaveData;
 
-    protected Map<ForgeDirection, Integer> settings;
+    protected Map<EnumFacing, Mode> settings;
+    private Map<EnumFacing, ITankHook> tankHooks;
+
+    public static enum Mode implements IStringSerializable {
+        SETTING_NONE("none"),
+        SETTING_ACCEPT("accept"),   // Blue
+        SETTING_PROVIDE("provide"); // Yellow
+
+        private final String name;
+
+        Mode(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+    }
+
 
     @Override
     public void onTileLoaded() {
         super.onTileLoaded();
         if (!worldObj.isRemote) {
-            DeepResonance.worldGridRegistry.getTankRegistry().get(getWorldObj()).addTile(this);
-            MinecraftForge.EVENT_BUS.post(new FluidTileEvent.Load(this));
-            for (Map.Entry<ITankHook, ForgeDirection> entry : getConnectedHooks().entrySet()){
-                entry.getKey().hook(this, entry.getValue());
-            }
+            DeepResonance.worldGridRegistry.getTankRegistry().get(worldObj).addTile(this);
+            //MinecraftForge.EVENT_BUS.post(new FluidTileEvent.Load(this));
+            initHooks();
         }
     }
 
@@ -81,10 +77,41 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     public void onTileUnloaded() {
         super.onTileUnloaded();
         if (!worldObj.isRemote) {
-            DeepResonance.worldGridRegistry.getTankRegistry().get(getWorldObj()).removeTile(this);
-            MinecraftForge.EVENT_BUS.post(new FluidTileEvent.Unload(this));
-            for (Map.Entry<ITankHook, ForgeDirection> entry : getConnectedHooks().entrySet()){
-                entry.getKey().unHook(this, entry.getValue());
+            DeepResonance.worldGridRegistry.getTankRegistry().get(worldObj).removeTile(this);
+            //MinecraftForge.EVENT_BUS.post(new FluidTileEvent.Unload(this));
+            for (Map.Entry<EnumFacing, ITankHook> entry : getConnectedHooks().entrySet()){
+                entry.getValue().unHook(this, entry.getKey().getOpposite());
+            }
+            getConnectedHooks().clear();
+        }
+    }
+
+    public void onNeighborChange(){
+        Map<EnumFacing, ITankHook> hookMap = getConnectedHooks();
+        for (EnumFacing facing : EnumFacing.VALUES){
+            ITankHook tankHook = hookMap.get(facing);
+            BlockPos pos = getPos().offset(facing);
+            TileEntity tile = WorldHelper.chunkLoaded(worldObj, pos) ? WorldHelper.getTileAt(worldObj, pos) : null;
+            if ((tile == null && tankHook != null) || (tile != null && tankHook == null) || (tile != tankHook)){
+                hookMap.remove(facing);
+                if (tile instanceof ITankHook){
+                    ((ITankHook) tile).hook(this, facing.getOpposite());
+                    hookMap.put(facing, (ITankHook) tile);
+                }
+            } else if (tankHook != null){
+                tankHook.onContentChanged(this, facing.getOpposite());
+            }
+        }
+    }
+
+    private void initHooks(){
+        tankHooks.clear();
+        for (EnumFacing facing : EnumFacing.VALUES){
+            BlockPos pos = getPos().offset(facing);
+            TileEntity tile = WorldHelper.chunkLoaded(worldObj, pos) ? WorldHelper.getTileAt(worldObj, pos) : null;
+            if (tile instanceof ITankHook){
+                tankHooks.put(facing, (ITankHook) tile);
+                ((ITankHook) tile).hook(this, facing.getOpposite());
             }
         }
     }
@@ -93,6 +120,10 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     public FluidStack myTank;
     public Fluid lastSeenFluid;
 
+    public Map<EnumFacing, Mode> getSettings() {
+        return settings;
+    }
+
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
@@ -100,43 +131,21 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         if (tagList != null){
             for (int i = 0; i < tagList.tagCount(); i++) {
                 NBTTagCompound tag = tagList.getCompoundTagAt(i);
-                settings.put(ForgeDirection.valueOf(tag.getString("dir")), tag.getInteger("n"));
+                EnumFacing side = EnumFacing.values()[tag.getInteger("dir")];
+                Mode mode = Mode.values()[tag.getInteger("n")];
+                settings.put(side, mode);
             }
         }
-    }
-
-    @Override
-    public NBTTagCompound getWailaTag(EntityPlayerMP entityPlayerMP, TileEntity tileEntity, NBTTagCompound nbtTagCompound, World world, int i, int i1, int i2) {
-        return null;
-    }
-
-    @Override
-    public List<String> getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        int i = settings.get(accessor.getSide());
-        currentTip.add("Mode: "+(i == SETTING_NONE ? "none" : (i == SETTING_ACCEPT ? "accept" : "provide")));
-        currentTip.add("Fluid: "+ DRFluidRegistry.getFluidName(clientRenderFluid));
-        currentTip.add("Amount: "+totalFluidAmount + " (" + tankCapacity + ")");
-        if (fluidData != null) {
-            currentTip.add(EnumChatFormatting.YELLOW + "Quality: " + (int)(fluidData.getQuality() * 100) + "%");
-            currentTip.add(EnumChatFormatting.YELLOW + "Purity: " + (int)(fluidData.getPurity() * 100) + "%");
-            currentTip.add(EnumChatFormatting.YELLOW + "Power: " + (int)(fluidData.getStrength() * 100) + "%");
-            currentTip.add(EnumChatFormatting.YELLOW + "Efficiency: " + (int)(fluidData.getEfficiency() * 100) + "%");
-        }
-        if (System.currentTimeMillis() - lastTime > 100){
-            lastTime = System.currentTimeMillis();
-            sendPacketToServer(1, new NBTTagCompound());
-        }
-        return currentTip;
     }
 
     @Override
     public void writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         NBTTagList tagList = new NBTTagList();
-        for (Map.Entry<ForgeDirection, Integer> entry : settings.entrySet()){
+        for (Map.Entry<EnumFacing, Mode> entry : settings.entrySet()){
             NBTTagCompound tag = new NBTTagCompound();
-            tag.setString("dir", entry.getKey().toString());
-            tag.setInteger("n", entry.getValue());
+            tag.setInteger("dir", entry.getKey().ordinal());
+            tag.setInteger("n", entry.getValue().ordinal());
             tagList.appendTag(tag);
         }
         tagCompound.setTag("settings", tagList);
@@ -145,41 +154,37 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     @Override
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
         super.readRestorableFromNBT(tagCompound);
-        NBTTagCompound mbTag = multiBlockSaveData = tagCompound.getCompoundTag("multiBlockData");
-        if (tagCompound.hasKey("fluid")) { /* legacy compat */
-            this.myTank = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("fluid"));
-        } else if (mbTag.hasKey("fluid")){
-            this.myTank = FluidStack.loadFluidStackFromNBT(mbTag.getCompoundTag("fluid"));
-        }
+        this.myTank = getFluidStackFromNBT(tagCompound);
+
+        multiBlockSaveData = tagCompound.getCompoundTag("multiBlockData");
         if (tagCompound.hasKey("lastSeenFluid")) { /* legacy compat */
             this.lastSeenFluid = FluidRegistry.getFluid(tagCompound.getString("lastSeenFluid"));
-        } else if (mbTag.hasKey("lastSeenFluid")){
-            this.lastSeenFluid = FluidRegistry.getFluid(mbTag.getString("lastSeenFluid"));
+        } else if (multiBlockSaveData.hasKey("lastSeenFluid")){
+            this.lastSeenFluid = FluidRegistry.getFluid(multiBlockSaveData.getString("lastSeenFluid"));
         }
+    }
+
+    public static FluidStack getFluidStackFromNBT(NBTTagCompound tagCompound) {
+        NBTTagCompound mbTag = tagCompound.getCompoundTag("multiBlockData");
+        FluidStack s;
+        if (tagCompound.hasKey("fluid")) { /* legacy compat */
+            s = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("fluid"));
+        } else if (mbTag.hasKey("fluid")){
+            s = FluidStack.loadFluidStackFromNBT(mbTag.getCompoundTag("fluid"));
+        } else {
+            s = null;
+        }
+        return s;
     }
 
     @Override
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
         super.writeRestorableToNBT(tagCompound);
-        if (multiBlock != null)
+        if (multiBlock != null) {
             getMultiBlock().setDataToTile(this);
+        }
+        ElecCore.systemPrintDebug("Writing restorable NBT @ " + pos);
         tagCompound.setTag("multiBlockData", multiBlockSaveData);
-        /*if (multiBlock != null) {
-            myTank = multiBlock.getFluidShare(this);
-            lastSeenFluid = multiBlock.getStoredFluid();
-        }
-        if (myTank != null) {
-            NBTTagCompound fluidTag = new NBTTagCompound();
-            myTank.writeToNBT(fluidTag);
-            tagCompound.setTag("fluid", fluidTag);
-        }
-        if (lastSeenFluid != null)
-            tagCompound.setString("lastSeenFluid", FluidRegistry.getFluidName(lastSeenFluid));*/
-    }
-
-    @Override
-    public boolean canUpdate() {
-        return false;
     }
 
     @Override
@@ -194,6 +199,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
 
     @Override
     public void setSaveData(NBTTagCompound nbtTagCompound) {
+        ElecCore.systemPrintDebug("Setting MB save data @ " + pos);
         this.multiBlockSaveData = nbtTagCompound;
     }
 
@@ -203,7 +209,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     }
 
     @Override
-    public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
         if (!isInput(from))
             return 0;
         notifyChanges(doFill);
@@ -211,7 +217,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     }
 
     @Override
-    public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
         if (!isOutput(from))
             return null;
         notifyChanges(doDrain);
@@ -219,7 +225,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     }
 
     @Override
-    public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
         if (!isOutput(from))
             return null;
         notifyChanges(doDrain);
@@ -227,46 +233,46 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     }
 
     @Override
-    public boolean canFill(ForgeDirection from, Fluid fluid) {
+    public boolean canFill(EnumFacing from, Fluid fluid) {
         return isInput(from) && multiBlock != null && multiBlock.canFill(from, fluid);
     }
 
     @Override
-    public boolean canDrain(ForgeDirection from, Fluid fluid) {
+    public boolean canDrain(EnumFacing from, Fluid fluid) {
         return isOutput(from) && multiBlock != null && multiBlock.canDrain(from, fluid);
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+    public FluidTankInfo[] getTankInfo(EnumFacing from) {
         return multiBlock == null ? new FluidTankInfo[0] : multiBlock.getTankInfo(from);
     }
 
     @Override
-    public boolean canAcceptFrom(ForgeDirection direction) {
+    public boolean canAcceptFrom(EnumFacing direction) {
         return isInput(direction);
     }
 
     @Override
-    public boolean canProvideTo(ForgeDirection direction) {
+    public boolean canProvideTo(EnumFacing direction) {
         return isOutput(direction);
     }
 
     @Override
-    public FluidStack getProvidedFluid(int maxProvided, ForgeDirection from) {
+    public FluidStack getProvidedFluid(int maxProvided, EnumFacing from) {
         if (!isOutput(from))
             return null;
         return getMultiBlock() == null ? null : getMultiBlock().drain(maxProvided, true);
     }
 
     @Override
-    public int getRequestedAmount(ForgeDirection from) {
+    public int getRequestedAmount(EnumFacing from) {
         if (!isInput(from))
             return 0;
         return multiBlock == null ? 0 : Math.min(multiBlock.getFreeSpace(), 1000);
     }
 
     @Override
-    public FluidStack acceptFluid(FluidStack fluidStack, ForgeDirection from) {
+    public FluidStack acceptFluid(FluidStack fluidStack, EnumFacing from) {
         if (!isInput(from)) {
             fill(from, fluidStack, true);
             notifyChanges(true);
@@ -280,7 +286,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         return clientRenderFluid;
     }
 
-    @SideOnly(Side.CLIENT)
+    // Client only
     public float getRenderHeight() {
         return renderHeight;
     }
@@ -303,44 +309,33 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
 
     private void notifyChanges(boolean b){
         if (multiBlock != null && b){
-            for (Map.Entry<ITankHook, ForgeDirection> entry : getConnectedHooks().entrySet()){
-                entry.getKey().onContentChanged(this, entry.getValue());
+            for (Map.Entry<EnumFacing, ITankHook> entry : getConnectedHooks().entrySet()){
+                entry.getValue().onContentChanged(this, entry.getKey().getOpposite());
             }
         }
     }
 
-    protected Map<ITankHook, ForgeDirection> getConnectedHooks(){
-        Map<ITankHook, ForgeDirection> ret = Maps.newHashMap();
-        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS){
+    private Map<EnumFacing, ITankHook> getConnectedHooks(){
+        /*Map<ITankHook, EnumFacing> ret = Maps.newHashMap();
+        for (EnumFacing direction : EnumFacing.VALUES){
             try {
-                TileEntity tile = WorldHelper.getTileAt(worldObj, myLocation().atSide(direction));
+                TileEntity tile = WorldHelper.getTileAt(worldObj, getPos().offset(direction));
                 if (tile instanceof ITankHook)
                     ret.put((ITankHook) tile, direction.getOpposite());
             } catch (Exception e){
                 e.printStackTrace();
             }
         }
-        return ret;
+        return ret;*/
+        return tankHooks;
     }
 
-    public boolean isInput(ForgeDirection direction){
-        return direction == ForgeDirection.UNKNOWN || settings.get(direction) == SETTING_ACCEPT;
+    public boolean isInput(EnumFacing direction){
+        return direction == null || settings.get(direction) == Mode.SETTING_ACCEPT;
     }
 
-    public boolean isOutput(ForgeDirection direction){
-        return direction == ForgeDirection.UNKNOWN || settings.get(direction) == SETTING_PROVIDE;
-    }
-
-    @Override
-    public void onPacketReceivedFromClient(EntityPlayerMP sender, int ID, NBTTagCompound data) {
-        switch (ID){
-            case 1:
-                sendPacket(2, new NBTHelper()
-                        .addToTag(getFluidAmount(), "totalFluid")
-                        .addToTag(getCapacity(), "capacity")
-                        .addToTag(getFluidTag(), "fluidTag")
-                        .toNBT());
-        }
+    public boolean isOutput(EnumFacing direction){
+        return direction == null || settings.get(direction) == Mode.SETTING_PROVIDE;
     }
 
     @Override
@@ -350,10 +345,6 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
                 this.clientRenderFluid = FluidRegistry.getFluid(tag.getString("fluid"));
                 return;
             case 2:
-                this.totalFluidAmount = tag.getInteger("totalFluid");
-                this.tankCapacity = tag.getInteger("capacity");
-                NBTTagCompound fluidTag = (NBTTagCompound) tag.getTag("fluidTag");
-                fluidData = LiquidCrystalFluidTagData.fromNBT(fluidTag);
                 return;
             case 3:
                 this.renderHeight = tag.getFloat("render");

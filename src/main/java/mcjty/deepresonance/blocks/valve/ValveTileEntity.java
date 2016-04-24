@@ -1,22 +1,23 @@
 package mcjty.deepresonance.blocks.valve;
 
 import elec332.core.world.WorldHelper;
-import mcjty.deepresonance.blocks.base.ElecTileBase;
 import mcjty.deepresonance.blocks.tank.ITankHook;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.network.Argument;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Map;
 
-public class ValveTileEntity extends ElecTileBase implements ITankHook {
+public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITickable {
 
     public static String CMD_SETTINGS = "settings";
 
@@ -27,12 +28,19 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
     private TileTank topTank;
     private int progress = 0;
 
-    private float minPurity = 0;
+    private float minPurity = 84.0f / 100.0f;
     private float minStrength = 0;
     private float minEfficiency = 0;
+    private int maxMb = 0;
 
     @Override
-    protected void checkStateServer() {
+    public void update() {
+        if (!worldObj.isRemote){
+            checkStateServer();
+        }
+    }
+
+    private void checkStateServer() {
         progress--;
         markDirty();
         if (progress > 0) {
@@ -44,7 +52,7 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
             return;
         }
 
-        FluidStack fluidStack = topTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Valve.rclPerOperation, false);
+        FluidStack fluidStack = topTank.drain(null, ConfigMachines.Valve.rclPerOperation, false);
         if (fluidStack != null && fillBottomTank(fluidStack.amount)) {
             LiquidCrystalFluidTagData data = LiquidCrystalFluidTagData.fromStack(fluidStack);
             if (data == null) {
@@ -60,9 +68,28 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
                 return;
             }
 
-            fluidStack = topTank.drain(ForgeDirection.UNKNOWN, ConfigMachines.Valve.rclPerOperation, true);
-            bottomTank.fill(ForgeDirection.UNKNOWN, fluidStack, true);
+            if (maxMb > 0) {
+                // We have to check maximum volume
+                int fluidAmount = bottomTank.getFluidAmount();
+                if (fluidAmount < maxMb) {
+                    int toDrain = Math.min(maxMb - fluidAmount, ConfigMachines.Valve.rclPerOperation);
+                    fluidStack = topTank.drain(null, toDrain, true);
+                    bottomTank.fill(null, fluidStack, true);
+                }
+            } else {
+                fluidStack = topTank.drain(null, ConfigMachines.Valve.rclPerOperation, true);
+                bottomTank.fill(null, fluidStack, true);
+            }
         }
+    }
+
+    public int getMaxMb() {
+        return maxMb;
+    }
+
+    public void setMaxMb(int maxMb) {
+        this.maxMb = maxMb;
+        markDirty();
     }
 
     public float getMinEfficiency() {
@@ -93,7 +120,7 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
     }
 
     private boolean fillBottomTank(int amount) {
-        return bottomTank.fill(ForgeDirection.UNKNOWN, new FluidStack(DRFluidRegistry.liquidCrystal, amount), false) == amount;
+        return bottomTank.fill(null, new FluidStack(DRFluidRegistry.liquidCrystal, amount), false) == amount;
     }
 
     @Override
@@ -108,6 +135,7 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
         tagCompound.setFloat("minPurity", minPurity);
         tagCompound.setFloat("minStrength", minStrength);
         tagCompound.setFloat("minEfficiency", minEfficiency);
+        tagCompound.setInteger("maxMb", maxMb);
     }
 
     @Override
@@ -122,11 +150,12 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
         minPurity = tagCompound.getFloat("minPurity");
         minStrength = tagCompound.getFloat("minStrength");
         minEfficiency = tagCompound.getFloat("minEfficiency");
+        maxMb = tagCompound.getInteger("maxMb");
     }
 
     @Override
-    public void hook(TileTank tank, ForgeDirection direction) {
-        if (direction == ForgeDirection.DOWN){
+    public void hook(TileTank tank, EnumFacing direction) {
+        if (direction == EnumFacing.DOWN){
             if (validRCLTank(tank)) {
                 bottomTank = tank;
             }
@@ -138,18 +167,18 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
     }
 
     @Override
-    public void unHook(TileTank tank, ForgeDirection direction) {
+    public void unHook(TileTank tank, EnumFacing direction) {
         if (tilesEqual(bottomTank, tank)){
             bottomTank = null;
-            notifyNeighboursOfDataChange();
+            notifyAndMarkDirty();
         } else if (tilesEqual(topTank, tank)){
             topTank = null;
-            notifyNeighboursOfDataChange();
+            notifyAndMarkDirty();
         }
     }
 
     @Override
-    public void onContentChanged(TileTank tank, ForgeDirection direction) {
+    public void onContentChanged(TileTank tank, EnumFacing direction) {
         if (tilesEqual(topTank, tank)){
             if (!validRCLTank(tank)) {
                 topTank = null;
@@ -168,7 +197,7 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
     }
 
     private boolean tilesEqual(TileTank first, TileTank second){
-        return first != null && second != null && first.myLocation().equals(second.myLocation()) && WorldHelper.getDimID(first.getWorldObj()) == WorldHelper.getDimID(second.getWorldObj());
+        return first != null && second != null && first.getPos().equals(second.getPos()) && WorldHelper.getDimID(first.getWorld()) == WorldHelper.getDimID(second.getWorld());
     }
 
     @Override
@@ -181,11 +210,21 @@ public class ValveTileEntity extends ElecTileBase implements ITankHook {
             double purity = args.get("purity").getDouble();
             double strength = args.get("strength").getDouble();
             double efficiency = args.get("efficiency").getDouble();
+            int maxMb = args.get("maxMb").getInteger();
             setMinPurity((float) purity);
             setMinStrength((float) strength);
             setMinEfficiency((float) efficiency);
+            setMaxMb(maxMb);
             return true;
         }
         return false;
     }
+
+    protected void notifyAndMarkDirty(){
+        if (WorldHelper.chunkLoaded(worldObj, pos)){
+            this.markDirty();
+            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+        }
+    }
+
 }

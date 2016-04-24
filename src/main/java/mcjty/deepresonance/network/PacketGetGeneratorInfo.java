@@ -1,13 +1,15 @@
 package mcjty.deepresonance.network;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketGetGeneratorInfo implements IMessage,IMessageHandler<PacketGetGeneratorInfo, PacketReturnGeneratorInfo> {
+public class PacketGetGeneratorInfo implements IMessage {
     private int networkId;
 
     @Override
@@ -27,16 +29,24 @@ public class PacketGetGeneratorInfo implements IMessage,IMessageHandler<PacketGe
         this.networkId = networkId;
     }
 
-    @Override
-    public PacketReturnGeneratorInfo onMessage(PacketGetGeneratorInfo message, MessageContext ctx) {
-        World world = ctx.getServerHandler().playerEntity.worldObj;
-        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(world);
-        DRGeneratorNetwork.Network network = generatorNetwork.getChannel(message.networkId);
-        if (network == null) {
+
+    public static class Handler implements IMessageHandler<PacketGetGeneratorInfo, IMessage> {
+        @Override
+        public IMessage onMessage(PacketGetGeneratorInfo message, MessageContext ctx) {
+            FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> handle(message, ctx));
             return null;
         }
 
-        return new PacketReturnGeneratorInfo(message.networkId, network.getEnergy(), network.getGeneratorBlocks(), network.getLastRfPerTick());
-    }
+        private void handle(PacketGetGeneratorInfo message, MessageContext ctx) {
+            World world = ctx.getServerHandler().playerEntity.worldObj;
+            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(world);
+            DRGeneratorNetwork.Network network = generatorNetwork.getChannel(message.networkId);
+            if (network == null) {
+                return;
+            }
 
+            PacketReturnGeneratorInfo packet = new PacketReturnGeneratorInfo(message.networkId, network.getEnergy(), network.getGeneratorBlocks(), network.getLastRfPerTick());
+            DeepResonance.networkHandler.getNetworkWrapper().sendTo(packet, ctx.getServerHandler().playerEntity);
+        }
+    }
 }

@@ -2,37 +2,34 @@ package mcjty.deepresonance.blocks.ore;
 
 import mcjty.deepresonance.DeepResonance;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class DenseObsidianBlock extends Block {
-    private IIcon icon;
 
     public DenseObsidianBlock() {
-        super(Material.rock);
+        super(Material.ROCK);
         setHardness(50.0f);
         setResistance(2000.0f);
-        setStepSound(soundTypePiston);
+        setSoundType(SoundType.STONE);
         setHarvestLevel("pickaxe", 3);
-        setBlockName("denseObsidian");
+        setUnlocalizedName(DeepResonance.MODID + ".dense_obsidian");
+        setRegistryName("dense_obsidian");
         setCreativeTab(DeepResonance.tabDeepResonance);
+        GameRegistry.register(this);
+        GameRegistry.register(new ItemBlock(this), getRegistryName());
     }
 
-    @Override
-    public void registerBlockIcons(IIconRegister iconRegister) {
-        icon = iconRegister.registerIcon(DeepResonance.MODID + ":denseobsidian");
-    }
-
-    @Override
-    public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
-        return icon;
-    }
-
-    @Override
-    public IIcon getIcon(int side, int meta) {
-        return icon;
+    @SideOnly(Side.CLIENT)
+    public void initModel() {
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "inventory"));
     }
 
 

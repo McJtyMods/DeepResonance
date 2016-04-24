@@ -1,35 +1,32 @@
 package mcjty.deepresonance;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import elec332.core.config.ConfigWrapper;
 import elec332.core.network.NetworkHandler;
 import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.commands.CommandDRGen;
 import mcjty.deepresonance.compat.CompatHandler;
 import mcjty.deepresonance.compat.handlers.ComputerCraftCompatHandler;
-import mcjty.deepresonance.config.ConfigGenerator;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.grid.WorldGridRegistry;
 import mcjty.deepresonance.items.manual.GuiDeepResonanceManual;
 import mcjty.deepresonance.proxy.CommonProxy;
 import mcjty.deepresonance.radiation.DRRadiationManager;
-import mcjty.deepresonance.radiation.RadiationConfiguration;
-import mcjty.deepresonance.worldgen.WorldGenConfiguration;
 import mcjty.lib.base.ModBase;
 import mcjty.lib.compat.MainCompatHandler;
-import mcjty.lib.gui.GuiStyle;
 import mcjty.lib.varia.Logging;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
@@ -42,10 +39,10 @@ import java.io.File;
         version = DeepResonance.VERSION)
 public class DeepResonance implements ModBase {
     public static final String MODID = "deepresonance";
-    public static final String VERSION = "1.0.1";
-    public static final String MIN_FORGE_VER = "10.13.2.1291";
-    public static final String MIN_MCJTYLIB_VER = "1.7.0";
-    public static final String MIN_ELECCORE_VER = "1.4.170";
+    public static final String VERSION = "1.1.4beta28";
+    public static final String MIN_FORGE_VER = "12.16.0.1835";
+    public static final String MIN_MCJTYLIB_VER = "1.8.9-1.8.1beta15";
+    public static final String MIN_ELECCORE_VER = "1.4.264";
 
     @SidedProxy(clientSide="mcjty.deepresonance.proxy.ClientProxy", serverSide="mcjty.deepresonance.proxy.ServerProxy")
     public static CommonProxy proxy;
@@ -57,10 +54,12 @@ public class DeepResonance implements ModBase {
     public static File modConfigDir;
     public static WorldGridRegistry worldGridRegistry;
     public static Configuration config;
+    public static Configuration versionConfig;
     public static CompatHandler compatHandler;
     public static ConfigWrapper configWrapper;
-    public static ConfigWrapper configGenerator;
     public static NetworkHandler networkHandler;
+
+    public boolean rftools = false;
 
     public static CreativeTabs tabDeepResonance = new CreativeTabs("DeepResonance") {
         @Override
@@ -70,30 +69,68 @@ public class DeepResonance implements ModBase {
         }
     };
 
+
+    private static final int CONFIG_VERSION = 1;
+
+    private boolean readVersionConfig() {
+        int oldVersion = -1;
+        try {
+            Configuration cfg = versionConfig;
+            cfg.load();
+            oldVersion = cfg.get("version", "version", -1).getInt();
+            cfg.getCategory("version").remove("version");
+            cfg.get("version", "version", CONFIG_VERSION).getInt();
+            if (cfg.hasChanged()) {
+                cfg.save();
+            }
+        } catch (Exception e) {
+            FMLLog.log(Level.ERROR, e, "Problem loading config file!");
+        }
+        return oldVersion != CONFIG_VERSION;
+    }
+
+
     /**
      * Run before anything else. Read your config, create blocks, items, etc, and
      * register them with the GameRegistry.
      */
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
+        rftools = Loader.isModLoaded("rftools");
+
         logger = e.getModLog();
+
         mainConfigDir = e.getModConfigurationDirectory();
         modConfigDir = new File(mainConfigDir.getPath() + File.separator + "deepresonance");
+        versionConfig = new Configuration(new File(modConfigDir, "version.cfg"));
         config = new Configuration(new File(modConfigDir, "main.cfg"));
+        File machinesFile = new File(modConfigDir, "machines.cfg");
+
+        if (readVersionConfig()) {
+            try {
+                config.getConfigFile().delete();
+                machinesFile.delete();
+            } catch (Exception ee) {
+                FMLLog.log(Level.WARN, ee, "Could not reset config file!");
+            }
+        }
+
         worldGridRegistry = new WorldGridRegistry();
         networkHandler = new NetworkHandler(MODID);
         compatHandler = new CompatHandler(config, logger);
         compatHandler.addHandler(new ComputerCraftCompatHandler());
-        configWrapper = new ConfigWrapper(new Configuration(new File(modConfigDir, "machines.cfg")));
+        configWrapper = new ConfigWrapper(new Configuration(machinesFile));
         configWrapper.registerConfigWithInnerClasses(new ConfigMachines());
         configWrapper.refresh();
-        configGenerator = new ConfigWrapper(new Configuration(new File(modConfigDir, "generator.cfg")));
-        configGenerator.registerConfigWithInnerClasses(new ConfigGenerator());
-        configGenerator.setCategoryData(WorldGenConfiguration.CATEGORY_WORLDGEN, "Configuration for worldGen").setCategoryData(GeneratorConfiguration.CATEGORY_GENERATOR, "Configuration for the generator multiblock").setCategoryData(ConfigGenerator.Crystal.category, "Configuration for the crystals").setCategoryData(RadiationConfiguration.CATEGORY_RADIATION, "Configuration for the radiation");
-        configGenerator.refresh();
         proxy.preInit(e);
         MainCompatHandler.registerWaila();
-        FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
+
+        if (rftools) {
+            Logging.log("Detected RFTools: enabling support");
+            FMLInterModComms.sendFunctionMessage("rftools", "getScreenModuleRegistry", "mcjty.deepresonance.items.rftoolsmodule.RFToolsSupport$GetScreenModuleRegistry");        }
+
+        //@todo
+//        FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
     }
 
 
@@ -111,7 +148,6 @@ public class DeepResonance implements ModBase {
         proxy.init(e);
         compatHandler.init();
         configWrapper.refresh();
-        configGenerator.refresh();
     }
 
     @Mod.EventHandler
@@ -139,4 +175,5 @@ public class DeepResonance implements ModBase {
         GuiDeepResonanceManual.locatePage = page;
         player.openGui(DeepResonance.instance, bookIndex, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
     }
+
 }

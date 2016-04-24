@@ -4,7 +4,7 @@ import elec332.core.grid.basic.AbstractGridTile;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.duct.TileBasicFluidDuct;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Created by Elec332 on 3-8-2015.
@@ -20,7 +20,7 @@ public class DRFluidTile extends AbstractGridTile<DRFluidDuctGrid, DRFluidTile, 
     }
 
     @Override
-    protected DRFluidDuctGrid newGrid(ForgeDirection direction) {
-        return new DRFluidDuctGrid(getTile().getWorldObj(), this, direction);
+    protected DRFluidDuctGrid newGrid(EnumFacing direction) {
+        return new DRFluidDuctGrid(getTile().getWorld(), this, direction);
     }
 }

@@ -1,7 +1,8 @@
 package mcjty.deepresonance.fluid;
 
+import elec332.core.client.IIconRegistrar;
 import mcjty.deepresonance.DeepResonance;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -11,14 +12,17 @@ import net.minecraftforge.fluids.FluidStack;
  */
 public class DRFluidRegistry {
 
-    public static final Fluid liquidCrystal = new Fluid("liquidCrystal");
 
-    public static void preInitFluids(){
+    private static ResourceLocation rclFluid = new ResourceLocation(DeepResonance.MODID, "blocks/rclfluid");
+    public static Fluid liquidCrystal = new Fluid("liquid_crystal", rclFluid, rclFluid);
+
+    public static void initFluids(){
+        liquidCrystal.setUnlocalizedName(DeepResonance.MODID + "." + "liquid_crystal");
         FluidRegistry.registerFluid(liquidCrystal);
     }
 
-    public static void registerIcons(IIconRegister iconRegister){
-        liquidCrystal.setIcons(iconRegister.registerIcon(DeepResonance.MODID + ":rclfluid"), iconRegister.registerIcon(DeepResonance.MODID + ":rclfluid"));
+    public static void registerIcons(IIconRegistrar iconRegister){
+        //rclFluid = iconRegister.registerSprite(new ResourceLocation(DeepResonance.MODID + ":rclfluid"));
     }
 
     public static boolean isValidLiquidCrystalStack(FluidStack stack){

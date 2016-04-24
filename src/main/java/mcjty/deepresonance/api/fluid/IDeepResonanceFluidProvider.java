@@ -1,6 +1,6 @@
 package mcjty.deepresonance.api.fluid;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -12,7 +12,7 @@ public interface IDeepResonanceFluidProvider {
      * @param direction The direction
      * @return Weather the tile can connect to the given side
      */
-    public boolean canProvideTo(ForgeDirection direction);
+    public boolean canProvideTo(EnumFacing direction);
 
     /**
      * Use this method to provide RS to the grid, make sure the FluidStack you return
@@ -22,6 +22,6 @@ public interface IDeepResonanceFluidProvider {
      * @param from From where the fluid gets extracted
      * @return The provided FluidStack
      */
-    public FluidStack getProvidedFluid(int maxProvided, ForgeDirection from);
+    public FluidStack getProvidedFluid(int maxProvided, EnumFacing from);
 
 }

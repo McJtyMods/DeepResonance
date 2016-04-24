@@ -1,17 +1,14 @@
 package mcjty.deepresonance;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.RadiationShieldRegistry;
 import mcjty.deepresonance.varia.QuadTree;
-import mcjty.lib.preferences.PlayerPreferencesProperties;
-import mcjty.lib.varia.Coordinate;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.Map;
 
@@ -19,27 +16,27 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onBlockBreakEvent(BlockEvent.BreakEvent event) {
-        float blocker = RadiationShieldRegistry.getBlocker(event.block);
+        float blocker = RadiationShieldRegistry.getBlocker(event.getState());
         if (blocker >= 0.99f) {
             return;
         }
 
-        World world = event.world;
+        World world = event.getWorld();
         DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
         Map<GlobalCoordinate, DRRadiationManager.RadiationSource> radiationSources = radiationManager.getRadiationSources();
         if (radiationSources.isEmpty()) {
             return;
         }
 
-        int x = event.x;
-        int y = event.y;
-        int z = event.z;
+        int x = event.getPos().getX();
+        int y = event.getPos().getY();
+        int z = event.getPos().getZ();
 
         for (Map.Entry<GlobalCoordinate, DRRadiationManager.RadiationSource> entry : radiationSources.entrySet()) {
             DRRadiationManager.RadiationSource source = entry.getValue();
             float radius = source.getRadius();
             GlobalCoordinate gc = entry.getKey();
-            Coordinate c = gc.getCoordinate();
+            BlockPos c = gc.getCoordinate();
             if (Math.abs(c.getX()-x) < radius && Math.abs(c.getY()-y) < radius && Math.abs(c.getZ()-z) < radius) {
                 Logging.logDebug("Removed blocker at: " + x + "," + y + "," + z);
                 QuadTree radiationTree = source.getRadiationTree(world, c.getX(), c.getY(), c.getZ());
@@ -50,26 +47,26 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onBlockPlaceEvent(BlockEvent.PlaceEvent event) {
-        float blocker = RadiationShieldRegistry.getBlocker(event.block);
+        float blocker = RadiationShieldRegistry.getBlocker(event.getState());
         if (blocker >= 0.99f) {
             return;
         }
 
-        World world = event.blockSnapshot.world;
+        World world = event.getBlockSnapshot().getWorld();
         DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
         Map<GlobalCoordinate, DRRadiationManager.RadiationSource> radiationSources = radiationManager.getRadiationSources();
         if (radiationSources.isEmpty()) {
             return;
         }
 
-        int x = event.blockSnapshot.x;
-        int y = event.blockSnapshot.y;
-        int z = event.blockSnapshot.z;
+        int x = event.getBlockSnapshot().getPos().getX();
+        int y = event.getBlockSnapshot().getPos().getY();
+        int z = event.getBlockSnapshot().getPos().getZ();
         for (Map.Entry<GlobalCoordinate, DRRadiationManager.RadiationSource> entry : radiationSources.entrySet()) {
             DRRadiationManager.RadiationSource source = entry.getValue();
             float radius = source.getRadius();
             GlobalCoordinate gc = entry.getKey();
-            Coordinate c = gc.getCoordinate();
+            BlockPos c = gc.getCoordinate();
             if (Math.abs(c.getX()-x) < radius && Math.abs(c.getY()-y) < radius && Math.abs(c.getZ()-z) < radius) {
                 Logging.logDebug("Add blocker at: " + x + "," + y + "," + z);
                 QuadTree radiationTree = source.getRadiationTree(world, c.getX(), c.getY(), c.getZ());
@@ -78,16 +75,4 @@ public class ForgeEventHandlers {
         }
 
     }
-
-    @SubscribeEvent
-    public void onEntityConstructingEvent(EntityEvent.EntityConstructing event) {
-        if (event.entity instanceof EntityPlayer) {
-            PlayerPreferencesProperties preferencesProperties = (PlayerPreferencesProperties) event.entity.getExtendedProperties(PlayerPreferencesProperties.ID);
-            if (preferencesProperties == null) {
-                preferencesProperties = new PlayerPreferencesProperties();
-                event.entity.registerExtendedProperties(PlayerPreferencesProperties.ID, preferencesProperties);
-            }
-        }
-    }
-
 }

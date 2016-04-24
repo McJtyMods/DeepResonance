@@ -1,70 +1,60 @@
 package mcjty.deepresonance.blocks.ore;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.util.IIcon;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class DenseGlassBlock extends Block {
-    private IIcon icon;
 
     public DenseGlassBlock() {
-        super(Material.glass);
+        super(Material.GLASS);
         setHardness(3.0f);
         setResistance(500.0f);
-        setStepSound(soundTypeGlass);
+        setSoundType(SoundType.GLASS);
         setHarvestLevel("pickaxe", 2);
-        setBlockName("denseGlass");
+        setUnlocalizedName(DeepResonance.MODID + ".dense_glass");
+        setRegistryName("dense_glass");
         setCreativeTab(DeepResonance.tabDeepResonance);
+        GameRegistry.register(this);
+        GameRegistry.register(new ItemBlock(this), getRegistryName());
     }
 
-    @Override
-    public void registerBlockIcons(IIconRegister iconRegister) {
-        icon = iconRegister.registerIcon(DeepResonance.MODID + ":denseglass");
-    }
-
-    @Override
-    public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
-        return icon;
-    }
-
-    @Override
-    public IIcon getIcon(int side, int meta) {
-        return icon;
-    }
-
-    @Override
     @SideOnly(Side.CLIENT)
-    public int getRenderBlockPass()
-    {
-        return 0;
+    public void initModel() {
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "inventory"));
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public BlockRenderLayer getBlockLayer() {
+        return BlockRenderLayer.CUTOUT;
     }
 
     @Override
-    public boolean renderAsNormalBlock()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isOpaqueCube()
+    public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)    {
-        Block block = world.getBlock(x, y, z);
-
-        if (block == this) {
-            return false;
-        }
-
-        return super.shouldSideBeRendered(world, x, y, z, side);
+    public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+        Block block = WorldHelper.getBlockAt(world, pos.offset(side));
+        return block != this && super.shouldSideBeRendered(state, world, pos, side);
     }
+
 }

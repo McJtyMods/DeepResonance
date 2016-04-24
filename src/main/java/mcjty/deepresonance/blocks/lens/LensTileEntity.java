@@ -10,11 +10,6 @@ public class LensTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public boolean canUpdate() {
-        return false;
-    }
-
-    @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
     }

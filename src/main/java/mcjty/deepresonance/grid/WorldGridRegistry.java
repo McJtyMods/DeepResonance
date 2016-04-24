@@ -2,11 +2,11 @@ package mcjty.deepresonance.grid;
 
 import elec332.core.multiblock.dynamic.AbstractDynamicMultiBlockWorldHolder;
 import elec332.core.registry.AbstractWorldRegistryHolder;
-import elec332.core.util.EventHelper;
 import mcjty.deepresonance.grid.fluid.DRFluidWorldGridHolder;
 import mcjty.deepresonance.grid.fluid.EventHandler;
 import mcjty.deepresonance.grid.tank.DRTankWorldHolder;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 /**
  * Created by Elec332 on 3-8-2015.
@@ -16,7 +16,7 @@ public class WorldGridRegistry {
     public WorldGridRegistry(){
         this.fluidGridWorldRegistry = new DRFluidGridWorldRegistry();
         this.tankGridWorldRegistry = new DRTankGridWorldRegistry();
-        EventHelper.registerHandlerForge(new EventHandler());
+        MinecraftForge.EVENT_BUS.register(new EventHandler());
     }
 
     private DRFluidGridWorldRegistry fluidGridWorldRegistry;

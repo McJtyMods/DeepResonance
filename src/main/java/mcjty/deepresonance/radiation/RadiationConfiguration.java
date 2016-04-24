@@ -5,22 +5,24 @@ import net.minecraftforge.common.config.Configuration;
 public class RadiationConfiguration {
     public static final String CATEGORY_RADIATION = "radiation";
 
-    public static float minRadiationRadius = 5.0f;
-    public static float maxRadiationRadius = 30.0f;
+    public static float minRadiationRadius = 7.0f;
+    public static float maxRadiationRadius = 50.0f;
 
-    public static float minRadiationStrength = 100.0f;
-    public static float maxRadiationStrength = 1000000.0f;
+    public static float minRadiationStrength = 3000.0f;
+    public static float maxRadiationStrength = 600000.0f;
 
-    public static float strengthGrowthFactor = 0.001f;
-    public static float strengthDecreasePerTick = 5.0f;
+    public static float strengthGrowthFactor = 0.002f;
+    public static float strengthDecreasePerTick = 3.0f;
 
-    public static float radiationStrenghLevel0 = 50000.0f;
-    public static float radiationStrenghLevel1 = 100000.0f;
-    public static float radiationStrenghLevel2 = 200000.0f;
-    public static float radiationStrenghLevel3 = 500000.0f;
-    public static float radiationStrenghLevel4 = 1000000.0f;
+    public static float radiationEffectLevelNone = 2000.0f;
+    public static float radiationEffectLevel0 = 20000.0f;
+    public static float radiationEffectLevel1 = 50000.0f;
+    public static float radiationEffectLevel2 = 100000.0f;
+    public static float radiationEffectLevel3 = 200000.0f;
+    public static float radiationEffectLevel4 = 500000.0f;
+    public static float radiationEffectLevel5 = 1000000.0f;
 
-    public static float radiationDestructionEventLevel = 200000.0f;
+    public static float radiationDestructionEventLevel = 300000.0f;
     public static float destructionEventChance = 0.02f;
 
     public static float maxRadiationMeter = 200000.0f;
@@ -38,6 +40,15 @@ public class RadiationConfiguration {
 
     public static float suitProtection[] = new float[] { 0, .25f, .50f, .75f, .95f };
 
+    public static int radiationOverlayColor = 0xffff0000;
+    public static int radiationOverlayColorNoRadiation = 0xff00ff00;
+    public static int radiationOverlayX = 10;
+    public static int radiationOverlayY = 10;
+
+    public static int RADIATIONMODULE_RFPERTICK = 6;
+    public static int RCLMODULE_RFPERTICK = 6;
+
+
     public static void init(Configuration cfg) {
         minRadiationRadius = (float) cfg.get(CATEGORY_RADIATION, "minRadiationRadius", minRadiationRadius,
                 "The minimum radiation radius").getDouble();
@@ -54,16 +65,20 @@ public class RadiationConfiguration {
         strengthDecreasePerTick = (float) cfg.get(CATEGORY_RADIATION, "strengthDecreasePerTick", strengthDecreasePerTick,
                 "How much the radiation strength decreases every tick").getDouble();
 
-        radiationStrenghLevel0 = (float) cfg.get(CATEGORY_RADIATION, "radiationStrenghLevel0", radiationStrenghLevel0,
+        radiationEffectLevelNone = (float) cfg.get(CATEGORY_RADIATION, "radiationEffectLevelNone", radiationEffectLevelNone,
+                "Below this level no effects occur").getDouble();
+        radiationEffectLevel0 = (float) cfg.get(CATEGORY_RADIATION, "radiationEffectLevel0", radiationEffectLevel0,
                 "Radiation strength level 0").getDouble();
-        radiationStrenghLevel1 = (float) cfg.get(CATEGORY_RADIATION, "radiationStrenghLevel1", radiationStrenghLevel1,
+        radiationEffectLevel1 = (float) cfg.get(CATEGORY_RADIATION, "radiationEffectLevel1", radiationEffectLevel1,
                 "Radiation strength level 1").getDouble();
-        radiationStrenghLevel2 = (float) cfg.get(CATEGORY_RADIATION, "radiationStrenghLevel2", radiationStrenghLevel2,
+        radiationEffectLevel2 = (float) cfg.get(CATEGORY_RADIATION, "radiationEffectLevel2", radiationEffectLevel2,
                 "Radiation strength level 2").getDouble();
-        radiationStrenghLevel3 = (float) cfg.get(CATEGORY_RADIATION, "radiationStrenghLevel3", radiationStrenghLevel3,
+        radiationEffectLevel3 = (float) cfg.get(CATEGORY_RADIATION, "radiationEffectLevel3", radiationEffectLevel3,
                 "Radiation strength level 3").getDouble();
-        radiationStrenghLevel4 = (float) cfg.get(CATEGORY_RADIATION, "radiationStrenghLevel4", radiationStrenghLevel4,
+        radiationEffectLevel4 = (float) cfg.get(CATEGORY_RADIATION, "radiationEffectLevel4", radiationEffectLevel4,
                 "Radiation strength level 4").getDouble();
+        radiationEffectLevel5 = (float) cfg.get(CATEGORY_RADIATION, "radiationEffectLevel5", radiationEffectLevel5,
+                "Radiation strength level 5").getDouble();
 
         radiationDestructionEventLevel = (float) cfg.get(CATEGORY_RADIATION, "radiationDestructionEventLevel", radiationDestructionEventLevel,
                 "The radiation strength at which point destruction events can happen").getDouble();
@@ -99,6 +114,20 @@ public class RadiationConfiguration {
                 "How much protection you get from radiation with 3 radiation suit pieces equipped").getDouble();
         suitProtection[4] = (float) cfg.get(CATEGORY_RADIATION, "suitProtection4", suitProtection[4],
                 "How much protection you get from radiation with 4 radiation suit pieces equipped").getDouble();
+
+        radiationOverlayColor = cfg.get(CATEGORY_RADIATION, "radiationOverlayColor", radiationOverlayColor,
+                "The color for the radiation overlay text in case the radiation monitor is in the players hand").getInt();
+        radiationOverlayColorNoRadiation = cfg.get(CATEGORY_RADIATION, "radiationOverlayColorNoRadiation", radiationOverlayColorNoRadiation,
+                "The color for the radiation overlay text in case the radiation monitor is in the players hand (in case there is no radiation)").getInt();
+        radiationOverlayX = cfg.get(CATEGORY_RADIATION, "radiationOverlayX", radiationOverlayX,
+                "The X coordinate (with 0 being left) for the radiation overlay text. Use -1 to disable").getInt();
+        radiationOverlayY = cfg.get(CATEGORY_RADIATION, "radiationOverlayY", radiationOverlayY,
+                "The Y coordinate (with 0 being top) for the radiation overlay text. Use -1 to disable").getInt();
+
+        RADIATIONMODULE_RFPERTICK = cfg.get(CATEGORY_RADIATION, "radiationModuleRFPerTick", RADIATIONMODULE_RFPERTICK,
+                                            "RF per tick/per block for the radiation screen module (if rftools is present)").getInt();
+        RCLMODULE_RFPERTICK = cfg.get(CATEGORY_RADIATION, "rclModuleRFPerTick", RCLMODULE_RFPERTICK,
+                                            "RF per tick/per block for the RCL screen module (if rftools is present)").getInt();
     }
 
 }

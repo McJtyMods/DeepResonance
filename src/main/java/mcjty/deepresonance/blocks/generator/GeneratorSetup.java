@@ -1,23 +1,28 @@
 package mcjty.deepresonance.blocks.generator;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.lib.container.GenericItemBlock;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class GeneratorSetup {
     public static GeneratorBlock generatorBlock;
 
     public static void setupBlocks() {
         generatorBlock = new GeneratorBlock();
-        GameRegistry.registerBlock(generatorBlock, GenericItemBlock.class, "generatorBlock");
-        GameRegistry.registerTileEntity(GeneratorTileEntity.class, "GeneratorTileEntity");
     }
 
+    @SideOnly(Side.CLIENT)
+    public static void setupModels() {
+        generatorBlock.initModel();
+    }
+
+
     public static void setupCrafting() {
-        GameRegistry.addRecipe(new ItemStack(generatorBlock), "nRn", "iMi", "nRn", 'M', ModBlocks.machineFrame, 'n', Items.gold_nugget, 'R', Blocks.redstone_block,
-                'i', Items.iron_ingot);
+        GameRegistry.addRecipe(new ItemStack(generatorBlock), "nRn", "iMi", "nRn", 'M', ModBlocks.machineFrame, 'n', Items.GOLD_NUGGET, 'R', Blocks.REDSTONE_BLOCK,
+                'i', Items.IRON_INGOT);
     }
 }

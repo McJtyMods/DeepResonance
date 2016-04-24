@@ -3,7 +3,6 @@ package mcjty.deepresonance.grid.fluid;
 import com.google.common.collect.Lists;
 import elec332.core.grid.basic.AbstractCableGrid;
 import elec332.core.main.ElecCore;
-import elec332.core.util.BlockLoc;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
@@ -11,18 +10,22 @@ import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
 import mcjty.deepresonance.blocks.duct.TileBasicFluidDuct;
 import mcjty.deepresonance.grid.InternalGridTank;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
+import java.util.OptionalInt;
+import java.util.stream.IntStream;
 
 /**
  * Created by Elec332 on 3-8-2015.
  */
 public class DRFluidDuctGrid extends AbstractCableGrid<DRFluidDuctGrid, DRFluidTile, DRGridTypeHelper, DRFluidWorldGridHolder> {
-    public DRFluidDuctGrid(World world, DRFluidTile p, ForgeDirection direction) {
+
+    public DRFluidDuctGrid(World world, DRFluidTile p, EnumFacing direction) {
         super(world, p, direction, DRGridTypeHelper.instance, DeepResonance.worldGridRegistry.getFluidRegistry());
         tank = new InternalGridTank(p.getTankStorage());
         tanks = Lists.newArrayList();
@@ -31,7 +34,7 @@ public class DRFluidDuctGrid extends AbstractCableGrid<DRFluidDuctGrid, DRFluidT
     }
 
     private InternalGridTank tank;
-    private List<BlockLoc> tanks;
+    private List<BlockPos> tanks;
 
     @Override
     protected void uponGridMerge(DRFluidDuctGrid grid) {
@@ -42,24 +45,24 @@ public class DRFluidDuctGrid extends AbstractCableGrid<DRFluidDuctGrid, DRFluidT
 
     @Override
     public void onTick() {
-        for (BlockLoc loc : locations)
+        for (BlockPos loc : locations)
             ElecCore.systemPrintDebug(loc);
         processLiquids();
     }
 
-    public void addTank(BlockLoc tank){
+    public void addTank(BlockPos tank){
         if (!tanks.contains(tank))
             tanks.add(tank);
     }
 
-    public void removeTank(BlockLoc tank){
+    public void removeTank(BlockPos tank){
         tanks.remove(tank);
     }
 
     private void processLiquids(){
         int requestedRCL = 0;
         int[] va = new int[acceptors.size()];
-        int[] vt = new int[tanks.size()];
+        //int[] vt = new int[tanks.size()];
         for (GridData gridData : providers) {
             int maxProvide = tank.getMaxAmount()-getStoredAmount();
             tank.fill(((IDeepResonanceFluidProvider) getWorldHolder().getPowerTile(gridData.getLoc()).getTile()).getProvidedFluid(maxProvide, gridData.getDirection()), true);
@@ -69,22 +72,22 @@ public class DRFluidDuctGrid extends AbstractCableGrid<DRFluidDuctGrid, DRFluidT
             va[acceptors.indexOf(gridData)] = e;
             requestedRCL += e;
         }
-        for (BlockLoc loc : tanks){
-            int e = ((IDeepResonanceFluidAcceptor) WorldHelper.getTileAt(world, loc)).getRequestedAmount(ForgeDirection.UNKNOWN);
+        for (BlockPos loc : tanks){
+            int e = ((IDeepResonanceFluidAcceptor) WorldHelper.getTileAt(world, loc)).getRequestedAmount(null);
             va[tanks.indexOf(loc)] = e;
             requestedRCL += e;
         }
         if (getStoredAmount() >= requestedRCL){
             for (GridData gridData : acceptors)
                 ((IDeepResonanceFluidAcceptor) getWorldHolder().getPowerTile(gridData.getLoc()).getTile()).acceptFluid(tank.drain(va[acceptors.indexOf(gridData)], true), gridData.getDirection());
-            for (BlockLoc loc : tanks)
-                ((IDeepResonanceFluidAcceptor) WorldHelper.getTileAt(world, loc)).acceptFluid(tank.drain(va[tanks.indexOf(loc)], true), ForgeDirection.UNKNOWN);
+            for (BlockPos loc : tanks)
+                ((IDeepResonanceFluidAcceptor) WorldHelper.getTileAt(world, loc)).acceptFluid(tank.drain(va[tanks.indexOf(loc)], true), null);
         }else if (getStoredAmount() > 0){
             float diff = (float)getStoredAmount()/(float)requestedRCL;
             for (GridData gridData : acceptors)
                 ((IDeepResonanceFluidAcceptor) getWorldHolder().getPowerTile(gridData.getLoc()).getTile()).acceptFluid(tank.drain((int) (va[acceptors.indexOf(gridData)] * diff), true), gridData.getDirection());
-            for (BlockLoc loc : tanks)
-                ((IDeepResonanceFluidAcceptor) WorldHelper.getTileAt(world, loc)).acceptFluid(tank.drain((int) (va[tanks.indexOf(loc)] * diff), true), ForgeDirection.UNKNOWN);
+            for (BlockPos loc : tanks)
+                ((IDeepResonanceFluidAcceptor) WorldHelper.getTileAt(world, loc)).acceptFluid(tank.drain((int) (va[tanks.indexOf(loc)] * diff), true), null);
 
         }
     }
@@ -114,7 +117,10 @@ public class DRFluidDuctGrid extends AbstractCableGrid<DRFluidDuctGrid, DRFluidT
 
     public FluidStack getFluidShare(TileEntity tile){
         if (tile instanceof TileBasicFluidDuct){
-            return tank.getShare(transmitters.size());
+            OptionalInt first = IntStream.range(0, transmitters.size())
+                    .filter(i -> tile.getPos().equals(transmitters.get(i).getLoc()))
+                    .findFirst();
+            return tank.getShare(transmitters.size(), first.isPresent() ? first.getAsInt() == 0 : false);
         }
         return null;
     }

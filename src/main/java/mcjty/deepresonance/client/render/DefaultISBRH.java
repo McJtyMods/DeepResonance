@@ -1,14 +1,6 @@
 package mcjty.deepresonance.client.render;
 
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.util.ForgeDirection;
-
-public abstract class DefaultISBRH implements ISimpleBlockRenderingHandler {
+public abstract class DefaultISBRH{}/* implements ISimpleBlockRenderingHandler {
 
     public static final class Vt {
         public final float x;
@@ -35,7 +27,7 @@ public abstract class DefaultISBRH implements ISimpleBlockRenderingHandler {
             this.v4 = v4;
         }
 
-        public Quad rotate(ForgeDirection direction) {
+        public Quad rotate(EnumFacing direction) {
             switch (direction) {
                 case NORTH: return new Quad(v4, v1, v2, v3);
                 case EAST: return new Quad(v3, v4, v1, v2);
@@ -55,7 +47,7 @@ public abstract class DefaultISBRH implements ISimpleBlockRenderingHandler {
             new Quad(new Vt(1, 0, 0), new Vt(1, 1, 0), new Vt(1, 1, 1), new Vt(1, 0, 1)),       // EAST
     };
 
-    public static Quad getQuad(ForgeDirection side){
+    public static Quad getQuad(EnumFacing side){
         return getQuad(side.ordinal());
     }
 
@@ -91,7 +83,7 @@ public abstract class DefaultISBRH implements ISimpleBlockRenderingHandler {
         tessellator.addVertexWithUV(quad.v4.x + offset, quad.v4.y * height + offset, quad.v4.z + offset, u2, v1);
     }
 
-    public static void addSideConditionally(IBlockAccess world, int x, int y, int z, Block block, Tessellator tessellator, IIcon icon, ForgeDirection direction) {
+    public static void addSideConditionally(IBlockAccess world, int x, int y, int z, Block block, Tessellator tessellator, IIcon icon, EnumFacing direction) {
         if (block.shouldSideBeRendered(world, x+direction.offsetX, y+direction.offsetY, z+direction.offsetZ, direction.ordinal())) {
             addSide(tessellator, direction.ordinal(), icon);
         }
@@ -114,32 +106,32 @@ public abstract class DefaultISBRH implements ISimpleBlockRenderingHandler {
 
         t.startDrawingQuads();
         t.setNormal(-1, 0, 0);
-        renderer.renderFaceXNeg(block, 0, 0, 0, renderer.getBlockIconFromSideAndMetadata(block, ForgeDirection.WEST.ordinal(), meta));
+        renderer.renderFaceXNeg(block, 0, 0, 0, renderer.getBlockIconFromSideAndMetadata(block, EnumFacing.WEST.ordinal(), meta));
         t.draw();
 
         t.startDrawingQuads();
         t.setNormal(1, 0, 0);
-        renderer.renderFaceXPos(block, 0, 0, 0, renderer.getBlockIconFromSideAndMetadata(block, ForgeDirection.EAST.ordinal(), meta));
+        renderer.renderFaceXPos(block, 0, 0, 0, renderer.getBlockIconFromSideAndMetadata(block, EnumFacing.EAST.ordinal(), meta));
         t.draw();
 
         t.startDrawingQuads();
         t.setNormal(0, 0, -1);
-        renderer.renderFaceZNeg(block, 0, 0, 0, renderer.getBlockIconFromSideAndMetadata(block, ForgeDirection.NORTH.ordinal(), meta));
+        renderer.renderFaceZNeg(block, 0, 0, 0, renderer.getBlockIconFromSideAndMetadata(block, EnumFacing.NORTH.ordinal(), meta));
         t.draw();
 
         t.startDrawingQuads();
         t.setNormal(0, 0, 1);
-        renderer.renderFaceZPos(block, 0, 0, 0, renderer.getBlockIconFromSideAndMetadata(block, ForgeDirection.SOUTH.ordinal(), meta));
+        renderer.renderFaceZPos(block, 0, 0, 0, renderer.getBlockIconFromSideAndMetadata(block, EnumFacing.SOUTH.ordinal(), meta));
         t.draw();
 
         t.startDrawingQuads();
         t.setNormal(0, -1, 0);
-        renderer.renderFaceYNeg(block, 0, 0, 0, renderer.getBlockIconFromSideAndMetadata(block, ForgeDirection.DOWN.ordinal(), meta));
+        renderer.renderFaceYNeg(block, 0, 0, 0, renderer.getBlockIconFromSideAndMetadata(block, EnumFacing.DOWN.ordinal(), meta));
         t.draw();
 
         t.startDrawingQuads();
         t.setNormal(0, 1, 0);
-        renderer.renderFaceYPos(block, 0, 0, 0, renderer.getBlockIconFromSideAndMetadata(block, ForgeDirection.UP.ordinal(), meta));
+        renderer.renderFaceYPos(block, 0, 0, 0, renderer.getBlockIconFromSideAndMetadata(block, EnumFacing.UP.ordinal(), meta));
         t.draw();
     }
 
@@ -157,4 +149,4 @@ public abstract class DefaultISBRH implements ISimpleBlockRenderingHandler {
     public boolean shouldRender3DInInventory(int modelId) {
         return false;
     }
-}
+}*/

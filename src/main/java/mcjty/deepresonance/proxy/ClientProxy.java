@@ -1,26 +1,36 @@
 package mcjty.deepresonance.proxy;
 
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import elec332.core.client.IIconRegistrar;
+import elec332.core.client.ITextureLoader;
+import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.RadiationOverlayRenderer;
+import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.client.sound.GeneratorSoundController;
 import mcjty.deepresonance.client.gui.NoRFFoundException;
-import mcjty.deepresonance.client.render.ModRenderers;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
-import net.minecraftforge.client.event.TextureStitchEvent;
+import mcjty.deepresonance.items.ModItems;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class ClientProxy extends CommonProxy {
+public class ClientProxy extends CommonProxy implements ITextureLoader {
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
         super.preInit(e);
+        OBJLoader.INSTANCE.addDomain(DeepResonance.MODID);
+        ModBlocks.initModels();
+        ModItems.initModels();
+        GeneratorSoundController.init();
     }
 
     @Override
     public void init(FMLInitializationEvent e) {
         super.init(e);
-        ModRenderers.init();
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -40,9 +50,13 @@ public class ClientProxy extends CommonProxy {
     }
 
     @SubscribeEvent
-    public void registerIcons(TextureStitchEvent.Pre event){
-        if (event.map.getTextureType() == 0)
-            DRFluidRegistry.registerIcons(event.map);
+    public void renderGameOverlayEvent(RenderGameOverlayEvent evt) {
+        RadiationOverlayRenderer.onRender(evt);
+    }
+
+    @Override
+    public void registerTextures(IIconRegistrar iIconRegistrar) {
+        DRFluidRegistry.registerIcons(iIconRegistrar);
     }
 
 }

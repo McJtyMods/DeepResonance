@@ -1,5 +1,6 @@
 package mcjty.deepresonance.items.manual;
 
+import elec332.core.client.RenderHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.events.ButtonEvent;
@@ -14,6 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 
 import java.awt.*;
+import java.io.IOException;
 
 public class GuiDeepResonanceManual extends GuiScreen {
 
@@ -85,25 +87,35 @@ public class GuiDeepResonanceManual extends GuiScreen {
 
 
     @Override
-    protected void mouseClicked(int x, int y, int button) {
+    protected void mouseClicked(int x, int y, int button) throws IOException {
         super.mouseClicked(x, y, button);
         window.mouseClicked(x, y, button);
     }
 
     @Override
-    public void handleMouseInput() {
+    protected void mouseReleased(int mouseX, int mouseY, int state) {
+        super.mouseReleased(mouseX, mouseY, state);
+        window.mouseMovedOrUp(mouseX, mouseY, state);
+    }
+
+    @Override
+    public void handleMouseInput() throws IOException {
         super.handleMouseInput();
         window.handleMouseInput();
     }
 
     @Override
-    protected void mouseMovedOrUp(int x, int y, int button) {
-        super.mouseMovedOrUp(x, y, button);
+    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+        mouseMovedOrUp(mouseX, mouseY, clickedMouseButton); //TODO: McJty: Check if this is correct
+    }
+
+    protected void mouseMovedOrUp(int x, int y, int button){
         window.mouseMovedOrUp(x, y, button);
     }
 
     @Override
-    protected void keyTyped(char typedChar, int keyCode) {
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
         window.keyTyped(typedChar, keyCode);
     }
@@ -125,7 +137,7 @@ public class GuiDeepResonanceManual extends GuiScreen {
             int guiTop = (this.height - this.ySize) / 2;
             int x = Mouse.getEventX() * width / mc.displayWidth;
             int y = height - Mouse.getEventY() * height / mc.displayHeight - 1;
-            drawHoveringText(tooltips, x-guiLeft, y-guiTop, mc.fontRenderer);
+            drawHoveringText(tooltips, x-guiLeft, y-guiTop, RenderHelper.getMCFontrenderer());
         }
     }
 }

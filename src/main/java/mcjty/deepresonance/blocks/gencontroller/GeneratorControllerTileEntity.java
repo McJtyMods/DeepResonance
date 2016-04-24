@@ -1,36 +1,61 @@
 package mcjty.deepresonance.blocks.gencontroller;
 
+import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
+import mcjty.deepresonance.client.sound.GeneratorSoundController;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
-import mcjty.deepresonance.varia.Broadcaster;
 import mcjty.lib.entity.GenericTileEntity;
-import mcjty.lib.varia.BlockTools;
-import mcjty.lib.varia.Coordinate;
+import mcjty.lib.varia.Broadcaster;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class GeneratorControllerTileEntity extends GenericTileEntity {
-    private ControllerSounds controllerSounds;
-
+public class GeneratorControllerTileEntity extends GenericTileEntity implements ITickable {
     private int startup = 0;
     private int shutdown = 0;
     private boolean active = false;
+
+    private int powered;
 
     public GeneratorControllerTileEntity() {
         super();
     }
 
-    private ControllerSounds getControllerSounds() {
-        if (controllerSounds == null) {
-            controllerSounds = new ControllerSounds();
+    @Override
+    public void setPowered(int powered) {
+        this.powered = powered;
+        markDirtyClient();
+    }
+
+    public boolean isPowered() {
+        return powered > 0;
+    }
+
+
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
+        boolean working = isPowered();
+
+        super.onDataPacket(net, packet);
+
+        if (worldObj.isRemote) {
+            // If needed send a render update.
+            if (isPowered() != working) {
+                worldObj.markBlockRangeForRenderUpdate(getPos(), getPos());
+            }
         }
-        return controllerSounds;
     }
 
 
@@ -43,61 +68,52 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
     }
 
     private void stopSounds() {
-        getControllerSounds().stopStartup();
-        getControllerSounds().stopLoop();
-        getControllerSounds().stopShutdown();
-    }
-
-
-    @Override
-    public boolean canUpdate() {
-        return true;
+        GeneratorSoundController.stopSound(worldObj, getPos());
     }
 
     @Override
+    public void update() {
+        if (!worldObj.isRemote){
+            checkStateServer();
+        } else {
+            checkStateClient();
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
     protected void checkStateClient() {
         if (GeneratorConfiguration.baseGeneratorVolume < 0.01f) {
             // No sounds.
             return;
         }
-        ControllerSounds sounds = getControllerSounds();
         if (startup != 0) {
-            sounds.stopLoop();
-            sounds.stopShutdown();
-            if (!sounds.isStartupPlaying()) {
-                sounds.playStartup(worldObj, xCoord, yCoord, zCoord);
+            if (!GeneratorSoundController.isStartupPlaying(worldObj, pos)) {
+                GeneratorSoundController.playStartup(worldObj, pos);
             }
         } else if (shutdown != 0) {
-            sounds.stopLoop();
-            sounds.stopStartup();
-            if (!sounds.isShutdownPlaying()) {
-                sounds.playShutdown(worldObj, xCoord, yCoord, zCoord);
+            if (!GeneratorSoundController.isShutdownPlaying(worldObj, pos)) {
+                GeneratorSoundController.playShutdown(worldObj, pos);
             }
         } else if (active) {
-            sounds.stopShutdown();
-            sounds.stopStartup();
-            if (!sounds.isLoopPlaying()) {
-                sounds.playLoop(worldObj, xCoord, yCoord, zCoord);
+            if (!GeneratorSoundController.isLoopPlaying(worldObj, pos)) {
+                GeneratorSoundController.playLoop(worldObj, pos);
             }
         } else {
             stopSounds();
         }
     }
 
-    @Override
     protected void checkStateServer() {
-        int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-        boolean active = BlockTools.getRedstoneSignalIn(meta);
+        boolean active = powered > 0;
 
         // @todo optimize this?
         boolean dirty = false;
         Set<Integer> networks = new HashSet<Integer>();
-        Coordinate thisCoord = new Coordinate(xCoord, yCoord, zCoord);
-        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
-            Coordinate newC = thisCoord.addDirection(direction);
-            Block b = worldObj.getBlock(newC.getX(), newC.getY(), newC.getZ());
+        for (EnumFacing direction : EnumFacing.VALUES) {
+            BlockPos newC = getPos().offset(direction);
+            Block b = WorldHelper.getBlockAt(worldObj, newC);
             if (b == GeneratorSetup.generatorBlock) {
-                GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) worldObj.getTileEntity(newC.getX(), newC.getY(), newC.getZ());
+                GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) WorldHelper.getTileAt(worldObj, newC);
                 int networkId = generatorTileEntity.getNetworkId();
                 if (networkId != -1 && !networks.contains(networkId)) {
                     networks.add(networkId);
@@ -110,9 +126,9 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
                             }
                         } else {
                             if (countCollectors < 1) {
-                                Broadcaster.broadcast(worldObj, xCoord, yCoord, zCoord, "There is no energy collector on this generator!", 100);
+                                Broadcaster.broadcast(worldObj, getPos().getX(), getPos().getY(), getPos().getZ(), "There is no energy collector on this generator!", 100);
                             } else {
-                                Broadcaster.broadcast(worldObj, xCoord, yCoord, zCoord, "There are too many energy collectors on this generator!!", 100);
+                                Broadcaster.broadcast(worldObj, getPos().getX(), getPos().getY(), getPos().getZ(), "There are too many energy collectors on this generator!!", 100);
                             }
                             if (handleDeactivate(networkId, newC)) {
                                 dirty = true;
@@ -132,7 +148,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
         }
     }
 
-    private boolean handleActivate(int id, Coordinate coordinate) {
+    private boolean handleActivate(int id, BlockPos coordinate) {
         DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
         DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(id);
         if (network.isActive() && network.getShutdownCounter() == 0) {
@@ -145,7 +161,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
         startup--;
         if (startup <= 0) {
             startup = 0;
-            GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) worldObj.getTileEntity(coordinate.getX(), coordinate.getY(), coordinate.getZ());
+            GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) WorldHelper.getTileAt(worldObj, coordinate);
             generatorTileEntity.activate(true);
         }
         active = network.isActive();
@@ -153,11 +169,13 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
         network.setShutdownCounter(0);
         network.setStartupCounter(startup);
         markDirty();
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        IBlockState state = worldObj.getBlockState(pos);
+        worldObj.notifyBlockUpdate(pos, state, state, 3);
         return true;
     }
 
-    private boolean handleDeactivate(int id, Coordinate coordinate) {
+    private boolean handleDeactivate(int id, BlockPos coordinate) {
+        IBlockState state = worldObj.getBlockState(getPos());
         DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
         DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(id);
         if ((!network.isActive()) && network.getShutdownCounter() == 0 && network.getStartupCounter() == 0) {
@@ -166,7 +184,8 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
                 startup = network.getStartupCounter();
                 active = network.isActive();
                 markDirty();
-                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+
+                worldObj.notifyBlockUpdate(getPos(), state, state, 3);
             }
             return false;   // Nothing to do.
         }
@@ -174,7 +193,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
         shutdown = network.getShutdownCounter();
         if (network.isActive() || network.getStartupCounter() != 0) {
             shutdown = GeneratorConfiguration.shutdownTime;
-            GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) worldObj.getTileEntity(coordinate.getX(), coordinate.getY(), coordinate.getZ());
+            GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) WorldHelper.getTileAt(worldObj, coordinate);
             generatorTileEntity.activate(false);
         }
         shutdown--;
@@ -186,7 +205,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
         network.setStartupCounter(0);
         network.setShutdownCounter(shutdown);
         markDirty();
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        worldObj.notifyBlockUpdate(getPos(), state, state, 3);
 
         return true;
     }
@@ -197,6 +216,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
         startup = tagCompound.getInteger("startup");
         shutdown = tagCompound.getInteger("shutdown");
         active = tagCompound.getBoolean("active");
+        powered = tagCompound.getInteger("powered");
     }
 
     @Override
@@ -205,5 +225,6 @@ public class GeneratorControllerTileEntity extends GenericTileEntity {
         tagCompound.setInteger("startup", startup);
         tagCompound.setInteger("shutdown", shutdown);
         tagCompound.setBoolean("active", active);
+        tagCompound.setInteger("powered", powered);
     }
 }

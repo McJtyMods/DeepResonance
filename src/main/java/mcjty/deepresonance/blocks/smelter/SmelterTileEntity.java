@@ -1,38 +1,39 @@
 package mcjty.deepresonance.blocks.smelter;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.deepresonance.blocks.base.ElecEnergyReceiverTileBase;
 import mcjty.deepresonance.blocks.tank.ITankHook;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
+import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
-import mcjty.lib.varia.BlockTools;
+import mcjty.lib.varia.CustomSidedInvWrapper;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import java.util.Map;
 
 /**
  * Created by Elec332 on 9-8-2015.
  */
-public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITankHook, ISidedInventory {
+public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implements ITankHook, DefaultSidedInventory, ITickable {
 
     public static final String CMD_GETPROGRESS = "getProgress";
     public static final String CLIENTCMD_GETPROGRESS = "getProgress";
@@ -52,10 +53,20 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     private float finalQuality = 1.0f;  // Calculated quality based on the amount of lava in the lava tank
     private float finalPurity = 0.1f;   // Calculated quality based on the amount of lava in the lava tank
 
-    @SideOnly(Side.CLIENT)
     private static int progressPercentage = 0;
 
     @Override
+    public InventoryHelper getInventoryHelper() {
+        return inventoryHelper;
+    }
+
+    @Override
+    public void update() {
+        if (!worldObj.isRemote){
+            checkStateServer();
+        }
+    }
+
     protected void checkStateServer() {
         if (progress > 0) {
             if (canWork()) {
@@ -67,21 +78,22 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
                 }
             }
         } else {
-            int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-            int meta2;
+            IBlockState state = worldObj.getBlockState(getPos());
+            boolean oldworking = state.getValue(SmelterBlock.WORKING);
+            boolean newworking;
             if (canWork() && validSlot()) {
                 startSmelting();
-                meta2 = BlockTools.setRedstoneSignalIn(meta, true);
+                newworking = true;
             } else {
-                meta2 = BlockTools.setRedstoneSignalIn(meta, false);
+                newworking = false;
             }
-            if (meta != meta2) {
-                worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, meta2, 3);
+            if (newworking != oldworking) {
+                state = state.withProperty(SmelterBlock.WORKING, newworking);
+                worldObj.setBlockState(getPos(), state, 3);
             }
         }
     }
 
-    @SideOnly(Side.CLIENT)
     public static int getProgressPercentage() {
         return progressPercentage;
     }
@@ -101,7 +113,7 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
         return lavaTank != null && rclTank != null
                 && DRFluidRegistry.getFluidFromStack(lavaTank.getFluid()) == FluidRegistry.LAVA
                 && lavaTank.getFluidAmount() > lavaTank.getCapacity()*0.25f
-                && rclTank.fill(ForgeDirection.UNKNOWN, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), false) == ConfigMachines.Smelter.rclPerOre;
+                && rclTank.fill(null, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), false) == ConfigMachines.Smelter.rclPerOre;
     }
 
     private boolean validSlot(){
@@ -130,7 +142,7 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
             finalPurity = 0.1f;
         }
 
-        lavaTank.drain(ForgeDirection.UNKNOWN, new FluidStack(FluidRegistry.LAVA, ConfigMachines.Smelter.lavaCost), true);
+        lavaTank.drain(null, new FluidStack(FluidRegistry.LAVA, ConfigMachines.Smelter.lavaCost), true);
 
         progress = ConfigMachines.Smelter.processTime + (int) ((percentage - 0.5f) * ConfigMachines.Smelter.processTime);
         totalProgress = progress;
@@ -139,7 +151,7 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     private void stopSmelting() {
         if (finalQuality > 0.0f) {
             FluidStack stack = LiquidCrystalFluidTagData.makeLiquidCrystalStack(ConfigMachines.Smelter.rclPerOre, finalQuality, finalPurity, 0.1f, 0.1f);
-            rclTank.fill(ForgeDirection.UNKNOWN, stack, true);
+            rclTank.fill(null, stack, true);
         }
     }
 
@@ -155,23 +167,8 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     @Override
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
         super.writeRestorableToNBT(tagCompound);
-
-        writeBufferToNBT(tagCompound);
+        writeBufferToNBT(tagCompound, inventoryHelper);
     }
-
-    private void writeBufferToNBT(NBTTagCompound tagCompound) {
-        NBTTagList bufferTagList = new NBTTagList();
-        for (int i = 0 ; i < inventoryHelper.getCount() ; i++) {
-            ItemStack stack = inventoryHelper.getStackInSlot(i);
-            NBTTagCompound nbtTagCompound = new NBTTagCompound();
-            if (stack != null) {
-                stack.writeToNBT(nbtTagCompound);
-            }
-            bufferTagList.appendTag(nbtTagCompound);
-        }
-        tagCompound.setTag("Items", bufferTagList);
-    }
-
 
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
@@ -185,21 +182,12 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     @Override
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
         super.readRestorableFromNBT(tagCompound);
-        readBufferFromNBT(tagCompound);
+        readBufferFromNBT(tagCompound, inventoryHelper);
     }
-
-    private void readBufferFromNBT(NBTTagCompound tagCompound) {
-        NBTTagList bufferTagList = tagCompound.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0 ; i < bufferTagList.tagCount() ; i++) {
-            NBTTagCompound nbtTagCompound = bufferTagList.getCompoundTagAt(i);
-            inventoryHelper.setStackInSlot(i, ItemStack.loadItemStackFromNBT(nbtTagCompound));
-        }
-    }
-
 
     @Override
-    public void hook(TileTank tank, ForgeDirection direction) {
-        if (direction == ForgeDirection.DOWN){
+    public void hook(TileTank tank, EnumFacing direction) {
+        if (direction == EnumFacing.DOWN){
             this.lavaTank = tank;
         } else if (rclTank == null){
             if (validRCLTank(tank)){
@@ -210,18 +198,18 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     }
 
     @Override
-    public void unHook(TileTank tank, ForgeDirection direction) {
+    public void unHook(TileTank tank, EnumFacing direction) {
         if (tilesEqual(lavaTank, tank)){
             lavaTank = null;
         } else if (tilesEqual(rclTank, tank)){
             rclTank = null;
-            notifyNeighboursOfDataChange();
+            notifyAndMarkDirty();
         }
         checkTanks = true;
     }
 
     @Override
-    public void onContentChanged(TileTank tank, ForgeDirection direction) {
+    public void onContentChanged(TileTank tank, EnumFacing direction) {
         if (tilesEqual(rclTank, tank)){
             if (!validRCLTank(tank)) {
                 rclTank = null;
@@ -236,57 +224,25 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     }
 
     private boolean tilesEqual(TileTank first, TileTank second){
-        return first != null && second != null && first.myLocation().equals(second.myLocation()) && WorldHelper.getDimID(first.getWorldObj()) == WorldHelper.getDimID(second.getWorldObj());
+        return first != null && second != null && first.getPos().equals(second.getPos()) && WorldHelper.getDimID(first.getWorld()) == WorldHelper.getDimID(second.getWorld());
     }
 
     @Override
-    public int[] getAccessibleSlotsFromSide(int side) {
+    public int[] getSlotsForFace(EnumFacing side) {
         return new int[] { SmelterContainer.SLOT_OREINPUT };
     }
 
     @Override
-    public boolean canInsertItem(int index, ItemStack item, int side) {
+    public boolean canInsertItem(int index, ItemStack item, EnumFacing side) {
+        if (!isItemValidForSlot(index, item)) {
+            return false;
+        }
         return SmelterContainer.factory.isInputSlot(index) || SmelterContainer.factory.isSpecificItemSlot(index);
     }
 
     @Override
-    public boolean canExtractItem(int index, ItemStack item, int side) {
+    public boolean canExtractItem(int index, ItemStack item, EnumFacing side) {
         return SmelterContainer.factory.isOutputSlot(index);
-    }
-
-    @Override
-    public int getSizeInventory() {
-        return inventoryHelper.getCount();
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int index) {
-        return inventoryHelper.getStackInSlot(index);
-    }
-
-    @Override
-    public ItemStack decrStackSize(int index, int amount) {
-        return inventoryHelper.decrStackSize(index, amount);
-    }
-
-    @Override
-    public ItemStack getStackInSlotOnClosing(int index) {
-        return null;
-    }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
-        inventoryHelper.setInventorySlotContents(getInventoryStackLimit(), index, stack);
-    }
-
-    @Override
-    public String getInventoryName() {
-        return "Smelter Inventory";
-    }
-
-    @Override
-    public boolean hasCustomInventoryName() {
-        return false;
     }
 
     @Override
@@ -300,25 +256,13 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
     }
 
     @Override
-    public void openInventory() {
-
-    }
-
-    @Override
-    public void closeInventory() {
-
-    }
-
-    @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return true;
+        return stack.getItem() == Item.getItemFromBlock(ModBlocks.resonatingOreBlock);
     }
 
     // Request the researching amount from the server. This has to be called on the client side.
     public void requestProgressFromServer() {
-        DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketRequestIntegerFromServer(xCoord, yCoord, zCoord,
-                CMD_GETPROGRESS,
-                CLIENTCMD_GETPROGRESS));
+        DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketRequestIntegerFromServer(DeepResonance.MODID, pos, CMD_GETPROGRESS, CLIENTCMD_GETPROGRESS));
     }
 
     @Override
@@ -350,5 +294,27 @@ public class SmelterTileEntity extends ElecEnergyReceiverTileBase implements ITa
         return false;
     }
 
+    IItemHandler invHandler = new CustomSidedInvWrapper(this);
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, net.minecraft.util.EnumFacing facing) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return (T) invHandler;
+        }
+        return super.getCapability(capability, facing);
+    }
+
+    protected void notifyAndMarkDirty(){
+        if (WorldHelper.chunkLoaded(worldObj, pos)){
+            this.markDirty();
+            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+        }
+    }
 
 }

@@ -1,29 +1,36 @@
 package mcjty.deepresonance.blocks.lens;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
-import mcjty.lib.container.GenericBlock;
+import mcjty.lib.container.EmptyContainer;
+import mcjty.lib.varia.BlockTools;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-public class LensBlock extends GenericBlock {
+public class LensBlock extends GenericDRBlock<LensTileEntity, EmptyContainer> {
 
     public LensBlock() {
-        super(DeepResonance.instance, Material.iron, LensTileEntity.class, false);
-        setBlockName("lensBlock");
-        setHorizRotation(true);
-        setCreativeTab(DeepResonance.tabDeepResonance);
+        super(Material.IRON, LensTileEntity.class, EmptyContainer.class, LensItemBlock.class, "lens", false);
+    }
+
+    @Override
+    public boolean isHorizRotation() {
+        return true;
     }
 
     @Override
@@ -32,52 +39,86 @@ public class LensBlock extends GenericBlock {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean whatIsThis) {
-        super.addInformation(itemStack, player, list, whatIsThis);
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedToolTip) {
+        super.addInformation(itemStack, player, list, advancedToolTip);
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
             list.add("Place this block on a tank and aim an");
             list.add("infusion laser at it to enhance the liquid");
             list.add("in the tank");
         } else {
-            list.add(EnumChatFormatting.WHITE + ClientHandler.getShiftMessage());
+            list.add(TextFormatting.WHITE + ClientHandler.getShiftMessage());
         }
     }
 
     @Override
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
         return null;
     }
 
+    public static final AxisAlignedBB BLOCK_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+    public static final AxisAlignedBB NORTH_BLOCK_AABB = new AxisAlignedBB(0.1F, 0.1F, 0.0F, 0.9F, 0.9F, 0.1F);
+    public static final AxisAlignedBB SOUTH_BLOCK_AABB = new AxisAlignedBB(0.1F, 0.1F, 0.9F, 0.9F, 0.9F, 1.0F);
+    public static final AxisAlignedBB WEST_BLOCK_AABB = new AxisAlignedBB(0.0F, 0.1F, 0.1F, 0.1F, 0.9F, 0.9F);
+    public static final AxisAlignedBB EAST_BLOCK_AABB = new AxisAlignedBB(0.9F, 0.1F, 0.1F, 1.0F, 0.9F, 0.9F);
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        int meta = state.getBlock().getMetaFromState(state);
+        EnumFacing direction = BlockTools.getOrientationHoriz(meta);
+        switch (direction) {
+            case NORTH:
+                return NORTH_BLOCK_AABB;
+            case SOUTH:
+                return SOUTH_BLOCK_AABB;
+            case WEST:
+                return WEST_BLOCK_AABB;
+            case EAST:
+                return EAST_BLOCK_AABB;
+            case DOWN:
+            case UP:
+            default:
+                return BLOCK_AABB;
+        }
+    }
+
+    /*
     @Override
     protected boolean wrenchUse(World world, int x, int y, int z, EntityPlayer player) {
         // Do not rotate
         return true;
+    }*/
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
     }
 
     @Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLivingBase, ItemStack itemStack) {
-    }
-
-    @Override
-    public String getSideIconName() {
-        return "lens";
-    }
-
-    @Override
-    public boolean shouldSideBeRendered(IBlockAccess blockAccess, int x, int y, int z, int side) {
+    public boolean shouldSideBeRendered(IBlockState state, IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
         return false;
     }
 
     @Override
-    public boolean renderAsNormalBlock() {
+    public boolean isOpaqueCube(IBlockState state) {
+        return false;
+    }
+
+
+    @Override
+    public boolean isFullBlock(IBlockState state) {
         return false;
     }
 
     @Override
-    public boolean isOpaqueCube() {
+    public boolean isFullCube(IBlockState state) {
         return false;
     }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public BlockRenderLayer getBlockLayer() {
+        return BlockRenderLayer.CUTOUT;
+    }
+
 }

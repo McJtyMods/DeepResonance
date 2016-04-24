@@ -61,18 +61,14 @@ public class TileBasicFluidDuct extends ElecTileBase {
             tagCompound.setString("lastSeenFluid", FluidRegistry.getFluidName(lastSeenFluid));
     }
 
-    @Override
-    public boolean canUpdate() {
-        return false;
-    }
-
     public int getTankStorageMax(){
         return 200;
     }
 
     public DRFluidDuctGrid getGrid(){
-        if (!worldObj.isRemote)
-            return DeepResonance.worldGridRegistry.getFluidRegistry().get(worldObj).getPowerTile(myLocation()).getGrid();
+        if (!worldObj.isRemote) {
+            return DeepResonance.worldGridRegistry.getFluidRegistry().get(worldObj).getPowerTile(getPos()).getGrid();
+        }
         return null;
     }
 

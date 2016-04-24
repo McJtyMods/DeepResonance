@@ -1,0 +1,29 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "forge:multi-layer",
+    "custom": {
+      "base": "deepresonance:crystalizer#base",
+      "Solid": "deepresonance:crystalizer#base",
+      "Translucent": "deepresonance:crystalizer#window"
+    },
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "facing": {
+      "north": { },
+      "south": {"y": 180},
+      "west": {"y": 270},
+      "east": {"y": 90}
+    },
+    "base": [{
+      "custom": { "flip-v": true },
+      "model": "deepresonance:crystalizer.obj"
+    }],
+    "window": [{
+      "model": "deepresonance:crystalizer_front", "textures": { "overlay": "deepresonance:blocks/crystalizer" }
+    }]
+  }
+}

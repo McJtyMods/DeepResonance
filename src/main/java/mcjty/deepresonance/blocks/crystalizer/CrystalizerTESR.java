@@ -1,123 +1,98 @@
 package mcjty.deepresonance.blocks.crystalizer;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mcjty.deepresonance.DeepResonance;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.AdvancedModelLoader;
-import net.minecraftforge.client.model.IModelCustom;
+import net.minecraft.world.World;
+import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
-public class CrystalizerTESR extends TileEntitySpecialRenderer {
-    IModelCustom model = AdvancedModelLoader.loadModel(new ResourceLocation(DeepResonance.MODID, "obj/crystal.obj"));
-    ResourceLocation texture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/crystal.png");
+public class CrystalizerTESR extends TileEntitySpecialRenderer<CrystalizerTileEntity> {
 
-    @Override
-    public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float time) {
-        if (tileEntity instanceof CrystalizerTileEntity) {
-            GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
+    ResourceLocation frontTexture = new ResourceLocation(DeepResonance.MODID, "blocks/crystalizer");
 
-            CrystalizerTileEntity crystalizerTileEntity = (CrystalizerTileEntity) tileEntity;
-            int progress = crystalizerTileEntity.getProgress();
-            boolean hasCrystal = crystalizerTileEntity.hasCrystal();
+    private IModel model;
+    private IBakedModel bakedModel;
 
-            if (hasCrystal || progress > 0) {
-                bindTexture(texture);
-
-                GL11.glPushMatrix();
-                GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-                //        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-                GL11.glEnable(GL11.GL_BLEND);
-                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-                GL11.glTranslatef((float) x + 0.5F, (float) y + 0.4F, (float) z + 0.5F);
-                GL11.glScalef(0.4f, 0.4f, 0.4f);
-
-                if (0 < progress && progress < CrystalizerTileEntity.getTotalProgress()) {
-                    float t = (System.currentTimeMillis() % 10000) / 10000.0f;
-                    GL11.glRotatef(t * 360.0f, 0.0F, 1.0F, 0.0F);
-                }
-
-                model.renderAll();
-
-                GL11.glPopMatrix();
-
-                GL11.glDisable(GL11.GL_BLEND);
-            }
-
-            GL11.glPushMatrix();
-            GL11.glTranslatef((float) x, (float) y, (float) z);
-            bindTexture(TextureMap.locationBlocksTexture);
-            renderInside(Tessellator.instance);
-            GL11.glPopMatrix();
-
-            GL11.glPopAttrib();
-        }
+    public CrystalizerTESR() {
+        // Manually load our rotating crystal here
     }
 
-    private void renderInside(Tessellator tessellator) {
-        float offset = 0.002f;
+    private IBakedModel getBakedModel() {
+        // Since we cannot bake in preInit() we do lazy baking of the model as soon as we need it
+        // for rendering
+        if (bakedModel == null) {
+            try {
+                model = ModelLoaderRegistry.getModel(new ResourceLocation(DeepResonance.MODID, "block/crystal_inside.obj"));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            bakedModel = model.bake(TRSRTransformation.identity(), DefaultVertexFormats.ITEM,
+                                    location -> Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString()));
+        }
+        return bakedModel;
+    }
 
-        tessellator.startDrawingQuads();
-        tessellator.setColorRGBA(255, 255, 255, 128);
-        tessellator.setBrightness(100);
 
-        // ---------------------------------------------------------------
-        // Render the inside of the tank
-        // ---------------------------------------------------------------
-        IIcon blockIcon;
+    @Override
+    public void renderTileEntityAt(CrystalizerTileEntity te, double x, double y, double z, float time, int breakTime) {
+        GlStateManager.pushAttrib();
+//        GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
 
-        //NORTH other side
-        blockIcon = CrystalizerSetup.crystalizer.getSideIcon();
-        tessellator.addVertexWithUV(1, 0, offset, blockIcon.getMinU(), blockIcon.getMinV());
-        tessellator.addVertexWithUV(1, 1, offset, blockIcon.getMinU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(0, 1, offset, blockIcon.getMaxU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(0, 0, offset, blockIcon.getMaxU(), blockIcon.getMinV());
+        int progress = te.getProgress();
+        boolean hasCrystal = te.hasCrystal();
 
-        //SOUTH other side
-        blockIcon = CrystalizerSetup.crystalizer.getSouthIcon();
-        tessellator.addVertexWithUV(1, 1, 1 - offset, blockIcon.getMinU(), blockIcon.getMinV());
-        tessellator.addVertexWithUV(1, 0, 1 - offset, blockIcon.getMinU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(0, 0, 1 - offset, blockIcon.getMaxU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(0, 1, 1 - offset, blockIcon.getMaxU(), blockIcon.getMinV());
+        if (hasCrystal || progress > 0) {
+            GlStateManager.pushMatrix();
+            GlStateManager.enableRescaleNormal();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-        //EAST other side
-        blockIcon = CrystalizerSetup.crystalizer.getSideIcon();
-        tessellator.addVertexWithUV(offset, 1, 1, blockIcon.getMinU(), blockIcon.getMinV());
-        tessellator.addVertexWithUV(offset, 0, 1, blockIcon.getMinU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(offset, 0, 0, blockIcon.getMaxU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(offset, 1, 0, blockIcon.getMaxU(), blockIcon.getMinV());
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        //WEST other side
-        blockIcon = CrystalizerSetup.crystalizer.getSideIcon();
-        tessellator.addVertexWithUV(1 - offset, 0, 1, blockIcon.getMinU(), blockIcon.getMinV());
-        tessellator.addVertexWithUV(1 - offset, 1, 1, blockIcon.getMinU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(1 - offset, 1, 0, blockIcon.getMaxU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(1 - offset, 0, 0, blockIcon.getMaxU(), blockIcon.getMinV());
+            GlStateManager.translate((float) x + 0.5F, (float) y + 0.4F, (float) z + 0.5F);
+            GlStateManager.scale(0.4f, 0.4f, 0.4f);
 
-        // Bottom other side. Raised a bit
-        blockIcon = CrystalizerSetup.crystalizer.getBottomIcon();
-        tessellator.addVertexWithUV(0, .4f, 0, blockIcon.getMinU(), blockIcon.getMinV());
-        tessellator.addVertexWithUV(0, .4f, 1, blockIcon.getMinU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(1, .4f, 1, blockIcon.getMaxU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(1, .4f, 0, blockIcon.getMaxU(), blockIcon.getMinV());
+            if (0 < progress && progress < CrystalizerTileEntity.getTotalProgress()) {
+                float t = (System.currentTimeMillis() % 10000) / 10000.0f;
+                GlStateManager.rotate(t * 360.0f, 0.0F, 1.0F, 0.0F);
+            }
 
-        // Top other side
-        blockIcon = CrystalizerSetup.crystalizer.getTopIcon();
-        tessellator.addVertexWithUV(0, 1 - offset, 0, blockIcon.getMinU(), blockIcon.getMinV());
-        tessellator.addVertexWithUV(1, 1 - offset, 0, blockIcon.getMinU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(1, 1 - offset, 1, blockIcon.getMaxU(), blockIcon.getMaxV());
-        tessellator.addVertexWithUV(0, 1 - offset, 1, blockIcon.getMaxU(), blockIcon.getMinV());
+            World world = te.getWorld();
+            // Translate back to local view coordinates so that we can do the acual rendering here
+            GlStateManager.translate(-te.getPos().getX(), -te.getPos().getY(), -te.getPos().getZ());
 
-        tessellator.draw();
+            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+
+            Tessellator tessellator = Tessellator.getInstance();
+            tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+            Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModel(
+                    world,
+                    getBakedModel(),
+                    world.getBlockState(te.getPos()),
+                    te.getPos(),
+                    Tessellator.getInstance().getBuffer(), false);
+            tessellator.draw();
+
+            RenderHelper.enableStandardItemLighting();
+
+            GlStateManager.popMatrix();
+
+            GlStateManager.disableBlend();
+        }
+
+        GlStateManager.popAttrib();
     }
 }
