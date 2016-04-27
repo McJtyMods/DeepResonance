@@ -23,6 +23,9 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.registry.FMLControlledNamespacedRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.IForgeRegistry;
 
 import java.util.List;
 import java.util.Map;
@@ -239,14 +242,14 @@ public class RadiationTickEvent {
     }
 
     private static void getPotions() {
-        IRegistry<ResourceLocation, Potion> potionRegistry = RegistryHelper.getPotionRegistry();
+        IForgeRegistry<Potion> potionRegistry = ForgeRegistries.POTIONS;
         if (harm == null) {
-            harm = potionRegistry.getObject(new ResourceLocation("instant_damage"));
-            hunger = potionRegistry.getObject(new ResourceLocation("hunger"));
-            moveSlowdown = potionRegistry.getObject(new ResourceLocation("slowness"));
-            weakness = potionRegistry.getObject(new ResourceLocation("weakness"));
-            poison = potionRegistry.getObject(new ResourceLocation("poison"));
-            wither = potionRegistry.getObject(new ResourceLocation("wither"));
+            harm = potionRegistry.getValue(new ResourceLocation("instant_damage"));
+            hunger = potionRegistry.getValue(new ResourceLocation("hunger"));
+            moveSlowdown = potionRegistry.getValue(new ResourceLocation("slowness"));
+            weakness = potionRegistry.getValue(new ResourceLocation("weakness"));
+            poison = potionRegistry.getValue(new ResourceLocation("poison"));
+            wither = potionRegistry.getValue(new ResourceLocation("wither"));
         }
     }
 
