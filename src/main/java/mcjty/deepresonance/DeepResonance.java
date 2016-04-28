@@ -39,7 +39,7 @@ import java.io.File;
         version = DeepResonance.VERSION)
 public class DeepResonance implements ModBase {
     public static final String MODID = "deepresonance";
-    public static final String VERSION = "1.1.4beta29";
+    public static final String VERSION = "1.1.4beta30";
     public static final String MIN_FORGE_VER = "12.16.0.1835";
     public static final String MIN_MCJTYLIB_VER = "1.9.0-1.8.2";
     public static final String MIN_ELECCORE_VER = "1.4.264";

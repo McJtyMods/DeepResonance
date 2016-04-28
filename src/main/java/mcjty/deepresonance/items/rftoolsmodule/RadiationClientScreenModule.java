@@ -3,6 +3,7 @@ package mcjty.deepresonance.items.rftoolsmodule;
 import mcjty.rftools.api.screens.IClientScreenModule;
 import mcjty.rftools.api.screens.IModuleGuiBuilder;
 import mcjty.rftools.api.screens.IModuleRenderHelper;
+import mcjty.rftools.api.screens.ModuleRenderInfo;
 import mcjty.rftools.api.screens.data.IModuleDataInteger;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -26,7 +27,7 @@ public class RadiationClientScreenModule implements IClientScreenModule<IModuleD
     }
 
     @Override
-    public void render(IModuleRenderHelper helper, FontRenderer fontRenderer, int currenty, IModuleDataInteger screenData, float factor) {
+    public void render(IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, IModuleDataInteger screenData, ModuleRenderInfo renderInfo) {
         GlStateManager.disableLighting();
         int xoffset;
         if (!line.isEmpty()) {
