@@ -3,6 +3,7 @@ package mcjty.deepresonance.items.rftoolsmodule;
 import mcjty.rftools.api.screens.IClientScreenModule;
 import mcjty.rftools.api.screens.IModuleGuiBuilder;
 import mcjty.rftools.api.screens.IModuleRenderHelper;
+import mcjty.rftools.api.screens.ModuleRenderInfo;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,7 +26,7 @@ public class RCLClientScreenModule implements IClientScreenModule<ModuleDataRCL>
     }
 
     @Override
-    public void render(IModuleRenderHelper helper, FontRenderer fontRenderer, int currenty, ModuleDataRCL screenData, float factor) {
+    public void render(IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, ModuleDataRCL screenData, ModuleRenderInfo renderInfo) {
         GlStateManager.disableLighting();
         int xoffset;
         if (!line.isEmpty()) {

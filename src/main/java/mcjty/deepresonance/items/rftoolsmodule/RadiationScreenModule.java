@@ -9,6 +9,7 @@ import mcjty.rftools.api.screens.IScreenDataHelper;
 import mcjty.rftools.api.screens.IScreenModule;
 import mcjty.rftools.api.screens.data.IModuleDataInteger;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -67,7 +68,6 @@ public class RadiationScreenModule implements IScreenModule<IModuleDataInteger> 
     }
 
     @Override
-    public void mouseClick(World world, int x, int y, boolean clicked) {
-
+    public void mouseClick(World world, int x, int y, boolean clicked, EntityPlayer player) {
     }
 }
