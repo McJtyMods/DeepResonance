@@ -124,6 +124,7 @@ public class DeepResonance implements ModBase {
         configWrapper.refresh();
         proxy.preInit(e);
         MainCompatHandler.registerWaila();
+        MainCompatHandler.registerTOP();
 
         if (rftools) {
             Logging.log("Detected RFTools: enabling support");

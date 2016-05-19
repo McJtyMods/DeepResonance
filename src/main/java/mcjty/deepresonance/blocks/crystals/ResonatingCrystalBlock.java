@@ -40,15 +40,12 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.text.DecimalFormat;
 import java.util.List;
 
-@Optional.InterfaceList({
-        @Optional.Interface(iface = "mcjty.theoneprobe.api.IProbeInfoAccessor", modid = "theoneprobe")})
 public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTileEntity, EmptyContainer> {
 
     public static PropertyBool EMPTY = PropertyBool.create("empty");
@@ -140,7 +137,6 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
         }
     }
 
-    @Optional.Method(modid = "theoneprobe")
     @Override
     public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
         super.addProbeInfo(mode, probeInfo, player, world, blockState, data);

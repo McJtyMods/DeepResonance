@@ -42,7 +42,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -54,8 +53,6 @@ import java.util.Map;
 /**
  * Created by Elec332 on 20-8-2015.
  */
-@Optional.InterfaceList({
-        @Optional.Interface(iface = "mcjty.theoneprobe.api.IProbeInfoAccessor", modid = "theoneprobe")})
 public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implements ITextureLoader {
 
     public static final PropertyEnum<TileTank.Mode> NORTH = PropertyEnum.create("north", TileTank.Mode.class);
@@ -121,7 +118,6 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     public LiquidCrystalFluidTagData fluidData = null;
     public Fluid clientRenderFluid = null;
 
-    @Optional.Method(modid = "theoneprobe")
     @Override
     public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
         super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
@@ -135,7 +131,8 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
             if (tank.getFluid() != null && tank.getFluid().getFluid() != null) {
                 probeInfo.text(TextFormatting.GREEN + "Fluid: " + DRFluidRegistry.getFluidName(tank.getFluid().getFluid()));
             }
-            probeInfo.progress(tank.getFluidAmount(), tank.getCapacity(), "", "B", new ProgressStyle()
+            probeInfo.progress(tank.getFluidAmount(), tank.getCapacity(), new ProgressStyle()
+                    .suffix("B")
                     .filledColor(0xff005588).alternateFilledColor(0xff001133));
 
             LiquidCrystalFluidTagData lcd = LiquidCrystalFluidTagData.fromStack(tank.getFluid());
