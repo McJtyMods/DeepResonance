@@ -12,6 +12,10 @@ import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.deepresonance.network.PacketGetTankInfo;
 import mcjty.lib.container.EmptyContainer;
+import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.api.ProbeMode;
+import mcjty.theoneprobe.api.ProgressStyle;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
@@ -38,6 +42,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -49,6 +54,8 @@ import java.util.Map;
 /**
  * Created by Elec332 on 20-8-2015.
  */
+@Optional.InterfaceList({
+        @Optional.Interface(iface = "mcjty.theoneprobe.api.IProbeInfoAccessor", modid = "theoneprobe")})
 public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implements ITextureLoader {
 
     public static final PropertyEnum<TileTank.Mode> NORTH = PropertyEnum.create("north", TileTank.Mode.class);
@@ -113,6 +120,34 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     public int tankCapacity = 0;
     public LiquidCrystalFluidTagData fluidData = null;
     public Fluid clientRenderFluid = null;
+
+    @Optional.Method(modid = "theoneprobe")
+    @Override
+    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
+        super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
+        TileEntity te = world.getTileEntity(data.getPos());
+        if (te instanceof TileTank) {
+            TileTank tank = (TileTank) te;
+
+            Map<EnumFacing, TileTank.Mode> settings = tank.getSettings();
+            TileTank.Mode i = settings.get(data.getSideHit());
+            probeInfo.text(TextFormatting.GREEN + "Mode: " + (i == TileTank.Mode.SETTING_NONE ? "none" : (i == TileTank.Mode.SETTING_ACCEPT ? "accept" : "provide")));
+            if (tank.getFluid() != null && tank.getFluid().getFluid() != null) {
+                probeInfo.text(TextFormatting.GREEN + "Fluid: " + DRFluidRegistry.getFluidName(tank.getFluid().getFluid()));
+            }
+            probeInfo.progress(tank.getFluidAmount(), tank.getCapacity(), "", "B", new ProgressStyle()
+                    .filledColor(0xff005588).alternateFilledColor(0xff001133));
+
+            LiquidCrystalFluidTagData lcd = LiquidCrystalFluidTagData.fromStack(tank.getFluid());
+            if (lcd != null) {
+                DecimalFormat decimalFormat = new DecimalFormat("#.#");
+                probeInfo.text(TextFormatting.YELLOW + "Quality: " + decimalFormat.format(lcd.getQuality() * 100) + "%");
+                probeInfo.text(TextFormatting.YELLOW + "Purity: " + decimalFormat.format(lcd.getPurity() * 100) + "%");
+                probeInfo.text(TextFormatting.YELLOW + "Strength: " + decimalFormat.format(lcd.getStrength() * 100) + "%");
+                probeInfo.text(TextFormatting.YELLOW + "Efficiency: " + decimalFormat.format(lcd.getEfficiency() * 100) + "%");
+            }
+        }
+    }
 
     @Override
     @SideOnly(Side.CLIENT)

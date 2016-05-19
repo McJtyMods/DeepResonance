@@ -12,6 +12,9 @@ import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
 import mcjty.lib.container.EmptyContainer;
 import mcjty.lib.varia.GlobalCoordinate;
+import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.api.ProbeMode;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.SoundType;
@@ -37,12 +40,15 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.text.DecimalFormat;
 import java.util.List;
 
+@Optional.InterfaceList({
+        @Optional.Interface(iface = "mcjty.theoneprobe.api.IProbeInfoAccessor", modid = "theoneprobe")})
 public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTileEntity, EmptyContainer> {
 
     public static PropertyBool EMPTY = PropertyBool.create("empty");
@@ -131,6 +137,21 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
                     + decimalFormat.format(tagCompound.getFloat("efficiency")) + "% "
                     + decimalFormat.format(tagCompound.getFloat("purity")) + "%");
             list.add(TextFormatting.YELLOW + "Power left: " + decimalFormat.format(power) + "%");
+        }
+    }
+
+    @Optional.Method(modid = "theoneprobe")
+    @Override
+    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
+        super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
+        TileEntity te = world.getTileEntity(data.getPos());
+        if (te instanceof ResonatingCrystalTileEntity) {
+            ResonatingCrystalTileEntity crystal = (ResonatingCrystalTileEntity) te;
+            DecimalFormat decimalFormat = new DecimalFormat("#.#");
+            probeInfo.text(TextFormatting.GREEN + "Strength/Efficiency/Purity: " + decimalFormat.format(crystal.getStrength()) + "% "
+                    + decimalFormat.format(crystal.getEfficiency()) + "% "
+                    + decimalFormat.format(crystal.getPurity()) + "%");
+            probeInfo.text(TextFormatting.YELLOW + "Power left: " + decimalFormat.format(crystal.getPower()) + "% (" + tooltipRFTick + " RF/t)");
         }
     }
 
