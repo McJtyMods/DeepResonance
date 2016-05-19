@@ -15,7 +15,6 @@ import mcjty.lib.container.EmptyContainer;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
-import mcjty.theoneprobe.api.ProgressStyle;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
@@ -131,9 +130,10 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
             if (tank.getFluid() != null && tank.getFluid().getFluid() != null) {
                 probeInfo.text(TextFormatting.GREEN + "Fluid: " + DRFluidRegistry.getFluidName(tank.getFluid().getFluid()));
             }
-            probeInfo.progress(tank.getFluidAmount(), tank.getCapacity(), new ProgressStyle()
-                    .suffix("B")
-                    .filledColor(0xff005588).alternateFilledColor(0xff001133));
+            probeInfo.progress(tank.getFluidAmount(), tank.getCapacity(),
+                    probeInfo.defaultProgressStyle()
+                        .suffix("B")
+                        .filledColor(0xff005588).alternateFilledColor(0xff001133));
 
             LiquidCrystalFluidTagData lcd = LiquidCrystalFluidTagData.fromStack(tank.getFluid());
             if (lcd != null) {

@@ -147,7 +147,15 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
             probeInfo.text(TextFormatting.GREEN + "Strength/Efficiency/Purity: " + decimalFormat.format(crystal.getStrength()) + "% "
                     + decimalFormat.format(crystal.getEfficiency()) + "% "
                     + decimalFormat.format(crystal.getPurity()) + "%");
-            probeInfo.text(TextFormatting.YELLOW + "Power left: " + decimalFormat.format(crystal.getPower()) + "% (" + tooltipRFTick + " RF/t)");
+            probeInfo.horizontal().text(TextFormatting.YELLOW + "Power: " + decimalFormat.format(crystal.getPower()) + "% (" + tooltipRFTick + " RF/t)")
+                .progress((int) crystal.getPower(), 100, probeInfo.defaultProgressStyle()
+                        .suffix("%")
+                        .width(40)
+                        .height(10)
+                        .showText(false)
+                        .filledColor(0xffff0000)
+                        .alternateFilledColor(0xff990000));
+//            probeInfo.text(TextFormatting.YELLOW + "Power left: " + decimalFormat.format(crystal.getPower()) + "% (" + tooltipRFTick + " RF/t)");
         }
     }
 
