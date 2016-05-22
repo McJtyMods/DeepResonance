@@ -111,7 +111,7 @@ public class DRRadiationManager extends WorldSavedData {
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         NBTTagList lst = new NBTTagList();
         for (Map.Entry<GlobalCoordinate, RadiationSource> entry : sources.entrySet()) {
             NBTTagCompound tc = new NBTTagCompound();
@@ -123,6 +123,7 @@ public class DRRadiationManager extends WorldSavedData {
             lst.appendTag(tc);
         }
         tagCompound.setTag("radiation", lst);
+        return tagCompound;
     }
 
     public static class RadiationSource {
@@ -163,7 +164,7 @@ public class DRRadiationManager extends WorldSavedData {
                 for (int x = (int) (centerX-radius); x < centerX+radius ; x++) {
                     for (int y = (int) (centerY-radius); y < centerY+radius ; y++) {
                         for (int z = (int) (centerZ-radius); z < centerZ+radius ; z++) {
-                            pos.set(x, y, z);
+                            pos.setPos(x, y, z);
                             IBlockState block = WorldHelper.getBlockState(world, pos);
                             float blocker = RadiationShieldRegistry.getBlocker(block);
                             if (blocker < 0.99f) {

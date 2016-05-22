@@ -55,7 +55,7 @@ public class CmdShowRadiation extends AbstractDRCommand {
                 for (int x = cx-radius; x < cx+radius ; x++) {
                     for (int y = cy-radius; y < cy+radius ; y++) {
                         for (int z = cz-radius; z < cz+radius ; z++) {
-                            pos.set(x, y, z);
+                            pos.setPos(x, y, z);
                             Block b = world.getBlockState(pos).getBlock();
                             if (world.isAirBlock(pos) || b == ModBlocks.debugBlock) {
                                 QuadTree radiationTree = source.getRadiationTree(world, cx, cy, cz);

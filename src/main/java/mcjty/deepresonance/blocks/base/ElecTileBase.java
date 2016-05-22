@@ -12,6 +12,8 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 
+import javax.annotation.Nullable;
+
 /**
  * Created by Elec332 on 12-8-2015.
  */
@@ -72,11 +74,12 @@ public abstract class ElecTileBase extends GenericTileEntity implements IElecCor
     }
 
     public void sendPacketTo(EntityPlayerMP player, int ID, NBTTagCompound data) {
-        player.playerNetServerHandler.sendPacket(new SPacketUpdateTileEntity(this.pos, ID, data));
+        player.connection.sendPacket(new SPacketUpdateTileEntity(this.pos, ID, data));
     }
 
+    @Nullable
     @Override
-    public Packet getDescriptionPacket() {
+    public SPacketUpdateTileEntity getUpdatePacket() {
         NBTTagCompound nbtTag = new NBTTagCompound();
         this.writeToNBT(nbtTag);
         return new SPacketUpdateTileEntity(this.pos, 0, nbtTag);

@@ -389,11 +389,12 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("color", color);
         tagCompound.setInteger("progress", progressCounter);
         tagCompound.setByte("powered", (byte) powered);
+        return tagCompound;
     }
 
     @Override

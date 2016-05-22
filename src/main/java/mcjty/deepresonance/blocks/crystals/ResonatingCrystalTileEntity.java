@@ -170,8 +170,9 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
+        return tagCompound;
     }
 
     @Override

@@ -212,7 +212,7 @@ public class RadiationTickEvent {
                     double dSq = (x-destx) * (x-destx) + (y-desty) * (y-desty) + (z-destz) * (z-destz);
                     double d = Math.sqrt(dSq);
                     double str = (eventradius-d) / eventradius;
-                    currentPos = currentPos.set(x, y, z);
+                    currentPos = currentPos.setPos(x, y, z);
 
                     Block block = WorldHelper.getBlockAt(world, currentPos);
                     if (block == Blocks.DIRT || block == Blocks.FARMLAND || block == Blocks.GRASS) {

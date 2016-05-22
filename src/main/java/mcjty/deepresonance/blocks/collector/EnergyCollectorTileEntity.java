@@ -341,7 +341,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         byte[] crystalX = new byte[crystals.size()];
         byte[] crystalY = new byte[crystals.size()];
@@ -360,6 +360,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         tagCompound.setBoolean("lasersActive", lasersActive);
         tagCompound.setInteger("laserStartup", laserStartup);
         tagCompound.setInteger("networkId", networkID);
+        return tagCompound;
     }
 
 

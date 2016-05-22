@@ -150,9 +150,10 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
 
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("progress", progress);
+        return tagCompound;
     }
 
     @Override

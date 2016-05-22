@@ -156,12 +156,13 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("totalProgress", totalProgress);
         tagCompound.setInteger("progress", progress);
         tagCompound.setFloat("finalQuality", finalQuality);
         tagCompound.setFloat("finalPurity", finalPurity);
+        return tagCompound;
     }
 
     @Override

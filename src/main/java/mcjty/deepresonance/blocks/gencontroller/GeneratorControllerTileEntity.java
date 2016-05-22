@@ -221,11 +221,12 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("startup", startup);
         tagCompound.setInteger("shutdown", shutdown);
         tagCompound.setBoolean("active", active);
         tagCompound.setInteger("powered", powered);
+        return tagCompound;
     }
 }

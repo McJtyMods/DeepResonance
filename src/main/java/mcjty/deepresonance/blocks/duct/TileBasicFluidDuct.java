@@ -46,7 +46,7 @@ public class TileBasicFluidDuct extends ElecTileBase {
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         if (getGrid() != null) {
             intTank = getGrid().getFluidShare(this);
@@ -59,6 +59,7 @@ public class TileBasicFluidDuct extends ElecTileBase {
         }
         if (lastSeenFluid != null)
             tagCompound.setString("lastSeenFluid", FluidRegistry.getFluidName(lastSeenFluid));
+        return tagCompound;
     }
 
     public int getTankStorageMax(){

@@ -89,7 +89,7 @@ public class LaserBlock extends GenericDRBlock<LaserTileEntity, LaserContainer> 
     */
 
     @Override
-    public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock) {
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn) {
         checkRedstoneWithTE(world, pos);
     }
 

@@ -56,7 +56,7 @@ public class GeneratorControllerBlock extends GenericDRBlock<GeneratorController
     }
 
     @Override
-    public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block block) {
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn) {
         checkRedstoneWithTE(world, pos);
     }
 

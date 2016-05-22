@@ -146,7 +146,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("progress", progress);
         if (mergedData != null) {
@@ -155,6 +155,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
             tagCompound.setTag("data", dataCompound);
             tagCompound.setInteger("amount", mergedData.getInternalTankAmount());
         }
+        return tagCompound;
     }
 
     @Override
