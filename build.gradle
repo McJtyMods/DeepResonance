@@ -30,6 +30,9 @@ repositories {
         name 'tterrag maven'
         url "http://maven.tterrag.com/"
     }
+    maven { // McJtyLib
+        url "http://maven.k-4u.nl"
+    }
     maven {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/repositories/snapshots/"
@@ -48,7 +51,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    version = "1.9.4-12.17.0.1909-1.9.4"
+    version = "1.9.4-12.17.0.1937"
     runDir = "run"
     mappings = "snapshot_20160518"
     useDepAts = true
@@ -66,10 +69,10 @@ artifacts {
 
 
 dependencies {
-    deobfCompile "mcp.mobius.waila:Waila:1.7.0-B2_1.9"
+    deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
     deobfCompile "mezz.jei:jei_1.9.4:3.4.0.202"
-    deobfCompile "mcjty.theoneprobe:TheOneProbe:1.9.4-0.0.1beta3-1"
-//    compile "com.github.mcjty:mcjtylib:1.8.9-1.8.1beta4-SNAPSHOT:dev"
+    deobfCompile "mcjty.theoneprobe:TheOneProbe:1.9.4-1.0.4-14"
+    deobfCompile "com.github.mcjty:mcjtylib:1.9.4-1.8.7-SNAPSHOT"
 }
 
 jar {
