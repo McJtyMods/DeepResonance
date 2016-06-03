@@ -18,7 +18,10 @@ public final class ModItems {
     public static ResonatingPlateItem resonatingPlateItem;
     public static FilterMaterialItem filterMaterialItem;
     public static SpentFilterMaterialItem spentFilterMaterialItem;
-    public static ItemRadiationSuit helmet, chestplate, leggings, boots;
+    public static ItemRadiationSuit helmet;
+    public static ItemRadiationSuit chestplate;
+    public static ItemRadiationSuit leggings;
+    public static ItemRadiationSuit boots;
     public static InsertLiquidItem insertLiquidItem;
 
     public static void init() {

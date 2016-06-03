@@ -45,20 +45,7 @@ public class ItemRadiationSuit extends ItemArmor implements IRadiationArmor{
     @SideOnly(Side.CLIENT)
     @Override
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
-        switch (armorType) {
-            case FEET:
-                return BootsModel.bootsModel;
-            case LEGS:
-                return LegsModel.legsModel;
-            case CHEST:
-                return ChestModel.chestModel;
-            case HEAD:
-                return HelmetModel.helmetModel;
-            case MAINHAND:
-            case OFFHAND:
-            default:
-                return _default;
-        }
+        return RadiationSuitModel.getModel(entityLiving, itemStack);
     }
 
 //    @Override
