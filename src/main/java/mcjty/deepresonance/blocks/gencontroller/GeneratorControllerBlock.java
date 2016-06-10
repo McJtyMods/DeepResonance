@@ -3,7 +3,6 @@ package mcjty.deepresonance.blocks.gencontroller;
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.lib.container.EmptyContainer;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
@@ -14,7 +13,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -29,6 +27,11 @@ public class GeneratorControllerBlock extends GenericDRBlock<GeneratorController
 
     public GeneratorControllerBlock() {
         super(Material.IRON, GeneratorControllerTileEntity.class, EmptyContainer.class, "generator_controller", false);
+    }
+
+    @Override
+    public boolean needsRedstoneCheck() {
+        return true;
     }
 
     @Override
@@ -53,11 +56,6 @@ public class GeneratorControllerBlock extends GenericDRBlock<GeneratorController
         } else {
             list.add(TextFormatting.WHITE + ClientHandler.getShiftMessage());
         }
-    }
-
-    @Override
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn) {
-        checkRedstoneWithTE(world, pos);
     }
 
     @Override
