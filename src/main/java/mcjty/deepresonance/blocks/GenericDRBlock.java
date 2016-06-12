@@ -1,8 +1,8 @@
 package mcjty.deepresonance.blocks;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.lib.container.GenericBlock;
 import mcjty.lib.container.GenericItemBlock;
-import mcjty.lib.container.GenericModBlock;
 import mcjty.lib.entity.GenericTileEntity;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,7 +11,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public abstract class GenericDRBlock<T extends GenericTileEntity, C extends Container> extends GenericModBlock {
+public abstract class GenericDRBlock<T extends GenericTileEntity, C extends Container> extends GenericBlock<T, C> {
 
     public GenericDRBlock(Material material,
                                Class<? extends T> tileEntityClass,
