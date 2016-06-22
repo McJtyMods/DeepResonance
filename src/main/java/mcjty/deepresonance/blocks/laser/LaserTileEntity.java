@@ -34,6 +34,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.HashMap;
 import java.util.Map;
 
+import static mcjty.deepresonance.grid.tank.DRTankMultiBlock.TANK_BUCKETS;
+
 public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements DefaultSidedInventory, ITickable {
 
     public static final String CMD_GETLIQUID = "getLiquid";
@@ -154,21 +156,29 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         if (te instanceof TileTank) {
             TileTank tileTank = (TileTank) te;
             if (validRCLTank(tileTank)) {
-                FluidStack stack = tileTank.drain(null, ConfigMachines.Laser.rclPerCatalyst, false);
+
+
+                FluidStack stack = tileTank.drain(null, 1000*TANK_BUCKETS, false);
                 if (stack != null) {
-                    stack = tileTank.drain(null, ConfigMachines.Laser.rclPerCatalyst, true);
+                    stack = tileTank.drain(null, 1000*TANK_BUCKETS, true);
                     LiquidCrystalFluidTagData fluidData = LiquidCrystalFluidTagData.fromStack(stack);
-                    float purity = bonus.getPurityModifier().modify(fluidData.getPurity(), fluidData.getQuality());
-                    float strength = bonus.getStrengthModifier().modify(fluidData.getStrength(), fluidData.getQuality());
-                    float efficiency = bonus.getEfficiencyModifier().modify(fluidData.getEfficiency(), fluidData.getQuality());
+                    float factor = 500.0f / stack.amount;
+                    float purity = bonus.getPurityModifier().modify(fluidData.getPurity(), fluidData.getQuality(), factor);
+                    float strength = bonus.getStrengthModifier().modify(fluidData.getStrength(), fluidData.getQuality(), factor);
+                    float efficiency = bonus.getEfficiencyModifier().modify(fluidData.getEfficiency(), fluidData.getQuality(), factor);
                     fluidData.setPurity(purity);
                     fluidData.setStrength(strength);
                     fluidData.setEfficiency(efficiency);
                     FluidStack newStack = fluidData.makeLiquidCrystalStack();
                     if (Math.abs(purity) < 0.01) {
-                        newStack.amount /= 10;
+                        newStack.amount -= 200;
+                        if (newStack.amount < 0) {
+                            newStack.amount = 0;
+                        }
                     }
-                    tileTank.fill(null, newStack, true);
+                    if (newStack.amount > 0) {
+                        tileTank.fill(null, newStack, true);
+                    }
                 }
             }
         }
