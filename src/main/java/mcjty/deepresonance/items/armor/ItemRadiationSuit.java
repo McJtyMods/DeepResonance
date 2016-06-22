@@ -33,7 +33,7 @@ public class ItemRadiationSuit extends ItemArmor implements IRadiationArmor{
     @Override
     public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedToolTip) {
         super.addInformation(itemStack, player, list, advancedToolTip);
-        list.add("Every chest piece of the radiation suit");
+        list.add("Every piece of the radiation suit");
         list.add("adds a bit of protection for radiation");
     }
 
