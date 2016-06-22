@@ -35,9 +35,9 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
     private TileTank topTank;
     private int progress = 0;
 
-    private float minPurity = 84.0f / 100.0f;
-    private float minStrength = 0;
-    private float minEfficiency = 0;
+    private float minPurity = 1.0f;
+    private float minStrength = 1.0f;
+    private float minEfficiency = 1.0f;
     private int maxMb = 0;
 
     @Override
