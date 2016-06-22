@@ -10,11 +10,12 @@ import mcjty.lib.gui.layout.HorizontalLayout;
 import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.layout.VerticalLayout;
 import mcjty.lib.gui.widgets.Button;
+import mcjty.lib.gui.widgets.*;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
 import mcjty.lib.gui.widgets.TextField;
-import mcjty.lib.gui.widgets.*;
 import mcjty.lib.network.Argument;
+import mcjty.lib.varia.RedstoneMode;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
@@ -24,17 +25,34 @@ public class GuiValve extends GenericGuiContainer<ValveTileEntity> {
     public static final int VALVE_HEIGHT = 152;
 
     private static final ResourceLocation iconLocation = new ResourceLocation(DeepResonance.MODID, "textures/gui/valve.png");
+    private static final ResourceLocation iconGuiElements = new ResourceLocation(DeepResonance.MODID, "textures/gui/guielements.png");
 
     private TextField minPurity;
     private TextField minStrength;
     private TextField minEfficiency;
     private TextField maxAmount;
+    private ImageChoiceLabel redstoneMode;
 
     public GuiValve(ValveTileEntity valveTileEntity, ValveContainer container) {
         super(DeepResonance.instance, DeepResonance.networkHandler.getNetworkWrapper(), valveTileEntity, container, 0, "valve");
 
         xSize = VALVE_WIDTH;
         ySize = VALVE_HEIGHT;
+    }
+
+    private void initRedstoneMode() {
+        redstoneMode = new ImageChoiceLabel(mc, this).
+                addChoiceEvent((parent, newChoice) -> changeRedstoneMode()).
+                addChoice(RedstoneMode.REDSTONE_IGNORED.getDescription(), "Redstone mode:\nIgnored", iconGuiElements, 0, 0).
+                addChoice(RedstoneMode.REDSTONE_OFFREQUIRED.getDescription(), "Redstone mode:\nOff to activate", iconGuiElements, 16, 0).
+                addChoice(RedstoneMode.REDSTONE_ONREQUIRED.getDescription(), "Redstone mode:\nOn to activate", iconGuiElements, 32, 0);
+        redstoneMode.setLayoutHint(new PositionalLayout.PositionalHint(154, 47, 16, 16));
+        redstoneMode.setCurrentChoice(tileEntity.getRSMode().ordinal());
+    }
+
+    private void changeRedstoneMode() {
+        tileEntity.setRSMode(RedstoneMode.values()[redstoneMode.getCurrentChoiceIndex()]);
+        sendServerCommand(DeepResonance.networkHandler.getNetworkWrapper(), ValveTileEntity.CMD_RSMODE, new Argument("rs", RedstoneMode.values()[redstoneMode.getCurrentChoiceIndex()].getDescription()));
     }
 
     @Override
@@ -49,7 +67,7 @@ public class GuiValve extends GenericGuiContainer<ValveTileEntity> {
         Button applyButton = new Button(mc, this)
                 .setText("Apply")
                 .setTooltips("Apply the new setting")
-                .setLayoutHint(new PositionalLayout.PositionalHint(112, 49, 60, 14))
+                .setLayoutHint(new PositionalLayout.PositionalHint(112, 49, 40, 14))
                 .addButtonEvent(new ButtonEvent() {
                     @Override
                     public void buttonClicked(Widget parent) {
@@ -57,7 +75,9 @@ public class GuiValve extends GenericGuiContainer<ValveTileEntity> {
                     }
                 });
 
-        toplevel.addChild(inputPanel).addChild(outputPanel).addChild(applyButton);
+        initRedstoneMode();
+
+        toplevel.addChild(inputPanel).addChild(outputPanel).addChild(applyButton).addChild(redstoneMode);
 
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
 
