@@ -1,5 +1,5 @@
 {
-  "parent": "deepresonance:block/dense_obsidian",
+  "parent": "deepresonance:block/poisoned_dirt",
   "display": {
     "thirdperson": {
       "rotation": [ 10, -45, 170 ],
