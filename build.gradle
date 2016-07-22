@@ -33,6 +33,9 @@ repositories {
     maven { // McJtyLib
         url "http://maven.k-4u.nl"
     }
+    maven { // OC Repo
+        url "http://maven.cil.li/"
+    }
     maven {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/repositories/snapshots/"
@@ -73,6 +76,7 @@ dependencies {
     deobfCompile "mezz.jei:jei_1.10.2:3.7.8.234"
     deobfCompile "mcjty.theoneprobe:TheOneProbe:1.10-1.0.13-26"
     deobfCompile "com.github.mcjty:mcjtylib:1.10-1.9.9-SNAPSHOT"
+    compile "li.cil.oc:OpenComputers:MC1.10.2-1.6.+:api"
 }
 
 jar {

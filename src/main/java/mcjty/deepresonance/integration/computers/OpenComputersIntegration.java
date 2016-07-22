@@ -1,0 +1,10 @@
+package mcjty.deepresonance.integration.computers;
+
+import li.cil.oc.api.Driver;
+import net.minecraftforge.fml.common.Optional;
+
+public class OpenComputersIntegration {
+    @Optional.Method(modid="OpenComputers")
+    public static void init() {
+    }
+}
