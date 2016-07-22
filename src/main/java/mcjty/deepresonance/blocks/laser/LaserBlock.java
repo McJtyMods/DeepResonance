@@ -33,6 +33,11 @@ public class LaserBlock extends GenericDRBlock<LaserTileEntity, LaserContainer> 
     }
 
     @Override
+    public boolean needsRedstoneCheck() {
+        return true;
+    }
+
+    @Override
     public boolean isHorizRotation() {
         return true;
     }
@@ -87,11 +92,6 @@ public class LaserBlock extends GenericDRBlock<LaserTileEntity, LaserContainer> 
         return true;
     }
     */
-
-    @Override
-    public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock) {
-        checkRedstoneWithTE(world, pos);
-    }
 
     @Override
     public int getMetaFromState(IBlockState state) {

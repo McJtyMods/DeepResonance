@@ -14,7 +14,6 @@ import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
 import mcjty.lib.varia.BlockTools;
-import mcjty.lib.varia.CustomSidedInvWrapper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,16 +26,15 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static mcjty.deepresonance.grid.tank.DRTankMultiBlock.TANK_BUCKETS;
 
 public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements DefaultSidedInventory, ITickable {
 
@@ -54,7 +52,6 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     private int progressCounter = 0;
     private int color = 0;          // 0 means not active, > 0 means a color laser
     private int crystalLiquid = 0;  // This is not RCL but just liquidified spent crystal
-    private int powered = 0;
 
     private static int crystalLiquidClient = 0;
 
@@ -68,10 +65,15 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     @Override
-    public void setPowered(int powered) {
-        if (this.powered != powered) {
-            this.powered = powered;
-            markDirty();
+    protected boolean needsCustomInvWrapper() {
+        return true;
+    }
+
+    @Override
+    public void setPowerInput(int powered) {
+        boolean changed = powerLevel != powered;
+        super.setPowerInput(powered);
+        if (changed) {
             IBlockState state = worldObj.getBlockState(pos);
             worldObj.notifyBlockUpdate(pos, state, state, 3);
         }
@@ -98,7 +100,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
 
         checkCrystal();
 
-        if (powered == 0) {
+        if (powerLevel == 0) {
             changeColor(0);
             return;
         }
@@ -154,21 +156,29 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         if (te instanceof TileTank) {
             TileTank tileTank = (TileTank) te;
             if (validRCLTank(tileTank)) {
-                FluidStack stack = tileTank.drain(null, ConfigMachines.Laser.rclPerCatalyst, false);
+
+
+                FluidStack stack = tileTank.drain(null, 1000*TANK_BUCKETS, false);
                 if (stack != null) {
-                    stack = tileTank.drain(null, ConfigMachines.Laser.rclPerCatalyst, true);
+                    stack = tileTank.drain(null, 1000*TANK_BUCKETS, true);
                     LiquidCrystalFluidTagData fluidData = LiquidCrystalFluidTagData.fromStack(stack);
-                    float purity = bonus.getPurityModifier().modify(fluidData.getPurity(), fluidData.getQuality());
-                    float strength = bonus.getStrengthModifier().modify(fluidData.getStrength(), fluidData.getQuality());
-                    float efficiency = bonus.getEfficiencyModifier().modify(fluidData.getEfficiency(), fluidData.getQuality());
+                    float factor = 500.0f / stack.amount;
+                    float purity = bonus.getPurityModifier().modify(fluidData.getPurity(), fluidData.getQuality(), factor);
+                    float strength = bonus.getStrengthModifier().modify(fluidData.getStrength(), fluidData.getQuality(), factor);
+                    float efficiency = bonus.getEfficiencyModifier().modify(fluidData.getEfficiency(), fluidData.getQuality(), factor);
                     fluidData.setPurity(purity);
                     fluidData.setStrength(strength);
                     fluidData.setEfficiency(efficiency);
                     FluidStack newStack = fluidData.makeLiquidCrystalStack();
                     if (Math.abs(purity) < 0.01) {
-                        newStack.amount /= 10;
+                        newStack.amount -= 200;
+                        if (newStack.amount < 0) {
+                            newStack.amount = 0;
+                        }
                     }
-                    tileTank.fill(null, newStack, true);
+                    if (newStack.amount > 0) {
+                        tileTank.fill(null, newStack, true);
+                    }
                 }
             }
         }
@@ -378,7 +388,6 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         super.readFromNBT(tagCompound);
         color = tagCompound.getInteger("color");
         progressCounter = tagCompound.getInteger("progress");
-        powered = tagCompound.getByte("powered");
     }
 
     @Override
@@ -389,11 +398,11 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("color", color);
         tagCompound.setInteger("progress", progressCounter);
-        tagCompound.setByte("powered", (byte) powered);
+        return tagCompound;
     }
 
     @Override
@@ -453,23 +462,5 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         } else {
             return true;
         }
-    }
-
-    IItemHandler invHandler = new CustomSidedInvWrapper(this);
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return true;
-        }
-        return super.hasCapability(capability, facing);
-    }
-
-    @Override
-    public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, net.minecraft.util.EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return (T) invHandler;
-        }
-        return super.getCapability(capability, facing);
     }
 }

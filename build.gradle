@@ -11,7 +11,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
     }
 }
 
@@ -26,13 +26,23 @@ repositories {
     maven { // JEI
         url "http://dvs1.progwml6.com/files/maven"
     }
+    maven { // TOP
+        name 'tterrag maven'
+        url "http://maven.tterrag.com/"
+    }
+    maven { // McJtyLib
+        url "http://maven.k-4u.nl"
+    }
+    maven { // OC Repo
+        url "http://maven.cil.li/"
+    }
     maven {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/repositories/snapshots/"
     }
 }
 
-version = "1.9.0-1.1.4beta32"
+version = "1.10-1.2.0beta35"
 def ENV = System.getenv()
 if (ENV.DRONE_BUILD_NUMBER) {
     version += ".n" + ENV.DRONE_BUILD_NUMBER
@@ -44,9 +54,9 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    version = "1.9-12.16.1.1898"
+    version = "1.10.2-12.18.0.2007-1.10.0"
     runDir = "run"
-    mappings = "snapshot_20160510"
+    mappings = "snapshot_20160624"
     useDepAts = true
 }
 
@@ -62,9 +72,11 @@ artifacts {
 
 
 dependencies {
-    deobfCompile "mcp.mobius.waila:Waila:1.7.0-B2_1.9"
-    deobfCompile "mezz.jei:jei_1.9:3.3.3.200"
-//    compile "com.github.mcjty:mcjtylib:1.8.9-1.8.1beta4-SNAPSHOT:dev"
+    deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
+    deobfCompile "mezz.jei:jei_1.10.2:3.7.8.234"
+    deobfCompile "mcjty.theoneprobe:TheOneProbe:1.10-1.0.12-25"
+    deobfCompile "com.github.mcjty:mcjtylib:1.10-1.9.4-SNAPSHOT"
+    compile "li.cil.oc:OpenComputers:MC1.10.2-1.6.+:api"
 }
 
 jar {

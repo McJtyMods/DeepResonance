@@ -9,6 +9,7 @@ import mcjty.deepresonance.compat.handlers.ComputerCraftCompatHandler;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.grid.WorldGridRegistry;
+import mcjty.deepresonance.integration.computers.OpenComputersIntegration;
 import mcjty.deepresonance.items.manual.GuiDeepResonanceManual;
 import mcjty.deepresonance.proxy.CommonProxy;
 import mcjty.deepresonance.radiation.DRRadiationManager;
@@ -35,14 +36,16 @@ import java.io.File;
         "required-after:Forge@["+DeepResonance.MIN_FORGE_VER+
         ",);required-after:McJtyLib@["+DeepResonance.MIN_MCJTYLIB_VER+
         ",);required-after:ElecCore@["+DeepResonance.MIN_ELECCORE_VER+
+        ",);after:OpenComputers@["+DeepResonance.MIN_OPENCOMPUTERS_VER+
         ",)",
         version = DeepResonance.VERSION)
 public class DeepResonance implements ModBase {
     public static final String MODID = "deepresonance";
-    public static final String VERSION = "1.1.4beta32";
+    public static final String VERSION = "1.2.0beta35";
     public static final String MIN_FORGE_VER = "12.16.0.1835";
-    public static final String MIN_MCJTYLIB_VER = "1.9.0-1.8.6";
+    public static final String MIN_MCJTYLIB_VER = "1.9.4-1.9.0";
     public static final String MIN_ELECCORE_VER = "1.4.264";
+    public static final String MIN_OPENCOMPUTERS_VER = "1.6.0";
 
     @SidedProxy(clientSide="mcjty.deepresonance.proxy.ClientProxy", serverSide="mcjty.deepresonance.proxy.ServerProxy")
     public static CommonProxy proxy;
@@ -149,6 +152,10 @@ public class DeepResonance implements ModBase {
         proxy.init(e);
         compatHandler.init();
         configWrapper.refresh();
+
+        if (Loader.isModLoaded("OpenComputers")) {
+            OpenComputersIntegration.init();
+        }
     }
 
     @Mod.EventHandler

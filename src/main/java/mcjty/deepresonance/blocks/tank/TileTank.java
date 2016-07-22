@@ -139,7 +139,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         NBTTagList tagList = new NBTTagList();
         for (Map.Entry<EnumFacing, Mode> entry : settings.entrySet()){
@@ -149,6 +149,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
             tagList.appendTag(tag);
         }
         tagCompound.setTag("settings", tagList);
+        return tagCompound;
     }
 
     @Override

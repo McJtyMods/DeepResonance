@@ -13,7 +13,6 @@ import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
-import mcjty.lib.varia.CustomSidedInvWrapper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -21,11 +20,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 
 import java.util.Map;
 
@@ -38,6 +34,11 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
 
     public CrystalizerTileEntity() {
         super(ConfigMachines.Crystalizer.rfMaximum, ConfigMachines.Crystalizer.rfPerTick);
+    }
+
+    @Override
+    protected boolean needsCustomInvWrapper() {
+        return true;
     }
 
     private TileTank rclTank;
@@ -146,7 +147,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("progress", progress);
         if (mergedData != null) {
@@ -155,6 +156,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
             tagCompound.setTag("data", dataCompound);
             tagCompound.setInteger("amount", mergedData.getInternalTankAmount());
         }
+        return tagCompound;
     }
 
     @Override
@@ -281,22 +283,6 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
             return true;
         }
         return false;
-    }
-
-    IItemHandler invHandler = new CustomSidedInvWrapper(this);
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, net.minecraft.util.EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return (T) invHandler;
-        }
-        return super.getCapability(capability, facing);
     }
 
     protected void notifyAndMarkDirty(){

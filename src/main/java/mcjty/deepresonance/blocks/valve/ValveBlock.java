@@ -27,6 +27,11 @@ public class ValveBlock extends GenericDRBlock<ValveTileEntity, ValveContainer> 
         return true;
     }
 
+    @Override
+    public boolean needsRedstoneCheck() {
+        return true;
+    }
+
     @SideOnly(Side.CLIENT)
     @Override
     public Class<? extends GenericGuiContainer> getGuiClass() {

@@ -48,11 +48,11 @@ public class InfusingBonus {
             return bonus;
         }
 
-        public float modify(float value, float quality) {
+        public float modify(float value, float quality, float factor) {
             if (bonus == 0.0f) {
                 return value;
             }
-            float toAdd = bonus / 100.0f;
+            float toAdd = factor * bonus / 100.0f;
             float cap = maxOrMin / 100.0f * quality;
 
             if (bonus > 0) {

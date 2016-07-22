@@ -27,20 +27,12 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
     private int shutdown = 0;
     private boolean active = false;
 
-    private int powered;
-
     public GeneratorControllerTileEntity() {
         super();
     }
 
-    @Override
-    public void setPowered(int powered) {
-        this.powered = powered;
-        markDirtyClient();
-    }
-
     public boolean isPowered() {
-        return powered > 0;
+        return powerLevel > 0;
     }
 
 
@@ -105,7 +97,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
     }
 
     protected void checkStateServer() {
-        boolean active = powered > 0;
+        boolean active = powerLevel > 0;
 
         // @todo optimize this?
         boolean dirty = false;
@@ -217,15 +209,14 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
         startup = tagCompound.getInteger("startup");
         shutdown = tagCompound.getInteger("shutdown");
         active = tagCompound.getBoolean("active");
-        powered = tagCompound.getInteger("powered");
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("startup", startup);
         tagCompound.setInteger("shutdown", shutdown);
         tagCompound.setBoolean("active", active);
-        tagCompound.setInteger("powered", powered);
+        return tagCompound;
     }
 }

@@ -225,9 +225,10 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("networkId", networkId);
+        return tagCompound;
     }
 
     @Override

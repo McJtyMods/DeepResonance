@@ -11,7 +11,6 @@ import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.container.InventoryLocator;
 import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.varia.BlockTools;
-import mcjty.lib.varia.CustomSidedInvWrapper;
 import mcjty.lib.varia.SoundTools;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,10 +23,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 
 public class PedestalTileEntity extends GenericTileEntity implements DefaultSidedInventory, ITickable {
     private InventoryHelper inventoryHelper = new InventoryHelper(this, PedestalContainer.factory, 1);
@@ -42,6 +38,11 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
     @Override
     public InventoryHelper getInventoryHelper() {
         return inventoryHelper;
+    }
+
+    @Override
+    protected boolean needsCustomInvWrapper() {
+        return true;
     }
 
     @Override
@@ -155,8 +156,9 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
+        return tagCompound;
     }
 
     @Override
@@ -195,21 +197,4 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
         return stack.getItem() == Item.getItemFromBlock(ModBlocks.resonatingCrystalBlock);
     }
 
-    IItemHandler invHandler = new CustomSidedInvWrapper(this);
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return true;
-        }
-        return super.hasCapability(capability, facing);
-    }
-
-    @Override
-    public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, net.minecraft.util.EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return (T) invHandler;
-        }
-        return super.getCapability(capability, facing);
-    }
 }

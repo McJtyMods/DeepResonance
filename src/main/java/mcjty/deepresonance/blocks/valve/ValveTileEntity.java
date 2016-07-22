@@ -8,6 +8,7 @@ import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.network.Argument;
+import mcjty.lib.varia.RedstoneMode;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -20,17 +21,23 @@ import java.util.Map;
 public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITickable {
 
     public static String CMD_SETTINGS = "settings";
+    public static final String CMD_RSMODE = "rsMode";
 
     public ValveTileEntity() {
+    }
+
+    @Override
+    protected boolean needsRedstoneMode() {
+        return true;
     }
 
     private TileTank bottomTank;
     private TileTank topTank;
     private int progress = 0;
 
-    private float minPurity = 84.0f / 100.0f;
-    private float minStrength = 0;
-    private float minEfficiency = 0;
+    private float minPurity = 1.0f;
+    private float minStrength = 1.0f;
+    private float minEfficiency = 1.0f;
     private int maxMb = 0;
 
     @Override
@@ -41,6 +48,10 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
     }
 
     private void checkStateServer() {
+        if (!isMachineEnabled()) {
+            return;
+        }
+
         progress--;
         markDirty();
         if (progress > 0) {
@@ -124,9 +135,10 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("progress", progress);
+        return tagCompound;
     }
 
     @Override
@@ -206,7 +218,11 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
         if (rc) {
             return true;
         }
-        if (CMD_SETTINGS.equals(command)) {
+        if (CMD_RSMODE.equals(command)) {
+            String m = args.get("rs").getString();
+            setRSMode(RedstoneMode.getMode(m));
+            return true;
+        } else if (CMD_SETTINGS.equals(command)) {
             double purity = args.get("purity").getDouble();
             double strength = args.get("strength").getDouble();
             double efficiency = args.get("efficiency").getDouble();

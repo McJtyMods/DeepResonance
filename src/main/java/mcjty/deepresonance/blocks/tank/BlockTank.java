@@ -188,7 +188,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     }
 
     @Override
-    public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block block) {
+    public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
         TileEntity tile = WorldHelper.getTileAt(world, pos);
         if (tile instanceof TileTank) {
             ((TileTank) tile).onNeighborChange();
