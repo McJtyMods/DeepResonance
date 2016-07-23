@@ -9,5 +9,6 @@ public class OpenComputersIntegration {
         Driver.add(new TankDriver.OCDriver());
         Driver.add(new ValveDriver.OCDriver());
         Driver.add(new LaserDriver.OCDriver());
+        Driver.add(new SmelterDriver.OCDriver());
     }
 }
