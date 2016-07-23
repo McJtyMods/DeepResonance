@@ -7,5 +7,6 @@ public class OpenComputersIntegration {
     @Optional.Method(modid="OpenComputers")
     public static void init() {
         Driver.add(new TankDriver.OCDriver());
+        Driver.add(new ValveDriver.OCDriver());
     }
 }
