@@ -8,5 +8,6 @@ public class OpenComputersIntegration {
     public static void init() {
         Driver.add(new TankDriver.OCDriver());
         Driver.add(new ValveDriver.OCDriver());
+        Driver.add(new LaserDriver.OCDriver());
     }
 }
