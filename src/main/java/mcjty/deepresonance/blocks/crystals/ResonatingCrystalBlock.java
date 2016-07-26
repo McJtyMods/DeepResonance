@@ -257,6 +257,21 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
     }
 
     @Override
+    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState metadata, int fortune) {
+        List<ItemStack> drops = super.getDrops(world, pos, metadata, fortune);
+        for (ItemStack drop : drops) {
+            if (drop.hasTagCompound()) {
+                NBTTagCompound tagCompound = drop.getTagCompound();
+                if (tagCompound.hasKey("glowing")) {
+                    tagCompound.setBoolean("glowing", false);
+                }
+            }
+        }
+
+        return drops;
+    }
+
+    @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity te = worldIn.getTileEntity(pos);
         boolean empty = false;
