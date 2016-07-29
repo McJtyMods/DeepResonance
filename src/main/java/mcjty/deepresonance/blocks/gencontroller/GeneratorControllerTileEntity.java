@@ -26,6 +26,8 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
     private int startup = 0;
     private int shutdown = 0;
     private boolean active = false;
+    private boolean rsControlled = true;
+    private boolean activated = false;
 
     public GeneratorControllerTileEntity() {
         super();
@@ -97,7 +99,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
     }
 
     protected void checkStateServer() {
-        boolean active = powerLevel > 0;
+        boolean active = (rsControlled && powerLevel > 0) || (!rsControlled && activated);
 
         // @todo optimize this?
         boolean dirty = false;
@@ -139,6 +141,21 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
             generatorNetwork.save(worldObj);
         }
+    }
+
+    public void activate() {
+        this.rsControlled = false;
+        this.activated = true;
+        this.markDirtyClient();
+    }
+
+    public void deactivate() {
+        this.activated = false;
+        this.markDirtyClient();
+    }
+
+    public void setRsControlled(boolean f) {
+        this.rsControlled = f;
     }
 
     private boolean handleActivate(int id, BlockPos coordinate) {

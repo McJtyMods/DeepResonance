@@ -25,6 +25,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
+import java.util.Optional;
+
 public class PedestalTileEntity extends GenericTileEntity implements DefaultSidedInventory, ITickable {
     private InventoryHelper inventoryHelper = new InventoryHelper(this, PedestalContainer.factory, 1);
 
@@ -59,20 +61,38 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
         }
         checkCounter = 20;
 
-        IBlockState state = worldObj.getBlockState(getPos());
-        EnumFacing orientation = BlockTools.getOrientation(state.getBlock().getMetaFromState(state));
-        BlockPos b = pos.offset(orientation);
+        BlockPos b = this.getCrystalPosition();
         if (worldObj.isAirBlock(b)) {
             // Nothing in front. We can place a new crystal if we have one.
-            placeCrystal(b);
+            placeCrystal();
         } else if (WorldHelper.getBlockAt(worldObj, b) == ModBlocks.resonatingCrystalBlock) {
             // Check if the crystal in front of us still has power.
             // If not we will remove it.
-            checkCrystal(b);
+            checkCrystal();
         } // else we can do nothing.
     }
 
-    private void placeCrystal(BlockPos pos) {
+    public BlockPos getCrystalPosition() {
+        IBlockState state = worldObj.getBlockState(getPos());
+        EnumFacing orientation = BlockTools.getOrientation(state.getBlock().getMetaFromState(state));
+        return pos.offset(orientation);
+    }
+
+    public Optional<ResonatingCrystalTileEntity> getCrystal() {
+        BlockPos p = this.getCrystalPosition();
+        TileEntity t = WorldHelper.getTileAt(worldObj, p);
+        if (t instanceof ResonatingCrystalTileEntity) {
+            return Optional.of((ResonatingCrystalTileEntity)t);
+        }
+        return Optional.empty();
+    }
+
+    public boolean crystalPresent() {
+        return WorldHelper.getBlockAt(worldObj, this.getCrystalPosition()) == ModBlocks.resonatingCrystalBlock;
+    }
+
+    private void placeCrystal() {
+        BlockPos pos = getCrystalPosition();
         ItemStack crystalStack = inventoryHelper.getStackInSlot(PedestalContainer.SLOT_CRYSTAL);
         if (crystalStack != null && crystalStack.stackSize > 0) {
             if (crystalStack.getItem() instanceof ItemBlock) {
@@ -81,7 +101,7 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
                 inventoryHelper.decrStackSize(PedestalContainer.SLOT_CRYSTAL, 1);
                 SoundTools.playSound(worldObj, ModBlocks.resonatingCrystalBlock.getSoundType().breakSound, getPos().getX(), getPos().getY(), getPos().getZ(), 1.0f, 1.0f);
 
-                if (findCollector(pos)) {
+                if (findCollector()) {
                     TileEntity tileEntity = WorldHelper.getTileAt(worldObj, new BlockPos(cachedLocator));
                     if (tileEntity instanceof EnergyCollectorTileEntity) {
                         EnergyCollectorTileEntity energyCollectorTileEntity = (EnergyCollectorTileEntity) tileEntity;
@@ -97,23 +117,32 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
             EnumFacing.UP, EnumFacing.DOWN
     };
 
-    private void checkCrystal(BlockPos p) {
-        TileEntity tileEntity = WorldHelper.getTileAt(worldObj, p);
-        if (tileEntity instanceof ResonatingCrystalTileEntity) {
-            ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
-            if (resonatingCrystalTileEntity.getPower() <= EnergyCollectorTileEntity.CRYSTAL_MIN_POWER) {
-                ItemStack spentCrystal = new ItemStack(ModBlocks.resonatingCrystalBlock, 1);
-                NBTTagCompound tagCompound = new NBTTagCompound();
-                resonatingCrystalTileEntity.writeToNBT(tagCompound);
-                spentCrystal.setTagCompound(tagCompound);
-                inventoryLocator.ejectStack(worldObj, getPos(), spentCrystal, pos, directions);
-                worldObj.setBlockToAir(p);
-                SoundTools.playSound(worldObj, ModBlocks.resonatingCrystalBlock.getSoundType().breakSound, p.getX(), p.getY(), p.getZ(), 1.0f, 1.0f);
-            }
+    private void checkCrystal() {
+        BlockPos p = getCrystalPosition();
+        Optional<Boolean> powerLow = getCrystal().map(tile -> tile.getPower() <= EnergyCollectorTileEntity.CRYSTAL_MIN_POWER);
+        if (powerLow.orElse(false)) {
+            dropCrystal();
         }
     }
 
-    private boolean findCollector(BlockPos crystalLocation) {
+    public void dropCrystal() {
+        Optional<ResonatingCrystalTileEntity> crystal = getCrystal();
+        if (!crystal.isPresent()) {
+            return;
+        }
+        ResonatingCrystalTileEntity resonatingCrystalTileEntity = crystal.get();
+        BlockPos p = resonatingCrystalTileEntity.getPos();
+        ItemStack spentCrystal = new ItemStack(ModBlocks.resonatingCrystalBlock, 1);
+        NBTTagCompound tagCompound = new NBTTagCompound();
+        resonatingCrystalTileEntity.writeToNBT(tagCompound);
+        spentCrystal.setTagCompound(tagCompound);
+        inventoryLocator.ejectStack(worldObj, getPos(), spentCrystal, pos, directions);
+        worldObj.setBlockToAir(p);
+        SoundTools.playSound(worldObj, ModBlocks.resonatingCrystalBlock.getSoundType().breakSound, p.getX(), p.getY(), p.getZ(), 1.0f, 1.0f);
+    }
+
+    private boolean findCollector() {
+        BlockPos crystalLocation = getCrystalPosition();
         if (cachedLocator != null) {
             if (WorldHelper.getBlockAt(worldObj, crystalLocation) == EnergyCollectorSetup.energyCollectorBlock) {
                 return true;

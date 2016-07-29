@@ -352,6 +352,10 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
                                                                                                          CLIENTCMD_GETLIQUID));
     }
 
+    public int getCrystalLiquid() {
+        return crystalLiquid;
+    }
+
     @SideOnly(Side.CLIENT)
     public static int getCrystalLiquidClient() {
         return crystalLiquidClient;
