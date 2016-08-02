@@ -11,7 +11,7 @@ public class WorldGenConfiguration {
 
     public static int minVeinSize = 5;
     public static int maxVeinSize = 8;
-    public static int chancesToSpawn = 3;
+    public static int chancesToSpawn = 5;
     public static int minY = 2;
     public static int maxY = 30;
 
