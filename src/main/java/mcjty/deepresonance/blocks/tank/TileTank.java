@@ -11,7 +11,6 @@ import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
 import mcjty.deepresonance.grid.tank.DRTankMultiBlock;
 import mcjty.lib.entity.GenericTileEntity;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -75,20 +74,6 @@ public class TileTank extends GenericTileEntity implements IDynamicMultiBlockTil
         for (EntityPlayerMP player : ServerHelper.instance.getAllPlayersWatchingBlock(this.worldObj, this.pos)) {
             player.connection.sendPacket(new SPacketUpdateTileEntity(this.pos, ID, data));
         }
-    }
-
-    public void notifyNeighboursOfDataChange(){
-        this.markDirty();
-        this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
-    }
-
-    public boolean timeCheck() {
-        return this.worldObj.getTotalWorldTime() % 32L == 0L;
-    }
-
-    public void syncData() {
-        IBlockState state = worldObj.getBlockState(pos);
-        this.worldObj.notifyBlockUpdate(this.pos, state, state, 3);
     }
 
     @Override
