@@ -3,10 +3,8 @@ package mcjty.deepresonance.grid.fluid;
 import elec332.core.grid.basic.IWiringTypeHelper;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
-import mcjty.deepresonance.blocks.duct.TileBasicFluidDuct;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fluids.Fluid;
 
 /**
  * Created by Elec332 on 3-8-2015.
@@ -24,7 +22,7 @@ public class DRGridTypeHelper implements IWiringTypeHelper {
 
     @Override
     public boolean isTransmitter(TileEntity tile) {
-        return tile instanceof TileBasicFluidDuct;
+        return false;
     }
 
     @Override
@@ -39,11 +37,10 @@ public class DRGridTypeHelper implements IWiringTypeHelper {
 
     @Override
     public boolean canTransmitterConnectTo(TileEntity transmitter, TileEntity otherTransmitter) {
-        Fluid fluid1 = ((TileBasicFluidDuct) transmitter).lastSeenFluid;
-        Fluid fluid2 = ((TileBasicFluidDuct) otherTransmitter).lastSeenFluid;
-        return (fluid1 == null || fluid2 == null) || fluid1 == fluid2;
+        return false;
     }
 
+    @Override
     public boolean canTransmitterConnectTo(TileEntity transmitter, EnumFacing direction){
         return true;
     }
@@ -55,6 +52,6 @@ public class DRGridTypeHelper implements IWiringTypeHelper {
 
     @Override
     public boolean isTileValid(TileEntity tile) {
-        return tile instanceof IDeepResonanceFluidProvider || tile instanceof IDeepResonanceFluidAcceptor || tile instanceof TileBasicFluidDuct;
+        return tile instanceof IDeepResonanceFluidProvider || tile instanceof IDeepResonanceFluidAcceptor;
     }
 }

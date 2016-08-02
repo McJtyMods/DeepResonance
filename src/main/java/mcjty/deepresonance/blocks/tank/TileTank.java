@@ -3,18 +3,24 @@ package mcjty.deepresonance.blocks.tank;
 import com.google.common.collect.Maps;
 import elec332.core.main.ElecCore;
 import elec332.core.multiblock.dynamic.IDynamicMultiBlockTile;
+import elec332.core.network.IElecCoreNetworkTile;
+import elec332.core.server.ServerHelper;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
-import mcjty.deepresonance.blocks.base.ElecTileBase;
 import mcjty.deepresonance.grid.tank.DRTankMultiBlock;
+import mcjty.lib.entity.GenericTileEntity;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.*;
 
@@ -23,7 +29,7 @@ import java.util.Map;
 /**
  * Created by Elec332 on 9-8-2015.
  */
-public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IDeepResonanceFluidProvider {
+public class TileTank extends GenericTileEntity implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IDeepResonanceFluidProvider, IElecCoreNetworkTile {
 
     public TileTank(){
         super();
@@ -35,9 +41,8 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         this.tankHooks = Maps.newHashMap();
     }
 
-    private Fluid clientRenderFluid;
-
     // Client only
+    private Fluid clientRenderFluid;
     private float renderHeight; //Value from 0.0f to 1.0f
 
     private NBTTagCompound multiBlockSaveData;
@@ -62,10 +67,55 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         }
     }
 
+    @Override
+    public void onPacketReceivedFromClient(EntityPlayerMP sender, int ID, NBTTagCompound data) {
+    }
+
+    public void sendPacket(int ID, NBTTagCompound data) {
+        for (EntityPlayerMP player : ServerHelper.instance.getAllPlayersWatchingBlock(this.worldObj, this.pos)) {
+            player.connection.sendPacket(new SPacketUpdateTileEntity(this.pos, ID, data));
+        }
+    }
+
+    public void notifyNeighboursOfDataChange(){
+        this.markDirty();
+        this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+    }
+
+    public boolean timeCheck() {
+        return this.worldObj.getTotalWorldTime() % 32L == 0L;
+    }
+
+    public void syncData() {
+        IBlockState state = worldObj.getBlockState(pos);
+        this.worldObj.notifyBlockUpdate(this.pos, state, state, 3);
+    }
 
     @Override
+    public void validate() {
+        super.validate();
+        ElecCore.tickHandler.registerCall(() -> {
+            if (WorldHelper.chunkLoaded(worldObj, pos)) {
+                onTileLoaded();
+            }
+        }, worldObj);
+    }
+
+    @Override
+    public void invalidate() {
+        if (!isInvalid()){
+            super.invalidate();
+            onTileUnloaded();
+        }
+    }
+
+    @Override
+    public void onChunkUnload() {
+        super.onChunkUnload();
+        onTileUnloaded();
+    }
+
     public void onTileLoaded() {
-        super.onTileLoaded();
         if (!worldObj.isRemote) {
             DeepResonance.worldGridRegistry.getTankRegistry().get(worldObj).addTile(this);
             //MinecraftForge.EVENT_BUS.post(new FluidTileEvent.Load(this));
@@ -73,9 +123,7 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
         }
     }
 
-    @Override
     public void onTileUnloaded() {
-        super.onTileUnloaded();
         if (!worldObj.isRemote) {
             DeepResonance.worldGridRegistry.getTankRegistry().get(worldObj).removeTile(this);
             //MinecraftForge.EVENT_BUS.post(new FluidTileEvent.Unload(this));
@@ -340,14 +388,37 @@ public class TileTank extends ElecTileBase implements IDynamicMultiBlockTile<DRT
     }
 
     @Override
+    public NBTTagCompound getUpdateTag() {
+        return super.getUpdateTag();
+    }
+
+    @Override
+    public void readClientDataFromNBT(NBTTagCompound tagCompound) {
+        super.readClientDataFromNBT(tagCompound);
+        this.clientRenderFluid = FluidRegistry.getFluid(tagCompound.getString("fluid"));
+        this.renderHeight = tagCompound.getFloat("render");
+    }
+
+    public static final int ID_GENERIC = 1;
+    public static final int ID_SETFLUID = 2;
+    public static final int ID_SETHEIGHT = 3;
+
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
+        if (packet.getTileEntityType() == ID_GENERIC) {
+            super.onDataPacket(net, packet);
+        } else {
+            this.onDataPacket(packet.getTileEntityType(), packet.getNbtCompound());
+        }
+    }
+
+    @Override
     public void onDataPacket(int id, NBTTagCompound tag) {
         switch (id){
-            case 1:
+            case ID_SETFLUID:
                 this.clientRenderFluid = FluidRegistry.getFluid(tag.getString("fluid"));
                 return;
-            case 2:
-                return;
-            case 3:
+            case ID_SETHEIGHT:
                 this.renderHeight = tag.getFloat("render");
         }
     }

@@ -7,18 +7,15 @@ import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
 import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
-import mcjty.deepresonance.blocks.duct.TileBasicFluidDuct;
 import mcjty.deepresonance.grid.InternalGridTank;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
-import java.util.OptionalInt;
-import java.util.stream.IntStream;
 
 /**
  * Created by Elec332 on 3-8-2015.
@@ -29,8 +26,6 @@ public class DRFluidDuctGrid extends AbstractCableGrid<DRFluidDuctGrid, DRFluidT
         super(world, p, direction, DRGridTypeHelper.instance, DeepResonance.worldGridRegistry.getFluidRegistry());
         tank = new InternalGridTank(p.getTankStorage());
         tanks = Lists.newArrayList();
-        if (p.getTile() instanceof TileBasicFluidDuct)
-            tank.fill(((TileBasicFluidDuct) p.getTile()).intTank, true);
     }
 
     private InternalGridTank tank;
@@ -92,36 +87,11 @@ public class DRFluidDuctGrid extends AbstractCableGrid<DRFluidDuctGrid, DRFluidT
         }
     }
 
-    @Override
-    protected void onTileRemoved(DRFluidTile tile) {
-        super.onTileRemoved(tile);
-        for (GridData gridData : transmitters){
-            TileEntity tileEntity = WorldHelper.getTileAt(world, gridData.getLoc());
-            if (tileEntity == null)
-                tileEntity = tile.getTile();
-            if (tileEntity instanceof TileBasicFluidDuct) {
-                ((TileBasicFluidDuct) tileEntity).intTank = getFluidShare(tile.getTile());
-                ((TileBasicFluidDuct) tileEntity).lastSeenFluid = tank.getStoredFluid();
-            }
-        }
-        if (tile.getTile() instanceof TileBasicFluidDuct) {
-            FluidStack stack = ((TileBasicFluidDuct) tile.getTile()).intTank;
-            if (stack != null)
-                tank.drain(stack.amount, true);
-        }
-    }
-
     public Fluid getFluid(){
         return tank.getStoredFluid();
     }
 
     public FluidStack getFluidShare(TileEntity tile){
-        if (tile instanceof TileBasicFluidDuct){
-            OptionalInt first = IntStream.range(0, transmitters.size())
-                    .filter(i -> tile.getPos().equals(transmitters.get(i).getLoc()))
-                    .findFirst();
-            return tank.getShare(transmitters.size(), first.isPresent() ? first.getAsInt() == 0 : false);
-        }
         return null;
     }
 
