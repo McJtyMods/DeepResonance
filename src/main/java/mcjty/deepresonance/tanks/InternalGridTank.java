@@ -1,16 +1,16 @@
-package mcjty.deepresonance.grid;
+package mcjty.deepresonance.tanks;
 
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.*;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by Elec332 on 10-8-2015.
  */
-public class InternalGridTank{
+public class InternalGridTank implements IFluidTank {
 
     public InternalGridTank(int maxAmount){
         this.maxAmount = maxAmount;
@@ -22,21 +22,9 @@ public class InternalGridTank{
     private LiquidCrystalFluidTagData tank;
     private FluidTank extraTank;
 
-    public int getStoredAmount(){
-        return tank.getInternalTankAmount() == 0 ? extraTank.getFluidAmount() : tank.getInternalTankAmount();
-    }
-
-    public int getMaxAmount() {
-        return this.maxAmount;
-    }
-
     public Fluid getStoredFluid(){
-        FluidStack stored = getStoredFluidStack();
-        return stored == null? null : getStoredFluidStack().getFluid();
-    }
-
-    public FluidStack getStoredFluidStack(){
-        return tank.getInternalTankAmount() > 0 ? tank.getReferenceStack() : (extraTank.getFluid() == null ? null : extraTank.getFluid().copy());
+        FluidStack stored = getFluid();
+        return stored == null? null : stored.getFluid();
     }
 
     public int fill(FluidStack stack, boolean doFill){
@@ -79,9 +67,9 @@ public class InternalGridTank{
         if (tank.getInternalTankAmount() > 0) {
             NBTTagCompound tag = new NBTTagCompound();
             tank.writeDataToNBT(tag);
-            int ret = getStoredAmount() / i;
+            int ret = getFluidAmount() / i;
             if (first) {
-                ret += getStoredAmount() % i;
+                ret += getFluidAmount() % i;
             }
             return new FluidStack(DRFluidRegistry.liquidCrystal, ret, tag);
         } else if (extraTank.getFluidAmount() > 0){
@@ -102,7 +90,29 @@ public class InternalGridTank{
         extraTank.fill(otherTank.extraTank.getFluid(), true);
     }
 
-    public String getInfo(){
+    @Nullable
+    @Override
+    public FluidStack getFluid() {
+        return tank.getInternalTankAmount() > 0 ? tank.getReferenceStack() : (extraTank.getFluid() == null ? null : extraTank.getFluid().copy());
+    }
+
+    @Override
+    public int getFluidAmount() {
+        return tank.getInternalTankAmount() == 0 ? extraTank.getFluidAmount() : tank.getInternalTankAmount();
+    }
+
+    @Override
+    public int getCapacity() {
+        return maxAmount;
+    }
+
+    @Override
+    public FluidTankInfo getInfo() {
+        return new FluidTankInfo(getFluid(), getCapacity());
+    }
+
+    public String getStringInfo(){
         return getStoredFluid() == DRFluidRegistry.liquidCrystal ? tank.toString() : "Fluid: "+getStoredFluid()+" Amount: "+extraTank.getFluidAmount();
     }
+
 }

@@ -1,18 +1,20 @@
 package mcjty.deepresonance;
 
 import elec332.core.config.ConfigWrapper;
+import elec332.core.main.ElecCoreRegistrar;
 import elec332.core.network.NetworkHandler;
+import elec332.core.util.LoadTimer;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.commands.CommandDRGen;
 import mcjty.deepresonance.compat.CompatHandler;
 import mcjty.deepresonance.compat.handlers.ComputerCraftCompatHandler;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
-import mcjty.deepresonance.grid.WorldGridRegistry;
 import mcjty.deepresonance.integration.computers.OpenComputersIntegration;
 import mcjty.deepresonance.items.manual.GuiDeepResonanceManual;
 import mcjty.deepresonance.proxy.CommonProxy;
 import mcjty.deepresonance.radiation.DRRadiationManager;
+import mcjty.deepresonance.tanks.TankGridHandler;
 import mcjty.lib.base.ModBase;
 import mcjty.lib.compat.MainCompatHandler;
 import mcjty.lib.varia.Logging;
@@ -55,12 +57,12 @@ public class DeepResonance implements ModBase {
     public static Logger logger;
     public static File mainConfigDir;
     public static File modConfigDir;
-    public static WorldGridRegistry worldGridRegistry;
     public static Configuration config;
     public static Configuration versionConfig;
     public static CompatHandler compatHandler;
     public static ConfigWrapper configWrapper;
     public static NetworkHandler networkHandler;
+    private static LoadTimer loadTimer;
 
     public boolean rftools = false;
 
@@ -99,9 +101,11 @@ public class DeepResonance implements ModBase {
      */
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
-        rftools = Loader.isModLoaded("rftools");
-
         logger = e.getModLog();
+        loadTimer = new LoadTimer(logger, "DeepResonance");
+        loadTimer.startPhase(e);
+
+        rftools = Loader.isModLoaded("rftools");
 
         mainConfigDir = e.getModConfigurationDirectory();
         modConfigDir = new File(mainConfigDir.getPath() + File.separator + "deepresonance");
@@ -118,7 +122,6 @@ public class DeepResonance implements ModBase {
             }
         }
 
-        worldGridRegistry = new WorldGridRegistry();
         networkHandler = new NetworkHandler(MODID);
         compatHandler = new CompatHandler(config, logger);
         compatHandler.addHandler(new ComputerCraftCompatHandler());
@@ -126,6 +129,7 @@ public class DeepResonance implements ModBase {
         configWrapper.registerConfigWithInnerClasses(new ConfigMachines());
         configWrapper.refresh();
         proxy.preInit(e);
+        ElecCoreRegistrar.GRIDS_V2.register(new TankGridHandler());
         MainCompatHandler.registerWaila();
         MainCompatHandler.registerTOP();
 
@@ -135,6 +139,7 @@ public class DeepResonance implements ModBase {
 
         //@todo
 //        FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
+        loadTimer.endPhase(e);
     }
 
 
@@ -149,6 +154,7 @@ public class DeepResonance implements ModBase {
      */
     @Mod.EventHandler
     public void init(FMLInitializationEvent e) {
+        loadTimer.startPhase(e);
         proxy.init(e);
         compatHandler.init();
         configWrapper.refresh();
@@ -156,6 +162,7 @@ public class DeepResonance implements ModBase {
         if (Loader.isModLoaded("OpenComputers")) {
             OpenComputersIntegration.init();
         }
+        loadTimer.endPhase(e);
     }
 
     @Mod.EventHandler
@@ -170,7 +177,9 @@ public class DeepResonance implements ModBase {
      */
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent e) {
+        loadTimer.startPhase(e);
         proxy.postInit(e);
+        loadTimer.endPhase(e);
     }
 
     @Override

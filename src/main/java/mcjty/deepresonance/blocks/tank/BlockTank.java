@@ -40,6 +40,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -176,8 +177,9 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
         TileEntity tile = WorldHelper.getTileAt(world, pos);
         if (tile instanceof TileTank) {
             TileTank tank = (TileTank) tile;
-            if (tank.getMultiBlock() != null)
-                return tank.getMultiBlock().getComparatorInputOverride();
+            if (tank.getTank() != null) {
+                return tank.getTank().getComparatorInputOverride();
+            }
         }
         return 0;
     }
@@ -217,17 +219,18 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
             TileTank tank = (TileTank)tile;
 
             if (player.getHeldItem(EnumHand.MAIN_HAND) != null) {
-                if (FluidContainerRegistry.isEmptyContainer(player.getHeldItem(EnumHand.MAIN_HAND))) {
-                    if (!world.isRemote) {
-                        extractIntoContainer(player, tank);
+                if (((TileTank) tile).getTank() != null) {
+                    if (FluidContainerRegistry.isEmptyContainer(player.getHeldItem(EnumHand.MAIN_HAND))) {
+                        if (!world.isRemote) {
+                            extractIntoContainer(player, tank.getTank());
+                        }
+                    } else if (FluidContainerRegistry.isFilledContainer(player.getHeldItem(EnumHand.MAIN_HAND))) {
+                        if (!world.isRemote) {
+                            fillFromContainer(player, tank.getTank());
+                        }
                     }
-                    return true;
-                } else if (FluidContainerRegistry.isFilledContainer(player.getHeldItem(EnumHand.MAIN_HAND))) {
-                    if (!world.isRemote) {
-                        fillFromContainer(player, tank);
-                    }
-                    return true;
                 }
+                return true;
             }
             TileTank.Mode i = tank.settings.get(side);
             switch (i) {
@@ -251,12 +254,12 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
         return super.onBlockActivated(world, pos, state, player, hand, heldItem, side, sidex, sidey, sidez);
     }
 
-    private void fillFromContainer(EntityPlayer player, TileTank tank) {
+    private void fillFromContainer(EntityPlayer player, IFluidHandler tank) {
         FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(player.getHeldItem(EnumHand.MAIN_HAND));
         if (fluidStack != null) {
-            int fill = tank.fill(null, fluidStack, false);
+            int fill = tank.fill(fluidStack, false);
             if (fill == fluidStack.amount) {
-                tank.fill(null, fluidStack, true);
+                tank.fill(fluidStack, true);
                 if (!player.capabilities.isCreativeMode) {
                     ItemStack emptyContainer = FluidContainerRegistry.drainFluidContainer(player.getHeldItem(EnumHand.MAIN_HAND));
                     player.inventory.setInventorySlotContents(player.inventory.currentItem, emptyContainer);
@@ -265,14 +268,14 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
         }
     }
 
-    private void extractIntoContainer(EntityPlayer player, TileTank tank) {
-        FluidStack fluidStack = tank.drain(null, 1, false);
+    private void extractIntoContainer(EntityPlayer player, IFluidHandler tank) {
+        FluidStack fluidStack = tank.drain(1, false);
         if (fluidStack != null) {
             int capacity = FluidContainerRegistry.getContainerCapacity(fluidStack, player.getHeldItem(EnumHand.MAIN_HAND));
             if (capacity != 0) {
-                fluidStack = tank.drain(null, capacity, false);
+                fluidStack = tank.drain(capacity, false);
                 if (fluidStack != null && fluidStack.amount == capacity) {
-                    fluidStack = tank.drain(null, capacity, true);
+                    fluidStack = tank.drain(capacity, true);
                     ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(fluidStack, player.getHeldItem(EnumHand.MAIN_HAND));
                     if (filledContainer != null) {
                         player.inventory.decrStackSize(player.inventory.currentItem, 1);
@@ -283,7 +286,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
                         player.openContainer.detectAndSendChanges();
                     } else {
                         // Try to insert the fluid back into the tank
-                        tank.fill(null, fluidStack, true);
+                        tank.fill(fluidStack, true);
                     }
                 }
             }

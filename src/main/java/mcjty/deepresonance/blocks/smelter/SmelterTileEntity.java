@@ -111,10 +111,10 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
     }
 
     private boolean checkTanks(){
-        return lavaTank != null && rclTank != null
+        return lavaTank != null && rclTank != null && lavaTank.getTank() != null && rclTank.getTank() != null
                 && DRFluidRegistry.getFluidFromStack(lavaTank.getFluid()) == FluidRegistry.LAVA
                 && lavaTank.getFluidAmount() > lavaTank.getCapacity()*0.25f
-                && rclTank.fill(null, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), false) == ConfigMachines.Smelter.rclPerOre;
+                && rclTank.getTank().fill(new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), false) == ConfigMachines.Smelter.rclPerOre;
     }
 
     private boolean validSlot(){
@@ -143,7 +143,7 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
             finalPurity = 0.1f;
         }
 
-        lavaTank.drain(null, new FluidStack(FluidRegistry.LAVA, ConfigMachines.Smelter.lavaCost), true);
+        lavaTank.getTank().drain(new FluidStack(FluidRegistry.LAVA, ConfigMachines.Smelter.lavaCost), true);
 
         progress = ConfigMachines.Smelter.processTime + (int) ((percentage - 0.5f) * ConfigMachines.Smelter.processTime);
         totalProgress = progress;
@@ -152,7 +152,7 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
     private void stopSmelting() {
         if (finalQuality > 0.0f) {
             FluidStack stack = LiquidCrystalFluidTagData.makeLiquidCrystalStack(ConfigMachines.Smelter.rclPerOre, finalQuality, finalPurity, 0.1f, 0.1f);
-            rclTank.fill(null, stack, true);
+            rclTank.getTank().fill(stack, true);
         }
     }
 

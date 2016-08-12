@@ -44,13 +44,15 @@ public class RCLScreenModule implements IScreenModule<ModuleDataRCL> {
         TileEntity te = world.getTileEntity(coordinate);
         if (te instanceof TileTank) {
             TileTank tank = (TileTank) te;
-            FluidStack fluidStack = tank.drain(null, 1, false);
-            if (fluidStack != null) {
-                LiquidCrystalFluidTagData data = LiquidCrystalFluidTagData.fromStack(fluidStack);
-                if (data != null) {
-                    purity = (int) ((data.getPurity() + .005) * 100);
-                    strength = (int) ((data.getStrength() + .005) * 100);
-                    efficiency = (int) ((data.getEfficiency() + .005) * 100);
+            if (tank.getTank() != null) {
+                FluidStack fluidStack = tank.getTank().drain(1, false);
+                if (fluidStack != null) {
+                    LiquidCrystalFluidTagData data = LiquidCrystalFluidTagData.fromStack(fluidStack);
+                    if (data != null) {
+                        purity = (int) ((data.getPurity() + .005) * 100);
+                        strength = (int) ((data.getStrength() + .005) * 100);
+                        efficiency = (int) ((data.getEfficiency() + .005) * 100);
+                    }
                 }
             }
         }

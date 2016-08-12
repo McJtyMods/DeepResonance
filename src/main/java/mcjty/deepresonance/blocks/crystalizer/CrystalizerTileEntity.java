@@ -73,7 +73,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
         }
 
         storage.extractEnergy(ConfigMachines.Crystalizer.rfPerRcl, false);
-        FluidStack fluidStack = rclTank.drain(null, ConfigMachines.Crystalizer.rclPerTick, true);
+        FluidStack fluidStack = rclTank.getTank().drain(ConfigMachines.Crystalizer.rclPerTick, true);
         LiquidCrystalFluidTagData data = LiquidCrystalFluidTagData.fromStack(fluidStack);
         if (mergedData == null) {
             mergedData = data;
@@ -112,7 +112,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
 
 
     private boolean canCrystalize() {
-        if (rclTank == null) {
+        if (rclTank == null || rclTank.getTank() == null) {
             return false;
         }
 
@@ -124,7 +124,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
             return false;
         }
 
-        FluidStack fluidStack = rclTank.drain(null, ConfigMachines.Crystalizer.rclPerTick, false);
+        FluidStack fluidStack = rclTank.getTank().drain(ConfigMachines.Crystalizer.rclPerTick, false);
         return !(fluidStack == null || fluidStack.amount != ConfigMachines.Crystalizer.rclPerTick);
     }
 

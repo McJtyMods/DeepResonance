@@ -18,6 +18,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.util.Random;
 
@@ -62,7 +63,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
                 progress = 1;
                 if (getOutputTank() != null) {
                     if (canWork()) {
-                        LiquidCrystalFluidTagData fluidData = LiquidCrystalFluidTagData.fromStack(getInputTank().drain(null, ConfigMachines.Purifier.rclPerPurify, true));
+                        LiquidCrystalFluidTagData fluidData = LiquidCrystalFluidTagData.fromStack(getInputTank().getTank().drain(ConfigMachines.Purifier.rclPerPurify, true));
                         if (fluidData != null) {
                             if (random.nextInt(doPurify(fluidData)) == 0) {
                                 consumeFilter();
@@ -101,7 +102,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
                 // We are already very pure. Do nothing.
                 // Put back the fluid we extracted.
                 FluidStack stack = fluidData.makeLiquidCrystalStack();
-                getOutputTank().fill(null, stack, true);
+                getOutputTank().fill(stack, true);
                 return 1000000;
             }
         }
@@ -109,30 +110,36 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
         purity += addedPurity;
         fluidData.setPurity(purity);
         FluidStack stack = fluidData.makeLiquidCrystalStack();
-        getOutputTank().fill(null, stack, true);
+        getOutputTank().fill(stack, true);
         return (int) ((maxPurityToAdd - addedPurity) * 40 / maxPurityToAdd + 1);
     }
 
     private boolean testFillOutputTank() {
-        return getOutputTank().fill(null, new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Purifier.rclPerPurify), false) == ConfigMachines.Purifier.rclPerPurify;
+        return getOutputTank().fill(new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Purifier.rclPerPurify), false) == ConfigMachines.Purifier.rclPerPurify;
     }
 
     private TileTank getInputTank() {
-        if (topTank == null) {
-            return bottomTank;
+        if (topTank == null || topTank.getTank() == null) {
+            if (bottomTank != null && bottomTank.getTank() != null) {
+                return bottomTank;
+            }
+            return null;
         }
         return topTank;
     }
 
-    private TileTank getOutputTank() {
-        if (bottomTank == null) {
-            return topTank;
+    private IFluidHandler getOutputTank() {
+        if (bottomTank == null || bottomTank.getTank() == null) {
+            if (topTank != null && topTank.getTank() != null) {
+                return topTank.getTank();
+            }
+            return null;
         }
-        return bottomTank;
+        return bottomTank.getTank();
     }
 
     private boolean canWork() {
-        if (bottomTank == null && topTank == null) {
+        if ((bottomTank == null || bottomTank.getTank() == null) && (topTank == null || topTank.getTank() == null)) {
             return false;
         }
         if (getInputTank().getFluidAmount() < ConfigMachines.Purifier.rclPerPurify) {
@@ -142,7 +149,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
             return false;
         }
         // Same tank so operation is possible.
-        return getInputTank().getMultiBlock().equals(getOutputTank().getMultiBlock()) || testFillOutputTank();
+        return getInputTank().getTank().equals(getOutputTank()) || testFillOutputTank();
     }
 
     private boolean validSlot(){

@@ -59,11 +59,11 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
         }
         progress = ConfigMachines.Valve.ticksPerOperation;
 
-        if (topTank == null || bottomTank == null) {
+        if (topTank == null || bottomTank == null || topTank.getTank() == null || bottomTank.getTank() == null) {
             return;
         }
 
-        FluidStack fluidStack = topTank.drain(null, ConfigMachines.Valve.rclPerOperation, false);
+        FluidStack fluidStack = topTank.getTank().drain(ConfigMachines.Valve.rclPerOperation, false);
         if (fluidStack != null && fillBottomTank(fluidStack.amount)) {
             LiquidCrystalFluidTagData data = LiquidCrystalFluidTagData.fromStack(fluidStack);
             if (data == null) {
@@ -84,12 +84,12 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
                 int fluidAmount = bottomTank.getFluidAmount();
                 if (fluidAmount < maxMb) {
                     int toDrain = Math.min(maxMb - fluidAmount, ConfigMachines.Valve.rclPerOperation);
-                    fluidStack = topTank.drain(null, toDrain, true);
-                    bottomTank.fill(null, fluidStack, true);
+                    fluidStack = topTank.getTank().drain(toDrain, true);
+                    bottomTank.getTank().fill(fluidStack, true);
                 }
             } else {
-                fluidStack = topTank.drain(null, ConfigMachines.Valve.rclPerOperation, true);
-                bottomTank.fill(null, fluidStack, true);
+                fluidStack = topTank.getTank().drain(ConfigMachines.Valve.rclPerOperation, true);
+                bottomTank.getTank().fill(fluidStack, true);
             }
         }
     }
@@ -131,7 +131,7 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
     }
 
     private boolean fillBottomTank(int amount) {
-        return bottomTank.fill(null, new FluidStack(DRFluidRegistry.liquidCrystal, amount), false) == amount;
+        return bottomTank.getTank().fill(new FluidStack(DRFluidRegistry.liquidCrystal, amount), false) == amount;
     }
 
     @Override

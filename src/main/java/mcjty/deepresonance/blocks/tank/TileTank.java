@@ -2,14 +2,11 @@ package mcjty.deepresonance.blocks.tank;
 
 import com.google.common.collect.Maps;
 import elec332.core.main.ElecCore;
-import elec332.core.multiblock.dynamic.IDynamicMultiBlockTile;
 import elec332.core.network.IElecCoreNetworkTile;
 import elec332.core.server.ServerHelper;
 import elec332.core.world.WorldHelper;
-import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.api.fluid.IDeepResonanceFluidAcceptor;
-import mcjty.deepresonance.api.fluid.IDeepResonanceFluidProvider;
-import mcjty.deepresonance.grid.tank.DRTankMultiBlock;
+import mcjty.deepresonance.tanks.TankGrid;
+import mcjty.deepresonance.varia.FluidTankWrapper;
 import mcjty.lib.entity.GenericTileEntity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,15 +17,23 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Map;
 
 /**
  * Created by Elec332 on 9-8-2015.
  */
-public class TileTank extends GenericTileEntity implements IDynamicMultiBlockTile<DRTankMultiBlock>, IFluidHandler, IDeepResonanceFluidAcceptor, IDeepResonanceFluidProvider, IElecCoreNetworkTile {
+public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile {
 
     public TileTank(){
         super();
@@ -38,33 +43,44 @@ public class TileTank extends GenericTileEntity implements IDynamicMultiBlockTil
         }
         this.multiBlockSaveData = new NBTTagCompound();
         this.tankHooks = Maps.newHashMap();
+        this.input = new FluidTankWrapper(){
+
+            @Override
+            protected IFluidTank getTank() {
+                return multiBlock;
+            }
+
+            @Override
+            protected boolean canDrain() {
+                return false;
+            }
+
+        };
+        this.output = new FluidTankWrapper() {
+
+            @Override
+            protected IFluidTank getTank() {
+                return multiBlock;
+            }
+
+            @Override
+            protected boolean canFill() {
+                return false;
+            }
+
+        };
     }
 
     // Client only
     private Fluid clientRenderFluid;
     private float renderHeight; //Value from 0.0f to 1.0f
 
+    private final IFluidHandler input, output;
+
     private NBTTagCompound multiBlockSaveData;
 
     protected Map<EnumFacing, Mode> settings;
     private Map<EnumFacing, ITankHook> tankHooks;
-
-    public static enum Mode implements IStringSerializable {
-        SETTING_NONE("none"),
-        SETTING_ACCEPT("accept"),   // Blue
-        SETTING_PROVIDE("provide"); // Yellow
-
-        private final String name;
-
-        Mode(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String getName() {
-            return name;
-        }
-    }
 
     @Override
     public void onPacketReceivedFromClient(EntityPlayerMP sender, int ID, NBTTagCompound data) {
@@ -102,16 +118,12 @@ public class TileTank extends GenericTileEntity implements IDynamicMultiBlockTil
 
     public void onTileLoaded() {
         if (!worldObj.isRemote) {
-            DeepResonance.worldGridRegistry.getTankRegistry().get(worldObj).addTile(this);
-            //MinecraftForge.EVENT_BUS.post(new FluidTileEvent.Load(this));
             initHooks();
         }
     }
 
     public void onTileUnloaded() {
         if (!worldObj.isRemote) {
-            DeepResonance.worldGridRegistry.getTankRegistry().get(worldObj).removeTile(this);
-            //MinecraftForge.EVENT_BUS.post(new FluidTileEvent.Unload(this));
             for (Map.Entry<EnumFacing, ITankHook> entry : getConnectedHooks().entrySet()){
                 entry.getValue().unHook(this, entry.getKey().getOpposite());
             }
@@ -149,7 +161,7 @@ public class TileTank extends GenericTileEntity implements IDynamicMultiBlockTil
         }
     }
 
-    private DRTankMultiBlock multiBlock;
+    private TankGrid multiBlock;
     public FluidStack myTank;
     public Fluid lastSeenFluid;
 
@@ -215,112 +227,30 @@ public class TileTank extends GenericTileEntity implements IDynamicMultiBlockTil
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
         super.writeRestorableToNBT(tagCompound);
         if (multiBlock != null) {
-            getMultiBlock().setDataToTile(this);
+            multiBlock.setDataToTile(this);
         }
-        ElecCore.systemPrintDebug("Writing restorable NBT @ " + pos);
         tagCompound.setTag("multiBlockData", multiBlockSaveData);
     }
 
-    @Override
-    public void setMultiBlock(DRTankMultiBlock multiBlock) {
+    public void setTank(TankGrid multiBlock) {
         this.multiBlock = multiBlock;
     }
 
-    @Override
-    public DRTankMultiBlock getMultiBlock() {
-        return multiBlock;
+    public TankGrid getTank(){
+        return this.multiBlock;
     }
 
-    @Override
     public void setSaveData(NBTTagCompound nbtTagCompound) {
-        ElecCore.systemPrintDebug("Setting MB save data @ " + pos);
         this.multiBlockSaveData = nbtTagCompound;
-    }
-
-    @Override
-    public NBTTagCompound getSaveData() {
-        return this.multiBlockSaveData;
-    }
-
-    @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-        if (!isInput(from))
-            return 0;
-        notifyChanges(doFill);
-        return multiBlock == null ? 0 : multiBlock.fill(from, resource, doFill);
-    }
-
-    @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
-        if (!isOutput(from))
-            return null;
-        notifyChanges(doDrain);
-        return multiBlock == null ? null : multiBlock.drain(from, resource, doDrain);
-    }
-
-    @Override
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        if (!isOutput(from))
-            return null;
-        notifyChanges(doDrain);
-        return multiBlock == null ? null : multiBlock.drain(from, maxDrain, doDrain);
-    }
-
-    @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
-        return isInput(from) && multiBlock != null && multiBlock.canFill(from, fluid);
-    }
-
-    @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
-        return isOutput(from) && multiBlock != null && multiBlock.canDrain(from, fluid);
-    }
-
-    @Override
-    public FluidTankInfo[] getTankInfo(EnumFacing from) {
-        return multiBlock == null ? new FluidTankInfo[0] : multiBlock.getTankInfo(from);
-    }
-
-    @Override
-    public boolean canAcceptFrom(EnumFacing direction) {
-        return isInput(direction);
-    }
-
-    @Override
-    public boolean canProvideTo(EnumFacing direction) {
-        return isOutput(direction);
-    }
-
-    @Override
-    public FluidStack getProvidedFluid(int maxProvided, EnumFacing from) {
-        if (!isOutput(from))
-            return null;
-        return getMultiBlock() == null ? null : getMultiBlock().drain(maxProvided, true);
-    }
-
-    @Override
-    public int getRequestedAmount(EnumFacing from) {
-        if (!isInput(from))
-            return 0;
-        return multiBlock == null ? 0 : Math.min(multiBlock.getFreeSpace(), 1000);
-    }
-
-    @Override
-    public FluidStack acceptFluid(FluidStack fluidStack, EnumFacing from) {
-        if (!isInput(from)) {
-            fill(from, fluidStack, true);
-            notifyChanges(true);
-            return null;
-        } else {
-            return fluidStack;
-        }
+        this.myTank = FluidStack.loadFluidStackFromNBT(nbtTagCompound.getCompoundTag("fluid"));
+        this.lastSeenFluid = FluidRegistry.getFluid(nbtTagCompound.getString("lastSeenFluid"));
     }
 
     public Fluid getClientRenderFluid() {
         return clientRenderFluid;
     }
 
-    // Client only
+    @SideOnly(Side.CLIENT)
     public float getRenderHeight() {
         return renderHeight;
     }
@@ -350,17 +280,6 @@ public class TileTank extends GenericTileEntity implements IDynamicMultiBlockTil
     }
 
     private Map<EnumFacing, ITankHook> getConnectedHooks(){
-        /*Map<ITankHook, EnumFacing> ret = Maps.newHashMap();
-        for (EnumFacing direction : EnumFacing.VALUES){
-            try {
-                TileEntity tile = WorldHelper.getTileAt(worldObj, getPos().offset(direction));
-                if (tile instanceof ITankHook)
-                    ret.put((ITankHook) tile, direction.getOpposite());
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        return ret;*/
         return tankHooks;
     }
 
@@ -373,6 +292,25 @@ public class TileTank extends GenericTileEntity implements IDynamicMultiBlockTil
     }
 
     @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && multiBlock != null && (isInput(facing) || isOutput(facing))) || super.hasCapability(capability, facing);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && multiBlock != null){
+            if (isOutput(facing)){
+                return (T) output;
+            }
+            if (isInput(facing)){
+                return (T) input;
+            }
+        }
+        return super.getCapability(capability, facing);
+    }
+
+    @Override
     public NBTTagCompound getUpdateTag() {
         return super.getUpdateTag();
     }
@@ -380,8 +318,8 @@ public class TileTank extends GenericTileEntity implements IDynamicMultiBlockTil
     @Override
     public void readClientDataFromNBT(NBTTagCompound tagCompound) {
         super.readClientDataFromNBT(tagCompound);
-        this.clientRenderFluid = FluidRegistry.getFluid(tagCompound.getString("fluid"));
-        this.renderHeight = tagCompound.getFloat("render");
+        //this.clientRenderFluid = FluidRegistry.getFluid(tagCompound.getString("fluid"));
+        //this.renderHeight = tagCompound.getFloat("render");
     }
 
     public static final int ID_GENERIC = 1;
@@ -407,4 +345,23 @@ public class TileTank extends GenericTileEntity implements IDynamicMultiBlockTil
                 this.renderHeight = tag.getFloat("render");
         }
     }
+
+    public enum Mode implements IStringSerializable {
+        SETTING_NONE("none"),
+        SETTING_ACCEPT("accept"),   // Blue
+        SETTING_PROVIDE("provide"); // Yellow
+
+        private final String name;
+
+        Mode(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+    }
+
 }

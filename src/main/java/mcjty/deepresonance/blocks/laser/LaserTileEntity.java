@@ -8,6 +8,7 @@ import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.deepresonance.tanks.TankGrid;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
@@ -34,7 +35,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.HashMap;
 import java.util.Map;
 
-import static mcjty.deepresonance.grid.tank.DRTankMultiBlock.TANK_BUCKETS;
+import static mcjty.deepresonance.tanks.TankGrid.TANK_BUCKETS;
 
 public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements DefaultSidedInventory, ITickable {
 
@@ -158,9 +159,9 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
             if (validRCLTank(tileTank)) {
 
 
-                FluidStack stack = tileTank.drain(null, 1000*TANK_BUCKETS, false);
+                FluidStack stack = tileTank.getTank().drain(1000 * TANK_BUCKETS, false);
                 if (stack != null) {
-                    stack = tileTank.drain(null, 1000*TANK_BUCKETS, true);
+                    stack = tileTank.getTank().drain(1000 * TANK_BUCKETS, true);
                     LiquidCrystalFluidTagData fluidData = LiquidCrystalFluidTagData.fromStack(stack);
                     float factor = 500.0f / stack.amount;
                     float purity = bonus.getPurityModifier().modify(fluidData.getPurity(), fluidData.getQuality(), factor);
@@ -177,7 +178,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
                         }
                     }
                     if (newStack.amount > 0) {
-                        tileTank.fill(null, newStack, true);
+                        tileTank.getTank().fill(newStack, true);
                     }
                 }
             }

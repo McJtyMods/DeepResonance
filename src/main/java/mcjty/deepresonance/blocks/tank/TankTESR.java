@@ -84,8 +84,9 @@ public class TankTESR extends TileEntitySpecialRenderer<TileTank> {
             
             if (scale > 3/16f) {
 
-                if (scale > 1 - 3/16f)
-                    scale = 1 - 3/16f;
+                if (scale > 1 - 3 / 16f) {
+                    scale = 1 - 3 / 16f;
+                }
 
                 v2 -= (fluid.getMaxV() - fluid.getMinV()) * (1 - scale);
 

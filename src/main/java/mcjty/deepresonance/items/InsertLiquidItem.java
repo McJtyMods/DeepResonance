@@ -35,10 +35,10 @@ public class InsertLiquidItem extends GenericDRItem {
     public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
             TileEntity te = WorldHelper.getTileAt(world, pos);
-            if (te instanceof TileTank) {
+            if (te instanceof TileTank && ((TileTank) te).getTank() != null) {
                 TileTank tileTank = (TileTank) te;
                 FluidStack fluidStack = LiquidCrystalFluidTagData.makeLiquidCrystalStack(100, 1.0f, 0.1f, 0.1f, 0.1f);
-                tileTank.fill(null, fluidStack, true);
+                tileTank.getTank().fill(fluidStack, true);
             } else {
                 player.addChatComponentMessage(new TextComponentString(TextFormatting.YELLOW + "This is not a tank!"));
             }
