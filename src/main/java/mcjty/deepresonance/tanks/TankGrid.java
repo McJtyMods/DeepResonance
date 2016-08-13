@@ -128,7 +128,6 @@ public class TankGrid implements IFluidHandler, IFluidTank {
                     total -= toAdd;
                     filled = (float) toAdd / (i * TANK_BUCKETS * 1000);
                 }
-                System.out.println(toString()+"  "+j + "      "  +filled);
                 for (DimensionCoordinate loc : list) {
                     TileTank tank = getTank(loc);
                     if (tank != null) {
