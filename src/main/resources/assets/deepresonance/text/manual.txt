@@ -67,7 +67,7 @@ Every crystal has four basic characteristics:
 A running generator will produce radiation. The amount of radiation as
 well as the power of this radiation depends on the power of the crystal
 as well as the purity of it. A 100% pure crystal that is not overcharged
-will generate no radiation.
+will generate very little radiation.
 
 Naturally spawned crystals are not pure but because they contain little
 power they don't cause a lot of radiation. So you can use them for early
