@@ -30,6 +30,8 @@ public class ResonatingCrystalTESR extends TileEntitySpecialRenderer<ResonatingC
             RenderHelper.renderBillboardQuadBright(0.6f);
 
             GlStateManager.popMatrix();
+
+            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         }
     }
 }

@@ -31,7 +31,6 @@ public class LaserRenderer extends TileEntitySpecialRenderer<LaserTileEntity> {
             float destX = tileEntity.getPos().getX() + 0.5f + direction.getFrontOffsetX()*2.5f;
             float destY = tileEntity.getPos().getY() + 0.5f;
             float destZ = tileEntity.getPos().getZ() + 0.5f + direction.getFrontOffsetZ()*2.5f;
-            GlStateManager.pushAttrib();
 //            GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
 
             tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
@@ -62,7 +61,8 @@ public class LaserRenderer extends TileEntitySpecialRenderer<LaserTileEntity> {
             tessellator.draw();
             GlStateManager.popMatrix();
 
-            GlStateManager.popAttrib();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         }
     }
 }

@@ -35,9 +35,6 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer<EnergyCollect
 
     @Override
     public void renderTileEntityAt(EnergyCollectorTileEntity te, double x, double y, double z, float time, int breakTime) {
-//        GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
-        GlStateManager.pushAttrib();
-
         if ((!te.getCrystals().isEmpty()) && (te.areLasersActive() || te.getLaserStartup() > 0)) {
             GlStateManager.depthMask(false);
             GlStateManager.enableBlend();
@@ -93,10 +90,10 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer<EnergyCollect
             tessellator.draw();
 
             GlStateManager.popMatrix();
-        }
 
-//        GL11.glPopAttrib();
-        GlStateManager.popAttrib();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        }
     }
 
     private float jitter(float startupFactor, float a1, float a2) {
