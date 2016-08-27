@@ -144,7 +144,7 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
     private boolean findCollector() {
         BlockPos crystalLocation = getCrystalPosition();
         if (cachedLocator != null) {
-            if (WorldHelper.getBlockAt(worldObj, crystalLocation) == EnergyCollectorSetup.energyCollectorBlock) {
+            if (WorldHelper.getBlockAt(worldObj, cachedLocator) == EnergyCollectorSetup.energyCollectorBlock) {
                 return true;
             }
             cachedLocator = null;
