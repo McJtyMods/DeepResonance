@@ -39,24 +39,36 @@ public class TankDriver {
             @Callback(doc="function():number; Returns the quality of the RCL")
             public Object[] getQuality(Context c, Arguments a) {
                 NBTTagCompound tagData = tile.getFluidTag();
+                if (tagData == null) {
+                    return new Object[]{-1.0f};
+                }
                 return new Object[]{tagData.getFloat("quality")};
             }
 
             @Callback(doc="function():number; Returns the purity of the RCL")
             public Object[] getPurity(Context c, Arguments a) {
                 NBTTagCompound tagData = tile.getFluidTag();
+                if (tagData == null) {
+                    return new Object[]{-1.0f};
+                }
                 return new Object[]{tagData.getFloat("purity")};
             }
 
             @Callback(doc="function():number; Returns the strength of the RCL")
             public Object[] getStrength(Context c, Arguments a) {
                 NBTTagCompound tagData = tile.getFluidTag();
+                if (tagData == null) {
+                    return new Object[]{-1.0f};
+                }
                 return new Object[]{tagData.getFloat("strength")};
             }
 
             @Callback(doc="function():number; Returns the efficiency of the RCL")
             public Object[] getEfficiency(Context c, Arguments a) {
                 NBTTagCompound tagData = tile.getFluidTag();
+                if (tagData == null) {
+                    return new Object[]{-1.0f};
+                }
                 return new Object[]{tagData.getFloat("efficiency")};
             }
 
