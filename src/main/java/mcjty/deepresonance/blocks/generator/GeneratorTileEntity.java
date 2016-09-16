@@ -14,11 +14,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class GeneratorTileEntity extends GenericTileEntity implements IEnergyProvider, ITickable {
+public class GeneratorTileEntity extends GenericTileEntity implements IEnergyProvider, ITickable, IEnergyStorage {
 
     private int networkId = -1;
 
@@ -249,21 +252,29 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
             BlockPos pos = getPos().offset(EnumFacing.VALUES[i]);
             TileEntity te = WorldHelper.getTileAt(worldObj, pos);
             if (EnergyTools.isEnergyTE(te)) {
-                IEnergyConnection connection = (IEnergyConnection) te;
                 EnumFacing opposite = EnumFacing.VALUES[i].getOpposite();
-                if (connection.canConnectEnergy(opposite)) {
-                    int rfToGive;
-                    if (GeneratorConfiguration.rfPerTickGenerator <= energyStored) {
-                        rfToGive = GeneratorConfiguration.rfPerTickGenerator;
-                    } else {
-                        rfToGive = energyStored;
-                    }
+                int rfToGive;
+                if (GeneratorConfiguration.rfPerTickGenerator <= energyStored) {
+                    rfToGive = GeneratorConfiguration.rfPerTickGenerator;
+                } else {
+                    rfToGive = energyStored;
+                }
+                int received;
 
-                    int received = EnergyTools.receiveEnergy(te, opposite, rfToGive);
-                    energyStored -= extractEnergy(EnumFacing.DOWN, received, false);
-                    if (energyStored <= 0) {
-                        break;
+                if (te instanceof IEnergyConnection) {
+                    IEnergyConnection connection = (IEnergyConnection) te;
+                    if (connection.canConnectEnergy(opposite)) {
+                        received = EnergyTools.receiveEnergy(te, opposite, rfToGive);
+                    } else {
+                        received = 0;
                     }
+                } else {
+                    // Forge unit
+                    received = EnergyTools.receiveEnergy(te, opposite, rfToGive);
+                }
+                energyStored -= extractEnergy(EnumFacing.DOWN, received, false);
+                if (energyStored <= 0) {
+                    break;
                 }
             }
         }
@@ -311,5 +322,54 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
     @Override
     public boolean canConnectEnergy(EnumFacing from) {
         return true;
+    }
+
+    //----------------------------------------------------------
+    // Forge  EnergyStorage
+
+    @Override
+    public int receiveEnergy(int maxReceive, boolean simulate) {
+        return 0;
+    }
+
+    @Override
+    public int extractEnergy(int maxExtract, boolean simulate) {
+        return 0;
+    }
+
+    @Override
+    public int getEnergyStored() {
+        return getEnergyStored(EnumFacing.DOWN);
+    }
+
+    @Override
+    public int getMaxEnergyStored() {
+        return getMaxEnergyStored(EnumFacing.DOWN);
+    }
+
+    @Override
+    public boolean canExtract() {
+        return false;
+    }
+
+    @Override
+    public boolean canReceive() {
+        return false;
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        if (capability == CapabilityEnergy.ENERGY) {
+            return true;
+        }
+        return super.hasCapability(capability, facing);
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityEnergy.ENERGY) {
+            return (T) this;
+        }
+        return super.getCapability(capability, facing);
     }
 }
