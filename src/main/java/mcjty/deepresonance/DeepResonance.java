@@ -65,6 +65,7 @@ public class DeepResonance implements ModBase {
     private static LoadTimer loadTimer;
 
     public boolean rftools = false;
+    public boolean rftoolsControl = false;
 
     public static CreativeTabs tabDeepResonance = new CreativeTabs("DeepResonance") {
         @Override
@@ -106,6 +107,7 @@ public class DeepResonance implements ModBase {
         loadTimer.startPhase(e);
 
         rftools = Loader.isModLoaded("rftools");
+        rftoolsControl = Loader.isModLoaded("rftoolscontrol");
 
         mainConfigDir = e.getModConfigurationDirectory();
         modConfigDir = new File(mainConfigDir.getPath() + File.separator + "deepresonance");
@@ -135,7 +137,12 @@ public class DeepResonance implements ModBase {
 
         if (rftools) {
             Logging.log("Detected RFTools: enabling support");
-            FMLInterModComms.sendFunctionMessage("rftools", "getScreenModuleRegistry", "mcjty.deepresonance.items.rftoolsmodule.RFToolsSupport$GetScreenModuleRegistry");        }
+            FMLInterModComms.sendFunctionMessage("rftools", "getScreenModuleRegistry", "mcjty.deepresonance.items.rftoolsmodule.RFToolsSupport$GetScreenModuleRegistry");
+        }
+        if (rftoolsControl) {
+            Logging.log("Detected RFTools Control: enabling support");
+            FMLInterModComms.sendFunctionMessage("rftoolscontrol", "getOpcodeRegistry", "mcjty.deepresonance.compat.rftoolscontrol.RFToolsControlSupport$GetOpcodeRegistry");
+        }
 
         //@todo
 //        FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");

@@ -14,7 +14,7 @@ import net.minecraft.world.World;
  */
 public interface IClientScreenModule<T extends IModuleData> {
     /**
-     * The transform mode lets you control how the screen will setup the GL
+     * The transform mode lets you rftoolscontrol how the screen will setup the GL
      * renderer for a your module.
      */
     enum TransformMode {

@@ -75,7 +75,7 @@ dependencies {
     deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
     deobfCompile "mezz.jei:jei_1.10.2:3.9.0.246"
     deobfCompile "mcjty.theoneprobe:TheOneProbe:1.10-1.0.13-26"
-    deobfCompile "com.github.mcjty:mcjtylib:1.10-2.1.0-SNAPSHOT"
+    deobfCompile "com.github.mcjty:mcjtylib:1.10-2.1.2-SNAPSHOT"
     compile "li.cil.oc:OpenComputers:MC1.10.2-1.6.+:api"
 }
 

@@ -22,13 +22,13 @@ public class GeneratorControllerDriver {
                 super(tile, "deepresonance_controller");
             }
 
-            @Callback(doc="function(); Activate the generator. This will turn off redstone control.")
+            @Callback(doc="function(); Activate the generator. This will turn off redstone rftoolscontrol.")
             public Object[] activate(Context c, Arguments a) {
                 tile.activate();
                 return new Object[]{};
             }
 
-            @Callback(doc="function(); Deactivate the generator. Note that this will NOT turn on redstone control.")
+            @Callback(doc="function(); Deactivate the generator. Note that this will NOT turn on redstone rftoolscontrol.")
             public Object[] deactivate(Context c, Arguments a) {
                 tile.deactivate();
                 return new Object[]{};

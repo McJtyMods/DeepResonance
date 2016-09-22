@@ -53,7 +53,7 @@ public interface IModuleGuiBuilder {
     IModuleGuiBuilder format(String tagname);
 
     /**
-     * This is a more hardcoded component that can be used to control the
+     * This is a more hardcoded component that can be used to rftoolscontrol the
      * mode to display a 'level' amount in. It gives the player a component that
      * he/she can configure to show a bar, show as a difference (RF/tick), optionally
      * hide the text or show as a percentage. It will save this information in the
