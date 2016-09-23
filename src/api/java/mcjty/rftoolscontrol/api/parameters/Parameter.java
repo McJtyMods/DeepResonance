@@ -1,5 +1,8 @@
 package mcjty.rftoolscontrol.api.parameters;
 
+/**
+ * A representation of a parameter.
+ */
 public class Parameter {
 
     private final ParameterType parameterType;

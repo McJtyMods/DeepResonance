@@ -6,7 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 import javax.annotation.Nullable;
 
 /**
- * How to identify a side on a block
+ * This class identifies a side of a network blocked. This basically
+ * is an optional nodename and an optional side. If side is null then
+ * it means the node or processor itself.
  */
 public class BlockSide {
     @Nullable private final String nodeName;          // An inventory on a network

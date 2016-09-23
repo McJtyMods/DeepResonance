@@ -21,7 +21,6 @@ public enum ParameterType {
         for (ParameterType type : values()) {
             TYPE_MAP.put(type.getName(), type);
         }
-
     }
 
     ParameterType(String name) {

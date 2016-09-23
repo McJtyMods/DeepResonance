@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * A description of a parameter for an opcode
+ */
 public class ParameterDescription {
 
     private final String name;

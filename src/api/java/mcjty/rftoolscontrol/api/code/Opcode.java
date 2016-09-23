@@ -49,6 +49,7 @@ public class Opcode {
         return isEvent;
     }
 
+    @Nonnull
     public List<ParameterDescription> getParameters() {
         return parameters;
     }

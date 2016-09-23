@@ -2,6 +2,7 @@ package mcjty.rftoolscontrol.api.code;
 
 import mcjty.rftoolscontrol.api.parameters.ParameterType;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,10 +31,12 @@ public class Function {
         return name;
     }
 
+    @Nonnull
     public IFunctionRunnable getFunctionRunnable() {
         return functionRunnable;
     }
 
+    @Nonnull
     public List<String> getDescription() {
         return description;
     }

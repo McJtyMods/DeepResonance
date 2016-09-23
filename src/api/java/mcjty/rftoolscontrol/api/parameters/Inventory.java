@@ -7,7 +7,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * How to identify an inventory
+ * This class identifies an inventory on a network. It has an optional
+ * node name. If that is not given then the processor itself is meant.
+ * There is also a side adjacent to the node or processor and an
+ * optional internal side. The internal side represents from which side
+ * we are supposedly accessing the inventory.
  */
 public class Inventory {
     @Nullable private final String nodeName;          // An inventory on a network

@@ -17,7 +17,19 @@ import javax.annotation.Nullable;
  */
 public interface IProcessor {
 
+    /**
+     * Evalulate a parameter with a given index and return an object
+     * of the right type or null if the parameter was not given
+     */
+    @Nullable
     <T> T evaluateParameter(ICompiledOpcode compiledOpcode, IProgram program, int parIndex);
+
+    /**
+     * Evalulate a parameter with a given index and return an object
+     * of the right type. Gives an exception if the result was null
+     */
+    @Nonnull
+    <T> T evaluateParameterNonNull(ICompiledOpcode compiledOpcode, IProgram program, int parIndex);
 
     /**
      * Evaluate an integer parameter. Return 0 if the parameter was not an integer or null
@@ -27,17 +39,22 @@ public interface IProcessor {
     /**
      * Evaluate an integer parameter. Return null if the parameter was not given
      */
+    @Nullable
     Integer evaluateIntegerParameter(ICompiledOpcode compiledOpcode, IProgram program, int parIndex);
 
+    @Nullable
     String evaluateStringParameter(ICompiledOpcode compiledOpcode, IProgram program, int parIndex);
 
+    /**
+     * Evaluate a boolean parameter. Return false if the parameter was not given
+     */
     boolean evaluateBoolParameter(ICompiledOpcode compiledOpcode, IProgram program, int parIndex);
 
     /**
      * Set the output redstone power at a given side on the network
      *
      * @param side
-     * @param level
+     * @param level a value between 0 and 15
      */
     void setPowerOut(@Nonnull BlockSide side, int level);
 
@@ -45,71 +62,94 @@ public interface IProcessor {
      * Read the redstone value at a specific side on the network
      *
      * @param side
-     * @return
+     * @return a value between 0 and 15
      */
     int readRedstoneIn(@Nonnull BlockSide side);
 
+    /**
+     * Get a tile entity at a specific side of a networked block
+     */
     @Nullable
     TileEntity getTileEntityAt(Inventory inv);
 
+    /**
+     * Get the block position at a specific side of a networked block
+     */
     @Nullable
     BlockPos getPositionAt(Inventory inv);
 
     /**
      * Get an itemhandler for an inventory at a given side on the network
-     *
-     * @param inv
-     * @return
      */
-    IItemHandler getItemHandlerAt(Inventory inv);
+    IItemHandler getItemHandlerAt(@Nonnull Inventory inv);
 
     /**
-     * Log a message on the console
-     *
-     * @param message
+     * Log a message on the console. This message can
+     * contain TextFormatting
      */
     void log(String message);
 
     /**
-     * Get an item from an internal slot
-     *
-     * @param program
-     * @param virtualSlot
-     * @return
+     * Get an item from an internal slot. The virtualSlot is a slot
+     * number relative to how the slots are allocated for the card. So
+     * index 0 means the first allocated slot
      */
+    @Nullable
     ItemStack getItemInternal(IProgram program, int virtualSlot);
 
     /**
-     * Set a variable to an integer
-     *  @param program
-     * @param var
+     * Set a variable to an integer. The index of the variable
+     * is relative to how the variables are allocated for the card
      */
     void setVariable(IProgram program, int var);
 
     /**
      * Get the amount of energy on a given block
-     *
-     * @param side
-     * @return
      */
     int getEnergy(Inventory side);
 
     int getMaxEnergy(Inventory side);
 
+    /**
+     * Try to place a lock. If it succeeds this returns POSITIVE and
+     * the lock will be placed. Otherwise it returns HOLD
+     */
     IOpcodeRunnable.OpcodeResult placeLock(String name);
 
+    /**
+     * Release the given lock. This does nothing if you don't
+     * have the lock.
+     */
     void releaseLock(String name);
 
+    /**
+     * Test if a given lock is set
+     */
     boolean testLock(String name);
 
-    boolean requestCraft(ItemStack stack, @Nullable Inventory inventory);
+    /**
+     * Try to request crafting of an item. Returns false if the item
+     * could not be requested.
+     */
+    boolean requestCraft(@Nonnull ItemStack stack, @Nullable Inventory inventory);
 
-    int getLiquid(Inventory side);
+    /**
+     * Get the amount of liquid on a specific tank. Returns 0 if it is not a tank
+     */
+    int getLiquid(@Nonnull Inventory side);
 
-    int getMaxLiquid(Inventory side);
+    int getMaxLiquid(@Nonnull Inventory side);
 
+    /**
+     * Send a signal to this processor to be handled by a program. It returns the
+     * number of signal handlers that reacted to this signal.
+     */
     int signal(String signal);
 
+    /**
+     * If this program is running in the context of a craft operation
+     * then you can get the desired craft result here
+     */
     @Nullable
     ItemStack getCraftResult(IProgram program);
 

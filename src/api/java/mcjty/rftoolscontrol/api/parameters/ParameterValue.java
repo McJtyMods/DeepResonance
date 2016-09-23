@@ -2,6 +2,10 @@ package mcjty.rftoolscontrol.api.parameters;
 
 import mcjty.rftoolscontrol.api.code.Function;
 
+/**
+ * A value for a parameter. This value can only be
+ * interpreted correctly in combination with a ParameterType
+ */
 public class ParameterValue {
 
     private final int variableIndex;

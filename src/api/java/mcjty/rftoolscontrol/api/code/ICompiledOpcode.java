@@ -2,6 +2,7 @@ package mcjty.rftoolscontrol.api.code;
 
 import mcjty.rftoolscontrol.api.parameters.Parameter;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -9,5 +10,6 @@ import java.util.List;
  */
 public interface ICompiledOpcode {
 
+    @Nonnull
     List<Parameter> getParameters();
 }
