@@ -13,28 +13,16 @@ import javax.annotation.Nullable;
  * optional internal side. The internal side represents from which side
  * we are supposedly accessing the inventory.
  */
-public class Inventory {
-    @Nullable private final String nodeName;          // An inventory on a network
-    @Nonnull private final EnumFacing side;      // The side at which the inventory can be found
+public class Inventory extends BlockSide {
     @Nullable private final EnumFacing intSide;   // The side at which we are accessing the inventory (can be null)
 
     public Inventory(@Nullable String name, @Nonnull EnumFacing side, @Nullable EnumFacing intSide) {
-        this.nodeName = (name == null || name.isEmpty()) ? null : name;
-        this.side = side;
+        super(name, side);
         this.intSide = intSide;
     }
 
-    @Nullable
-    public String getNodeName() {
-        return nodeName;
-    }
-
-    public boolean hasNodeName() {
-        return nodeName != null && !nodeName.isEmpty();
-    }
-
     public String serialize() {
-        return "#" + (hasNodeName() ? nodeName : "-") + "#" + side.getName() + "#" + (intSide == null ? "-" : intSide.getName()) + "#";
+        return "#" + (hasNodeName() ? getNodeName() : "-") + "#" + getSide().getName() + "#" + (intSide == null ? "-" : intSide.getName()) + "#";
     }
 
     public static Inventory deserialize(String s) {
@@ -45,7 +33,7 @@ public class Inventory {
 
     @Nonnull
     public EnumFacing getSide() {
-        return side;
+        return super.getSide();
     }
 
     @Nullable

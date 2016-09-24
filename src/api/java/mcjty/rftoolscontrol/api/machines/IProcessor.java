@@ -32,6 +32,14 @@ public interface IProcessor {
     <T> T evaluateParameterNonNull(ICompiledOpcode compiledOpcode, IProgram program, int parIndex);
 
     /**
+     * Evalulate a parameter with a given index and return a BlockSide.
+     * This can convert from Inventory correctly
+     * of the right type or null if the parameter was not given
+     */
+    @Nullable
+    BlockSide evaluateSideParameter(ICompiledOpcode compiledOpcode, IProgram program, int parIndex);
+
+    /**
      * Evaluate an integer parameter. Return 0 if the parameter was not an integer or null
      */
     int evaluateIntParameter(ICompiledOpcode compiledOpcode, IProgram program, int parIndex);
@@ -67,19 +75,21 @@ public interface IProcessor {
     int readRedstoneIn(@Nonnull BlockSide side);
 
     /**
-     * Get a tile entity at a specific side of a networked block
+     * Get a tile entity at a specific side of a networked block. If the side in
+     * the BlockSide itself is null then the postion is the position of the processor or node itself
      */
     @Nullable
-    TileEntity getTileEntityAt(Inventory inv);
+    TileEntity getTileEntityAt(@Nullable BlockSide inv);
 
     /**
-     * Get the block position at a specific side of a networked block
+     * Get the block position at a specific side of a networked block. If the side in
+     * the BlockSide itself is null then the postion is the position of the processor or node itself
      */
     @Nullable
-    BlockPos getPositionAt(Inventory inv);
+    BlockPos getPositionAt(@Nullable BlockSide inv);
 
     /**
-     * Get an itemhandler for an inventory at a given side on the network
+     * Get an itemhandler for an inventory at a given position on the network
      */
     IItemHandler getItemHandlerAt(@Nonnull Inventory inv);
 
