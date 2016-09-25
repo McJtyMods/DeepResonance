@@ -32,12 +32,52 @@ public interface IProcessor {
     <T> T evaluateParameterNonNull(ICompiledOpcode compiledOpcode, IProgram program, int parIndex);
 
     /**
+     * Evalulate a parameter with a given index and return an item stack
+     * This can convert from String correctly
+     * or null if the parameter was not given
+     */
+    @Nullable
+    ItemStack evaluateItemParameter(ICompiledOpcode compiledOpcode, IProgram program, int parIndex);
+
+    /**
      * Evalulate a parameter with a given index and return a BlockSide.
-     * This can convert from Inventory correctly
-     * of the right type or null if the parameter was not given
+     * This can convert from String correctly
+     * Gives an exception if the result was null
+     */
+    @Nonnull
+    ItemStack evaluateItemParameterNonNull(ICompiledOpcode compiledOpcode, IProgram program, int parIndex);
+
+    /**
+     * Evalulate a parameter with a given index and return a BlockSide.
+     * This can convert from Inventory and String correctly
+     * or null if the parameter was not given
      */
     @Nullable
     BlockSide evaluateSideParameter(ICompiledOpcode compiledOpcode, IProgram program, int parIndex);
+
+    /**
+     * Evalulate a parameter with a given index and return a BlockSide.
+     * This can convert from Inventory and String correctly
+     * Gives an exception if the result was null
+     */
+    @Nonnull
+    BlockSide evaluateSideParameterNonNull(ICompiledOpcode compiledOpcode, IProgram program, int parIndex);
+
+    /**
+     * Evalulate a parameter with a given index and return an Inventory.
+     * This can convert from BlockSide and String correctly
+     * or null if the parameter was not given
+     */
+    @Nullable
+    Inventory evaluateInventoryParameter(ICompiledOpcode compiledOpcode, IProgram program, int parIndex);
+
+    /**
+     * Evalulate a parameter with a given index and return an Inventory.
+     * This can convert from BlockSide and String correctly.
+     * Gives an exception if the result was null
+     */
+    @Nonnull
+    Inventory evaluateInventoryParameterNonNull(ICompiledOpcode compiledOpcode, IProgram program, int parIndex);
 
     /**
      * Evaluate an integer parameter. Return 0 if the parameter was not an integer or null

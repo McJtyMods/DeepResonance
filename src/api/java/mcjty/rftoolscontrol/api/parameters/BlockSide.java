@@ -33,15 +33,6 @@ public class BlockSide {
         return side;
     }
 
-    @Override
-    public String toString() {
-        if (side == null) {
-            return "*";
-        } else {
-            return side.toString();
-        }
-    }
-
     public String getStringRepresentation() {
         EnumFacing facing = getSide();
 

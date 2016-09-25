@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
  * we are supposedly accessing the inventory.
  */
 public class Inventory extends BlockSide {
+
     @Nullable private final EnumFacing intSide;   // The side at which we are accessing the inventory (can be null)
 
     public Inventory(@Nullable String name, @Nonnull EnumFacing side, @Nullable EnumFacing intSide) {
@@ -55,4 +56,5 @@ public class Inventory extends BlockSide {
             return StringUtils.left(getNodeName(), 6) + " " + s;
         }
     }
+
 }
