@@ -93,6 +93,9 @@ public interface IProcessor {
     @Nullable
     String evaluateStringParameter(ICompiledOpcode compiledOpcode, IProgram program, int parIndex);
 
+    @Nonnull
+    String evaluateStringParameterNonNull(ICompiledOpcode compiledOpcode, IProgram program, int parIndex);
+
     /**
      * Evaluate a boolean parameter. Return false if the parameter was not given
      */
@@ -203,4 +206,9 @@ public interface IProcessor {
     @Nullable
     ItemStack getCraftResult(IProgram program);
 
+    /**
+     * Send a message to another processor identified by the network identifier item
+     * that is in idSlot. Can optionally send a variable to that processor.
+     */
+    void sendMessage(IProgram program, int idSlot, String messageName, @Nullable Integer variableSlot);
 }

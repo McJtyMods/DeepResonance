@@ -224,13 +224,14 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
                         if (!world.isRemote) {
                             extractIntoContainer(player, tank.getTank());
                         }
+                        return true;
                     } else if (FluidContainerRegistry.isFilledContainer(player.getHeldItem(EnumHand.MAIN_HAND))) {
                         if (!world.isRemote) {
                             fillFromContainer(player, tank.getTank());
                         }
+                        return true;
                     }
                 }
-                return true;
             }
             TileTank.Mode i = tank.settings.get(side);
             switch (i) {
