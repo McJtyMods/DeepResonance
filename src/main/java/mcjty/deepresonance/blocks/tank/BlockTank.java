@@ -17,7 +17,6 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.properties.PropertyInteger;
@@ -219,18 +218,20 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
             TileTank tank = (TileTank)tile;
 
             if (player.getHeldItem(EnumHand.MAIN_HAND) != null) {
-                if (((TileTank) tile).getTank() != null) {
-                    if (FluidContainerRegistry.isEmptyContainer(player.getHeldItem(EnumHand.MAIN_HAND))) {
+                if (FluidContainerRegistry.isEmptyContainer(player.getHeldItem(EnumHand.MAIN_HAND))) {
+                    if (((TileTank) tile).getTank() != null) {
                         if (!world.isRemote) {
                             extractIntoContainer(player, tank.getTank());
                         }
-                        return true;
-                    } else if (FluidContainerRegistry.isFilledContainer(player.getHeldItem(EnumHand.MAIN_HAND))) {
+                    }
+                    return true;
+                } else if (FluidContainerRegistry.isFilledContainer(player.getHeldItem(EnumHand.MAIN_HAND))) {
+                    if (((TileTank) tile).getTank() != null) {
                         if (!world.isRemote) {
                             fillFromContainer(player, tank.getTank());
                         }
-                        return true;
                     }
+                    return true;
                 }
             }
             TileTank.Mode i = tank.settings.get(side);
