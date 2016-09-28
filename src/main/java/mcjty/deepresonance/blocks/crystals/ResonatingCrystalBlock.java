@@ -10,6 +10,7 @@ import mcjty.deepresonance.boom.TestExplosion;
 import mcjty.deepresonance.network.PacketGetCrystalInfo;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
+import mcjty.lib.base.GeneralConfig;
 import mcjty.lib.container.EmptyContainer;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -113,12 +114,12 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
     @Override
     public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedToolTips) {
         NBTTagCompound tagCompound = itemStack.getTagCompound();
-        if (tagCompound != null) {
-            tagCompound.removeTag("owner");
-            tagCompound.removeTag("ownerM");
-            tagCompound.removeTag("idM");
-        }
+
+        boolean oldOwnership = GeneralConfig.manageOwnership;
+        GeneralConfig.manageOwnership = false;
         super.addInformation(itemStack, player, list, advancedToolTips);
+        GeneralConfig.manageOwnership = oldOwnership;
+
         float power = 100.0f;
         if (tagCompound != null) {
             power = tagCompound.getFloat("power");
