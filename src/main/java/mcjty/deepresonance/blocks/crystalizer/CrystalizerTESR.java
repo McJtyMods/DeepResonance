@@ -48,7 +48,7 @@ public class CrystalizerTESR extends TileEntitySpecialRenderer<CrystalizerTileEn
 
     @Override
     public void renderTileEntityAt(CrystalizerTileEntity te, double x, double y, double z, float time, int breakTime) {
-        GlStateManager.pushAttrib();
+//        GlStateManager.pushAttrib();
 //        GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
 
         int progress = te.getProgress();
@@ -93,6 +93,6 @@ public class CrystalizerTESR extends TileEntitySpecialRenderer<CrystalizerTileEn
             GlStateManager.disableBlend();
         }
 
-        GlStateManager.popAttrib();
+//        GlStateManager.popAttrib();
     }
 }

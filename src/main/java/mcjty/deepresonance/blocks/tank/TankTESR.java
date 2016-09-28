@@ -24,7 +24,7 @@ public class TankTESR extends TileEntitySpecialRenderer<TileTank> {
     @Override
     public void renderTileEntityAt(TileTank tileTank, double x, double y, double z, float time, int breakTime) {
 //        GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
-        GlStateManager.pushAttrib();
+//        GlStateManager.pushAttrib();
 
         Tessellator tessellator = Tessellator.getInstance();
 
@@ -49,7 +49,7 @@ public class TankTESR extends TileEntitySpecialRenderer<TileTank> {
         net.minecraft.client.renderer.RenderHelper.enableStandardItemLighting();
 
         GlStateManager.popMatrix();
-        GlStateManager.popAttrib();
+//        GlStateManager.popAttrib();
     }
 
     // ---------------------------------------------------------------
