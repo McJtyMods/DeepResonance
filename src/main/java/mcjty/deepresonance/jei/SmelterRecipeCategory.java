@@ -1,7 +1,6 @@
 package mcjty.deepresonance.jei;
 
 import elec332.core.client.RenderHelper;
-import elec332.core.inventory.ContainerMachine;
 import mcjty.deepresonance.config.ConfigMachines;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
@@ -13,14 +12,14 @@ import net.minecraft.client.Minecraft;
 
 import javax.annotation.Nonnull;
 
-public class LaserRecipeCategory extends BlankRecipeCategory<LaserRecipeWrapper> {
+public class SmelterRecipeCategory extends BlankRecipeCategory<SmelterRecipeWrapper> {
 
     private final IGuiHelper guiHelper;
     private final IDrawable slot;
 
-    public static final String ID = "DRLaser";
+    public static final String ID = "DRSmelter";
 
-    public LaserRecipeCategory(IGuiHelper guiHelper) {
+    public SmelterRecipeCategory(IGuiHelper guiHelper) {
         this.guiHelper = guiHelper;
         slot = guiHelper.getSlotDrawable();
     }
@@ -34,7 +33,7 @@ public class LaserRecipeCategory extends BlankRecipeCategory<LaserRecipeWrapper>
     @Nonnull
     @Override
     public String getTitle() {
-        return "Deep Resonance Laser";
+        return "Deep Resonance Smelter";
     }
 
     @Nonnull
@@ -53,7 +52,7 @@ public class LaserRecipeCategory extends BlankRecipeCategory<LaserRecipeWrapper>
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull LaserRecipeWrapper recipeWrapper) {
+    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull SmelterRecipeWrapper recipeWrapper) {
         IGuiItemStackGroup group = recipeLayout.getItemStacks();
         group.init(0, true, 0, 0);
         group.set(0, recipeWrapper.getInputs());
