@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class LaserBonusConfiguration {
-    public static final String CATEGORY_LASERBONUS = "lasercatalysts";
+    public static final String CATEGORY_LASERBONUS = "laserconfig";
 
     private static String toString(InfusingBonus.Modifier modifier) {
         return modifier.getBonus() + ":" + modifier.getMaxOrMin();

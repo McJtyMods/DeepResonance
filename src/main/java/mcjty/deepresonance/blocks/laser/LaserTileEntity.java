@@ -224,99 +224,99 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         if (item == null) {
             return null;
         }
-        String name = item.getItem().getRegistryName().getResourcePath();
+        String name = item.getItem().getRegistryName().toString();
 //        String name = Item.itemRegistry.getNameForObject(item.getItem()).toString();
         return infusingBonusMap.get(name);
     }
 
     public static void createDefaultInfusionBonusMap() {
         infusingBonusMap = new HashMap<String, InfusingBonus>();
-        infusingBonusMap.put(Items.DIAMOND.getRegistryName().getResourcePath(), new InfusingBonus(
+        infusingBonusMap.put(Items.DIAMOND.getRegistryName().toString(), new InfusingBonus(
                 COLOR_BLUE,
                 new InfusingBonus.Modifier(5.0f, 100.0f),
                 InfusingBonus.Modifier.NONE,
                 InfusingBonus.Modifier.NONE));
-        infusingBonusMap.put(Items.EMERALD.getRegistryName().getResourcePath(), new InfusingBonus(
+        infusingBonusMap.put(Items.EMERALD.getRegistryName().toString(), new InfusingBonus(
                 COLOR_GREEN,
                 new InfusingBonus.Modifier(8.0f, 100.0f),
                 InfusingBonus.Modifier.NONE,
                 InfusingBonus.Modifier.NONE));
-        infusingBonusMap.put(Items.ENDER_PEARL.getRegistryName().getResourcePath(), new InfusingBonus(
+        infusingBonusMap.put(Items.ENDER_PEARL.getRegistryName().toString(), new InfusingBonus(
                 COLOR_GREEN,
                 new InfusingBonus.Modifier(2.0f, 100.0f),
                 InfusingBonus.Modifier.NONE,
                 InfusingBonus.Modifier.NONE));
-        infusingBonusMap.put(Items.REDSTONE.getRegistryName().getResourcePath(), new InfusingBonus(
+        infusingBonusMap.put(Items.REDSTONE.getRegistryName().toString(), new InfusingBonus(
                 COLOR_RED,
                 new InfusingBonus.Modifier(-1.0f, 0.0f),
                 new InfusingBonus.Modifier(5.0f, 60.0f),
                 InfusingBonus.Modifier.NONE));
-        infusingBonusMap.put(Items.GUNPOWDER.getRegistryName().getResourcePath(), new InfusingBonus(
+        infusingBonusMap.put(Items.GUNPOWDER.getRegistryName().toString(), new InfusingBonus(
                 COLOR_RED,
                 new InfusingBonus.Modifier(-5.0f, 0.0f),
                 new InfusingBonus.Modifier(8.0f, 70.0f),
                 new InfusingBonus.Modifier(4.0f, 60.0f)));
-        infusingBonusMap.put(Items.GLOWSTONE_DUST.getRegistryName().getResourcePath(), new InfusingBonus(
+        infusingBonusMap.put(Items.GLOWSTONE_DUST.getRegistryName().toString(), new InfusingBonus(
                 COLOR_YELLOW,
                 new InfusingBonus.Modifier(-2.0f, 0.0f),
                 new InfusingBonus.Modifier(6.0f, 50.0f),
                 new InfusingBonus.Modifier(3.0f, 50.0f)));
-        infusingBonusMap.put(Items.BLAZE_POWDER.getRegistryName().getResourcePath(), new InfusingBonus(
+        infusingBonusMap.put(Items.BLAZE_POWDER.getRegistryName().toString(), new InfusingBonus(
                 COLOR_YELLOW,
                 new InfusingBonus.Modifier(-6.0f, 0.0f),
                 new InfusingBonus.Modifier(5.0f, 70.0f),
                 new InfusingBonus.Modifier(5.0f, 70.0f)));
-        infusingBonusMap.put(Items.QUARTZ.getRegistryName().getResourcePath(), new InfusingBonus(
+        infusingBonusMap.put(Items.QUARTZ.getRegistryName().toString(), new InfusingBonus(
                 COLOR_BLUE,
                 new InfusingBonus.Modifier(-1.0f, 0.0f),
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(7.0f, 80.0f)));
-        infusingBonusMap.put(Items.NETHER_STAR.getRegistryName().getResourcePath(), new InfusingBonus(
+        infusingBonusMap.put(Items.NETHER_STAR.getRegistryName().toString(), new InfusingBonus(
                 COLOR_RED,
                 new InfusingBonus.Modifier(-60.0f, 0.0f),
                 new InfusingBonus.Modifier(90.0f, 100.0f),
                 new InfusingBonus.Modifier(90.0f, 100.0f)));
-        infusingBonusMap.put(Items.GHAST_TEAR.getRegistryName().getResourcePath(), new InfusingBonus(
+        infusingBonusMap.put(Items.GHAST_TEAR.getRegistryName().toString(), new InfusingBonus(
                 COLOR_YELLOW,
                 new InfusingBonus.Modifier(-20.0f, 0.0f),
                 new InfusingBonus.Modifier(25.0f, 100.0f),
                 new InfusingBonus.Modifier(15.0f, 100.0f)));
-        infusingBonusMap.put(Items.PRISMARINE_SHARD.getRegistryName().getResourcePath(), new InfusingBonus(
+        infusingBonusMap.put(Items.PRISMARINE_SHARD.getRegistryName().toString(), new InfusingBonus(
                 COLOR_YELLOW,
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(3.0f, 30.0f),
                 new InfusingBonus.Modifier(3.0f, 30.0f)));
-        infusingBonusMap.put(Items.PRISMARINE_CRYSTALS.getRegistryName().getResourcePath(), new InfusingBonus(
+        infusingBonusMap.put(Items.PRISMARINE_CRYSTALS.getRegistryName().toString(), new InfusingBonus(
                 COLOR_YELLOW,
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(4.0f, 35.0f),
                 new InfusingBonus.Modifier(4.0f, 35.0f)));
-        infusingBonusMap.put(Items.SLIME_BALL.getRegistryName().getResourcePath(), new InfusingBonus(
+        infusingBonusMap.put(Items.SLIME_BALL.getRegistryName().toString(), new InfusingBonus(
                 COLOR_GREEN,
                 InfusingBonus.Modifier.NONE,
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(-10.0f, 1.0f)));
-        infusingBonusMap.put(Items.COAL.getRegistryName().getResourcePath(), new InfusingBonus(
+        infusingBonusMap.put(Items.COAL.getRegistryName().toString(), new InfusingBonus(
                 COLOR_RED,
                 new InfusingBonus.Modifier(-1.0f, 0.0f),
                 new InfusingBonus.Modifier(-10.0f, 0.0f),
                 InfusingBonus.Modifier.NONE));
-        infusingBonusMap.put(Items.NETHER_WART.getRegistryName().getResourcePath(), new InfusingBonus(
+        infusingBonusMap.put(Items.NETHER_WART.getRegistryName().toString(), new InfusingBonus(
                 COLOR_RED,
                 new InfusingBonus.Modifier(-3.0f, 0.0f),
                 new InfusingBonus.Modifier(2.0f, 35.0f),
                 new InfusingBonus.Modifier(-2.0f, 1.0f)));
-        infusingBonusMap.put(Items.GOLD_INGOT.getRegistryName().getResourcePath(), new InfusingBonus(
+        infusingBonusMap.put(Items.GOLD_INGOT.getRegistryName().toString(), new InfusingBonus(
                 COLOR_RED,
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(-1.0f, 0.0f),
                 new InfusingBonus.Modifier(1.0f, 30.0f)));
-        infusingBonusMap.put(Items.IRON_INGOT.getRegistryName().getResourcePath(), new InfusingBonus(
+        infusingBonusMap.put(Items.IRON_INGOT.getRegistryName().toString(), new InfusingBonus(
                 COLOR_RED,
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(-2.0f, 0.0f),
                 new InfusingBonus.Modifier(1.0f, 20.0f)));
-        infusingBonusMap.put(Items.SNOWBALL.getRegistryName().getResourcePath(), new InfusingBonus(
+        infusingBonusMap.put(Items.SNOWBALL.getRegistryName().toString(), new InfusingBonus(
                 COLOR_RED,
                 new InfusingBonus.Modifier(1.0f, 30.0f),
                 InfusingBonus.Modifier.NONE,
