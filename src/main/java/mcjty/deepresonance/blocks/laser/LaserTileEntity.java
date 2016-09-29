@@ -163,7 +163,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
                 if (stack != null) {
                     stack = tileTank.getTank().drain(1000 * TANK_BUCKETS, true);
                     LiquidCrystalFluidTagData fluidData = LiquidCrystalFluidTagData.fromStack(stack);
-                    float factor = 500.0f / stack.amount;
+                    float factor = (float) ConfigMachines.Laser.rclPerCatalyst / stack.amount;
                     float purity = bonus.getPurityModifier().modify(fluidData.getPurity(), fluidData.getQuality(), factor);
                     float strength = bonus.getStrengthModifier().modify(fluidData.getStrength(), fluidData.getQuality(), factor);
                     float efficiency = bonus.getEfficiencyModifier().modify(fluidData.getEfficiency(), fluidData.getQuality(), factor);
