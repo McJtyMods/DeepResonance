@@ -1,5 +1,8 @@
 package mcjty.deepresonance.jei;
 
+import elec332.core.client.RenderHelper;
+import elec332.core.inventory.ContainerMachine;
+import mcjty.deepresonance.config.ConfigMachines;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IDrawableStatic;
@@ -37,7 +40,7 @@ public class LaserRecipeCategory extends BlankRecipeCategory<LaserRecipeWrapper>
     @Nonnull
     @Override
     public IDrawable getBackground() {
-        IDrawableStatic drawable = guiHelper.createBlankDrawable(120, 100);
+        IDrawableStatic drawable = guiHelper.createBlankDrawable(120, 70);
         return drawable;
 
     }
@@ -46,6 +49,8 @@ public class LaserRecipeCategory extends BlankRecipeCategory<LaserRecipeWrapper>
     public void drawExtras(@Nonnull Minecraft minecraft) {
         super.drawExtras(minecraft);
         slot.draw(minecraft);
+        RenderHelper.getMCFontrenderer().drawString("Per " + ConfigMachines.Laser.rclPerCatalyst + "mb RCL", 24, 0, 0xffffffff, true);
+        RenderHelper.getMCFontrenderer().drawString("and " + ConfigMachines.Laser.crystalLiquidPerCatalyst + "mb crystal", 24, 10, 0xffffffff, true);
     }
 
     @Override
