@@ -1,4 +1,4 @@
-package mcjty.deepresonance.jei;
+package mcjty.deepresonance.jei.laser;
 
 import elec332.core.client.RenderHelper;
 import mcjty.deepresonance.blocks.laser.InfusingBonus;

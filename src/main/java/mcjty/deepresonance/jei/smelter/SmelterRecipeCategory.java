@@ -1,4 +1,4 @@
-package mcjty.deepresonance.jei;
+package mcjty.deepresonance.jei.smelter;
 
 import elec332.core.client.RenderHelper;
 import mcjty.deepresonance.DeepResonance;
@@ -8,6 +8,7 @@ import mezz.jei.api.gui.*;
 import mezz.jei.api.recipe.BlankRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
 
@@ -59,6 +60,11 @@ public class SmelterRecipeCategory extends BlankRecipeCategory<SmelterRecipeWrap
         group.init(0, true, 20, 32);
         group.set(0, recipeWrapper.getInputs());
         IGuiFluidStackGroup fluidGroup = recipeLayout.getFluidStacks();
+        fluidGroup.addTooltipCallback((slotIndex, input, ingredient, tooltip) -> {
+            tooltip.add(TextFormatting.GREEN + "Purity: 10%");
+            tooltip.add(TextFormatting.GREEN + "Strength: 10%");
+            tooltip.add(TextFormatting.GREEN + "Efficiency: 10%");
+        });
         fluidGroup.init(0, false, 70, 25, 30, 30, ConfigMachines.Smelter.rclPerOre, true, null);
         fluidGroup.set(0, recipeWrapper.getFluidOutputs());
     }

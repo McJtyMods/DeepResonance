@@ -2,7 +2,17 @@ package mcjty.deepresonance.jei;
 
 import mcjty.deepresonance.blocks.laser.LaserSetup;
 import mcjty.deepresonance.blocks.laser.LaserTileEntity;
+import mcjty.deepresonance.blocks.purifier.PurifierSetup;
 import mcjty.deepresonance.blocks.smelter.SmelterSetup;
+import mcjty.deepresonance.jei.laser.LaserRecipeCategory;
+import mcjty.deepresonance.jei.laser.LaserRecipeHandler;
+import mcjty.deepresonance.jei.laser.LaserRecipeWrapper;
+import mcjty.deepresonance.jei.purifier.PurifierRecipeCategory;
+import mcjty.deepresonance.jei.purifier.PurifierRecipeHandler;
+import mcjty.deepresonance.jei.purifier.PurifierRecipeWrapper;
+import mcjty.deepresonance.jei.smelter.SmelterRecipeCategory;
+import mcjty.deepresonance.jei.smelter.SmelterRecipeHandler;
+import mcjty.deepresonance.jei.smelter.SmelterRecipeWrapper;
 import mezz.jei.api.*;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.Item;
@@ -24,10 +34,12 @@ public class DeepResonanceJeiPlugin extends BlankModPlugin {
 
         registry.addRecipeCategories(
                 new LaserRecipeCategory(guiHelper),
-                new SmelterRecipeCategory(guiHelper));
+                new SmelterRecipeCategory(guiHelper),
+                new PurifierRecipeCategory(guiHelper));
         registry.addRecipeHandlers(
                 new LaserRecipeHandler(),
-                new SmelterRecipeHandler());
+                new SmelterRecipeHandler(),
+                new PurifierRecipeHandler());
 
         List<IRecipeWrapper> recipes = new ArrayList<>();
         for (String registryName : LaserTileEntity.infusingBonusMap.keySet()) {
@@ -35,9 +47,11 @@ public class DeepResonanceJeiPlugin extends BlankModPlugin {
             recipes.add(new LaserRecipeWrapper(item));
         }
         recipes.add(new SmelterRecipeWrapper());
+        recipes.add(new PurifierRecipeWrapper());
         registry.addRecipes(recipes);
 
         registry.addRecipeCategoryCraftingItem(new ItemStack(LaserSetup.laserBlock), LaserRecipeCategory.ID);
         registry.addRecipeCategoryCraftingItem(new ItemStack(SmelterSetup.smelter), SmelterRecipeCategory.ID);
+        registry.addRecipeCategoryCraftingItem(new ItemStack(PurifierSetup.purifierBlock), PurifierRecipeCategory.ID);
     }
 }

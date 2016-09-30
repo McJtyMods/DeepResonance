@@ -1,7 +1,6 @@
-package mcjty.deepresonance.jei;
+package mcjty.deepresonance.jei.laser;
 
 import elec332.core.client.RenderHelper;
-import elec332.core.inventory.ContainerMachine;
 import mcjty.deepresonance.config.ConfigMachines;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;

@@ -1,4 +1,4 @@
-package mcjty.deepresonance.jei;
+package mcjty.deepresonance.jei.smelter;
 
 import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;

@@ -1,4 +1,4 @@
-package mcjty.deepresonance.jei;
+package mcjty.deepresonance.jei.smelter;
 
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.config.ConfigMachines;
