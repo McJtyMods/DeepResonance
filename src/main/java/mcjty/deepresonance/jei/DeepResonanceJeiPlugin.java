@@ -30,8 +30,14 @@ public class DeepResonanceJeiPlugin extends BlankModPlugin {
                 new SmelterRecipeHandler());
 
         List<IRecipeWrapper> recipes = new ArrayList<>();
+        for (String registryName : LaserTileEntity.infusingBonusMap.keySet()) {
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(registryName));
+            recipes.add(new LaserRecipeWrapper(item));
+        }
         recipes.add(new SmelterRecipeWrapper());
+        registry.addRecipes(recipes);
 
-        registry.addRecipeCategoryCraftingItem(new ItemStack(SmelterSetup.smelter), LaserRecipeCategory.ID);
+        registry.addRecipeCategoryCraftingItem(new ItemStack(LaserSetup.laserBlock), LaserRecipeCategory.ID);
+        registry.addRecipeCategoryCraftingItem(new ItemStack(SmelterSetup.smelter), SmelterRecipeCategory.ID);
     }
 }

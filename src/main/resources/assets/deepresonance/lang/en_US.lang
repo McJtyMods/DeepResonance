@@ -37,3 +37,5 @@ tile.deepresonance.laser.name=Infusing Laser
 itemGroup.DeepResonance=Deep Resonance
 
 message.shiftMessage=Press Shift
+
+fluid.deepresonance.liquid_crystal=Resonating Crystal Liquid
