@@ -323,7 +323,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
                 new InfusingBonus.Modifier(1.0f, 30.0f),
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(1.0f, 40.0f)));
-        Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation("rftools", "dimensional_shards"));
+        Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation("rftools", "dimensional_shard"));
         if (item != null) {
             infusingBonusMap.put(item.getRegistryName().toString(), new InfusingBonus(
                     COLOR_BLUE,
