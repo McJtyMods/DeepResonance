@@ -45,7 +45,7 @@ public class LaserBonusConfiguration {
             }
 
         } else {
-            LaserTileEntity.infusingBonusMap = new HashMap<String, InfusingBonus>();
+            LaserTileEntity.infusingBonusMap = new HashMap<>();
             List<String> items = new ArrayList<String>();
             for (Map.Entry<String, Property> entry : category.entrySet()) {
                 String key = entry.getKey();

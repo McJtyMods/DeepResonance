@@ -8,7 +8,6 @@ import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
-import mcjty.deepresonance.tanks.TankGrid;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
@@ -30,7 +29,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -323,9 +321,8 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
                 new InfusingBonus.Modifier(1.0f, 30.0f),
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(1.0f, 40.0f)));
-        Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation("rftools", "dimensional_shard"));
-        if (item != null) {
-            infusingBonusMap.put(item.getRegistryName().toString(), new InfusingBonus(
+        if (DeepResonance.instance.rftools) {
+            infusingBonusMap.put(new ResourceLocation("rftools", "dimensional_shard").toString(), new InfusingBonus(
                     COLOR_BLUE,
                     new InfusingBonus.Modifier(1.0f, 100.0f),
                     new InfusingBonus.Modifier(8.0f, 80.0f),
