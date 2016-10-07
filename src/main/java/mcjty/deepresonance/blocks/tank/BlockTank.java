@@ -127,13 +127,13 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
             Map<EnumFacing, TileTank.Mode> settings = tank.getSettings();
             TileTank.Mode i = settings.get(data.getSideHit());
             probeInfo.text(TextFormatting.GREEN + "Mode: " + (i == TileTank.Mode.SETTING_NONE ? "none" : (i == TileTank.Mode.SETTING_ACCEPT ? "accept" : "provide")));
-            if (tank.getFluid() != null && tank.getFluid().getFluid() != null) {
-                probeInfo.text(TextFormatting.GREEN + "Fluid: " + DRFluidRegistry.getFluidName(tank.getFluid().getFluid()));
-            }
-            probeInfo.progress(tank.getFluidAmount(), tank.getCapacity(),
-                    probeInfo.defaultProgressStyle()
-                        .suffix("B")
-                        .filledColor(0xff005588).alternateFilledColor(0xff001133));
+//            if (tank.getFluid() != null && tank.getFluid().getFluid() != null) {
+//                probeInfo.text(TextFormatting.GREEN + "Fluid: " + DRFluidRegistry.getFluidName(tank.getFluid().getFluid()));
+//            }
+//            probeInfo.progress(tank.getFluidAmount(), tank.getCapacity(),
+//                    probeInfo.defaultProgressStyle()
+//                        .suffix("B")
+//                        .filledColor(0xff005588).alternateFilledColor(0xff001133));
 
             LiquidCrystalFluidTagData lcd = LiquidCrystalFluidTagData.fromStack(tank.getFluid());
             if (lcd != null) {
