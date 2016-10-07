@@ -54,7 +54,7 @@ public class RadiationScreenModule implements IScreenModule<IModuleDataInteger> 
                     int dx = Math.abs(c.getX() - pos.getX());
                     int dy = Math.abs(c.getY() - pos.getY());
                     int dz = Math.abs(c.getZ() - pos.getZ());
-                    if (dx <= 64 && dy <= 64 && dz <= 64) {
+                    if (dx <= 256 && dy <= 256 && dz <= 256) {
                         coordinate = c;
                     }
                 }
