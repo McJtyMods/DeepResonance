@@ -51,7 +51,7 @@ public abstract class FluidTankWrapper implements IFluidHandler, IFluidTank {
     @Override
     public FluidStack drain(FluidStack resource, boolean doDrain) {
         FluidStack f = getTank().getFluid();
-        if (!canDrainFluidType(f) || resource == null || f == null || resource.getFluid() != f.getFluid()) {
+        if (!canDrainFluidType(f) || resource == null || f == null || resource.isFluidEqual(f)) {
             return null;
         }
         return getTank().drain(resource.amount, doDrain);
