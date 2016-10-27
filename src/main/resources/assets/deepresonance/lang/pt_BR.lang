@@ -1,0 +1,41 @@
+item.deepresonance.dr_manual.name=Manual do Deep Resonance
+item.deepresonance.radiation_module.name=Módulo de Radiação
+item.deepresonance.rcl_module.name=Módulo de RCL
+item.deepresonance.radiation_monitor.name=Monitor de Radiação
+item.deepresonance.resonating_plate.name=Placa de Ressonância
+item.deepresonance.filter.name=Material de Filtragem
+item.deepresonance.spent_filter.name=Material de Filtragem Usado
+item.deepresonance.insert_liquid.name=Injetor de Líquido
+//Maybe should be different?
+item.deepresonance.helmet.name=Roupa de Radiação - Capacete (WIP)
+item.deepresonance.chest.name=Roupa de Radiação - Peitoral (WIP)
+item.deepresonance.leggings.name=Roupa de Radiação - Calça  (WIP)
+item.deepresonance.boots.name=Roupa de Radiação - Botas (WIP)
+
+tile.deepresonance.liquid_crystal.name=Cristal Líquido
+
+tile.deepresonance.radiation_sensor.name=Sensor de Radiação
+tile.deepresonance.resonating_ore.name=Minério Ressonante
+tile.deepresonance.resonating_block.name=Bloco de Placa de Ressonância
+tile.deepresonance.dense_obsidian.name=Obsidiana Densa
+tile.deepresonance.dense_glass.name=Vidro Denso
+tile.deepresonance.poisoned_dirt.name=Dirt Envenenado
+tile.deepresonance.resonating_crystal.name=Cristal Ressonante
+tile.deepresonance.generator.name=Gerador
+tile.deepresonance.generator_controller.name=Controlador de Gerador
+tile.deepresonance.energy_collector.name=Coletor de Energia
+tile.deepresonance.machine_frame.name=Estrutura de Máquina
+tile.deepresonance.tank.name=Tanque
+tile.deepresonance.crystalizer.name=Cristalisador
+tile.deepresonance.smelter.name=Fundição
+tile.deepresonance.purifier.name=Purificador
+tile.deepresonance.pedestal.name=Pedestal
+tile.deepresonance.valve.name=Válvula
+tile.deepresonance.lens.name=Lente
+tile.deepresonance.laser.name=Laser de Infusão
+
+itemGroup.DeepResonance=Deep Resonance
+
+message.shiftMessage=Pressione Shift
+
+fluid.deepresonance.liquid_crystal=Cristal Ressonante Líquido (RCL)
