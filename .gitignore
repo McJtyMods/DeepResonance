@@ -5,3 +5,4 @@ out/*
 *.iws
 *.ipr
 build/*
+run/*
