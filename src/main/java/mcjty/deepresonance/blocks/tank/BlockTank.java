@@ -1,7 +1,7 @@
 package mcjty.deepresonance.blocks.tank;
 
-import elec332.core.client.IIconRegistrar;
-import elec332.core.client.ITextureLoader;
+import elec332.core.api.client.IIconRegistrar;
+import elec332.core.api.client.ITextureLoader;
 import elec332.core.util.PlayerHelper;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
@@ -164,7 +164,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
         }
         if (System.currentTimeMillis() - lastTime > 100) {
             lastTime = System.currentTimeMillis();
-            DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetTankInfo(tankTile.getPos()));
+            DeepResonance.networkHandler.sendToServer(new PacketGetTankInfo(tankTile.getPos()));
         }
         return currentTip;
     }

@@ -1,12 +1,12 @@
 package mcjty.deepresonance.proxy;
 
-import elec332.core.client.IIconRegistrar;
-import elec332.core.client.ITextureLoader;
+import elec332.core.api.client.IIconRegistrar;
+import elec332.core.api.client.ITextureLoader;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.RadiationOverlayRenderer;
 import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.deepresonance.client.sound.GeneratorSoundController;
 import mcjty.deepresonance.client.gui.NoRFFoundException;
+import mcjty.deepresonance.client.sound.GeneratorSoundController;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.items.ModItems;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;

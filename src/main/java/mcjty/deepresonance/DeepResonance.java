@@ -1,8 +1,9 @@
 package mcjty.deepresonance;
 
+import elec332.core.api.network.INetworkHandler;
+import elec332.core.api.network.ModNetworkHandler;
 import elec332.core.config.ConfigWrapper;
 import elec332.core.main.ElecCoreRegistrar;
-import elec332.core.network.NetworkHandler;
 import elec332.core.util.LoadTimer;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.commands.CommandDRGen;
@@ -46,7 +47,7 @@ public class DeepResonance implements ModBase {
     public static final String VERSION = "1.2.9";
     public static final String MIN_FORGE_VER = "12.16.0.1835";
     public static final String MIN_MCJTYLIB_VER = "1.10-2.1.0";
-    public static final String MIN_ELECCORE_VER = "1.6.322";
+    public static final String MIN_ELECCORE_VER = "1.6.333";
     public static final String MIN_OPENCOMPUTERS_VER = "1.6.0";
 
     @SidedProxy(clientSide="mcjty.deepresonance.proxy.ClientProxy", serverSide="mcjty.deepresonance.proxy.ServerProxy")
@@ -61,7 +62,8 @@ public class DeepResonance implements ModBase {
     public static Configuration versionConfig;
     public static CompatHandler compatHandler;
     public static ConfigWrapper configWrapper;
-    public static NetworkHandler networkHandler;
+    @ModNetworkHandler
+    public static INetworkHandler networkHandler;
     private static LoadTimer loadTimer;
 
     public boolean rftools = false;
@@ -124,14 +126,13 @@ public class DeepResonance implements ModBase {
             }
         }
 
-        networkHandler = new NetworkHandler(MODID);
         compatHandler = new CompatHandler(config, logger);
         compatHandler.addHandler(new ComputerCraftCompatHandler());
         configWrapper = new ConfigWrapper(new Configuration(machinesFile));
         configWrapper.registerConfigWithInnerClasses(new ConfigMachines());
         configWrapper.refresh();
         proxy.preInit(e);
-        ElecCoreRegistrar.GRIDS_V2.register(new TankGridHandler());
+        ElecCoreRegistrar.GRIDHANDLERS.register(new TankGridHandler());
         MainCompatHandler.registerWaila();
         MainCompatHandler.registerTOP();
 

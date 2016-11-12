@@ -1,6 +1,6 @@
 package mcjty.deepresonance.tanks;
 
-import elec332.core.grid.v2.DefaultTileEntityLink;
+import elec332.core.grid.DefaultTileEntityLink;
 import mcjty.deepresonance.blocks.tank.TileTank;
 
 import javax.annotation.Nullable;

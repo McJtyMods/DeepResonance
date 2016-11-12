@@ -3,12 +3,12 @@ package mcjty.deepresonance.tanks;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import elec332.core.util.FluidTankWrapper;
 import elec332.core.util.NBTHelper;
 import elec332.core.world.DimensionCoordinate;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
-import mcjty.deepresonance.varia.FluidTankWrapper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -17,7 +17,10 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static mcjty.deepresonance.blocks.tank.TileTank.ID_SETFLUID;
 import static mcjty.deepresonance.blocks.tank.TileTank.ID_SETHEIGHT;

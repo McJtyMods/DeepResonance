@@ -1,6 +1,6 @@
 package mcjty.deepresonance.fluid;
 
-import elec332.core.client.IIconRegistrar;
+import elec332.core.api.client.IIconRegistrar;
 import mcjty.deepresonance.DeepResonance;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;

@@ -1,6 +1,7 @@
 package mcjty.deepresonance.blocks.smelter;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.network.DRMessages;
 import mcjty.lib.container.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
@@ -24,7 +25,7 @@ public class GuiSmelter extends GenericGuiContainer<SmelterTileEntity> {
     private static final ResourceLocation iconBurning = new ResourceLocation(DeepResonance.MODID, "textures/gui/burning.png");
 
     public GuiSmelter(SmelterTileEntity smelterTileEntity, SmelterContainer container) {
-        super(DeepResonance.instance, DeepResonance.networkHandler.getNetworkWrapper(), smelterTileEntity, container, 0, "smelter");
+        super(DeepResonance.instance, DRMessages.networkWrapper, smelterTileEntity, container, 0, "smelter");
         smelterTileEntity.setCurrentRF(smelterTileEntity.getEnergyStored(EnumFacing.DOWN));
 
         xSize = SMELTER_WIDTH;

@@ -355,7 +355,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     public void requestCrystalLiquidFromServer() {
-        DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketRequestIntegerFromServer(DeepResonance.MODID, pos,
+        DeepResonance.networkHandler.sendToServer(new PacketRequestIntegerFromServer(DeepResonance.MODID, pos,
                                                                                                          CMD_GETLIQUID,
                                                                                                          CLIENTCMD_GETLIQUID));
     }

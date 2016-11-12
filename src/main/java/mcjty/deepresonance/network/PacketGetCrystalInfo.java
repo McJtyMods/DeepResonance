@@ -46,7 +46,7 @@ public class PacketGetCrystalInfo implements IMessage {
             if (tileEntity instanceof ResonatingCrystalTileEntity) {
                 ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
                 PacketReturnCrystalInfo packet = new PacketReturnCrystalInfo(resonatingCrystalTileEntity.getRfPerTick(), resonatingCrystalTileEntity.getPower());
-                DeepResonance.networkHandler.getNetworkWrapper().sendTo(packet, ctx.getServerHandler().playerEntity);
+                DeepResonance.networkHandler.sendTo(packet, ctx.getServerHandler().playerEntity);
             }
         }
     }

@@ -46,7 +46,7 @@ public class PacketGetGeneratorInfo implements IMessage {
             }
 
             PacketReturnGeneratorInfo packet = new PacketReturnGeneratorInfo(message.networkId, network.getEnergy(), network.getGeneratorBlocks(), network.getLastRfPerTick());
-            DeepResonance.networkHandler.getNetworkWrapper().sendTo(packet, ctx.getServerHandler().playerEntity);
+            DeepResonance.networkHandler.sendTo(packet, ctx.getServerHandler().playerEntity);
         }
     }
 }

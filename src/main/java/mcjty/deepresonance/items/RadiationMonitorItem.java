@@ -128,7 +128,7 @@ public class RadiationMonitorItem extends GenericDRItem {
             int id = WorldHelper.getDimID(player.getEntityWorld());
             lastTime = System.currentTimeMillis();
             GlobalCoordinate c = new GlobalCoordinate(player.getPosition(), id);
-            DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetRadiationLevel(c));
+            DeepResonance.networkHandler.sendToServer(new PacketGetRadiationLevel(c));
         }
     }
 }

@@ -173,7 +173,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
             currenttip.add(TextFormatting.YELLOW + "Power left: " + decimalFormat.format(tooltipPower) + "% (" + tooltipRFTick + " RF/t)");
             if (System.currentTimeMillis() - lastTime > 250) {
                 lastTime = System.currentTimeMillis();
-                DeepResonance.networkHandler.getNetworkWrapper().sendToServer(new PacketGetCrystalInfo(tileEntity.getPos()));
+                DeepResonance.networkHandler.sendToServer(new PacketGetCrystalInfo(tileEntity.getPos()));
             }
         }
         return currenttip;

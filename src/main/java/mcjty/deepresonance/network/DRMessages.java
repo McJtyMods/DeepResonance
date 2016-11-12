@@ -1,16 +1,28 @@
 package mcjty.deepresonance.network;
 
+import elec332.core.java.ReflectionHelper;
+import elec332.core.util.FMLUtil;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.lib.network.PacketHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class DRMessages {
 
+    public static SimpleNetworkWrapper networkWrapper;
+
     public static void registerNetworkMessages() {
 
-        int i = PacketHandler.registerMessages(DeepResonance.networkHandler.getNetworkWrapper());
-        PacketHandler.modNetworking.put(DeepResonance.MODID, DeepResonance.networkHandler.getNetworkWrapper());
-        DeepResonance.networkHandler.setMessageIndex(i);
+        try {
+            Class clazz = FMLUtil.loadClass("elec332.core.network.impl.DefaultNetworkHandler");
+            networkWrapper = (SimpleNetworkWrapper) ReflectionHelper.makeFinalFieldModifiable(clazz.getDeclaredField("networkWrapper")).get(DeepResonance.networkHandler);
+
+            int i = PacketHandler.registerMessages(networkWrapper);
+            PacketHandler.modNetworking.put(DeepResonance.MODID, networkWrapper);
+            ReflectionHelper.makeFinalFieldModifiable(clazz.getDeclaredField("i")).set(DeepResonance.networkHandler, i);
+        } catch (Exception e){
+            throw new RuntimeException("Error registering packets, this version of DeepResonance is probably incompatible with the installed version of ElecCore.", e);
+        }
 
         // Server side
         DeepResonance.networkHandler.registerPacket(PacketGetGeneratorInfo.Handler.class, PacketGetGeneratorInfo.class, Side.SERVER);

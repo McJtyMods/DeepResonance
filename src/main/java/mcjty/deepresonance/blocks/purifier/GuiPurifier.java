@@ -1,6 +1,7 @@
 package mcjty.deepresonance.blocks.purifier;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.network.DRMessages;
 import mcjty.lib.container.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
@@ -17,7 +18,7 @@ public class GuiPurifier extends GenericGuiContainer<PurifierTileEntity> {
     private static final ResourceLocation iconLocation = new ResourceLocation(DeepResonance.MODID, "textures/gui/purifier.png");
 
     public GuiPurifier(PurifierTileEntity purifierTileEntity, PurifierContainer container) {
-        super(DeepResonance.instance, DeepResonance.networkHandler.getNetworkWrapper(), purifierTileEntity, container, 0, "purifier");
+        super(DeepResonance.instance, DRMessages.networkWrapper, purifierTileEntity, container, 0, "purifier");
 
         xSize = PURIFIER_WIDTH;
         ySize = PURIFIER_HEIGHT;

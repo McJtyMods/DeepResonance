@@ -1,6 +1,7 @@
 package mcjty.deepresonance.blocks.pedestal;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.network.DRMessages;
 import mcjty.lib.container.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
@@ -17,7 +18,7 @@ public class GuiPedestal extends GenericGuiContainer<PedestalTileEntity> {
     private static final ResourceLocation iconLocation = new ResourceLocation(DeepResonance.MODID, "textures/gui/pedestal.png");
 
     public GuiPedestal(PedestalTileEntity pedestalTileEntity, PedestalContainer container) {
-        super(DeepResonance.instance, DeepResonance.networkHandler.getNetworkWrapper(), pedestalTileEntity, container, 0, "pedestal");
+        super(DeepResonance.instance, DRMessages.networkWrapper, pedestalTileEntity, container, 0, "pedestal");
 
         xSize = PEDESTAL_WIDTH;
         ySize = PEDESTAL_HEIGHT;

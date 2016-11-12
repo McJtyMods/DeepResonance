@@ -1,13 +1,9 @@
 package mcjty.deepresonance.integration.computers;
 
-import li.cil.oc.api.driver.NamedBlock;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.prefab.DriverSidedTileEntity;
 import li.cil.oc.api.prefab.ManagedEnvironment;
-import li.cil.oc.api.Network;
-import li.cil.oc.api.network.Visibility;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;

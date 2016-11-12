@@ -52,7 +52,7 @@ public class PacketGetRadiationLevel implements IMessage {
             World world = player.worldObj;
             float strength = RadiationMonitorItem.calculateRadiationStrength(world, message.coordinate);
             PacketReturnRadiation packet = new PacketReturnRadiation(strength);
-            DeepResonance.networkHandler.getNetworkWrapper().sendTo(packet, ctx.getServerHandler().playerEntity);
+            DeepResonance.networkHandler.sendTo(packet, ctx.getServerHandler().playerEntity);
         }
 
     }

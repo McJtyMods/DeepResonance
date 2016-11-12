@@ -1,7 +1,7 @@
 package mcjty.deepresonance.tanks;
 
 import com.google.common.collect.Sets;
-import elec332.core.grid.v2.AbstractGridHandler;
+import elec332.core.grid.AbstractGridHandler;
 import elec332.core.world.DimensionCoordinate;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import net.minecraft.tileentity.TileEntity;

@@ -47,7 +47,7 @@ public class PacketGetTankInfo implements IMessage {
             if (tileEntity instanceof TileTank) {
                 TileTank tileTank = (TileTank) tileEntity;
                 PacketReturnTankInfo packet = new PacketReturnTankInfo(tileTank.getFluidAmount(), tileTank.getCapacity(), DRFluidRegistry.getFluidName(tileTank.getFluid()), tileTank.getFluidTag());
-                DeepResonance.networkHandler.getNetworkWrapper().sendTo(packet, ctx.getServerHandler().playerEntity);
+                DeepResonance.networkHandler.sendTo(packet, ctx.getServerHandler().playerEntity);
             }
         }
 

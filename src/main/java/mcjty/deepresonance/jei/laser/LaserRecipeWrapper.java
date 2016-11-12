@@ -5,7 +5,6 @@ import mcjty.deepresonance.blocks.laser.InfusingBonus;
 import mcjty.deepresonance.blocks.laser.LaserTileEntity;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 

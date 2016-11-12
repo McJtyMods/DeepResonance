@@ -2,6 +2,7 @@ package mcjty.deepresonance.blocks.laser;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.config.ConfigMachines;
+import mcjty.deepresonance.network.DRMessages;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -31,7 +32,7 @@ public class GuiLaser extends GenericGuiContainer<LaserTileEntity> {
     private static final ResourceLocation iconLocation = new ResourceLocation(DeepResonance.MODID, "textures/gui/laser.png");
 
     public GuiLaser(LaserTileEntity laserTileEntity, LaserContainer container) {
-        super(DeepResonance.instance, DeepResonance.networkHandler.getNetworkWrapper(), laserTileEntity, container, 0, "laser");
+        super(DeepResonance.instance, DRMessages.networkWrapper, laserTileEntity, container, 0, "laser");
         laserTileEntity.setCurrentRF(laserTileEntity.getEnergyStored(EnumFacing.DOWN));
 
         xSize = LASER_WIDTH;

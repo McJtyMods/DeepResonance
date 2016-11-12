@@ -1,6 +1,7 @@
 package mcjty.deepresonance.blocks.crystalizer;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.network.DRMessages;
 import mcjty.lib.container.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
@@ -25,7 +26,7 @@ public class GuiCrystalizer extends GenericGuiContainer<CrystalizerTileEntity> {
 //    private static final ResourceLocation iconBurning = new ResourceLocation(DeepResonance.MODID, "textures/gui/burning.png");
 
     public GuiCrystalizer(CrystalizerTileEntity crystalizerTileEntity, CrystalizerContainer container) {
-        super(DeepResonance.instance, DeepResonance.networkHandler.getNetworkWrapper(), crystalizerTileEntity, container, 0, "crystalizer");
+        super(DeepResonance.instance, DRMessages.networkWrapper, crystalizerTileEntity, container, 0, "crystalizer");
         crystalizerTileEntity.setCurrentRF(crystalizerTileEntity.getEnergyStored(EnumFacing.DOWN));
 
         xSize = CRYSTALIZER_WIDTH;
