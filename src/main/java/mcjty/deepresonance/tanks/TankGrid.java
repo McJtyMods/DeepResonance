@@ -37,7 +37,19 @@ public class TankGrid implements IFluidHandler, IFluidTank {
         this.tanks.add(tank);
         this.tank = new InternalGridTank(TANK_BUCKETS * 1000);
         this.tank.fill(tank.getTileEntity().myTank, true);
-        this.fluidTank = FluidTankWrapper.of(this.tank);
+        this.fluidTank = new FluidTankWrapper() {
+
+            @Override
+            protected IFluidTank getTank() {
+                return TankGrid.this.tank;
+            }
+
+            @Override
+            public int fill(FluidStack resource, boolean doFill) {
+                return getTank().fill(resource, doFill);
+            }
+
+        };
         this.renderData = Maps.newHashMap();
         this.needsSorting = true;
     }

@@ -121,7 +121,6 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
         return inventoryHelper.getStackInSlot(SmelterContainer.SLOT_OREINPUT) != null && inventoryHelper.getStackInSlot(SmelterContainer.SLOT_OREINPUT).getItem() == Item.getItemFromBlock(ModBlocks.resonatingOreBlock);
     }
 
-
     private void startSmelting() {
         inventoryHelper.decrStackSize(SmelterContainer.SLOT_OREINPUT, 1);
 
