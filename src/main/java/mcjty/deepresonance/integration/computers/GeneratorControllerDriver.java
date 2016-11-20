@@ -5,6 +5,7 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.prefab.ManagedEnvironment;
 import mcjty.deepresonance.blocks.gencontroller.GeneratorControllerTileEntity;
+import mcjty.lib.integration.computers.AbstractOCDriver;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;

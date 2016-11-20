@@ -5,6 +5,7 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.prefab.ManagedEnvironment;
 import mcjty.deepresonance.blocks.smelter.SmelterTileEntity;
+import mcjty.lib.integration.computers.AbstractOCDriver;
 import mcjty.lib.network.Argument;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
