@@ -2,6 +2,8 @@ package mcjty.deepresonance.proxy;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.ForgeEventHandlers;
+import mcjty.deepresonance.ResonatingCrystalEventHandlers;
+
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.blocks.laser.LaserBonusConfiguration;
@@ -73,6 +75,7 @@ public abstract class CommonProxy {
         MinecraftForge.EVENT_BUS.register(WorldTickHandler.instance);
         MinecraftForge.EVENT_BUS.register(new RadiationTickEvent());
         MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
+        MinecraftForge.EVENT_BUS.register(new ResonatingCrystalEventHandlers());
     }
 
     public void postInit(FMLPostInitializationEvent e) {
