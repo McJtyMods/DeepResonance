@@ -75,8 +75,8 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         boolean changed = powerLevel != powered;
         super.setPowerInput(powered);
         if (changed) {
-            IBlockState state = worldObj.getBlockState(pos);
-            worldObj.notifyBlockUpdate(pos, state, state, 3);
+            IBlockState state = getWorld().getBlockState(pos);
+            getWorld().notifyBlockUpdate(pos, state, state, 3);
         }
     }
 
@@ -87,7 +87,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
 
     @Override
     public void update() {
-        if (!worldObj.isRemote) {
+        if (!getWorld().isRemote) {
             checkStateServer();
         }
     }
@@ -153,7 +153,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         consumeEnergy(ConfigMachines.Laser.rfUsePerCatalyst);
         crystalLiquid -= ConfigMachines.Laser.crystalLiquidPerCatalyst;
 
-        TileEntity te = WorldHelper.getTileAt(worldObj, tankCoordinate);
+        TileEntity te = WorldHelper.getTileAt(getWorld(), tankCoordinate);
         if (te instanceof TileTank) {
             TileTank tileTank = (TileTank) te;
             if (validRCLTank(tileTank)) {
@@ -194,7 +194,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
             } else if (color == 0) {
                 mcolor = 0;    // Off
             }
-            worldObj.setBlockState(getPos(), worldObj.getBlockState(getPos()).withProperty(LaserBlock.COLOR, mcolor), 3);
+            getWorld().setBlockState(getPos(), getWorld().getBlockState(getPos()).withProperty(LaserBlock.COLOR, mcolor), 3);
             markDirty();
         }
     }
@@ -331,22 +331,22 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     private BlockPos findLens() {
-        if (!worldObj.isBlockLoaded(getPos())) {
+        if (!getWorld().isBlockLoaded(getPos())) {
             return null;
         }
-        IBlockState state = worldObj.getBlockState(getPos());
+        IBlockState state = getWorld().getBlockState(getPos());
         int meta = state.getBlock().getMetaFromState(state);
         EnumFacing direction = BlockTools.getOrientationHoriz(meta);
         BlockPos shouldBeAir = getPos().offset(direction);
-        if (!worldObj.isAirBlock(shouldBeAir)) {
+        if (!getWorld().isAirBlock(shouldBeAir)) {
             return null;
         }
         BlockPos shouldBeLens = shouldBeAir.offset(direction);
-        Block lensBlock = WorldHelper.getBlockAt(worldObj, shouldBeLens);
+        Block lensBlock = WorldHelper.getBlockAt(getWorld(), shouldBeLens);
         if (lensBlock != LensSetup.lensBlock) {
             return null;
         }
-        EnumFacing lensDirection = BlockTools.getOrientationHoriz(WorldHelper.getBlockMeta(worldObj, shouldBeLens));
+        EnumFacing lensDirection = BlockTools.getOrientationHoriz(WorldHelper.getBlockMeta(getWorld(), shouldBeLens));
         if (lensDirection != direction) {
             return null;
         }

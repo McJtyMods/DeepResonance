@@ -3,6 +3,7 @@ package mcjty.deepresonance.items;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.lib.tools.ChatTools;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -32,7 +33,7 @@ public class InsertLiquidItem extends GenericDRItem {
     }
 
     @Override
-    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    protected EnumActionResult clOnItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
             TileEntity te = WorldHelper.getTileAt(world, pos);
             if (te instanceof TileTank && ((TileTank) te).getTank() != null) {
@@ -40,7 +41,7 @@ public class InsertLiquidItem extends GenericDRItem {
                 FluidStack fluidStack = LiquidCrystalFluidTagData.makeLiquidCrystalStack(100, 1.0f, 0.1f, 0.1f, 0.1f);
                 tileTank.getTank().fill(fluidStack, true);
             } else {
-                player.addChatComponentMessage(new TextComponentString(TextFormatting.YELLOW + "This is not a tank!"));
+                ChatTools.addChatMessage(player, new TextComponentString(TextFormatting.YELLOW + "This is not a tank!"));
             }
         }
         return EnumActionResult.SUCCESS;

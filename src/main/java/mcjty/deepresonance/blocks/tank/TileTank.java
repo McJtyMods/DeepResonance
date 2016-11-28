@@ -87,7 +87,7 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
     }
 
     public void sendPacket(int ID, NBTTagCompound data) {
-        for (EntityPlayerMP player : ServerHelper.instance.getAllPlayersWatchingBlock(this.worldObj, this.pos)) {
+        for (EntityPlayerMP player : ServerHelper.instance.getAllPlayersWatchingBlock(this.getWorld(), this.pos)) {
             player.connection.sendPacket(new SPacketUpdateTileEntity(this.pos, ID, data));
         }
     }
@@ -96,10 +96,10 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
     public void validate() {
         super.validate();
         ElecCore.tickHandler.registerCall(() -> {
-            if (WorldHelper.chunkLoaded(worldObj, pos)) {
+            if (WorldHelper.chunkLoaded(getWorld(), pos)) {
                 onTileLoaded();
             }
-        }, worldObj);
+        }, getWorld());
     }
 
     @Override
@@ -117,13 +117,13 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
     }
 
     public void onTileLoaded() {
-        if (!worldObj.isRemote) {
+        if (!getWorld().isRemote) {
             initHooks();
         }
     }
 
     public void onTileUnloaded() {
-        if (!worldObj.isRemote) {
+        if (!getWorld().isRemote) {
             for (Map.Entry<EnumFacing, ITankHook> entry : getConnectedHooks().entrySet()){
                 entry.getValue().unHook(this, entry.getKey().getOpposite());
             }
@@ -136,7 +136,7 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
         for (EnumFacing facing : EnumFacing.VALUES){
             ITankHook tankHook = hookMap.get(facing);
             BlockPos pos = getPos().offset(facing);
-            TileEntity tile = WorldHelper.chunkLoaded(worldObj, pos) ? WorldHelper.getTileAt(worldObj, pos) : null;
+            TileEntity tile = WorldHelper.chunkLoaded(getWorld(), pos) ? WorldHelper.getTileAt(getWorld(), pos) : null;
             if ((tile == null && tankHook != null) || (tile != null && tankHook == null) || (tile != tankHook)){
                 hookMap.remove(facing);
                 if (tile instanceof ITankHook){
@@ -153,7 +153,7 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
         tankHooks.clear();
         for (EnumFacing facing : EnumFacing.VALUES){
             BlockPos pos = getPos().offset(facing);
-            TileEntity tile = WorldHelper.chunkLoaded(worldObj, pos) ? WorldHelper.getTileAt(worldObj, pos) : null;
+            TileEntity tile = WorldHelper.chunkLoaded(getWorld(), pos) ? WorldHelper.getTileAt(getWorld(), pos) : null;
             if (tile instanceof ITankHook){
                 tankHooks.put(facing, (ITankHook) tile);
                 ((ITankHook) tile).hook(this, facing.getOpposite());

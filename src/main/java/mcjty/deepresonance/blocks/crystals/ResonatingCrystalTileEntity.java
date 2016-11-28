@@ -84,7 +84,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         super.onDataPacket(net, packet);
         boolean newempty = isEmpty();
         if (oldempty != newempty) {
-            worldObj.markBlockRangeForRenderUpdate(getPos(), getPos());
+            getWorld().markBlockRangeForRenderUpdate(getPos(), getPos());
         }
     }
 
@@ -103,7 +103,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
             return;
         }
         this.glowing = glowing;
-        if (hasWorldObj()) {
+        if (getWorld() != null) {
             markDirtyClient();
         } else {
             markDirty();

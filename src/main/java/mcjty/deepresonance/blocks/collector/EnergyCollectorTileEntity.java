@@ -42,7 +42,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
 
     @Override
     public void update() {
-        if (!worldObj.isRemote) {
+        if (!getWorld().isRemote) {
             checkStateServer();
         }
     }
@@ -52,10 +52,10 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         int startup = 0;
         DRGeneratorNetwork.Network network = null;
 
-        TileEntity te = worldObj.getTileEntity(getPos().down());
+        TileEntity te = getWorld().getTileEntity(getPos().down());
         if (te instanceof GeneratorTileEntity) {
             GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) te;
-            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(worldObj);
+            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(getWorld());
 
             if (networkID != generatorTileEntity.getNetworkId()) {
                 if (networkID != -1) {
@@ -64,7 +64,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
 
                 networkID = generatorTileEntity.getNetworkId();
                 generatorTileEntity.getNetwork().incCollectorBlocks();
-                generatorNetwork.save(worldObj);
+                generatorNetwork.save(getWorld());
             }
 
 
@@ -80,7 +80,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
                     }
                     if (network.getEnergy() != newEnergy) {
                         network.setEnergy(newEnergy);
-                        generatorNetwork.save(worldObj);
+                        generatorNetwork.save(getWorld());
                     }
 
                     active = true;
@@ -111,7 +111,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
 
     public void disableCrystalGlow() {
         for (BlockPos coordinate : crystals) {
-            TileEntity te = worldObj.getTileEntity(new BlockPos(getPos().getX() + coordinate.getX(), getPos().getY() + coordinate.getY(), getPos().getZ() + coordinate.getZ()));
+            TileEntity te = getWorld().getTileEntity(new BlockPos(getPos().getX() + coordinate.getX(), getPos().getY() + coordinate.getY(), getPos().getZ() + coordinate.getZ()));
             if (te instanceof ResonatingCrystalTileEntity) {
                 ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
                 resonatingCrystalTileEntity.setGlowing(false);
@@ -135,7 +135,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
 
         int rf = 0;
         for (BlockPos coordinate : crystals) {
-            TileEntity te = worldObj.getTileEntity(new BlockPos(getPos().getX() + coordinate.getX(), getPos().getY() + coordinate.getY(), getPos().getZ() + coordinate.getZ()));
+            TileEntity te = getWorld().getTileEntity(new BlockPos(getPos().getX() + coordinate.getX(), getPos().getY() + coordinate.getY(), getPos().getZ() + coordinate.getZ()));
             if (te instanceof ResonatingCrystalTileEntity) {
                 ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
                 if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
@@ -177,14 +177,14 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         }
 
         if (doRadiation && radiationRadius > 0.1f) {
-            DRRadiationManager radiationManager = DRRadiationManager.getManager(worldObj);
-            GlobalCoordinate thisCoordinate = new GlobalCoordinate(getPos(), worldObj.provider.getDimension());
+            DRRadiationManager radiationManager = DRRadiationManager.getManager(getWorld());
+            GlobalCoordinate thisCoordinate = new GlobalCoordinate(getPos(), getWorld().provider.getDimension());
             if (radiationManager.getRadiationSource(thisCoordinate) == null) {
                 Logging.log("Created radiation source with radius " + radiationRadius + " and strength " + radiationStrength);
             }
             DRRadiationManager.RadiationSource radiationSource = radiationManager.getOrCreateRadiationSource(thisCoordinate);
             radiationSource.update(radiationRadius, radiationStrength, MAXTICKS);
-            radiationManager.save(worldObj);
+            radiationManager.save(getWorld());
         }
 
         return rf;
@@ -195,7 +195,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
             return;
         }
 
-        DRGeneratorNetwork channels = DRGeneratorNetwork.getChannels(worldObj);
+        DRGeneratorNetwork channels = DRGeneratorNetwork.getChannels(getWorld());
         DRGeneratorNetwork.Network network = channels.getChannel(networkID);
         if (network == null) {
             return;
@@ -203,7 +203,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
 
         int maxSupportedRF = network.getGeneratorBlocks() * GeneratorConfiguration.maxRFInputPerBlock;
         for (BlockPos coordinate : crystals) {
-            TileEntity te = worldObj.getTileEntity(new BlockPos(getPos().getX() + coordinate.getX(), getPos().getY() + coordinate.getY(), getPos().getZ() + coordinate.getZ()));
+            TileEntity te = getWorld().getTileEntity(new BlockPos(getPos().getX() + coordinate.getX(), getPos().getY() + coordinate.getY(), getPos().getZ() + coordinate.getZ()));
             if (te instanceof ResonatingCrystalTileEntity) {
                 ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
                 if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
@@ -225,7 +225,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
     private int addCrystal(int x, int y, int z, DRGeneratorNetwork.Network network, Set<BlockPos> newCrystals, Set<BlockPos> oldCrystals, int maxSupportedRF) {
         int maxSupportedCrystals = network.getGeneratorBlocks() * GeneratorConfiguration.maxCrystalsPerBlock;
 
-        TileEntity te = worldObj.getTileEntity(new BlockPos(x, y, z));
+        TileEntity te = getWorld().getTileEntity(new BlockPos(x, y, z));
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
             if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
@@ -267,11 +267,11 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         int yCoord = getPos().getY();
         int zCoord = getPos().getZ();
         for (int y = yCoord - ConfigMachines.Collector.maxVerticalCrystalDistance ; y <= yCoord + ConfigMachines.Collector.maxVerticalCrystalDistance ; y++) {
-            if (y >= 0 && y < worldObj.getHeight()) {
+            if (y >= 0 && y < getWorld().getHeight()) {
                 int maxhordist = ConfigMachines.Collector.maxHorizontalCrystalDistance;
                 for (int x = xCoord - maxhordist; x <= xCoord + maxhordist; x++) {
                     for (int z = zCoord - maxhordist; z <= zCoord + maxhordist; z++) {
-                        if (worldObj.getBlockState(new BlockPos(x, y, z)).getBlock() == ModBlocks.resonatingCrystalBlock) {
+                        if (getWorld().getBlockState(new BlockPos(x, y, z)).getBlock() == ModBlocks.resonatingCrystalBlock) {
                             maxSupportedRF = addCrystal(x, y, z, network, newCrystals, crystals, maxSupportedRF);
                             if (maxSupportedRF == ERROR_TOOMANYCRYSTALS) {
                                 tooManyCrystals = true;
@@ -291,10 +291,10 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         if (lasersActive && (tooManyCrystals || tooMuchPower)) {
             // @todo This should be put in the Logging class as a broadcast message
             if (tooManyCrystals) {
-                Broadcaster.broadcast(worldObj, xCoord, yCoord, zCoord, "There are too many crystals for this size generator!", 100);
+                Broadcaster.broadcast(getWorld(), xCoord, yCoord, zCoord, "There are too many crystals for this size generator!", 100);
             }
             if (tooMuchPower) {
-                Broadcaster.broadcast(worldObj, xCoord, yCoord, zCoord, "Some crystals are too powerful for this size generator!!", 100);
+                Broadcaster.broadcast(getWorld(), xCoord, yCoord, zCoord, "Some crystals are too powerful for this size generator!!", 100);
             }
         }
 

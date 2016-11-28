@@ -4,6 +4,7 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.lib.gui.RenderHelper;
 import mcjty.lib.gui.RenderHelper.Vector;
+import mcjty.lib.tools.MinecraftTools;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;
@@ -47,7 +48,7 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer<EnergyCollect
             GlStateManager.popMatrix();
 
             Minecraft mc = Minecraft.getMinecraft();
-            EntityPlayerSP p = mc.thePlayer;
+            EntityPlayerSP p = MinecraftTools.getPlayer(mc);
             double doubleX = p.lastTickPosX + (p.posX - p.lastTickPosX) * time;
             double doubleY = p.lastTickPosY + (p.posY - p.lastTickPosY) * time;
             double doubleZ = p.lastTickPosZ + (p.posZ - p.lastTickPosZ) * time;
