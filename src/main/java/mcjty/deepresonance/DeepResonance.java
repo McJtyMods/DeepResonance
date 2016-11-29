@@ -35,13 +35,15 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
-@Mod(modid = DeepResonance.MODID, name="DeepResonance", dependencies =
-        "required-after:Forge@["+DeepResonance.MIN_FORGE_VER+
-        ",);required-after:McJtyLib@["+DeepResonance.MIN_MCJTYLIB_VER+
-        ",);required-after:eleccore@["+DeepResonance.MIN_ELECCORE_VER+
-        ",);after:OpenComputers@["+DeepResonance.MIN_OPENCOMPUTERS_VER+
-        ",)",
-        version = DeepResonance.VERSION)
+@Mod(modid = DeepResonance.MODID, name="DeepResonance",
+//        dependencies =
+//        "required-after:Forge@["+DeepResonance.MIN_FORGE_VER+
+//        ",);required-after:McJtyLib@["+DeepResonance.MIN_MCJTYLIB_VER+
+//        ",);required-after:eleccore@["+DeepResonance.MIN_ELECCORE_VER+
+//        ",);after:OpenComputers@["+DeepResonance.MIN_OPENCOMPUTERS_VER+
+//        ",)",
+        version = DeepResonance.VERSION,
+        acceptedMinecraftVersions = "[1.10,1.12)")
 public class DeepResonance implements ModBase {
     public static final String MODID = "deepresonance";
     public static final String VERSION = "1.3.1";
