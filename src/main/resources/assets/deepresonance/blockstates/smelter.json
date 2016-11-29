@@ -1,7 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "textures": { "front" : "deepresonance:blocks/smelterInactive" },
+    "textures": { "front" : "deepresonance:blocks/smelterinactive" },
     "model": "deepresonance:frontblock"
   },
   "variants": {
@@ -17,7 +17,7 @@
     },
     "working": {
       "false": {},
-      "true": { "textures": {"front": "deepresonance:blocks/smelterActive"}}
+      "true": { "textures": {"front": "deepresonance:blocks/smelteractive"}}
     }
   }
 }

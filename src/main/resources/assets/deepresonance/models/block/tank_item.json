@@ -1,12 +1,12 @@
 {
   "parent": "block/cube",
   "textures": {
-    "particle": "deepresonance:blocks/tankSide",
-    "down": "deepresonance:blocks/tankBottom",
-    "up": "deepresonance:blocks/tankTop",
-    "north": "deepresonance:blocks/tankSide",
-    "east": "deepresonance:blocks/tankSide",
-    "south": "deepresonance:blocks/tankSide",
-    "west": "deepresonance:blocks/tankSide"
+    "particle": "deepresonance:blocks/tankside",
+    "down": "deepresonance:blocks/tankbottom",
+    "up": "deepresonance:blocks/tanktop",
+    "north": "deepresonance:blocks/tankside",
+    "east": "deepresonance:blocks/tankside",
+    "south": "deepresonance:blocks/tankside",
+    "west": "deepresonance:blocks/tankside"
   }
 }

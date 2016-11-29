@@ -1,12 +1,12 @@
 {
   "parent": "block/cube",
   "textures": {
-    "particle": "deepresonance:blocks/machineBottom",
-    "down": "deepresonance:blocks/machineBottom",
-    "up": "deepresonance:blocks/machineTop",
-    "north": "deepresonance:blocks/laserBlockFront",
-    "east": "deepresonance:blocks/laserBlock",
-    "south": "deepresonance:blocks/laserBlock",
-    "west": "deepresonance:blocks/laserBlock"
+    "particle": "deepresonance:blocks/machinebottom",
+    "down": "deepresonance:blocks/machinebottom",
+    "up": "deepresonance:blocks/machinetop",
+    "north": "deepresonance:blocks/laserblockfront",
+    "east": "deepresonance:blocks/laserblock",
+    "south": "deepresonance:blocks/laserblock",
+    "west": "deepresonance:blocks/laserblock"
   }
 }

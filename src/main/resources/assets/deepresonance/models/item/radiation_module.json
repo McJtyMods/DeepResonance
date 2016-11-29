@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "deepresonance:items/radiationModuleItem"
+    "layer0": "deepresonance:items/radiationmoduleitem"
   }
 }

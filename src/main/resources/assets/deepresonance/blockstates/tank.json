@@ -2,40 +2,40 @@
   "forge_marker": 1,
   "defaults": {
     "model": "deepresonance:tank",
-    "textures": { "particle": "deepresonance:blocks/tankBottom" }
+    "textures": { "particle": "deepresonance:blocks/tankbottom" }
   },
   "variants": {
     "normal": [{}],
     "inventory": [{}],
     "down": {
-      "none": { "textures": { "down": "deepresonance:blocks/tankBottom" } },
-      "accept": { "textures": { "down": "deepresonance:blocks/tankBottomAccept" } },
-      "provide": { "textures": { "down": "deepresonance:blocks/tankBottomProvide" } }
+      "none": { "textures": { "down": "deepresonance:blocks/tankbottom" } },
+      "accept": { "textures": { "down": "deepresonance:blocks/tankbottomaccept" } },
+      "provide": { "textures": { "down": "deepresonance:blocks/tankbottomprovide" } }
     },
     "east": {
-      "none": { "textures": { "east": "deepresonance:blocks/tankSide" } },
-      "accept": { "textures": { "east": "deepresonance:blocks/tankSideAccept" } },
-      "provide": { "textures": { "east": "deepresonance:blocks/tankSideProvide" } }
+      "none": { "textures": { "east": "deepresonance:blocks/tankside" } },
+      "accept": { "textures": { "east": "deepresonance:blocks/tanksideaccept" } },
+      "provide": { "textures": { "east": "deepresonance:blocks/tanksideprovide" } }
     },
     "north": {
-      "none": { "textures": { "north": "deepresonance:blocks/tankSide" } },
-      "accept": { "textures": { "north": "deepresonance:blocks/tankSideAccept" } },
-      "provide": { "textures": { "north": "deepresonance:blocks/tankSideProvide" } }
+      "none": { "textures": { "north": "deepresonance:blocks/tankside" } },
+      "accept": { "textures": { "north": "deepresonance:blocks/tanksideaccept" } },
+      "provide": { "textures": { "north": "deepresonance:blocks/tanksideprovide" } }
     },
     "south": {
-      "none": { "textures": { "south": "deepresonance:blocks/tankSide" } },
-      "accept": { "textures": { "south": "deepresonance:blocks/tankSideAccept" } },
-      "provide": { "textures": { "south": "deepresonance:blocks/tankSideProvide" } }
+      "none": { "textures": { "south": "deepresonance:blocks/tankside" } },
+      "accept": { "textures": { "south": "deepresonance:blocks/tanksideaccept" } },
+      "provide": { "textures": { "south": "deepresonance:blocks/tanksideprovide" } }
     },
     "up": {
-      "none": { "textures": { "up": "deepresonance:blocks/tankTop" } },
-      "accept": { "textures": { "up": "deepresonance:blocks/tankTopAccept" } },
-      "provide": { "textures": { "up": "deepresonance:blocks/tankTopProvide" } }
+      "none": { "textures": { "up": "deepresonance:blocks/tanktop" } },
+      "accept": { "textures": { "up": "deepresonance:blocks/tankTopaccept" } },
+      "provide": { "textures": { "up": "deepresonance:blocks/tankTopprovide" } }
     },
     "west": {
-      "none": { "textures": { "west": "deepresonance:blocks/tankSide" } },
-      "accept": { "textures": { "west": "deepresonance:blocks/tankSideAccept" } },
-      "provide": { "textures": { "west": "deepresonance:blocks/tankSideProvide" } }
+      "none": { "textures": { "west": "deepresonance:blocks/tankside" } },
+      "accept": { "textures": { "west": "deepresonance:blocks/tanksideaccept" } },
+      "provide": { "textures": { "west": "deepresonance:blocks/tanksideprovide" } }
     },
     "dummy_rcl": {
       "0": { "fluid": "liquid_crystal" },

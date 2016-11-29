@@ -13,18 +13,18 @@ Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 Ks 0.8 0.8 0.8
 d 1
-map_Kd deepresonance:blocks/machineBottom
+map_Kd deepresonance:blocks/machinebottom
 
 newmtl None_machineSide.png
 Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 Ks 0.8 0.8 0.8
 d 1
-map_Kd deepresonance:blocks/machineSide
+map_Kd deepresonance:blocks/machineside
 
 newmtl None_machineTop.png
 Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 Ks 0.8 0.8 0.8
 d 1
-map_Kd deepresonance:blocks/machineTop
+map_Kd deepresonance:blocks/machinetop

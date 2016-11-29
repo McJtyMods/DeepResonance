@@ -1,19 +1,19 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "textures": { "side" : "deepresonance:blocks/generatorSideFullOff" },
+    "textures": { "side" : "deepresonance:blocks/generatorsidefulloff" },
     "model": "deepresonance:generator"
   },
   "variants": {
     "normal": [{}],
     "inventory": [{}],
-    "enabled=false,lower=false,upper=false": [ {"textures": {"side": "deepresonance:blocks/generatorSideFullOff"}} ],
-    "enabled=false,lower=false,upper=true": [ {"textures": {"side": "deepresonance:blocks/generatorSideBottomOff"}} ],
-    "enabled=false,lower=true,upper=false": [ {"textures": {"side": "deepresonance:blocks/generatorSideTopOff"}} ],
-    "enabled=false,lower=true,upper=true": [ {"textures": {"side": "deepresonance:blocks/generatorSideMiddleOff"}} ],
-    "enabled=true,lower=false,upper=false": [ {"textures": {"side": "deepresonance:blocks/generatorSideFullOn"}} ],
-    "enabled=true,lower=false,upper=true": [ {"textures": {"side": "deepresonance:blocks/generatorSideBottomOn"}} ],
-    "enabled=true,lower=true,upper=false": [ {"textures": {"side": "deepresonance:blocks/generatorSideTopOn"}} ],
-    "enabled=true,lower=true,upper=true": [ {"textures": {"side": "deepresonance:blocks/generatorSideMiddleOn"}} ]
+    "enabled=false,lower=false,upper=false": [ {"textures": {"side": "deepresonance:blocks/generatorsidefulloff"}} ],
+    "enabled=false,lower=false,upper=true": [ {"textures": {"side": "deepresonance:blocks/generatorsidebottomoff"}} ],
+    "enabled=false,lower=true,upper=false": [ {"textures": {"side": "deepresonance:blocks/generatorsidetopoff"}} ],
+    "enabled=false,lower=true,upper=true": [ {"textures": {"side": "deepresonance:blocks/generatorsidemiddleoff"}} ],
+    "enabled=true,lower=false,upper=false": [ {"textures": {"side": "deepresonance:blocks/generatorsidefullon"}} ],
+    "enabled=true,lower=false,upper=true": [ {"textures": {"side": "deepresonance:blocks/generatorsidebottomon"}} ],
+    "enabled=true,lower=true,upper=false": [ {"textures": {"side": "deepresonance:blocks/generatorsidetopon"}} ],
+    "enabled=true,lower=true,upper=true": [ {"textures": {"side": "deepresonance:blocks/generatorsidemiddleon"}} ]
   }
 }
