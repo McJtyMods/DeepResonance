@@ -384,9 +384,9 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     @Override
     @SideOnly(Side.CLIENT)
     public void registerTextures(IIconRegistrar iIconRegistrar) {
-        iconSide = iIconRegistrar.registerSprite(new DRResourceLocation("blocks/tankSide"));
-        iconTop = iIconRegistrar.registerSprite(new DRResourceLocation("blocks/tankTop"));
-        iconBottom = iIconRegistrar.registerSprite(new DRResourceLocation("blocks/tankBottom"));
+        iconSide = iIconRegistrar.registerSprite(new DRResourceLocation("blocks/tankside"));
+        iconTop = iIconRegistrar.registerSprite(new DRResourceLocation("blocks/tanktop"));
+        iconBottom = iIconRegistrar.registerSprite(new DRResourceLocation("blocks/tankbottom"));
     }
 
 }
