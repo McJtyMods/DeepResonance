@@ -13,6 +13,7 @@ import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
+import mcjty.lib.tools.WorldTools;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -63,7 +64,7 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
 
     @Override
     public void update() {
-        if (!worldObj.isRemote){
+        if (!getWorld().isRemote){
             checkStateServer();
         }
     }
@@ -79,7 +80,7 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
                 }
             }
         } else {
-            IBlockState state = worldObj.getBlockState(getPos());
+            IBlockState state = getWorld().getBlockState(getPos());
             boolean oldworking = state.getValue(SmelterBlock.WORKING);
             boolean newworking;
             if (canWork() && validSlot()) {
@@ -90,7 +91,7 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
             }
             if (newworking != oldworking) {
                 state = state.withProperty(SmelterBlock.WORKING, newworking);
-                worldObj.setBlockState(getPos(), state, 3);
+                getWorld().setBlockState(getPos(), state, 3);
             }
         }
     }
@@ -252,7 +253,7 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
+    public boolean isUsable(EntityPlayer player) {
         return canPlayerAccess(player);
     }
 
@@ -296,9 +297,9 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
     }
 
     protected void notifyAndMarkDirty(){
-        if (WorldHelper.chunkLoaded(worldObj, pos)){
+        if (WorldHelper.chunkLoaded(getWorld(), pos)){
             this.markDirty();
-            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+            WorldTools.notifyNeighborsOfStateChange(this.getWorld(), pos, blockType);
         }
     }
 

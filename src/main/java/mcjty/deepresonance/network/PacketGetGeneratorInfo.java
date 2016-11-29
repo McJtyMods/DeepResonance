@@ -38,7 +38,7 @@ public class PacketGetGeneratorInfo implements IMessage {
         }
 
         private void handle(PacketGetGeneratorInfo message, MessageContext ctx) {
-            World world = ctx.getServerHandler().playerEntity.worldObj;
+            World world = ctx.getServerHandler().playerEntity.getEntityWorld();
             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(world);
             DRGeneratorNetwork.Network network = generatorNetwork.getChannel(message.networkId);
             if (network == null) {

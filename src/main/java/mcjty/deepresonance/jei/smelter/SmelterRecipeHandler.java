@@ -13,8 +13,9 @@ public class SmelterRecipeHandler implements IRecipeHandler<SmelterRecipeWrapper
         return SmelterRecipeWrapper.class;
     }
 
+    // @todo @@@@@@@@@@@@@@@@@
     @Nonnull
-    @Override
+//    @Override
     public String getRecipeCategoryUid() {
         return SmelterRecipeCategory.ID;
     }

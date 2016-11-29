@@ -1,6 +1,7 @@
 package mcjty.deepresonance.commands;
 
 import mcjty.deepresonance.radiation.DRRadiationManager;
+import mcjty.lib.tools.ChatTools;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import net.minecraft.command.ICommandSender;
@@ -29,7 +30,7 @@ public class CmdListRadiation extends AbstractDRCommand {
     @Override
     public void execute(ICommandSender sender, String[] args) {
         if (args.length > 1) {
-            sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Too many parameters!"));
+            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.RED + "Too many parameters!"));
             return;
         }
 

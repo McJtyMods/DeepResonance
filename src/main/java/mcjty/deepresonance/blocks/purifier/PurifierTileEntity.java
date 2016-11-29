@@ -11,6 +11,7 @@ import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.container.InventoryLocator;
 import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.tools.WorldTools;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -50,7 +51,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
 
     @Override
     public void update() {
-        if (!worldObj.isRemote){
+        if (!getWorld().isRemote){
             checkStateServer();
         }
     }
@@ -87,7 +88,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
     private void consumeFilter() {
         inventoryHelper.decrStackSize(PurifierContainer.SLOT_FILTERINPUT, 1);
         ItemStack spentMaterial = new ItemStack(ModItems.spentFilterMaterialItem, 1);
-        inventoryLocator.ejectStack(worldObj, pos, spentMaterial, pos, directions);
+        inventoryLocator.ejectStack(getWorld(), pos, spentMaterial, pos, directions);
     }
 
     private int doPurify(LiquidCrystalFluidTagData fluidData) {
@@ -255,7 +256,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
+    public boolean isUsable(EntityPlayer player) {
         return canPlayerAccess(player);
     }
 
@@ -265,9 +266,9 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
     }
 
     protected void notifyAndMarkDirty(){
-        if (WorldHelper.chunkLoaded(worldObj, pos)){
+        if (WorldHelper.chunkLoaded(getWorld(), pos)){
             this.markDirty();
-            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+            WorldTools.notifyNeighborsOfStateChange(getWorld(), pos, blockType);
         }
     }
 

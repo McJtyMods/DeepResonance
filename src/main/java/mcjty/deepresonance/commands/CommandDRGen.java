@@ -13,7 +13,7 @@ public class CommandDRGen extends DefaultCommand {
     }
 
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "drgen";
     }
 

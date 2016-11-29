@@ -17,6 +17,7 @@ import mcjty.deepresonance.proxy.CommonProxy;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.tanks.TankGridHandler;
 import mcjty.lib.base.ModBase;
+import mcjty.lib.compat.CompatCreativeTabs;
 import mcjty.lib.compat.MainCompatHandler;
 import mcjty.lib.varia.Logging;
 import net.minecraft.creativetab.CreativeTabs;
@@ -29,12 +30,9 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.Nonnull;
 import java.io.File;
 
 @Mod(modid = DeepResonance.MODID, name="DeepResonance", dependencies =
@@ -71,12 +69,10 @@ public class DeepResonance implements ModBase {
     public boolean rftools = false;
     public boolean rftoolsControl = false;
 
-    public static CreativeTabs tabDeepResonance = new CreativeTabs("DeepResonance") {
+    public static CreativeTabs tabDeepResonance = new CompatCreativeTabs("DeepResonance") {
 
         @Override
-        @SideOnly(Side.CLIENT)
-        @Nonnull
-        public Item getTabIconItem() {
+        protected Item getItem() {
             return Item.getItemFromBlock(ModBlocks.resonatingCrystalBlock);
         }
 
@@ -208,7 +204,7 @@ public class DeepResonance implements ModBase {
     @Override
     public void openManual(EntityPlayer player, int bookIndex, String page) {
         GuiDeepResonanceManual.locatePage = page;
-        player.openGui(DeepResonance.instance, bookIndex, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
+        player.openGui(DeepResonance.instance, bookIndex, player.getEntityWorld(), (int) player.posX, (int) player.posY, (int) player.posZ);
     }
 
 }

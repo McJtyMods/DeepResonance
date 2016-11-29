@@ -2,6 +2,8 @@ package mcjty.deepresonance.commands;
 
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
+import mcjty.lib.tools.ChatTools;
+import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -30,19 +32,19 @@ public class CmdInfoCrystal extends AbstractDRCommand {
     @Override
     public void execute(ICommandSender sender, String[] args) {
         if (args.length > 1) {
-            sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Too many parameters!"));
+            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.RED + "Too many parameters!"));
             return;
         }
 
         if (!(sender instanceof EntityPlayer)) {
-            sender.addChatMessage(new TextComponentString(TextFormatting.RED + "This command only works as a player!"));
+            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.RED + "This command only works as a player!"));
             return;
         }
 
         EntityPlayer player = (EntityPlayer) sender;
         ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
-        if (heldItem == null) {
-            sender.addChatMessage(new TextComponentString(TextFormatting.RED + "You must hold a crystal in your hand!"));
+        if (ItemStackTools.isEmpty(heldItem)) {
+            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.RED + "You must hold a crystal in your hand!"));
             return;
         }
 
@@ -56,11 +58,11 @@ public class CmdInfoCrystal extends AbstractDRCommand {
             int rfPerTick = ResonatingCrystalTileEntity.getRfPerTick(efficiency, purity);
             int totalSeconds = (int) ((totalPower / rfPerTick) / 20);
             int totalMinutes = (int) ((totalPower / rfPerTick) / 1200);
-            sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + "Total power: " + (int)totalPower + " RF"));
-            sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + "RF per tick: " + rfPerTick));
-            sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + "Lifetime: " + totalSeconds + " seconds or " + totalMinutes + " minutes"));
+            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.GREEN + "Total power: " + (int)totalPower + " RF"));
+            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.GREEN + "RF per tick: " + rfPerTick));
+            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.GREEN + "Lifetime: " + totalSeconds + " seconds or " + totalMinutes + " minutes"));
         } else {
-            sender.addChatMessage(new TextComponentString(TextFormatting.RED + "You must hold a crystal in your hand!"));
+            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.RED + "You must hold a crystal in your hand!"));
         }
     }
 }

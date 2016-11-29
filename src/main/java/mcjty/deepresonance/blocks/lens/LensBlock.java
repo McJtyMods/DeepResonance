@@ -20,6 +20,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class LensBlock extends GenericDRBlock<LensTileEntity, EmptyContainer> {
@@ -52,16 +53,23 @@ public class LensBlock extends GenericDRBlock<LensTileEntity, EmptyContainer> {
         }
     }
 
+    // @todo @@@@@ check IBlockAccess vs World
+    @Nullable
     @Override
-    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
         return null;
     }
+//    @Override
+//    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
+//        return null;
+//    }
 
     public static final AxisAlignedBB BLOCK_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
     public static final AxisAlignedBB NORTH_BLOCK_AABB = new AxisAlignedBB(0.1F, 0.1F, 0.0F, 0.9F, 0.9F, 0.1F);
     public static final AxisAlignedBB SOUTH_BLOCK_AABB = new AxisAlignedBB(0.1F, 0.1F, 0.9F, 0.9F, 0.9F, 1.0F);
     public static final AxisAlignedBB WEST_BLOCK_AABB = new AxisAlignedBB(0.0F, 0.1F, 0.1F, 0.1F, 0.9F, 0.9F);
     public static final AxisAlignedBB EAST_BLOCK_AABB = new AxisAlignedBB(0.9F, 0.1F, 0.1F, 1.0F, 0.9F, 0.9F);
+
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {

@@ -4,6 +4,8 @@ import elec332.core.client.RenderHelper;
 import mcjty.deepresonance.items.ModItems;
 import mcjty.deepresonance.items.RadiationMonitorItem;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
+import mcjty.lib.tools.ItemStackTools;
+import mcjty.lib.tools.MinecraftTools;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.EnumHand;
@@ -21,8 +23,8 @@ public class RadiationOverlayRenderer {
             return;
         }
 
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-        if (player.getHeldItem(EnumHand.MAIN_HAND) == null) {
+        EntityPlayerSP player = MinecraftTools.getPlayer(Minecraft.getMinecraft());
+        if (ItemStackTools.isEmpty(player.getHeldItem(EnumHand.MAIN_HAND))) {
             return;
         }
 

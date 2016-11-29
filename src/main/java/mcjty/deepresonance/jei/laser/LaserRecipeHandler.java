@@ -13,8 +13,9 @@ public class LaserRecipeHandler implements IRecipeHandler<LaserRecipeWrapper> {
         return LaserRecipeWrapper.class;
     }
 
+    // @todo @@@@@@@@@@@@@@@@@@@@@@@@@@
     @Nonnull
-    @Override
+//    @Override
     public String getRecipeCategoryUid() {
         return LaserRecipeCategory.ID;
     }

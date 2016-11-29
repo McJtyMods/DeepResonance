@@ -13,8 +13,9 @@ public class PurifierRecipeHandler implements IRecipeHandler<PurifierRecipeWrapp
         return PurifierRecipeWrapper.class;
     }
 
+    // @todo @@@@@@@@@@@@@@@@@@@@@
     @Nonnull
-    @Override
+//    @Override
     public String getRecipeCategoryUid() {
         return PurifierRecipeCategory.ID;
     }

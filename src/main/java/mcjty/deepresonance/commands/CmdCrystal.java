@@ -1,6 +1,7 @@
 package mcjty.deepresonance.commands;
 
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
+import mcjty.lib.tools.ChatTools;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
@@ -27,16 +28,16 @@ public class CmdCrystal extends AbstractDRCommand {
     @Override
     public void execute(ICommandSender sender, String[] args) {
         if (args.length > 5) {
-            sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Too many parameters!"));
+            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.RED + "Too many parameters!"));
             return;
         }
         if (args.length < 5) {
-            sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Too few parameters!"));
+            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.RED + "Too few parameters!"));
             return;
         }
 
         if (!(sender instanceof EntityPlayer)) {
-            sender.addChatMessage(new TextComponentString(TextFormatting.RED + "This command only works as a player!"));
+            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.RED + "This command only works as a player!"));
             return;
         }
 
@@ -46,7 +47,7 @@ public class CmdCrystal extends AbstractDRCommand {
         int power = fetchInt(sender, args, 4, 0);
 
         EntityPlayer player = (EntityPlayer) sender;
-        World world = player.worldObj;
+        World world = player.getEntityWorld();
         int x = (int) (player.posX - .5);
         int y = (int) player.posY;
         int z = (int) (player.posZ - .5);

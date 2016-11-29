@@ -7,6 +7,7 @@ import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IDrawableStatic;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeCategory;
 import net.minecraft.client.Minecraft;
 
@@ -51,10 +52,15 @@ public class LaserRecipeCategory extends BlankRecipeCategory<LaserRecipeWrapper>
         RenderHelper.getMCFontrenderer().drawString("and " + ConfigMachines.Laser.crystalLiquidPerCatalyst + "mb crystal", 24, 10, 0xffffffff, true);
     }
 
+    // @todo @@@@@@@@@@@@@@@@@@@@@
     @Override
-    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull LaserRecipeWrapper recipeWrapper) {
-        IGuiItemStackGroup group = recipeLayout.getItemStacks();
-        group.init(0, true, 0, 0);
-        group.set(0, recipeWrapper.getInputs());
+    public void setRecipe(IRecipeLayout recipeLayout, LaserRecipeWrapper recipeWrapper, IIngredients ingredients) {
+
     }
+//    @Override
+//    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull LaserRecipeWrapper recipeWrapper) {
+//        IGuiItemStackGroup group = recipeLayout.getItemStacks();
+//        group.init(0, true, 0, 0);
+//        group.set(0, recipeWrapper.getInputs());
+//    }
 }

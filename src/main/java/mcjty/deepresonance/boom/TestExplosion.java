@@ -8,7 +8,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -67,7 +66,7 @@ public class TestExplosion extends Elexplosion{
                     double xDifference = entity.posX - (double) this.getLocation().getX();
                     double yDifference = entity.posY - (double) this.getLocation().getY();
                     double zDifference = entity.posZ - (double) this.getLocation().getZ();
-                    double d1 = (double) MathHelper.sqrt_double(xDifference * xDifference + yDifference * yDifference + zDifference * zDifference);
+                    double d1 = Math.sqrt(xDifference * xDifference + yDifference * yDifference + zDifference * zDifference);
                     xDifference /= d1;
                     yDifference /= d1;
                     zDifference /= d1;

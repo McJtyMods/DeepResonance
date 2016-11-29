@@ -13,6 +13,7 @@ import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
+import mcjty.lib.tools.WorldTools;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -62,7 +63,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
 
     @Override
     public void update() {
-        if (!worldObj.isRemote) {
+        if (!getWorld().isRemote) {
             checkStateServer();
         }
     }
@@ -88,8 +89,8 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
         progress++;
         if (progress == 1) {
             // We just started to work. Notify client
-            IBlockState state = worldObj.getBlockState(getPos());
-            worldObj.notifyBlockUpdate(getPos(), state, state, 3);
+            IBlockState state = getWorld().getBlockState(getPos());
+            getWorld().notifyBlockUpdate(getPos(), state, state, 3);
         }
 
         if (progress >= getTotalProgress()) {
@@ -240,7 +241,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
+    public boolean isUsable(EntityPlayer player) {
         return canPlayerAccess(player);
     }
 
@@ -286,9 +287,9 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
     }
 
     protected void notifyAndMarkDirty(){
-        if (WorldHelper.chunkLoaded(worldObj, pos)){
+        if (WorldHelper.chunkLoaded(getWorld(), pos)){
             this.markDirty();
-            this.worldObj.notifyNeighborsOfStateChange(pos, blockType);
+            WorldTools.notifyNeighborsOfStateChange(this.getWorld(), pos, blockType);
         }
     }
 

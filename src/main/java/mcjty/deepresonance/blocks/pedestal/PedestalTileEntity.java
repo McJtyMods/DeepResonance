@@ -10,6 +10,7 @@ import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.container.InventoryLocator;
 import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.tools.ItemStackTools;
 import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.SoundTools;
 import net.minecraft.block.state.IBlockState;
@@ -49,7 +50,7 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
 
     @Override
     public void update() {
-        if (!worldObj.isRemote){
+        if (!getWorld().isRemote){
             checkStateServer();
         }
     }
@@ -62,10 +63,10 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
         checkCounter = 20;
 
         BlockPos b = this.getCrystalPosition();
-        if (worldObj.isAirBlock(b)) {
+        if (getWorld().isAirBlock(b)) {
             // Nothing in front. We can place a new crystal if we have one.
             placeCrystal();
-        } else if (WorldHelper.getBlockAt(worldObj, b) == ModBlocks.resonatingCrystalBlock) {
+        } else if (WorldHelper.getBlockAt(getWorld(), b) == ModBlocks.resonatingCrystalBlock) {
             // Check if the crystal in front of us still has power.
             // If not we will remove it.
             checkCrystal();
@@ -73,14 +74,14 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
     }
 
     public BlockPos getCrystalPosition() {
-        IBlockState state = worldObj.getBlockState(getPos());
+        IBlockState state = getWorld().getBlockState(getPos());
         EnumFacing orientation = BlockTools.getOrientation(state.getBlock().getMetaFromState(state));
         return pos.offset(orientation);
     }
 
     public Optional<ResonatingCrystalTileEntity> getCrystal() {
         BlockPos p = this.getCrystalPosition();
-        TileEntity t = WorldHelper.getTileAt(worldObj, p);
+        TileEntity t = WorldHelper.getTileAt(getWorld(), p);
         if (t instanceof ResonatingCrystalTileEntity) {
             return Optional.of((ResonatingCrystalTileEntity)t);
         }
@@ -88,21 +89,21 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
     }
 
     public boolean crystalPresent() {
-        return WorldHelper.getBlockAt(worldObj, this.getCrystalPosition()) == ModBlocks.resonatingCrystalBlock;
+        return WorldHelper.getBlockAt(getWorld(), this.getCrystalPosition()) == ModBlocks.resonatingCrystalBlock;
     }
 
     private void placeCrystal() {
         BlockPos pos = getCrystalPosition();
         ItemStack crystalStack = inventoryHelper.getStackInSlot(PedestalContainer.SLOT_CRYSTAL);
-        if (crystalStack != null && crystalStack.stackSize > 0) {
+        if (ItemStackTools.isValid(crystalStack)) {
             if (crystalStack.getItem() instanceof ItemBlock) {
                 ItemBlock itemBlock = (ItemBlock) (crystalStack.getItem());
-                itemBlock.placeBlockAt(crystalStack, FakePlayerFactory.getMinecraft((WorldServer) worldObj), worldObj, pos, null, 0, 0, 0, itemBlock.getBlock().getStateFromMeta(0));
+                itemBlock.placeBlockAt(crystalStack, FakePlayerFactory.getMinecraft((WorldServer) getWorld()), getWorld(), pos, null, 0, 0, 0, itemBlock.getBlock().getStateFromMeta(0));
                 inventoryHelper.decrStackSize(PedestalContainer.SLOT_CRYSTAL, 1);
-                SoundTools.playSound(worldObj, ModBlocks.resonatingCrystalBlock.getSoundType().breakSound, getPos().getX(), getPos().getY(), getPos().getZ(), 1.0f, 1.0f);
+                SoundTools.playSound(getWorld(), ModBlocks.resonatingCrystalBlock.getSoundType().breakSound, getPos().getX(), getPos().getY(), getPos().getZ(), 1.0f, 1.0f);
 
                 if (findCollector()) {
-                    TileEntity tileEntity = WorldHelper.getTileAt(worldObj, new BlockPos(cachedLocator));
+                    TileEntity tileEntity = WorldHelper.getTileAt(getWorld(), new BlockPos(cachedLocator));
                     if (tileEntity instanceof EnergyCollectorTileEntity) {
                         EnergyCollectorTileEntity energyCollectorTileEntity = (EnergyCollectorTileEntity) tileEntity;
                         energyCollectorTileEntity.addCrystal(pos.getX(), pos.getY(), pos.getZ());
@@ -136,15 +137,15 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
         NBTTagCompound tagCompound = new NBTTagCompound();
         resonatingCrystalTileEntity.writeToNBT(tagCompound);
         spentCrystal.setTagCompound(tagCompound);
-        inventoryLocator.ejectStack(worldObj, getPos(), spentCrystal, pos, directions);
-        worldObj.setBlockToAir(p);
-        SoundTools.playSound(worldObj, ModBlocks.resonatingCrystalBlock.getSoundType().breakSound, p.getX(), p.getY(), p.getZ(), 1.0f, 1.0f);
+        inventoryLocator.ejectStack(getWorld(), getPos(), spentCrystal, pos, directions);
+        getWorld().setBlockToAir(p);
+        SoundTools.playSound(getWorld(), ModBlocks.resonatingCrystalBlock.getSoundType().breakSound, p.getX(), p.getY(), p.getZ(), 1.0f, 1.0f);
     }
 
     private boolean findCollector() {
         BlockPos crystalLocation = getCrystalPosition();
         if (cachedLocator != null) {
-            if (WorldHelper.getBlockAt(worldObj, cachedLocator) == EnergyCollectorSetup.energyCollectorBlock) {
+            if (WorldHelper.getBlockAt(getWorld(), cachedLocator) == EnergyCollectorSetup.energyCollectorBlock) {
                 return true;
             }
             cachedLocator = null;
@@ -154,12 +155,12 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
 
         int yy = crystalLocation.getY(), xx = crystalLocation.getX(), zz = crystalLocation.getZ();
         for (int y = yy - ConfigMachines.Collector.maxVerticalCrystalDistance ; y <= yy + ConfigMachines.Collector.maxVerticalCrystalDistance ; y++) {
-            if (y >= 0 && y < worldObj.getHeight()) {
+            if (y >= 0 && y < getWorld().getHeight()) {
                 int maxhordist = ConfigMachines.Collector.maxHorizontalCrystalDistance;
                 for (int x = xx - maxhordist; x <= xx + maxhordist; x++) {
                     for (int z = zz - maxhordist; z <= zz + maxhordist; z++) {
                         BlockPos pos = new BlockPos(x, y, z);
-                        if (WorldHelper.getBlockAt(worldObj, pos) == EnergyCollectorSetup.energyCollectorBlock) {
+                        if (WorldHelper.getBlockAt(getWorld(), pos) == EnergyCollectorSetup.energyCollectorBlock) {
                             double sqdist = pos.distanceSq(crystalLocation);
                             if (sqdist < closestDistance) {
                                 closestDistance = (float)sqdist;
@@ -217,7 +218,7 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
+    public boolean isUsable(EntityPlayer player) {
         return canPlayerAccess(player);
     }
 

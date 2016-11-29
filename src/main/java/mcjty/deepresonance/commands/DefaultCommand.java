@@ -2,6 +2,9 @@ package mcjty.deepresonance.commands;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
+import mcjty.lib.compat.CompatCommand;
+import mcjty.lib.compat.CompatCommandBase;
+import mcjty.lib.tools.ChatTools;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -11,10 +14,11 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
-public abstract class DefaultCommand implements ICommand {
+public abstract class DefaultCommand implements CompatCommand {
 
     protected final Map<String,DRCommand> commands = Maps.newHashMap();
 
@@ -27,9 +31,9 @@ public abstract class DefaultCommand implements ICommand {
     }
 
     public void showHelp(ICommandSender sender) {
-        sender.addChatMessage(new TextComponentString(TextFormatting.BLUE + getCommandName() + " <subcommand> <args>"));
+        ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.BLUE + getName() + " <subcommand> <args>"));
         for (Map.Entry<String,DRCommand> me : commands.entrySet()) {
-            sender.addChatMessage(new TextComponentString("    " + me.getKey() + " " + me.getValue().getHelp()));
+            ChatTools.addChatMessage(sender, new TextComponentString("    " + me.getKey() + " " + me.getValue().getHelp()));
         }
     }
 
@@ -61,12 +65,12 @@ public abstract class DefaultCommand implements ICommand {
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender) {
-        return getCommandName() + " <subcommand> <args> (try '" + getCommandName() + " help' for more info)";
+    public String getUsage(ICommandSender sender) {
+        return getName() + " <subcommand> <args> (try '" + getName() + " help' for more info)";
     }
 
     @Override
-    public List<String> getCommandAliases() {
+    public List<String> getAliases() {
         return ImmutableList.of();
     }
 
@@ -81,7 +85,7 @@ public abstract class DefaultCommand implements ICommand {
             DRCommand command = commands.get(args[0]);
             if (command == null) {
                 if (!world.isRemote) {
-                    sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Unknown Deep Resonance command: " + args[0]));
+                    ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.RED + "Unknown Deep Resonance command: " + args[0]));
                 }
             } else {
                 if (world.isRemote) {
@@ -91,8 +95,8 @@ public abstract class DefaultCommand implements ICommand {
                     }
                 } else {
                     // Server-side.
-                    if (!sender.canCommandSenderUseCommand(command.getPermissionLevel(), getCommandName())) {
-                        sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Command is not allowed!"));
+                    if (!CompatCommandBase.canUseCommand(sender, command.getPermissionLevel(), getName())) {
+                        ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.RED + "Command is not allowed!"));
                     } else {
                         command.execute(sender, args);
                     }
@@ -107,7 +111,7 @@ public abstract class DefaultCommand implements ICommand {
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
         return ImmutableList.of();
     }
 
@@ -125,7 +129,7 @@ public abstract class DefaultCommand implements ICommand {
     @SuppressWarnings("all")
     //TODO: Param seems to be nullable, NPE catcher.
     public int compareTo(ICommand command) {
-        return getCommandName().compareTo(command.getCommandName());
+        return getName().compareTo(command.getName());
     }
 
 }

@@ -6,6 +6,7 @@ import mcjty.deepresonance.network.PacketGetRadiationLevel;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
 import mcjty.deepresonance.varia.QuadTree;
+import mcjty.lib.tools.MinecraftTools;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import net.minecraft.client.Minecraft;
@@ -49,7 +50,7 @@ public class RadiationMonitorItem extends GenericDRItem {
         ModelLoader.setCustomMeshDefinition(this, new ItemMeshDefinition() {
             @Override
             public ModelResourceLocation getModelLocation(ItemStack stack) {
-                EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+                EntityPlayerSP player = MinecraftTools.getPlayer(Minecraft.getMinecraft());
                 fetchRadiation(player);
                 int level = (int) ((10 * radiationStrength) / RadiationConfiguration.maxRadiationMeter);
                 if (level < 0) {
@@ -71,7 +72,8 @@ public class RadiationMonitorItem extends GenericDRItem {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+    protected ActionResult<ItemStack> clOnItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
         if (!world.isRemote) {
             GlobalCoordinate c = new GlobalCoordinate(player.getPosition(), WorldHelper.getDimID(world));
             float maxStrength = calculateRadiationStrength(world, c);

@@ -3,6 +3,7 @@ package mcjty.deepresonance.radiation;
 import com.google.common.collect.Maps;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.varia.QuadTree;
+import mcjty.lib.tools.WorldTools;
 import mcjty.lib.varia.GlobalCoordinate;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
@@ -43,7 +44,7 @@ public class DRRadiationManager extends WorldSavedData {
     }
 
     public void save(World world) {
-        world.setItemData(RADIATION_MANAGER_NAME, this);
+        WorldTools.saveData(world, RADIATION_MANAGER_NAME, this);
         markDirty();
     }
 
@@ -69,7 +70,7 @@ public class DRRadiationManager extends WorldSavedData {
         if (instance != null) {
             return instance;
         }
-        instance = (DRRadiationManager) world.loadItemData(DRRadiationManager.class, RADIATION_MANAGER_NAME);
+        instance = WorldTools.loadData(world, DRRadiationManager.class, RADIATION_MANAGER_NAME);
         if (instance == null) {
             instance = new DRRadiationManager(RADIATION_MANAGER_NAME);
         }
