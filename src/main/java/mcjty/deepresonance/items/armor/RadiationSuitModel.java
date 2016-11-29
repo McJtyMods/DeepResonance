@@ -1,5 +1,6 @@
 package mcjty.deepresonance.items.armor;
 
+import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -485,7 +486,7 @@ public class RadiationSuitModel extends ModelBiped {
 
     public static ModelBiped getModel(EntityLivingBase entity, ItemStack stack) {
 
-        if (stack == null || !(stack.getItem() instanceof ItemArmor))
+        if (ItemStackTools.isEmpty(stack) || !(stack.getItem() instanceof ItemArmor))
             return null;
         EntityEquipmentSlot slot = ((ItemArmor) stack.getItem()).armorType;
 

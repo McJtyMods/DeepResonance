@@ -11,6 +11,7 @@ import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.container.InventoryLocator;
 import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.tools.ItemStackTools;
 import mcjty.lib.tools.WorldTools;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -154,7 +155,8 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
     }
 
     private boolean validSlot(){
-        return inventoryHelper.getStackInSlot(PurifierContainer.SLOT_FILTERINPUT) != null && inventoryHelper.getStackInSlot(PurifierContainer.SLOT_FILTERINPUT).getItem() == ModItems.filterMaterialItem;
+        return ItemStackTools.isValid(inventoryHelper.getStackInSlot(PurifierContainer.SLOT_FILTERINPUT))
+                && inventoryHelper.getStackInSlot(PurifierContainer.SLOT_FILTERINPUT).getItem() == ModItems.filterMaterialItem;
     }
 
 

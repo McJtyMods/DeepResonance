@@ -13,6 +13,7 @@ import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
+import mcjty.lib.tools.ItemStackTools;
 import mcjty.lib.tools.WorldTools;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -119,7 +120,8 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
     }
 
     private boolean validSlot(){
-        return inventoryHelper.getStackInSlot(SmelterContainer.SLOT_OREINPUT) != null && inventoryHelper.getStackInSlot(SmelterContainer.SLOT_OREINPUT).getItem() == Item.getItemFromBlock(ModBlocks.resonatingOreBlock);
+        return ItemStackTools.isValid(inventoryHelper.getStackInSlot(SmelterContainer.SLOT_OREINPUT))
+                && inventoryHelper.getStackInSlot(SmelterContainer.SLOT_OREINPUT).getItem() == Item.getItemFromBlock(ModBlocks.resonatingOreBlock);
     }
 
     private void startSmelting() {

@@ -3,6 +3,7 @@ package mcjty.deepresonance.items.armor;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.IRadiationArmor;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
+import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -68,7 +69,7 @@ public class ItemRadiationSuit extends ItemArmor implements IRadiationArmor{
         for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
             if (slot.getSlotType() == EntityEquipmentSlot.Type.ARMOR) {
                 ItemStack stack = entity.getItemStackFromSlot(slot);
-                if (stack != null && (stack.getItem() instanceof IRadiationArmor)) {
+                if (ItemStackTools.isValid(stack) && (stack.getItem() instanceof IRadiationArmor)) {
                     cnt++;
                 }
             }
@@ -81,7 +82,7 @@ public class ItemRadiationSuit extends ItemArmor implements IRadiationArmor{
         for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
             if (slot.getSlotType() == EntityEquipmentSlot.Type.ARMOR) {
                 ItemStack stack = entity.getItemStackFromSlot(slot);
-                if (stack != null) {
+                if (ItemStackTools.isValid(stack)) {
                     if (stack.getItem() instanceof IRadiationArmor) {
                         return ((IRadiationArmor) stack.getItem()).protection()[countSuitPieces(entity)];
                     } else if (stack.hasTagCompound() && stack.getTagCompound().hasKey("AntiRadiationArmor")) {

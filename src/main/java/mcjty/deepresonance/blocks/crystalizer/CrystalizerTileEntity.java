@@ -13,6 +13,7 @@ import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
+import mcjty.lib.tools.ItemStackTools;
 import mcjty.lib.tools.WorldTools;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -131,7 +132,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
 
     public boolean hasCrystal() {
         ItemStack crystalStack = inventoryHelper.getStackInSlot(CrystalizerContainer.SLOT_CRYSTAL);
-        return crystalStack != null;
+        return ItemStackTools.isValid(crystalStack);
     }
 
     private void makeCrystal() {
