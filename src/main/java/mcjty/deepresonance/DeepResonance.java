@@ -23,6 +23,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -80,6 +81,11 @@ public class DeepResonance implements ModBase {
         }
 
     };
+
+    public DeepResonance() {
+        // This has to be done VERY early
+        FluidRegistry.enableUniversalBucket();
+    }
 
 
     private static final int CONFIG_VERSION = 1;

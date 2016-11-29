@@ -12,6 +12,9 @@ import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.deepresonance.network.PacketGetTankInfo;
 import mcjty.lib.container.EmptyContainer;
+import mcjty.lib.tools.FluidTools;
+import mcjty.lib.tools.ItemStackTools;
+import mcjty.lib.tools.WorldTools;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
@@ -37,7 +40,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -212,20 +214,21 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float sidex, float sidey, float sidez) {
+    protected boolean clOnBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntity tile = WorldHelper.getTileAt(world, pos);
         if (tile instanceof TileTank){
             TileTank tank = (TileTank)tile;
 
-            if (player.getHeldItem(EnumHand.MAIN_HAND) != null) {
-                if (FluidContainerRegistry.isEmptyContainer(player.getHeldItem(EnumHand.MAIN_HAND))) {
+            ItemStack mainItem = player.getHeldItem(EnumHand.MAIN_HAND);
+            if (ItemStackTools.isValid(mainItem)) {
+                if (FluidTools.isEmptyContainer(mainItem)) {
                     if (((TileTank) tile).getTank() != null) {
                         if (!world.isRemote) {
                             extractIntoContainer(player, tank.getTank());
                         }
                     }
                     return true;
-                } else if (FluidContainerRegistry.isFilledContainer(player.getHeldItem(EnumHand.MAIN_HAND))) {
+                } else if (FluidTools.isFilledContainer(mainItem)) {
                     if (((TileTank) tile).getTank() != null) {
                         if (!world.isRemote) {
                             fillFromContainer(player, tank.getTank());
@@ -249,21 +252,21 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
             tank.settings.put(side, i);
             tank.markDirty();
             WorldHelper.markBlockForUpdate(world, pos);
-            world.notifyNeighborsOfStateChange(pos, this);
+            WorldTools.notifyNeighborsOfStateChange(world, pos, this);
             WorldHelper.markBlockForRenderUpdate(world, pos);
             return true;
         }
-        return super.onBlockActivated(world, pos, state, player, hand, heldItem, side, sidex, sidey, sidez);
+        return super.clOnBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
     }
 
     private void fillFromContainer(EntityPlayer player, IFluidHandler tank) {
-        FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(player.getHeldItem(EnumHand.MAIN_HAND));
+        FluidStack fluidStack = FluidTools.convertBucketToFluid(player.getHeldItem(EnumHand.MAIN_HAND));
         if (fluidStack != null) {
             int fill = tank.fill(fluidStack, false);
             if (fill == fluidStack.amount) {
                 tank.fill(fluidStack, true);
                 if (!player.capabilities.isCreativeMode) {
-                    ItemStack emptyContainer = FluidContainerRegistry.drainFluidContainer(player.getHeldItem(EnumHand.MAIN_HAND));
+                    ItemStack emptyContainer = FluidTools.drainContainer(player.getHeldItem(EnumHand.MAIN_HAND));
                     player.inventory.setInventorySlotContents(player.inventory.currentItem, emptyContainer);
                 }
             }
@@ -273,17 +276,17 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     private void extractIntoContainer(EntityPlayer player, IFluidHandler tank) {
         FluidStack fluidStack = tank.drain(1, false);
         if (fluidStack != null) {
-            int capacity = FluidContainerRegistry.getContainerCapacity(fluidStack, player.getHeldItem(EnumHand.MAIN_HAND));
+            int capacity = FluidTools.getCapacity(fluidStack, player.getHeldItem(EnumHand.MAIN_HAND));
             if (capacity != 0) {
                 fluidStack = tank.drain(capacity, false);
                 if (fluidStack != null && fluidStack.amount == capacity) {
                     fluidStack = tank.drain(capacity, true);
-                    ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(fluidStack, player.getHeldItem(EnumHand.MAIN_HAND));
-                    if (filledContainer != null) {
+                    ItemStack filledContainer = FluidTools.fillContainer(fluidStack, player.getHeldItem(EnumHand.MAIN_HAND));
+                    if (ItemStackTools.isValid(filledContainer)) {
                         player.inventory.decrStackSize(player.inventory.currentItem, 1);
                         if (!player.inventory.addItemStackToInventory(filledContainer)) {
-                            EntityItem entityItem = new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, filledContainer);
-                            player.worldObj.spawnEntityInWorld(entityItem);
+                            EntityItem entityItem = new EntityItem(player.getEntityWorld(), player.posX, player.posY, player.posZ, filledContainer);
+                            WorldTools.spawnEntity(player.getEntityWorld(), entityItem);
                         }
                         player.openContainer.detectAndSendChanges();
                     } else {
