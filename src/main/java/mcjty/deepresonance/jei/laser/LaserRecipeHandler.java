@@ -1,11 +1,15 @@
 package mcjty.deepresonance.jei.laser;
 
-import mezz.jei.api.recipe.IRecipeHandler;
+import mcjty.lib.jei.CompatRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 
 import javax.annotation.Nonnull;
 
-public class LaserRecipeHandler implements IRecipeHandler<LaserRecipeWrapper> {
+public class LaserRecipeHandler extends CompatRecipeHandler<LaserRecipeWrapper> {
+
+    public LaserRecipeHandler() {
+        super(LaserRecipeCategory.ID);
+    }
 
     @Nonnull
     @Override
@@ -13,27 +17,9 @@ public class LaserRecipeHandler implements IRecipeHandler<LaserRecipeWrapper> {
         return LaserRecipeWrapper.class;
     }
 
-    // @todo @@@@@@@@@@@@@@@@@@@@@@@@@@
-    @Nonnull
-//    @Override
-    public String getRecipeCategoryUid() {
-        return LaserRecipeCategory.ID;
-    }
-
-    @Nonnull
-    @Override
-    public String getRecipeCategoryUid(@Nonnull LaserRecipeWrapper recipe) {
-        return LaserRecipeCategory.ID;
-    }
-
     @Nonnull
     @Override
     public IRecipeWrapper getRecipeWrapper(@Nonnull LaserRecipeWrapper recipe) {
         return recipe;
-    }
-
-    @Override
-    public boolean isRecipeValid(@Nonnull LaserRecipeWrapper recipe) {
-        return true;
     }
 }
