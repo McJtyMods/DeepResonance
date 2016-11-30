@@ -1,28 +1,8 @@
 package mcjty.deepresonance.jei;
 
-import mcjty.deepresonance.blocks.laser.LaserSetup;
-import mcjty.deepresonance.blocks.laser.LaserTileEntity;
-import mcjty.deepresonance.blocks.purifier.PurifierSetup;
-import mcjty.deepresonance.blocks.smelter.SmelterSetup;
-import mcjty.deepresonance.jei.laser.LaserRecipeCategory;
-import mcjty.deepresonance.jei.laser.LaserRecipeHandler;
-import mcjty.deepresonance.jei.laser.LaserRecipeWrapper;
-import mcjty.deepresonance.jei.purifier.PurifierRecipeCategory;
-import mcjty.deepresonance.jei.purifier.PurifierRecipeHandler;
-import mcjty.deepresonance.jei.purifier.PurifierRecipeWrapper;
-import mcjty.deepresonance.jei.smelter.SmelterRecipeCategory;
-import mcjty.deepresonance.jei.smelter.SmelterRecipeHandler;
-import mcjty.deepresonance.jei.smelter.SmelterRecipeWrapper;
 import mezz.jei.api.*;
-import mezz.jei.api.recipe.IRecipeWrapper;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
 
 @JEIPlugin
 public class DeepResonanceJeiPlugin extends BlankModPlugin {

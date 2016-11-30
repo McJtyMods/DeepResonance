@@ -29,15 +29,15 @@ public class TestExplosion extends Elexplosion{
     @Override
     public void explode() {
         if(!this.getWorld().isRemote) {
-            for(int x = (int)(-this.getRadius()); (float)x < this.getRadius(); ++x) {
-                for(int y = (int)(-this.getRadius()); (float)y < this.getRadius(); ++y) {
-                    for(int z = (int)(-this.getRadius()); (float)z < this.getRadius(); ++z) {
+            for(int x = (int)(-this.getRadius()); x < this.getRadius(); ++x) {
+                for(int y = (int)(-this.getRadius()); y < this.getRadius(); ++y) {
+                    for(int z = (int)(-this.getRadius()); z < this.getRadius(); ++z) {
                         BlockPos targetPosition = this.getLocation().add(x, y, z);
                         double dist = Math.sqrt(getLocation().distanceSq(targetPosition));
                         if(dist < this.getRadius()) {
                             Block block = WorldHelper.getBlockAt(this.getWorld(), targetPosition);
                             IBlockState state = this.getWorld().getBlockState(targetPosition);
-                            if(block != null && !block.isAir(state, this.getWorld(), targetPosition) && block.getBlockHardness(state, getWorld(), targetPosition) > 0 && (dist < (double)(this.getRadius() - 1.0F) || (double)this.getWorld().rand.nextFloat() > 0.7D)) {
+                            if(block != null && !block.isAir(state, this.getWorld(), targetPosition) && block.getBlockHardness(state, getWorld(), targetPosition) > 0 && (dist < (this.getRadius() - 1.0F) || this.getWorld().rand.nextFloat() > 0.7D)) {
                                 block.onBlockExploded(getWorld(), targetPosition, this);
                             }
                         }
@@ -57,22 +57,22 @@ public class TestExplosion extends Elexplosion{
             minCoord.add(minRadius, minRadius, minRadius);
             BlockPos maxCoord = this.getLocation();
             maxCoord.add(maxRadius, maxRadius, maxRadius);
-            List allEntities = this.getWorld().getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB((double) minCoord.getX(), (double) minCoord.getY(), (double) minCoord.getZ(), (double) maxCoord.getX(), (double) maxCoord.getY(), (double) maxCoord.getZ()));
+            List allEntities = this.getWorld().getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(minCoord.getX(), minCoord.getY(), minCoord.getZ(), maxCoord.getX(), maxCoord.getY(), maxCoord.getZ()));
 
             for (Object allEntity : allEntities) {
                 Entity entity = (Entity) allEntity;
-                double distance = entity.getDistance((double) this.getLocation().getX(), (double) this.getLocation().getY(), (double) this.getLocation().getZ()) / (double) radius;
+                double distance = entity.getDistance(this.getLocation().getX(), this.getLocation().getY(), this.getLocation().getZ()) / radius;
                 if (distance <= 1.0D) {
-                    double xDifference = entity.posX - (double) this.getLocation().getX();
-                    double yDifference = entity.posY - (double) this.getLocation().getY();
-                    double zDifference = entity.posZ - (double) this.getLocation().getZ();
+                    double xDifference = entity.posX - this.getLocation().getX();
+                    double yDifference = entity.posY - this.getLocation().getY();
+                    double zDifference = entity.posZ - this.getLocation().getZ();
                     double d1 = Math.sqrt(xDifference * xDifference + yDifference * yDifference + zDifference * zDifference);
                     xDifference /= d1;
                     yDifference /= d1;
                     zDifference /= d1;
-                    double density = (double) this.getWorld().getBlockDensity(new Vec3d((double) this.getLocation().getX(), (double) this.getLocation().getY(), (double) this.getLocation().getZ()), entity.getEntityBoundingBox());
+                    double density = this.getWorld().getBlockDensity(new Vec3d(this.getLocation().getX(), this.getLocation().getY(), this.getLocation().getZ()), entity.getEntityBoundingBox());
                     double d2 = (1.0D - distance) * density;
-                    int damage = (int) ((d2 * d2 + d2) / 2.0D * 8.0D * (double) power + 1.0D);
+                    int damage = (int) ((d2 * d2 + d2) / 2.0D * 8.0D * power + 1.0D);
                     //@todo
 //                    entity.attackEntityFrom(DamageSource.setExplosionSource(this), (float) damage);
                     entity.motionX += xDifference * d2;

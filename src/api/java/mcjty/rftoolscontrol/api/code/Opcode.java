@@ -90,12 +90,18 @@ public class Opcode {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Opcode opcode = (Opcode) o;
 
-        if (!id.equals(opcode.id)) return false;
+        if (!id.equals(opcode.id)) {
+            return false;
+        }
 
         return true;
     }

@@ -2,6 +2,7 @@ package mcjty.deepresonance.blocks.lens;
 
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.tank.TankSetup;
+import mcjty.lib.container.GenericBlock;
 import mcjty.lib.container.GenericItemBlock;
 import mcjty.lib.varia.Logging;
 import net.minecraft.block.Block;
@@ -34,6 +35,6 @@ public class LensItemBlock extends GenericItemBlock {
             return false;
         }
 
-        return super.placeBlockAt(stack, player, world, pos, direction, hitX, hitY, hitZ, newState.withProperty(LensBlock.FACING_HORIZ, direction));
+        return super.placeBlockAt(stack, player, world, pos, direction, hitX, hitY, hitZ, newState.withProperty(GenericBlock.FACING_HORIZ, direction));
     }
 }

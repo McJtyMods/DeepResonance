@@ -1,17 +1,8 @@
 package mcjty.deepresonance.jei.laser;
 
-import elec332.core.client.RenderHelper;
-import mcjty.deepresonance.blocks.laser.InfusingBonus;
-import mcjty.deepresonance.blocks.laser.LaserTileEntity;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LaserRecipeWrapper extends BlankRecipeWrapper {
 

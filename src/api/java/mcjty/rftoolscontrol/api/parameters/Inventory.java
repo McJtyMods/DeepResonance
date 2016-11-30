@@ -32,6 +32,7 @@ public class Inventory extends BlockSide {
                 "-".equals(splitted[2]) ? null : EnumFacing.byName(splitted[2]));
     }
 
+    @Override
     @Nonnull
     public EnumFacing getSide() {
         return super.getSide();
@@ -42,6 +43,7 @@ public class Inventory extends BlockSide {
         return intSide;
     }
 
+    @Override
     public String getStringRepresentation() {
         String s = StringUtils.left(getSide().getName().toUpperCase(), 1);
         if (getIntSide() == null) {

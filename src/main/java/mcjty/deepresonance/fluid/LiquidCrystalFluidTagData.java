@@ -33,10 +33,12 @@ public final class LiquidCrystalFluidTagData {
     }
 
     public static LiquidCrystalFluidTagData fromStack(FluidStack stack){
-        if (!DRFluidRegistry.isValidLiquidCrystalStack(stack))
+        if (!DRFluidRegistry.isValidLiquidCrystalStack(stack)) {
             return null;
-        if (stack.tag == null)
+        }
+        if (stack.tag == null) {
             stack.tag = new NBTTagCompound();
+        }
         NBTTagCompound fluidTag = stack.tag;
         LiquidCrystalFluidTagData ret = fromNBT(fluidTag);
         ret.valid = stack.amount > 0;

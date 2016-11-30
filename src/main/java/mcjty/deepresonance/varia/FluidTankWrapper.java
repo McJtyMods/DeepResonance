@@ -114,7 +114,7 @@ public abstract class FluidTankWrapper implements IFluidHandler, IFluidTank {
         return fluidStack != null && canDrain();
     }
 
-    private class Properties implements IFluidTankProperties {
+    private static class Properties implements IFluidTankProperties {
 
         private Properties(FluidTankWrapper tank){
             this.tank = tank;

@@ -486,8 +486,9 @@ public class RadiationSuitModel extends ModelBiped {
 
     public static ModelBiped getModel(EntityLivingBase entity, ItemStack stack) {
 
-        if (ItemStackTools.isEmpty(stack) || !(stack.getItem() instanceof ItemArmor))
+        if (ItemStackTools.isEmpty(stack) || !(stack.getItem() instanceof ItemArmor)) {
             return null;
+        }
         EntityEquipmentSlot slot = ((ItemArmor) stack.getItem()).armorType;
 
         RadiationSuitModel armor;

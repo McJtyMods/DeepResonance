@@ -27,10 +27,12 @@ public class InternalGridTank implements IFluidTank {
         return stored == null? null : stored.getFluid();
     }
 
+    @Override
     public int fill(FluidStack stack, boolean doFill){
         if (DRFluidRegistry.isValidLiquidCrystalStack(stack)) {
-            if (extraTank.getFluidAmount() > 0)
+            if (extraTank.getFluidAmount() > 0) {
                 return 0;
+            }
             int ret = stack.amount;
             int compare = tank.getInternalTankAmount() + stack.amount;
             FluidStack toAdd = stack.copy();
@@ -38,25 +40,30 @@ public class InternalGridTank implements IFluidTank {
                 toAdd.amount = maxAmount - tank.getInternalTankAmount();
                 ret = toAdd.amount;
             }
-            if (doFill)
+            if (doFill) {
                 tank.merge(LiquidCrystalFluidTagData.fromStack(toAdd));
+            }
             return ret;
         } else {
-            if (tank.getInternalTankAmount() > 0)
+            if (tank.getInternalTankAmount() > 0) {
                 return 0;
+            }
             return extraTank.fill(stack, doFill);
         }
     }
 
+    @Override
     public FluidStack drain(int toRemoveMax, boolean doDrain){
         if (tank.getInternalTankAmount() > 0) {
             NBTTagCompound tag = new NBTTagCompound();
             tank.writeDataToNBT(tag);
             int stored = tank.getInternalTankAmount();
-            if (toRemoveMax > stored)
+            if (toRemoveMax > stored) {
                 toRemoveMax = stored;
-            if (doDrain)
+            }
+            if (doDrain) {
                 tank.setInternalAmount(stored - toRemoveMax);
+            }
             return new FluidStack(DRFluidRegistry.liquidCrystal, toRemoveMax, tag);
         } else {
             return extraTank.drain(toRemoveMax, doDrain);

@@ -1,16 +1,7 @@
 package mcjty.deepresonance.jei.purifier;
 
-import mcjty.deepresonance.config.ConfigMachines;
-import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
-import mcjty.deepresonance.items.ModItems;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PurifierRecipeWrapper extends BlankRecipeWrapper {
 
