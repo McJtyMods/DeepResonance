@@ -47,13 +47,13 @@ import java.io.File;
         acceptedMinecraftVersions = "[1.10,1.12)")
 public class DeepResonance implements ModBase {
     public static final String MODID = "deepresonance";
-    public static final String VERSION = "1.3.1alpha2";
+    public static final String VERSION = "1.3.1beta1";
     public static final String MIN_ELECCORE_VER = "1.6.345";
     public static final String MIN_OPENCOMPUTERS_VER = "1.6.0";
     public static final String MIN_FORGE10_VER = "12.18.1.2082";
-    public static final String MIN_FORGE11_VER = "13.19.0.2157";
-    public static final String MIN_MCJTYLIB_VER = "2.2.0alpha14";
-    public static final String COMPATLAYER_VER = "0.0.35alpha";
+    public static final String MIN_FORGE11_VER = "13.19.0.2176";
+    public static final String MIN_MCJTYLIB_VER = "2.2.0beta1";
+    public static final String COMPATLAYER_VER = "0.0.39beta";
 
     @SidedProxy(clientSide="mcjty.deepresonance.proxy.ClientProxy", serverSide="mcjty.deepresonance.proxy.ServerProxy")
     public static CommonProxy proxy;
