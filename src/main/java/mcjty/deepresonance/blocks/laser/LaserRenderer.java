@@ -16,10 +16,10 @@ import org.lwjgl.opengl.GL11;
 
 public class LaserRenderer extends TileEntitySpecialRenderer<LaserTileEntity> {
 
-    private static final ResourceLocation bluelaser = new ResourceLocation(DeepResonance.MODID, "textures/effects/blueLaserbeam.png");
-    private static final ResourceLocation redlaser = new ResourceLocation(DeepResonance.MODID, "textures/effects/redLaserbeam.png");
-    private static final ResourceLocation greenlaser = new ResourceLocation(DeepResonance.MODID, "textures/effects/greenLaserbeam.png");
-    private static final ResourceLocation yellowlaser = new ResourceLocation(DeepResonance.MODID, "textures/effects/yellowLaserbeam.png");
+    private static final ResourceLocation bluelaser = new ResourceLocation(DeepResonance.MODID, "textures/effects/bluelaserbeam.png");
+    private static final ResourceLocation redlaser = new ResourceLocation(DeepResonance.MODID, "textures/effects/redlaserbeam.png");
+    private static final ResourceLocation greenlaser = new ResourceLocation(DeepResonance.MODID, "textures/effects/greenlaserbeam.png");
+    private static final ResourceLocation yellowlaser = new ResourceLocation(DeepResonance.MODID, "textures/effects/yellowlaserbeam.png");
 
     @Override
     public void renderTileEntityAt(LaserTileEntity tileEntity, double x, double y, double z, float f, int breakState) {

@@ -1,7 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "textures": { "side" : "deepresonance:blocks/laserBlock", "front": "deepresonance:blocks/laserblockfront" },
+    "textures": { "side" : "deepresonance:blocks/laserblock", "front": "deepresonance:blocks/laserblockfront" },
     "model": "deepresonance:laser"
   },
   "variants": {
