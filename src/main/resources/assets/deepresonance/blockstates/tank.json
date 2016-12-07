@@ -29,8 +29,8 @@
     },
     "up": {
       "none": { "textures": { "up": "deepresonance:blocks/tanktop" } },
-      "accept": { "textures": { "up": "deepresonance:blocks/tankTopaccept" } },
-      "provide": { "textures": { "up": "deepresonance:blocks/tankTopprovide" } }
+      "accept": { "textures": { "up": "deepresonance:blocks/tanktopaccept" } },
+      "provide": { "textures": { "up": "deepresonance:blocks/tanktopprovide" } }
     },
     "west": {
       "none": { "textures": { "west": "deepresonance:blocks/tankside" } },
