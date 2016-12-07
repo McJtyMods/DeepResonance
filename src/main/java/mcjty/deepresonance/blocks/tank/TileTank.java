@@ -69,13 +69,23 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
             }
 
         };
+        this.inputOutput = new FluidTankWrapper() {
+
+            @Override
+            protected IFluidTank getTank() {
+                return multiBlock;
+            }
+
+        };
     }
 
     // Client only
     private Fluid clientRenderFluid;
     private float renderHeight; //Value from 0.0f to 1.0f
 
-    private final IFluidHandler input, output;
+    private final IFluidHandler input;
+    private final IFluidHandler output;
+    private final IFluidHandler inputOutput;
 
     private NBTTagCompound multiBlockSaveData;
 
@@ -300,6 +310,9 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
     @SuppressWarnings("unchecked")
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && multiBlock != null){
+            if (facing == null) {
+                return (T) inputOutput;
+            }
             if (isOutput(facing)){
                 return (T) output;
             }
