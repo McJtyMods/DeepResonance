@@ -3,20 +3,24 @@ package mcjty.deepresonance.blocks.tank;
 import com.google.common.collect.Maps;
 import elec332.core.main.ElecCore;
 import elec332.core.network.IElecCoreNetworkTile;
-import elec332.core.server.ServerHelper;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.tanks.TankGrid;
 import mcjty.deepresonance.varia.FluidTankWrapper;
 import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.tools.WorldTools;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.server.management.PlayerChunkMap;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.Fluid;
@@ -28,6 +32,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -96,8 +102,25 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
     public void onPacketReceivedFromClient(EntityPlayerMP sender, int ID, NBTTagCompound data) {
     }
 
+
+    private List<EntityPlayerMP> getAllPlayersWatchingBlock(World world, int x, int z) {
+        List<EntityPlayerMP> ret = new ArrayList<>();
+        if(world instanceof WorldServer) {
+            PlayerChunkMap playerManager = ((WorldServer)world).getPlayerChunkMap();
+
+            for (EntityPlayerMP player : WorldTools.getPlayerList((WorldServer) getWorld())) {
+                Chunk chunk = world.getChunkFromChunkCoords(x >> 4, z >> 4);
+                if (playerManager.isPlayerWatchingChunk(player, chunk.xPosition, chunk.zPosition)) {
+                    ret.add(player);
+                }
+            }
+        }
+
+        return ret;
+    }
+
     public void sendPacket(int ID, NBTTagCompound data) {
-        for (EntityPlayerMP player : ServerHelper.instance.getAllPlayersWatchingBlock(this.getWorld(), this.pos)) {
+        for (EntityPlayerMP player : getAllPlayersWatchingBlock(this.getWorld(), this.pos.getX(), this.pos.getZ())) {
             player.connection.sendPacket(new SPacketUpdateTileEntity(this.pos, ID, data));
         }
     }
