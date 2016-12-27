@@ -1,6 +1,7 @@
 package mcjty.deepresonance.blocks.debug;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.lib.compat.CompatBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
@@ -25,7 +26,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-public class DebugBlock extends Block {
+public class DebugBlock extends CompatBlock {
 
     public static final int STATUS_RED = 0;
     public static final int STATUS_BLUE = 1;
@@ -89,7 +90,7 @@ public class DebugBlock extends Block {
 //    }
 
     @Override
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entityIn) {
+    public void clAddCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entityIn) {
     }
 
 
