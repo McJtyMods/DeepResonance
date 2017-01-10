@@ -38,7 +38,7 @@ public class LaserDriver {
                 return new Object[]{tile.getCrystalLiquid()};
             }
 
-            @Callback(doc="function():number; Get the currently stored liquid crystal")
+            @Callback(doc="function():number; Get the maximum liquid crystal capacity")
             public Object[] getMaxCrystalLiquid(Context c, Arguments a) {
                 return new Object[]{ConfigMachines.Laser.crystalLiquidMaximum};
             }
