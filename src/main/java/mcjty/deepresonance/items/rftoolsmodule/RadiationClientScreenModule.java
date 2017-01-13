@@ -1,9 +1,6 @@
 package mcjty.deepresonance.items.rftoolsmodule;
 
-import mcjty.rftools.api.screens.IClientScreenModule;
-import mcjty.rftools.api.screens.IModuleGuiBuilder;
-import mcjty.rftools.api.screens.IModuleRenderHelper;
-import mcjty.rftools.api.screens.ModuleRenderInfo;
+import mcjty.rftools.api.screens.*;
 import mcjty.rftools.api.screens.data.IModuleDataInteger;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -15,6 +12,9 @@ public class RadiationClientScreenModule implements IClientScreenModule<IModuleD
     private String line = "";
     private int color = 0xffffff;
     private int radcolor = 0xffffff;
+    private TextAlign textAlign = TextAlign.ALIGN_LEFT;
+
+    private ITextRenderHelper labelCache = null;
 
     @Override
     public TransformMode getTransformMode() {
@@ -28,16 +28,21 @@ public class RadiationClientScreenModule implements IClientScreenModule<IModuleD
 
     @Override
     public void render(IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, IModuleDataInteger screenData, ModuleRenderInfo renderInfo) {
+        if (labelCache == null) {
+            labelCache = renderHelper.createTextRenderHelper().align(textAlign);
+        }
+
         GlStateManager.disableLighting();
         int xoffset;
         if (!line.isEmpty()) {
-            fontRenderer.drawString(line, 7, currenty, color);
+            labelCache.setup(line, 160, renderInfo);
+            labelCache.renderText(0, currenty, color, renderInfo);
             xoffset = 7 + 40;
         } else {
             xoffset = 7;
         }
         if (screenData != null) {
-            fontRenderer.drawString(String.valueOf(screenData.get()), xoffset, currenty, radcolor);
+            renderHelper.renderText(xoffset, currenty, radcolor, renderInfo, String.valueOf(screenData.get()));
         }
     }
 
@@ -48,10 +53,11 @@ public class RadiationClientScreenModule implements IClientScreenModule<IModuleD
 
     @Override
     public void createGui(IModuleGuiBuilder guiBuilder) {
-        guiBuilder.
-                label("Label:").text("text", "Label text").color("color", "Color for the label").nl().
-                label("Rad:").color("radcolor", "Color for the radiation text").nl().
-                block("monitor").nl();
+        guiBuilder
+                .label("Label:").text("text", "Label text").color("color", "Color for the label").nl()
+                .label("Rad:").color("radcolor", "Color for the radiation text").nl()
+                .choices("align", "Label alignment", "Left", "Center", "Right").nl()
+                .block("monitor").nl();
     }
 
     @Override
@@ -67,6 +73,12 @@ public class RadiationClientScreenModule implements IClientScreenModule<IModuleD
                 radcolor = tagCompound.getInteger("radcolor");
             } else {
                 radcolor = 0xffffff;
+            }
+            if (tagCompound.hasKey("align")) {
+                String alignment = tagCompound.getString("align");
+                textAlign = TextAlign.get(alignment);
+            } else {
+                textAlign = TextAlign.ALIGN_LEFT;
             }
         }
     }

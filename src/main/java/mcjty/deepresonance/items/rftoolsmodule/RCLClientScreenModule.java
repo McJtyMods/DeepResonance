@@ -1,9 +1,6 @@
 package mcjty.deepresonance.items.rftoolsmodule;
 
-import mcjty.rftools.api.screens.IClientScreenModule;
-import mcjty.rftools.api.screens.IModuleGuiBuilder;
-import mcjty.rftools.api.screens.IModuleRenderHelper;
-import mcjty.rftools.api.screens.ModuleRenderInfo;
+import mcjty.rftools.api.screens.*;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,6 +11,9 @@ public class RCLClientScreenModule implements IClientScreenModule<ModuleDataRCL>
     private String line = "";
     private int color = 0xffffff;
     private int radcolor = 0xffffff;
+    private TextAlign textAlign = TextAlign.ALIGN_LEFT;
+
+    private ITextRenderHelper labelCache = null;
 
     @Override
     public TransformMode getTransformMode() {
@@ -27,23 +27,28 @@ public class RCLClientScreenModule implements IClientScreenModule<ModuleDataRCL>
 
     @Override
     public void render(IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, ModuleDataRCL screenData, ModuleRenderInfo renderInfo) {
+        if (labelCache == null) {
+            labelCache = renderHelper.createTextRenderHelper().align(textAlign);
+        }
+
         GlStateManager.disableLighting();
         int xoffset;
         if (!line.isEmpty()) {
-            fontRenderer.drawString(line, 7, currenty, color);
+            labelCache.setup(line, 160, renderInfo);
+            labelCache.renderText(0, currenty, color, renderInfo);
             xoffset = 7 + 40;
         } else {
             xoffset = 7;
         }
         if (screenData != null) {
-            fontRenderer.drawString("Purity:", xoffset, currenty, radcolor);
-            fontRenderer.drawString(String.valueOf(screenData.getPurity()) + "%", xoffset + 55, currenty, radcolor);
+            renderHelper.renderText(xoffset, currenty, radcolor, renderInfo, "Purity:");
+            renderHelper.renderText(xoffset + 55, currenty, radcolor, renderInfo, String.valueOf(screenData.getPurity()) + "%");
             currenty += 10;
-            fontRenderer.drawString("Strength:", xoffset, currenty, radcolor);
-            fontRenderer.drawString(String.valueOf(screenData.getStrength()) + "%", xoffset + 55, currenty, radcolor);
+            renderHelper.renderText(xoffset, currenty, radcolor, renderInfo, "Strength:");
+            renderHelper.renderText(xoffset + 55, currenty, radcolor, renderInfo, String.valueOf(screenData.getStrength()) + "%");
             currenty += 10;
-            fontRenderer.drawString("Efficiency:", xoffset, currenty, radcolor);
-            fontRenderer.drawString(String.valueOf(screenData.getEfficiency()) + "%", xoffset + 55, currenty, radcolor);
+            renderHelper.renderText(xoffset, currenty, radcolor, renderInfo, "Efficiency:");
+            renderHelper.renderText(xoffset + 55, currenty, radcolor, renderInfo, String.valueOf(screenData.getEfficiency()) + "%");
         }
     }
 
@@ -54,10 +59,11 @@ public class RCLClientScreenModule implements IClientScreenModule<ModuleDataRCL>
 
     @Override
     public void createGui(IModuleGuiBuilder guiBuilder) {
-        guiBuilder.
-                label("Label:").text("text", "Label text").color("color", "Color for the label").nl().
-                label("Stats:").color("radcolor", "Color for the statistics text").nl().
-                block("monitor").nl();
+        guiBuilder
+                .label("Label:").text("text", "Label text").color("color", "Color for the label").nl()
+                .label("Stats:").color("radcolor", "Color for the statistics text").nl()
+                .choices("align", "Label alignment", "Left", "Center", "Right").nl()
+                .block("monitor").nl();
     }
 
     @Override
@@ -73,6 +79,12 @@ public class RCLClientScreenModule implements IClientScreenModule<ModuleDataRCL>
                 radcolor = tagCompound.getInteger("radcolor");
             } else {
                 radcolor = 0xffffff;
+            }
+            if (tagCompound.hasKey("align")) {
+                String alignment = tagCompound.getString("align");
+                textAlign = TextAlign.get(alignment);
+            } else {
+                textAlign = TextAlign.ALIGN_LEFT;
             }
         }
     }
