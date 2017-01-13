@@ -44,47 +44,82 @@ public abstract class FluidTankWrapper implements IFluidHandler, IFluidTank {
         if (!canFillFluidType(resource)) {
             return 0;
         }
-        return getTank().fill(resource, doFill);
+        IFluidTank tank = getTank();
+        // @todo check why this is sometimes needed
+        if (tank == null) {
+            return 0;
+        }
+        return tank.fill(resource, doFill);
     }
 
 
     @Override
     public FluidStack drain(FluidStack resource, boolean doDrain) {
-        FluidStack f = getTank().getFluid();
+        IFluidTank tank = getTank();
+        // @todo check why this is sometimes needed
+        if (tank == null) {
+            return null;
+        }
+        FluidStack f = tank.getFluid();
         if (!canDrainFluidType(f) || resource == null || f == null || !resource.isFluidEqual(f)) {
             return null;
         }
-        return getTank().drain(resource.amount, doDrain);
+        return tank.drain(resource.amount, doDrain);
     }
 
     @Override
     public FluidStack drain(int maxDrain, boolean doDrain) {
-        if (!canDrainFluidType(getTank().getFluid())) {
+        IFluidTank tank = getTank();
+        // @todo check why this is sometimes needed
+        if (tank == null) {
             return null;
         }
-        return getTank().drain(maxDrain, doDrain);
+        if (!canDrainFluidType(tank.getFluid())) {
+            return null;
+        }
+        return tank.drain(maxDrain, doDrain);
     }
 
     @Nullable
     @Override
     public FluidStack getFluid() {
-        FluidStack tankStack = getTank().getFluid();
+        IFluidTank tank = getTank();
+        // @todo check why this is sometimes needed
+        if (tank == null) {
+            return null;
+        }
+        FluidStack tankStack = tank.getFluid();
         return tankStack == null ? null : tankStack.copy();
     }
 
     @Override
     public int getFluidAmount() {
-        return getTank().getFluidAmount();
+        IFluidTank tank = getTank();
+        // @todo check why this is sometimes needed
+        if (tank == null) {
+            return 0;
+        }
+        return tank.getFluidAmount();
     }
 
     @Override
     public int getCapacity() {
-        return getTank().getCapacity();
+        IFluidTank tank = getTank();
+        // @todo check why this is sometimes needed
+        if (tank == null) {
+            return 0;
+        }
+        return tank.getCapacity();
     }
 
     @Override
     public FluidTankInfo getInfo() {
-        return getTank().getInfo();
+        IFluidTank tank = getTank();
+        // @todo check why this is sometimes needed
+        if (tank == null) {
+            return null;
+        }
+        return tank.getInfo();
     }
 
     protected boolean canFill() {
@@ -99,7 +134,12 @@ public abstract class FluidTankWrapper implements IFluidHandler, IFluidTank {
         if (fluidStack == null){
             return false;
         }
-        FluidStack f = getTank().getFluid();
+        IFluidTank tank = getTank();
+        // @todo check why this is sometimes needed
+        if (tank == null) {
+            return false;
+        }
+        FluidStack f = tank.getFluid();
         if (f == null){
             return canFillFluidTypeInternal(fluidStack);
         }
@@ -125,13 +165,21 @@ public abstract class FluidTankWrapper implements IFluidHandler, IFluidTank {
         @Nullable
         @Override
         public FluidStack getContents() {
-            FluidStack stack = tank.getTank().getFluid();
+            IFluidTank tank = this.tank.getTank();
+            if (tank == null) {
+                return null;
+            }
+            FluidStack stack = tank.getFluid();
             return stack == null ? null : stack.copy();
         }
 
         @Override
         public int getCapacity() {
-            return tank.getTank().getCapacity();
+            IFluidTank tank = this.tank.getTank();
+            if (tank == null) {
+                return 0;
+            }
+            return tank.getCapacity();
         }
 
         @Override
