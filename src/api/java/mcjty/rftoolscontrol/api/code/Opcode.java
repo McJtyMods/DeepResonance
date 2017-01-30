@@ -4,9 +4,7 @@ import mcjty.rftoolscontrol.api.parameters.ParameterDescription;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Opcode {
 
@@ -17,6 +15,7 @@ public class Opcode {
     private final String outputDescription;
     private final IOpcodeRunnable runnable;
     private final List<String> description;
+    private final Set<OpcodeCategory> categories;
     private final boolean deprecated;
 
     private final int iconU;
@@ -32,6 +31,7 @@ public class Opcode {
         this.iconV = builder.iconV;
         this.runnable = builder.runnable;
         this.description = new ArrayList<>(builder.description);
+        this.categories = EnumSet.copyOf(builder.categories);
         this.outputDescription = builder.outputDescription;
         this.deprecated = builder.deprecated;
         this.iconResource = builder.iconResource;
@@ -47,6 +47,10 @@ public class Opcode {
 
     public boolean isEvent() {
         return isEvent;
+    }
+
+    public Set<OpcodeCategory> getCategories() {
+        return categories;
     }
 
     @Nonnull
@@ -130,6 +134,7 @@ public class Opcode {
         private IOpcodeRunnable runnable = NOOP;
         private List<String> description = Collections.emptyList();
         private String outputDescription = "No result";
+        private Set<OpcodeCategory> categories = EnumSet.noneOf(OpcodeCategory.class);
         private boolean deprecated = false;
 
         public Builder id(String id) {
@@ -178,6 +183,11 @@ public class Opcode {
             this.iconU = u;
             this.iconV = v;
             this.iconResource = iconLocation;
+            return this;
+        }
+
+        public Builder category(OpcodeCategory category) {
+            categories.add(category);
             return this;
         }
 

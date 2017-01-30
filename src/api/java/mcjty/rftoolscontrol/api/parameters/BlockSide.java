@@ -34,6 +34,34 @@ public class BlockSide {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        BlockSide blockSide = (BlockSide) o;
+
+        if (nodeName != null ? !nodeName.equals(blockSide.nodeName) : blockSide.nodeName != null) {
+            return false;
+        }
+        if (side != blockSide.side) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = nodeName != null ? nodeName.hashCode() : 0;
+        result = 31 * result + (side != null ? side.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         if (side == null) {
             return "*";
