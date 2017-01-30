@@ -79,7 +79,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
         LiquidCrystalFluidTagData data = LiquidCrystalFluidTagData.fromStack(fluidStack);
         if (mergedData == null) {
             mergedData = data;
-        } else {
+        } else if (data != null) {
             mergedData.merge(data);
         }
 
@@ -127,7 +127,16 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
         }
 
         FluidStack fluidStack = rclTank.getTank().drain(ConfigMachines.Crystalizer.rclPerTick, false);
-        return !(fluidStack == null || fluidStack.amount != ConfigMachines.Crystalizer.rclPerTick);
+        if (fluidStack == null || fluidStack.amount != ConfigMachines.Crystalizer.rclPerTick) {
+            return false;
+        }
+
+        LiquidCrystalFluidTagData data = LiquidCrystalFluidTagData.fromStack(fluidStack);
+        if (data == null) {
+            return false;
+        }
+
+        return true;
     }
 
     public boolean hasCrystal() {
