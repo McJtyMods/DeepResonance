@@ -13,6 +13,7 @@ import mcjty.deepresonance.jei.purifier.PurifierRecipeWrapper;
 import mcjty.deepresonance.jei.smelter.SmelterRecipeCategory;
 import mcjty.deepresonance.jei.smelter.SmelterRecipeHandler;
 import mcjty.deepresonance.jei.smelter.SmelterRecipeWrapper;
+import mcjty.lib.jei.JeiCompatTools;
 import mezz.jei.api.*;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.Item;
@@ -48,7 +49,7 @@ public class DeepResonanceJeiPlugin extends BlankModPlugin {
         }
         recipes.add(new SmelterRecipeWrapper());
         recipes.add(new PurifierRecipeWrapper());
-        registry.addRecipes(recipes);
+        JeiCompatTools.addRecipes(registry, recipes);
 
         registry.addRecipeCategoryCraftingItem(new ItemStack(LaserSetup.laserBlock), LaserRecipeCategory.ID);
         registry.addRecipeCategoryCraftingItem(new ItemStack(SmelterSetup.smelter), SmelterRecipeCategory.ID);
