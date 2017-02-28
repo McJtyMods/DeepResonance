@@ -56,7 +56,6 @@ public abstract class FluidTankWrapper implements IFluidHandler, IFluidTank {
     @Override
     public FluidStack drain(FluidStack resource, boolean doDrain) {
         IFluidTank tank = getTank();
-        // @todo check why this is sometimes needed
         if (tank == null) {
             return null;
         }
@@ -70,7 +69,6 @@ public abstract class FluidTankWrapper implements IFluidHandler, IFluidTank {
     @Override
     public FluidStack drain(int maxDrain, boolean doDrain) {
         IFluidTank tank = getTank();
-        // @todo check why this is sometimes needed
         if (tank == null) {
             return null;
         }
@@ -84,7 +82,6 @@ public abstract class FluidTankWrapper implements IFluidHandler, IFluidTank {
     @Override
     public FluidStack getFluid() {
         IFluidTank tank = getTank();
-        // @todo check why this is sometimes needed
         if (tank == null) {
             return null;
         }
@@ -95,7 +92,6 @@ public abstract class FluidTankWrapper implements IFluidHandler, IFluidTank {
     @Override
     public int getFluidAmount() {
         IFluidTank tank = getTank();
-        // @todo check why this is sometimes needed
         if (tank == null) {
             return 0;
         }
@@ -105,7 +101,6 @@ public abstract class FluidTankWrapper implements IFluidHandler, IFluidTank {
     @Override
     public int getCapacity() {
         IFluidTank tank = getTank();
-        // @todo check why this is sometimes needed
         if (tank == null) {
             return 0;
         }
@@ -115,7 +110,6 @@ public abstract class FluidTankWrapper implements IFluidHandler, IFluidTank {
     @Override
     public FluidTankInfo getInfo() {
         IFluidTank tank = getTank();
-        // @todo check why this is sometimes needed
         if (tank == null) {
             return null;
         }
@@ -135,7 +129,6 @@ public abstract class FluidTankWrapper implements IFluidHandler, IFluidTank {
             return false;
         }
         IFluidTank tank = getTank();
-        // @todo check why this is sometimes needed
         if (tank == null) {
             return false;
         }

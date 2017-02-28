@@ -326,13 +326,13 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && multiBlock != null && (isInput(facing) || isOutput(facing))) || super.hasCapability(capability, facing);
+        return (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (isInput(facing) || isOutput(facing))) || super.hasCapability(capability, facing);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && multiBlock != null){
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
             if (facing == null) {
                 return (T) inputOutput;
             }
