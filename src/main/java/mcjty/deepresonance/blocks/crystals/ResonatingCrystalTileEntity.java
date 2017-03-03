@@ -232,6 +232,18 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         }
     }
 
+    public static void spawnRandomCrystal(World world, Random random, BlockPos pos, float str, float pow, float eff, float pur) {
+        WorldHelper.setBlockState(world, pos, ModBlocks.resonatingCrystalBlock.getStateFromMeta(0), 3);
+        TileEntity te = WorldHelper.getTileAt(world, pos);
+        if (te instanceof ResonatingCrystalTileEntity) {
+            ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
+            resonatingCrystalTileEntity.setStrength(random.nextFloat() * str * 3.0f + 0.01f);
+            resonatingCrystalTileEntity.setPower(random.nextFloat() * pow * 60.0f + 0.2f);
+            resonatingCrystalTileEntity.setEfficiency(random.nextFloat() * eff * 3.0f + 0.1f);
+            resonatingCrystalTileEntity.setPurity(random.nextFloat() * pur * 10.0f + 5.0f);
+        }
+    }
+
     private static float getRandomSpecial(Random random, int special) {
         return special == 0 ? random.nextFloat() :
                 special == 1 ? .5f : 1.0f;

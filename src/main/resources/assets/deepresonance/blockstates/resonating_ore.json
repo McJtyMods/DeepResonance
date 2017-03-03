@@ -1,10 +1,12 @@
 {
   "forge_marker": 1,
-  "defaults": {
-    "model": "deepresonance:resonating_ore"
-  },
   "variants": {
     "normal": [{}],
-    "inventory": [{}]
+    "inventory": [{}],
+    "oretype": {
+      "overworld": { "model": "deepresonance:resonating_ore" },
+      "nether": { "model": "deepresonance:resonating_ore_nether" },
+      "end": { "model": "deepresonance:resonating_ore_end" }
+    }
   }
 }

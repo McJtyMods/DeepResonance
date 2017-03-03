@@ -18,9 +18,27 @@ public class WorldGenConfiguration {
     public static int crystalSpawnChance = 15;
     public static int crystalSpawnTries = 10;
 
+    public static boolean generateOverworldOre = true;
+    public static boolean generateNetherOre = true;
+    public static boolean generateEndOre = false;
+    public static boolean generateOreOtherDimensions = true;
+
+    public static boolean generateOverworldCrystals = true;
+    public static boolean generateNetherCrystals = true;
+    public static boolean generateCrystalsOtherDimensions = true;
+
     public static void init(Configuration cfg) {
         retrogen = cfg.get(CATEGORY_WORLDGEN, "retrogen", retrogen, "Enable this if you want to get retrogen (generation of ores/crystals) for already existing chunks").getBoolean();
         verboseSpawn = cfg.get(CATEGORY_WORLDGEN, "verboseSpawn", verboseSpawn, "Enable this if you want to see in the log where crystals are spawned").getBoolean();
+
+        generateOverworldOre = cfg.get(CATEGORY_WORLDGEN, "generateOverworldOre", generateOverworldOre, "Enable this if you want resonating ore in the overworld").getBoolean();
+        generateNetherOre = cfg.get(CATEGORY_WORLDGEN, "generateNetherOre", generateNetherOre, "Enable this if you want resonating ore in the nether").getBoolean();
+        generateEndOre = cfg.get(CATEGORY_WORLDGEN, "generateEndOre", generateEndOre, "Enable this if you want resonating ore in the end").getBoolean();
+        generateOreOtherDimensions = cfg.get(CATEGORY_WORLDGEN, "generateOreOtherDimensions", generateOreOtherDimensions, "Enable this if you want resonating ore in other dimensions (if they have stone)").getBoolean();
+
+        generateOverworldCrystals = cfg.get(CATEGORY_WORLDGEN, "generateOverworldCrystals", generateOverworldCrystals, "Enable this if you want resonating crystals in the overworld").getBoolean();
+        generateNetherCrystals = cfg.get(CATEGORY_WORLDGEN, "generateNetherCrystals", generateNetherCrystals, "Enable this if you want resonating crystals in the nether").getBoolean();
+        generateCrystalsOtherDimensions = cfg.get(CATEGORY_WORLDGEN, "generateCrystalsOtherDimensions", generateCrystalsOtherDimensions, "Enable this if you want resonating crystals in other dimensions (if they have stone caves)").getBoolean();
 
         minVeinSize = cfg.get(CATEGORY_WORLDGEN, "minVeinSize", minVeinSize, "Minimum size of the ore veines").getInt();
         maxVeinSize = cfg.get(CATEGORY_WORLDGEN, "maxVeinSize", maxVeinSize, "Maximum size of the ore veines").getInt();

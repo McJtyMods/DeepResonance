@@ -3,6 +3,7 @@ package mcjty.deepresonance.worldgen;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
+import mcjty.deepresonance.blocks.ore.ResonatingOreBlock;
 import mcjty.lib.varia.Logging;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.pattern.BlockMatcher;
@@ -10,6 +11,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -37,12 +39,46 @@ public class DeepWorldGenerator implements IWorldGenerator {
             return;
         }
 
-        addOreSpawn(ModBlocks.resonatingOreBlock, (byte) 0, Blocks.STONE, world, random, chunkX * 16, chunkZ * 16,
-                WorldGenConfiguration.minVeinSize, WorldGenConfiguration.maxVeinSize, WorldGenConfiguration.chancesToSpawn, WorldGenConfiguration.minY, WorldGenConfiguration.maxY);
+        if (world.provider.getDimension() == DimensionType.OVERWORLD.getId()) {
+            if (WorldGenConfiguration.generateOverworldOre) {
+                addOreSpawn(ModBlocks.resonatingOreBlock, (byte) ResonatingOreBlock.OreType.ORE_OVERWORLD.ordinal(), Blocks.STONE, world, random, chunkX * 16, chunkZ * 16,
+                        WorldGenConfiguration.minVeinSize, WorldGenConfiguration.maxVeinSize, WorldGenConfiguration.chancesToSpawn, WorldGenConfiguration.minY, WorldGenConfiguration.maxY);
+            }
+        } else if (world.provider.getDimension() == DimensionType.NETHER.getId()) {
+            if (WorldGenConfiguration.generateNetherOre) {
+                addOreSpawn(ModBlocks.resonatingOreBlock, (byte) ResonatingOreBlock.OreType.ORE_NETHER.ordinal(), Blocks.NETHERRACK, world, random, chunkX * 16, chunkZ * 16,
+                        WorldGenConfiguration.minVeinSize, WorldGenConfiguration.maxVeinSize, WorldGenConfiguration.chancesToSpawn, WorldGenConfiguration.minY, WorldGenConfiguration.maxY);
+            }
+        } else if (world.provider.getDimension() == DimensionType.THE_END.getId()) {
+            if (WorldGenConfiguration.generateEndOre) {
+                addOreSpawn(ModBlocks.resonatingOreBlock, (byte) ResonatingOreBlock.OreType.ORE_END.ordinal(), Blocks.END_STONE, world, random, chunkX * 16, chunkZ * 16,
+                        WorldGenConfiguration.minVeinSize, WorldGenConfiguration.maxVeinSize, WorldGenConfiguration.chancesToSpawn, WorldGenConfiguration.minY, WorldGenConfiguration.maxY);
+            }
+        } else {
+            if (WorldGenConfiguration.generateOreOtherDimensions) {
+                addOreSpawn(ModBlocks.resonatingOreBlock, (byte) ResonatingOreBlock.OreType.ORE_OVERWORLD.ordinal(), Blocks.STONE, world, random, chunkX * 16, chunkZ * 16,
+                        WorldGenConfiguration.minVeinSize, WorldGenConfiguration.maxVeinSize, WorldGenConfiguration.chancesToSpawn, WorldGenConfiguration.minY, WorldGenConfiguration.maxY);
+            }
+        }
 
-
-        if (WorldGenConfiguration.crystalSpawnChance > 0 && random.nextInt(WorldGenConfiguration.crystalSpawnChance) == 0) {
-            attemptSpawnCrystal(random, chunkX, chunkZ, world);
+        if (world.provider.getDimension() == DimensionType.OVERWORLD.getId()) {
+            if (WorldGenConfiguration.generateOverworldCrystals) {
+                if (WorldGenConfiguration.crystalSpawnChance > 0 && random.nextInt(WorldGenConfiguration.crystalSpawnChance) == 0) {
+                    attemptSpawnCrystal(random, chunkX, chunkZ, world, Blocks.STONE, 1.0f, 1.0f, 1.0f, 1.0f);
+                }
+            }
+        } else if (world.provider.getDimension() == DimensionType.NETHER.getId()) {
+            if (WorldGenConfiguration.generateNetherCrystals) {
+                if (WorldGenConfiguration.crystalSpawnChance > 0 && random.nextInt(WorldGenConfiguration.crystalSpawnChance) == 0) {
+                    attemptSpawnCrystal(random, chunkX, chunkZ, world, Blocks.NETHERRACK, 3.0f, 5.0f, 2.0f, 0.5f);
+                }
+            }
+        } else {
+            if (WorldGenConfiguration.generateCrystalsOtherDimensions) {
+                if (WorldGenConfiguration.crystalSpawnChance > 0 && random.nextInt(WorldGenConfiguration.crystalSpawnChance) == 0) {
+                    attemptSpawnCrystal(random, chunkX, chunkZ, world, Blocks.STONE, 1.0f, 1.0f, 1.0f, 1.0f);
+                }
+            }
         }
 
         if (!newGen) {
@@ -50,11 +86,16 @@ public class DeepWorldGenerator implements IWorldGenerator {
         }
     }
 
-    private void attemptSpawnCrystal(Random random, int chunkX, int chunkZ, World world) {
+    private void attemptSpawnCrystal(Random random, int chunkX, int chunkZ, World world, Block spawnOn, float str, float pow, float eff, float pur) {
         for (int i = 0 ; i < WorldGenConfiguration.crystalSpawnTries ; i++) {
             int x = chunkX * 16 + random.nextInt(16);
             int z = chunkZ * 16 + random.nextInt(16);
-            int y = world.getTopSolidOrLiquidBlock(new BlockPos(x, world.provider.getActualHeight(), z)).getY()-1;
+            int y;
+            if (world.provider.getDimension() == DimensionType.NETHER.getId()) {
+                y = 60;
+            } else {
+                y = world.getTopSolidOrLiquidBlock(new BlockPos(x, world.provider.getActualHeight(), z)).getY() - 1;
+            }
             boolean air = false;
             BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
             while (y > 1 && !air) {
@@ -74,11 +115,11 @@ public class DeepWorldGenerator implements IWorldGenerator {
                     }
                 }
                 if (!air) {
-                    if (WorldHelper.getBlockAt(world, pos) == Blocks.STONE) {
+                    if (WorldHelper.getBlockAt(world, pos) == spawnOn) {
                         if (WorldGenConfiguration.verboseSpawn) {
                             Logging.log("Spawned a crystal at: " + x + "," + y + "," + z);
                         }
-                        ResonatingCrystalTileEntity.spawnRandomCrystal(world, random, new BlockPos(pos.setPos(x, y+1, z)), 0);
+                        ResonatingCrystalTileEntity.spawnRandomCrystal(world, random, new BlockPos(pos.setPos(x, y+1, z)), str, pow, eff, pur);
                         return;
                     }
                 }
