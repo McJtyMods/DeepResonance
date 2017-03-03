@@ -9,8 +9,8 @@ public class WorldGenConfiguration {
     public static boolean retrogen = true;
     public static boolean verboseSpawn = false;
 
-    public static int minVeinSize = 5;
-    public static int maxVeinSize = 8;
+    public static int minVeinSize = 2;
+    public static int maxVeinSize = 4;
     public static int chancesToSpawn = 5;
     public static int minY = 2;
     public static int maxY = 30;
@@ -40,8 +40,8 @@ public class WorldGenConfiguration {
         generateNetherCrystals = cfg.get(CATEGORY_WORLDGEN, "generateNetherCrystals", generateNetherCrystals, "Enable this if you want resonating crystals in the nether").getBoolean();
         generateCrystalsOtherDimensions = cfg.get(CATEGORY_WORLDGEN, "generateCrystalsOtherDimensions", generateCrystalsOtherDimensions, "Enable this if you want resonating crystals in other dimensions (if they have stone caves)").getBoolean();
 
-        minVeinSize = cfg.get(CATEGORY_WORLDGEN, "minVeinSize", minVeinSize, "Minimum size of the ore veines").getInt();
-        maxVeinSize = cfg.get(CATEGORY_WORLDGEN, "maxVeinSize", maxVeinSize, "Maximum size of the ore veines").getInt();
+        minVeinSize = cfg.get(CATEGORY_WORLDGEN, "minOreVeinSize", minVeinSize, "Minimum size of the ore veines").getInt();
+        maxVeinSize = cfg.get(CATEGORY_WORLDGEN, "maxOreVeinSize", maxVeinSize, "Maximum size of the ore veines").getInt();
         chancesToSpawn = cfg.get(CATEGORY_WORLDGEN, "chancesToSpawn", chancesToSpawn, "Chances for the ore to spawn in a chunk").getInt();
         minY = cfg.get(CATEGORY_WORLDGEN, "minY", minY, "Minimum ore height").getInt();
         maxY = cfg.get(CATEGORY_WORLDGEN, "maxY", maxY, "Maximum ore height").getInt();

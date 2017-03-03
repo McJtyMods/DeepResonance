@@ -47,7 +47,7 @@ public class DeepWorldGenerator implements IWorldGenerator {
         } else if (world.provider.getDimension() == DimensionType.NETHER.getId()) {
             if (WorldGenConfiguration.generateNetherOre) {
                 addOreSpawn(ModBlocks.resonatingOreBlock, (byte) ResonatingOreBlock.OreType.ORE_NETHER.ordinal(), Blocks.NETHERRACK, world, random, chunkX * 16, chunkZ * 16,
-                        WorldGenConfiguration.minVeinSize, WorldGenConfiguration.maxVeinSize, WorldGenConfiguration.chancesToSpawn, WorldGenConfiguration.minY, WorldGenConfiguration.maxY);
+                        WorldGenConfiguration.minVeinSize * 2, WorldGenConfiguration.maxVeinSize * 2, WorldGenConfiguration.chancesToSpawn, WorldGenConfiguration.minY, WorldGenConfiguration.maxY);
             }
         } else if (world.provider.getDimension() == DimensionType.THE_END.getId()) {
             if (WorldGenConfiguration.generateEndOre) {
@@ -128,7 +128,7 @@ public class DeepWorldGenerator implements IWorldGenerator {
     }
 
     public void addOreSpawn(Block block, byte blockMeta, Block targetBlock, World world, Random random, int blockXPos, int blockZPos, int minVeinSize, int maxVeinSize, int chancesToSpawn, int minY, int maxY) {
-        WorldGenMinable minable = new WorldGenMinable(block.getStateFromMeta(blockMeta), (minVeinSize - random.nextInt(maxVeinSize - minVeinSize)), BlockMatcher.forBlock(targetBlock));
+        WorldGenMinable minable = new WorldGenMinable(block.getStateFromMeta(blockMeta), (minVeinSize + random.nextInt(maxVeinSize - minVeinSize + 1)), BlockMatcher.forBlock(targetBlock));
         for (int i = 0 ; i < chancesToSpawn ; i++) {
             int posX = blockXPos + random.nextInt(16);
             int posY = minY + random.nextInt(maxY - minY);
