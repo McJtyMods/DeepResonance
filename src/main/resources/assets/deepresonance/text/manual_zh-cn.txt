@@ -110,33 +110,26 @@ Table of contents:
 {b}RCL品质
 {n:rclquality}
 只有品质100%的水晶液才会长出最好的水晶.品质在熔化炉里决定. 只有正确量的岩浆 (
-半满储罐) 才会产出最高品质的RCL.储罐里放太多岩浆会导致熔化温度过高，降低液体
-的纯净度.
+半满储罐) 才会产出最高品质的RCL（别急着动手！请先参看熔化炉条目——译者注）.储
+罐里放太多岩浆会导致熔化温度过高，降低液体的纯净度.
 
-注意没有以后提升品质的手段，所以第一步调好品质很重要.
+注意没有后期提升品质的手段，所以第一步调好品质很重要.
 {-------------------------------------------------------------}
 {b}RCL纯度
 {n:rclpurity}
-The purity of the liquid determines how much radiation and pollution you
-will get when generating power from a crystal. It is important to try to get
-the purity as high as possible. In addition, crystals with higher purity will
-generate more power at a higher RF/t as well.
+RCL的纯度决定了你从共振水晶获得能量时所接收到的辐射和污染量.尽可能提高纯度很重
+要.而且，纯度更高的共振水晶才会产生更高的能量（RF/t）.
 
-With the right amount of lava the smelter will produce liquid with only 10%
-purity so you need to use the purifier to improve purity.
+使用正确量的岩浆所产出的液体纯度只有10%，所以你需要精炼器来提高纯度.
 {-------------------------------------------------------------}
-{b}RCL Strength
+{b}RCL容强
 {n:rclstrength}
-The strength of the liquid determines how much power in total this
-crystal will be able to generate. The smelter will always produce
-liquid with strength 10%.
+液体的容强决定了这个共振水晶总共能产出多少能量.熔化炉将总是产出容强10%的液体。
 {-------------------------------------------------------------}
-{b}RCL Efficiency
+{b}RCL功率
 {n:rclefficiency}
-The efficiency of the liquid determines how efficient the
-generated crystal will be able to produce its power. In other words,
-the higher the efficiency, the better the RF/tick. The smelter
-will always produce liquid with efficiency 10%.
+液体的功率决定了形成的水晶的产能功率.换句话说，功率越高，RF/tick越大.熔化炉将
+总是产出功率10%的液体.
 {-------------------------------------------------------------}
 {b}Tank
 {n:tank}
