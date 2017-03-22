@@ -17,10 +17,10 @@ Table of contents:
 {l:rcl}共振水晶液
 {l:tank}储罐
 {l:smelter}熔化炉
-{l:purifier}精炼器
+{l:purifier}净化器
 {l:laser}透镜与激光
 {l:valve}阀门
-{l:crystalizer}Crystalizer 护膜？
+{l:crystalizer}结晶器
 {l:pedestal}基座
 {-------------------------------------------------------------}
 {b}共振矿石
@@ -120,7 +120,7 @@ Table of contents:
 RCL的纯度决定了你从共振水晶获得能量时所接收到的辐射和污染量.尽可能提高纯度很重
 要.而且，纯度更高的共振水晶才会产生更高的能量（RF/t）.
 
-使用正确量的岩浆所产出的液体纯度只有10%，所以你需要精炼器来提高纯度.
+使用正确量的岩浆所产出的液体纯度只有10%，所以你需要净化器来提高纯度.
 {-------------------------------------------------------------}
 {b}RCL容强
 {n:rclstrength}
@@ -131,106 +131,77 @@ RCL的纯度决定了你从共振水晶获得能量时所接收到的辐射和�
 液体的功率决定了形成的水晶的产能功率.换句话说，功率越高，RF/tick越大.熔化炉将
 总是产出功率10%的液体.
 {-------------------------------------------------------------}
-{b}Tank
+{b}储罐
 {n:tank}
 {rb:tank}
-The tanks from Deep Resonance have room for 16 buckets of liquid.
-If you place multiple tanks connected to each other they will form a
-multiblock capable of holding more liquid. They are normal tanks so they
-can contain liquids of any mod but they have special support for RCL as
-they can mix incoming RCL with the liquid that is already there. For
-example, adding 50% purity liquid to a tank containing already 40% purity
-liquid will slightly increase the overall purity of the liquid in the tank.
+来自深度共振模组的储罐可以容纳16桶液体.如果你将多个储罐彼此连接，它们将会形成一
+个容纳更多液体的多方块结构.它们是正常的储罐，可以容纳任何模组的液体，但是它们对
+RCL有特殊的支持——可以将输入的RCL和储罐中已有的液体混合. 例如，将50%纯度的RCL倒
+进一个已有40%纯度液体的储罐中会些许提升储罐内液体的总体品质.
 {-------------------------------------------------------------}
-Right clicking a face of the tank will toggle between three modes:
-none, accept, and provide. This is not needed for sides that are
-connected to machines of this mod (smelter, crystalizer, ...) as
-they will automatically connect to the tank.
+右击储罐的表面可以切换三个模式:无，接受和输出. 不必限定哪一面要连接到这一模组的
+机器(熔化炉, 结晶器, ...) 因为机器会自动连接储罐.
 
-Placing a comparator next to the tank will allow detecting if
-the tank is filled between 40 and 60%. This helps for automating
-the correct filling of the lava tank under the smelter.
+在储罐旁边放一个红石比较器可以检测储罐的液体含量是不是在40和60%之间.这有助于
+自动调节熔化炉下面储罐里正确的岩浆量.
 {-------------------------------------------------------------}
-{b}Smelter
+{b}熔化炉
 {n:smelter}
 {rb:smelter}
-To use the smelter you need a tank below it filled with lava and a tank
-above it which will be filled with RCL. In addition you need to give the
-smelter power and supply it with resonating ore (either with automation
-or by inserting it in the user interface).
+使用熔化炉，需要在其下方放一个装有岩浆的储罐，上方放一个用来装产出的RCL的储罐。
+（有些像毛伊物语——译者注）而且要给予熔化所需电能并放入共振矿石 (自动输入或者在
+界面里放入矿石都行).
 
-The smelter works best with the lava tank filled between 40 and 60%. More
-lava will increase the operation speed but if you use too much lava the
-quality of the RCL will decrease.
+下方储罐放40-60%的岩浆，熔化炉工作最好.更多的岩浆有利于提升速度但是太多的话会
+降低RCL的品质;
 {-------------------------------------------------------------}
-{b}Purifier
+{b}净化器
 {n:purifier}
 {rb:purifier}
-With the purifier you can enhance the purity of the liquid. To do this you
-need filter material which you can insert into the purifier. Put the tank of
-RCL that you want to purify above the purifier and another tank below it.
-The purifier can only purify up to 85% purity and will do so in steps of 25%.
-When the filter material is used up it will be ejected in an nearby inventory
-if possible. The purifier can also work with a single tank on top or below it.
+使用净化器你可以提升RCL的品质，需要能插入净化器中的过滤材料. 将装有你想净化的RCL
+的储罐放在机器上面，另一个储罐放在下面。净化器只能净化到85%纯度，每步25%。当过滤
+材料被耗尽时它会自动弹出到附近的容器中. 上面或下面只有一个储罐时净化器也会工作.
 
-Note that if the quality of the liquid is not very good you may not
-be able to purify it as high as 85%.
+注意如果液体的品质不是很好，那么可能得不到纯度85%的液体.
 {-------------------------------------------------------------}
-{b}Lens and Laser
+{b}透镜和激光
 {n:laser}
 {rb:laser}
 {rb:lens}
-With the laser and the lens you can improve the quality of the liquid
-in a tank even more then what the purifier can do.
+使用透镜和注射激光，可以比净化器更好地提升储罐内的液体纯度.
 {-------------------------------------------------------------}
-The lens has to be placed on the tank and the laser facing the lens.
-So you have the laser, one empty space, the lens and finally the tank.
+透镜必须放在储罐上，注射激光面对透镜.好了现在你有一个透镜，一片空地和一个激光和
+储罐.
 
-The laser needs power, spent (or unspent) crystals. Finally you also
-need some kind of catalyst item (emerald, diamond, redstone, glowstone,
-...). Then give the laser a redstone signal and it will start improving
-the liquid.
+激光需要能量，消耗 (或不消耗) 晶石.所以你需要一些催化剂(绿宝石，钻石，红石，萤
+石,...). 给注射激光一个红石信号它便会开始净化液体.
 
-Be careful though! The laser does not test if the tank actually has
-enough liquid in it (500mB) and if the liquid is actually valid liquid
-that can be infused. So be careful not to waste precious materials here.
+小心!激光不会检测储罐里是不是有足够加工一次的液体(500mB)，也不检测液体是否能被
+有效注入. 所以珍惜，不要在这里浪费宝贵的材料.
 
-Warning! Make sure you don't infuse purity below 0% as that
-will destroy a lot of the liquid
+警告：确保不要把液体纯度搞成0%以下，因为这样会毁掉很多液体！
 {-------------------------------------------------------------}
-Note that the laser does infuse 500mB per catalist item. By default
-the following catalysts are supported: diamond, emerald, ender pearl,
-redstone, gunpowder, glowstone, blaze powder, quartz, nether star,
-ghast tear, slime ball and coal. You can see what bonuses a catalyst
-has in the GUI of the laser (just turn off the laser and put the
-catalyst in the slot).
+注意，注射激光每消耗一个催化剂就注入500mB的液体，默认支持如下催化剂: 钻石，绿宝
+石,末影珍珠，红石，火药，萤石, 烈焰棒, 石英, 下界星,恶魂泪, 粘液球和煤. 在激光的
+界面里可以看到不同的催化剂所带来的加成(只需要关闭激光器并将催化剂放在插槽中).
 {-------------------------------------------------------------}
-{b}Valve
+{b}阀门
 {n:valve}
 {rb:valve}
-The valve is an advanced filter that can measure various attributes
-of the RCL liquid in a tank above it and if these attributes are
-better then specific values it will move liquid to the bottom tank.
-Using the valve you can make a purifier setup using a single purifier
-where you loop the RCL back through the same tank and then use the
-valve to extract the liquid when it has sufficient purity.
-The valve can also make sure the bottom tank has not more then
-a certain amount of RCL liquid in it.
+阀门是一种能检测其上方储罐中不同RCL参数的高级过滤器。如果这些参数好于特定值，它
+会将液体移到下方储罐中.使用阀门，你可以只用一个精炼器将RCL循环到相同水槽，当纯度
+足够时使用阀门转移液体.阀门也可以确保底部的水槽有不超过一定值的RCL。
 {-------------------------------------------------------------}
-{b}Crystalizer
+{b}结晶器
 {n:crystalizer}
 {rb:crystalizer}
-The crystalizer needs to be placed on top of a tank filled with RCL. It
-will consume the liquid in that tank and form a crystal out of it. The
-crystalizer also needs power.
+结晶器需要放在装有RCL的储罐的顶部。它会提取储罐内的液体并将其结成共振水晶. 结晶器
+也需要能量.
 {-------------------------------------------------------------}
-{b}Pedestal
+{b}基座
 {n:pedestal}
 {rb:pedestal}
-The pedestal can automatically place crystals in front of it. It will
-also break crystals if they are used up and try to place them in an
-adjacent inventory. If it can't find one it will eject it into the
-world instead.
-Once the crystal is placed it will be automatically connected to the
-closest generator (if that generator allows it).
+基座可以自动将共振水晶放在前方.如果共振水晶用尽，需要放进相邻的容器中也可以自动破
+坏水晶. 如果没有容器就会把共振水晶弹出去.
+共振水晶被放置时会自动链接到附最近的发电机 (如果发电机允许).
 {-------------------------------------------------------------}
