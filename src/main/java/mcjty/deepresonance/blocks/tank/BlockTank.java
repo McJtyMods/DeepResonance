@@ -276,12 +276,14 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     private void extractIntoContainer(EntityPlayer player, IFluidHandler tank) {
         FluidStack fluidStack = tank.drain(1, false);
         if (fluidStack != null) {
-            int capacity = FluidTools.getCapacity(fluidStack, player.getHeldItem(EnumHand.MAIN_HAND));
+            ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND).copy();
+            ItemStackTools.setStackSize(heldItem, 1);
+            int capacity = FluidTools.getCapacity(fluidStack, heldItem);
             if (capacity != 0) {
                 fluidStack = tank.drain(capacity, false);
                 if (fluidStack != null && fluidStack.amount == capacity) {
                     fluidStack = tank.drain(capacity, true);
-                    ItemStack filledContainer = FluidTools.fillContainer(fluidStack, player.getHeldItem(EnumHand.MAIN_HAND));
+                    ItemStack filledContainer = FluidTools.fillContainer(fluidStack, heldItem);
                     if (ItemStackTools.isValid(filledContainer)) {
                         player.inventory.decrStackSize(player.inventory.currentItem, 1);
                         if (!player.inventory.addItemStackToInventory(filledContainer)) {
