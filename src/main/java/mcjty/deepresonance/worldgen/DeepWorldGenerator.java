@@ -70,7 +70,7 @@ public class DeepWorldGenerator implements IWorldGenerator {
         } else if (world.provider.getDimension() == DimensionType.NETHER.getId()) {
             if (WorldGenConfiguration.generateNetherCrystals) {
                 if (WorldGenConfiguration.crystalSpawnChance > 0 && random.nextInt(WorldGenConfiguration.crystalSpawnChance) == 0) {
-                    attemptSpawnCrystal(random, chunkX, chunkZ, world, Blocks.NETHERRACK, 3.0f, 5.0f, 2.0f, 0.5f);
+                    attemptSpawnCrystal(random, chunkX, chunkZ, world, Blocks.NETHERRACK, 3.0f, 1.5f, 2.0f, 0.5f);
                 }
             }
         } else {

@@ -237,10 +237,10 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         TileEntity te = WorldHelper.getTileAt(world, pos);
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
-            resonatingCrystalTileEntity.setStrength(random.nextFloat() * str * 3.0f + 0.01f);
-            resonatingCrystalTileEntity.setPower(random.nextFloat() * pow * 60.0f + 0.2f);
-            resonatingCrystalTileEntity.setEfficiency(random.nextFloat() * eff * 3.0f + 0.1f);
-            resonatingCrystalTileEntity.setPurity(random.nextFloat() * pur * 10.0f + 5.0f);
+            resonatingCrystalTileEntity.setStrength(Math.min(100.0f, random.nextFloat() * str * 3.0f + 0.01f));
+            resonatingCrystalTileEntity.setPower(Math.min(100.0f, random.nextFloat() * pow * 60.0f + 0.2f));
+            resonatingCrystalTileEntity.setEfficiency(Math.min(100.0f, random.nextFloat() * eff * 3.0f + 0.1f));
+            resonatingCrystalTileEntity.setPurity(Math.min(100.0f, random.nextFloat() * pur * 10.0f + 5.0f));
         }
     }
 
