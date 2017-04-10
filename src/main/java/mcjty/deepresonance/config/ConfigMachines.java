@@ -7,6 +7,9 @@ import elec332.core.config.Configurable;
  */
 public class ConfigMachines {
 
+    @Configurable(comment = "Experimental fix for weird behaviour of machines that interact with DR tanks.")
+    public static boolean experimentalChunkBorderFix = true;
+
     public static class PlateBlock {
         private static final String category = "PlateBlock";
 

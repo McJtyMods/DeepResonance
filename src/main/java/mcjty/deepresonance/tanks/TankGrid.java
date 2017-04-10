@@ -17,10 +17,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static mcjty.deepresonance.blocks.tank.TileTank.ID_SETFLUID;
 import static mcjty.deepresonance.blocks.tank.TileTank.ID_SETHEIGHT;
@@ -117,7 +114,7 @@ public class TankGrid implements IFluidHandler, IFluidTank {
         if (needsSorting){
             renderData.clear();
             List<TankTileLink> listT = Lists.newArrayList(tanks);
-            Collections.sort(listT, (o1, o2) -> o1.getPosition().getPos().getY() - o2.getPosition().getPos().getY());
+            Collections.sort(listT, Comparator.comparingInt(o -> o.getPosition().getPos().getY()));
             for (TankTileLink loc : listT){
                 BlockPos p = loc.getPosition().getPos();
                 List<DimensionCoordinate> list = renderData.get(p.getY());

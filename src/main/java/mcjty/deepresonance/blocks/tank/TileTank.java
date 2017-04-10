@@ -1,9 +1,11 @@
 package mcjty.deepresonance.blocks.tank;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import elec332.core.main.ElecCore;
 import elec332.core.network.IElecCoreNetworkTile;
 import elec332.core.world.WorldHelper;
+import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.tanks.TankGrid;
 import mcjty.deepresonance.varia.FluidTankWrapper;
 import mcjty.lib.entity.GenericTileEntity;
@@ -18,23 +20,27 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 
 /**
  * Created by Elec332 on 9-8-2015.
@@ -97,6 +103,8 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
 
     protected Map<EnumFacing, Mode> settings;
     private Map<EnumFacing, ITankHook> tankHooks;
+    private boolean hooksInit = false;
+    private static Map<ChunkPos, Map<BlockPos, EnumFacing>> toLoad;
 
     @Override
     public void onPacketReceivedFromClient(EntityPlayerMP sender, int ID, NBTTagCompound data) {
@@ -157,10 +165,14 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
 
     public void onTileUnloaded() {
         if (!getWorld().isRemote) {
+            for (EnumFacing f : EnumFacing.VALUES) {
+                Optional.of(toLoad.get(getChunk(pos.offset(f)))).ifPresent(map -> map.remove(pos));
+            }
             for (Map.Entry<EnumFacing, ITankHook> entry : getConnectedHooks().entrySet()){
                 entry.getValue().unHook(this, entry.getKey().getOpposite());
             }
             getConnectedHooks().clear();
+            hooksInit = false;
         }
     }
 
@@ -170,8 +182,11 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
             ITankHook tankHook = hookMap.get(facing);
             BlockPos pos = getPos().offset(facing);
             TileEntity tile = WorldHelper.chunkLoaded(getWorld(), pos) ? WorldHelper.getTileAt(getWorld(), pos) : null;
-            if ((tile == null && tankHook != null) || (tile != null && tankHook == null) || (tile != tankHook)){
+            if (((tile == null) != (tankHook == null)) || (tile != tankHook)){
                 hookMap.remove(facing);
+                if (tile != null){
+                    Optional.of(toLoad.get(getChunk(pos))).ifPresent(set -> set.remove(getPos()));
+                }
                 if (tile instanceof ITankHook){
                     ((ITankHook) tile).hook(this, facing.getOpposite());
                     hookMap.put(facing, (ITankHook) tile);
@@ -185,12 +200,26 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
     private void initHooks(){
         tankHooks.clear();
         for (EnumFacing facing : EnumFacing.VALUES){
-            BlockPos pos = getPos().offset(facing);
-            TileEntity tile = WorldHelper.chunkLoaded(getWorld(), pos) ? WorldHelper.getTileAt(getWorld(), pos) : null;
-            if (tile instanceof ITankHook){
-                tankHooks.put(facing, (ITankHook) tile);
-                ((ITankHook) tile).hook(this, facing.getOpposite());
+            BlockPos offPos = getPos().offset(facing);
+            if (!WorldHelper.chunkLoaded(getWorld(), offPos)) {
+                ChunkPos chP = getChunk(offPos);
+                Map<BlockPos, EnumFacing> dta = toLoad.get(chP);
+                if (dta == null) {
+                    toLoad.put(chP, dta = Maps.newHashMap());
+                }
+                dta.put(offPos, facing);
+                continue;
             }
+            initLoaded(facing);
+        }
+        hooksInit = true;
+    }
+
+    private void initLoaded(EnumFacing facing){
+        TileEntity tile = WorldHelper.getTileAt(getWorld(), getPos().offset(facing));
+        if (tile instanceof ITankHook){
+            tankHooks.put(facing, (ITankHook) tile);
+            ((ITankHook) tile).hook(this, facing.getOpposite());
         }
     }
 
@@ -382,6 +411,14 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
         }
     }
 
+    private ChunkPos getChunk(){
+        return getChunk(getPos());
+    }
+
+    private ChunkPos getChunk(BlockPos pos){
+        return new ChunkPos(pos);
+    }
+
     public enum Mode implements IStringSerializable {
         SETTING_NONE("none"),
         SETTING_ACCEPT("accept"),   // Blue
@@ -398,6 +435,30 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
             return name;
         }
 
+    }
+
+    static {
+        toLoad = Maps.newHashMap();
+        MinecraftForge.EVENT_BUS.register(new Object(){
+
+            @SubscribeEvent
+            public void onChunkLoad(ChunkEvent.Load event){
+                Map<BlockPos, EnumFacing> dta = toLoad.remove(event.getChunk().getPos());
+                if (dta != null && ConfigMachines.experimentalChunkBorderFix){
+                    World world = event.getWorld();
+                    for (Map.Entry<BlockPos, EnumFacing> e : dta.entrySet()){
+                        if (!WorldHelper.chunkLoaded(world, e.getKey())){
+                            continue;
+                        }
+                        TileEntity tile = WorldHelper.getTileAt(world, e.getKey());
+                        if (tile instanceof TileTank){
+                            ((TileTank) tile).initLoaded(e.getValue());
+                        }
+                    }
+                }
+            }
+
+        });
     }
 
 }
