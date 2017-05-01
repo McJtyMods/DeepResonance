@@ -39,6 +39,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Function;
 
@@ -185,7 +186,7 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
             if (((tile == null) != (tankHook == null)) || (tile != tankHook)){
                 hookMap.remove(facing);
                 if (tile != null){
-                    Optional.of(toLoad.get(getChunk(pos))).ifPresent(set -> set.remove(getPos()));
+                    Optional.ofNullable(toLoad.get(getChunk(pos))).ifPresent(set -> set.remove(getPos()));
                 }
                 if (tile instanceof ITankHook){
                     ((ITankHook) tile).hook(this, facing.getOpposite());
@@ -431,6 +432,7 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
         }
 
         @Override
+        @Nonnull
         public String getName() {
             return name;
         }
