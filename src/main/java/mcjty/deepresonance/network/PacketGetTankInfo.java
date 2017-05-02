@@ -42,12 +42,12 @@ public class PacketGetTankInfo implements IMessage {
         }
 
         private void handle(PacketGetTankInfo message, MessageContext ctx) {
-            World world = ctx.getServerHandler().playerEntity.getEntityWorld();
+            World world = ctx.getServerHandler().player.getEntityWorld();
             TileEntity tileEntity = WorldHelper.getTileAt(world, message.pos);
             if (tileEntity instanceof TileTank) {
                 TileTank tileTank = (TileTank) tileEntity;
                 PacketReturnTankInfo packet = new PacketReturnTankInfo(tileTank.getFluidAmount(), tileTank.getCapacity(), DRFluidRegistry.getFluidName(tileTank.getFluid()), tileTank.getFluidTag());
-                DeepResonance.networkHandler.sendTo(packet, ctx.getServerHandler().playerEntity);
+                DeepResonance.networkHandler.sendTo(packet, ctx.getServerHandler().player);
             }
         }
 

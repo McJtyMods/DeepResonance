@@ -38,7 +38,7 @@ public class PacketGetGeneratorInfo implements IMessage {
         }
 
         private void handle(PacketGetGeneratorInfo message, MessageContext ctx) {
-            World world = ctx.getServerHandler().playerEntity.getEntityWorld();
+            World world = ctx.getServerHandler().player.getEntityWorld();
             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(world);
             DRGeneratorNetwork.Network network = generatorNetwork.getChannel(message.networkId);
             if (network == null) {
@@ -46,7 +46,7 @@ public class PacketGetGeneratorInfo implements IMessage {
             }
 
             PacketReturnGeneratorInfo packet = new PacketReturnGeneratorInfo(message.networkId, network.getEnergy(), network.getGeneratorBlocks(), network.getLastRfPerTick());
-            DeepResonance.networkHandler.sendTo(packet, ctx.getServerHandler().playerEntity);
+            DeepResonance.networkHandler.sendTo(packet, ctx.getServerHandler().player);
         }
     }
 }
