@@ -167,7 +167,7 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
     public void onTileUnloaded() {
         if (!getWorld().isRemote) {
             for (EnumFacing f : EnumFacing.VALUES) {
-                Optional.of(toLoad.get(getChunk(pos.offset(f)))).ifPresent(map -> map.remove(pos));
+                Optional.ofNullable(toLoad.get(getChunk(pos.offset(f)))).ifPresent(map -> map.remove(pos));
             }
             for (Map.Entry<EnumFacing, ITankHook> entry : getConnectedHooks().entrySet()){
                 entry.getValue().unHook(this, entry.getKey().getOpposite());
