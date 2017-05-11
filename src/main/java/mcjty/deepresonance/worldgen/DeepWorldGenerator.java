@@ -88,8 +88,8 @@ public class DeepWorldGenerator implements IWorldGenerator {
 
     private void attemptSpawnCrystal(Random random, int chunkX, int chunkZ, World world, Block spawnOn, float str, float pow, float eff, float pur) {
         for (int i = 0 ; i < WorldGenConfiguration.crystalSpawnTries ; i++) {
-            int x = chunkX * 16 + random.nextInt(16);
-            int z = chunkZ * 16 + random.nextInt(16);
+            int x = chunkX * 16 + random.nextInt(16) + 8;
+            int z = chunkZ * 16 + random.nextInt(16) + 8;
             int y;
             if (world.provider.getDimension() == DimensionType.NETHER.getId()) {
                 y = 60;
