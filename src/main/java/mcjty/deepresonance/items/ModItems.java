@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -61,9 +60,7 @@ public final class ModItems {
     }
 
     private static ItemRadiationSuit newRadiationSuitPart(EntityEquipmentSlot i, String texture) {
-        ItemRadiationSuit ret = new ItemRadiationSuit(ItemArmor.ArmorMaterial.IRON, 0, i, texture);
-        GameRegistry.register(ret);
-        return ret;
+        return new ItemRadiationSuit(ItemArmor.ArmorMaterial.IRON, 0, i, texture);
     }
 
     /**

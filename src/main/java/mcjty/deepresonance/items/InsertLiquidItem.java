@@ -4,6 +4,7 @@ import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.lib.tools.ChatTools;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -26,7 +27,7 @@ public class InsertLiquidItem extends GenericDRItem {
     }
 
     @Override
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedToolTip) {
+    public void addInformation(ItemStack itemStack, World player, List<String> list, ITooltipFlag advancedToolTip) {
         super.addInformation(itemStack, player, list, advancedToolTip);
         list.add("Creative only item to inject 100mb of liquid");
         list.add("crystal to a tank");

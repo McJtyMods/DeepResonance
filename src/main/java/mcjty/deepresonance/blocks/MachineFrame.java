@@ -20,8 +20,6 @@ public class MachineFrame extends Block {
         setUnlocalizedName(DeepResonance.MODID + ".machine_frame");
         setRegistryName("machine_frame");
         setCreativeTab(DeepResonance.tabDeepResonance);
-        GameRegistry.register(this);
-        GameRegistry.register(new ItemBlock(this), getRegistryName());
     }
 
     @SideOnly(Side.CLIENT)

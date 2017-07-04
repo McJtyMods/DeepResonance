@@ -38,9 +38,7 @@ import java.io.File;
 @Mod(modid = DeepResonance.MODID, name="DeepResonance",
         dependencies =
                         "required-after:mcjtylib_ng@[" + DeepResonance.MIN_MCJTYLIB_VER + ",);" +
-                        "required-after:compatlayer@[" + DeepResonance.COMPATLAYER_VER + ",);" +
                         "required-after:eleccore@[" + DeepResonance.MIN_ELECCORE_VER + ",);" +
-                        "after:Forge@[" + DeepResonance.MIN_FORGE10_VER + ",);" +
                         "after:forge@[" + DeepResonance.MIN_FORGE11_VER + ",);" +
                         "after:OpenComputers@[" + DeepResonance.MIN_OPENCOMPUTERS_VER + ",)",
         version = DeepResonance.VERSION,
@@ -50,10 +48,8 @@ public class DeepResonance implements ModBase {
     public static final String VERSION = "1.4.8";
     public static final String MIN_ELECCORE_VER = "1.6.345";
     public static final String MIN_OPENCOMPUTERS_VER = "1.6.0";
-    public static final String MIN_FORGE10_VER = "12.18.1.2082";
     public static final String MIN_FORGE11_VER = "13.19.0.2176";
-    public static final String MIN_MCJTYLIB_VER = "2.3.0";
-    public static final String COMPATLAYER_VER = "0.2.6";
+    public static final String MIN_MCJTYLIB_VER = "2.4.1";
 
     @SidedProxy(clientSide="mcjty.deepresonance.proxy.ClientProxy", serverSide="mcjty.deepresonance.proxy.ServerProxy")
     public static CommonProxy proxy;
@@ -73,6 +69,7 @@ public class DeepResonance implements ModBase {
 
     public boolean rftools = false;
     public boolean rftoolsControl = false;
+    public static boolean redstoneflux = false;
 
     public static CreativeTabs tabDeepResonance = new CompatCreativeTabs("DeepResonance") {
 
@@ -121,6 +118,10 @@ public class DeepResonance implements ModBase {
 
         rftools = Loader.isModLoaded("rftools");
         rftoolsControl = Loader.isModLoaded("rftoolscontrol");
+        redstoneflux = Loader.isModLoaded("redstoneflux");
+        if (redstoneflux) {
+            Logging.log("Deep Resonance Detected RedstoneFlux: enabling support");
+        }
 
         mainConfigDir = e.getModConfigurationDirectory();
         modConfigDir = new File(mainConfigDir.getPath() + File.separator + "deepresonance");
@@ -137,8 +138,8 @@ public class DeepResonance implements ModBase {
             }
         }
 
-        compatHandler = new CompatHandler(config, logger);
-        compatHandler.addHandler(new ComputerCraftCompatHandler());
+//        compatHandler = new CompatHandler(config, logger);
+//        compatHandler.addHandler(new ComputerCraftCompatHandler());
         configWrapper = new ConfigWrapper(new Configuration(machinesFile));
         configWrapper.registerConfigWithInnerClasses(new ConfigMachines());
         configWrapper.refresh();
@@ -175,7 +176,8 @@ public class DeepResonance implements ModBase {
     public void init(FMLInitializationEvent e) {
         loadTimer.startPhase(e);
         proxy.init(e);
-        compatHandler.init();
+        // @todo compathandler?
+//        compatHandler.init();
         configWrapper.refresh();
 
         if (Loader.isModLoaded("OpenComputers")) {

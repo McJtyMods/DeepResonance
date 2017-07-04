@@ -1,11 +1,12 @@
 package mcjty.deepresonance.blocks.generator;
 
-import cofh.api.energy.IEnergyConnection;
-import cofh.api.energy.IEnergyProvider;
+import cofh.redstoneflux.api.IEnergyProvider;
 import com.google.common.collect.Sets;
 import elec332.core.world.WorldHelper;
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.varia.EnergyTools;
+import mcjty.lib.compat.RedstoneFluxCompatibility;
 import mcjty.lib.entity.GenericTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -17,10 +18,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fml.common.Optional;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Optional.Interface(iface = "cofh.redstoneflux.api.IEnergyProvider", modid = "redstoneflux")
 public class GeneratorTileEntity extends GenericTileEntity implements IEnergyProvider, ITickable, IEnergyStorage {
 
     private int networkId = -1;
@@ -261,9 +264,8 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
                 }
                 int received;
 
-                if (te instanceof IEnergyConnection) {
-                    IEnergyConnection connection = (IEnergyConnection) te;
-                    if (connection.canConnectEnergy(opposite)) {
+                if (DeepResonance.redstoneflux && RedstoneFluxCompatibility.isEnergyConnection(te)) {
+                    if (RedstoneFluxCompatibility.canConnectEnergy(te, opposite)) {
                         received = EnergyTools.receiveEnergy(te, opposite, rfToGive);
                     } else {
                         received = 0;
@@ -281,8 +283,13 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
     }
 
 
+    @Optional.Method(modid = "redstoneflux")
     @Override
     public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
+        return extraEnergyInternal(maxExtract, simulate);
+    }
+
+    private int extraEnergyInternal(int maxExtract, boolean simulate) {
         if (networkId == -1) {
             return 0;
         }
@@ -301,8 +308,13 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         return maxExtract;
     }
 
+    @Optional.Method(modid = "redstoneflux")
     @Override
     public int getEnergyStored(EnumFacing from) {
+        return getEnergyStoredInternal();
+    }
+
+    private int getEnergyStoredInternal() {
         if (networkId == -1) {
             return 0;
         }
@@ -310,8 +322,13 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         return network.getEnergy();
     }
 
+    @Optional.Method(modid = "redstoneflux")
     @Override
     public int getMaxEnergyStored(EnumFacing from) {
+        return getMaxEnergyStoredInternal();
+    }
+
+    private int getMaxEnergyStoredInternal() {
         if (networkId == -1) {
             return 0;
         }
@@ -319,6 +336,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         return network.getGeneratorBlocks() * GeneratorConfiguration.rfPerGeneratorBlock;
     }
 
+    @Optional.Method(modid = "redstoneflux")
     @Override
     public boolean canConnectEnergy(EnumFacing from) {
         return true;
@@ -334,17 +352,17 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate) {
-        return 0;
+        return extraEnergyInternal(maxExtract, simulate);
     }
 
     @Override
     public int getEnergyStored() {
-        return getEnergyStored(EnumFacing.DOWN);
+        return getEnergyStoredInternal();
     }
 
     @Override
     public int getMaxEnergyStored() {
-        return getMaxEnergyStored(EnumFacing.DOWN);
+        return getMaxEnergyStoredInternal();
     }
 
     @Override

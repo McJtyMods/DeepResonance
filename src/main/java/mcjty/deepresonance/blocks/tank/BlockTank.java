@@ -26,6 +26,7 @@ import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -86,7 +87,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedToolTip) {
+    public void addInformation(ItemStack itemStack, World player, List<String> list, ITooltipFlag advancedToolTip) {
         super.addInformation(itemStack, player, list, advancedToolTip);
         NBTTagCompound tagCompound = itemStack.getTagCompound();
         if (tagCompound != null) {
@@ -214,7 +215,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     }
 
     @Override
-    protected boolean clOnBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntity tile = WorldHelper.getTileAt(world, pos);
         if (tile instanceof TileTank){
             TileTank tank = (TileTank)tile;
@@ -256,7 +257,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
             WorldHelper.markBlockForRenderUpdate(world, pos);
             return true;
         }
-        return super.clOnBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
+        return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
     }
 
     private void fillFromContainer(EntityPlayer player, IFluidHandler tank) {

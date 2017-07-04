@@ -1,6 +1,7 @@
 package mcjty.deepresonance.jei.laser;
 
 import elec332.core.client.RenderHelper;
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.config.ConfigMachines;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
@@ -36,6 +37,11 @@ public class LaserRecipeCategory extends BlankRecipeCategory<LaserRecipeWrapper>
     @Override
     public String getTitle() {
         return "Deep Resonance Laser";
+    }
+
+    @Override
+    public String getModName() {
+        return DeepResonance.MODID;
     }
 
     @Nonnull

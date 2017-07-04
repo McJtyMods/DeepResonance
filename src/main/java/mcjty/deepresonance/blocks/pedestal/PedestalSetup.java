@@ -21,7 +21,7 @@ public class PedestalSetup {
     }
 
     public static void setupCrafting() {
-        GameRegistry.addRecipe(new ItemStack(pedestalBlock), "idi", "iMi", "iCi", 'M', ModBlocks.machineFrame, 'r', Items.REDSTONE,
-                'd', Blocks.DISPENSER, 'C', Items.COMPARATOR, 'i', Items.IRON_INGOT);
+//        GameRegistry.addRecipe(new ItemStack(pedestalBlock), "idi", "iMi", "iCi", 'M', ModBlocks.machineFrame, 'r', Items.REDSTONE,
+//                'd', Blocks.DISPENSER, 'C', Items.COMPARATOR, 'i', Items.IRON_INGOT);
     }
 }

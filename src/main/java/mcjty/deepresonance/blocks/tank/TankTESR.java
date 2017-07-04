@@ -3,9 +3,9 @@ package mcjty.deepresonance.blocks.tank;
 import elec332.core.client.RenderHelper;
 import elec332.core.world.WorldHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -22,10 +22,7 @@ import org.lwjgl.opengl.GL11;
 public class TankTESR extends TileEntitySpecialRenderer<TileTank> {
 
     @Override
-    public void renderTileEntityAt(TileTank tileTank, double x, double y, double z, float time, int breakTime) {
-//        GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
-//        GlStateManager.pushAttrib();
-
+    public void render(TileTank tileTank, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         Tessellator tessellator = Tessellator.getInstance();
 
         net.minecraft.client.renderer.RenderHelper.disableStandardItemLighting();
@@ -56,7 +53,7 @@ public class TankTESR extends TileEntitySpecialRenderer<TileTank> {
     // Render the fluid inside the tank
     // ---------------------------------------------------------------
     private void renderFluid(TileTank tileTank, Tessellator tessellator, Fluid renderFluid) {
-        VertexBuffer buffer = tessellator.getBuffer();
+        BufferBuilder buffer = tessellator.getBuffer();
 
         float offset = 0.002f;
 
@@ -119,7 +116,7 @@ public class TankTESR extends TileEntitySpecialRenderer<TileTank> {
     }
 
     private void renderTankInside(Tessellator tessellator, World world, BlockPos pos, TileTank tank) {
-        VertexBuffer buffer = tessellator.getBuffer();
+        BufferBuilder buffer = tessellator.getBuffer();
 
         float offset = 0.002f;
         int ix = pos.getX(), iy = pos.getY(), iz = pos.getZ();

@@ -4,11 +4,13 @@ import mcjty.lib.tools.WorldTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldSavedData;
+import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static mezz.jei.ingredients.IngredientInformation.markDirty;
 
 public class DRGeneratorNetwork extends WorldSavedData {
 

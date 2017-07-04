@@ -8,6 +8,7 @@ import mcjty.deepresonance.items.ModItems;
 import mcjty.rftools.api.screens.IScreenModuleRegistry;
 import mcjty.rftools.api.screens.data.IModuleData;
 import mcjty.rftools.api.screens.data.IModuleDataFactory;
+import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -37,19 +38,23 @@ public class RFToolsSupport {
         radiationSensorBlock = new RadiationSensorBlock();
     }
 
+    public static Block getRadiationSensorBlock() {
+        return radiationSensorBlock;
+    }
+
     @SideOnly(Side.CLIENT)
     public static void initBlockModels() {
         radiationSensorBlock.initModel();
     }
 
     public static void initCrafting() {
-        GameRegistry.addRecipe(new ItemStack(RFToolsSupport.radiationSensorBlock), "qcq", "tot", "qrq", 'r', Items.REDSTONE, 'q', Items.QUARTZ, 'o', ModBlocks.machineFrame,
-                               'c', Items.CLOCK, 't', Items.COMPASS);
-        ItemStack inkSac = new ItemStack(Items.DYE, 1, 0);
-        GameRegistry.addRecipe(new ItemStack(RFToolsSupport.radiationModuleItem), " c ", "rir", " b ", 'c', ModItems.radiationMonitorItem, 'r', ModItems.resonatingPlateItem, 'i', Items.IRON_INGOT,
-                               'b', inkSac);
-        GameRegistry.addRecipe(new ItemStack(RFToolsSupport.rclModuleItem), " c ", "rir", " b ", 'c', Items.COMPARATOR, 'r', ModItems.resonatingPlateItem, 'i', Items.IRON_INGOT,
-                               'b', inkSac);
+//        GameRegistry.addRecipe(new ItemStack(RFToolsSupport.radiationSensorBlock), "qcq", "tot", "qrq", 'r', Items.REDSTONE, 'q', Items.QUARTZ, 'o', ModBlocks.machineFrame,
+//                               'c', Items.CLOCK, 't', Items.COMPASS);
+//        ItemStack inkSac = new ItemStack(Items.DYE, 1, 0);
+//        GameRegistry.addRecipe(new ItemStack(RFToolsSupport.radiationModuleItem), " c ", "rir", " b ", 'c', ModItems.radiationMonitorItem, 'r', ModItems.resonatingPlateItem, 'i', Items.IRON_INGOT,
+//                               'b', inkSac);
+//        GameRegistry.addRecipe(new ItemStack(RFToolsSupport.rclModuleItem), " c ", "rir", " b ", 'c', Items.COMPARATOR, 'r', ModItems.resonatingPlateItem, 'i', Items.IRON_INGOT,
+//                               'b', inkSac);
     }
 
     public static class GetScreenModuleRegistry implements Function<IScreenModuleRegistry, Void> {

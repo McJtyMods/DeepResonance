@@ -7,9 +7,9 @@ import mcjty.lib.gui.RenderHelper.Vector;
 import mcjty.lib.tools.MinecraftTools;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
@@ -35,7 +35,7 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer<EnergyCollect
     }
 
     @Override
-    public void renderTileEntityAt(EnergyCollectorTileEntity te, double x, double y, double z, float time, int breakTime) {
+    public void render(EnergyCollectorTileEntity te, double x, double y, double z, float time, int destroyStage, float alpha) {
         if ((!te.getCrystals().isEmpty()) && (te.areLasersActive() || te.getLaserStartup() > 0)) {
             GlStateManager.depthMask(false);
             GlStateManager.enableBlend();
@@ -60,7 +60,7 @@ public class EnergyCollectorTESR extends TileEntitySpecialRenderer<EnergyCollect
             GlStateManager.translate(-doubleX, -doubleY, -doubleZ);
 
             Tessellator tessellator = Tessellator.getInstance();
-            VertexBuffer buffer = tessellator.getBuffer();
+            BufferBuilder buffer = tessellator.getBuffer();
 
             // ----------------------------------------
 

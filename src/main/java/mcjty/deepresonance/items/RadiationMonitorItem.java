@@ -14,6 +14,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -115,9 +116,9 @@ public class RadiationMonitorItem extends GenericDRItem {
     }
 
     @Override
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedToolTip) {
+    public void addInformation(ItemStack itemStack, World player, List<String> list, ITooltipFlag advancedToolTip) {
         super.addInformation(itemStack, player, list, advancedToolTip);
-        fetchRadiation(player);
+        fetchRadiation(DeepResonance.proxy.getClientPlayer());
         if (radiationStrength <= 0.0f) {
             list.add(TextFormatting.GREEN + "No radiation detected");
         } else {

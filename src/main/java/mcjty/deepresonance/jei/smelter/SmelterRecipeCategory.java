@@ -45,6 +45,11 @@ public class SmelterRecipeCategory extends BlankRecipeCategory<SmelterRecipeWrap
         return "Deep Resonance Smelter";
     }
 
+    @Override
+    public String getModName() {
+        return DeepResonance.MODID;
+    }
+
     @Nonnull
     @Override
     public IDrawable getBackground() {

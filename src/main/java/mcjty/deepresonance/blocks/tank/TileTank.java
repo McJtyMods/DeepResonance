@@ -119,7 +119,7 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
 
             for (EntityPlayerMP player : WorldTools.getPlayerList((WorldServer) getWorld())) {
                 Chunk chunk = world.getChunkFromChunkCoords(x >> 4, z >> 4);
-                if (playerManager.isPlayerWatchingChunk(player, chunk.xPosition, chunk.zPosition)) {
+                if (playerManager.isPlayerWatchingChunk(player, chunk.x, chunk.z)) {
                     ret.add(player);
                 }
             }

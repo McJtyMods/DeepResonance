@@ -14,7 +14,7 @@ public class ResonatingCrystalTESR extends TileEntitySpecialRenderer<ResonatingC
     ResourceLocation redhalo = new ResourceLocation(DeepResonance.MODID, "textures/effects/redhalo.png");
 
     @Override
-    public void renderTileEntityAt(ResonatingCrystalTileEntity tileEntity, double x, double y, double z, float time, int breakTime) {
+    public void render(ResonatingCrystalTileEntity tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 
         if (tileEntity.isGlowing()) {
             GlStateManager.pushMatrix();

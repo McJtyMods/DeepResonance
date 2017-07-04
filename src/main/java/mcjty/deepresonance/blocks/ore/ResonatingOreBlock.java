@@ -9,14 +9,11 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.List;
 
@@ -49,16 +46,6 @@ public class ResonatingOreBlock extends CompatBlock {
         setUnlocalizedName(DeepResonance.MODID + ".resonating_ore");
         setRegistryName("resonating_ore");
         setCreativeTab(DeepResonance.tabDeepResonance);
-        GameRegistry.register(this);
-        ItemBlock itemBlock = new ItemBlock(this) {
-            @Override
-            public int getMetadata(int damage) {
-                return damage;
-            }
-        };
-        itemBlock.setHasSubtypes(true);
-        GameRegistry.register(itemBlock, getRegistryName());
-        OreDictionary.registerOre("oreResonating", this);
     }
 
     @Override

@@ -21,8 +21,6 @@ public class PoisonedDirtBlock extends Block {
         setUnlocalizedName(DeepResonance.MODID + ".poisoned_dirt");
         setRegistryName("poisoned_dirt");
         setCreativeTab(DeepResonance.tabDeepResonance);
-        GameRegistry.register(this);
-        GameRegistry.register(new ItemBlock(this), getRegistryName());
     }
 
     @SideOnly(Side.CLIENT)

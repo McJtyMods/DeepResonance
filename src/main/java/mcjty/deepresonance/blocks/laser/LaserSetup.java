@@ -21,6 +21,6 @@ public class LaserSetup {
     }
 
     public static void setupCrafting() {
-        GameRegistry.addRecipe(new ItemStack(laserBlock), "ggg", "eMe", "ddd", 'M', ModBlocks.machineFrame, 'g', Blocks.GLASS, 'e', Items.EMERALD, 'd', Items.DIAMOND);
+//        GameRegistry.addRecipe(new ItemStack(laserBlock), "ggg", "eMe", "ddd", 'M', ModBlocks.machineFrame, 'g', Blocks.GLASS, 'e', Items.EMERALD, 'd', Items.DIAMOND);
     }
 }

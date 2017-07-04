@@ -44,6 +44,11 @@ public class PurifierRecipeCategory extends BlankRecipeCategory<PurifierRecipeWr
         return "Deep Resonance Purifier";
     }
 
+    @Override
+    public String getModName() {
+        return DeepResonance.MODID;
+    }
+
     @Nonnull
     @Override
     public IDrawable getBackground() {

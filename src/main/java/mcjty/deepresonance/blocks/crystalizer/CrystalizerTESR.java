@@ -45,12 +45,8 @@ public class CrystalizerTESR extends TileEntitySpecialRenderer<CrystalizerTileEn
         return bakedModel;
     }
 
-
     @Override
-    public void renderTileEntityAt(CrystalizerTileEntity te, double x, double y, double z, float time, int breakTime) {
-//        GlStateManager.pushAttrib();
-//        GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
-
+    public void render(CrystalizerTileEntity te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         int progress = te.getProgress();
         boolean hasCrystal = te.hasCrystal();
 

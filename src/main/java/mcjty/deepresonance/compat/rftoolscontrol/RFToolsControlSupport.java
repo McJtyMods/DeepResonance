@@ -1,6 +1,5 @@
 package mcjty.deepresonance.compat.rftoolscontrol;
 
-import com.google.common.base.Function;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.blocks.laser.LaserTileEntity;
@@ -13,6 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
+import java.util.function.Function;
 
 import static mcjty.rftoolscontrol.api.code.IOpcodeRunnable.OpcodeResult.POSITIVE;
 import static mcjty.rftoolscontrol.api.code.OpcodeOutput.SINGLE;

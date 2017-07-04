@@ -22,7 +22,7 @@ public class LaserRenderer extends TileEntitySpecialRenderer<LaserTileEntity> {
     private static final ResourceLocation yellowlaser = new ResourceLocation(DeepResonance.MODID, "textures/effects/yellowlaserbeam.png");
 
     @Override
-    public void renderTileEntityAt(LaserTileEntity tileEntity, double x, double y, double z, float f, int breakState) {
+    public void render(LaserTileEntity tileEntity, double x, double y, double z, float f, int destroyStage, float alpha) {
         Tessellator tessellator = Tessellator.getInstance();
 
         int color = tileEntity.getColor();

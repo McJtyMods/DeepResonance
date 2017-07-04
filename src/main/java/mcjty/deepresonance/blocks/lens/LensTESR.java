@@ -17,7 +17,7 @@ public class LensTESR extends TileEntitySpecialRenderer {
     ResourceLocation blockTexture = new ResourceLocation(DeepResonance.MODID, "textures/blocks/lens.png");
 
     @Override
-    public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float time, int breakTime) {
+    public void render(TileEntity tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT);
 
         bindTexture(blockTexture);

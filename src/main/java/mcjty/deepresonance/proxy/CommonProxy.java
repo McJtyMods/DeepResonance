@@ -1,5 +1,6 @@
 package mcjty.deepresonance.proxy;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.ForgeEventHandlers;
 import mcjty.deepresonance.blocks.ModBlocks;
@@ -18,6 +19,8 @@ import mcjty.deepresonance.worldgen.WorldTickHandler;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.base.GeneralConfig;
 import mcjty.lib.varia.WrenchChecker;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLLog;
@@ -27,11 +30,14 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.Level;
 
+import java.util.concurrent.Callable;
+
 public abstract class CommonProxy {
 
     private Configuration mainConfig;
 
     public void preInit(FMLPreInitializationEvent e) {
+        MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
         McJtyLib.preInit(e);
         GeneralConfig.preInit(e);
 
@@ -72,7 +78,6 @@ public abstract class CommonProxy {
         NetworkRegistry.INSTANCE.registerGuiHandler(DeepResonance.instance, new GuiProxy());
         MinecraftForge.EVENT_BUS.register(WorldTickHandler.instance);
         MinecraftForge.EVENT_BUS.register(new RadiationTickEvent());
-        MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
     }
 
     public void postInit(FMLPostInitializationEvent e) {
@@ -84,5 +89,21 @@ public abstract class CommonProxy {
     }
 
     public abstract void throwException(Exception e, int i);
+
+    public World getClientWorld() {
+        throw new IllegalStateException("This should only be called from client side");
+    }
+
+    public EntityPlayer getClientPlayer() {
+        throw new IllegalStateException("This should only be called from client side");
+    }
+
+    public <V> ListenableFuture<V> addScheduledTaskClient(Callable<V> callableToSchedule) {
+        throw new IllegalStateException("This should only be called from client side");
+    }
+
+    public ListenableFuture<Object> addScheduledTaskClient(Runnable runnableToSchedule) {
+        throw new IllegalStateException("This should only be called from client side");
+    }
 
 }

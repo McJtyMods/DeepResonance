@@ -134,19 +134,19 @@ public class QuadTree {
     private static boolean testIntersect(DiscreteAABB box, Ray ray) {
         Vec3d invDir = ray.getInvDir();
 
-        boolean signDirX = invDir.xCoord < 0;
-        boolean signDirY = invDir.yCoord < 0;
-        boolean signDirZ = invDir.zCoord < 0;
+        boolean signDirX = invDir.x < 0;
+        boolean signDirY = invDir.y < 0;
+        boolean signDirZ = invDir.z < 0;
 
         double v = signDirX ? box.maxX : box.minX;
-        double tmin = (v - ray.getStart().xCoord) * invDir.xCoord;
+        double tmin = (v - ray.getStart().x) * invDir.x;
         v = signDirX ? box.minX : box.maxX;
-        double tmax = (v - ray.getStart().xCoord) * invDir.xCoord;
+        double tmax = (v - ray.getStart().x) * invDir.x;
 
         v = signDirY ? box.maxY : box.minY;
-        double tymin = (v - ray.getStart().yCoord) * invDir.yCoord;
+        double tymin = (v - ray.getStart().y) * invDir.y;
         v = signDirY ? box.minY : box.maxY;
-        double tymax = (v - ray.getStart().yCoord) * invDir.yCoord;
+        double tymax = (v - ray.getStart().y) * invDir.y;
 
         if ((tmin > tymax) || (tymin > tmax)) {
             return false;
@@ -159,9 +159,9 @@ public class QuadTree {
         }
 
         v = signDirZ ? box.maxZ : box.minZ;
-        double tzmin = (v - ray.getStart().zCoord) * invDir.zCoord;
+        double tzmin = (v - ray.getStart().z) * invDir.z;
         v = signDirZ ? box.minZ : box.maxZ;
-        double tzmax = (v - ray.getStart().zCoord) * invDir.zCoord;
+        double tzmax = (v - ray.getStart().z) * invDir.z;
 
         if ((tmin > tzmax) || (tzmin > tmax)) {
             return false;
@@ -207,7 +207,7 @@ public class QuadTree {
             this.dir = end.subtract(start);
             length = this.dir.lengthVector();
             this.dir = this.dir.normalize();
-            this.invDir = new Vec3d(1.0 / this.dir.xCoord, 1.0 / this.dir.yCoord, 1.0 / this.dir.zCoord);
+            this.invDir = new Vec3d(1.0 / this.dir.x, 1.0 / this.dir.y, 1.0 / this.dir.z);
         }
 
         public Vec3d getDir() {
