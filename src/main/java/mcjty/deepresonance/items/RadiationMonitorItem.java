@@ -127,6 +127,9 @@ public class RadiationMonitorItem extends GenericDRItem {
     }
 
     public static void fetchRadiation(EntityPlayer player) {
+        if (player == null) {
+            return;
+        }
         if (System.currentTimeMillis() - lastTime > 250) {
             int id = WorldHelper.getDimID(player.getEntityWorld());
             lastTime = System.currentTimeMillis();

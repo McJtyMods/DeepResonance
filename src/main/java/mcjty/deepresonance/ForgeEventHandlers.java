@@ -9,7 +9,6 @@ import mcjty.deepresonance.varia.QuadTree;
 import mcjty.lib.McJtyRegister;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
-import mcjty.rftools.RFTools;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -27,7 +26,7 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void registerBlocks(RegistryEvent.Register<Block> event) {
-        McJtyRegister.registerBlocks(RFTools.instance, event.getRegistry());
+        McJtyRegister.registerBlocks(DeepResonance.instance, event.getRegistry());
         event.getRegistry().register(ModBlocks.denseGlassBlock);
         event.getRegistry().register(ModBlocks.denseObsidianBlock);
         event.getRegistry().register(ModBlocks.debugBlock);
@@ -43,7 +42,7 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void registerItems(RegistryEvent.Register<Item> event) {
-        McJtyRegister.registerItems(RFTools.instance, event.getRegistry());
+        McJtyRegister.registerItems(DeepResonance.instance, event.getRegistry());
         event.getRegistry().register(new ItemBlock(ModBlocks.denseGlassBlock).setRegistryName(ModBlocks.denseGlassBlock.getRegistryName()));
         event.getRegistry().register(new ItemBlock(ModBlocks.denseObsidianBlock).setRegistryName(ModBlocks.denseObsidianBlock.getRegistryName()));
         event.getRegistry().register(new ItemBlock(ModBlocks.debugBlock).setRegistryName(ModBlocks.debugBlock.getRegistryName()));

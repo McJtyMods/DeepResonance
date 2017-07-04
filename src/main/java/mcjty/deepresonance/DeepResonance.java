@@ -41,8 +41,7 @@ import java.io.File;
                         "required-after:eleccore@[" + DeepResonance.MIN_ELECCORE_VER + ",);" +
                         "after:forge@[" + DeepResonance.MIN_FORGE11_VER + ",);" +
                         "after:OpenComputers@[" + DeepResonance.MIN_OPENCOMPUTERS_VER + ",)",
-        version = DeepResonance.VERSION,
-        acceptedMinecraftVersions = "[1.10,1.12)")
+        version = DeepResonance.VERSION)
 public class DeepResonance implements ModBase {
     public static final String MODID = "deepresonance";
     public static final String VERSION = "1.4.8";
