@@ -1,0 +1,28 @@
+{
+  "result": {
+    "item": "deepresonance:valve"
+  },
+  "pattern": [
+    "gtg",
+    "fMf",
+    "gCg"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "minecraft:comparator"
+    },
+    "t": {
+      "item": "minecraft:quartz"
+    },
+    "f": {
+      "item": "deepresonance:filter"
+    },
+    "g": {
+      "item": "minecraft:glass"
+    },
+    "M": {
+      "item": "deepresonance:machine_frame"
+    }
+  }
+}

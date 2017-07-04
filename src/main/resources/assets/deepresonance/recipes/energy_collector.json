@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "deepresonance:energy_collector"
+  },
+  "pattern": [
+    " q ",
+    "qMq",
+    "ggg"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "q": {
+      "item": "minecraft:quartz"
+    },
+    "g": {
+      "item": "minecraft:gold_ingot"
+    },
+    "M": {
+      "item": "deepresonance:machine_frame"
+    }
+  }
+}

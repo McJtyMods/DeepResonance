@@ -14,9 +14,4 @@ public class LensSetup {
     public static void setupModels() {
         lensBlock.initModel();
     }
-
-
-    public static void setupCrafting() {
-//        GameRegistry.addRecipe(new ItemStack(lensBlock), "gpg", "pXp", "gpg", 'g', Blocks.GLASS_PANE, 'p', ModItems.resonatingPlateItem, 'X', Items.EMERALD);
-    }
 }

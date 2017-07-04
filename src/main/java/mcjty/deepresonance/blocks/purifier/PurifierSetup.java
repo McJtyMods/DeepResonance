@@ -14,8 +14,4 @@ public class PurifierSetup {
     public static void setupModels() {
         purifierBlock.initModel();
     }
-
-    public static void setupCrafting() {
-//        GameRegistry.addRecipe(new ItemStack(purifierBlock), "ggg", "iMi", "ggg", 'M', ModBlocks.machineFrame, 'g', ModItems.filterMaterialItem, 'i', Items.IRON_INGOT);
-    }
 }

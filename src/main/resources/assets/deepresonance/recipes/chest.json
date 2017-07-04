@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "deepresonance:chest"
+  },
+  "pattern": [
+    "p p",
+    "ppp",
+    "ppp"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "p": {
+      "item": "deepresonance:resonating_plate"
+    }
+  }
+}

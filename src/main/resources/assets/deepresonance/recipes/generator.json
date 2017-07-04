@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "deepresonance:generator"
+  },
+  "pattern": [
+    "nRn",
+    "iMi",
+    "nRn"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "R": {
+      "item": "minecraft:redstone_block"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "M": {
+      "item": "deepresonance:machine_frame"
+    },
+    "n": {
+      "item": "minecraft:gold_nugget"
+    }
+  }
+}

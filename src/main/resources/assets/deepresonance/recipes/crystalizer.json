@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "deepresonance:crystalizer"
+  },
+  "pattern": [
+    "ggg",
+    "qMq",
+    "iii"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "q": {
+      "item": "minecraft:quartz"
+    },
+    "g": {
+      "item": "minecraft:glass"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "M": {
+      "item": "deepresonance:machine_frame"
+    }
+  }
+}

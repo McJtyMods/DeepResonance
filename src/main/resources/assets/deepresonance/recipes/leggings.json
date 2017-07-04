@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "deepresonance:leggings"
+  },
+  "pattern": [
+    "ppp",
+    "p p",
+    "p p"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "p": {
+      "item": "deepresonance:resonating_plate"
+    }
+  }
+}

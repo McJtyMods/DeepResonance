@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "deepresonance:filter",
+    "count": 8
+  },
+  "pattern": [
+    "gcg",
+    "csc",
+    "gcg"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "c": {
+      "item": "minecraft:coal",
+      "data": 0
+    },
+    "s": {
+      "item": "minecraft:sand",
+      "data": 0
+    },
+    "g": {
+      "item": "minecraft:gravel"
+    }
+  }
+}

@@ -15,10 +15,4 @@ public class TankSetup {
     public static void setupModels() {
         tank.initModel();
     }
-
-
-    public static void setupCrafting() {
-//        GameRegistry.addRecipe(new ItemStack(tank), "iii", "ggg", "ipi",  'g', Blocks.GLASS, 'p', ModItems.resonatingPlateItem,
-//                'i', Items.IRON_INGOT);
-    }
 }

@@ -14,11 +14,4 @@ public class GeneratorControllerSetup {
     public static void setupModels() {
         generatorControllerBlock.initModel();
     }
-
-
-
-    public static void setupCrafting() {
-//        GameRegistry.addRecipe(new ItemStack(generatorControllerBlock), "rCr", "iMi", "rir", 'M', ModBlocks.machineFrame, 'r', Items.REDSTONE,
-//                'C', Items.COMPARATOR, 'i', Items.IRON_INGOT);
-    }
 }

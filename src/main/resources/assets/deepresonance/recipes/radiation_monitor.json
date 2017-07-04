@@ -1,0 +1,28 @@
+{
+  "result": {
+    "item": "deepresonance:radiation_monitor"
+  },
+  "pattern": [
+    "qcq",
+    "tot",
+    "qrq"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "q": {
+      "item": "minecraft:quartz"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "c": {
+      "item": "minecraft:clock"
+    },
+    "t": {
+      "item": "minecraft:compass"
+    },
+    "o": {
+      "item": "deepresonance:resonating_plate"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "deepresonance:machine_frame"
+  },
+  "pattern": [
+    "ioi",
+    "oso",
+    "ioi"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "s": {
+      "item": "minecraft:stone",
+      "data": 0
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "o": {
+      "item": "deepresonance:resonating_plate"
+    }
+  }
+}

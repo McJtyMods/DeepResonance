@@ -14,8 +14,4 @@ public class EnergyCollectorSetup {
     public static void setupModels() {
         energyCollectorBlock.initModel();
     }
-
-    public static void setupCrafting() {
-//        GameRegistry.addRecipe(new ItemStack(energyCollectorBlock), " q ", "qMq", "ggg", 'M', ModBlocks.machineFrame, 'g', Items.GOLD_INGOT, 'q', Items.QUARTZ);
-    }
 }

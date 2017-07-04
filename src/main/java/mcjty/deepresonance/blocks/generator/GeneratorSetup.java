@@ -14,10 +14,4 @@ public class GeneratorSetup {
     public static void setupModels() {
         generatorBlock.initModel();
     }
-
-
-    public static void setupCrafting() {
-//        GameRegistry.addRecipe(new ItemStack(generatorBlock), "nRn", "iMi", "nRn", 'M', ModBlocks.machineFrame, 'n', Items.GOLD_NUGGET, 'R', Blocks.REDSTONE_BLOCK,
-//                'i', Items.IRON_INGOT);
-    }
 }

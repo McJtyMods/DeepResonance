@@ -1,0 +1,28 @@
+{
+  "result": {
+    "item": "deepresonance:pedestal"
+  },
+  "pattern": [
+    "idi",
+    "iMi",
+    "iCi"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "C": {
+      "item": "minecraft:comparator"
+    },
+    "d": {
+      "item": "minecraft:dispenser"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "M": {
+      "item": "deepresonance:machine_frame"
+    }
+  }
+}

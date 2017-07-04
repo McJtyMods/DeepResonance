@@ -47,7 +47,6 @@ public abstract class CommonProxy {
         DRMessages.registerNetworkMessages();
         ModItems.init();
         ModBlocks.init();
-        ModCrafting.init();
         WorldGen.init();
         DRFluidRegistry.initFluids();
     }
@@ -86,6 +85,7 @@ public abstract class CommonProxy {
         }
         mainConfig = null;
         WrenchChecker.init();
+        ModCrafting.init();
     }
 
     public abstract void throwException(Exception e, int i);

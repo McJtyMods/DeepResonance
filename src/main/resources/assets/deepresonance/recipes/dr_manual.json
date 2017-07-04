@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "deepresonance:dr_manual"
+  },
+  "pattern": [
+    " o ",
+    "rbr",
+    " r "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "b": {
+      "item": "minecraft:book"
+    },
+    "o": {
+      "item": "deepresonance:resonating_ore",
+      "data": 0
+    }
+  }
+}

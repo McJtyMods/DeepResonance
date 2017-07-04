@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "deepresonance:laser"
+  },
+  "pattern": [
+    "ggg",
+    "eMe",
+    "ddd"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "d": {
+      "item": "minecraft:diamond"
+    },
+    "e": {
+      "item": "minecraft:emerald"
+    },
+    "g": {
+      "item": "minecraft:glass"
+    },
+    "M": {
+      "item": "deepresonance:machine_frame"
+    }
+  }
+}

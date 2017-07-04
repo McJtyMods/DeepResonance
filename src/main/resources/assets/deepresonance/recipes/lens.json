@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "deepresonance:lens"
+  },
+  "pattern": [
+    "gpg",
+    "pXp",
+    "gpg"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "p": {
+      "item": "deepresonance:resonating_plate"
+    },
+    "g": {
+      "item": "minecraft:glass_pane"
+    },
+    "X": {
+      "item": "minecraft:emerald"
+    }
+  }
+}

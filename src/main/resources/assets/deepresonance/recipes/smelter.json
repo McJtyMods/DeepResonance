@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "deepresonance:smelter"
+  },
+  "pattern": [
+    "ppp",
+    "iMi",
+    "nnn"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "p": {
+      "item": "deepresonance:resonating_plate"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "M": {
+      "item": "deepresonance:machine_frame"
+    },
+    "n": {
+      "item": "minecraft:nether_brick"
+    }
+  }
+}

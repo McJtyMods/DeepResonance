@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "deepresonance:dense_glass",
+    "count": 4
+  },
+  "pattern": [
+    "sgs",
+    "gog",
+    "sgs"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "s": {
+      "item": "deepresonance:spent_filter"
+    },
+    "g": {
+      "item": "minecraft:glass"
+    },
+    "o": {
+      "item": "minecraft:obsidian"
+    }
+  }
+}

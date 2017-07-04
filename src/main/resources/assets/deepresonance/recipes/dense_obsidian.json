@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "deepresonance:dense_obsidian",
+    "count": 4
+  },
+  "pattern": [
+    "sos",
+    "oso",
+    "sos"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "s": {
+      "item": "deepresonance:spent_filter"
+    },
+    "o": {
+      "item": "minecraft:obsidian"
+    }
+  }
+}

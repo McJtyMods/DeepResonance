@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "deepresonance:tank"
+  },
+  "pattern": [
+    "iii",
+    "ggg",
+    "ipi"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "p": {
+      "item": "deepresonance:resonating_plate"
+    },
+    "g": {
+      "item": "minecraft:glass"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    }
+  }
+}

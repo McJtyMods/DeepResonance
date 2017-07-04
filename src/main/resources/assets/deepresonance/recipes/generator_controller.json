@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "deepresonance:generator_controller"
+  },
+  "pattern": [
+    "rCr",
+    "iMi",
+    "rir"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "C": {
+      "item": "minecraft:comparator"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "M": {
+      "item": "deepresonance:machine_frame"
+    }
+  }
+}
