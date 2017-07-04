@@ -1,14 +1,15 @@
 package mcjty.deepresonance.jei.smelter;
 
-import mcjty.lib.jei.CompatRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 
 import javax.annotation.Nonnull;
 
-public class SmelterRecipeHandler extends CompatRecipeHandler<SmelterRecipeWrapper> {
+public class SmelterRecipeHandler implements mezz.jei.api.recipe.IRecipeHandler<SmelterRecipeWrapper> {
+
+    private final String id;
 
     public SmelterRecipeHandler() {
-        super(SmelterRecipeCategory.ID);
+        this.id = SmelterRecipeCategory.ID;
     }
 
     @Nonnull
@@ -21,5 +22,15 @@ public class SmelterRecipeHandler extends CompatRecipeHandler<SmelterRecipeWrapp
     @Override
     public IRecipeWrapper getRecipeWrapper(@Nonnull SmelterRecipeWrapper recipe) {
         return recipe;
+    }
+
+    @Override
+    public String getRecipeCategoryUid(SmelterRecipeWrapper recipe) {
+        return id;
+    }
+
+    @Override
+    public boolean isRecipeValid(SmelterRecipeWrapper recipe) {
+        return true;
     }
 }

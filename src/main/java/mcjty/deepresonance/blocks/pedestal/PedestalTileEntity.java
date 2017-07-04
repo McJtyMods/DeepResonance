@@ -10,7 +10,6 @@ import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.container.InventoryLocator;
 import mcjty.lib.entity.GenericTileEntity;
-import mcjty.lib.tools.ItemStackTools;
 import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.SoundTools;
 import net.minecraft.block.state.IBlockState;
@@ -95,7 +94,7 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
     private void placeCrystal() {
         BlockPos pos = getCrystalPosition();
         ItemStack crystalStack = inventoryHelper.getStackInSlot(PedestalContainer.SLOT_CRYSTAL);
-        if (ItemStackTools.isValid(crystalStack)) {
+        if (!crystalStack.isEmpty()) {
             if (crystalStack.getItem() instanceof ItemBlock) {
                 ItemBlock itemBlock = (ItemBlock) (crystalStack.getItem());
                 itemBlock.placeBlockAt(crystalStack, FakePlayerFactory.getMinecraft((WorldServer) getWorld()), getWorld(), pos, null, 0, 0, 0, itemBlock.getBlock().getStateFromMeta(0));

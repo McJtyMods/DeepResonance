@@ -1,10 +1,5 @@
 package mcjty.deepresonance.blocks.crystalizer;
 
-import mcjty.deepresonance.blocks.ModBlocks;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 

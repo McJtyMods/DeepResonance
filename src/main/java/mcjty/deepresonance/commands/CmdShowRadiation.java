@@ -4,11 +4,12 @@ import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.debug.DebugBlock;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.varia.QuadTree;
-import mcjty.lib.tools.ChatTools;
 import mcjty.lib.varia.GlobalCoordinate;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -34,7 +35,12 @@ public class CmdShowRadiation extends AbstractDRCommand {
     @Override
     public void execute(ICommandSender sender, String[] args) {
         if (args.length > 2) {
-            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.RED + "Too many parameters!"));
+            ITextComponent component = new TextComponentString(TextFormatting.RED + "Too many parameters!");
+            if (sender instanceof EntityPlayer) {
+                ((EntityPlayer) sender).sendStatusMessage(component, false);
+            } else {
+                sender.sendMessage(component);
+            }
             return;
         }
 

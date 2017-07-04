@@ -2,16 +2,11 @@ package mcjty.deepresonance.items.rftoolsmodule;
 
 import com.google.common.base.Function;
 import io.netty.buffer.ByteBuf;
-import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.radiationsensor.RadiationSensorBlock;
-import mcjty.deepresonance.items.ModItems;
 import mcjty.rftools.api.screens.IScreenModuleRegistry;
 import mcjty.rftools.api.screens.data.IModuleData;
 import mcjty.rftools.api.screens.data.IModuleDataFactory;
 import net.minecraft.block.Block;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 

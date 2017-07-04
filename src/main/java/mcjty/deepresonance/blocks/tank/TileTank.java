@@ -1,7 +1,6 @@
 package mcjty.deepresonance.blocks.tank;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import elec332.core.main.ElecCore;
 import elec332.core.network.IElecCoreNetworkTile;
 import elec332.core.world.WorldHelper;
@@ -9,7 +8,6 @@ import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.tanks.TankGrid;
 import mcjty.deepresonance.varia.FluidTankWrapper;
 import mcjty.lib.entity.GenericTileEntity;
-import mcjty.lib.tools.WorldTools;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -37,11 +35,12 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
-import java.util.*;
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by Elec332 on 9-8-2015.
@@ -117,7 +116,7 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
         if(world instanceof WorldServer) {
             PlayerChunkMap playerManager = ((WorldServer)world).getPlayerChunkMap();
 
-            for (EntityPlayerMP player : WorldTools.getPlayerList((WorldServer) getWorld())) {
+            for (EntityPlayerMP player : ((WorldServer) getWorld()).getMinecraftServer().getPlayerList().getPlayers()) {
                 Chunk chunk = world.getChunkFromChunkCoords(x >> 4, z >> 4);
                 if (playerManager.isPlayerWatchingChunk(player, chunk.x, chunk.z)) {
                     ret.add(player);

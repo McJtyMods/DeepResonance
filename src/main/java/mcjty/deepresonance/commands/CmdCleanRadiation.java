@@ -1,10 +1,10 @@
 package mcjty.deepresonance.commands;
 
 import mcjty.deepresonance.radiation.DRRadiationManager;
-import mcjty.lib.tools.ChatTools;
 import mcjty.lib.varia.Logging;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
@@ -27,7 +27,12 @@ public class CmdCleanRadiation extends AbstractDRCommand {
     @Override
     public void execute(ICommandSender sender, String[] args) {
         if (args.length > 1) {
-            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.RED + "Too many parameters!"));
+            ITextComponent component = new TextComponentString(TextFormatting.RED + "Too many parameters!");
+            if (sender instanceof EntityPlayer) {
+                ((EntityPlayer) sender).sendStatusMessage(component, false);
+            } else {
+                sender.sendMessage(component);
+            }
             return;
         }
 

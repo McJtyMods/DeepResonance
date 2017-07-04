@@ -8,7 +8,6 @@ import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.network.Argument;
-import mcjty.lib.tools.WorldTools;
 import mcjty.lib.varia.RedstoneMode;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -240,7 +239,7 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
     protected void notifyAndMarkDirty(){
         if (WorldHelper.chunkLoaded(getWorld(), pos)){
             this.markDirty();
-            WorldTools.notifyNeighborsOfStateChange(this.getWorld(), pos, blockType);
+            this.getWorld().notifyNeighborsOfStateChange(pos, blockType, false);
         }
     }
 

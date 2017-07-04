@@ -8,7 +8,6 @@ import elec332.core.util.LoadTimer;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.commands.CommandDRGen;
 import mcjty.deepresonance.compat.CompatHandler;
-import mcjty.deepresonance.compat.handlers.ComputerCraftCompatHandler;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.integration.computers.OpenComputersIntegration;
@@ -17,12 +16,11 @@ import mcjty.deepresonance.proxy.CommonProxy;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.tanks.TankGridHandler;
 import mcjty.lib.base.ModBase;
-import mcjty.lib.compat.CompatCreativeTabs;
 import mcjty.lib.compat.MainCompatHandler;
 import mcjty.lib.varia.Logging;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.FMLLog;
@@ -70,13 +68,12 @@ public class DeepResonance implements ModBase {
     public boolean rftoolsControl = false;
     public static boolean redstoneflux = false;
 
-    public static CreativeTabs tabDeepResonance = new CompatCreativeTabs("DeepResonance") {
+    public static CreativeTabs tabDeepResonance = new CreativeTabs("DeepResonance") {
 
         @Override
-        protected Item getItem() {
-            return Item.getItemFromBlock(ModBlocks.resonatingCrystalBlock);
+        public ItemStack getTabIconItem() {
+            return new ItemStack(ModBlocks.resonatingCrystalBlock);
         }
-
     };
 
     public DeepResonance() {

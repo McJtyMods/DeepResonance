@@ -1,10 +1,10 @@
 package mcjty.deepresonance.commands;
 
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
-import mcjty.lib.tools.ChatTools;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -30,12 +30,22 @@ public class CmdSpawnCrystal extends AbstractDRCommand {
     @Override
     public void execute(ICommandSender sender, String[] args) {
         if (args.length > 2) {
-            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.RED + "Too many parameters!"));
+            ITextComponent component = new TextComponentString(TextFormatting.RED + "Too many parameters!");
+            if (sender instanceof EntityPlayer) {
+                ((EntityPlayer) sender).sendStatusMessage(component, false);
+            } else {
+                sender.sendMessage(component);
+            }
             return;
         }
 
         if (!(sender instanceof EntityPlayer)) {
-            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.RED + "This command only works as a player!"));
+            ITextComponent component = new TextComponentString(TextFormatting.RED + "This command only works as a player!");
+            if (sender instanceof EntityPlayer) {
+                ((EntityPlayer) sender).sendStatusMessage(component, false);
+            } else {
+                sender.sendMessage(component);
+            }
             return;
         }
 

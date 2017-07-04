@@ -13,8 +13,6 @@ import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
-import mcjty.lib.tools.ItemStackTools;
-import mcjty.lib.tools.WorldTools;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -141,7 +139,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
 
     public boolean hasCrystal() {
         ItemStack crystalStack = inventoryHelper.getStackInSlot(CrystalizerContainer.SLOT_CRYSTAL);
-        return ItemStackTools.isValid(crystalStack);
+        return !crystalStack.isEmpty();
     }
 
     private void makeCrystal() {
@@ -304,7 +302,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
     protected void notifyAndMarkDirty(){
         if (WorldHelper.chunkLoaded(getWorld(), pos)){
             this.markDirty();
-            WorldTools.notifyNeighborsOfStateChange(this.getWorld(), pos, blockType);
+            this.getWorld().notifyNeighborsOfStateChange(pos, blockType, false);
         }
     }
 

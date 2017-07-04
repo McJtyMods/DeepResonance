@@ -2,7 +2,6 @@ package mcjty.deepresonance.blocks.laser;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.lib.gui.RenderHelper;
-import mcjty.lib.tools.MinecraftTools;
 import mcjty.lib.varia.BlockTools;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -48,7 +47,7 @@ public class LaserRenderer extends TileEntitySpecialRenderer<LaserTileEntity> {
             }
 
             Minecraft mc = Minecraft.getMinecraft();
-            EntityPlayerSP p = MinecraftTools.getPlayer(mc);
+            EntityPlayerSP p = mc.player;
             double doubleX = p.lastTickPosX + (p.posX - p.lastTickPosX) * f;
             double doubleY = p.lastTickPosY + (p.posY - p.lastTickPosY) * f;
             double doubleZ = p.lastTickPosZ + (p.posZ - p.lastTickPosZ) * f;

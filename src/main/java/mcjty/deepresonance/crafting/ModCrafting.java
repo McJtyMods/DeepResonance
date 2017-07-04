@@ -15,8 +15,6 @@ import mcjty.deepresonance.blocks.tank.TankSetup;
 import mcjty.deepresonance.blocks.valve.ValveSetup;
 import mcjty.deepresonance.items.ModItems;
 import mcjty.deepresonance.items.rftoolsmodule.RFToolsSupport;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 

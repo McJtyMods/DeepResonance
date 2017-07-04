@@ -1,14 +1,15 @@
 package mcjty.deepresonance.jei.purifier;
 
-import mcjty.lib.jei.CompatRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 
 import javax.annotation.Nonnull;
 
-public class PurifierRecipeHandler extends CompatRecipeHandler<PurifierRecipeWrapper> {
+public class PurifierRecipeHandler implements mezz.jei.api.recipe.IRecipeHandler<PurifierRecipeWrapper> {
+
+    private final String id;
 
     public PurifierRecipeHandler() {
-        super(PurifierRecipeCategory.ID);
+        this.id = PurifierRecipeCategory.ID;
     }
 
     @Nonnull
@@ -21,5 +22,15 @@ public class PurifierRecipeHandler extends CompatRecipeHandler<PurifierRecipeWra
     @Override
     public IRecipeWrapper getRecipeWrapper(@Nonnull PurifierRecipeWrapper recipe) {
         return recipe;
+    }
+
+    @Override
+    public String getRecipeCategoryUid(PurifierRecipeWrapper recipe) {
+        return id;
+    }
+
+    @Override
+    public boolean isRecipeValid(PurifierRecipeWrapper recipe) {
+        return true;
     }
 }

@@ -2,13 +2,13 @@ package mcjty.deepresonance.radiation;
 
 import com.google.common.collect.Sets;
 import mcjty.deepresonance.blocks.ModBlocks;
-import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.List;
 import java.util.Set;
@@ -22,7 +22,7 @@ public class RadiationShieldRegistry {
             return leadBlocks;
         }
         leadBlocks = Sets.newHashSet();
-        List<ItemStack> stacks = ItemStackTools.getOres("blockLead");
+        List<ItemStack> stacks = OreDictionary.getOres("blockLead");
         for (ItemStack stack : stacks) {
             Item item = stack.getItem();
             if (item instanceof ItemBlock) {

@@ -2,14 +2,13 @@ package mcjty.deepresonance.commands;
 
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
-import mcjty.lib.tools.ChatTools;
-import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
@@ -32,19 +31,34 @@ public class CmdInfoCrystal extends AbstractDRCommand {
     @Override
     public void execute(ICommandSender sender, String[] args) {
         if (args.length > 1) {
-            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.RED + "Too many parameters!"));
+            ITextComponent component = new TextComponentString(TextFormatting.RED + "Too many parameters!");
+            if (sender instanceof EntityPlayer) {
+                ((EntityPlayer) sender).sendStatusMessage(component, false);
+            } else {
+                sender.sendMessage(component);
+            }
             return;
         }
 
         if (!(sender instanceof EntityPlayer)) {
-            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.RED + "This command only works as a player!"));
+            ITextComponent component = new TextComponentString(TextFormatting.RED + "This command only works as a player!");
+            if (sender instanceof EntityPlayer) {
+                ((EntityPlayer) sender).sendStatusMessage(component, false);
+            } else {
+                sender.sendMessage(component);
+            }
             return;
         }
 
         EntityPlayer player = (EntityPlayer) sender;
         ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
-        if (ItemStackTools.isEmpty(heldItem)) {
-            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.RED + "You must hold a crystal in your hand!"));
+        if (heldItem.isEmpty()) {
+            ITextComponent component = new TextComponentString(TextFormatting.RED + "You must hold a crystal in your hand!");
+            if (sender instanceof EntityPlayer) {
+                ((EntityPlayer) sender).sendStatusMessage(component, false);
+            } else {
+                sender.sendMessage(component);
+            }
             return;
         }
 
@@ -58,11 +72,31 @@ public class CmdInfoCrystal extends AbstractDRCommand {
             int rfPerTick = ResonatingCrystalTileEntity.getRfPerTick(efficiency, purity);
             int totalSeconds = (int) ((totalPower / rfPerTick) / 20);
             int totalMinutes = (int) ((totalPower / rfPerTick) / 1200);
-            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.GREEN + "Total power: " + (int)totalPower + " RF"));
-            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.GREEN + "RF per tick: " + rfPerTick));
-            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.GREEN + "Lifetime: " + totalSeconds + " seconds or " + totalMinutes + " minutes"));
+            ITextComponent component2 = new TextComponentString(TextFormatting.GREEN + "Total power: " + (int)totalPower + " RF");
+            if (sender instanceof EntityPlayer) {
+                ((EntityPlayer) sender).sendStatusMessage(component2, false);
+            } else {
+                sender.sendMessage(component2);
+            }
+            ITextComponent component1 = new TextComponentString(TextFormatting.GREEN + "RF per tick: " + rfPerTick);
+            if (sender instanceof EntityPlayer) {
+                ((EntityPlayer) sender).sendStatusMessage(component1, false);
+            } else {
+                sender.sendMessage(component1);
+            }
+            ITextComponent component = new TextComponentString(TextFormatting.GREEN + "Lifetime: " + totalSeconds + " seconds or " + totalMinutes + " minutes");
+            if (sender instanceof EntityPlayer) {
+                ((EntityPlayer) sender).sendStatusMessage(component, false);
+            } else {
+                sender.sendMessage(component);
+            }
         } else {
-            ChatTools.addChatMessage(sender, new TextComponentString(TextFormatting.RED + "You must hold a crystal in your hand!"));
+            ITextComponent component = new TextComponentString(TextFormatting.RED + "You must hold a crystal in your hand!");
+            if (sender instanceof EntityPlayer) {
+                ((EntityPlayer) sender).sendStatusMessage(component, false);
+            } else {
+                sender.sendMessage(component);
+            }
         }
     }
 }

@@ -11,10 +11,8 @@ import mcjty.deepresonance.client.DRResourceLocation;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.deepresonance.network.PacketGetTankInfo;
+import mcjty.deepresonance.varia.FluidTools;
 import mcjty.lib.container.EmptyContainer;
-import mcjty.lib.tools.FluidTools;
-import mcjty.lib.tools.ItemStackTools;
-import mcjty.lib.tools.WorldTools;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
@@ -221,7 +219,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
             TileTank tank = (TileTank)tile;
 
             ItemStack mainItem = player.getHeldItem(EnumHand.MAIN_HAND);
-            if (ItemStackTools.isValid(mainItem)) {
+            if (!mainItem.isEmpty()) {
                 if (FluidTools.isEmptyContainer(mainItem)) {
                     if (((TileTank) tile).getTank() != null) {
                         if (!world.isRemote) {
@@ -253,7 +251,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
             tank.settings.put(side, i);
             tank.markDirty();
             WorldHelper.markBlockForUpdate(world, pos);
-            WorldTools.notifyNeighborsOfStateChange(world, pos, this);
+            world.notifyNeighborsOfStateChange(pos, this, false);
             WorldHelper.markBlockForRenderUpdate(world, pos);
             return true;
         }
@@ -278,18 +276,22 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
         FluidStack fluidStack = tank.drain(1, false);
         if (fluidStack != null) {
             ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND).copy();
-            ItemStackTools.setStackSize(heldItem, 1);
+            if (1 <= 0) {
+                heldItem.setCount(0);
+            } else {
+                heldItem.setCount(1);
+            }
             int capacity = FluidTools.getCapacity(fluidStack, heldItem);
             if (capacity != 0) {
                 fluidStack = tank.drain(capacity, false);
                 if (fluidStack != null && fluidStack.amount == capacity) {
                     fluidStack = tank.drain(capacity, true);
                     ItemStack filledContainer = FluidTools.fillContainer(fluidStack, heldItem);
-                    if (ItemStackTools.isValid(filledContainer)) {
+                    if (!filledContainer.isEmpty()) {
                         player.inventory.decrStackSize(player.inventory.currentItem, 1);
                         if (!player.inventory.addItemStackToInventory(filledContainer)) {
                             EntityItem entityItem = new EntityItem(player.getEntityWorld(), player.posX, player.posY, player.posZ, filledContainer);
-                            WorldTools.spawnEntity(player.getEntityWorld(), entityItem);
+                            player.getEntityWorld().spawnEntity(entityItem);
                         }
                         player.openContainer.detectAndSendChanges();
                     } else {

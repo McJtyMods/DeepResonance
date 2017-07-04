@@ -13,8 +13,6 @@ import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
-import mcjty.lib.tools.ItemStackTools;
-import mcjty.lib.tools.WorldTools;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -120,7 +118,7 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
     }
 
     private boolean validSlot(){
-        return ItemStackTools.isValid(inventoryHelper.getStackInSlot(SmelterContainer.SLOT_OREINPUT))
+        return !inventoryHelper.getStackInSlot(SmelterContainer.SLOT_OREINPUT).isEmpty()
                 && inventoryHelper.getStackInSlot(SmelterContainer.SLOT_OREINPUT).getItem() == Item.getItemFromBlock(ModBlocks.resonatingOreBlock);
     }
 
@@ -306,7 +304,7 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
     protected void notifyAndMarkDirty(){
         if (WorldHelper.chunkLoaded(getWorld(), pos)){
             this.markDirty();
-            WorldTools.notifyNeighborsOfStateChange(this.getWorld(), pos, blockType);
+            this.getWorld().notifyNeighborsOfStateChange(pos, blockType, false);
         }
     }
 

@@ -13,7 +13,6 @@ import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
-import mcjty.lib.tools.ItemStackTools;
 import mcjty.lib.varia.BlockTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -206,7 +205,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
 
     private void checkCrystal() {
         ItemStack stack = inventoryHelper.getStackInSlot(LaserContainer.SLOT_CRYSTAL);
-        if (ItemStackTools.isValid(stack)) {
+        if (!stack.isEmpty()) {
             NBTTagCompound tagCompound = stack.getTagCompound();
             float strength = tagCompound == null ? 0 : tagCompound.getFloat("strength") / 100.0f;
             int addAmount = (int) (ConfigMachines.Laser.minCrystalLiquidPerCrystal + strength * (ConfigMachines.Laser.maxCrystalLiquidPerCrystal - ConfigMachines.Laser.minCrystalLiquidPerCrystal));
@@ -222,7 +221,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     public static InfusingBonus getInfusingBonus(ItemStack item) {
-        if (ItemStackTools.isEmpty(item)) {
+        if (item.isEmpty()) {
             return null;
         }
         String name = item.getItem().getRegistryName().toString();

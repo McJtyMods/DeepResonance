@@ -1,6 +1,5 @@
 package mcjty.deepresonance.generatornetwork;
 
-import mcjty.lib.tools.WorldTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
@@ -9,8 +8,6 @@ import net.minecraftforge.common.util.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static mezz.jei.ingredients.IngredientInformation.markDirty;
 
 public class DRGeneratorNetwork extends WorldSavedData {
 
@@ -26,7 +23,7 @@ public class DRGeneratorNetwork extends WorldSavedData {
     }
 
     public void save(World world) {
-        WorldTools.saveData(world, GENERATOR_NETWORK_NAME, this);
+        world.setData(GENERATOR_NETWORK_NAME, this);
         markDirty();
     }
 
@@ -48,7 +45,7 @@ public class DRGeneratorNetwork extends WorldSavedData {
         if (instance != null) {
             return instance;
         }
-        instance = WorldTools.loadData(world, DRGeneratorNetwork.class, GENERATOR_NETWORK_NAME);
+        instance = (DRGeneratorNetwork) world.loadData(DRGeneratorNetwork.class, GENERATOR_NETWORK_NAME);
         if (instance == null) {
             instance = new DRGeneratorNetwork(GENERATOR_NETWORK_NAME);
         }

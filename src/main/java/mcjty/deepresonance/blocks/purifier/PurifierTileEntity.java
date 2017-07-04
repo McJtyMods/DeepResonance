@@ -11,8 +11,6 @@ import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.container.InventoryLocator;
 import mcjty.lib.entity.GenericTileEntity;
-import mcjty.lib.tools.ItemStackTools;
-import mcjty.lib.tools.WorldTools;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -155,7 +153,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
     }
 
     private boolean validSlot(){
-        return ItemStackTools.isValid(inventoryHelper.getStackInSlot(PurifierContainer.SLOT_FILTERINPUT))
+        return !inventoryHelper.getStackInSlot(PurifierContainer.SLOT_FILTERINPUT).isEmpty()
                 && inventoryHelper.getStackInSlot(PurifierContainer.SLOT_FILTERINPUT).getItem() == ModItems.filterMaterialItem;
     }
 
@@ -275,7 +273,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITankHook, 
     protected void notifyAndMarkDirty(){
         if (WorldHelper.chunkLoaded(getWorld(), pos)){
             this.markDirty();
-            WorldTools.notifyNeighborsOfStateChange(getWorld(), pos, blockType);
+            getWorld().notifyNeighborsOfStateChange(pos, blockType, false);
         }
     }
 
