@@ -245,7 +245,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
     }
 
     private void checkStateServer() {
-        int energyStored = getEnergyStored(EnumFacing.DOWN);
+        int energyStored = getEnergyStored();
 
         if (energyStored <= 0) {
             return;
@@ -274,7 +274,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
                     // Forge unit
                     received = EnergyTools.receiveEnergy(te, opposite, rfToGive);
                 }
-                energyStored -= extractEnergy(EnumFacing.DOWN, received, false);
+                energyStored -= extractEnergy(received, false);
                 if (energyStored <= 0) {
                     break;
                 }

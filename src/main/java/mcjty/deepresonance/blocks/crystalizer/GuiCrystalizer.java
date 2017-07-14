@@ -9,7 +9,6 @@ import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
 import mcjty.lib.gui.widgets.Widget;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
@@ -27,7 +26,7 @@ public class GuiCrystalizer extends GenericGuiContainer<CrystalizerTileEntity> {
 
     public GuiCrystalizer(CrystalizerTileEntity crystalizerTileEntity, CrystalizerContainer container) {
         super(DeepResonance.instance, DRMessages.networkWrapper, crystalizerTileEntity, container, 0, "crystalizer");
-        crystalizerTileEntity.setCurrentRF(crystalizerTileEntity.getEnergyStored(EnumFacing.DOWN));
+        crystalizerTileEntity.setCurrentRF(crystalizerTileEntity.getEnergyStored());
 
         xSize = CRYSTALIZER_WIDTH;
         ySize = CRYSTALIZER_HEIGHT;
@@ -37,7 +36,7 @@ public class GuiCrystalizer extends GenericGuiContainer<CrystalizerTileEntity> {
     public void initGui() {
         super.initGui();
 
-        int maxEnergyStored = tileEntity.getMaxEnergyStored(EnumFacing.DOWN);
+        int maxEnergyStored = tileEntity.getMaxEnergyStored();
         energyBar = new EnergyBar(mc, this).setVertical().setMaxValue(maxEnergyStored).setLayoutHint(new PositionalLayout.PositionalHint(10, 7, 8, 54)).setShowText(false);
         energyBar.setValue(tileEntity.getCurrentRF());
 

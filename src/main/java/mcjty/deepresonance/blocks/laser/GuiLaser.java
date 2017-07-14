@@ -13,7 +13,6 @@ import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
 import mcjty.lib.gui.widgets.Widget;
 import net.minecraft.inventory.Slot;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
@@ -33,7 +32,7 @@ public class GuiLaser extends GenericGuiContainer<LaserTileEntity> {
 
     public GuiLaser(LaserTileEntity laserTileEntity, LaserContainer container) {
         super(DeepResonance.instance, DRMessages.networkWrapper, laserTileEntity, container, 0, "laser");
-        laserTileEntity.setCurrentRF(laserTileEntity.getEnergyStored(EnumFacing.DOWN));
+        laserTileEntity.setCurrentRF(laserTileEntity.getEnergyStored());
 
         xSize = LASER_WIDTH;
         ySize = LASER_HEIGHT;
@@ -43,7 +42,7 @@ public class GuiLaser extends GenericGuiContainer<LaserTileEntity> {
     public void initGui() {
         super.initGui();
 
-        int maxEnergyStored = tileEntity.getMaxEnergyStored(EnumFacing.DOWN);
+        int maxEnergyStored = tileEntity.getMaxEnergyStored();
         energyBar = new EnergyBar(mc, this).setVertical().setMaxValue(maxEnergyStored).setLayoutHint(new PositionalLayout.PositionalHint(10, 7, 8, 59)).setShowText(false);
         energyBar.setValue(tileEntity.getCurrentRF());
 

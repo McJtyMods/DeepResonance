@@ -25,12 +25,12 @@ public class LaserDriver {
 
             @Callback(doc="function():number; Get the currently stored energy")
             public Object[] getEnergy(Context c, Arguments a) {
-                return new Object[]{tile.getEnergyStored(EnumFacing.DOWN)};
+                return new Object[]{tile.getEnergyStored()};
             }
 
             @Callback(doc="function():number; Get the maximum stored energy")
             public Object[] getMaxEnergy(Context c, Arguments a) {
-                return new Object[]{tile.getMaxEnergyStored(EnumFacing.DOWN)};
+                return new Object[]{tile.getMaxEnergyStored()};
             }
 
             @Callback(doc="function():number; Get the currently stored liquid crystal")

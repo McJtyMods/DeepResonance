@@ -8,7 +8,6 @@ import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.*;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
@@ -26,7 +25,7 @@ public class GuiSmelter extends GenericGuiContainer<SmelterTileEntity> {
 
     public GuiSmelter(SmelterTileEntity smelterTileEntity, SmelterContainer container) {
         super(DeepResonance.instance, DRMessages.networkWrapper, smelterTileEntity, container, 0, "smelter");
-        smelterTileEntity.setCurrentRF(smelterTileEntity.getEnergyStored(EnumFacing.DOWN));
+        smelterTileEntity.setCurrentRF(smelterTileEntity.getEnergyStored());
 
         xSize = SMELTER_WIDTH;
         ySize = SMELTER_HEIGHT;
@@ -36,7 +35,7 @@ public class GuiSmelter extends GenericGuiContainer<SmelterTileEntity> {
     public void initGui() {
         super.initGui();
 
-        int maxEnergyStored = tileEntity.getMaxEnergyStored(EnumFacing.DOWN);
+        int maxEnergyStored = tileEntity.getMaxEnergyStored();
         energyBar = new EnergyBar(mc, this).setVertical().setMaxValue(maxEnergyStored).setLayoutHint(new PositionalLayout.PositionalHint(10, 7, 8, 54)).setShowText(false);
         energyBar.setValue(tileEntity.getCurrentRF());
 
