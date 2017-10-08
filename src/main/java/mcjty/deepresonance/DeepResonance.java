@@ -177,7 +177,7 @@ public class DeepResonance implements ModBase {
 //        compatHandler.init();
         configWrapper.refresh();
 
-        if (Loader.isModLoaded("OpenComputers")) {
+        if (Loader.isModLoaded("opencomputers")) {
             OpenComputersIntegration.init();
         }
         loadTimer.endPhase(e);
