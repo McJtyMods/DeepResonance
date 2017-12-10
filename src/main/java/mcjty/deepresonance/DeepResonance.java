@@ -42,6 +42,7 @@ import java.io.File;
                         "required-after:eleccore@[" + DeepResonance.MIN_ELECCORE_VER + ",);" +
                         "after:Forge@[" + DeepResonance.MIN_FORGE10_VER + ",);" +
                         "after:forge@[" + DeepResonance.MIN_FORGE11_VER + ",);" +
+                        "after:opencomputers@[" + DeepResonance.MIN_OPENCOMPUTERS_VER + ",);" +
                         "after:OpenComputers@[" + DeepResonance.MIN_OPENCOMPUTERS_VER + ",)",
         version = DeepResonance.VERSION,
         acceptedMinecraftVersions = "[1.10,1.12)")
@@ -179,7 +180,9 @@ public class DeepResonance implements ModBase {
         configWrapper.refresh();
 
         if (Loader.isModLoaded("OpenComputers")) {
-            OpenComputersIntegration.init();
+            OpenComputersIntegration.initV10();
+        } else if (Loader.isModLoaded("opencomputers")) {
+            OpenComputersIntegration.initV11();
         }
         loadTimer.endPhase(e);
     }
