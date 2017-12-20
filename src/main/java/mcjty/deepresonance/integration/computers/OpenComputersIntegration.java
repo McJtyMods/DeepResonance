@@ -1,28 +1,17 @@
 package mcjty.deepresonance.integration.computers;
 
-import li.cil.oc.api.Driver;
+import mcjty.lib.integration.computers.OcCompatTools;
 import net.minecraftforge.fml.common.Optional;
 
 public class OpenComputersIntegration {
-    @Optional.Method(modid="OpenComputers")
-    public static void initV10() {
-        Driver.add(new TankDriver.OCDriver());
-        Driver.add(new ValveDriver.OCDriver());
-        Driver.add(new LaserDriver.OCDriver());
-        Driver.add(new SmelterDriver.OCDriver());
-        Driver.add(new CrystalizerDriver.OCDriver());
-        Driver.add(new GeneratorControllerDriver.OCDriver());
-        Driver.add(new PedestalDriver.OCDriver());
-    }
-
     @Optional.Method(modid="opencomputers")
-    public static void initV11() {
-        Driver.add(new TankDriver.OCDriver());
-        Driver.add(new ValveDriver.OCDriver());
-        Driver.add(new LaserDriver.OCDriver());
-        Driver.add(new SmelterDriver.OCDriver());
-        Driver.add(new CrystalizerDriver.OCDriver());
-        Driver.add(new GeneratorControllerDriver.OCDriver());
-        Driver.add(new PedestalDriver.OCDriver());
+    public static void init() {
+        OcCompatTools.driverAdd(new TankDriver.OCDriver());
+        OcCompatTools.driverAdd(new ValveDriver.OCDriver());
+        OcCompatTools.driverAdd(new LaserDriver.OCDriver());
+        OcCompatTools.driverAdd(new SmelterDriver.OCDriver());
+        OcCompatTools.driverAdd(new CrystalizerDriver.OCDriver());
+        OcCompatTools.driverAdd(new GeneratorControllerDriver.OCDriver());
+        OcCompatTools.driverAdd(new PedestalDriver.OCDriver());
     }
 }

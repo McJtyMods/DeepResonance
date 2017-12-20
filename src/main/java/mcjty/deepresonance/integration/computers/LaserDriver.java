@@ -3,7 +3,7 @@ package mcjty.deepresonance.integration.computers;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.prefab.ManagedEnvironment;
+import li.cil.oc.api.network.ManagedEnvironment;
 import mcjty.deepresonance.blocks.laser.LaserTileEntity;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.lib.integration.computers.AbstractOCDriver;

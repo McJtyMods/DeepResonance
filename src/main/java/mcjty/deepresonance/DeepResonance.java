@@ -50,11 +50,11 @@ public class DeepResonance implements ModBase {
     public static final String MODID = "deepresonance";
     public static final String VERSION = "1.4.8";
     public static final String MIN_ELECCORE_VER = "1.6.345";
-    public static final String MIN_OPENCOMPUTERS_VER = "1.6.0";
+    public static final String MIN_OPENCOMPUTERS_VER = "1.7.0.146";
     public static final String MIN_FORGE10_VER = "12.18.1.2082";
     public static final String MIN_FORGE11_VER = "13.19.0.2176";
-    public static final String MIN_MCJTYLIB_VER = "2.3.0";
-    public static final String COMPATLAYER_VER = "0.2.6";
+    public static final String MIN_MCJTYLIB_VER = "2.5.1";
+    public static final String COMPATLAYER_VER = "0.3.0";
 
     @SidedProxy(clientSide="mcjty.deepresonance.proxy.ClientProxy", serverSide="mcjty.deepresonance.proxy.ServerProxy")
     public static CommonProxy proxy;
@@ -179,10 +179,8 @@ public class DeepResonance implements ModBase {
         compatHandler.init();
         configWrapper.refresh();
 
-        if (Loader.isModLoaded("OpenComputers")) {
-            OpenComputersIntegration.initV10();
-        } else if (Loader.isModLoaded("opencomputers")) {
-            OpenComputersIntegration.initV11();
+        if (Loader.isModLoaded("opencomputers") || Loader.isModLoaded("OpenComputers")) {
+            OpenComputersIntegration.init();
         }
         loadTimer.endPhase(e);
     }
