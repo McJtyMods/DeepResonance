@@ -45,8 +45,8 @@ public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyCon
     }
 
     @Override
-    public boolean hasNoRotation() {
-        return true;
+    public RotationType getRotationType() {
+        return RotationType.NONE;
     }
 
     @Override

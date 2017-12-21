@@ -34,8 +34,8 @@ public class EnergyCollectorBlock extends GenericDRBlock<EnergyCollectorTileEnti
     }
 
     @Override
-    public boolean hasNoRotation() {
-        return true;
+    public RotationType getRotationType() {
+        return RotationType.NONE;
     }
 
     @Override

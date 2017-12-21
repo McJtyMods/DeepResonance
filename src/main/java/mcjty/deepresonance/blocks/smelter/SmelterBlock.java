@@ -12,6 +12,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -60,7 +61,7 @@ public class SmelterBlock extends GenericDRBlock<SmelterTileEntity, SmelterConta
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        return this.getDefaultState().withProperty(FACING, getFacing(meta)).withProperty(WORKING, (meta & 8) != 0);
+        return this.getDefaultState().withProperty(FACING, EnumFacing.VALUES[meta & 7]).withProperty(WORKING, (meta & 8) != 0);
     }
 
     @Override

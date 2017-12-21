@@ -85,13 +85,13 @@ dependencies {
     deobfCompile "cofh:RedstoneFlux:1.12-2.0.0.1:universal"
 
     deobfCompile "com.github.mcjty:intwheel:1.12-1.2.7"
-    deobfCompile "com.github.mcjty:xnet:1.12-1.3.4"
-    deobfCompile "com.github.mcjty:mcjtylib:1.12-2.4.4-SNAPSHOT"
-    deobfCompile "com.github.mcjty:rftools:1.12-6.12"
+    deobfCompile "com.github.mcjty:xnet:1.12-1.5.0"
+    deobfCompile "com.github.mcjty:mcjtylib:1.12-2.5.1-SNAPSHOT"
+    deobfCompile "com.github.mcjty:rftools:1.12-7.16"
 	
 	//deobfCompile "eleccore-rendering-library:ElecCore:1.12:1.8.429"
 
-    compile "li.cil.oc:OpenComputers:MC1.10.2-1.6.+:api"
+    compile "li.cil.oc:OpenComputers:MC1.12.1-1.7.+:api"
 }
 
 jar {

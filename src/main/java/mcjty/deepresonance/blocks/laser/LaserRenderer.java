@@ -2,7 +2,7 @@ package mcjty.deepresonance.blocks.laser;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.lib.gui.RenderHelper;
-import mcjty.lib.varia.BlockTools;
+import mcjty.lib.varia.OrientationTools;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;
@@ -26,8 +26,7 @@ public class LaserRenderer extends TileEntitySpecialRenderer<LaserTileEntity> {
 
         int color = tileEntity.getColor();
         if (color != 0) {
-            int meta = tileEntity.getBlockMetadata();
-            EnumFacing direction = BlockTools.getOrientationHoriz(meta);
+            EnumFacing direction = OrientationTools.getOrientationHoriz(Minecraft.getMinecraft().world.getBlockState(tileEntity.getPos()));
             float destX = tileEntity.getPos().getX() + 0.5f + direction.getFrontOffsetX()*2.5f;
             float destY = tileEntity.getPos().getY() + 0.5f;
             float destZ = tileEntity.getPos().getZ() + 0.5f + direction.getFrontOffsetZ()*2.5f;

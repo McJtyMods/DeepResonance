@@ -36,8 +36,8 @@ public class GeneratorControllerBlock extends GenericDRBlock<GeneratorController
     }
 
     @Override
-    public boolean isHorizRotation() {
-        return true;
+    public RotationType getRotationType() {
+        return RotationType.HORIZROTATION;
     }
 
     @Override

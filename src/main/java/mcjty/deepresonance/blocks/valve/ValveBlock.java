@@ -24,8 +24,8 @@ public class ValveBlock extends GenericDRBlock<ValveTileEntity, ValveContainer> 
     }
 
     @Override
-    public boolean isHorizRotation() {
-        return true;
+    public RotationType getRotationType() {
+        return RotationType.HORIZROTATION;
     }
 
     @Override

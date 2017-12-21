@@ -12,6 +12,7 @@ import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.deepresonance.network.PacketGetTankInfo;
 import mcjty.deepresonance.varia.FluidTools;
+import mcjty.lib.container.BaseBlock;
 import mcjty.lib.container.EmptyContainer;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -72,8 +73,8 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     private TextureAtlasSprite iconSide, iconTop, iconBottom;
 
     @Override
-    public boolean hasNoRotation() {
-        return true;
+    public RotationType getRotationType() {
+        return RotationType.NONE;
     }
 
     @SideOnly(Side.CLIENT)

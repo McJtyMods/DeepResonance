@@ -37,8 +37,8 @@ public class LaserBlock extends GenericDRBlock<LaserTileEntity, LaserContainer> 
     }
 
     @Override
-    public boolean isHorizRotation() {
-        return true;
+    public RotationType getRotationType() {
+        return RotationType.HORIZROTATION;
     }
 
     @SideOnly(Side.CLIENT)
@@ -99,7 +99,7 @@ public class LaserBlock extends GenericDRBlock<LaserTileEntity, LaserContainer> 
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(FACING_HORIZ, getFacingHoriz(meta & 3)).withProperty(COLOR, (meta >> 2));
+        return getDefaultState().withProperty(FACING_HORIZ, EnumFacing.VALUES[(meta&3) + 2]).withProperty(COLOR, (meta >> 2));
     }
 
     @Override

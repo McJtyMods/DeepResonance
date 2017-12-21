@@ -1,7 +1,8 @@
 package mcjty.deepresonance.blocks.lens;
 
 import mcjty.deepresonance.DeepResonance;
-import mcjty.lib.varia.BlockTools;
+import mcjty.lib.varia.OrientationTools;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -30,7 +31,7 @@ public class LensTESR extends TileEntitySpecialRenderer {
 //        GL11.glEnable(GL11.GL_DEPTH_TEST);
 
         GL11.glTranslatef((float) x + 0.5F, (float) y + 0.0F, (float) z + 0.5F);
-        EnumFacing direction = BlockTools.getOrientationHoriz(tileEntity.getBlockMetadata());
+        EnumFacing direction = OrientationTools.getOrientationHoriz(Minecraft.getMinecraft().world.getBlockState(tileEntity.getPos()));
         switch (direction) {
             case DOWN:
             case UP:

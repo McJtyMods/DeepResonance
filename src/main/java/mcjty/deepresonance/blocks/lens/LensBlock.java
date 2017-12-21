@@ -4,6 +4,7 @@ import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.lib.container.EmptyContainer;
 import mcjty.lib.varia.BlockTools;
+import mcjty.lib.varia.OrientationTools;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -30,8 +31,8 @@ public class LensBlock extends GenericDRBlock<LensTileEntity, EmptyContainer> {
     }
 
     @Override
-    public boolean isHorizRotation() {
-        return true;
+    public RotationType getRotationType() {
+        return RotationType.HORIZROTATION;
     }
 
     @Override
@@ -73,8 +74,7 @@ public class LensBlock extends GenericDRBlock<LensTileEntity, EmptyContainer> {
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        int meta = state.getBlock().getMetaFromState(state);
-        EnumFacing direction = BlockTools.getOrientationHoriz(meta);
+        EnumFacing direction = OrientationTools.getOrientationHoriz(state);
         switch (direction) {
             case NORTH:
                 return NORTH_BLOCK_AABB;

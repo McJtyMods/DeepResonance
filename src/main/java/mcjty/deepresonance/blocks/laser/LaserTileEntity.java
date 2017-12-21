@@ -13,7 +13,7 @@ import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
-import mcjty.lib.varia.BlockTools;
+import mcjty.lib.varia.OrientationTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -335,8 +335,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
             return null;
         }
         IBlockState state = getWorld().getBlockState(getPos());
-        int meta = state.getBlock().getMetaFromState(state);
-        EnumFacing direction = BlockTools.getOrientationHoriz(meta);
+        EnumFacing direction = OrientationTools.getOrientationHoriz(state);
         BlockPos shouldBeAir = getPos().offset(direction);
         if (!getWorld().isAirBlock(shouldBeAir)) {
             return null;
@@ -346,7 +345,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         if (lensBlock != LensSetup.lensBlock) {
             return null;
         }
-        EnumFacing lensDirection = BlockTools.getOrientationHoriz(WorldHelper.getBlockMeta(getWorld(), shouldBeLens));
+        EnumFacing lensDirection = OrientationTools.getOrientationHoriz(getWorld().getBlockState(shouldBeLens));
         if (lensDirection != direction) {
             return null;
         }

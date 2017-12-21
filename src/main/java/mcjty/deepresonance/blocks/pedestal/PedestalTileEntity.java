@@ -10,7 +10,7 @@ import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.container.InventoryLocator;
 import mcjty.lib.entity.GenericTileEntity;
-import mcjty.lib.varia.BlockTools;
+import mcjty.lib.varia.OrientationTools;
 import mcjty.lib.varia.SoundTools;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -74,7 +74,7 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
 
     public BlockPos getCrystalPosition() {
         IBlockState state = getWorld().getBlockState(getPos());
-        EnumFacing orientation = BlockTools.getOrientation(state.getBlock().getMetaFromState(state));
+        EnumFacing orientation = OrientationTools.getOrientation(state);
         return pos.offset(orientation);
     }
 

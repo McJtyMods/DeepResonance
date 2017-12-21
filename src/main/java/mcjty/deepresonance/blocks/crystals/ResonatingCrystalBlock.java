@@ -107,8 +107,8 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
     }
 
     @Override
-    public boolean isHorizRotation() {
-        return true;
+    public RotationType getRotationType() {
+        return RotationType.HORIZROTATION;
     }
 
     @SideOnly(Side.CLIENT)
@@ -241,16 +241,6 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockState state, IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
         return false;
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        return ((state.getValue(FACING_HORIZ)).getIndex() - 2);
-    }
-
-    @Override
-    public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(FACING_HORIZ, getFacingHoriz(meta & 3));
     }
 
     @Override
