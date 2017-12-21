@@ -3,7 +3,7 @@ package mcjty.deepresonance.items.rftoolsmodule;
 import mcjty.deepresonance.blocks.tank.TankSetup;
 import mcjty.deepresonance.items.GenericDRItem;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
-import mcjty.deepresonance.varia.BlockInfo;
+import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.Logging;
 import mcjty.rftools.api.screens.IClientScreenModule;
 import mcjty.rftools.api.screens.IModuleProvider;
@@ -93,7 +93,7 @@ public class RCLModuleItem extends GenericDRItem implements IModuleProvider {
             tagCompound.setInteger("monitorz", pos.getZ());
             String name = "<invalid>";
             if (block != null && !block.isAir(state, world, pos)) {
-                name = BlockInfo.getReadableName(state);
+                name = BlockTools.getReadableName(world, pos);
             }
             tagCompound.setString("monitorname", name);
             if (world.isRemote) {
