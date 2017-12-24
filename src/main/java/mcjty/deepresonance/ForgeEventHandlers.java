@@ -35,7 +35,6 @@ public class ForgeEventHandlers {
         event.getRegistry().register(ModBlocks.machineFrame);
         event.getRegistry().register(ModBlocks.resonatingPlateBlock);
         event.getRegistry().register(ModBlocks.resonatingOreBlock);
-        OreDictionary.registerOre("oreResonating", ModBlocks.resonatingOreBlock);
         if (DeepResonance.instance.rftools) {
             event.getRegistry().register(RFToolsSupport.getRadiationSensorBlock());
         }
@@ -68,6 +67,7 @@ public class ForgeEventHandlers {
         event.getRegistry().register(ModItems.chestplate);
         event.getRegistry().register(ModItems.leggings);
         ModCrafting.init();
+        OreDictionary.registerOre("oreResonating", ModBlocks.resonatingOreBlock);
     }
 
     @SubscribeEvent
