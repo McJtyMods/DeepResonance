@@ -49,7 +49,6 @@ public abstract class CommonProxy {
         ModBlocks.init();
         WorldGen.init();
         DRFluidRegistry.initFluids();
-        ModCrafting.init();
     }
 
     private void readMainConfig() {

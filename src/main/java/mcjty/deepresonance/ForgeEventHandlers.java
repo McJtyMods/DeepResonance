@@ -1,6 +1,7 @@
 package mcjty.deepresonance;
 
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.crafting.ModCrafting;
 import mcjty.deepresonance.items.ModItems;
 import mcjty.deepresonance.items.rftoolsmodule.RFToolsSupport;
 import mcjty.deepresonance.radiation.DRRadiationManager;
@@ -66,6 +67,7 @@ public class ForgeEventHandlers {
         event.getRegistry().register(ModItems.helmet);
         event.getRegistry().register(ModItems.chestplate);
         event.getRegistry().register(ModItems.leggings);
+        ModCrafting.init();
     }
 
     @SubscribeEvent
