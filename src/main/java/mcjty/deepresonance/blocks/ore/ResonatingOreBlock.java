@@ -61,7 +61,6 @@ public class ResonatingOreBlock extends Block {
 
     @Override
     public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> subItems) {
-        super.getSubBlocks(tab, subItems);
         subItems.add(new ItemStack(this, 1, 0));
         subItems.add(new ItemStack(this, 1, 1));
         subItems.add(new ItemStack(this, 1, 2));
