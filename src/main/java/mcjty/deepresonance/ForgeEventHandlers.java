@@ -8,6 +8,7 @@ import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.RadiationShieldRegistry;
 import mcjty.deepresonance.varia.QuadTree;
 import mcjty.lib.McJtyRegister;
+import mcjty.lib.container.DamageMetadataItemBlock;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import net.minecraft.block.Block;
@@ -49,15 +50,7 @@ public class ForgeEventHandlers {
         event.getRegistry().register(new ItemBlock(ModBlocks.poisonedDirtBlock).setRegistryName(ModBlocks.poisonedDirtBlock.getRegistryName()));
         event.getRegistry().register(new ItemBlock(ModBlocks.machineFrame).setRegistryName(ModBlocks.machineFrame.getRegistryName()));
         event.getRegistry().register(new ItemBlock(ModBlocks.resonatingPlateBlock).setRegistryName(ModBlocks.resonatingPlateBlock.getRegistryName()));
-
-        ItemBlock itemBlock = new ItemBlock(ModBlocks.resonatingOreBlock) {
-            @Override
-            public int getMetadata(int damage) {
-                return damage;
-            }
-        };
-        itemBlock.setHasSubtypes(true);
-        event.getRegistry().register(itemBlock.setRegistryName(ModBlocks.resonatingOreBlock.getRegistryName()));
+        event.getRegistry().register(new DamageMetadataItemBlock(ModBlocks.resonatingOreBlock).setRegistryName(ModBlocks.resonatingOreBlock.getRegistryName()));
 
         if (DeepResonance.instance.rftools) {
             event.getRegistry().register(new ItemBlock(RFToolsSupport.getRadiationSensorBlock()).setRegistryName(RFToolsSupport.getRadiationSensorBlock().getRegistryName()));
