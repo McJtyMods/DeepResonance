@@ -86,8 +86,8 @@ dependencies {
 
     deobfCompile "com.github.mcjty:intwheel:1.12-1.2.7"
     deobfCompile "com.github.mcjty:xnet:1.12-1.5.1"
-    deobfCompile "com.github.mcjty:mcjtylib:1.12-2.5.5-SNAPSHOT"
-    deobfCompile "com.github.mcjty:rftools:1.12-7.18"
+    deobfCompile "com.github.mcjty:mcjtylib:1.12-2.5.6-SNAPSHOT"
+    deobfCompile "com.github.mcjty:rftools:1.12-7.19"
 	
 	//deobfCompile "eleccore-rendering-library:ElecCore:1.12:1.8.429"
 
