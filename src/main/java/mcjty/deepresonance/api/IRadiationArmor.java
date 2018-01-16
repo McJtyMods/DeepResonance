@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
  */
 public interface IRadiationArmor {
     
-    default float[] protection(ItemStack armorItemStack) {
+    default float[] protection() {
     
         return RadiationConfiguration.suitProtection;
     }

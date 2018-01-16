@@ -86,7 +86,7 @@ public class ItemRadiationSuit extends ItemArmor implements IRadiationArmor{
                 ItemStack stack = entity.getItemStackFromSlot(slot);
                 if (!stack.isEmpty()) {
                     if (stack.getItem() instanceof IRadiationArmor && ((IRadiationArmor) stack.getItem()).isActive(stack)) {
-                        return ((IRadiationArmor) stack.getItem()).protection(stack)[countSuitPieces(entity)];
+                        return ((IRadiationArmor) stack.getItem()).protection()[countSuitPieces(entity)];
                     } else if (stack.hasTagCompound() && stack.getTagCompound().hasKey("AntiRadiationArmor")) {
                         return RadiationConfiguration.suitProtection[countSuitPieces(entity)];
                     }
