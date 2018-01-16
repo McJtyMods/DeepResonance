@@ -69,7 +69,9 @@ public class ItemRadiationSuit extends ItemArmor implements IRadiationArmor{
         for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
             if (slot.getSlotType() == EntityEquipmentSlot.Type.ARMOR) {
                 ItemStack stack = entity.getItemStackFromSlot(slot);
-                if (!stack.isEmpty() && (stack.getItem() instanceof IRadiationArmor)) {
+                if (!stack.isEmpty() && (stack.getItem() instanceof IRadiationArmor) && ((IRadiationArmor)stack.getItem()).isActive(stack)) {
+                    cnt++;
+                } else if (stack.hasTagCompound() && stack.getTagCompound().hasKey("AntiRadiationArmor")) {
                     cnt++;
                 }
             }
@@ -83,7 +85,7 @@ public class ItemRadiationSuit extends ItemArmor implements IRadiationArmor{
             if (slot.getSlotType() == EntityEquipmentSlot.Type.ARMOR) {
                 ItemStack stack = entity.getItemStackFromSlot(slot);
                 if (!stack.isEmpty()) {
-                    if (stack.getItem() instanceof IRadiationArmor) {
+                    if (stack.getItem() instanceof IRadiationArmor && ((IRadiationArmor) stack.getItem()).isActive(stack)) {
                         return ((IRadiationArmor) stack.getItem()).protection()[countSuitPieces(entity)];
                     } else if (stack.hasTagCompound() && stack.getTagCompound().hasKey("AntiRadiationArmor")) {
                         return RadiationConfiguration.suitProtection[countSuitPieces(entity)];
@@ -92,10 +94,5 @@ public class ItemRadiationSuit extends ItemArmor implements IRadiationArmor{
             }
         }
         return 0;
-    }
-
-    @Override
-    public float[] protection() {
-        return RadiationConfiguration.suitProtection;
     }
 }
