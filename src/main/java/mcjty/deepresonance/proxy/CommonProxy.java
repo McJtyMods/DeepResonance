@@ -13,6 +13,7 @@ import mcjty.deepresonance.items.ModItems;
 import mcjty.deepresonance.network.DRMessages;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
 import mcjty.deepresonance.radiation.RadiationTickEvent;
+import mcjty.deepresonance.radiation.SuperGenerationConfiguration;
 import mcjty.deepresonance.worldgen.WorldGen;
 import mcjty.deepresonance.worldgen.WorldGenConfiguration;
 import mcjty.deepresonance.worldgen.WorldTickHandler;
@@ -60,10 +61,12 @@ public abstract class CommonProxy {
             cfg.addCustomCategoryComment(GeneratorConfiguration.CATEGORY_GENERATOR, "Configuration for the generator multiblock");
             cfg.addCustomCategoryComment(RadiationConfiguration.CATEGORY_RADIATION, "Configuration for the radiation");
             cfg.addCustomCategoryComment(LaserBonusConfiguration.CATEGORY_LASERBONUS, "Configuration for the laser bonuses");
+            cfg.addCustomCategoryComment(SuperGenerationConfiguration.CATEGORY_SUPERGEN, "Configuration for super power generation (using pulser)");
             WorldGenConfiguration.init(cfg);
             GeneratorConfiguration.init(cfg);
             RadiationConfiguration.init(cfg);
             LaserBonusConfiguration.init(cfg);
+            SuperGenerationConfiguration.init(cfg);
         } catch (Exception e1) {
             FMLLog.log(Level.ERROR, e1, "Problem loading config file!");
         } finally {

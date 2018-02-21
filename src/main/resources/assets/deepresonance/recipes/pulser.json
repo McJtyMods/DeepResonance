@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "deepresonance:pulser"
+  },
+  "pattern": [
+    "RxR",
+    "qMq",
+    "RqR"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "R": {
+      "item": "minecraft:redstone_block"
+    },
+    "x": {
+      "item": "minecraft:nether_star"
+    },
+    "q": {
+      "item": "minecraft:quartz"
+    },
+    "M": {
+      "item": "deepresonance:machine_frame"
+    }
+  }
+}

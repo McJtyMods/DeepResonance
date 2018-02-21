@@ -23,6 +23,19 @@ public class ConfigMachines {
         public static int radiationTicks = 100;
     }
 
+    public static class Pulser {
+        private static final String category = "Pulser";
+
+        @Configurable(category = category, minValue = 0, maxValue = 1000, comment = "How much RF/t this machine can input from a generator/capacitor")
+        public static int rfPerTick = 100;
+
+        @Configurable(category = category, minValue = 0, maxValue = 1000000000, comment = "Maximum RF that can be stored in this machine")
+        public static int rfMaximum = 100;
+
+        @Configurable(category = category, minValue = 1, maxValue = 100000, comment = "The RF needed for a single pulse")
+        public static int rfPerPulse = 50;
+    }
+
     public static class Purifier {
         private static final String category = "Purifier";
 

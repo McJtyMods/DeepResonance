@@ -5,6 +5,7 @@ import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.radiation.DRRadiationManager;
+import mcjty.deepresonance.radiation.SuperGenerationConfiguration;
 import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.varia.Logging;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,13 +13,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.Random;
 import java.util.UUID;
 
-public class ResonatingCrystalTileEntity extends GenericTileEntity {
+public class ResonatingCrystalTileEntity extends GenericTileEntity implements ITickable {
 
     // The total maximum RF you can get out of a crystal with the following characteristics:
     //    * S: Strength (0-100%)
@@ -34,10 +36,20 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     private float efficiency = 1.0f;    // Default 1%
     private float purity = 1.0f;        // Default 1% purity
 
+    // These values are used during super powergen
+    private int cooldown = 0;           // In microticks
+    private int resistance = 0;         // Current maximum cooldown when a pulse is received (microticks)
+    private float danger = 0;           // Current danger status
+    private int pulses = 0;             // Number of EMP pulses since last tick
+
     private float powerPerTick = -1;    // Calculated value that contains the power/tick that is drained for this crystal.
     private int rfPerTick = -1;         // Calculated value that contains the RF/tick for this crystal.
 
     private boolean glowing = false;
+
+    public int getResistance() {
+        return resistance;
+    }
 
     public float getStrength() {
         return strength;
@@ -74,8 +86,129 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         markDirty();
         boolean newempty = isEmpty();
         if (oldempty != newempty) {
+            if (newempty) {
+                resistance = SuperGenerationConfiguration.maxResistance;
+            }
             markDirtyClient();
         }
+    }
+
+    public ResonatingCrystalTileEntity() {
+        resistance = SuperGenerationConfiguration.maxResistance;
+    }
+
+    @Override
+    public void update() {
+        if (!world.isRemote && power > 0) {
+            boolean dirty = false;
+            if (cooldown > 0) {
+                // We're still cooling down
+                cooldown -= 1000;   // 1000 microticks
+                if (cooldown < 0) {
+                    cooldown = 0;
+                }
+                resistance += 1;     // Slight increase in resistance here as well
+                if (resistance > SuperGenerationConfiguration.maxResistance) {
+                    resistance = SuperGenerationConfiguration.maxResistance;
+                }
+                dirty = true;
+            } else if (resistance < SuperGenerationConfiguration.maxResistance) {
+                // We're cool, so increase our resistance again
+                resistance += SuperGenerationConfiguration.resistanceIncreasePerTick;
+                if (resistance > SuperGenerationConfiguration.maxResistance) {
+                    resistance = SuperGenerationConfiguration.maxResistance;
+                }
+                dirty = true;
+            }
+
+            // How many microticks do we have left in this tick to use for pulses
+            int microticksleft = 1000;
+            while (pulses > 0) {
+                // When handling multiple pulses in a single tick we're going to do as if these
+                // pulses arrive evenly spread in that tick (in microticks). We're also going to be
+                // gentle and assume the first of these pulses will arrive after the cooldown counter
+                // has gotten a chance to do its work. Obviously this only works if there is less
+                // then a single tick of cooldown left
+                dirty = true;
+                pulses--;
+                // Handle a pulse
+                if (cooldown < 1000) {
+                    // We can let the cooldown expire in this tick and postpone the pulse until after
+                    // that. Of course we can only do that if we have enough microticks left in this tick
+                    // for us to consume
+                    if (microticksleft >= cooldown) {
+                        microticksleft -= cooldown;
+                        cooldown = 0;
+                    } else {
+                        cooldown -= microticksleft;
+                        microticksleft = 0;
+                    }
+                }
+                handleSinglePulse();
+            }
+
+            if (danger > 0) {
+                dirty = true;
+                // We're currently having some danger issues
+                handleDanger();
+            }
+
+            if (dirty) {
+                markDirtyQuick();
+            }
+        }
+    }
+
+    private void handleDanger() {
+        // The 'danger' value accumulates. Every time we handle danger there is a chance
+        // we act on it. Not acting on danger is actually a bad thing as it means the danger will
+        // stay and possibly be augmented in the near future
+        if (world.rand.nextFloat() < SuperGenerationConfiguration.dangerHandlingChance) {
+            // We handle the danger. How much do we handle?
+            float tohandle = world.rand.nextFloat() * danger;
+            danger -= tohandle;
+            if (tohandle > SuperGenerationConfiguration.dangerExplosionThresshold) {
+                System.out.println("*** BOOM ***");
+            } else if (tohandle > SuperGenerationConfiguration.dangerBigDamageThresshold) {
+                // Damage crystal
+                setPower(Math.max(0, power-10));
+                setPurity(Math.max(1, purity-10));
+            } else if (tohandle > SuperGenerationConfiguration.dangerSmallDamageThresshold) {
+                // Damage crystal
+                setPower(Math.max(0, power-1));
+                setPurity(Math.max(1, purity-1));
+            } // Otherwise we just got lucky
+        }
+    }
+
+    private void handleSinglePulse() {
+        // We got a pulse. If our cooldown is > 0 we have to do some bad things
+        if (cooldown > 0) {
+            // The bad things depend on how far we actually are from our current resistance value
+            float badness = (float) cooldown / resistance;
+            danger += badness;
+
+            // Decrease resistance as well but not as much
+            resistance = (int) (resistance - SuperGenerationConfiguration.resistanceDecreasePerPulse * (1.0f-badness));
+            if (resistance < 1) {
+                resistance = 1;
+            }
+        } else {
+            // Otherwise we can decrease our resistance a bit
+            resistance -= SuperGenerationConfiguration.resistanceDecreasePerPulse;
+            if (resistance < 1) {
+                resistance = 1;
+            }
+        }
+
+        // Now we have to set the cooldown back to our resistance
+        cooldown = resistance;
+    }
+
+    // A pulse is received
+    public void pulse() {
+        pulses++;
+        markDirtyQuick();
     }
 
     @Override
@@ -142,8 +275,17 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         if (rfPerTick == -1) {
             rfPerTick = ResonatingCrystalTileEntity.getRfPerTick(efficiency, purity);
         }
+
+        // If we are super generating then we modify the RF here. To see that we're doing this we
+        // can basically check our resistance value
+        if (resistance < SuperGenerationConfiguration.maxResistance) {
+            float factor = (float) resistance / SuperGenerationConfiguration.maxResistance;
+            rfPerTick = (int) (rfPerTick / factor);
+        }
+
         return rfPerTick;
     }
+
 
     public static int getRfPerTick(float efficiency, float purity) {
         return (int) (ConfigMachines.Power.maximumRFPerTick * efficiency / 100.1f * (purity + 2.0f) / 102.0f + 1);
@@ -152,6 +294,17 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
+        cooldown = tagCompound.getInteger("cool");
+        if (tagCompound.hasKey("resist")) {
+            resistance = tagCompound.getInteger("resist");
+            if (resistance == 0) {
+                resistance = SuperGenerationConfiguration.maxResistance;
+            }
+        } else {
+            resistance = SuperGenerationConfiguration.maxResistance;
+        }
+        danger = tagCompound.getFloat("danger");
+        pulses = tagCompound.getInteger("pulses");
     }
 
     @Override
@@ -172,6 +325,10 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
+        tagCompound.setInteger("cool", cooldown);
+        tagCompound.setInteger("resist", resistance);
+        tagCompound.setFloat("danger", danger);
+        tagCompound.setInteger("pulses", pulses);
         return tagCompound;
     }
 

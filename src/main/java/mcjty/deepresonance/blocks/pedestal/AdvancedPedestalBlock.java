@@ -15,10 +15,10 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-public class PedestalBlock extends GenericDRBlock<PedestalTileEntity, PedestalContainer> {
+public class AdvancedPedestalBlock extends GenericDRBlock<AdvancedPedestalTileEntity, PedestalContainer> {
 
-    public PedestalBlock() {
-        super(Material.IRON, PedestalTileEntity.class, PedestalContainer.class, "pedestal", false);
+    public AdvancedPedestalBlock() {
+        super(Material.IRON, AdvancedPedestalTileEntity.class, PedestalContainer.class, "advanced_pedestal", false);
     }
 
     @SideOnly(Side.CLIENT)
@@ -41,6 +41,8 @@ public class PedestalBlock extends GenericDRBlock<PedestalTileEntity, PedestalCo
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
             list.add("This block can place crystals and");
             list.add("pick up spent crystals");
+            list.add("This advanced version helps stability");
+            list.add("in combination with the Pulser");
         } else {
             list.add(TextFormatting.WHITE + ClientHandler.getShiftMessage());
         }

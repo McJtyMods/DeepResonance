@@ -1,9 +1,9 @@
-package mcjty.deepresonance.blocks.pedestal;
+package mcjty.deepresonance.blocks.pulser;
 
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
-import mcjty.deepresonance.gui.GuiProxy;
-import mcjty.lib.container.GenericGuiContainer;
+import mcjty.deepresonance.config.ConfigMachines;
+import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
@@ -15,23 +15,16 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-public class PedestalBlock extends GenericDRBlock<PedestalTileEntity, PedestalContainer> {
+public class PulserBlock extends GenericDRBlock<PulserTileEntity, EmptyContainer> {
 
-    public PedestalBlock() {
-        super(Material.IRON, PedestalTileEntity.class, PedestalContainer.class, "pedestal", false);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public Class<? extends GenericGuiContainer> getGuiClass() {
-        return GuiPedestal.class;
+    public PulserBlock() {
+        super(Material.IRON, PulserTileEntity.class, EmptyContainer.class, "pulser", false);
     }
 
     @Override
     public int getGuiID() {
-        return GuiProxy.GUI_PEDESTAL;
+        return -1;
     }
-
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -39,8 +32,8 @@ public class PedestalBlock extends GenericDRBlock<PedestalTileEntity, PedestalCo
         super.addInformation(itemStack, player, list, advancedToolTip);
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-            list.add("This block can place crystals and");
-            list.add("pick up spent crystals");
+            list.add("This machine will send an EMP pulse");
+            list.add("every tick when it has more than " + ConfigMachines.Pulser.rfPerPulse + "RF");
         } else {
             list.add(TextFormatting.WHITE + ClientHandler.getShiftMessage());
         }

@@ -7,6 +7,7 @@ import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.radiation.DRRadiationManager;
+import mcjty.deepresonance.radiation.SuperGenerationConfiguration;
 import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.varia.Broadcaster;
 import mcjty.lib.varia.GlobalCoordinate;
@@ -137,34 +138,38 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         for (BlockPos coordinate : crystals) {
             TileEntity te = getWorld().getTileEntity(new BlockPos(getPos().getX() + coordinate.getX(), getPos().getY() + coordinate.getY(), getPos().getZ() + coordinate.getZ()));
             if (te instanceof ResonatingCrystalTileEntity) {
-                ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
-                if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
-                    resonatingCrystalTileEntity.setGlowing(lasersActive);
+                ResonatingCrystalTileEntity crystal = (ResonatingCrystalTileEntity) te;
+                if (crystal.getPower() > CRYSTAL_MIN_POWER) {
+                    crystal.setGlowing(lasersActive);
                     tokeep.add(coordinate);
 
-                    float power = resonatingCrystalTileEntity.getPower();
-                    if (power < resonatingCrystalTileEntity.getPowerPerTick()) {
+                    float power = crystal.getPower();
+                    if (power < crystal.getPowerPerTick()) {
                         // We are empty.
-                        resonatingCrystalTileEntity.setPower(0);
+                        crystal.setPower(0);
                         // Crystal will be removed from the list of active crystals next tick.
                     } else {
-                        power -= resonatingCrystalTileEntity.getPowerPerTick();
-                        resonatingCrystalTileEntity.setPower(power); // @@@ No block update on crystal yet!
-                        int rfPerTick = resonatingCrystalTileEntity.getRfPerTick();
+                        power -= crystal.getPowerPerTick();
+                        crystal.setPower(power); // @@@ No block update on crystal yet!
+                        int rfPerTick = crystal.getRfPerTick();
                         rf += rfPerTick;
 
                         if (doRadiation) {
-                            float purity = resonatingCrystalTileEntity.getPurity();
-                            float radius = DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getStrength(), resonatingCrystalTileEntity.getEfficiency(), purity);
+                            float purity = crystal.getPurity();
+                            float radius = DRRadiationManager.calculateRadiationRadius(crystal.getStrength(), crystal.getEfficiency(), purity);
                             if (radius > radiationRadius) {
                                 radiationRadius = radius;
                             }
-                            float strength = DRRadiationManager.calculateRadiationStrength(resonatingCrystalTileEntity.getStrength(), purity);
+                            float strength = DRRadiationManager.calculateRadiationStrength(crystal.getStrength(), purity);
+                            if (crystal.getResistance() < SuperGenerationConfiguration.maxResistance) {
+                                float factor = (float) crystal.getResistance() / SuperGenerationConfiguration.maxResistance;
+                                strength = strength / factor;
+                            }
                             radiationStrength += strength;
                         }
                     }
                 } else {
-                    resonatingCrystalTileEntity.setGlowing(false);
+                    crystal.setGlowing(false);
                     dirty = true;
                 }
             } else {

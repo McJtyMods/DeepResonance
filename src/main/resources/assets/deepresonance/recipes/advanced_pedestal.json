@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "deepresonance:advanced_pedestal"
+  },
+  "pattern": [
+    "qxq",
+    "qMq",
+    "qqq"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "q": {
+      "item": "minecraft:quartz"
+    },
+    "x": {
+      "item": "minecraft:nether_star"
+    },
+    "M": {
+      "item": "deepresonance:pedestal"
+    }
+  }
+}
