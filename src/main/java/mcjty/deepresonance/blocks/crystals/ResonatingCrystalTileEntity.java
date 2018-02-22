@@ -168,7 +168,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
             float tohandle = world.rand.nextFloat() * danger;
             danger -= tohandle;
             if (tohandle > SuperGenerationConfiguration.dangerExplosionThresshold) {
-                System.out.println("*** BOOM ***");
+                ResonatingCrystalBlock.explode(world, pos, true);
             } else if (tohandle > SuperGenerationConfiguration.dangerBigDamageThresshold) {
                 // Damage crystal
                 setPower(Math.max(0, power-10));

@@ -183,31 +183,41 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
     @Override
     public void onBlockExploded(final World world, final BlockPos pos, Explosion explosion) {
         if (!world.isRemote) {
-            final TileEntity theCrystalTile = WorldHelper.getTileAt(world, pos);
-            ElecCore.tickHandler.registerCall(() -> {
-                float forceMultiplier = 1;
-                if (theCrystalTile instanceof ResonatingCrystalTileEntity) {
-                    ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) theCrystalTile;
-                    float explosionStrength = (resonatingCrystalTileEntity.getPower() * resonatingCrystalTileEntity.getStrength()) / (100.0f * 100.0f);
-                    forceMultiplier = explosionStrength * (RadiationConfiguration.maximumExplosionMultiplier - RadiationConfiguration.minimumExplosionMultiplier) + RadiationConfiguration.minimumExplosionMultiplier;
-                    if (forceMultiplier > RadiationConfiguration.absoluteMaximumExplosionMultiplier) {
-                        forceMultiplier = RadiationConfiguration.absoluteMaximumExplosionMultiplier;
-                    }
-                    if (forceMultiplier > 0.001f) {
-                        DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
-                        DRRadiationManager.RadiationSource source = radiationManager.getOrCreateRadiationSource(new GlobalCoordinate(pos, WorldHelper.getDimID(world)));
-                        float radiationRadius = DRRadiationManager.calculateRadiationRadius(resonatingCrystalTileEntity.getStrength(), resonatingCrystalTileEntity.getEfficiency(), resonatingCrystalTileEntity.getPurity());
-                        float radiationStrength = DRRadiationManager.calculateRadiationStrength(resonatingCrystalTileEntity.getStrength(), resonatingCrystalTileEntity.getPurity());
-                        source.update(radiationRadius * RadiationConfiguration.radiationExplosionFactor, radiationStrength / RadiationConfiguration.radiationExplosionFactor, 1000);
-                    }
-                }
-                if (forceMultiplier > 0.001f) {
-                    Elexplosion boom = new TestExplosion(world, null, pos.getX(), pos.getY(), pos.getZ(), forceMultiplier);
-                    boom.explode();
-                }
-            }, world);
+            explode(world, pos, false);
         }
         super.onBlockExploded(world, pos, explosion);
+    }
+
+    public static void explode(World world, BlockPos pos, boolean strong) {
+        final TileEntity theCrystalTile = WorldHelper.getTileAt(world, pos);
+        ElecCore.tickHandler.registerCall(() -> {
+            float forceMultiplier = 1;
+            if (theCrystalTile instanceof ResonatingCrystalTileEntity) {
+                ResonatingCrystalTileEntity crystal = (ResonatingCrystalTileEntity) theCrystalTile;
+                float explosionStrength = (crystal.getPower() * crystal.getStrength()) / (100.0f * 100.0f);
+                forceMultiplier = explosionStrength * (RadiationConfiguration.maximumExplosionMultiplier - RadiationConfiguration.minimumExplosionMultiplier) + RadiationConfiguration.minimumExplosionMultiplier;
+                if (forceMultiplier > RadiationConfiguration.absoluteMaximumExplosionMultiplier) {
+                    forceMultiplier = RadiationConfiguration.absoluteMaximumExplosionMultiplier;
+                }
+                if (forceMultiplier > 0.001f) {
+                    DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
+                    DRRadiationManager.RadiationSource source = radiationManager.getOrCreateRadiationSource(new GlobalCoordinate(pos, WorldHelper.getDimID(world)));
+                    float radiationRadius = DRRadiationManager.calculateRadiationRadius(crystal.getStrength(), crystal.getEfficiency(), crystal.getPurity());
+                    float radiationStrength = DRRadiationManager.calculateRadiationStrength(crystal.getStrength(), crystal.getPurity());
+                    source.update(radiationRadius * RadiationConfiguration.radiationExplosionFactor, radiationStrength / RadiationConfiguration.radiationExplosionFactor, 1000);
+                }
+            }
+            if (forceMultiplier > 0.001f) {
+                Elexplosion boom = new TestExplosion(world, null, pos.getX(), pos.getY(), pos.getZ(), forceMultiplier);
+                boom.explode();
+                if (strong) {
+//                    boom = new TestExplosion(world, null, pos.getX()-15, pos.getY(), pos.getZ(), forceMultiplier);
+//                    boom.explode();
+//                    boom = new TestExplosion(world, null, pos.getX()-15, pos.getY(), pos.getZ(), forceMultiplier);
+//                    boom.explode();
+                }
+            }
+        }, world);
     }
 
     @SideOnly(Side.CLIENT)

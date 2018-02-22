@@ -12,12 +12,12 @@ import net.minecraft.util.math.BlockPos;
 public class PulserTileEntity extends GenericEnergyReceiverTileEntity implements ITickable {
 
     public PulserTileEntity() {
-        super(ConfigMachines.Pulser.rfPerTick, ConfigMachines.Pulser.rfMaximum);
+        super(ConfigMachines.Pulser.rfMaximum, ConfigMachines.Pulser.rfPerTick);
     }
 
     @Override
     public void update() {
-        if (!world.isRemote) {
+        if (!world.isRemote && powerLevel > 0) {
             int rf = getEnergyStored();
             if (rf >= ConfigMachines.Pulser.rfPerPulse) {
                 consumeEnergy(ConfigMachines.Pulser.rfPerPulse);

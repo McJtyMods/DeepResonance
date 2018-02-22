@@ -22,6 +22,11 @@ public class PulserBlock extends GenericDRBlock<PulserTileEntity, EmptyContainer
     }
 
     @Override
+    public boolean needsRedstoneCheck() {
+        return true;
+    }
+
+    @Override
     public int getGuiID() {
         return -1;
     }
