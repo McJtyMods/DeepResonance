@@ -32,8 +32,8 @@ public class ConfigMachines {
         @Configurable(category = category, minValue = 0, maxValue = 1000000000, comment = "Maximum RF that can be stored in this machine")
         public static int rfMaximum = 100;
 
-        @Configurable(category = category, minValue = 1, maxValue = 100000, comment = "The RF needed for a single pulse")
-        public static int rfPerPulse = 50;
+        @Configurable(category = category, minValue = 1, maxValue = 100000, comment = "The RF needed for a single pulse (should be a multiple of 15!)")
+        public static int rfPerPulse = 60;
     }
 
     public static class Purifier {

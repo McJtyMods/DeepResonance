@@ -8,12 +8,15 @@ import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.SuperGenerationConfiguration;
 import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.varia.Logging;
+import mcjty.lib.varia.SoundTools;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -39,7 +42,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
     // These values are used during super powergen
     private int cooldown = 0;           // In microticks
     private int resistance = 0;         // Current maximum cooldown when a pulse is received (microticks)
-    private float danger = 0;           // Current danger status
+    private float instability = 0;      // Current instability
     private int pulses = 0;             // Number of EMP pulses since last tick
 
     private float powerPerTick = -1;    // Calculated value that contains the power/tick that is drained for this crystal.
@@ -49,6 +52,14 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
 
     public int getResistance() {
         return resistance;
+    }
+
+    public int getCooldown() {
+        return cooldown;
+    }
+
+    public float getInstability() {
+        return instability;
     }
 
     public float getStrength() {
@@ -147,10 +158,10 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
                 handleSinglePulse();
             }
 
-            if (danger > 0) {
+            if (instability > 0) {
                 dirty = true;
-                // We're currently having some danger issues
-                handleDanger();
+                // We're currently having some instability issues
+                handleInstability();
             }
 
             if (dirty) {
@@ -159,21 +170,23 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
         }
     }
 
-    private void handleDanger() {
-        // The 'danger' value accumulates. Every time we handle danger there is a chance
-        // we act on it. Not acting on danger is actually a bad thing as it means the danger will
+    private void handleInstability() {
+        // The 'instability' value accumulates. Every time we handle instability there is a chance
+        // we act on it. Not acting on instability is actually a bad thing as it means the instability will
         // stay and possibly be augmented in the near future
-        if (world.rand.nextFloat() < SuperGenerationConfiguration.dangerHandlingChance) {
-            // We handle the danger. How much do we handle?
-            float tohandle = world.rand.nextFloat() * danger;
-            danger -= tohandle;
-            if (tohandle > SuperGenerationConfiguration.dangerExplosionThresshold) {
-                ResonatingCrystalBlock.explode(world, pos, true);
-            } else if (tohandle > SuperGenerationConfiguration.dangerBigDamageThresshold) {
+        if (world.rand.nextFloat() < SuperGenerationConfiguration.instabilityHandlingChance) {
+            // We handle the instability. How much do we handle?
+            float tohandle = world.rand.nextFloat() * instability;
+            instability -= tohandle;
+            if (tohandle > SuperGenerationConfiguration.instabilityExplosionThresshold) {
+                SoundTools.playSound(world, SoundEvents.ENTITY_GENERIC_EXPLODE, pos.getX(), pos.getY(), pos.getZ(), 1.0, 1.0);
+                setPower(0);
+//                ResonatingCrystalBlock.explode(world, pos, true);
+            } else if (tohandle > SuperGenerationConfiguration.instabilityBigDamageThresshold) {
                 // Damage crystal
                 setPower(Math.max(0, power-10));
                 setPurity(Math.max(1, purity-10));
-            } else if (tohandle > SuperGenerationConfiguration.dangerSmallDamageThresshold) {
+            } else if (tohandle > SuperGenerationConfiguration.instabilitySmallDamageThresshold) {
                 // Damage crystal
                 setPower(Math.max(0, power-1));
                 setPurity(Math.max(1, purity-1));
@@ -186,7 +199,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
         if (cooldown > 0) {
             // The bad things depend on how far we actually are from our current resistance value
             float badness = (float) cooldown / resistance;
-            danger += badness;
+            instability += badness;
 
             // Decrease resistance as well but not as much
             resistance = (int) (resistance - SuperGenerationConfiguration.resistanceDecreasePerPulse * (1.0f-badness));
@@ -207,8 +220,11 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
 
     // A pulse is received
     public void pulse() {
-        pulses++;
-        markDirtyQuick();
+        if (glowing) {
+            // If we're not glowing (not active) we ignore pulses
+            pulses++;
+            markDirtyQuick();
+        }
     }
 
     @Override
@@ -236,6 +252,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
             return;
         }
         this.glowing = glowing;
+        pulses = 0;         // Clear pulses
         if (getWorld() != null) {
             markDirtyClient();
         } else {
@@ -303,7 +320,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
         } else {
             resistance = SuperGenerationConfiguration.maxResistance;
         }
-        danger = tagCompound.getFloat("danger");
+        instability = tagCompound.getFloat("instability");
         pulses = tagCompound.getInteger("pulses");
     }
 
@@ -327,7 +344,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("cool", cooldown);
         tagCompound.setInteger("resist", resistance);
-        tagCompound.setFloat("danger", danger);
+        tagCompound.setFloat("instability", instability);
         tagCompound.setInteger("pulses", pulses);
         return tagCompound;
     }

@@ -16,6 +16,7 @@ import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
+import mcjty.theoneprobe.api.TextStyleClass;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.SoundType;
@@ -145,19 +146,27 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
         TileEntity te = world.getTileEntity(data.getPos());
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity crystal = (ResonatingCrystalTileEntity) te;
-            DecimalFormat decimalFormat = new DecimalFormat("#.#");
-            probeInfo.text(TextFormatting.GREEN + "Strength/Efficiency/Purity: " + decimalFormat.format(crystal.getStrength()) + "% "
-                    + decimalFormat.format(crystal.getEfficiency()) + "% "
-                    + decimalFormat.format(crystal.getPurity()) + "%");
+            DecimalFormat fmt = new DecimalFormat("#.#");
+            probeInfo.text(TextFormatting.GREEN + "Strength/Efficiency/Purity: " + fmt.format(crystal.getStrength()) + "% "
+                    + fmt.format(crystal.getEfficiency()) + "% "
+                    + fmt.format(crystal.getPurity()) + "%");
             int rfPerTick = crystal.getRfPerTick();
-            probeInfo.horizontal().text(TextFormatting.YELLOW + "Power: " + decimalFormat.format(crystal.getPower()) + "% (" + rfPerTick + " RF/t)")
-                .progress((int) crystal.getPower(), 100, probeInfo.defaultProgressStyle()
-                        .suffix("%")
-                        .width(40)
-                        .height(10)
-                        .showText(false)
-                        .filledColor(0xffff0000)
-                        .alternateFilledColor(0xff990000));
+            if (mode == ProbeMode.DEBUG) {
+                probeInfo.text(TextStyleClass.INFO + "RF/t: " + rfPerTick + " RF/t");
+                probeInfo.text(TextStyleClass.INFO + "Power: " + fmt.format(crystal.getPower()) + "%");
+                probeInfo.text(TextStyleClass.INFO + "Instability: " + fmt.format(crystal.getInstability()));
+                probeInfo.text(TextStyleClass.INFO + "Resistance: " + crystal.getResistance());
+                probeInfo.text(TextStyleClass.INFO + "Cooldown: " + crystal.getCooldown());
+            } else {
+                probeInfo.horizontal().text(TextFormatting.YELLOW + "Power: " + fmt.format(crystal.getPower()) + "% (" + rfPerTick + " RF/t)")
+                        .progress((int) crystal.getPower(), 100, probeInfo.defaultProgressStyle()
+                                .suffix("%")
+                                .width(40)
+                                .height(10)
+                                .showText(false)
+                                .filledColor(0xffff0000)
+                                .alternateFilledColor(0xff990000));
+            }
         }
     }
 

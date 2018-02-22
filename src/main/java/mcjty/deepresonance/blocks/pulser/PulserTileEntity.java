@@ -15,20 +15,33 @@ public class PulserTileEntity extends GenericEnergyReceiverTileEntity implements
         super(ConfigMachines.Pulser.rfMaximum, ConfigMachines.Pulser.rfPerTick);
     }
 
+    private int pulsePower = 0;         // Collected pulsePower
+
     @Override
     public void update() {
-        if (!world.isRemote && powerLevel > 0) {
-            int rf = getEnergyStored();
-            if (rf >= ConfigMachines.Pulser.rfPerPulse) {
-                consumeEnergy(ConfigMachines.Pulser.rfPerPulse);
-                // Find crystals in area (@todo config area)
+        if (!world.isRemote) {
+            if (powerLevel > 0) {
+                int rf = getEnergyStored();
+                int rfToTransfer = (ConfigMachines.Pulser.rfPerPulse / 15) * powerLevel;
+                if (rf >= rfToTransfer) {
+                    consumeEnergy(rfToTransfer);
+                    pulsePower += rfToTransfer;
+                    markDirtyQuick();
+                }
+            }
+
+            if (pulsePower >= ConfigMachines.Pulser.rfPerPulse) {
+                pulsePower -= ConfigMachines.Pulser.rfPerPulse;
+                markDirtyQuick();
+                // Find crystals in area
                 // @todo cache crystals
                 int x = pos.getX();
                 int y = pos.getY();
                 int z = pos.getZ();
-                for (int dx = -8 ; dx <= 8 ; dx++) {
-                    for (int dy = -8 ; dy <= 8 ; dy++) {
-                        for (int dz = -8 ; dz <= 8 ; dz++) {
+                int range = 6;      // @todo config?
+                for (int dx = -range; dx <= range; dx++) {
+                    for (int dy = -range; dy <= range; dy++) {
+                        for (int dz = -range; dz <= range; dz++) {
                             BlockPos p = new BlockPos(x + dx, y + dy, z + dz);
                             TileEntity te = world.getTileEntity(p);
                             if (te instanceof ResonatingCrystalTileEntity) {
@@ -42,9 +55,19 @@ public class PulserTileEntity extends GenericEnergyReceiverTileEntity implements
         }
     }
 
+    public int getPulsePower() {
+        return pulsePower;
+    }
+
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
+    }
+
+    @Override
+    public void readRestorableFromNBT(NBTTagCompound tagCompound) {
+        super.readRestorableFromNBT(tagCompound);
+        pulsePower = tagCompound.getInteger("pulsePower");
     }
 
     @Override
@@ -53,5 +76,9 @@ public class PulserTileEntity extends GenericEnergyReceiverTileEntity implements
         return tagCompound;
     }
 
-
+    @Override
+    public void writeRestorableToNBT(NBTTagCompound tagCompound) {
+        super.writeRestorableToNBT(tagCompound);
+        tagCompound.setInteger("pulsePower", pulsePower);
+    }
 }

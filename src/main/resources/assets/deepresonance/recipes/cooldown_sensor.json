@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "deepresonance:cooldown_sensor"
+  },
+  "pattern": [
+    "qqq",
+    "qMq",
+    "qCq"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "q": {
+      "item": "minecraft:quartz"
+    },
+    "C": {
+      "item": "minecraft:comparator"
+    },
+    "M": {
+      "item": "deepresonance:machine_frame"
+    }
+  }
+}

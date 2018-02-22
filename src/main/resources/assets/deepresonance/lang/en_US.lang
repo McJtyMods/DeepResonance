@@ -35,6 +35,8 @@ tile.deepresonance.advanced_pedestal.name=Advanced Pedestal
 tile.deepresonance.valve.name=Valve
 tile.deepresonance.lens.name=Lens
 tile.deepresonance.laser.name=Infusing Laser
+tile.deepresonance.cooldown_sensor.name=Cooldown Sensor
+tile.deepresonance.instability_sensor.name=Instability Sensor
 
 itemGroup.DeepResonance=Deep Resonance
 

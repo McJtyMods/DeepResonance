@@ -8,10 +8,11 @@ public class SuperGenerationConfiguration {
     public static int maxResistance = 40000;
     public static int resistanceIncreasePerTick = 200;
     public static int resistanceDecreasePerPulse = 500;
-    public static float dangerHandlingChance = .3f;
-    public static float dangerExplosionThresshold = 2.0f;
-    public static float dangerBigDamageThresshold = 0.7f;
-    public static float dangerSmallDamageThresshold = 0.2f;
+    public static float instabilityHandlingChance = .3f;
+    public static float instabilityExplosionThresshold = 2.0f;
+    public static float instabilityBigDamageThresshold = 0.7f;
+    public static float instabilitySmallDamageThresshold = 0.2f;
+    public static float instabilitySensorThresshold = 0.2f;
 
 
     public static void init(Configuration cfg) {
@@ -21,14 +22,16 @@ public class SuperGenerationConfiguration {
                 "How much resistance decreases when a pulse is received (if cooldown is 0)");
         resistanceIncreasePerTick = cfg.getInt("resistanceIncreasePerTick", CATEGORY_SUPERGEN, resistanceIncreasePerTick, 1, 1000000000,
                 "How much resistance increases again when idle");
-        dangerHandlingChance = cfg.getFloat("dangerHandlingChance", CATEGORY_SUPERGEN, dangerHandlingChance, 0.0f, 1.0f,
-                "When the crystal has accumulated danger then this is the chance that (at any tick) we actually handle that danger");
-        dangerExplosionThresshold = cfg.getFloat("dangerExplosionThresshold", CATEGORY_SUPERGEN, dangerExplosionThresshold, 0.0f, 10000000.0f,
-                "When accumulated danger is handled then we handle a random amount of that danger. When that random amount is greater then this value we cause a massive explosion");
-        dangerBigDamageThresshold = cfg.getFloat("dangerBigDamageThresshold", CATEGORY_SUPERGEN, dangerBigDamageThresshold, 0.0f, 10000000.0f,
-                "When accumulated danger is handled then we handle a random amount of that danger. When that random amount is greater then this value we cause big damage on the crystal");
-        dangerSmallDamageThresshold = cfg.getFloat("dangerSmallDamageThresshold", CATEGORY_SUPERGEN, dangerSmallDamageThresshold, 0.0f, 10000000.0f,
-                "When accumulated danger is handled then we handle a random amount of that danger. When that random amount is greater then this value we cause minor damage on the crystal");
+        instabilityHandlingChance = cfg.getFloat("instabilityHandlingChance", CATEGORY_SUPERGEN, instabilityHandlingChance, 0.0f, 1.0f,
+                "When the crystal has accumulated instability then this is the chance that (at any tick) we actually handle that instability");
+        instabilityExplosionThresshold = cfg.getFloat("instabilityExplosionThresshold", CATEGORY_SUPERGEN, instabilityExplosionThresshold, 0.0f, 10000000.0f,
+                "When accumulated instability is handled then we handle a random amount of that instability. When that random amount is greater then this value we cause a massive explosion");
+        instabilityBigDamageThresshold = cfg.getFloat("instabilityBigDamageThresshold", CATEGORY_SUPERGEN, instabilityBigDamageThresshold, 0.0f, 10000000.0f,
+                "When accumulated instability is handled then we handle a random amount of that instability. When that random amount is greater then this value we cause big damage on the crystal");
+        instabilitySmallDamageThresshold = cfg.getFloat("instabilitySmallDamageThresshold", CATEGORY_SUPERGEN, instabilitySmallDamageThresshold, 0.0f, 10000000.0f,
+                "When accumulated instability is handled then we handle a random amount of that instability. When that random amount is greater then this value we cause minor damage on the crystal");
+        instabilitySensorThresshold = cfg.getFloat("instabilitySensorThresshold", CATEGORY_SUPERGEN, instabilitySensorThresshold, 0.0f, 10000000.0f,
+                "The amount of instability in the crystal that corresponds to redstone level 15 in the instability sensor");
     }
 
 }
