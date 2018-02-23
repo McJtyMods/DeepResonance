@@ -125,7 +125,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
                 dirty = true;
             } else if (resistance < SuperGenerationConfiguration.maxResistance) {
                 // We're cool, so increase our resistance again
-                resistance += SuperGenerationConfiguration.resistanceIncreasePerTick;
+                resistance += 50;//@todo config SuperGenerationConfiguration.resistanceIncreasePerTick;
                 if (resistance > SuperGenerationConfiguration.maxResistance) {
                     resistance = SuperGenerationConfiguration.maxResistance;
                 }
@@ -202,13 +202,14 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
             instability += badness;
 
             // Decrease resistance as well but not as much
+            // @todo this is too much!
             resistance = (int) (resistance - SuperGenerationConfiguration.resistanceDecreasePerPulse * (1.0f-badness));
             if (resistance < 1) {
                 resistance = 1;
             }
         } else {
             // Otherwise we can decrease our resistance a bit
-            resistance -= SuperGenerationConfiguration.resistanceDecreasePerPulse;
+            resistance -= 800;// @todo SuperGenerationConfiguration.resistanceDecreasePerPulse;
             if (resistance < 1) {
                 resistance = 1;
             }
@@ -278,7 +279,8 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
     public float getPowerPerTick() {
         if (powerPerTick < 0) {
             float totalRF = ResonatingCrystalTileEntity.getTotalPower(strength, purity);
-            float numticks = totalRF / getRfPerTick();
+            float numticks = totalRF / ResonatingCrystalTileEntity.getRfPerTick(efficiency, purity);
+//            float numticks = totalRF / getRfPerTick();
             powerPerTick = 100.0f / numticks;
         }
         return powerPerTick;
@@ -297,7 +299,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
         // can basically check our resistance value
         if (resistance < SuperGenerationConfiguration.maxResistance) {
             float factor = (float) resistance / SuperGenerationConfiguration.maxResistance;
-            rfPerTick = (int) (rfPerTick / factor);
+            return (int) (rfPerTick / factor);
         }
 
         return rfPerTick;

@@ -9,10 +9,10 @@ public class SuperGenerationConfiguration {
     public static int resistanceIncreasePerTick = 200;
     public static int resistanceDecreasePerPulse = 500;
     public static float instabilityHandlingChance = .3f;
-    public static float instabilityExplosionThresshold = 2.0f;
-    public static float instabilityBigDamageThresshold = 0.7f;
-    public static float instabilitySmallDamageThresshold = 0.2f;
-    public static float instabilitySensorThresshold = 0.2f;
+    public static float instabilityExplosionThresshold = 5.0f;
+    public static float instabilityBigDamageThresshold = 1.25f;
+    public static float instabilitySmallDamageThresshold = 0.5f;
+    public static float instabilitySensorThresshold = 0.3f;
 
 
     public static void init(Configuration cfg) {
