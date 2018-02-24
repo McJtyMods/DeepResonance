@@ -16,7 +16,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -110,62 +109,48 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
 
     @Override
     public void update() {
-        if (!world.isRemote && power > 0) {
-            boolean dirty = false;
-            if (cooldown > 0) {
-                // We're still cooling down
-                cooldown -= 1000;   // 1000 microticks
-                if (cooldown < 0) {
-                    cooldown = 0;
-                }
-                resistance += 1;     // Slight increase in resistance here as well
-                if (resistance > SuperGenerationConfiguration.maxResistance) {
-                    resistance = SuperGenerationConfiguration.maxResistance;
-                }
-                dirty = true;
-            } else if (resistance < SuperGenerationConfiguration.maxResistance) {
-                // We're cool, so increase our resistance again
-                resistance += 50;//@todo config SuperGenerationConfiguration.resistanceIncreasePerTick;
-                if (resistance > SuperGenerationConfiguration.maxResistance) {
-                    resistance = SuperGenerationConfiguration.maxResistance;
-                }
-                dirty = true;
-            }
+        if (!world.isRemote) {
 
-            // How many microticks do we have left in this tick to use for pulses
-            int microticksleft = 1000;
+            markDirtyQuick();
+
+            // Handle the next 1000 microticks
+            int microTicksLeft = 1000;
+
+            // Handle pulses
             while (pulses > 0) {
-                // When handling multiple pulses in a single tick we're going to do as if these
-                // pulses arrive evenly spread in that tick (in microticks). We're also going to be
-                // gentle and assume the first of these pulses will arrive after the cooldown counter
-                // has gotten a chance to do its work. Obviously this only works if there is less
-                // then a single tick of cooldown left
-                dirty = true;
                 pulses--;
-                // Handle a pulse
-                if (cooldown < 1000) {
-                    // We can let the cooldown expire in this tick and postpone the pulse until after
-                    // that. Of course we can only do that if we have enough microticks left in this tick
-                    // for us to consume
-                    if (microticksleft >= cooldown) {
-                        microticksleft -= cooldown;
-                        cooldown = 0;
-                    } else {
-                        cooldown -= microticksleft;
-                        microticksleft = 0;
-                    }
+
+                // We can delay the pulse until after the cooldown has finished
+                if (cooldown <= microTicksLeft) {
+                    // We have enough ticks left to go after the cooldown
+                    microTicksLeft -= cooldown;
+                    cooldown = 0;
+                } else {
+                    // Not enough ticks left
+                    cooldown -= microTicksLeft;
+                    microTicksLeft = 0;
                 }
+
+                // Actually handle the pulse
                 handleSinglePulse();
             }
 
-            if (instability > 0) {
-                dirty = true;
-                // We're currently having some instability issues
-                handleInstability();
+            // No more pulses. Just handle cooldown and resistance
+            if (cooldown < microTicksLeft) {
+                // We have less then 1 tick of cooldown. So that means we only
+                // have to increase resistance for the actual cooldown period
+                resistance += microTicksLeft - cooldown;
+                if (resistance > SuperGenerationConfiguration.maxResistance) {
+                    resistance = SuperGenerationConfiguration.maxResistance;
+                }
+                cooldown = 0;
+            } else {
+                cooldown -= microTicksLeft;
             }
 
-            if (dirty) {
-                markDirtyQuick();
+            if (instability > 0) {
+                // We're currently having some instability issues
+                handleInstability();
             }
         }
     }
@@ -197,21 +182,23 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
     private void handleSinglePulse() {
         // We got a pulse. If our cooldown is > 0 we have to do some bad things
         if (cooldown > 0) {
-            // The bad things depend on how far we actually are from our current resistance value
-            float badness = (float) cooldown / resistance;
+            // The bad things depend on how far we actually are from our current resistance value. We do a
+            // down cap of cooldown to 10 to make sure we have a minimum badness
+            // @todo config for min cap
+            float badness = (float) Math.min(cooldown, 10) / resistance;
             instability += badness;
 
             // Decrease resistance as well but not as much
-            // @todo this is too much!
-            resistance = (int) (resistance - SuperGenerationConfiguration.resistanceDecreasePerPulse * (1.0f-badness));
+            // @todo config the /10?
+            resistance = (int) ((resistance - 1000 * (1.0f-badness)) / 10.0f);
             if (resistance < 1) {
                 resistance = 1;
             }
         } else {
             // Otherwise we can decrease our resistance a bit
-            resistance -= 800;// @todo SuperGenerationConfiguration.resistanceDecreasePerPulse;
+            resistance -= 3000;// @todo SuperGenerationConfiguration.resistanceDecreasePerPulse;
             if (resistance < 1) {
-                resistance = 1;
+                resistance = 1; // @todo cap?
             }
         }
 
@@ -221,7 +208,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
 
     // A pulse is received
     public void pulse() {
-        if (glowing) {
+        if (glowing && power > 0) {
             // If we're not glowing (not active) we ignore pulses
             pulses++;
             markDirtyQuick();
