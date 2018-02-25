@@ -8,17 +8,28 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class AbstractSensorTileEntity extends GenericTileEntity implements ITickable {
 
     private int power;
     private BlockPos crystalPos;
 
+    // We enqueue sensors for processing later
+    public static Set<AbstractSensorTileEntity> todoSensors = new HashSet<>();
+
     @Override
     public void update() {
-        if (!getWorld().isRemote){
-            setRedstoneOut(checkSensor());
+        if (!world.isRemote) {
+            todoSensors.add(this);
         }
+    }
+
+    public void realUpdate() {
+        int sensor = checkSensor();
+        System.out.println("Sensor=" + sensor);
+        setRedstoneOut(sensor);
     }
 
     @Nullable

@@ -1,6 +1,8 @@
 package mcjty.deepresonance;
 
 import mcjty.deepresonance.blocks.ModBlocks;
+import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
+import mcjty.deepresonance.blocks.sensors.AbstractSensorTileEntity;
 import mcjty.deepresonance.crafting.ModCrafting;
 import mcjty.deepresonance.items.ModItems;
 import mcjty.deepresonance.items.rftoolsmodule.RFToolsSupport;
@@ -20,6 +22,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Map;
@@ -129,4 +132,22 @@ public class ForgeEventHandlers {
         }
 
     }
+
+
+    @SubscribeEvent
+    public void onPostWorldTick(TickEvent.WorldTickEvent event) {
+        if (!event.world.isRemote) {
+            System.out.println("### POST ###");
+            for (ResonatingCrystalTileEntity crystal : ResonatingCrystalTileEntity.todoCrystals) {
+                crystal.realUpdate();
+            }
+            ResonatingCrystalTileEntity.todoCrystals.clear();
+            for (AbstractSensorTileEntity sensor : AbstractSensorTileEntity.todoSensors) {
+                sensor.realUpdate();
+            }
+            AbstractSensorTileEntity.todoSensors.clear();
+        }
+    }
+
+
 }

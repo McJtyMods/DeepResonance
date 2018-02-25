@@ -19,8 +19,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class ResonatingCrystalTileEntity extends GenericTileEntity implements ITickable {
 
@@ -81,6 +80,11 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
         return glowing;
     }
 
+
+    // We enqueue crystals for processing later
+    public static Set<ResonatingCrystalTileEntity> todoCrystals = new HashSet<>();
+
+
     public void setStrength(float strength) {
         this.strength = strength;
         markDirtyClient();
@@ -110,48 +114,55 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
     @Override
     public void update() {
         if (!world.isRemote) {
+            todoCrystals.add(this);
+        }
+    }
 
-            markDirtyQuick();
+    public void realUpdate() {
+        markDirtyQuick();
 
-            // Handle the next 1000 microticks
-            int microTicksLeft = 1000;
+        // Handle the next 1000 microticks
+        int microTicksLeft = 1000;
 
-            // Handle pulses
-            while (pulses > 0) {
-                pulses--;
+        if (purity > 20) {
+            System.out.println("Cool=" + cooldown + ", Pulses=" + pulses + ", Resist=" + resistance);
+        }
 
-                // We can delay the pulse until after the cooldown has finished
-                if (cooldown <= microTicksLeft) {
-                    // We have enough ticks left to go after the cooldown
-                    microTicksLeft -= cooldown;
-                    cooldown = 0;
-                } else {
-                    // Not enough ticks left
-                    cooldown -= microTicksLeft;
-                    microTicksLeft = 0;
-                }
+        // Handle pulses
+        while (pulses > 0) {
+            pulses--;
 
-                // Actually handle the pulse
-                handleSinglePulse();
-            }
-
-            // No more pulses. Just handle cooldown and resistance
-            if (cooldown < microTicksLeft) {
-                // We have less then 1 tick of cooldown. So that means we only
-                // have to increase resistance for the actual cooldown period
-                resistance += microTicksLeft - cooldown;
-                if (resistance > SuperGenerationConfiguration.maxResistance) {
-                    resistance = SuperGenerationConfiguration.maxResistance;
-                }
+            // We can delay the pulse until after the cooldown has finished
+            if (cooldown <= microTicksLeft) {
+                // We have enough ticks left to go after the cooldown
+                microTicksLeft -= cooldown;
                 cooldown = 0;
             } else {
+                // Not enough ticks left
                 cooldown -= microTicksLeft;
+                microTicksLeft = 0;
             }
 
-            if (instability > 0) {
-                // We're currently having some instability issues
-                handleInstability();
+            // Actually handle the pulse
+            handleSinglePulse();
+        }
+
+        // No more pulses. Just handle cooldown and resistance
+        if (cooldown < microTicksLeft) {
+            // We have less then 1 tick of cooldown. So that means we only
+            // have to increase resistance for the actual cooldown period
+            resistance += microTicksLeft - cooldown;
+            if (resistance > SuperGenerationConfiguration.maxResistance) {
+                resistance = SuperGenerationConfiguration.maxResistance;
             }
+            cooldown = 0;
+        } else {
+            cooldown -= microTicksLeft;
+        }
+
+        if (instability > 0) {
+            // We're currently having some instability issues
+            handleInstability();
         }
     }
 
@@ -196,7 +207,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
             }
         } else {
             // Otherwise we can decrease our resistance a bit
-            resistance -= 3000;// @todo SuperGenerationConfiguration.resistanceDecreasePerPulse;
+            resistance -= 5000;// @todo SuperGenerationConfiguration.resistanceDecreasePerPulse;
             if (resistance < 1) {
                 resistance = 1; // @todo cap?
             }
