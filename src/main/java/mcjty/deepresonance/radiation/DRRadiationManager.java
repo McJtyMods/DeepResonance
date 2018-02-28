@@ -1,7 +1,6 @@
 package mcjty.deepresonance.radiation;
 
 import com.google.common.collect.Maps;
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.varia.QuadTree;
 import mcjty.lib.varia.GlobalCoordinate;
 import net.minecraft.block.state.IBlockState;
@@ -165,7 +164,7 @@ public class DRRadiationManager extends WorldSavedData {
                     for (int y = (int) (centerY-radius); y < centerY+radius ; y++) {
                         for (int z = (int) (centerZ-radius); z < centerZ+radius ; z++) {
                             pos.setPos(x, y, z);
-                            IBlockState block = WorldHelper.getBlockState(world, pos);
+                            IBlockState block = world.getBlockState(pos);
                             float blocker = RadiationShieldRegistry.getBlocker(block);
                             if (blocker < 0.99f) {
                                 radiationTree.addBlocker(pos, blocker);

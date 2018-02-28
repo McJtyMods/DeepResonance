@@ -198,7 +198,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
     }
 
     public static void explode(World world, BlockPos pos, boolean strong) {
-        final TileEntity theCrystalTile = WorldHelper.getTileAt(world, pos);
+        final TileEntity theCrystalTile = world.getTileEntity(pos);
         ElecCore.tickHandler.registerCall(() -> {
             float forceMultiplier = 1;
             if (theCrystalTile instanceof ResonatingCrystalTileEntity) {

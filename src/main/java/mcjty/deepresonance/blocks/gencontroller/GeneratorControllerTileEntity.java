@@ -1,6 +1,5 @@
 package mcjty.deepresonance.blocks.gencontroller;
 
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
@@ -106,9 +105,9 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
         Set<Integer> networks = new HashSet<Integer>();
         for (EnumFacing direction : EnumFacing.VALUES) {
             BlockPos newC = getPos().offset(direction);
-            Block b = WorldHelper.getBlockAt(getWorld(), newC);
+            Block b = getWorld().getBlockState(newC).getBlock();
             if (b == GeneratorSetup.generatorBlock) {
-                GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) WorldHelper.getTileAt(getWorld(), newC);
+                GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) getWorld().getTileEntity(newC);
                 int networkId = generatorTileEntity.getNetworkId();
                 if (networkId != -1 && !networks.contains(networkId)) {
                     networks.add(networkId);
@@ -171,7 +170,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
         startup--;
         if (startup <= 0) {
             startup = 0;
-            GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) WorldHelper.getTileAt(getWorld(), coordinate);
+            GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) getWorld().getTileEntity(coordinate);
             generatorTileEntity.activate(true);
         }
         active = network.isActive();
@@ -203,7 +202,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
         shutdown = network.getShutdownCounter();
         if (network.isActive() || network.getStartupCounter() != 0) {
             shutdown = GeneratorConfiguration.shutdownTime;
-            GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) WorldHelper.getTileAt(getWorld(), coordinate);
+            GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) getWorld().getTileEntity(coordinate);
             generatorTileEntity.activate(false);
         }
         shutdown--;

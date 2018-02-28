@@ -1,6 +1,5 @@
 package mcjty.deepresonance.network;
 
-import elec332.core.world.WorldHelper;
 import io.netty.buffer.ByteBuf;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
@@ -42,7 +41,7 @@ public class PacketGetCrystalInfo implements IMessage {
 
         private void handle(PacketGetCrystalInfo message, MessageContext ctx) {
             World world = ctx.getServerHandler().player.getEntityWorld();
-            TileEntity tileEntity = WorldHelper.getTileAt(world, message.pos);
+            TileEntity tileEntity = world.getTileEntity(message.pos);
             if (tileEntity instanceof ResonatingCrystalTileEntity) {
                 ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
                 PacketReturnCrystalInfo packet = new PacketReturnCrystalInfo(resonatingCrystalTileEntity.getRfPerTick(), resonatingCrystalTileEntity.getPower());

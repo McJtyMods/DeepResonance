@@ -2,7 +2,6 @@ package mcjty.deepresonance.blocks.generator;
 
 import cofh.redstoneflux.api.IEnergyProvider;
 import com.google.common.collect.Sets;
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.lib.compat.RedstoneFluxCompatibility;
@@ -36,9 +35,9 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         Set<Integer> adjacentGeneratorIds = new HashSet<Integer>();
         for (EnumFacing direction : EnumFacing.VALUES) {
             BlockPos pos = getPos().offset(direction);
-            Block block = WorldHelper.getBlockAt(getWorld(), pos);
+            Block block = getWorld().getBlockState(pos).getBlock();
             if (block == GeneratorSetup.generatorBlock) {
-                GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) WorldHelper.getTileAt(getWorld(), pos);
+                GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) getWorld().getTileEntity(pos);
                 adjacentGeneratorIds.add(generatorTileEntity.getNetworkId());
             }
         }
@@ -81,7 +80,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         done.add(c);
 
         DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(getWorld());
-        GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) WorldHelper.getTileAt(getWorld(), c);
+        GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) getWorld().getTileEntity(c);
         int oldNetworkId = generatorTileEntity.getNetworkId();
         if (oldNetworkId != newId) {
             if (oldNetworkId != -1) {
@@ -96,7 +95,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         for (EnumFacing direction : EnumFacing.VALUES) {
             BlockPos newC = c.offset(direction);
             if (!done.contains(newC)) {
-                Block block = WorldHelper.getBlockAt(getWorld(), newC);
+                Block block = getWorld().getBlockState(newC).getBlock();
                 if (block == GeneratorSetup.generatorBlock) {
                     setBlocksToNetwork(newC, done, newId);
                 }
@@ -128,7 +127,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         // Clear all networks adjacent to this one.
         for (EnumFacing direction : EnumFacing.VALUES) {
             BlockPos newC = getPos().offset(direction);
-            Block block = WorldHelper.getBlockAt(getWorld(), newC);
+            Block block = getWorld().getBlockState(newC).getBlock();
             if (block == GeneratorSetup.generatorBlock) {
                 Set<BlockPos> done = Sets.newHashSet();
                 done.add(pos);
@@ -140,9 +139,9 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         int idToUse = networkId;
         for (EnumFacing direction : EnumFacing.VALUES) {
             BlockPos newC = getPos().offset(direction);
-            Block block = WorldHelper.getBlockAt(getWorld(), newC);
+            Block block = getWorld().getBlockState(newC).getBlock();
             if (block == GeneratorSetup.generatorBlock) {
-                GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) WorldHelper.getTileAt(getWorld(), newC);                if (generatorTileEntity.getNetworkId() == -1) {
+                GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) getWorld().getTileEntity(newC);                if (generatorTileEntity.getNetworkId() == -1) {
                     if (idToUse == -1) {
                         idToUse = generatorNetwork.newChannel();
                     }
@@ -161,9 +160,9 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         int remainder = totalEnergy % totalBlocks;
         for (EnumFacing direction : EnumFacing.VALUES) {
             BlockPos newC = getPos().offset(direction);
-            Block block = WorldHelper.getBlockAt(getWorld(), newC);
+            Block block = getWorld().getBlockState(newC).getBlock();
             if (block == GeneratorSetup.generatorBlock) {
-                GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) WorldHelper.getTileAt(getWorld(), newC);
+                GeneratorTileEntity generatorTileEntity = (GeneratorTileEntity) getWorld().getTileEntity(newC);
                 DRGeneratorNetwork.Network network = generatorTileEntity.getNetwork();
                 if (network.getEnergy() == -1) {
                     network.setEnergy(energy * network.getGeneratorBlocks() + remainder);
@@ -216,7 +215,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         for (EnumFacing direction : EnumFacing.VALUES) {
             BlockPos newC = c.offset(direction);
             if (!done.contains(newC)) {
-                Block block = WorldHelper.getBlockAt(getWorld(), newC);
+                Block block = getWorld().getBlockState(newC).getBlock();
                 if (block == GeneratorSetup.generatorBlock) {
                     activateBlocks(newC, done, active);
                 }
@@ -253,7 +252,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
 
         for (int i = 0 ; i < 6 ; i++) {
             BlockPos pos = getPos().offset(EnumFacing.VALUES[i]);
-            TileEntity te = WorldHelper.getTileAt(getWorld(), pos);
+            TileEntity te = getWorld().getTileEntity(pos);
             if (EnergyTools.isEnergyTE(te)) {
                 EnumFacing opposite = EnumFacing.VALUES[i].getOpposite();
                 int rfToGive;

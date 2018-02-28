@@ -1,6 +1,5 @@
 package mcjty.deepresonance.blocks.laser;
 
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.lens.LensSetup;
@@ -153,7 +152,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         consumeEnergy(ConfigMachines.Laser.rfUsePerCatalyst);
         crystalLiquid -= ConfigMachines.Laser.crystalLiquidPerCatalyst;
 
-        TileEntity te = WorldHelper.getTileAt(getWorld(), tankCoordinate);
+        TileEntity te = getWorld().getTileEntity(tankCoordinate);
         if (te instanceof TileTank) {
             TileTank tileTank = (TileTank) te;
             if (validRCLTank(tileTank)) {
@@ -341,7 +340,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
             return null;
         }
         BlockPos shouldBeLens = shouldBeAir.offset(direction);
-        Block lensBlock = WorldHelper.getBlockAt(getWorld(), shouldBeLens);
+        Block lensBlock = getWorld().getBlockState(shouldBeLens).getBlock();
         if (lensBlock != LensSetup.lensBlock) {
             return null;
         }

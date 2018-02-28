@@ -1,6 +1,5 @@
 package mcjty.deepresonance.gui;
 
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.items.manual.GuiDeepResonanceManual;
 import mcjty.lib.container.GenericBlock;
 import net.minecraft.block.Block;
@@ -29,10 +28,10 @@ public class GuiProxy implements IGuiHandler {
         if (guiID == GUI_MANUAL_MAIN) {
             return null;
         } else {
-            Block block = WorldHelper.getBlockAt(world, pos);
+            Block block = world.getBlockState(pos).getBlock();
             if (block instanceof GenericBlock) {
                 GenericBlock genericBlock = (GenericBlock) block;
-                TileEntity te = WorldHelper.getTileAt(world, pos);
+                TileEntity te = world.getTileEntity(pos);
                 return genericBlock.createServerContainer(entityPlayer, te);
             }
             return null;
@@ -45,10 +44,10 @@ public class GuiProxy implements IGuiHandler {
         if (guiID == GUI_MANUAL_MAIN) {
             return new GuiDeepResonanceManual();
         }  else {
-            Block block = WorldHelper.getBlockAt(world, pos);
+            Block block = world.getBlockState(pos).getBlock();
             if (block instanceof GenericBlock) {
                 GenericBlock genericBlock = (GenericBlock) block;
-                TileEntity te = WorldHelper.getTileAt(world, pos);
+                TileEntity te = world.getTileEntity(pos);
                 return genericBlock.createClientGui(entityPlayer, te);
             }
             return null;
