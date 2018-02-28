@@ -151,7 +151,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
         if (cooldown < microTicksLeft) {
             // We have less then 1 tick of cooldown. So that means we only
             // have to increase resistance for the actual cooldown period
-            resistance += microTicksLeft - cooldown;
+            resistance += (microTicksLeft - cooldown) / 5;
             if (resistance > SuperGenerationConfiguration.maxResistance) {
                 resistance = SuperGenerationConfiguration.maxResistance;
             }
@@ -207,7 +207,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
             }
         } else {
             // Otherwise we can decrease our resistance a bit
-            resistance -= 5000;// @todo SuperGenerationConfiguration.resistanceDecreasePerPulse;
+            resistance -= 1000;// @todo SuperGenerationConfiguration.resistanceDecreasePerPulse;
             if (resistance < 1) {
                 resistance = 1; // @todo cap?
             }
@@ -296,8 +296,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
         // If we are super generating then we modify the RF here. To see that we're doing this we
         // can basically check our resistance value
         if (resistance < SuperGenerationConfiguration.maxResistance) {
-            float factor = (float) resistance / SuperGenerationConfiguration.maxResistance;
-            return (int) (rfPerTick / factor);
+            return (int) (rfPerTick * SuperGenerationConfiguration.maxResistance / (float) resistance);
         }
 
         return rfPerTick;
