@@ -115,7 +115,7 @@ public class DeepWorldGenerator implements IWorldGenerator {
                     }
                 }
                 if (!air) {
-                    if (WorldHelper.getBlockAt(world, pos) == spawnOn) {
+                    if (world.getBlockState(pos).getBlock() == spawnOn) {
                         if (WorldGenConfiguration.verboseSpawn) {
                             Logging.log("Spawned a crystal at: " + x + "," + y + "," + z);
                         }

@@ -4,12 +4,12 @@ import elec332.core.api.client.IIconRegistrar;
 import elec332.core.api.client.ITextureLoader;
 import elec332.core.util.PlayerHelper;
 import elec332.core.world.WorldHelper;
-import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.client.DRResourceLocation;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.deepresonance.network.DRMessages;
 import mcjty.deepresonance.network.PacketGetTankInfo;
 import mcjty.lib.container.EmptyContainer;
 import mcjty.lib.varia.FluidTools;
@@ -165,7 +165,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
         }
         if (System.currentTimeMillis() - lastTime > 100) {
             lastTime = System.currentTimeMillis();
-            DeepResonance.networkHandler.sendToServer(new PacketGetTankInfo(tankTile.getPos()));
+            DRMessages.INSTANCE.sendToServer(new PacketGetTankInfo(tankTile.getPos()));
         }
         return currentTip;
     }
@@ -174,7 +174,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
 
     @Override
     public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos) {
-        TileEntity tile = WorldHelper.getTileAt(world, pos);
+        TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileTank) {
             TileTank tank = (TileTank) tile;
             if (tank.getTank() != null) {
@@ -191,7 +191,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
 
     @Override
     public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
-        TileEntity tile = WorldHelper.getTileAt(world, pos);
+        TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileTank) {
             ((TileTank) tile).onNeighborChange();
         }
@@ -201,7 +201,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
         super.onBlockHarvested(worldIn, pos, state, player);
         if (PlayerHelper.isPlayerInCreative(player)){
-            TileEntity tile = WorldHelper.getTileAt(worldIn, pos);
+            TileEntity tile = worldIn.getTileEntity(pos);
             if (tile instanceof TileTank) {
                 ItemStack stack = new ItemStack(Item.getItemFromBlock(this));
                 NBTTagCompound tagCompound = new NBTTagCompound();
@@ -214,7 +214,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        TileEntity tile = WorldHelper.getTileAt(world, pos);
+        TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileTank){
             TileTank tank = (TileTank)tile;
 
@@ -252,7 +252,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
             tank.markDirty();
             WorldHelper.markBlockForUpdate(world, pos);
             world.notifyNeighborsOfStateChange(pos, this, false);
-            WorldHelper.markBlockForRenderUpdate(world, pos);
+            world.markBlockRangeForRenderUpdate(pos, pos);
             return true;
         }
         return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
@@ -306,7 +306,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
 
     @Override
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-        TileEntity tile = WorldHelper.getTileAt(world, pos);
+        TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileTank){
             TileTank tank = (TileTank) tile;
             if (tank.getClientRenderFluid() != null) {
@@ -355,7 +355,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
 
     @Override
     public boolean shouldSideBeRendered(IBlockState state, IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
-        return WorldHelper.getBlockAt(worldIn, pos.offset(side)) != this;
+        return worldIn.getBlockState(pos.offset(side)).getBlock() != this;
     }
 
     @Override

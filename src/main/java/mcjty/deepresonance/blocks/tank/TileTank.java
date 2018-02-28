@@ -181,7 +181,7 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
         for (EnumFacing facing : EnumFacing.VALUES){
             ITankHook tankHook = hookMap.get(facing);
             BlockPos pos = getPos().offset(facing);
-            TileEntity tile = WorldHelper.chunkLoaded(getWorld(), pos) ? WorldHelper.getTileAt(getWorld(), pos) : null;
+            TileEntity tile = WorldHelper.chunkLoaded(getWorld(), pos) ? getWorld().getTileEntity(pos) : null;
             if (((tile == null) != (tankHook == null)) || (tile != tankHook)){
                 hookMap.remove(facing);
                 if (tile != null){
@@ -216,7 +216,7 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
     }
 
     private void initLoaded(EnumFacing facing){
-        TileEntity tile = WorldHelper.getTileAt(getWorld(), getPos().offset(facing));
+        TileEntity tile = getWorld().getTileEntity(getPos().offset(facing));
         if (tile instanceof ITankHook){
             tankHooks.put(facing, (ITankHook) tile);
             ((ITankHook) tile).hook(this, facing.getOpposite());
@@ -451,7 +451,7 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
                         if (!WorldHelper.chunkLoaded(world, e.getKey())){
                             continue;
                         }
-                        TileEntity tile = WorldHelper.getTileAt(world, e.getKey());
+                        TileEntity tile = world.getTileEntity(e.getKey());
                         if (tile instanceof TileTank){
                             ((TileTank) tile).initLoaded(e.getValue());
                         }

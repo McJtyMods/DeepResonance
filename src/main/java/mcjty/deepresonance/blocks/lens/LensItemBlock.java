@@ -1,6 +1,5 @@
 package mcjty.deepresonance.blocks.lens;
 
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.tank.TankSetup;
 import mcjty.lib.container.GenericBlock;
 import mcjty.lib.container.GenericItemBlock;
@@ -27,7 +26,7 @@ public class LensItemBlock extends GenericItemBlock {
             return false;
         }
         direction = direction.getOpposite();
-        Block block = WorldHelper.getBlockAt(world, pos.offset(direction));
+        Block block = world.getBlockState(pos.offset(direction)).getBlock();
         if (block != TankSetup.tank) {
             if (world.isRemote) {
                 Logging.warn(player, "You can only place this against a tank!");

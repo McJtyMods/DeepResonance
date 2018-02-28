@@ -1,7 +1,6 @@
 package mcjty.deepresonance.boom;
 
 import elec332.core.explosion.Elexplosion;
-import elec332.core.world.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -35,7 +34,7 @@ public class TestExplosion extends Elexplosion{
                         BlockPos targetPosition = this.getLocation().add(x, y, z);
                         double dist = Math.sqrt(getLocation().distanceSq(targetPosition));
                         if(dist < this.getRadius()) {
-                            Block block = WorldHelper.getBlockAt(this.getWorld(), targetPosition);
+                            Block block = this.getWorld().getBlockState(targetPosition).getBlock();
                             IBlockState state = this.getWorld().getBlockState(targetPosition);
                             if(block != null && !block.isAir(state, this.getWorld(), targetPosition) && block.getBlockHardness(state, getWorld(), targetPosition) > 0 && (dist < (this.getRadius() - 1.0F) || this.getWorld().rand.nextFloat() > 0.7D)) {
                                 block.onBlockExploded(getWorld(), targetPosition, this);

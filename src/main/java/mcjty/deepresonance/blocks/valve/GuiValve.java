@@ -35,7 +35,7 @@ public class GuiValve extends GenericGuiContainer<ValveTileEntity> {
     private ImageChoiceLabel redstoneMode;
 
     public GuiValve(ValveTileEntity valveTileEntity, ValveContainer container) {
-        super(DeepResonance.instance, DRMessages.networkWrapper, valveTileEntity, container, 0, "valve");
+        super(DeepResonance.instance, DRMessages.INSTANCE, valveTileEntity, container, 0, "valve");
 
         xSize = VALVE_WIDTH;
         ySize = VALVE_HEIGHT;
@@ -53,7 +53,7 @@ public class GuiValve extends GenericGuiContainer<ValveTileEntity> {
 
     private void changeRedstoneMode() {
         tileEntity.setRSMode(RedstoneMode.values()[redstoneMode.getCurrentChoiceIndex()]);
-        sendServerCommand(DRMessages.networkWrapper, ValveTileEntity.CMD_RSMODE, new Argument("rs", RedstoneMode.values()[redstoneMode.getCurrentChoiceIndex()].getDescription()));
+        sendServerCommand(DRMessages.INSTANCE, ValveTileEntity.CMD_RSMODE, new Argument("rs", RedstoneMode.values()[redstoneMode.getCurrentChoiceIndex()].getDescription()));
     }
 
     @Override
@@ -151,7 +151,7 @@ public class GuiValve extends GenericGuiContainer<ValveTileEntity> {
         tileEntity.setMinStrength(strength / 100.0f);
         tileEntity.setMinEfficiency(efficiency / 100.0f);
         tileEntity.setMaxMb(maxMb);
-        sendServerCommand(DRMessages.networkWrapper, ValveTileEntity.CMD_SETTINGS,
+        sendServerCommand(DRMessages.INSTANCE, ValveTileEntity.CMD_SETTINGS,
                 new Argument("purity", purity / 100.0f),
                 new Argument("strength", strength / 100.0f),
                 new Argument("efficiency", efficiency / 100.0f),

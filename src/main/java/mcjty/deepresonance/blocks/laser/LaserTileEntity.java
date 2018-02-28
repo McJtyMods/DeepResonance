@@ -1,6 +1,5 @@
 package mcjty.deepresonance.blocks.laser;
 
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.lens.LensSetup;
@@ -8,6 +7,7 @@ import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.deepresonance.network.DRMessages;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
@@ -153,7 +153,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         consumeEnergy(ConfigMachines.Laser.rfUsePerCatalyst);
         crystalLiquid -= ConfigMachines.Laser.crystalLiquidPerCatalyst;
 
-        TileEntity te = WorldHelper.getTileAt(getWorld(), tankCoordinate);
+        TileEntity te = getWorld().getTileEntity(tankCoordinate);
         if (te instanceof TileTank) {
             TileTank tileTank = (TileTank) te;
             if (validRCLTank(tileTank)) {
@@ -341,7 +341,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
             return null;
         }
         BlockPos shouldBeLens = shouldBeAir.offset(direction);
-        Block lensBlock = WorldHelper.getBlockAt(getWorld(), shouldBeLens);
+        Block lensBlock = getWorld().getBlockState(shouldBeLens).getBlock();
         if (lensBlock != LensSetup.lensBlock) {
             return null;
         }
@@ -354,7 +354,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     public void requestCrystalLiquidFromServer() {
-        DeepResonance.networkHandler.sendToServer(new PacketRequestIntegerFromServer(DeepResonance.MODID, pos,
+        DRMessages.INSTANCE.sendToServer(new PacketRequestIntegerFromServer(DeepResonance.MODID, pos,
                                                                                                          CMD_GETLIQUID,
                                                                                                          CLIENTCMD_GETLIQUID));
     }

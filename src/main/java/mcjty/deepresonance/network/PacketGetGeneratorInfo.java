@@ -1,7 +1,6 @@
 package mcjty.deepresonance.network;
 
 import io.netty.buffer.ByteBuf;
-import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -46,7 +45,7 @@ public class PacketGetGeneratorInfo implements IMessage {
             }
 
             PacketReturnGeneratorInfo packet = new PacketReturnGeneratorInfo(message.networkId, network.getEnergy(), network.getGeneratorBlocks(), network.getLastRfPerTick());
-            DeepResonance.networkHandler.sendTo(packet, ctx.getServerHandler().player);
+            DRMessages.INSTANCE.sendTo(packet, ctx.getServerHandler().player);
         }
     }
 }

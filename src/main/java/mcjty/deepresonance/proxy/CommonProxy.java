@@ -19,6 +19,7 @@ import mcjty.deepresonance.worldgen.WorldGenConfiguration;
 import mcjty.deepresonance.worldgen.WorldTickHandler;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.base.GeneralConfig;
+import mcjty.lib.network.PacketHandler;
 import mcjty.lib.varia.WrenchChecker;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -29,6 +30,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+
 import org.apache.logging.log4j.Level;
 
 import java.util.concurrent.Callable;
@@ -45,7 +48,9 @@ public abstract class CommonProxy {
         mainConfig = DeepResonance.config;
         readMainConfig();
 
-        DRMessages.registerNetworkMessages();
+        SimpleNetworkWrapper network = PacketHandler.registerMessages(DeepResonance.MODID, "deepresonance");
+        DRMessages.registerNetworkMessages(network);
+
         ModItems.init();
         ModBlocks.init();
         WorldGen.init();

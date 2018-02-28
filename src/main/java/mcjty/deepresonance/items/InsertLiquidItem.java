@@ -1,6 +1,5 @@
 package mcjty.deepresonance.items;
 
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import net.minecraft.client.util.ITooltipFlag;
@@ -36,7 +35,7 @@ public class InsertLiquidItem extends GenericDRItem {
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
-            TileEntity te = WorldHelper.getTileAt(world, pos);
+            TileEntity te = world.getTileEntity(pos);
             if (te instanceof TileTank && ((TileTank) te).getTank() != null) {
                 TileTank tileTank = (TileTank) te;
                 FluidStack fluidStack = LiquidCrystalFluidTagData.makeLiquidCrystalStack(100, 1.0f, 0.1f, 0.1f, 0.1f);

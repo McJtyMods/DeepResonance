@@ -1,7 +1,6 @@
 package mcjty.deepresonance.blocks.tank;
 
 import elec332.core.client.RenderHelper;
-import elec332.core.world.WorldHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -184,7 +183,7 @@ public class TankTESR extends TileEntitySpecialRenderer<TileTank> {
     }
 
     private boolean doRenderToSide(World world, int x, int y ,int z, TileTank tank){
-        TileEntity tile = WorldHelper.getTileAt(world, new BlockPos(x, y, z));
+        TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
         return !(tile instanceof TileTank && ((TileTank)tile).getClientRenderFluid() == tank.getClientRenderFluid());
     }
 }

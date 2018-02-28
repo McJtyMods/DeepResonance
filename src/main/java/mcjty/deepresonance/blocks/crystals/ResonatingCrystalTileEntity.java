@@ -1,6 +1,5 @@
 package mcjty.deepresonance.blocks.crystals;
 
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.deepresonance.config.ConfigMachines;
@@ -360,8 +359,8 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
     }
 
     public static void spawnCrystal(EntityPlayer player, World world, BlockPos pos, int purity, int strength, int efficiency, int power) {
-        WorldHelper.setBlockState(world, pos, ModBlocks.resonatingCrystalBlock.getStateFromMeta(0), 3);
-        TileEntity te = WorldHelper.getTileAt(world, pos);
+        world.setBlockState(pos, ModBlocks.resonatingCrystalBlock.getStateFromMeta(0), 3);
+        TileEntity te = world.getTileEntity(pos);
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
             resonatingCrystalTileEntity.setPurity(purity);
@@ -382,8 +381,8 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
     // Special == 3, best non-overcharged
     // Special == 4, almost depleted
     public static void spawnRandomCrystal(World world, Random random, BlockPos pos, int special) {
-        WorldHelper.setBlockState(world, pos, ModBlocks.resonatingCrystalBlock.getStateFromMeta(0), 3);
-        TileEntity te = WorldHelper.getTileAt(world, pos);
+        world.setBlockState(pos, ModBlocks.resonatingCrystalBlock.getStateFromMeta(0), 3);
+        TileEntity te = world.getTileEntity(pos);
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
             if (special >= 5) {
@@ -406,8 +405,8 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
     }
 
     public static void spawnRandomCrystal(World world, Random random, BlockPos pos, float str, float pow, float eff, float pur) {
-        WorldHelper.setBlockState(world, pos, ModBlocks.resonatingCrystalBlock.getStateFromMeta(0), 3);
-        TileEntity te = WorldHelper.getTileAt(world, pos);
+        world.setBlockState(pos, ModBlocks.resonatingCrystalBlock.getStateFromMeta(0), 3);
+        TileEntity te = world.getTileEntity(pos);
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
             resonatingCrystalTileEntity.setStrength(Math.min(100.0f, random.nextFloat() * str * 3.0f + 0.01f));

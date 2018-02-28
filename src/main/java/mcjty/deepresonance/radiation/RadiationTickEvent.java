@@ -210,10 +210,10 @@ public class RadiationTickEvent {
                     double str = (eventradius-d) / eventradius;
                     currentPos = currentPos.setPos(x, y, z);
 
-                    Block block = WorldHelper.getBlockAt(world, currentPos);
+                    Block block = world.getBlockState(currentPos).getBlock();
                     if (block == Blocks.DIRT || block == Blocks.FARMLAND || block == Blocks.GRASS) {
                         if (random.nextFloat() < poisonBlockChance * str) {
-                            WorldHelper.setBlockState(world, currentPos, ModBlocks.poisonedDirtBlock.getDefaultState(), 2);
+                            world.setBlockState(currentPos, ModBlocks.poisonedDirtBlock.getDefaultState(), 2);
                         }
                     } else if (block.isLeaves(world.getBlockState(currentPos), world, currentPos) || block instanceof IPlantable) {
                         if (random.nextFloat() < removeLeafChance * str) {
@@ -228,7 +228,7 @@ public class RadiationTickEvent {
 //                                Logging.logDebug("Set fire at: " + x + "," + y + "," + z);
 //                                System.out.println("RadiationTickEvent.handleDestructionEvent: FIRE");
 //                                System.out.flush();
-//                                WorldHelper.setBlockState(world, currentPos, Blocks.fire.getDefaultState(), 2);
+//                                world.setBlockState(currentPos, Blocks.fire.getDefaultState(), 2);
 //                            }
 //                        }
                     }

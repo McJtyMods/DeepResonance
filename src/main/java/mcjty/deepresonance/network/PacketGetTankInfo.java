@@ -1,8 +1,6 @@
 package mcjty.deepresonance.network;
 
-import elec332.core.world.WorldHelper;
 import io.netty.buffer.ByteBuf;
-import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.lib.network.NetworkTools;
@@ -43,11 +41,11 @@ public class PacketGetTankInfo implements IMessage {
 
         private void handle(PacketGetTankInfo message, MessageContext ctx) {
             World world = ctx.getServerHandler().player.getEntityWorld();
-            TileEntity tileEntity = WorldHelper.getTileAt(world, message.pos);
+            TileEntity tileEntity = world.getTileEntity(message.pos);
             if (tileEntity instanceof TileTank) {
                 TileTank tileTank = (TileTank) tileEntity;
                 PacketReturnTankInfo packet = new PacketReturnTankInfo(tileTank.getFluidAmount(), tileTank.getCapacity(), DRFluidRegistry.getFluidName(tileTank.getFluid()), tileTank.getFluidTag());
-                DeepResonance.networkHandler.sendTo(packet, ctx.getServerHandler().player);
+                DRMessages.INSTANCE.sendTo(packet, ctx.getServerHandler().player);
             }
         }
 

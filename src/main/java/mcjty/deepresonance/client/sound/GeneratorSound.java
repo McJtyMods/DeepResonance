@@ -1,6 +1,5 @@
 package mcjty.deepresonance.client.sound;
 
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.gencontroller.GeneratorControllerSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
 import net.minecraft.block.Block;
@@ -40,7 +39,7 @@ public class GeneratorSound extends MovingSound {
 
     @Override
     public void update() {
-        Block block = WorldHelper.getBlockAt(world, pos);
+        Block block = world.getBlockState(pos).getBlock();
         if (block != GeneratorControllerSetup.generatorControllerBlock) {
             donePlaying = true;
             return;

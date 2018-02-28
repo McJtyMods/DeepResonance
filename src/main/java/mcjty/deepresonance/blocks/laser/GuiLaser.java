@@ -31,7 +31,7 @@ public class GuiLaser extends GenericGuiContainer<LaserTileEntity> {
     private static final ResourceLocation iconLocation = new ResourceLocation(DeepResonance.MODID, "textures/gui/laser.png");
 
     public GuiLaser(LaserTileEntity laserTileEntity, LaserContainer container) {
-        super(DeepResonance.instance, DRMessages.networkWrapper, laserTileEntity, container, 0, "laser");
+        super(DeepResonance.instance, DRMessages.INSTANCE, laserTileEntity, container, 0, "laser");
         laserTileEntity.setCurrentRF(laserTileEntity.getEnergyStored());
 
         xSize = LASER_WIDTH;

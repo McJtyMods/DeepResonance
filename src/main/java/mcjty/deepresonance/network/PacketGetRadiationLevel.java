@@ -1,7 +1,6 @@
 package mcjty.deepresonance.network;
 
 import io.netty.buffer.ByteBuf;
-import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.items.RadiationMonitorItem;
 import mcjty.lib.varia.GlobalCoordinate;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -52,7 +51,7 @@ public class PacketGetRadiationLevel implements IMessage {
             World world = player.getEntityWorld();
             float strength = RadiationMonitorItem.calculateRadiationStrength(world, message.coordinate);
             PacketReturnRadiation packet = new PacketReturnRadiation(strength);
-            DeepResonance.networkHandler.sendTo(packet, ctx.getServerHandler().player);
+            DRMessages.INSTANCE.sendTo(packet, ctx.getServerHandler().player);
         }
 
     }

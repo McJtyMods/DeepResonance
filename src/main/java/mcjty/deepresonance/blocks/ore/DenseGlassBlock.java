@@ -1,6 +1,5 @@
 package mcjty.deepresonance.blocks.ore;
 
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -49,7 +48,7 @@ public class DenseGlassBlock extends Block {
     @SideOnly(Side.CLIENT)
     @Override
     public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
-        Block block = WorldHelper.getBlockAt(world, pos.offset(side));
+        Block block = world.getBlockState(pos.offset(side)).getBlock();
         return block != this && super.shouldSideBeRendered(state, world, pos, side);
     }
 
