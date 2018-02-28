@@ -2,7 +2,6 @@ package mcjty.deepresonance;
 
 import elec332.core.config.ConfigWrapper;
 import elec332.core.main.ElecCoreRegistrar;
-import elec332.core.util.LoadTimer;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.commands.CommandDRGen;
 import mcjty.deepresonance.compat.CompatHandler;
@@ -59,7 +58,6 @@ public class DeepResonance implements ModBase {
     public static Configuration versionConfig;
     public static CompatHandler compatHandler;
     public static ConfigWrapper configWrapper;
-    private static LoadTimer loadTimer;
 
     public boolean rftools = false;
     public boolean rftoolsControl = false;
@@ -106,8 +104,6 @@ public class DeepResonance implements ModBase {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
         logger = e.getModLog();
-        loadTimer = new LoadTimer(logger, "DeepResonance");
-        loadTimer.startPhase(e);
 
         rftools = Loader.isModLoaded("rftools");
         rftoolsControl = Loader.isModLoaded("rftoolscontrol");
@@ -152,7 +148,6 @@ public class DeepResonance implements ModBase {
 
         //@todo
 //        FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
-        loadTimer.endPhase(e);
     }
 
 
@@ -167,7 +162,6 @@ public class DeepResonance implements ModBase {
      */
     @Mod.EventHandler
     public void init(FMLInitializationEvent e) {
-        loadTimer.startPhase(e);
         proxy.init(e);
         // @todo compathandler?
 //        compatHandler.init();
@@ -176,7 +170,6 @@ public class DeepResonance implements ModBase {
         if (Loader.isModLoaded("OpenComputers")) {
             OpenComputersIntegration.init();
         }
-        loadTimer.endPhase(e);
     }
 
     @Mod.EventHandler
@@ -191,9 +184,7 @@ public class DeepResonance implements ModBase {
      */
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent e) {
-        loadTimer.startPhase(e);
         proxy.postInit(e);
-        loadTimer.endPhase(e);
     }
 
     @Override
