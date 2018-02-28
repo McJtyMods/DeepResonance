@@ -4,12 +4,12 @@ import elec332.core.api.client.IIconRegistrar;
 import elec332.core.api.client.ITextureLoader;
 import elec332.core.util.PlayerHelper;
 import elec332.core.world.WorldHelper;
-import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.client.DRResourceLocation;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.deepresonance.network.DRMessages;
 import mcjty.deepresonance.network.PacketGetTankInfo;
 import mcjty.lib.container.EmptyContainer;
 import mcjty.lib.varia.FluidTools;
@@ -165,7 +165,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
         }
         if (System.currentTimeMillis() - lastTime > 100) {
             lastTime = System.currentTimeMillis();
-            DeepResonance.networkHandler.sendToServer(new PacketGetTankInfo(tankTile.getPos()));
+            DRMessages.INSTANCE.sendToServer(new PacketGetTankInfo(tankTile.getPos()));
         }
         return currentTip;
     }

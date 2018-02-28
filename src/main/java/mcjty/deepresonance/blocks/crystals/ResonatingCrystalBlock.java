@@ -3,10 +3,10 @@ package mcjty.deepresonance.blocks.crystals;
 import elec332.core.explosion.Elexplosion;
 import elec332.core.main.ElecCore;
 import elec332.core.world.WorldHelper;
-import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.deepresonance.boom.TestExplosion;
+import mcjty.deepresonance.network.DRMessages;
 import mcjty.deepresonance.network.PacketGetCrystalInfo;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
@@ -183,7 +183,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
             currenttip.add(TextFormatting.YELLOW + "Power left: " + decimalFormat.format(tooltipPower) + "% (" + tooltipRFTick + " RF/t)");
             if (System.currentTimeMillis() - lastTime > 250) {
                 lastTime = System.currentTimeMillis();
-                DeepResonance.networkHandler.sendToServer(new PacketGetCrystalInfo(tileEntity.getPos()));
+                DRMessages.INSTANCE.sendToServer(new PacketGetCrystalInfo(tileEntity.getPos()));
             }
         }
         return currenttip;

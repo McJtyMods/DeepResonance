@@ -7,6 +7,7 @@ import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.deepresonance.network.DRMessages;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
@@ -353,7 +354,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     public void requestCrystalLiquidFromServer() {
-        DeepResonance.networkHandler.sendToServer(new PacketRequestIntegerFromServer(DeepResonance.MODID, pos,
+        DRMessages.INSTANCE.sendToServer(new PacketRequestIntegerFromServer(DeepResonance.MODID, pos,
                                                                                                          CMD_GETLIQUID,
                                                                                                          CLIENTCMD_GETLIQUID));
     }

@@ -1,9 +1,9 @@
 package mcjty.deepresonance.blocks.generator;
 
-import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
+import mcjty.deepresonance.network.DRMessages;
 import mcjty.deepresonance.network.PacketGetGeneratorInfo;
 import mcjty.lib.container.EmptyContainer;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -81,7 +81,7 @@ public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyCon
             currenttip.add(TextFormatting.GREEN + "ID: " + new DecimalFormat("#.##").format(generatorTileEntity.getNetworkId()));
             if (System.currentTimeMillis() - lastTime > 250) {
                 lastTime = System.currentTimeMillis();
-                DeepResonance.networkHandler.sendToServer(new PacketGetGeneratorInfo(generatorTileEntity.getNetworkId()));
+                DRMessages.INSTANCE.sendToServer(new PacketGetGeneratorInfo(generatorTileEntity.getNetworkId()));
             }
             currenttip.add(TextFormatting.GREEN + "Energy: " + tooltipEnergy + "/" + (tooltipRefCount*GeneratorConfiguration.rfPerGeneratorBlock) + " RF");
             currenttip.add(TextFormatting.YELLOW + Integer.toString(tooltipRfPerTick) + " RF/t");

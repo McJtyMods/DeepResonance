@@ -18,7 +18,7 @@ public class GuiPedestal extends GenericGuiContainer<PedestalTileEntity> {
     private static final ResourceLocation iconLocation = new ResourceLocation(DeepResonance.MODID, "textures/gui/pedestal.png");
 
     public GuiPedestal(PedestalTileEntity pedestalTileEntity, PedestalContainer container) {
-        super(DeepResonance.instance, DRMessages.networkWrapper, pedestalTileEntity, container, 0, "pedestal");
+        super(DeepResonance.instance, DRMessages.INSTANCE, pedestalTileEntity, container, 0, "pedestal");
 
         xSize = PEDESTAL_WIDTH;
         ySize = PEDESTAL_HEIGHT;

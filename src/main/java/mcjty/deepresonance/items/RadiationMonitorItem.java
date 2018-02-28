@@ -2,6 +2,7 @@ package mcjty.deepresonance.items;
 
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.network.DRMessages;
 import mcjty.deepresonance.network.PacketGetRadiationLevel;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.RadiationConfiguration;
@@ -133,7 +134,7 @@ public class RadiationMonitorItem extends GenericDRItem {
             int id = WorldHelper.getDimID(player.getEntityWorld());
             lastTime = System.currentTimeMillis();
             GlobalCoordinate c = new GlobalCoordinate(player.getPosition(), id);
-            DeepResonance.networkHandler.sendToServer(new PacketGetRadiationLevel(c));
+            DRMessages.INSTANCE.sendToServer(new PacketGetRadiationLevel(c));
         }
     }
 }

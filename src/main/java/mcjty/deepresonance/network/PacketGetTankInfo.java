@@ -1,7 +1,6 @@
 package mcjty.deepresonance.network;
 
 import io.netty.buffer.ByteBuf;
-import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.lib.network.NetworkTools;
@@ -46,7 +45,7 @@ public class PacketGetTankInfo implements IMessage {
             if (tileEntity instanceof TileTank) {
                 TileTank tileTank = (TileTank) tileEntity;
                 PacketReturnTankInfo packet = new PacketReturnTankInfo(tileTank.getFluidAmount(), tileTank.getCapacity(), DRFluidRegistry.getFluidName(tileTank.getFluid()), tileTank.getFluidTag());
-                DeepResonance.networkHandler.sendTo(packet, ctx.getServerHandler().player);
+                DRMessages.INSTANCE.sendTo(packet, ctx.getServerHandler().player);
             }
         }
 

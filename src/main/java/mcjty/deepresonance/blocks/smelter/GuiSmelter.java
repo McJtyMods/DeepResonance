@@ -24,7 +24,7 @@ public class GuiSmelter extends GenericGuiContainer<SmelterTileEntity> {
     private static final ResourceLocation iconBurning = new ResourceLocation(DeepResonance.MODID, "textures/gui/burning.png");
 
     public GuiSmelter(SmelterTileEntity smelterTileEntity, SmelterContainer container) {
-        super(DeepResonance.instance, DRMessages.networkWrapper, smelterTileEntity, container, 0, "smelter");
+        super(DeepResonance.instance, DRMessages.INSTANCE, smelterTileEntity, container, 0, "smelter");
         smelterTileEntity.setCurrentRF(smelterTileEntity.getEnergyStored());
 
         xSize = SMELTER_WIDTH;

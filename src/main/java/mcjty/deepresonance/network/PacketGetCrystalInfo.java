@@ -1,7 +1,6 @@
 package mcjty.deepresonance.network;
 
 import io.netty.buffer.ByteBuf;
-import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.lib.network.NetworkTools;
 import net.minecraft.tileentity.TileEntity;
@@ -45,7 +44,7 @@ public class PacketGetCrystalInfo implements IMessage {
             if (tileEntity instanceof ResonatingCrystalTileEntity) {
                 ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
                 PacketReturnCrystalInfo packet = new PacketReturnCrystalInfo(resonatingCrystalTileEntity.getRfPerTick(), resonatingCrystalTileEntity.getPower());
-                DeepResonance.networkHandler.sendTo(packet, ctx.getServerHandler().player);
+                DRMessages.INSTANCE.sendTo(packet, ctx.getServerHandler().player);
             }
         }
     }

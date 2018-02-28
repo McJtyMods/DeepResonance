@@ -25,7 +25,7 @@ public class GuiCrystalizer extends GenericGuiContainer<CrystalizerTileEntity> {
 //    private static final ResourceLocation iconBurning = new ResourceLocation(DeepResonance.MODID, "textures/gui/burning.png");
 
     public GuiCrystalizer(CrystalizerTileEntity crystalizerTileEntity, CrystalizerContainer container) {
-        super(DeepResonance.instance, DRMessages.networkWrapper, crystalizerTileEntity, container, 0, "crystalizer");
+        super(DeepResonance.instance, DRMessages.INSTANCE, crystalizerTileEntity, container, 0, "crystalizer");
         crystalizerTileEntity.setCurrentRF(crystalizerTileEntity.getEnergyStored());
 
         xSize = CRYSTALIZER_WIDTH;

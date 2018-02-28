@@ -8,6 +8,7 @@ import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.deepresonance.network.DRMessages;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
@@ -269,7 +270,7 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
 
     // Request the researching amount from the server. This has to be called on the client side.
     public void requestProgressFromServer() {
-        DeepResonance.networkHandler.sendToServer(new PacketRequestIntegerFromServer(DeepResonance.MODID, pos, CMD_GETPROGRESS, CLIENTCMD_GETPROGRESS));
+        DRMessages.INSTANCE.sendToServer(new PacketRequestIntegerFromServer(DeepResonance.MODID, pos, CMD_GETPROGRESS, CLIENTCMD_GETPROGRESS));
     }
 
     @Override

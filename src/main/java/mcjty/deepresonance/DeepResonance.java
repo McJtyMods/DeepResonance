@@ -1,7 +1,5 @@
 package mcjty.deepresonance;
 
-import elec332.core.api.network.INetworkHandler;
-import elec332.core.api.network.ModNetworkHandler;
 import elec332.core.config.ConfigWrapper;
 import elec332.core.main.ElecCoreRegistrar;
 import elec332.core.util.LoadTimer;
@@ -61,8 +59,6 @@ public class DeepResonance implements ModBase {
     public static Configuration versionConfig;
     public static CompatHandler compatHandler;
     public static ConfigWrapper configWrapper;
-    @ModNetworkHandler
-    public static INetworkHandler networkHandler;
     private static LoadTimer loadTimer;
 
     public boolean rftools = false;
