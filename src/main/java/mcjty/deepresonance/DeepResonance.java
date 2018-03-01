@@ -20,12 +20,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
@@ -55,7 +53,6 @@ public class DeepResonance implements ModBase {
     public static File mainConfigDir;
     public static File modConfigDir;
     public static Configuration config;
-    public static Configuration versionConfig;
     public static CompatHandler compatHandler;
     public static ConfigWrapper configWrapper;
 
@@ -76,27 +73,6 @@ public class DeepResonance implements ModBase {
         FluidRegistry.enableUniversalBucket();
     }
 
-
-    private static final int CONFIG_VERSION = 1;
-
-    private boolean readVersionConfig() {
-        int oldVersion = -1;
-        try {
-            Configuration cfg = versionConfig;
-            cfg.load();
-            oldVersion = cfg.get("version", "version", -1).getInt();
-            cfg.getCategory("version").remove("version");
-            cfg.get("version", "version", CONFIG_VERSION).getInt();
-            if (cfg.hasChanged()) {
-                cfg.save();
-            }
-        } catch (Exception e) {
-            FMLLog.log(Level.ERROR, e, "Problem loading config file!");
-        }
-        return oldVersion != CONFIG_VERSION;
-    }
-
-
     /**
      * Run before anything else. Read your config, create blocks, items, etc, and
      * register them with the GameRegistry.
@@ -114,18 +90,8 @@ public class DeepResonance implements ModBase {
 
         mainConfigDir = e.getModConfigurationDirectory();
         modConfigDir = new File(mainConfigDir.getPath() + File.separator + "deepresonance");
-        versionConfig = new Configuration(new File(modConfigDir, "version.cfg"));
         config = new Configuration(new File(modConfigDir, "main.cfg"));
         File machinesFile = new File(modConfigDir, "machines.cfg");
-
-        if (readVersionConfig()) {
-            try {
-                config.getConfigFile().delete();
-                machinesFile.delete();
-            } catch (Exception ee) {
-                FMLLog.log(Level.WARN, ee, "Could not reset config file!");
-            }
-        }
 
 //        compatHandler = new CompatHandler(config, logger);
 //        compatHandler.addHandler(new ComputerCraftCompatHandler());
