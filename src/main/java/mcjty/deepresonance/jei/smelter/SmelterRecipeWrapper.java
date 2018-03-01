@@ -16,7 +16,7 @@ public class SmelterRecipeWrapper extends BlankRecipeWrapper {
     @Override
     public void getIngredients(IIngredients ingredients) {
         ingredients.setInput(ItemStack.class, new ItemStack(ModBlocks.resonatingOreBlock));
-        FluidStack fluidStack = LiquidCrystalFluidTagData.makeLiquidCrystalStack(ConfigMachines.Smelter.rclPerOre, 1.0f, 0.1f, 0.1f, 0.1f);
+        FluidStack fluidStack = LiquidCrystalFluidTagData.makeLiquidCrystalStack(ConfigMachines.smelter.rclPerOre, 1.0f, 0.1f, 0.1f, 0.1f);
         ingredients.setOutput(FluidStack.class, fluidStack);
     }
 }

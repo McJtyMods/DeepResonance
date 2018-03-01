@@ -38,7 +38,7 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
     private InventoryHelper inventoryHelper = new InventoryHelper(this, SmelterContainer.factory, 1);
 
     public SmelterTileEntity() {
-        super(ConfigMachines.Smelter.rfMaximum, ConfigMachines.Smelter.rfPerTick);
+        super(ConfigMachines.smelter.rfMaximum, ConfigMachines.smelter.rfPerTick);
         checkTanks = true;
     }
 
@@ -73,7 +73,7 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
         if (progress > 0) {
             if (canWork()) {
                 progress--;
-                storage.extractEnergy(ConfigMachines.Smelter.rfPerOre, false);
+                storage.extractEnergy(ConfigMachines.smelter.rfPerOre, false);
                 if (progress == 0) {
                     // Done!
                     stopSmelting();
@@ -108,14 +108,14 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
                 return false;
             }
         }
-        return storage.getEnergyStored() >= ConfigMachines.Smelter.rfPerOre;
+        return storage.getEnergyStored() >= ConfigMachines.smelter.rfPerOre;
     }
 
     private boolean checkTanks(){
         return lavaTank != null && rclTank != null && lavaTank.getTank() != null && rclTank.getTank() != null
                 && DRFluidRegistry.getFluidFromStack(lavaTank.getFluid()) == FluidRegistry.LAVA
                 && lavaTank.getFluidAmount() > lavaTank.getCapacity()*0.25f
-                && rclTank.getTank().fill(new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.Smelter.rclPerOre), false) == ConfigMachines.Smelter.rclPerOre;
+                && rclTank.getTank().fill(new FluidStack(DRFluidRegistry.liquidCrystal, ConfigMachines.smelter.rclPerOre), false) == ConfigMachines.smelter.rclPerOre;
     }
 
     private boolean validSlot(){
@@ -144,15 +144,15 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
             finalPurity = 0.1f;
         }
 
-        lavaTank.getTank().drain(new FluidStack(FluidRegistry.LAVA, ConfigMachines.Smelter.lavaCost), true);
+        lavaTank.getTank().drain(new FluidStack(FluidRegistry.LAVA, ConfigMachines.smelter.lavaCost), true);
 
-        progress = ConfigMachines.Smelter.processTime + (int) ((percentage - 0.5f) * ConfigMachines.Smelter.processTime);
+        progress = ConfigMachines.smelter.processTime + (int) ((percentage - 0.5f) * ConfigMachines.smelter.processTime);
         totalProgress = progress;
     }
 
     private void stopSmelting() {
         if (finalQuality > 0.0f) {
-            FluidStack stack = LiquidCrystalFluidTagData.makeLiquidCrystalStack(ConfigMachines.Smelter.rclPerOre, finalQuality, finalPurity, 0.1f, 0.1f);
+            FluidStack stack = LiquidCrystalFluidTagData.makeLiquidCrystalStack(ConfigMachines.smelter.rclPerOre, finalQuality, finalPurity, 0.1f, 0.1f);
             rclTank.getTank().fill(stack, true);
         }
     }

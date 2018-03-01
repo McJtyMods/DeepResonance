@@ -284,7 +284,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
     }
 
     public static float getTotalPower(float strength, float purity) {
-        return 1000.0f * ConfigMachines.Power.maximumKiloRF * strength / 100.0f * (purity + 30.0f) / 130.0f;
+        return 1000.0f * ConfigMachines.power.maximumKiloRF * strength / 100.0f * (purity + 30.0f) / 130.0f;
     }
 
     public int getRfPerTick() {
@@ -310,7 +310,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
 
 
     public static int getRfPerTick(float efficiency, float purity) {
-        return (int) (ConfigMachines.Power.maximumRFPerTick * efficiency / 100.1f * (purity + 2.0f) / 102.0f + 1);
+        return (int) (ConfigMachines.power.maximumRFPerTick * efficiency / 100.1f * (purity + 2.0f) / 102.0f + 1);
     }
 
     @Override

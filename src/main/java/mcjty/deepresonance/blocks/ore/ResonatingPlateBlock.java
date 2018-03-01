@@ -26,7 +26,7 @@ public class ResonatingPlateBlock extends Block {
         setHardness(3.0f);
         setResistance(5.0f);
         setHarvestLevel("pickaxe", 2);
-        if (ConfigMachines.PlateBlock.radiationStrength > 0) {
+        if (ConfigMachines.plateBlock.radiationStrength > 0) {
             setTickRandomly(true);
         }
         setUnlocalizedName(DeepResonance.MODID + ".resonating_block");
@@ -43,7 +43,7 @@ public class ResonatingPlateBlock extends Block {
 
     @Override
     public void updateTick(World world, BlockPos pos, IBlockState state, Random random) {
-        if (ConfigMachines.PlateBlock.radiationStrength <= 0) {
+        if (ConfigMachines.plateBlock.radiationStrength <= 0) {
             return;
         }
         int powered = world.getStrongPower(pos);
@@ -51,10 +51,10 @@ public class ResonatingPlateBlock extends Block {
             DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
             GlobalCoordinate thisCoordinate = new GlobalCoordinate(pos, WorldHelper.getDimID(world));
             if (radiationManager.getRadiationSource(thisCoordinate) == null) {
-                Logging.log("Created radiation source with radius " + ConfigMachines.PlateBlock.radiationRadius + " and strength " + ConfigMachines.PlateBlock.radiationStrength);
+                Logging.log("Created radiation source with radius " + ConfigMachines.plateBlock.radiationRadius + " and strength " + ConfigMachines.plateBlock.radiationStrength);
             }
             DRRadiationManager.RadiationSource radiationSource = radiationManager.getOrCreateRadiationSource(thisCoordinate);
-            radiationSource.update(ConfigMachines.PlateBlock.radiationRadius, ConfigMachines.PlateBlock.radiationStrength, ConfigMachines.PlateBlock.radiationTicks);
+            radiationSource.update(ConfigMachines.plateBlock.radiationRadius, ConfigMachines.plateBlock.radiationStrength, ConfigMachines.plateBlock.radiationTicks);
             radiationManager.save(world);
         }
     }

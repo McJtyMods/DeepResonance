@@ -445,7 +445,7 @@ public class TileTank extends GenericTileEntity implements IElecCoreNetworkTile 
             @SubscribeEvent
             public void onChunkLoad(ChunkEvent.Load event){
                 Map<BlockPos, EnumFacing> dta = toLoad.remove(event.getChunk().getPos());
-                if (dta != null && ConfigMachines.experimentalChunkBorderFix){
+                if (dta != null && ConfigMachines.general.experimentalChunkBorderFix){
                     World world = event.getWorld();
                     for (Map.Entry<BlockPos, EnumFacing> e : dta.entrySet()){
                         if (!WorldHelper.chunkLoaded(world, e.getKey())){

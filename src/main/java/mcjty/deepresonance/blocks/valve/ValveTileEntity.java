@@ -57,13 +57,13 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
         if (progress > 0) {
             return;
         }
-        progress = ConfigMachines.Valve.ticksPerOperation;
+        progress = ConfigMachines.valve.ticksPerOperation;
 
         if (topTank == null || bottomTank == null || topTank.getTank() == null || bottomTank.getTank() == null) {
             return;
         }
 
-        FluidStack fluidStack = topTank.getTank().drain(ConfigMachines.Valve.rclPerOperation, false);
+        FluidStack fluidStack = topTank.getTank().drain(ConfigMachines.valve.rclPerOperation, false);
         if (fluidStack != null && fillBottomTank(fluidStack.amount)) {
             LiquidCrystalFluidTagData data = LiquidCrystalFluidTagData.fromStack(fluidStack);
             if (data == null) {
@@ -83,12 +83,12 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
                 // We have to check maximum volume
                 int fluidAmount = bottomTank.getFluidAmount();
                 if (fluidAmount < maxMb) {
-                    int toDrain = Math.min(maxMb - fluidAmount, ConfigMachines.Valve.rclPerOperation);
+                    int toDrain = Math.min(maxMb - fluidAmount, ConfigMachines.valve.rclPerOperation);
                     fluidStack = topTank.getTank().drain(toDrain, true);
                     bottomTank.getTank().fill(fluidStack, true);
                 }
             } else {
-                fluidStack = topTank.getTank().drain(ConfigMachines.Valve.rclPerOperation, true);
+                fluidStack = topTank.getTank().drain(ConfigMachines.valve.rclPerOperation, true);
                 bottomTank.getTank().fill(fluidStack, true);
             }
         }

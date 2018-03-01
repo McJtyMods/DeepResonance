@@ -1,6 +1,5 @@
 package mcjty.deepresonance.jei.smelter;
 
-import elec332.core.client.RenderHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.config.ConfigMachines;
 import mezz.jei.api.IGuiHelper;
@@ -11,6 +10,7 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeCategory;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
@@ -61,8 +61,9 @@ public class SmelterRecipeCategory extends BlankRecipeCategory<SmelterRecipeWrap
         super.drawExtras(minecraft);
         slot.draw(minecraft, 20, 32);
         arrow.draw(minecraft, 46, 32);
-        RenderHelper.getMCFontrenderer().drawString("Tank below between", 10, 0, 0xffffffff, true);
-        RenderHelper.getMCFontrenderer().drawString("40% and 60% lava", 10, 10, 0xffffffff, true);
+        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+        fontRenderer.drawString("Tank below between", 10, 0, 0xffffffff, true);
+        fontRenderer.drawString("40% and 60% lava", 10, 10, 0xffffffff, true);
     }
 
     @Override
@@ -76,7 +77,7 @@ public class SmelterRecipeCategory extends BlankRecipeCategory<SmelterRecipeWrap
             tooltip.add(TextFormatting.GREEN + "Strength: 10%");
             tooltip.add(TextFormatting.GREEN + "Efficiency: 10%");
         });
-        fluidGroup.init(0, false, 70, 25, 30, 30, ConfigMachines.Smelter.rclPerOre, true, null);
+        fluidGroup.init(0, false, 70, 25, 30, 30, ConfigMachines.smelter.rclPerOre, true, null);
         fluidGroup.set(0, ingredients.getOutputs(FluidStack.class).get(0));
     }
 }

@@ -1,11 +1,11 @@
 package mcjty.deepresonance.jei.laser;
 
-import elec332.core.client.RenderHelper;
 import mcjty.deepresonance.blocks.laser.InfusingBonus;
 import mcjty.deepresonance.blocks.laser.LaserTileEntity;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -40,11 +40,12 @@ public class LaserRecipeWrapper extends BlankRecipeWrapper {
     }
 
     private void renderStat(String label, InfusingBonus.Modifier modifier, int y) {
-        RenderHelper.getMCFontrenderer().drawString(label, 0, y, 0xffffffff, true);
+        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+        fontRenderer.drawString(label, 0, y, 0xffffffff, true);
         float purityBonus = modifier.getBonus();
-        RenderHelper.getMCFontrenderer().drawString(String.valueOf(purityBonus)+"%", 60, y,
+        fontRenderer.drawString(String.valueOf(purityBonus)+"%", 60, y,
                 purityBonus > 0 ? 0xff006600 : 0xffff0000, false);
-        RenderHelper.getMCFontrenderer().drawString("(" + String.valueOf(modifier.getMaxOrMin()) + ")", 100, y,
+        fontRenderer.drawString("(" + String.valueOf(modifier.getMaxOrMin()) + ")", 100, y,
                 0xff000000, false);
     }
 

@@ -152,9 +152,9 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
         float closestDistance = Float.MAX_VALUE;
 
         int yy = crystalLocation.getY(), xx = crystalLocation.getX(), zz = crystalLocation.getZ();
-        for (int y = yy - ConfigMachines.Collector.maxVerticalCrystalDistance ; y <= yy + ConfigMachines.Collector.maxVerticalCrystalDistance ; y++) {
+        for (int y = yy - ConfigMachines.collector.maxVerticalCrystalDistance ; y <= yy + ConfigMachines.collector.maxVerticalCrystalDistance ; y++) {
             if (y >= 0 && y < getWorld().getHeight()) {
-                int maxhordist = ConfigMachines.Collector.maxHorizontalCrystalDistance;
+                int maxhordist = ConfigMachines.collector.maxHorizontalCrystalDistance;
                 for (int x = xx - maxhordist; x <= xx + maxhordist; x++) {
                     for (int z = zz - maxhordist; z <= zz + maxhordist; z++) {
                         BlockPos pos = new BlockPos(x, y, z);

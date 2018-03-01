@@ -271,9 +271,9 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         int xCoord = getPos().getX();
         int yCoord = getPos().getY();
         int zCoord = getPos().getZ();
-        for (int y = yCoord - ConfigMachines.Collector.maxVerticalCrystalDistance ; y <= yCoord + ConfigMachines.Collector.maxVerticalCrystalDistance ; y++) {
+        for (int y = yCoord - ConfigMachines.collector.maxVerticalCrystalDistance ; y <= yCoord + ConfigMachines.collector.maxVerticalCrystalDistance ; y++) {
             if (y >= 0 && y < getWorld().getHeight()) {
-                int maxhordist = ConfigMachines.Collector.maxHorizontalCrystalDistance;
+                int maxhordist = ConfigMachines.collector.maxHorizontalCrystalDistance;
                 for (int x = xCoord - maxhordist; x <= xCoord + maxhordist; x++) {
                     for (int z = zCoord - maxhordist; z <= zCoord + maxhordist; z++) {
                         if (getWorld().getBlockState(new BlockPos(x, y, z)).getBlock() == ModBlocks.resonatingCrystalBlock) {

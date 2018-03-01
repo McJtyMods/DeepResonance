@@ -1,6 +1,5 @@
 package mcjty.deepresonance.jei.laser;
 
-import elec332.core.client.RenderHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.config.ConfigMachines;
 import mezz.jei.api.IGuiHelper;
@@ -11,6 +10,7 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeCategory;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -55,8 +55,9 @@ public class LaserRecipeCategory extends BlankRecipeCategory<LaserRecipeWrapper>
     public void drawExtras(@Nonnull Minecraft minecraft) {
         super.drawExtras(minecraft);
         slot.draw(minecraft);
-        RenderHelper.getMCFontrenderer().drawString("Per " + ConfigMachines.Laser.rclPerCatalyst + "mb RCL", 24, 0, 0xffffffff, true);
-        RenderHelper.getMCFontrenderer().drawString("and " + ConfigMachines.Laser.crystalLiquidPerCatalyst + "mb crystal", 24, 10, 0xffffffff, true);
+        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+        fontRenderer.drawString("Per " + ConfigMachines.laser.rclPerCatalyst + "mb RCL", 24, 0, 0xffffffff, true);
+        fontRenderer.drawString("and " + ConfigMachines.laser.crystalLiquidPerCatalyst + "mb crystal", 24, 10, 0xffffffff, true);
     }
 
     @Override

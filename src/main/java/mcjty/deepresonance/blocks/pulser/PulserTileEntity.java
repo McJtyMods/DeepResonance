@@ -12,7 +12,7 @@ import net.minecraft.util.math.BlockPos;
 public class PulserTileEntity extends GenericEnergyReceiverTileEntity implements ITickable {
 
     public PulserTileEntity() {
-        super(ConfigMachines.Pulser.rfMaximum, ConfigMachines.Pulser.rfPerTick);
+        super(ConfigMachines.pulser.rfMaximum, ConfigMachines.pulser.rfPerTick);
     }
 
     private int pulsePower = 0;         // Collected pulsePower
@@ -22,7 +22,7 @@ public class PulserTileEntity extends GenericEnergyReceiverTileEntity implements
         if (!world.isRemote) {
             if (powerLevel > 0) {
                 int rf = getEnergyStored();
-                int rfToTransfer = (ConfigMachines.Pulser.rfPerPulse / 15) * powerLevel;
+                int rfToTransfer = (ConfigMachines.pulser.rfPerPulse / 15) * powerLevel;
                 if (rf >= rfToTransfer) {
                     consumeEnergy(rfToTransfer);
                     pulsePower += rfToTransfer;
@@ -30,8 +30,8 @@ public class PulserTileEntity extends GenericEnergyReceiverTileEntity implements
                 }
             }
 
-            if (pulsePower >= ConfigMachines.Pulser.rfPerPulse) {
-                pulsePower -= ConfigMachines.Pulser.rfPerPulse;
+            if (pulsePower >= ConfigMachines.pulser.rfPerPulse) {
+                pulsePower -= ConfigMachines.pulser.rfPerPulse;
                 markDirtyQuick();
                 // Find crystals in area
                 // @todo cache crystals

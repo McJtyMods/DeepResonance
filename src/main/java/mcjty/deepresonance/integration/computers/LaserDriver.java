@@ -40,7 +40,7 @@ public class LaserDriver {
 
             @Callback(doc="function():number; Get the currently stored liquid crystal")
             public Object[] getMaxCrystalLiquid(Context c, Arguments a) {
-                return new Object[]{ConfigMachines.Laser.crystalLiquidMaximum};
+                return new Object[]{ConfigMachines.laser.crystalLiquidMaximum};
             }
 
             @Override

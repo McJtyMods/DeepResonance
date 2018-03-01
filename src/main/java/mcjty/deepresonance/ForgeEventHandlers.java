@@ -19,8 +19,11 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.oredict.OreDictionary;
@@ -70,6 +73,12 @@ public class ForgeEventHandlers {
     public void registerSounds(RegistryEvent.Register<SoundEvent> sounds) {
     }
 
+    @SubscribeEvent
+    public static void onConfigChanged(OnConfigChangedEvent event) {
+        if (event.getModID().equals(DeepResonance.MODID)) {
+            ConfigManager.sync(DeepResonance.MODID, Config.Type.INSTANCE);
+        }
+    }
 
     @SubscribeEvent
     public void onBlockBreakEvent(BlockEvent.BreakEvent event) {

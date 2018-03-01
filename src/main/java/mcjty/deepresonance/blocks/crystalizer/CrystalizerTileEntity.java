@@ -34,7 +34,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
     private InventoryHelper inventoryHelper = new InventoryHelper(this, CrystalizerContainer.factory, 1);
 
     public CrystalizerTileEntity() {
-        super(ConfigMachines.Crystalizer.rfMaximum, ConfigMachines.Crystalizer.rfPerTick);
+        super(ConfigMachines.crystalizer.rfMaximum, ConfigMachines.crystalizer.rfPerTick);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
 
     public static int getTotalProgress() {
         if (totalProgress == 0) {
-            totalProgress = ConfigMachines.Crystalizer.rclPerCrystal / ConfigMachines.Crystalizer.rclPerTick;
+            totalProgress = ConfigMachines.crystalizer.rclPerCrystal / ConfigMachines.crystalizer.rclPerTick;
         }
         return totalProgress;
     }
@@ -73,8 +73,8 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
             return;
         }
 
-        storage.extractEnergy(ConfigMachines.Crystalizer.rfPerRcl, false);
-        FluidStack fluidStack = rclTank.getTank().drain(ConfigMachines.Crystalizer.rclPerTick, true);
+        storage.extractEnergy(ConfigMachines.crystalizer.rfPerRcl, false);
+        FluidStack fluidStack = rclTank.getTank().drain(ConfigMachines.crystalizer.rclPerTick, true);
         LiquidCrystalFluidTagData data = LiquidCrystalFluidTagData.fromStack(fluidStack);
         if (mergedData == null) {
             mergedData = data;
@@ -117,7 +117,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
             return false;
         }
 
-        if (storage.getEnergyStored() < ConfigMachines.Crystalizer.rfPerRcl) {
+        if (storage.getEnergyStored() < ConfigMachines.crystalizer.rfPerRcl) {
             return false;
         }
 
@@ -125,8 +125,8 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
             return false;
         }
 
-        FluidStack fluidStack = rclTank.getTank().drain(ConfigMachines.Crystalizer.rclPerTick, false);
-        if (fluidStack == null || fluidStack.amount != ConfigMachines.Crystalizer.rclPerTick) {
+        FluidStack fluidStack = rclTank.getTank().drain(ConfigMachines.crystalizer.rclPerTick, false);
+        if (fluidStack == null || fluidStack.amount != ConfigMachines.crystalizer.rclPerTick) {
             return false;
         }
 

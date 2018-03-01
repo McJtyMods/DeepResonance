@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import elec332.core.util.FluidTankWrapper;
-import elec332.core.util.NBTHelper;
 import elec332.core.world.DimensionCoordinate;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.tank.TileTank;
@@ -143,7 +142,9 @@ public class TankGrid implements IFluidHandler, IFluidTank {
                 for (DimensionCoordinate loc : list) {
                     TileTank tank = getTank(loc);
                     if (tank != null) {
-                        tank.sendPacket(ID_SETHEIGHT, new NBTHelper().addToTag(filled, "render").serializeNBT());
+                        NBTTagCompound nbt = new NBTTagCompound();
+                        nbt.setFloat("render", filled);
+                        tank.sendPacket(ID_SETHEIGHT, nbt);
                     }
                 }
             }
@@ -281,7 +282,9 @@ public class TankGrid implements IFluidHandler, IFluidTank {
     private void setClientRenderFluid(TileTank tank, Fluid fluid){
         if (tank != null) {
             tank.lastSeenFluid = getStoredFluid();
-            tank.sendPacket(ID_SETFLUID, new NBTHelper().addToTag(DRFluidRegistry.getFluidName(fluid), "fluid").serializeNBT());
+            NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setString("fluid", DRFluidRegistry.getFluidName(fluid));
+            tank.sendPacket(ID_SETFLUID, nbt);
         }
     }
 
