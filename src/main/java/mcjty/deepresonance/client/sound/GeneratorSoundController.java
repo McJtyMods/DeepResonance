@@ -1,7 +1,6 @@
 package mcjty.deepresonance.client.sound;
 
 import com.google.common.collect.Maps;
-import elec332.core.util.RegistryHelper;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.client.DRResourceLocation;
 import mcjty.lib.varia.GlobalCoordinate;
@@ -11,6 +10,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -30,7 +30,7 @@ public final class GeneratorSoundController {
 
     private static SoundEvent registerSound(ResourceLocation rl){
         SoundEvent ret = new SoundEvent(rl).setRegistryName(rl);
-        RegistryHelper.getSoundEventRegistry().register(ret);
+        ForgeRegistries.SOUND_EVENTS.register(ret);
         return ret;
     }
 

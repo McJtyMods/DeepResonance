@@ -2,7 +2,6 @@ package mcjty.deepresonance.blocks.tank;
 
 import elec332.core.api.client.IIconRegistrar;
 import elec332.core.api.client.ITextureLoader;
-import elec332.core.util.PlayerHelper;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
@@ -200,7 +199,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     @Override
     public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
         super.onBlockHarvested(worldIn, pos, state, player);
-        if (PlayerHelper.isPlayerInCreative(player)){
+        if (player.capabilities.isCreativeMode){
             TileEntity tile = worldIn.getTileEntity(pos);
             if (tile instanceof TileTank) {
                 ItemStack stack = new ItemStack(Item.getItemFromBlock(this));
