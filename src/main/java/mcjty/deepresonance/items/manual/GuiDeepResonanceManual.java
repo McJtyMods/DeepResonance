@@ -1,6 +1,5 @@
 package mcjty.deepresonance.items.manual;
 
-import elec332.core.client.RenderHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.events.ButtonEvent;
@@ -137,7 +136,7 @@ public class GuiDeepResonanceManual extends GuiScreen {
             int guiTop = (this.height - this.ySize) / 2;
             int x = Mouse.getEventX() * width / mc.displayWidth;
             int y = height - Mouse.getEventY() * height / mc.displayHeight - 1;
-            drawHoveringText(tooltips, x-guiLeft, y-guiTop, RenderHelper.getMCFontrenderer());
+            drawHoveringText(tooltips, x-guiLeft, y-guiTop, mc.fontRenderer);
         }
     }
 }
