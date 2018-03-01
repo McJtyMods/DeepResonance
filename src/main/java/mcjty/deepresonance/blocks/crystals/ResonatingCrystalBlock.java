@@ -1,11 +1,9 @@
 package mcjty.deepresonance.blocks.crystals;
 
-import elec332.core.explosion.Elexplosion;
 import elec332.core.main.ElecCore;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
-import mcjty.deepresonance.boom.TestExplosion;
 import mcjty.deepresonance.network.DRMessages;
 import mcjty.deepresonance.network.PacketGetCrystalInfo;
 import mcjty.deepresonance.radiation.DRRadiationManager;
@@ -19,6 +17,7 @@ import mcjty.theoneprobe.api.ProbeMode;
 import mcjty.theoneprobe.api.TextStyleClass;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
+import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -197,6 +196,27 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
         super.onBlockExploded(world, pos, explosion);
     }
 
+    private static void explodeHelper(World world, BlockPos location, float radius) {
+        if(!world.isRemote) {
+            Explosion boom = new Explosion(world, null, location.getX(), location.getY(), location.getZ(), radius, false, true);
+            for(int x = (int)(-radius); x < radius; ++x) {
+                for(int y = (int)(-radius); y < radius; ++y) {
+                    for(int z = (int)(-radius); z < radius; ++z) {
+                        BlockPos targetPosition = location.add(x, y, z);
+                        double dist = Math.sqrt(location.distanceSq(targetPosition));
+                        if(dist < radius) {
+                            Block block = world.getBlockState(targetPosition).getBlock();
+                            IBlockState state = world.getBlockState(targetPosition);
+                            if(block != null && !block.isAir(state, world, targetPosition) && block.getBlockHardness(state, world, targetPosition) > 0 && (dist < (radius - 1.0F) || world.rand.nextFloat() > 0.7D)) {
+                                block.onBlockExploded(world, targetPosition, boom);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public static void explode(World world, BlockPos pos, boolean strong) {
         final TileEntity theCrystalTile = world.getTileEntity(pos);
         ElecCore.tickHandler.registerCall(() -> {
@@ -217,13 +237,10 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
                 }
             }
             if (forceMultiplier > 0.001f) {
-                Elexplosion boom = new TestExplosion(world, null, pos.getX(), pos.getY(), pos.getZ(), forceMultiplier);
-                boom.explode();
+                explodeHelper(world, pos, forceMultiplier);
                 if (strong) {
-//                    boom = new TestExplosion(world, null, pos.getX()-15, pos.getY(), pos.getZ(), forceMultiplier);
-//                    boom.explode();
-//                    boom = new TestExplosion(world, null, pos.getX()-15, pos.getY(), pos.getZ(), forceMultiplier);
-//                    boom.explode();
+//                    explodeHelper(world, pos.west(15), forceMultiplier);
+//                    explodeHelper(world, pos.west(15), forceMultiplier);
                 }
             }
         }, world);
