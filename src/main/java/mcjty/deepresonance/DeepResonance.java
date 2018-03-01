@@ -1,11 +1,9 @@
 package mcjty.deepresonance;
 
-import elec332.core.config.ConfigWrapper;
 import elec332.core.main.ElecCoreRegistrar;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.commands.CommandDRGen;
 import mcjty.deepresonance.compat.CompatHandler;
-import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.integration.computers.OpenComputersIntegration;
 import mcjty.deepresonance.items.manual.GuiDeepResonanceManual;
@@ -54,7 +52,6 @@ public class DeepResonance implements ModBase {
     public static File modConfigDir;
     public static Configuration config;
     public static CompatHandler compatHandler;
-    public static ConfigWrapper configWrapper;
 
     public boolean rftools = false;
     public boolean rftoolsControl = false;
@@ -91,13 +88,9 @@ public class DeepResonance implements ModBase {
         mainConfigDir = e.getModConfigurationDirectory();
         modConfigDir = new File(mainConfigDir.getPath() + File.separator + "deepresonance");
         config = new Configuration(new File(modConfigDir, "main.cfg"));
-        File machinesFile = new File(modConfigDir, "machines.cfg");
 
 //        compatHandler = new CompatHandler(config, logger);
 //        compatHandler.addHandler(new ComputerCraftCompatHandler());
-        configWrapper = new ConfigWrapper(new Configuration(machinesFile));
-        configWrapper.registerConfigWithInnerClasses(new ConfigMachines());
-        configWrapper.refresh();
         proxy.preInit(e);
         ElecCoreRegistrar.GRIDHANDLERS.register(new TankGridHandler());
         MainCompatHandler.registerWaila();
@@ -131,7 +124,6 @@ public class DeepResonance implements ModBase {
         proxy.init(e);
         // @todo compathandler?
 //        compatHandler.init();
-        configWrapper.refresh();
 
         if (Loader.isModLoaded("OpenComputers")) {
             OpenComputersIntegration.init();

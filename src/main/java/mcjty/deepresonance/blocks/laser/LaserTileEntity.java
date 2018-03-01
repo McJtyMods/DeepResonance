@@ -62,7 +62,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     private InventoryHelper inventoryHelper = new InventoryHelper(this, LaserContainer.factory, 2);
 
     public LaserTileEntity() {
-        super(ConfigMachines.Laser.rfMaximum, ConfigMachines.Laser.rfPerTick);
+        super(ConfigMachines.laser.rfMaximum, ConfigMachines.laser.rfPerTick);
     }
 
     @Override
@@ -113,12 +113,12 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
             return;
         }
 
-        if (getEnergyStored() < ConfigMachines.Laser.rfUsePerCatalyst) {
+        if (getEnergyStored() < ConfigMachines.laser.rfUsePerCatalyst) {
             changeColor(0);
             return;
         }
 
-        if (crystalLiquid < ConfigMachines.Laser.crystalLiquidPerCatalyst) {
+        if (crystalLiquid < ConfigMachines.laser.crystalLiquidPerCatalyst) {
             changeColor(0);
             return;
         }
@@ -136,7 +136,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         if (progressCounter > 0) {
             return;
         }
-        progressCounter = ConfigMachines.Laser.ticks10PerCatalyst;
+        progressCounter = ConfigMachines.laser.ticks10PerCatalyst;
 
         infuseLiquid(tankCoordinate, bonus);
     }
@@ -150,8 +150,8 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     private void infuseLiquid(BlockPos tankCoordinate, InfusingBonus bonus) {
         // We consume stuff even if the tank does not have enough liquid. Player has to be careful
         decrStackSize(LaserContainer.SLOT_CATALYST, 1);
-        consumeEnergy(ConfigMachines.Laser.rfUsePerCatalyst);
-        crystalLiquid -= ConfigMachines.Laser.crystalLiquidPerCatalyst;
+        consumeEnergy(ConfigMachines.laser.rfUsePerCatalyst);
+        crystalLiquid -= ConfigMachines.laser.crystalLiquidPerCatalyst;
 
         TileEntity te = getWorld().getTileEntity(tankCoordinate);
         if (te instanceof TileTank) {
@@ -163,7 +163,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
                 if (stack != null) {
                     stack = tileTank.getTank().drain(1000 * TANK_BUCKETS, true);
                     LiquidCrystalFluidTagData fluidData = LiquidCrystalFluidTagData.fromStack(stack);
-                    float factor = (float) ConfigMachines.Laser.rclPerCatalyst / stack.amount;
+                    float factor = (float) ConfigMachines.laser.rclPerCatalyst / stack.amount;
                     float purity = bonus.getPurityModifier().modify(fluidData.getPurity(), fluidData.getQuality(), factor);
                     float strength = bonus.getStrengthModifier().modify(fluidData.getStrength(), fluidData.getQuality(), factor);
                     float efficiency = bonus.getEfficiencyModifier().modify(fluidData.getEfficiency(), fluidData.getQuality(), factor);
@@ -208,9 +208,9 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         if (!stack.isEmpty()) {
             NBTTagCompound tagCompound = stack.getTagCompound();
             float strength = tagCompound == null ? 0 : tagCompound.getFloat("strength") / 100.0f;
-            int addAmount = (int) (ConfigMachines.Laser.minCrystalLiquidPerCrystal + strength * (ConfigMachines.Laser.maxCrystalLiquidPerCrystal - ConfigMachines.Laser.minCrystalLiquidPerCrystal));
+            int addAmount = (int) (ConfigMachines.laser.minCrystalLiquidPerCrystal + strength * (ConfigMachines.laser.maxCrystalLiquidPerCrystal - ConfigMachines.laser.minCrystalLiquidPerCrystal));
             int newAmount = crystalLiquid + addAmount;
-            if (newAmount > ConfigMachines.Laser.crystalLiquidMaximum) {
+            if (newAmount > ConfigMachines.laser.crystalLiquidMaximum) {
                 // Not enough room
                 return;
             }

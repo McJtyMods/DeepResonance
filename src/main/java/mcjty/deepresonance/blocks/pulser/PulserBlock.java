@@ -49,7 +49,7 @@ public class PulserBlock extends GenericDRBlock<PulserTileEntity, EmptyContainer
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
             list.add("This machine will send an EMP pulse");
-            list.add("every tick when it has collected more than " + ConfigMachines.Pulser.rfPerPulse + "RF");
+            list.add("every tick when it has collected more than " + ConfigMachines.pulser.rfPerPulse + "RF");
             list.add("The strength of the input redstone signal");
             list.add("controls the rate of power input");
         } else {
@@ -62,8 +62,8 @@ public class PulserBlock extends GenericDRBlock<PulserTileEntity, EmptyContainer
         super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
         TileEntity te = world.getTileEntity(data.getPos());
         if (te instanceof PulserTileEntity) {
-            int pulsePower = Math.min(((PulserTileEntity) te).getPulsePower(), ConfigMachines.Pulser.rfPerPulse);
-            probeInfo.progress(pulsePower, ConfigMachines.Pulser.rfPerPulse);
+            int pulsePower = Math.min(((PulserTileEntity) te).getPulsePower(), ConfigMachines.pulser.rfPerPulse);
+            probeInfo.progress(pulsePower, ConfigMachines.pulser.rfPerPulse);
         }
     }
 

@@ -55,8 +55,8 @@ public class LaserRecipeCategory extends BlankRecipeCategory<LaserRecipeWrapper>
     public void drawExtras(@Nonnull Minecraft minecraft) {
         super.drawExtras(minecraft);
         slot.draw(minecraft);
-        RenderHelper.getMCFontrenderer().drawString("Per " + ConfigMachines.Laser.rclPerCatalyst + "mb RCL", 24, 0, 0xffffffff, true);
-        RenderHelper.getMCFontrenderer().drawString("and " + ConfigMachines.Laser.crystalLiquidPerCatalyst + "mb crystal", 24, 10, 0xffffffff, true);
+        RenderHelper.getMCFontrenderer().drawString("Per " + ConfigMachines.laser.rclPerCatalyst + "mb RCL", 24, 0, 0xffffffff, true);
+        RenderHelper.getMCFontrenderer().drawString("and " + ConfigMachines.laser.crystalLiquidPerCatalyst + "mb crystal", 24, 10, 0xffffffff, true);
     }
 
     @Override

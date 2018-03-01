@@ -76,7 +76,7 @@ public class SmelterRecipeCategory extends BlankRecipeCategory<SmelterRecipeWrap
             tooltip.add(TextFormatting.GREEN + "Strength: 10%");
             tooltip.add(TextFormatting.GREEN + "Efficiency: 10%");
         });
-        fluidGroup.init(0, false, 70, 25, 30, 30, ConfigMachines.Smelter.rclPerOre, true, null);
+        fluidGroup.init(0, false, 70, 25, 30, 30, ConfigMachines.smelter.rclPerOre, true, null);
         fluidGroup.set(0, ingredients.getOutputs(FluidStack.class).get(0));
     }
 }

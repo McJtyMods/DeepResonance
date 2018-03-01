@@ -46,7 +46,7 @@ public class GuiLaser extends GenericGuiContainer<LaserTileEntity> {
         energyBar = new EnergyBar(mc, this).setVertical().setMaxValue(maxEnergyStored).setLayoutHint(new PositionalLayout.PositionalHint(10, 7, 8, 59)).setShowText(false);
         energyBar.setValue(tileEntity.getCurrentRF());
 
-        crystalBar = new EnergyBar(mc, this).setVertical().setMaxValue(ConfigMachines.Laser.crystalLiquidMaximum).setLayoutHint(new PositionalLayout.PositionalHint(153, 7, 19, 38)).setShowText(false);
+        crystalBar = new EnergyBar(mc, this).setVertical().setMaxValue(ConfigMachines.laser.crystalLiquidMaximum).setLayoutHint(new PositionalLayout.PositionalHint(153, 7, 19, 38)).setShowText(false);
         crystalBar.setEnergyOnColor(0xff0066ff);
         crystalBar.setEnergyOffColor(0xff003366);
         crystalBar.setSpacerColor(0xff001122);

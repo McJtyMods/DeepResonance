@@ -80,9 +80,9 @@ public class PurifierRecipeCategory extends BlankRecipeCategory<PurifierRecipeWr
                 tooltip.add(TextFormatting.GREEN + "Purity: X + 25%");
             }
         });
-        fluidGroup.init(0, true, 13, 35, 30, 30, ConfigMachines.Purifier.rclPerPurify, true, null);
+        fluidGroup.init(0, true, 13, 35, 30, 30, ConfigMachines.purifier.rclPerPurify, true, null);
         fluidGroup.set(0, ingredients.getInputs(FluidStack.class).get(0));
-        fluidGroup.init(1, false, 73, 35, 30, 30, ConfigMachines.Purifier.rclPerPurify, true, null);
+        fluidGroup.init(1, false, 73, 35, 30, 30, ConfigMachines.purifier.rclPerPurify, true, null);
         fluidGroup.set(1, ingredients.getOutputs(FluidStack.class).get(0));
     }
 }
