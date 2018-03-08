@@ -133,7 +133,7 @@ public class PedestalTileEntity extends GenericTileEntity implements DefaultSide
         BlockPos p = resonatingCrystalTileEntity.getPos();
         ItemStack spentCrystal = new ItemStack(ModBlocks.resonatingCrystalBlock, 1);
         NBTTagCompound tagCompound = new NBTTagCompound();
-        resonatingCrystalTileEntity.writeToNBT(tagCompound);
+        resonatingCrystalTileEntity.writeRestorableToNBT(tagCompound);
         spentCrystal.setTagCompound(tagCompound);
         inventoryLocator.ejectStack(getWorld(), getPos(), spentCrystal, pos, directions);
         getWorld().setBlockToAir(p);
