@@ -196,19 +196,17 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
     }
 
     private static void explodeHelper(World world, BlockPos location, float radius) {
-        if(!world.isRemote) {
-            Explosion boom = new Explosion(world, null, location.getX(), location.getY(), location.getZ(), radius, false, true);
-            for(int x = (int)(-radius); x < radius; ++x) {
-                for(int y = (int)(-radius); y < radius; ++y) {
-                    for(int z = (int)(-radius); z < radius; ++z) {
-                        BlockPos targetPosition = location.add(x, y, z);
-                        double dist = Math.sqrt(location.distanceSq(targetPosition));
-                        if(dist < radius) {
-                            Block block = world.getBlockState(targetPosition).getBlock();
-                            IBlockState state = world.getBlockState(targetPosition);
-                            if(block != null && !block.isAir(state, world, targetPosition) && block.getBlockHardness(state, world, targetPosition) > 0 && (dist < (radius - 1.0F) || world.rand.nextFloat() > 0.7D)) {
-                                block.onBlockExploded(world, targetPosition, boom);
-                            }
+        Explosion boom = new Explosion(world, null, location.getX(), location.getY(), location.getZ(), radius, false, true);
+        for(int x = (int)(-radius); x < radius; ++x) {
+            for(int y = (int)(-radius); y < radius; ++y) {
+                for(int z = (int)(-radius); z < radius; ++z) {
+                    BlockPos targetPosition = location.add(x, y, z);
+                    double dist = Math.sqrt(location.distanceSq(targetPosition));
+                    if(dist < radius) {
+                        Block block = world.getBlockState(targetPosition).getBlock();
+                        IBlockState state = world.getBlockState(targetPosition);
+                        if(block != null && !block.isAir(state, world, targetPosition) && block.getBlockHardness(state, world, targetPosition) > 0 && (dist < (radius - 1.0F) || world.rand.nextFloat() > 0.7D)) {
+                            block.onBlockExploded(world, targetPosition, boom);
                         }
                     }
                 }
@@ -218,7 +216,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
 
     public static void explode(World world, BlockPos pos, boolean strong) {
         final TileEntity theCrystalTile = world.getTileEntity(pos);
-        ElecCore.tickHandler.registerCall(() -> {
+        ElecCore.tickHandler.registerCallServer(() -> {
             float forceMultiplier = 1;
             if (theCrystalTile instanceof ResonatingCrystalTileEntity) {
                 ResonatingCrystalTileEntity crystal = (ResonatingCrystalTileEntity) theCrystalTile;
@@ -242,7 +240,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
 //                    explodeHelper(world, pos.west(15), forceMultiplier);
                 }
             }
-        }, world);
+        });
     }
 
     @SideOnly(Side.CLIENT)
