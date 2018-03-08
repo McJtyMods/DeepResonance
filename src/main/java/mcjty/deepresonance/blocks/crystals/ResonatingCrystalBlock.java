@@ -1,7 +1,6 @@
 package mcjty.deepresonance.blocks.crystals;
 
 import elec332.core.main.ElecCore;
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.deepresonance.network.DRMessages;
@@ -230,7 +229,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
                 }
                 if (forceMultiplier > 0.001f) {
                     DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
-                    DRRadiationManager.RadiationSource source = radiationManager.getOrCreateRadiationSource(new GlobalCoordinate(pos, WorldHelper.getDimID(world)));
+                    DRRadiationManager.RadiationSource source = radiationManager.getOrCreateRadiationSource(new GlobalCoordinate(pos, world.provider.getDimension()));
                     float radiationRadius = DRRadiationManager.calculateRadiationRadius(crystal.getStrength(), crystal.getEfficiency(), crystal.getPurity());
                     float radiationStrength = DRRadiationManager.calculateRadiationStrength(crystal.getStrength(), crystal.getPurity());
                     source.update(radiationRadius * RadiationConfiguration.radiationExplosionFactor, radiationStrength / RadiationConfiguration.radiationExplosionFactor, 1000);

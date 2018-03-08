@@ -1,6 +1,5 @@
 package mcjty.deepresonance.worldgen;
 
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.blocks.ore.ResonatingOreBlock;
@@ -150,7 +149,7 @@ public class DeepWorldGenerator implements IWorldGenerator {
 
     @SubscribeEvent
     public void handleChunkLoadEvent(ChunkDataEvent.Load event) {
-        int dim = WorldHelper.getDimID(event.getWorld());
+        int dim = event.getWorld().provider.getDimension();
 
         boolean regen = false;
         NBTTagCompound tag = (NBTTagCompound) event.getData().getTag(RETRO_NAME);

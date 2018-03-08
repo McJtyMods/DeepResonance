@@ -1,6 +1,5 @@
 package mcjty.deepresonance.items;
 
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.network.DRMessages;
 import mcjty.deepresonance.network.PacketGetRadiationLevel;
@@ -76,7 +75,7 @@ public class RadiationMonitorItem extends GenericDRItem {
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (!world.isRemote) {
-            GlobalCoordinate c = new GlobalCoordinate(player.getPosition(), WorldHelper.getDimID(world));
+            GlobalCoordinate c = new GlobalCoordinate(player.getPosition(), world.provider.getDimension());
             float maxStrength = calculateRadiationStrength(world, c);
             if (maxStrength <= 0.0f) {
                 Logging.message(player, TextFormatting.GREEN + "No radiation detected");
@@ -131,7 +130,7 @@ public class RadiationMonitorItem extends GenericDRItem {
             return;
         }
         if (System.currentTimeMillis() - lastTime > 250) {
-            int id = WorldHelper.getDimID(player.getEntityWorld());
+            int id = player.getEntityWorld().provider.getDimension();
             lastTime = System.currentTimeMillis();
             GlobalCoordinate c = new GlobalCoordinate(player.getPosition(), id);
             DRMessages.INSTANCE.sendToServer(new PacketGetRadiationLevel(c));

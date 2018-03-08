@@ -1,6 +1,5 @@
 package mcjty.deepresonance.worldgen;
 
-import elec332.core.world.WorldHelper;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.hash.THashSet;
 import net.minecraft.nbt.NBTTagList;
@@ -27,7 +26,7 @@ public class WorldTickHandler {
             return;
         }
         World world = event.world;
-        int dim = WorldHelper.getDimID(world);
+        int dim = world.provider.getDimension();
 
         if (event.phase == TickEvent.Phase.END) {
             ArrayDeque<RetroChunkCoord> chunks = chunksToGen.get(dim);

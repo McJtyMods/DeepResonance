@@ -209,7 +209,7 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
     }
 
     private boolean tilesEqual(TileTank first, TileTank second){
-        return first != null && second != null && first.getPos().equals(second.getPos()) && WorldHelper.getDimID(first.getWorld()) == WorldHelper.getDimID(second.getWorld());
+        return first != null && second != null && first.getPos().equals(second.getPos()) && first.getWorld().provider.getDimension() == second.getWorld().provider.getDimension();
     }
 
     @Override

@@ -1,7 +1,6 @@
 package mcjty.deepresonance.client.sound;
 
 import com.google.common.collect.Maps;
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.client.DRResourceLocation;
 import mcjty.lib.varia.GlobalCoordinate;
 import net.minecraft.client.Minecraft;
@@ -86,7 +85,7 @@ public final class GeneratorSoundController {
     }
 
     private static GlobalCoordinate fromPosition(World world, BlockPos pos){
-        return new GlobalCoordinate(pos, WorldHelper.getDimID(world));
+        return new GlobalCoordinate(pos, world.provider.getDimension());
     }
 
 }

@@ -1,6 +1,5 @@
 package mcjty.deepresonance.blocks.ore;
 
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.radiation.DRRadiationManager;
@@ -49,7 +48,7 @@ public class ResonatingPlateBlock extends Block {
         int powered = world.getStrongPower(pos);
         if (powered > 0) {
             DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
-            GlobalCoordinate thisCoordinate = new GlobalCoordinate(pos, WorldHelper.getDimID(world));
+            GlobalCoordinate thisCoordinate = new GlobalCoordinate(pos, world.provider.getDimension());
             if (radiationManager.getRadiationSource(thisCoordinate) == null) {
                 Logging.log("Created radiation source with radius " + ConfigMachines.plateBlock.radiationRadius + " and strength " + ConfigMachines.plateBlock.radiationStrength);
             }
