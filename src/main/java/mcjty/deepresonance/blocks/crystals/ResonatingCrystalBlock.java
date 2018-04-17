@@ -33,6 +33,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
@@ -282,8 +283,8 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
     }
 
     @Override
-    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState metadata, int fortune) {
-        List<ItemStack> drops = super.getDrops(world, pos, metadata, fortune);
+    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState metadata, int fortune) {
+        super.getDrops(drops, world, pos, metadata, fortune);
         for (ItemStack drop : drops) {
             if (drop.hasTagCompound()) {
                 NBTTagCompound tagCompound = drop.getTagCompound();
@@ -292,8 +293,6 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
                 }
             }
         }
-
-        return drops;
     }
 
     @Override

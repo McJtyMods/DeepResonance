@@ -17,6 +17,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
@@ -132,8 +133,8 @@ public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyCon
     }
 
     @Override
-    public List<ItemStack> getDrops(IBlockAccess access, BlockPos pos, IBlockState metadata, int fortune) {
-        List<ItemStack> drops = super.getDrops(access, pos, metadata, fortune);
+    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess access, BlockPos pos, IBlockState metadata, int fortune) {
+        super.getDrops(drops, access, pos, metadata, fortune);
         TileEntity te = access.getTileEntity(pos);
         if (te instanceof GeneratorTileEntity) {
             DRGeneratorNetwork.Network network = ((GeneratorTileEntity) te).getNetwork();
@@ -149,7 +150,6 @@ public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyCon
                 }
             }
         }
-        return drops;
     }
 
     @Override
