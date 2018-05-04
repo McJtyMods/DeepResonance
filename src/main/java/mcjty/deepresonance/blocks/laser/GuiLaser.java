@@ -52,11 +52,11 @@ public class GuiLaser extends GenericGuiContainer<LaserTileEntity> {
         crystalBar.setSpacerColor(0xff001122);
         crystalBar.setValue(0);
 
-        purifyBonus = new Label(mc, this).setHorizontalAlignment(HorizontalAlignment.ALIGH_LEFT);
+        purifyBonus = new Label(mc, this).setHorizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
         purifyBonus.setLayoutHint(new PositionalLayout.PositionalHint(5, 5, 100, 14));
-        strengthBonus = new Label(mc, this).setHorizontalAlignment(HorizontalAlignment.ALIGH_LEFT);
+        strengthBonus = new Label(mc, this).setHorizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
         strengthBonus.setLayoutHint(new PositionalLayout.PositionalHint(5, 23, 100, 14));
-        efficiencyBonus = new Label(mc, this).setHorizontalAlignment(HorizontalAlignment.ALIGH_LEFT);
+        efficiencyBonus = new Label(mc, this).setHorizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
         efficiencyBonus.setLayoutHint(new PositionalLayout.PositionalHint(5, 41, 100, 14));
 
         Panel catalystPanel = new Panel(mc, this).setLayout(new PositionalLayout()).setLayoutHint(new PositionalLayout.PositionalHint(41, 7, 109, 59))

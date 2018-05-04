@@ -106,15 +106,15 @@ public class GuiValve extends GenericGuiContainer<ValveTileEntity> {
         minEfficiency.setText(Integer.toString((int) (tileEntity.getMinEfficiency() * 100))).setDesiredWidth(30).setDesiredHeight(15);
         Panel purityPanel = new Panel(mc, this).setLayout(new HorizontalLayout())
                 .setDesiredHeight(16)
-                .addChild(new Label(mc, this).setHorizontalAlignment(HorizontalAlignment.ALIGH_LEFT).setText("Purity").setDesiredWidth(50))
+                .addChild(new Label(mc, this).setHorizontalAlignment(HorizontalAlignment.ALIGN_LEFT).setText("Purity").setDesiredWidth(50))
                 .addChild(minPurity);
         Panel strengthPanel = new Panel(mc, this).setLayout(new HorizontalLayout())
                 .setDesiredHeight(16)
-                .addChild(new Label(mc, this).setHorizontalAlignment(HorizontalAlignment.ALIGH_LEFT).setText("Strength").setDesiredWidth(50))
+                .addChild(new Label(mc, this).setHorizontalAlignment(HorizontalAlignment.ALIGN_LEFT).setText("Strength").setDesiredWidth(50))
                 .addChild(minStrength);
         Panel efficiencyPanel = new Panel(mc, this).setLayout(new HorizontalLayout())
                 .setDesiredHeight(16)
-                .addChild(new Label(mc, this).setHorizontalAlignment(HorizontalAlignment.ALIGH_LEFT).setText("Efficiency").setDesiredWidth(50))
+                .addChild(new Label(mc, this).setHorizontalAlignment(HorizontalAlignment.ALIGN_LEFT).setText("Efficiency").setDesiredWidth(50))
                 .addChild(minEfficiency);
 
         return new Panel(mc, this).setLayout(new VerticalLayout().setSpacing(1).setVerticalMargin(3))
