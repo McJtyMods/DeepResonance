@@ -146,7 +146,6 @@ public class ForgeEventHandlers {
     @SubscribeEvent
     public void onPostWorldTick(TickEvent.WorldTickEvent event) {
         if (!event.world.isRemote) {
-            System.out.println("### POST ###");
             for (ResonatingCrystalTileEntity crystal : ResonatingCrystalTileEntity.todoCrystals) {
                 crystal.realUpdate();
             }
