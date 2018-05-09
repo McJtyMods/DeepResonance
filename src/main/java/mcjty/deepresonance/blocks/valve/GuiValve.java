@@ -4,22 +4,21 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.network.DRMessages;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericGuiContainer;
+import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.events.ButtonEvent;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.layout.HorizontalLayout;
 import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.layout.VerticalLayout;
-import mcjty.lib.gui.widgets.Button;
 import mcjty.lib.gui.widgets.*;
-import mcjty.lib.gui.widgets.Label;
-import mcjty.lib.gui.widgets.Panel;
-import mcjty.lib.gui.widgets.TextField;
-import mcjty.lib.network.Argument;
+import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.RedstoneMode;
 import net.minecraft.util.ResourceLocation;
 
-import java.awt.*;
+import java.awt.Rectangle;
+
+import static mcjty.deepresonance.blocks.valve.ValveTileEntity.*;
 
 public class GuiValve extends GenericGuiContainer<ValveTileEntity> {
     public static final int VALVE_WIDTH = 180;
@@ -32,7 +31,6 @@ public class GuiValve extends GenericGuiContainer<ValveTileEntity> {
     private TextField minStrength;
     private TextField minEfficiency;
     private TextField maxAmount;
-    private ImageChoiceLabel redstoneMode;
 
     public GuiValve(ValveTileEntity valveTileEntity, ValveContainer container) {
         super(DeepResonance.instance, DRMessages.INSTANCE, valveTileEntity, container, 0, "valve");
@@ -41,19 +39,14 @@ public class GuiValve extends GenericGuiContainer<ValveTileEntity> {
         ySize = VALVE_HEIGHT;
     }
 
-    private void initRedstoneMode() {
-        redstoneMode = new ImageChoiceLabel(mc, this).
-                addChoiceEvent((parent, newChoice) -> changeRedstoneMode()).
+    private ImageChoiceLabel initRedstoneMode() {
+        ImageChoiceLabel redstoneMode = new ImageChoiceLabel(mc, this).
+                setName("redstone").
                 addChoice(RedstoneMode.REDSTONE_IGNORED.getDescription(), "Redstone mode:\nIgnored", iconGuiElements, 0, 0).
                 addChoice(RedstoneMode.REDSTONE_OFFREQUIRED.getDescription(), "Redstone mode:\nOff to activate", iconGuiElements, 16, 0).
                 addChoice(RedstoneMode.REDSTONE_ONREQUIRED.getDescription(), "Redstone mode:\nOn to activate", iconGuiElements, 32, 0);
         redstoneMode.setLayoutHint(new PositionalLayout.PositionalHint(154, 47, 16, 16));
-        redstoneMode.setCurrentChoice(tileEntity.getRSMode().ordinal());
-    }
-
-    private void changeRedstoneMode() {
-        tileEntity.setRSMode(RedstoneMode.values()[redstoneMode.getCurrentChoiceIndex()]);
-        sendServerCommand(DRMessages.INSTANCE, ValveTileEntity.CMD_RSMODE, new Argument("rs", RedstoneMode.values()[redstoneMode.getCurrentChoiceIndex()].getDescription()));
+        return redstoneMode;
     }
 
     @Override
@@ -76,13 +69,15 @@ public class GuiValve extends GenericGuiContainer<ValveTileEntity> {
                     }
                 });
 
-        initRedstoneMode();
+        ImageChoiceLabel redstoneMode = initRedstoneMode();
 
         toplevel.addChild(inputPanel).addChild(outputPanel).addChild(applyButton).addChild(redstoneMode);
 
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
 
         window = new Window(this, toplevel);
+
+        window.bind(DRMessages.INSTANCE, "redstone", tileEntity, GenericTileEntity.VALUE_RSMODE.getName());
     }
 
     private Panel setupOutputPanel() {
@@ -152,10 +147,12 @@ public class GuiValve extends GenericGuiContainer<ValveTileEntity> {
         tileEntity.setMinEfficiency(efficiency / 100.0f);
         tileEntity.setMaxMb(maxMb);
         sendServerCommand(DRMessages.INSTANCE, ValveTileEntity.CMD_SETTINGS,
-                new Argument("purity", purity / 100.0f),
-                new Argument("strength", strength / 100.0f),
-                new Argument("efficiency", efficiency / 100.0f),
-                new Argument("maxMb", maxMb));
+                TypedMap.builder()
+                        .put(PARAM_PURITY, purity / 100.0)
+                        .put(PARAM_STRENGTH, strength / 100.0)
+                        .put(PARAM_EFFICIENCY, efficiency / 100.0)
+                        .put(PARAM_MAXMB, maxMb)
+                        .build());
     }
 
     @Override

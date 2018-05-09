@@ -6,9 +6,12 @@ import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
+import mcjty.lib.entity.DefaultValue;
 import mcjty.lib.entity.GenericTileEntity;
-import mcjty.lib.network.Argument;
-import mcjty.lib.varia.RedstoneMode;
+import mcjty.lib.entity.IValue;
+import mcjty.lib.typed.Key;
+import mcjty.lib.typed.Type;
+import mcjty.lib.typed.TypedMap;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -16,14 +19,23 @@ import net.minecraft.util.ITickable;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.util.Map;
-
 public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITickable {
 
-    public static String CMD_SETTINGS = "settings";
-    public static final String CMD_RSMODE = "rsMode";
+    public static final String CMD_SETTINGS = "valve.settings";
+
+    public static final Key<Double> PARAM_PURITY = new Key<>("purity", Type.DOUBLE);
+    public static final Key<Double> PARAM_STRENGTH = new Key<>("strength", Type.DOUBLE);
+    public static final Key<Double> PARAM_EFFICIENCY = new Key<>("efficiency", Type.DOUBLE);
+    public static final Key<Integer> PARAM_MAXMB = new Key<>("maxmb", Type.INTEGER);
 
     public ValveTileEntity() {
+    }
+
+    @Override
+    public IValue[] getValues() {
+        return new IValue[]{
+                new DefaultValue<>(VALUE_RSMODE, ValveTileEntity::getRSModeInt, ValveTileEntity::setRSModeInt),
+        };
     }
 
     @Override
@@ -213,20 +225,16 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
     }
 
     @Override
-    public boolean execute(EntityPlayerMP playerMP, String command, Map<String, Argument> args) {
-        boolean rc = super.execute(playerMP, command, args);
+    public boolean execute(EntityPlayerMP playerMP, String command, TypedMap params) {
+        boolean rc = super.execute(playerMP, command, params);
         if (rc) {
             return true;
         }
-        if (CMD_RSMODE.equals(command)) {
-            String m = args.get("rs").getString();
-            setRSMode(RedstoneMode.getMode(m));
-            return true;
-        } else if (CMD_SETTINGS.equals(command)) {
-            double purity = args.get("purity").getDouble();
-            double strength = args.get("strength").getDouble();
-            double efficiency = args.get("efficiency").getDouble();
-            int maxMb = args.get("maxMb").getInteger();
+        if (CMD_SETTINGS.equals(command)) {
+            double purity = params.get(PARAM_PURITY);
+            double strength = params.get(PARAM_STRENGTH);
+            double efficiency = params.get(PARAM_EFFICIENCY);
+            int maxMb = params.get(PARAM_MAXMB);
             setMinPurity((float) purity);
             setMinStrength((float) strength);
             setMinEfficiency((float) efficiency);
