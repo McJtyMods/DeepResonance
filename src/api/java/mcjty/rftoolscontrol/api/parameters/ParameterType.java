@@ -14,7 +14,9 @@ public enum ParameterType {
     PAR_EXCEPTION("exception"),
     PAR_TUPLE("tuple"),
     PAR_FLUID("fluid"),
-    PAR_VECTOR("vector");
+    PAR_VECTOR("vector"),
+    PAR_LONG("long"),
+    PAR_NUMBER("number");
 
     private final String name;
 
