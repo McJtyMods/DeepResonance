@@ -12,8 +12,8 @@ import mcjty.deepresonance.network.DRMessages;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
-import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
+import mcjty.lib.typed.TypedMap;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -23,8 +23,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-
-import java.util.Map;
 
 public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity implements ITankHook, DefaultSidedInventory, ITickable {
 
@@ -272,11 +270,11 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
 
     // Request the researching amount from the server. This has to be called on the client side.
     public void requestProgressFromServer() {
-        DRMessages.INSTANCE.sendToServer(new PacketRequestIntegerFromServer(DeepResonance.MODID, pos, CMD_GETPROGRESS, CLIENTCMD_GETPROGRESS));
+        DRMessages.INSTANCE.sendToServer(new PacketRequestIntegerFromServer(DeepResonance.MODID, pos, CMD_GETPROGRESS, CLIENTCMD_GETPROGRESS, TypedMap.EMPTY));
     }
 
     @Override
-    public Integer executeWithResultInteger(String command, Map<String, Argument> args) {
+    public Integer executeWithResultInteger(String command, TypedMap args) {
         Integer rc = super.executeWithResultInteger(command, args);
         if (rc != null) {
             return rc;

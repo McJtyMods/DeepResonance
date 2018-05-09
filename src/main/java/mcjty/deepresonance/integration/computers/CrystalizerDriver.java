@@ -6,13 +6,11 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.prefab.AbstractManagedEnvironment;
 import mcjty.deepresonance.blocks.crystalizer.CrystalizerTileEntity;
 import mcjty.lib.integration.computers.AbstractOCDriver;
-import mcjty.lib.network.Argument;
+import mcjty.lib.typed.TypedMap;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.HashMap;
 
 public class CrystalizerDriver {
     public static class OCDriver extends AbstractOCDriver {
@@ -37,7 +35,7 @@ public class CrystalizerDriver {
 
             @Callback(doc="function():number; Get the current progress in percent")
             public Object[] getProgress(Context c, Arguments a) {
-                Integer progress = tile.executeWithResultInteger(CrystalizerTileEntity.CMD_GETPROGRESS, new HashMap<String, Argument>());
+                Integer progress = tile.executeWithResultInteger(CrystalizerTileEntity.CMD_GETPROGRESS, TypedMap.EMPTY);
                 return new Object[]{progress.intValue()};
             }
 

@@ -11,8 +11,8 @@ import mcjty.deepresonance.network.DRMessages;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
-import mcjty.lib.network.Argument;
 import mcjty.lib.network.PacketRequestIntegerFromServer;
+import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -355,8 +355,9 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
 
     public void requestCrystalLiquidFromServer() {
         DRMessages.INSTANCE.sendToServer(new PacketRequestIntegerFromServer(DeepResonance.MODID, pos,
-                                                                                                         CMD_GETLIQUID,
-                                                                                                         CLIENTCMD_GETLIQUID));
+                CMD_GETLIQUID,
+                CLIENTCMD_GETLIQUID,
+                TypedMap.EMPTY));
     }
 
     public int getCrystalLiquid() {
@@ -369,7 +370,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     @Override
-    public Integer executeWithResultInteger(String command, Map<String, Argument> args) {
+    public Integer executeWithResultInteger(String command, TypedMap args) {
         Integer rc = super.executeWithResultInteger(command, args);
         if (rc != null) {
             return rc;
