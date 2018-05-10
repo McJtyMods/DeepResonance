@@ -1,9 +1,9 @@
 package mcjty.deepresonance.blocks;
 
 import mcjty.deepresonance.DeepResonance;
-import mcjty.lib.container.GenericBlock;
-import mcjty.lib.container.GenericItemBlock;
-import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.blocks.GenericBlock;
+import mcjty.lib.blocks.GenericItemBlock;
+import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;

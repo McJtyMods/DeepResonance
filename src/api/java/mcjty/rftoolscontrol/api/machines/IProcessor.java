@@ -164,7 +164,7 @@ public interface IProcessor {
     int readRedstoneIn(@Nonnull BlockSide side);
 
     /**
-     * Get a tile entity at a specific side of a networked block. If the side in
+     * Get a tile bindings at a specific side of a networked block. If the side in
      * the BlockSide itself is null then the postion is the position of the processor or node itself
      */
     @Nullable

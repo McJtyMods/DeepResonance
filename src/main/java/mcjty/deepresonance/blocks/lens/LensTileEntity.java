@@ -1,6 +1,6 @@
 package mcjty.deepresonance.blocks.lens;
 
-import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class LensTileEntity extends GenericTileEntity {

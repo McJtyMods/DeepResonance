@@ -8,7 +8,7 @@ import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.container.InventoryLocator;
-import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.OrientationTools;
 import mcjty.lib.varia.SoundTools;
 import net.minecraft.block.state.IBlockState;

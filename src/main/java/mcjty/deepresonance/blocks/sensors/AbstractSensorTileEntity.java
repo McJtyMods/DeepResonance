@@ -1,7 +1,7 @@
 package mcjty.deepresonance.blocks.sensors;
 
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
-import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;

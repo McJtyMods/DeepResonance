@@ -5,7 +5,7 @@ import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.SuperGenerationConfiguration;
-import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.SoundTools;
 import net.minecraft.entity.player.EntityPlayer;

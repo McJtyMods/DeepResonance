@@ -10,7 +10,7 @@ import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.RadiationShieldRegistry;
 import mcjty.deepresonance.varia.QuadTree;
 import mcjty.lib.McJtyRegister;
-import mcjty.lib.container.DamageMetadataItemBlock;
+import mcjty.lib.blocks.DamageMetadataItemBlock;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import net.minecraft.block.Block;

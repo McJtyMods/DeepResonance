@@ -8,7 +8,7 @@ import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.SuperGenerationConfiguration;
-import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.Broadcaster;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;

@@ -1,8 +1,8 @@
 package mcjty.deepresonance.blocks.lens;
 
 import mcjty.deepresonance.blocks.tank.TankSetup;
-import mcjty.lib.container.GenericBlock;
-import mcjty.lib.container.GenericItemBlock;
+import mcjty.lib.blocks.GenericBlock;
+import mcjty.lib.blocks.GenericItemBlock;
 import mcjty.lib.varia.Logging;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;

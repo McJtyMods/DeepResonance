@@ -5,7 +5,7 @@ import mcjty.deepresonance.blocks.generator.GeneratorSetup;
 import mcjty.deepresonance.blocks.generator.GeneratorTileEntity;
 import mcjty.deepresonance.client.sound.GeneratorSoundController;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
-import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.Broadcaster;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;

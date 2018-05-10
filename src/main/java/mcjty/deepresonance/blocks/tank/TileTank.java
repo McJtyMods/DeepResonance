@@ -7,7 +7,7 @@ import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.tanks.TankGrid;
 import mcjty.deepresonance.varia.FluidTankWrapper;
-import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;

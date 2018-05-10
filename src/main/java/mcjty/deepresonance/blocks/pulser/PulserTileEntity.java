@@ -2,8 +2,7 @@ package mcjty.deepresonance.blocks.pulser;
 
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.config.ConfigMachines;
-import mcjty.lib.entity.GenericEnergyReceiverTileEntity;
-import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.tileentity.GenericEnergyReceiverTileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;

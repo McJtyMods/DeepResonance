@@ -1,7 +1,7 @@
 package mcjty.deepresonance.gui;
 
 import mcjty.deepresonance.items.manual.GuiDeepResonanceManual;
-import mcjty.lib.container.GenericBlock;
+import mcjty.lib.blocks.GenericBlock;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;

@@ -5,7 +5,7 @@ import com.google.common.collect.Sets;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.lib.compat.RedstoneFluxCompatibility;
-import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.EnergyTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -173,7 +173,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         generatorNetwork.save(getWorld());
     }
 
-    // Move this tile entity to another network.
+    // Move this tile bindings to another network.
     public void setNetworkId(int newId) {
         networkId = newId;
         markDirty();

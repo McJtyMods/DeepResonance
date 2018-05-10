@@ -4,7 +4,7 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.network.DRMessages;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericGuiContainer;
-import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.layout.HorizontalLayout;
