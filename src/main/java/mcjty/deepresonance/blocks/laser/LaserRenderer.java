@@ -1,7 +1,7 @@
 package mcjty.deepresonance.blocks.laser;
 
 import mcjty.deepresonance.DeepResonance;
-import mcjty.lib.gui.RenderHelper;
+import mcjty.lib.client.RenderHelper;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;

@@ -2,8 +2,8 @@ package mcjty.deepresonance.blocks.collector;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.blocks.generator.GeneratorConfiguration;
-import mcjty.lib.gui.RenderHelper;
-import mcjty.lib.gui.RenderHelper.Vector;
+import mcjty.lib.client.RenderHelper;
+import mcjty.lib.client.RenderHelper.Vector;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.BufferBuilder;
