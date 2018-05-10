@@ -15,9 +15,7 @@ import mcjty.deepresonance.blocks.ore.ResonatingOreBlock;
 import mcjty.deepresonance.blocks.ore.ResonatingPlateBlock;
 import mcjty.deepresonance.blocks.pedestal.PedestalSetup;
 import mcjty.deepresonance.blocks.poisondirt.PoisonedDirtBlock;
-import mcjty.deepresonance.blocks.pulser.PulserSetup;
 import mcjty.deepresonance.blocks.purifier.PurifierSetup;
-import mcjty.deepresonance.blocks.sensors.SensorSetup;
 import mcjty.deepresonance.blocks.smelter.SmelterSetup;
 import mcjty.deepresonance.blocks.tank.TankSetup;
 import mcjty.deepresonance.blocks.valve.ValveSetup;
@@ -66,8 +64,8 @@ public final class ModBlocks {
         ValveSetup.setupBlocks();
         LensSetup.setupBlocks();
         LaserSetup.setupBlocks();
-        PulserSetup.setupBlocks();
-        SensorSetup.setupBlocks();
+//        PulserSetup.setupBlocks();
+//        SensorSetup.setupBlocks();
     }
 
     @SideOnly(Side.CLIENT)
@@ -91,8 +89,8 @@ public final class ModBlocks {
         ValveSetup.setupModels();
         LensSetup.setupModels();
         LaserSetup.setupModels();
-        PulserSetup.setupModels();
-        SensorSetup.setupModels();
+//        PulserSetup.setupModels();
+//        SensorSetup.setupModels();
         if (DeepResonance.instance.rftools) {
             RFToolsSupport.initBlockModels();
         }
