@@ -3,7 +3,7 @@ package mcjty.deepresonance.blocks.laser;
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.gui.GuiProxy;
-import mcjty.lib.container.GenericGuiContainer;
+import mcjty.lib.gui.GenericGuiContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;

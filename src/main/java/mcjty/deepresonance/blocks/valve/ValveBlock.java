@@ -3,7 +3,7 @@ package mcjty.deepresonance.blocks.valve;
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
 import mcjty.deepresonance.gui.GuiProxy;
-import mcjty.lib.container.GenericGuiContainer;
+import mcjty.lib.gui.GenericGuiContainer;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;

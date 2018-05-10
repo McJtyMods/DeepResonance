@@ -2,7 +2,7 @@ package mcjty.deepresonance.blocks.smelter;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.network.DRMessages;
-import mcjty.lib.container.GenericGuiContainer;
+import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.*;

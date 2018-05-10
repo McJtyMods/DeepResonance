@@ -3,7 +3,7 @@ package mcjty.deepresonance.blocks.valve;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.network.DRMessages;
 import mcjty.lib.base.StyleConfig;
-import mcjty.lib.container.GenericGuiContainer;
+import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
