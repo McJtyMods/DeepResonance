@@ -6,7 +6,6 @@ import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericGuiContainer;
 import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.gui.Window;
-import mcjty.lib.gui.events.ButtonEvent;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.layout.HorizontalLayout;
 import mcjty.lib.gui.layout.PositionalLayout;
@@ -59,15 +58,10 @@ public class GuiValve extends GenericGuiContainer<ValveTileEntity> {
         Panel outputPanel = setupOutputPanel();
 
         Button applyButton = new Button(mc, this)
+                .setChannel("apply")
                 .setText("Apply")
                 .setTooltips("Apply the new setting")
-                .setLayoutHint(new PositionalLayout.PositionalHint(112, 49, 40, 14))
-                .addButtonEvent(new ButtonEvent() {
-                    @Override
-                    public void buttonClicked(Widget parent) {
-                        updateSettings();
-                    }
-                });
+                .setLayoutHint(new PositionalLayout.PositionalHint(112, 49, 40, 14));
 
         ImageChoiceLabel redstoneMode = initRedstoneMode();
 
@@ -78,6 +72,7 @@ public class GuiValve extends GenericGuiContainer<ValveTileEntity> {
         window = new Window(this, toplevel);
 
         window.bind(DRMessages.INSTANCE, "redstone", tileEntity, GenericTileEntity.VALUE_RSMODE.getName());
+        window.event("apply", (source, params) -> updateSettings());
     }
 
     private Panel setupOutputPanel() {
