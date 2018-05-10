@@ -173,7 +173,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         generatorNetwork.save(getWorld());
     }
 
-    // Move this tile bindings to another network.
+    // Move this tile entity to another network.
     public void setNetworkId(int newId) {
         networkId = newId;
         markDirty();

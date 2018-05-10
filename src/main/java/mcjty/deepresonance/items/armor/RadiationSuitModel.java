@@ -547,9 +547,9 @@ public class RadiationSuitModel extends ModelBiped {
     public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         this.isSneak = entity.isSneaking();
         this.isRiding = entity.isRiding();
-//        if (bindings instanceof EntityLivingBase) {
-//            this.isChild = ((EntityLivingBase) bindings).isChild();
-//            this.rightArmPose = (((EntityLivingBase) bindings).getHeldItem(EnumHand.MAIN_HAND) != null ? ArmPose.BOW_AND_ARROW : ArmPose.EMPTY);
+//        if (entity instanceof EntityLivingBase) {
+//            this.isChild = ((EntityLivingBase) entity).isChild();
+//            this.rightArmPose = (((EntityLivingBase) entity).getHeldItem(EnumHand.MAIN_HAND) != null ? ArmPose.BOW_AND_ARROW : ArmPose.EMPTY);
 //            // TODO possibly check if it can be completely removed? 1.9 thing
 //        }
 
