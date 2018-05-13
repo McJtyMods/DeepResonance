@@ -10,8 +10,10 @@ import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.deepresonance.network.DRMessages;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
+import mcjty.lib.network.PacketRequestDataFromServer;
 import mcjty.lib.tileentity.GenericEnergyReceiverTileEntity;
-import mcjty.lib.network.PacketRequestIntegerFromServer;
+import mcjty.lib.typed.Key;
+import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.block.Block;
@@ -32,6 +34,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +44,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
 
     public static final String CMD_GETLIQUID = "getLiquid";
     public static final String CLIENTCMD_GETLIQUID = "getLiquid";
+    public static final Key<Integer> PARAM_AMOUNT = new Key<>("amount", Type.INTEGER);
 
     public static final int COLOR_BLUE = 1;
     public static final int COLOR_RED = 2;
@@ -354,7 +358,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     public void requestCrystalLiquidFromServer() {
-        DRMessages.INSTANCE.sendToServer(new PacketRequestIntegerFromServer(DeepResonance.MODID, pos,
+        DRMessages.INSTANCE.sendToServer(new PacketRequestDataFromServer(DeepResonance.MODID, pos,
                 CMD_GETLIQUID,
                 CLIENTCMD_GETLIQUID,
                 TypedMap.EMPTY));
@@ -370,25 +374,25 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     @Override
-    public Integer executeWithResultInteger(String command, TypedMap args) {
-        Integer rc = super.executeWithResultInteger(command, args);
+    public TypedMap executeWithResult(String command, TypedMap args) {
+        TypedMap rc = super.executeWithResult(command, args);
         if (rc != null) {
             return rc;
         }
         if (CMD_GETLIQUID.equals(command)) {
-            return crystalLiquid;
+            return TypedMap.builder().put(PARAM_AMOUNT, crystalLiquid).build();
         }
         return null;
     }
 
     @Override
-    public boolean execute(String command, Integer result) {
-        boolean rc = super.execute(command, result);
+    public boolean receiveDataFromServer(String command, @Nonnull TypedMap result) {
+        boolean rc = super.receiveDataFromServer(command, result);
         if (rc) {
             return true;
         }
         if (CLIENTCMD_GETLIQUID.equals(command)) {
-            crystalLiquidClient = result;
+            crystalLiquidClient = result.get(PARAM_AMOUNT);
             return true;
         }
         return false;

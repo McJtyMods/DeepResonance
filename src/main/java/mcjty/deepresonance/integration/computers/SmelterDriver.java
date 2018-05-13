@@ -35,8 +35,8 @@ public class SmelterDriver {
 
             @Callback(doc="function():number; Get the current progress in percent")
             public Object[] getProgress(Context c, Arguments a) {
-                Integer progress = tile.executeWithResultInteger(SmelterTileEntity.CMD_GETPROGRESS, TypedMap.EMPTY);
-                return new Object[]{progress.intValue()};
+                Integer progress = tile.getProgress();
+                return new Object[]{progress};
             }
 
             @Override
