@@ -273,7 +273,7 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
 
     // Request the researching amount from the server. This has to be called on the client side.
     public void requestProgressFromServer() {
-        DRMessages.INSTANCE.sendToServer(new PacketRequestDataFromServer(DeepResonance.MODID, pos, CMD_GETPROGRESS, CLIENTCMD_GETPROGRESS, TypedMap.EMPTY));
+        requestDataFromServer(DeepResonance.MODID, CMD_GETPROGRESS, CLIENTCMD_GETPROGRESS, TypedMap.EMPTY);
     }
 
     @Override

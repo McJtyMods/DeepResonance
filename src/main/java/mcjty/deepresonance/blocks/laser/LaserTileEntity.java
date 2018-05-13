@@ -358,10 +358,10 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     public void requestCrystalLiquidFromServer() {
-        DRMessages.INSTANCE.sendToServer(new PacketRequestDataFromServer(DeepResonance.MODID, pos,
+        requestDataFromServer(DeepResonance.MODID,
                 CMD_GETLIQUID,
                 CLIENTCMD_GETLIQUID,
-                TypedMap.EMPTY));
+                TypedMap.EMPTY);
     }
 
     public int getCrystalLiquid() {

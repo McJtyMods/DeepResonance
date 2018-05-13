@@ -8,10 +8,8 @@ import mcjty.deepresonance.blocks.tank.TileTank;
 import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
-import mcjty.deepresonance.network.DRMessages;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
-import mcjty.lib.network.PacketRequestDataFromServer;
 import mcjty.lib.tileentity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
@@ -275,7 +273,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
 
     // Request the researching amount from the server. This has to be called on the client side.
     public void requestProgressFromServer() {
-        DRMessages.INSTANCE.sendToServer(new PacketRequestDataFromServer(DeepResonance.MODID, pos, CMD_GETPROGRESS, CLIENTCMD_GETPROGRESS, TypedMap.EMPTY));
+        requestDataFromServer(DeepResonance.MODID, CMD_GETPROGRESS, CLIENTCMD_GETPROGRESS, TypedMap.EMPTY);
     }
 
     @Override
