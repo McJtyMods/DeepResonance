@@ -29,7 +29,6 @@ import javax.annotation.Nonnull;
 public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity implements ITankHook, DefaultSidedInventory, ITickable {
 
     public static final String CMD_GETPROGRESS = "getProgress";
-    public static final String CLIENTCMD_GETPROGRESS = "getProgress";
     public static final Key<Integer> PARAM_PROGRESS = new Key<>("progress", Type.INTEGER);
 
     private InventoryHelper inventoryHelper = new InventoryHelper(this, CrystalizerContainer.factory, 1);
@@ -273,7 +272,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
 
     // Request the researching amount from the server. This has to be called on the client side.
     public void requestProgressFromServer() {
-        requestDataFromServer(DeepResonance.MODID, CMD_GETPROGRESS, CLIENTCMD_GETPROGRESS, TypedMap.EMPTY);
+        requestDataFromServer(DeepResonance.MODID, CMD_GETPROGRESS, TypedMap.EMPTY);
     }
 
     @Override
@@ -298,7 +297,7 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
         if (rc) {
             return true;
         }
-        if (CLIENTCMD_GETPROGRESS.equals(command)) {
+        if (CMD_GETPROGRESS.equals(command)) {
             clientProgress = result.get(PARAM_PROGRESS);
             return true;
         }

@@ -43,7 +43,6 @@ import static mcjty.deepresonance.tanks.TankGrid.TANK_BUCKETS;
 public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements DefaultSidedInventory, ITickable {
 
     public static final String CMD_GETLIQUID = "getLiquid";
-    public static final String CLIENTCMD_GETLIQUID = "getLiquid";
     public static final Key<Integer> PARAM_AMOUNT = new Key<>("amount", Type.INTEGER);
 
     public static final int COLOR_BLUE = 1;
@@ -358,10 +357,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     }
 
     public void requestCrystalLiquidFromServer() {
-        requestDataFromServer(DeepResonance.MODID,
-                CMD_GETLIQUID,
-                CLIENTCMD_GETLIQUID,
-                TypedMap.EMPTY);
+        requestDataFromServer(DeepResonance.MODID, CMD_GETLIQUID, TypedMap.EMPTY);
     }
 
     public int getCrystalLiquid() {
@@ -391,7 +387,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
         if (rc) {
             return true;
         }
-        if (CLIENTCMD_GETLIQUID.equals(command)) {
+        if (CMD_GETLIQUID.equals(command)) {
             crystalLiquidClient = result.get(PARAM_AMOUNT);
             return true;
         }

@@ -35,7 +35,6 @@ import javax.annotation.Nonnull;
 public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implements ITankHook, DefaultSidedInventory, ITickable {
 
     public static final String CMD_GETPROGRESS = "getProgress";
-    public static final String CLIENTCMD_GETPROGRESS = "getProgress";
     public static final Key<Integer> PARAM_PROGRESS = new Key<>("progress", Type.INTEGER);
 
     private InventoryHelper inventoryHelper = new InventoryHelper(this, SmelterContainer.factory, 1);
@@ -273,7 +272,7 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
 
     // Request the researching amount from the server. This has to be called on the client side.
     public void requestProgressFromServer() {
-        requestDataFromServer(DeepResonance.MODID, CMD_GETPROGRESS, CLIENTCMD_GETPROGRESS, TypedMap.EMPTY);
+        requestDataFromServer(DeepResonance.MODID, CMD_GETPROGRESS, TypedMap.EMPTY);
     }
 
     @Override
@@ -302,7 +301,7 @@ public class SmelterTileEntity extends GenericEnergyReceiverTileEntity implement
         if (rc) {
             return true;
         }
-        if (CLIENTCMD_GETPROGRESS.equals(command)) {
+        if (CMD_GETPROGRESS.equals(command)) {
             progressPercentage = result.get(PARAM_PROGRESS);
             return true;
         }
