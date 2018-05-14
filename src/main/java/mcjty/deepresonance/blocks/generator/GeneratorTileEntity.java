@@ -73,7 +73,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
             network.setEnergy(energy);
         }
 
-        generatorNetwork.save(getWorld());
+        generatorNetwork.save();
     }
 
     private void setBlocksToNetwork(BlockPos c, Set<BlockPos> done, int newId) {
@@ -170,7 +170,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
                 }
             }
         }
-        generatorNetwork.save(getWorld());
+        generatorNetwork.save();
     }
 
     // Move this tile entity to another network.
@@ -198,7 +198,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         if (network != null && network.isActive() != active) {
             network.setActive(active);
             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(getWorld());
-            generatorNetwork.save(getWorld());
+            generatorNetwork.save();
             Set<BlockPos> done = Sets.newHashSet();
             activateBlocks(getPos(), done, active);
         }
@@ -302,7 +302,7 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         }
         if (!simulate) {
             network.setEnergy(energy - maxExtract);
-            DRGeneratorNetwork.getChannels(getWorld()).save(getWorld());
+            DRGeneratorNetwork.getChannels(getWorld()).save();
         }
         return maxExtract;
     }

@@ -4,11 +4,9 @@ import elec332.core.main.ElecCoreRegistrar;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.commands.CommandDRGen;
 import mcjty.deepresonance.compat.CompatHandler;
-import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
 import mcjty.deepresonance.integration.computers.OpenComputersIntegration;
 import mcjty.deepresonance.items.manual.GuiDeepResonanceManual;
 import mcjty.deepresonance.proxy.CommonProxy;
-import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.tanks.TankGridHandler;
 import mcjty.lib.base.ModBase;
 import mcjty.lib.compat.MainCompatHandler;
@@ -128,13 +126,6 @@ public class DeepResonance implements ModBase {
         if (Loader.isModLoaded("opencomputers")) {
             OpenComputersIntegration.init();
         }
-    }
-
-    @Mod.EventHandler
-    public void serverStopped(FMLServerStoppedEvent event) {
-        Logging.log("Deep Resonance: server is stopping. Shutting down gracefully");
-        DRRadiationManager.clearInstance();
-        DRGeneratorNetwork.clearInstance();
     }
 
     /**

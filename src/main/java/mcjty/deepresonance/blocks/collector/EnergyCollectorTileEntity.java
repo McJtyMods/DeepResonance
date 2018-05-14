@@ -65,7 +65,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
 
                 networkID = generatorTileEntity.getNetworkId();
                 generatorTileEntity.getNetwork().incCollectorBlocks();
-                generatorNetwork.save(getWorld());
+                generatorNetwork.save();
             }
 
 
@@ -81,7 +81,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
                     }
                     if (network.getEnergy() != newEnergy) {
                         network.setEnergy(newEnergy);
-                        generatorNetwork.save(getWorld());
+                        generatorNetwork.save();
                     }
 
                     active = true;
@@ -189,7 +189,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
             }
             DRRadiationManager.RadiationSource radiationSource = radiationManager.getOrCreateRadiationSource(thisCoordinate);
             radiationSource.update(radiationRadius, radiationStrength, MAXTICKS);
-            radiationManager.save(getWorld());
+            radiationManager.save();
         }
 
         return rf;

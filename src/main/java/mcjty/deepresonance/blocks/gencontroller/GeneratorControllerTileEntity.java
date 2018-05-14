@@ -138,7 +138,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
         }
         if (dirty) {
             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(getWorld());
-            generatorNetwork.save(getWorld());
+            generatorNetwork.save();
         }
     }
 

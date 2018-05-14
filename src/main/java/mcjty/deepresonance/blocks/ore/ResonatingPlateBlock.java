@@ -54,7 +54,7 @@ public class ResonatingPlateBlock extends Block {
             }
             DRRadiationManager.RadiationSource radiationSource = radiationManager.getOrCreateRadiationSource(thisCoordinate);
             radiationSource.update(ConfigMachines.plateBlock.radiationRadius, ConfigMachines.plateBlock.radiationStrength, ConfigMachines.plateBlock.radiationTicks);
-            radiationManager.save(world);
+            radiationManager.save();
         }
     }
 

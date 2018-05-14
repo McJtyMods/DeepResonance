@@ -103,7 +103,7 @@ public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyCon
                     NBTTagCompound tagCompound = itemStack.getTagCompound();
                     network.setEnergy(network.getEnergy() + (tagCompound == null ? 0 : tagCompound.getInteger("energy")));
                     DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(world);
-                    generatorNetwork.save(world);
+                    generatorNetwork.save();
                 }
             }
         }

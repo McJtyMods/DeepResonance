@@ -132,7 +132,7 @@ public class RadiationTickEvent {
                 Logging.logDebug("Removed radiation source at: " + coordinate.getCoordinate().toString() + " (" + coordinate.getDimension() + ")");
             }
 
-            radiationManager.save(entityWorld);
+            radiationManager.save();
         }
     }
 

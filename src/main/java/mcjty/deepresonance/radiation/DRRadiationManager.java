@@ -3,25 +3,29 @@ package mcjty.deepresonance.radiation;
 import com.google.common.collect.Maps;
 import mcjty.deepresonance.varia.QuadTree;
 import mcjty.lib.varia.GlobalCoordinate;
+import mcjty.lib.worlddata.AbstractWorldData;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.Map;
 
-public class DRRadiationManager extends WorldSavedData {
+public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
 
-    public static final String RADIATION_MANAGER_NAME = "DRRadiationManager";
-    private static DRRadiationManager instance = null;
+    private static final String RADIATION_MANAGER_NAME = "DRRadiationManager";
 
     private final Map<GlobalCoordinate, RadiationSource> sources = Maps.newHashMap();
 
-    public DRRadiationManager(String identifier) {
-        super(identifier);
+    public DRRadiationManager(String name) {
+        super(name);
+    }
+
+    @Override
+    public void clear() {
+        sources.clear();
     }
 
     public static float calculateRadiationStrength(float strength, float purity) {
@@ -41,38 +45,12 @@ public class DRRadiationManager extends WorldSavedData {
         return radius;
     }
 
-    public void save(World world) {
-        world.setData(RADIATION_MANAGER_NAME, this);
-        markDirty();
-    }
-
-    public static void clearInstance() {
-        if (instance != null) {
-            instance.sources.clear();
-            instance = null;
-        }
-    }
-
     public void removeAllRadiation() {
         sources.clear();
     }
 
-    public static DRRadiationManager getManager() {
-        return instance;
-    }
-
     public static DRRadiationManager getManager(World world) {
-        if (world.isRemote) {
-            return null;
-        }
-        if (instance != null) {
-            return instance;
-        }
-        instance = (DRRadiationManager) world.loadData(DRRadiationManager.class, RADIATION_MANAGER_NAME);
-        if (instance == null) {
-            instance = new DRRadiationManager(RADIATION_MANAGER_NAME);
-        }
-        return instance;
+        return getData(world, DRRadiationManager.class, RADIATION_MANAGER_NAME);
     }
 
     public RadiationSource getOrCreateRadiationSource(GlobalCoordinate coordinate) {

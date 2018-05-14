@@ -51,6 +51,6 @@ public class CmdCleanRadiation extends AbstractDRCommand {
             Logging.log("Removed " + cnt + " radiation sources!");
         }
 
-        manager.save(sender.getEntityWorld());
+        manager.save();
     }
 }

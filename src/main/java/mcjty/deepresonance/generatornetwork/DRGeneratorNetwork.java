@@ -1,55 +1,34 @@
 package mcjty.deepresonance.generatornetwork;
 
+import mcjty.lib.worlddata.AbstractWorldData;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class DRGeneratorNetwork extends WorldSavedData {
+public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
 
-    public static final String GENERATOR_NETWORK_NAME = "DRGeneratorNetwork";
-    private static DRGeneratorNetwork instance = null;
+    private static final String GENERATOR_NETWORK_NAME = "DRGeneratorNetwork";
 
     private int lastId = 0;
 
-    private final Map<Integer,Network> networks = new HashMap<Integer,Network>();
+    private final Map<Integer,Network> networks = new HashMap<>();
 
-    public DRGeneratorNetwork(String identifier) {
-        super(identifier);
+    public DRGeneratorNetwork(String name) {
+        super(name);
     }
 
-    public void save(World world) {
-        world.setData(GENERATOR_NETWORK_NAME, this);
-        markDirty();
-    }
-
-    public static void clearInstance() {
-        if (instance != null) {
-            instance.networks.clear();
-            instance = null;
-        }
-    }
-
-    public static DRGeneratorNetwork getChannels() {
-        return instance;
+    @Override
+    public void clear() {
+        networks.clear();
+        lastId = 0;
     }
 
     public static DRGeneratorNetwork getChannels(World world) {
-        if (world.isRemote) {
-            return null;
-        }
-        if (instance != null) {
-            return instance;
-        }
-        instance = (DRGeneratorNetwork) world.loadData(DRGeneratorNetwork.class, GENERATOR_NETWORK_NAME);
-        if (instance == null) {
-            instance = new DRGeneratorNetwork(GENERATOR_NETWORK_NAME);
-        }
-        return instance;
+        return getData(world, DRGeneratorNetwork.class, GENERATOR_NETWORK_NAME);
     }
 
     public Network getOrCreateNetwork(int id) {

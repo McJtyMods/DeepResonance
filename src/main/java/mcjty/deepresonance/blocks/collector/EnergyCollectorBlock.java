@@ -76,7 +76,7 @@ public class EnergyCollectorBlock extends GenericDRBlock<EnergyCollectorTileEnti
                 if (network != null) {
                     network.incCollectorBlocks();
                     DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(world);
-                    generatorNetwork.save(world);
+                    generatorNetwork.save();
                     EnergyCollectorTileEntity energyCollectorTileEntity = (EnergyCollectorTileEntity) world.getTileEntity(pos);
                     energyCollectorTileEntity.setNetworkID(generatorTileEntity.getNetworkId());
                 }
@@ -101,7 +101,7 @@ public class EnergyCollectorBlock extends GenericDRBlock<EnergyCollectorTileEnti
                     if (network != null) {
                         network.decCollectorBlocks();
                         DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(world);
-                        generatorNetwork.save(world);
+                        generatorNetwork.save();
                     }
                 }
             }
