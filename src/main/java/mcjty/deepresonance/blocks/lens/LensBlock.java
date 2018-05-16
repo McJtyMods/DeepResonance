@@ -27,7 +27,7 @@ import java.util.List;
 public class LensBlock extends GenericDRBlock<LensTileEntity, EmptyContainer> {
 
     public LensBlock() {
-        super(Material.IRON, LensTileEntity.class, EmptyContainer.class, LensItemBlock.class, "lens", false);
+        super(Material.IRON, LensTileEntity.class, EmptyContainer::new, LensItemBlock.class, "lens", false);
     }
 
     @Override

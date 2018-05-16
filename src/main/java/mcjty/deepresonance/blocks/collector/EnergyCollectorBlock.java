@@ -11,6 +11,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -30,7 +31,7 @@ import java.util.List;
 public class EnergyCollectorBlock extends GenericDRBlock<EnergyCollectorTileEntity, EmptyContainer> {
 
     public EnergyCollectorBlock() {
-        super(Material.IRON, EnergyCollectorTileEntity.class, EmptyContainer.class, "energy_collector", false);
+        super(Material.IRON, EnergyCollectorTileEntity.class, EmptyContainer::new, "energy_collector", false);
     }
 
     @Override

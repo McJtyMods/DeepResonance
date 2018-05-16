@@ -20,7 +20,7 @@ import java.util.List;
 public class PurifierBlock extends GenericDRBlock<PurifierTileEntity, PurifierContainer> {
 
     public PurifierBlock() {
-        super(Material.ROCK, PurifierTileEntity.class, PurifierContainer.class, "purifier", true);
+        super(Material.ROCK, PurifierTileEntity.class, PurifierContainer::new, "purifier", true);
     }
 
     @SideOnly(Side.CLIENT)

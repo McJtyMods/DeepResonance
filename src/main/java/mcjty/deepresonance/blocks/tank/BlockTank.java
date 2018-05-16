@@ -64,7 +64,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
     public static final PropertyInteger DUMMY_RCL = PropertyInteger.create("dummy_rcl", 0, 1);
 
     public BlockTank() {
-        super(Material.ROCK, TileTank.class, EmptyContainer.class, "tank", true);
+        super(Material.ROCK, TileTank.class, EmptyContainer::new, "tank", true);
     }
 
     @SideOnly(Side.CLIENT)

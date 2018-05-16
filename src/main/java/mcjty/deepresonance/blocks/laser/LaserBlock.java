@@ -28,7 +28,7 @@ public class LaserBlock extends GenericDRBlock<LaserTileEntity, LaserContainer> 
     public static PropertyInteger COLOR = PropertyInteger.create("color", 0, 3);
 
     public LaserBlock() {
-        super(Material.IRON, LaserTileEntity.class, LaserContainer.class, "laser", false);
+        super(Material.IRON, LaserTileEntity.class, LaserContainer::new, "laser", false);
     }
 
     @Override

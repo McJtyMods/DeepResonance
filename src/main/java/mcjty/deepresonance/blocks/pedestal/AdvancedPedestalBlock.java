@@ -18,7 +18,7 @@ import java.util.List;
 public class AdvancedPedestalBlock extends GenericDRBlock<AdvancedPedestalTileEntity, PedestalContainer> {
 
     public AdvancedPedestalBlock() {
-        super(Material.IRON, AdvancedPedestalTileEntity.class, PedestalContainer.class, "advanced_pedestal", false);
+        super(Material.IRON, AdvancedPedestalTileEntity.class, PedestalContainer::new, "advanced_pedestal", false);
     }
 
     @SideOnly(Side.CLIENT)

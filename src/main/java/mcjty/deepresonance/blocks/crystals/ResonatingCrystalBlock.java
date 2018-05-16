@@ -59,7 +59,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
     private static long lastTime = 0;
 
     public ResonatingCrystalBlock() {
-        super(Material.GLASS, ResonatingCrystalTileEntity.class, EmptyContainer.class, "resonating_crystal", false);
+        super(Material.GLASS, ResonatingCrystalTileEntity.class, EmptyContainer::new, "resonating_crystal", false);
         setHardness(3.0f);
         setResistance(5.0f);
         setHarvestLevel("pickaxe", 2);

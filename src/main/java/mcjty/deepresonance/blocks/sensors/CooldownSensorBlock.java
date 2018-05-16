@@ -22,7 +22,7 @@ import java.util.List;
 public class CooldownSensorBlock extends GenericDRBlock<CooldownSensorTileEntity, EmptyContainer> {
 
     public CooldownSensorBlock() {
-        super(Material.IRON, CooldownSensorTileEntity.class, EmptyContainer.class, "cooldown_sensor", false);
+        super(Material.IRON, CooldownSensorTileEntity.class, EmptyContainer::new, "cooldown_sensor", false);
     }
 
     @Override

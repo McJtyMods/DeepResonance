@@ -18,7 +18,7 @@ import java.util.List;
 public class PedestalBlock extends GenericDRBlock<PedestalTileEntity, PedestalContainer> {
 
     public PedestalBlock() {
-        super(Material.IRON, PedestalTileEntity.class, PedestalContainer.class, "pedestal", false);
+        super(Material.IRON, PedestalTileEntity.class, PedestalContainer::new, "pedestal", false);
     }
 
     @SideOnly(Side.CLIENT)

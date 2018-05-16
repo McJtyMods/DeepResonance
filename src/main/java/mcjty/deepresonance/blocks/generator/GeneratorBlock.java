@@ -42,7 +42,7 @@ public class GeneratorBlock extends GenericDRBlock<GeneratorTileEntity, EmptyCon
     private static long lastTime = 0;
 
     public GeneratorBlock() {
-        super(Material.IRON, GeneratorTileEntity.class, EmptyContainer.class, "generator", false);
+        super(Material.IRON, GeneratorTileEntity.class, EmptyContainer::new, "generator", false);
     }
 
     @Override

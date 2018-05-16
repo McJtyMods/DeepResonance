@@ -22,7 +22,7 @@ import java.util.List;
 public class InstabilitySensorBlock extends GenericDRBlock<InstabilitySensorTileEntity, EmptyContainer> {
 
     public InstabilitySensorBlock() {
-        super(Material.IRON, InstabilitySensorTileEntity.class, EmptyContainer.class, "instability_sensor", false);
+        super(Material.IRON, InstabilitySensorTileEntity.class, EmptyContainer::new,"instability_sensor", false);
     }
 
     @Override

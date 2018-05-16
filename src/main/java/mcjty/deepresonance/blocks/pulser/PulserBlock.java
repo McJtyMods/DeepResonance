@@ -29,7 +29,7 @@ import static mcjty.theoneprobe.api.TextStyleClass.LABEL;
 public class PulserBlock extends GenericDRBlock<PulserTileEntity, EmptyContainer> {
 
     public PulserBlock() {
-        super(Material.IRON, PulserTileEntity.class, EmptyContainer.class, "pulser", false);
+        super(Material.IRON, PulserTileEntity.class, EmptyContainer::new, "pulser", false);
     }
 
     @Override
