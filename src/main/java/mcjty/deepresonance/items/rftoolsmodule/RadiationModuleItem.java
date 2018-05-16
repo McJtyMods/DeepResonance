@@ -37,12 +37,12 @@ public class RadiationModuleItem extends GenericDRItem implements IModuleProvide
     }
 
     @Override
-    public Class<? extends IScreenModule> getServerScreenModule() {
+    public Class<? extends IScreenModule<?>> getServerScreenModule() {
         return RadiationScreenModule.class;
     }
 
     @Override
-    public Class<? extends IClientScreenModule> getClientScreenModule() {
+    public Class<? extends IClientScreenModule<?>> getClientScreenModule() {
         return RadiationClientScreenModule.class;
     }
 

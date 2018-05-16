@@ -45,7 +45,7 @@ public class GuiSmelter extends GenericGuiContainer<SmelterTileEntity> {
         percentage = new Label(mc, this);
         percentage.setLayoutHint(new PositionalLayout.PositionalHint(54, 44, 32, 14));
 
-        Widget toplevel = new Panel(mc, this).setBackground(iconLocation).setLayout(new PositionalLayout()).addChild(energyBar).addChild(burningImage).addChild(percentage);
+        Panel toplevel = new Panel(mc, this).setBackground(iconLocation).setLayout(new PositionalLayout()).addChild(energyBar).addChild(burningImage).addChild(percentage);
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
 
         window = new Window(this, toplevel);

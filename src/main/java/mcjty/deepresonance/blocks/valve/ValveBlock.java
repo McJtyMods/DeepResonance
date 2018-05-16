@@ -35,7 +35,7 @@ public class ValveBlock extends GenericDRBlock<ValveTileEntity, ValveContainer> 
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Class<? extends GenericGuiContainer> getGuiClass() {
+    public Class<? extends GenericGuiContainer<ValveTileEntity>> getGuiClass() {
         return GuiValve.class;
     }
 

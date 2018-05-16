@@ -28,7 +28,7 @@ public class GuiPurifier extends GenericGuiContainer<PurifierTileEntity> {
     public void initGui() {
         super.initGui();
 
-        Widget toplevel = new Panel(mc, this).setBackground(iconLocation).setLayout(new PositionalLayout());
+        Panel toplevel = new Panel(mc, this).setBackground(iconLocation).setLayout(new PositionalLayout());
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
 
         window = new Window(this, toplevel);

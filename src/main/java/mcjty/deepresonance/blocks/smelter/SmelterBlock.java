@@ -31,7 +31,7 @@ public class SmelterBlock extends GenericDRBlock<SmelterTileEntity, SmelterConta
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Class<? extends GenericGuiContainer> getGuiClass() {
+    public Class<? extends GenericGuiContainer<SmelterTileEntity>> getGuiClass() {
         return GuiSmelter.class;
     }
 

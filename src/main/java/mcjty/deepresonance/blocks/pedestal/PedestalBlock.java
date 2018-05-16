@@ -23,7 +23,7 @@ public class PedestalBlock extends GenericDRBlock<PedestalTileEntity, PedestalCo
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Class<? extends GenericGuiContainer> getGuiClass() {
+    public Class<? extends GenericGuiContainer<PedestalTileEntity>> getGuiClass() {
         return GuiPedestal.class;
     }
 

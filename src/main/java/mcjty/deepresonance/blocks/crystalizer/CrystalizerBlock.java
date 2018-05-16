@@ -36,7 +36,7 @@ public class CrystalizerBlock extends GenericDRBlock<CrystalizerTileEntity, Crys
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Class<? extends GenericGuiContainer> getGuiClass() {
+    public Class<? extends GenericGuiContainer<CrystalizerTileEntity>> getGuiClass() {
         return GuiCrystalizer.class;
     }
 

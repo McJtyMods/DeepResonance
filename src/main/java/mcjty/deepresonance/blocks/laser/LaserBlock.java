@@ -43,7 +43,7 @@ public class LaserBlock extends GenericDRBlock<LaserTileEntity, LaserContainer> 
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Class<? extends GenericGuiContainer> getGuiClass() {
+    public Class<? extends GenericGuiContainer<LaserTileEntity>> getGuiClass() {
         return GuiLaser.class;
     }
 

@@ -66,7 +66,7 @@ public class GuiLaser extends GenericGuiContainer<LaserTileEntity> {
                 .addChild(strengthBonus)
                 .addChild(efficiencyBonus);
 
-        Widget toplevel = new Panel(mc, this).setBackground(iconLocation).setLayout(new PositionalLayout()).addChild(energyBar).addChild(catalystPanel).addChild(crystalBar);
+        Panel toplevel = new Panel(mc, this).setBackground(iconLocation).setLayout(new PositionalLayout()).addChild(energyBar).addChild(catalystPanel).addChild(crystalBar);
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
 
         window = new Window(this, toplevel);

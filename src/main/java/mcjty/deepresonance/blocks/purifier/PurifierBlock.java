@@ -25,7 +25,7 @@ public class PurifierBlock extends GenericDRBlock<PurifierTileEntity, PurifierCo
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Class<? extends GenericGuiContainer> getGuiClass() {
+    public Class<? extends GenericGuiContainer<PurifierTileEntity>> getGuiClass() {
         return GuiPurifier.class;
     }
 

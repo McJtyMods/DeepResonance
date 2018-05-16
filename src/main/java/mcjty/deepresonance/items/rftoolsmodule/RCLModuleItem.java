@@ -38,12 +38,12 @@ public class RCLModuleItem extends GenericDRItem implements IModuleProvider {
     }
 
     @Override
-    public Class<? extends IScreenModule> getServerScreenModule() {
+    public Class<? extends IScreenModule<?>> getServerScreenModule() {
         return RCLScreenModule.class;
     }
 
     @Override
-    public Class<? extends IClientScreenModule> getClientScreenModule() {
+    public Class<? extends IClientScreenModule<?>> getClientScreenModule() {
         return RCLClientScreenModule.class;
     }
 
