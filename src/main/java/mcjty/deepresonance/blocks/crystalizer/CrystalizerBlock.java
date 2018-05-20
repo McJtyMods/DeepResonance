@@ -22,6 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 public class CrystalizerBlock extends GenericDRBlock<CrystalizerTileEntity, CrystalizerContainer> {
 
@@ -36,8 +37,8 @@ public class CrystalizerBlock extends GenericDRBlock<CrystalizerTileEntity, Crys
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Class<? extends GenericGuiContainer<CrystalizerTileEntity>> getGuiClass() {
-        return GuiCrystalizer.class;
+    public BiFunction<CrystalizerTileEntity, CrystalizerContainer, GenericGuiContainer<? super CrystalizerTileEntity>> getGuiFactory() {
+        return GuiCrystalizer::new;
     }
 
     @Override

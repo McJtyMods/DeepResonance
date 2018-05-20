@@ -14,6 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 public class AdvancedPedestalBlock extends GenericDRBlock<AdvancedPedestalTileEntity, PedestalContainer> {
 
@@ -23,8 +24,8 @@ public class AdvancedPedestalBlock extends GenericDRBlock<AdvancedPedestalTileEn
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Class<? extends GenericGuiContainer<PedestalTileEntity>> getGuiClass() {
-        return GuiPedestal.class;
+    public BiFunction<AdvancedPedestalTileEntity, PedestalContainer, GenericGuiContainer<? super AdvancedPedestalTileEntity>> getGuiFactory() {
+        return GuiPedestal::new;
     }
 
     @Override

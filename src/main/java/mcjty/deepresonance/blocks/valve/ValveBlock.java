@@ -16,6 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 public class ValveBlock extends GenericDRBlock<ValveTileEntity, ValveContainer> {
 
@@ -35,8 +36,8 @@ public class ValveBlock extends GenericDRBlock<ValveTileEntity, ValveContainer> 
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Class<? extends GenericGuiContainer<ValveTileEntity>> getGuiClass() {
-        return GuiValve.class;
+    public BiFunction<ValveTileEntity, ValveContainer, GenericGuiContainer<? super ValveTileEntity>> getGuiFactory() {
+        return GuiValve::new;
     }
 
     @Override

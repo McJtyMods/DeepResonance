@@ -20,6 +20,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 //@Optional.InterfaceList({
       //  @Optional.Interface(iface = "crazypants.enderio.api.redstone.IRedstoneConnectable", modid = "EnderIO")})
@@ -43,8 +44,8 @@ public class LaserBlock extends GenericDRBlock<LaserTileEntity, LaserContainer> 
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Class<? extends GenericGuiContainer<LaserTileEntity>> getGuiClass() {
-        return GuiLaser.class;
+    public BiFunction<LaserTileEntity, LaserContainer, GenericGuiContainer<? super LaserTileEntity>> getGuiFactory() {
+        return GuiLaser::new;
     }
 
     @Override

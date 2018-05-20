@@ -20,6 +20,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 public class SmelterBlock extends GenericDRBlock<SmelterTileEntity, SmelterContainer> {
 
@@ -31,8 +32,8 @@ public class SmelterBlock extends GenericDRBlock<SmelterTileEntity, SmelterConta
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Class<? extends GenericGuiContainer<SmelterTileEntity>> getGuiClass() {
-        return GuiSmelter.class;
+    public BiFunction<SmelterTileEntity, SmelterContainer, GenericGuiContainer<? super SmelterTileEntity>> getGuiFactory() {
+        return GuiSmelter::new;
     }
 
     @Override

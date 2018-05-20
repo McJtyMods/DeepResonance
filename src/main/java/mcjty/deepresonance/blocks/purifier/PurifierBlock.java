@@ -16,6 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 public class PurifierBlock extends GenericDRBlock<PurifierTileEntity, PurifierContainer> {
 
@@ -25,8 +26,8 @@ public class PurifierBlock extends GenericDRBlock<PurifierTileEntity, PurifierCo
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Class<? extends GenericGuiContainer<PurifierTileEntity>> getGuiClass() {
-        return GuiPurifier.class;
+    public BiFunction<PurifierTileEntity, PurifierContainer, GenericGuiContainer<? super PurifierTileEntity>> getGuiFactory() {
+        return GuiPurifier::new;
     }
 
     @Override
