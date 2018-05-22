@@ -265,13 +265,13 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
 
                 if (DeepResonance.redstoneflux && RedstoneFluxCompatibility.isEnergyConnection(te)) {
                     if (RedstoneFluxCompatibility.canConnectEnergy(te, opposite)) {
-                        received = EnergyTools.receiveEnergy(te, opposite, rfToGive);
+                        received = (int) EnergyTools.receiveEnergy(te, opposite, rfToGive);
                     } else {
                         received = 0;
                     }
                 } else {
                     // Forge unit
-                    received = EnergyTools.receiveEnergy(te, opposite, rfToGive);
+                    received = (int) EnergyTools.receiveEnergy(te, opposite, rfToGive);
                 }
                 energyStored -= extractEnergy(received, false);
                 if (energyStored <= 0) {
