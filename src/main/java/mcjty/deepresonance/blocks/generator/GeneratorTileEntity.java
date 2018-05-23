@@ -253,8 +253,8 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         for (int i = 0 ; i < 6 ; i++) {
             BlockPos pos = getPos().offset(EnumFacing.VALUES[i]);
             TileEntity te = getWorld().getTileEntity(pos);
-            if (EnergyTools.isEnergyTE(te)) {
-                EnumFacing opposite = EnumFacing.VALUES[i].getOpposite();
+            EnumFacing opposite = EnumFacing.VALUES[i].getOpposite();
+            if (EnergyTools.isEnergyTE(te, opposite)) {
                 int rfToGive;
                 if (GeneratorConfiguration.rfPerTickGenerator <= energyStored) {
                     rfToGive = GeneratorConfiguration.rfPerTickGenerator;
