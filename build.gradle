@@ -182,6 +182,5 @@ curseforge {
             optionalLibrary 'the-one-probe'
             optionalLibrary 'rftools-control'
         }
-        addArtifact(apiJar)
     }
 }
