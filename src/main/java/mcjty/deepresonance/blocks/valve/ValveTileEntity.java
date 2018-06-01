@@ -7,8 +7,8 @@ import mcjty.deepresonance.config.ConfigMachines;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
 import mcjty.deepresonance.fluid.LiquidCrystalFluidTagData;
 import mcjty.lib.bindings.DefaultValue;
-import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.bindings.IValue;
+import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
@@ -32,9 +32,9 @@ public class ValveTileEntity extends GenericTileEntity implements ITankHook, ITi
     }
 
     @Override
-    public IValue[] getValues() {
+    public IValue<?>[] getValues() {
         return new IValue[]{
-                new DefaultValue<>(VALUE_RSMODE, ValveTileEntity::getRSModeInt, ValveTileEntity::setRSModeInt),
+                new DefaultValue<>(VALUE_RSMODE, this::getRSModeInt, this::setRSModeInt),
         };
     }
 
