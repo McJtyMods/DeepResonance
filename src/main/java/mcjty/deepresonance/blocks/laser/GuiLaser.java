@@ -32,7 +32,7 @@ public class GuiLaser extends GenericGuiContainer<LaserTileEntity> {
 
     public GuiLaser(LaserTileEntity laserTileEntity, LaserContainer container) {
         super(DeepResonance.instance, DRMessages.INSTANCE, laserTileEntity, container, 0, "laser");
-        laserTileEntity.setCurrentRF(laserTileEntity.getEnergyStored());
+        laserTileEntity.setCurrentRF(laserTileEntity.getStoredPower());
 
         xSize = LASER_WIDTH;
         ySize = LASER_HEIGHT;
@@ -42,7 +42,7 @@ public class GuiLaser extends GenericGuiContainer<LaserTileEntity> {
     public void initGui() {
         super.initGui();
 
-        int maxEnergyStored = tileEntity.getMaxEnergyStored();
+        long maxEnergyStored = tileEntity.getCapacity();
         energyBar = new EnergyBar(mc, this).setVertical().setMaxValue(maxEnergyStored).setLayoutHint(new PositionalLayout.PositionalHint(10, 7, 8, 59)).setShowText(false);
         energyBar.setValue(tileEntity.getCurrentRF());
 

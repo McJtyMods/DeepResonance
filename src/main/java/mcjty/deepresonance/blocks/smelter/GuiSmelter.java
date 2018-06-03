@@ -25,7 +25,7 @@ public class GuiSmelter extends GenericGuiContainer<SmelterTileEntity> {
 
     public GuiSmelter(SmelterTileEntity smelterTileEntity, SmelterContainer container) {
         super(DeepResonance.instance, DRMessages.INSTANCE, smelterTileEntity, container, 0, "smelter");
-        smelterTileEntity.setCurrentRF(smelterTileEntity.getEnergyStored());
+        smelterTileEntity.setCurrentRF(smelterTileEntity.getStoredPower());
 
         xSize = SMELTER_WIDTH;
         ySize = SMELTER_HEIGHT;
@@ -35,7 +35,7 @@ public class GuiSmelter extends GenericGuiContainer<SmelterTileEntity> {
     public void initGui() {
         super.initGui();
 
-        int maxEnergyStored = tileEntity.getMaxEnergyStored();
+        long maxEnergyStored = tileEntity.getCapacity();
         energyBar = new EnergyBar(mc, this).setVertical().setMaxValue(maxEnergyStored).setLayoutHint(new PositionalLayout.PositionalHint(10, 7, 8, 54)).setShowText(false);
         energyBar.setValue(tileEntity.getCurrentRF());
 

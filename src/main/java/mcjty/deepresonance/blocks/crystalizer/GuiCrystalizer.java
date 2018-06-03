@@ -26,7 +26,7 @@ public class GuiCrystalizer extends GenericGuiContainer<CrystalizerTileEntity> {
 
     public GuiCrystalizer(CrystalizerTileEntity crystalizerTileEntity, CrystalizerContainer container) {
         super(DeepResonance.instance, DRMessages.INSTANCE, crystalizerTileEntity, container, 0, "crystalizer");
-        crystalizerTileEntity.setCurrentRF(crystalizerTileEntity.getEnergyStored());
+        crystalizerTileEntity.setCurrentRF(crystalizerTileEntity.getStoredPower());
 
         xSize = CRYSTALIZER_WIDTH;
         ySize = CRYSTALIZER_HEIGHT;
@@ -36,7 +36,7 @@ public class GuiCrystalizer extends GenericGuiContainer<CrystalizerTileEntity> {
     public void initGui() {
         super.initGui();
 
-        int maxEnergyStored = tileEntity.getMaxEnergyStored();
+        long maxEnergyStored = tileEntity.getCapacity();
         energyBar = new EnergyBar(mc, this).setVertical().setMaxValue(maxEnergyStored).setLayoutHint(new PositionalLayout.PositionalHint(10, 7, 8, 54)).setShowText(false);
         energyBar.setValue(tileEntity.getCurrentRF());
 

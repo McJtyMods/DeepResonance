@@ -20,7 +20,7 @@ public class PulserTileEntity extends GenericEnergyReceiverTileEntity implements
     public void update() {
         if (!world.isRemote) {
             if (powerLevel > 0) {
-                int rf = getEnergyStored();
+                long rf = getStoredPower();
                 int rfToTransfer = (ConfigMachines.pulser.rfPerPulse / 15) * powerLevel;
                 if (rf >= rfToTransfer) {
                     consumeEnergy(rfToTransfer);

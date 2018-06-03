@@ -116,7 +116,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
             return;
         }
 
-        if (getEnergyStored() < ConfigMachines.laser.rfUsePerCatalyst) {
+        if (getStoredPower() < ConfigMachines.laser.rfUsePerCatalyst) {
             changeColor(0);
             return;
         }
