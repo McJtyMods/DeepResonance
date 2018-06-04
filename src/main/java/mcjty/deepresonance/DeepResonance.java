@@ -53,7 +53,6 @@ public class DeepResonance implements ModBase {
 
     public boolean rftools = false;
     public boolean rftoolsControl = false;
-    public static boolean redstoneflux = false;
 
     public static CreativeTabs tabDeepResonance = new CreativeTabs("DeepResonance") {
 
@@ -78,10 +77,6 @@ public class DeepResonance implements ModBase {
 
         rftools = Loader.isModLoaded("rftools");
         rftoolsControl = Loader.isModLoaded("rftoolscontrol");
-        redstoneflux = Loader.isModLoaded("redstoneflux");
-        if (redstoneflux) {
-            Logging.log("Deep Resonance Detected RedstoneFlux: enabling support");
-        }
 
         mainConfigDir = e.getModConfigurationDirectory();
         modConfigDir = new File(mainConfigDir.getPath() + File.separator + "deepresonance");

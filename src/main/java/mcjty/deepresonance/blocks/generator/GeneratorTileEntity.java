@@ -250,29 +250,13 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
             return;
         }
 
-        for (int i = 0 ; i < 6 ; i++) {
-            BlockPos pos = getPos().offset(EnumFacing.VALUES[i]);
+        for (EnumFacing facing : EnumFacing.VALUES) {
+            BlockPos pos = getPos().offset(facing);
             TileEntity te = getWorld().getTileEntity(pos);
-            EnumFacing opposite = EnumFacing.VALUES[i].getOpposite();
+            EnumFacing opposite = facing.getOpposite();
             if (EnergyTools.isEnergyTE(te, opposite)) {
-                int rfToGive;
-                if (GeneratorConfiguration.rfPerTickGenerator <= energyStored) {
-                    rfToGive = GeneratorConfiguration.rfPerTickGenerator;
-                } else {
-                    rfToGive = energyStored;
-                }
-                int received;
-
-                if (DeepResonance.redstoneflux && RedstoneFluxCompatibility.isEnergyConnection(te)) {
-                    if (RedstoneFluxCompatibility.canConnectEnergy(te, opposite)) {
-                        received = (int) EnergyTools.receiveEnergy(te, opposite, rfToGive);
-                    } else {
-                        received = 0;
-                    }
-                } else {
-                    // Forge unit
-                    received = (int) EnergyTools.receiveEnergy(te, opposite, rfToGive);
-                }
+                int rfToGive = Math.min(GeneratorConfiguration.rfPerTickGenerator, energyStored);
+                int received = (int) EnergyTools.receiveEnergy(te, opposite, rfToGive);
                 energyStored -= extractEnergy(received, false);
                 if (energyStored <= 0) {
                     break;
