@@ -1,2 +1,5 @@
+1.7.0:
+- Made compatible with the latest McJtyLib (3.0.0)
+
 1.7.0alpha:
 - Made compatible with the latest McJtyLib (3.0.0)
