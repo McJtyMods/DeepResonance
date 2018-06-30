@@ -123,9 +123,9 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
         // Handle the next 1000 microticks
         int microTicksLeft = 1000;
 
-        if (purity > 20) {
-            System.out.println("Cool=" + cooldown + ", Pulses=" + pulses + ", Resist=" + resistance);
-        }
+//        if (purity > 20) {
+//            System.out.println("Cool=" + cooldown + ", Pulses=" + pulses + ", Resist=" + resistance);
+//        }
 
         // Handle pulses
         while (pulses > 0) {
