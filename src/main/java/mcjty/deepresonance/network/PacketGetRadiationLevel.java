@@ -2,6 +2,7 @@ package mcjty.deepresonance.network;
 
 import io.netty.buffer.ByteBuf;
 import mcjty.deepresonance.items.RadiationMonitorItem;
+import mcjty.lib.network.IClientServerDelayed;
 import mcjty.lib.varia.GlobalCoordinate;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
@@ -11,7 +12,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketGetRadiationLevel implements IMessage {
+public class PacketGetRadiationLevel implements IMessage, IClientServerDelayed {
 
     private GlobalCoordinate coordinate;
 

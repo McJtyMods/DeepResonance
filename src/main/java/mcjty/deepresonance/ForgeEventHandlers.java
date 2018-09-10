@@ -6,14 +6,18 @@ import mcjty.deepresonance.blocks.sensors.AbstractSensorTileEntity;
 import mcjty.deepresonance.crafting.ModCrafting;
 import mcjty.deepresonance.items.ModItems;
 import mcjty.deepresonance.items.rftoolsmodule.RFToolsSupport;
+import mcjty.deepresonance.network.DRMessages;
 import mcjty.deepresonance.radiation.DRRadiationManager;
 import mcjty.deepresonance.radiation.RadiationShieldRegistry;
 import mcjty.deepresonance.varia.QuadTree;
 import mcjty.lib.McJtyRegister;
 import mcjty.lib.blocks.DamageMetadataItemBlock;
+import mcjty.lib.network.PacketFinalizeLogin;
+import mcjty.lib.network.PacketHandler;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.SoundEvent;
@@ -25,7 +29,9 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Map;
@@ -142,6 +148,15 @@ public class ForgeEventHandlers {
 
     }
 
+    @SubscribeEvent
+    public void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        DRMessages.INSTANCE.sendTo(new PacketFinalizeLogin(), (EntityPlayerMP) event.player);
+    }
+
+    @SubscribeEvent
+    public void onDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
+        PacketHandler.onDisconnect();
+    }
 
     @SubscribeEvent
     public void onPostWorldTick(TickEvent.WorldTickEvent event) {
