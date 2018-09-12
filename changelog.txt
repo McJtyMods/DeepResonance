@@ -1,6 +1,7 @@
 1.7.2:
 - Needs McJtyLib 3.0.5
 - Fixed a problem (using support in McJtyLib) for a packet that was sent too early
+- Fixed the inventory model for the tank
 
 1.7.1:
 - Removed some spam output

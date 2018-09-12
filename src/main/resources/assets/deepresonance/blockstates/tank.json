@@ -2,7 +2,15 @@
   "forge_marker": 1,
   "defaults": {
     "model": "deepresonance:tank",
-    "textures": { "particle": "deepresonance:blocks/tankbottom" }
+    "textures": {
+      "particle": "deepresonance:blocks/tankbottom",
+      "down": "deepresonance:blocks/tankbottom",
+      "up": "deepresonance:blocks/tanktop",
+      "east": "deepresonance:blocks/tankside",
+      "west": "deepresonance:blocks/tankside",
+      "north": "deepresonance:blocks/tankside",
+      "south": "deepresonance:blocks/tankside"
+    }
   },
   "variants": {
     "normal": [{}],
