@@ -1,3 +1,6 @@
+1.7.3 (upcoming):
+- Protection for mods that call onBlockPlaceEvent from client
+
 1.7.2:
 - Needs McJtyLib 3.0.5
 - Fixed a problem (using support in McJtyLib) for a packet that was sent too early
