@@ -125,6 +125,11 @@ public class ForgeEventHandlers {
         }
 
         World world = event.getBlockSnapshot().getWorld();
+        if (world.isRemote) {
+            // Can normally not happen but in rare situations the PlaceEvent can get called client-side
+            return;
+        }
+
         DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
         Map<GlobalCoordinate, DRRadiationManager.RadiationSource> radiationSources = radiationManager.getRadiationSources();
         if (radiationSources.isEmpty()) {
