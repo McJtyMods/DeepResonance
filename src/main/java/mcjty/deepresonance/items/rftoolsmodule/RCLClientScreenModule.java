@@ -58,15 +58,6 @@ public class RCLClientScreenModule implements IClientScreenModule<ModuleDataRCL>
     }
 
     @Override
-    public void createGui(IModuleGuiBuilder guiBuilder) {
-        guiBuilder
-                .label("Label:").text("text", "Label text").color("color", "Color for the label").nl()
-                .label("Stats:").color("radcolor", "Color for the statistics text").nl()
-                .choices("align", "Label alignment", "Left", "Center", "Right").nl()
-                .block("monitor").nl();
-    }
-
-    @Override
     public void setupFromNBT(NBTTagCompound tagCompound, int dim, BlockPos pos) {
         if (tagCompound != null) {
             line = tagCompound.getString("text");

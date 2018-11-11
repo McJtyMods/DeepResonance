@@ -29,7 +29,8 @@ import java.io.File;
                         "required-after:mcjtylib_ng@[" + DeepResonance.MIN_MCJTYLIB_VER + ",);" +
                         "required-after:eleccore@[" + DeepResonance.MIN_ELECCORE_VER + ",);" +
                         "after:forge@[" + DeepResonance.MIN_FORGE11_VER + ",);" +
-                        "after:opencomputers@[" + DeepResonance.MIN_OPENCOMPUTERS_VER + ",)",
+                        "after:opencomputers@[" + DeepResonance.MIN_OPENCOMPUTERS_VER + ",);" +
+                        "after:rftools@[" + DeepResonance.MIN_RFTOOLS_VER + ",)",
         acceptedMinecraftVersions = "[1.12,1.13)",
         version = DeepResonance.VERSION)
 public class DeepResonance implements ModBase {
@@ -39,6 +40,7 @@ public class DeepResonance implements ModBase {
     public static final String MIN_OPENCOMPUTERS_VER = "1.6.0";
     public static final String MIN_FORGE11_VER = "13.19.0.2176";
     public static final String MIN_MCJTYLIB_VER = "3.0.5";
+    public static final String MIN_RFTOOLS_VER = "7.58";
 
     @SidedProxy(clientSide="mcjty.deepresonance.proxy.ClientProxy", serverSide="mcjty.deepresonance.proxy.ServerProxy")
     public static CommonProxy proxy;

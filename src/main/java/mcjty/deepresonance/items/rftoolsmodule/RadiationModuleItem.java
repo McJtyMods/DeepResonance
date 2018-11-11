@@ -5,6 +5,7 @@ import mcjty.deepresonance.radiation.RadiationConfiguration;
 import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.Logging;
 import mcjty.rftools.api.screens.IClientScreenModule;
+import mcjty.rftools.api.screens.IModuleGuiBuilder;
 import mcjty.rftools.api.screens.IModuleProvider;
 import mcjty.rftools.api.screens.IScreenModule;
 import net.minecraft.block.Block;
@@ -49,6 +50,15 @@ public class RadiationModuleItem extends GenericDRItem implements IModuleProvide
     @Override
     public String getName() {
         return "Rad";
+    }
+
+    @Override
+    public void createGui(IModuleGuiBuilder guiBuilder) {
+        guiBuilder
+                .label("Label:").text("text", "Label text").color("color", "Color for the label").nl()
+                .label("Rad:").color("radcolor", "Color for the radiation text").nl()
+                .choices("align", "Label alignment", "Left", "Center", "Right").nl()
+                .block("monitor").nl();
     }
 
     @SideOnly(Side.CLIENT)

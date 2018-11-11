@@ -6,6 +6,7 @@ import mcjty.deepresonance.radiation.RadiationConfiguration;
 import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.Logging;
 import mcjty.rftools.api.screens.IClientScreenModule;
+import mcjty.rftools.api.screens.IModuleGuiBuilder;
 import mcjty.rftools.api.screens.IModuleProvider;
 import mcjty.rftools.api.screens.IScreenModule;
 import net.minecraft.block.Block;
@@ -50,6 +51,15 @@ public class RCLModuleItem extends GenericDRItem implements IModuleProvider {
     @Override
     public String getName() {
         return "RCL";
+    }
+
+    @Override
+    public void createGui(IModuleGuiBuilder guiBuilder) {
+        guiBuilder
+                .label("Label:").text("text", "Label text").color("color", "Color for the label").nl()
+                .label("Stats:").color("radcolor", "Color for the statistics text").nl()
+                .choices("align", "Label alignment", "Left", "Center", "Right").nl()
+                .block("monitor").nl();
     }
 
     @SideOnly(Side.CLIENT)
