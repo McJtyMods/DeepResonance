@@ -1,5 +1,6 @@
-1.7.3 (upcoming):
+1.7.3:
 - Protection for mods that call onBlockPlaceEvent from client
+- Made compatible with RFTools 7.58
 
 1.7.2:
 - Needs McJtyLib 3.0.5
