@@ -1,4 +1,8 @@
 {
+  "conditions": [{
+    "type": "forge:mod_loaded",
+    "modid": "rftools"
+  }],
   "result": {
     "item": "deepresonance:radiation_module"
   },
