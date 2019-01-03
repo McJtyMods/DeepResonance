@@ -13,6 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -185,5 +186,9 @@ public class TankTESR extends TileEntitySpecialRenderer<TileTank> {
     private boolean doRenderToSide(World world, int x, int y ,int z, TileTank tank){
         TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
         return !(tile instanceof TileTank && ((TileTank)tile).getClientRenderFluid() == tank.getClientRenderFluid());
+    }
+
+    public static void register() {
+        ClientRegistry.bindTileEntitySpecialRenderer(TileTank.class, new TankTESR());
     }
 }

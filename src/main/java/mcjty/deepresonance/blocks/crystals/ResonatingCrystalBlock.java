@@ -41,7 +41,6 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -76,7 +75,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
     @SideOnly(Side.CLIENT)
     @Override
     public void initModel() {
-        ClientRegistry.bindTileEntitySpecialRenderer(ResonatingCrystalTileEntity.class, new ResonatingCrystalTESR());
+        ResonatingCrystalTESR.register();
 
         ModelResourceLocation emptyNaturalModel = new ModelResourceLocation(getRegistryName(), "empty=true,facing=north,generated=false");
         ModelResourceLocation fullNaturalModel = new ModelResourceLocation(getRegistryName(), "empty=false,facing=north,generated=false");
