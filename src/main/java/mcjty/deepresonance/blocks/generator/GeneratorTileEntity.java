@@ -1,10 +1,7 @@
 package mcjty.deepresonance.blocks.generator;
 
-import cofh.redstoneflux.api.IEnergyProvider;
 import com.google.common.collect.Sets;
-import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
-import mcjty.lib.compat.RedstoneFluxCompatibility;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.EnergyTools;
 import net.minecraft.block.Block;
@@ -17,13 +14,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fml.common.Optional;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Optional.Interface(iface = "cofh.redstoneflux.api.IEnergyProvider", modid = "redstoneflux")
-public class GeneratorTileEntity extends GenericTileEntity implements IEnergyProvider, ITickable, IEnergyStorage {
+public class GeneratorTileEntity extends GenericTileEntity implements ITickable, IEnergyStorage {
 
     private int networkId = -1;
 
@@ -266,12 +261,6 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
     }
 
 
-    @Optional.Method(modid = "redstoneflux")
-    @Override
-    public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
-        return extraEnergyInternal(maxExtract, simulate);
-    }
-
     private int extraEnergyInternal(int maxExtract, boolean simulate) {
         if (networkId == -1) {
             return 0;
@@ -291,12 +280,6 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         return maxExtract;
     }
 
-    @Optional.Method(modid = "redstoneflux")
-    @Override
-    public int getEnergyStored(EnumFacing from) {
-        return getEnergyStoredInternal();
-    }
-
     private int getEnergyStoredInternal() {
         if (networkId == -1) {
             return 0;
@@ -305,24 +288,12 @@ public class GeneratorTileEntity extends GenericTileEntity implements IEnergyPro
         return network.getEnergy();
     }
 
-    @Optional.Method(modid = "redstoneflux")
-    @Override
-    public int getMaxEnergyStored(EnumFacing from) {
-        return getMaxEnergyStoredInternal();
-    }
-
     private int getMaxEnergyStoredInternal() {
         if (networkId == -1) {
             return 0;
         }
         DRGeneratorNetwork.Network network = getNetwork();
         return network.getGeneratorBlocks() * GeneratorConfiguration.rfPerGeneratorBlock;
-    }
-
-    @Optional.Method(modid = "redstoneflux")
-    @Override
-    public boolean canConnectEnergy(EnumFacing from) {
-        return true;
     }
 
     //----------------------------------------------------------
