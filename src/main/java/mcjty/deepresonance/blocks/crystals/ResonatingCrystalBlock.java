@@ -72,6 +72,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
         return BLOCK_AABB;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void initModel() {
         ResonatingCrystalTESR.register();
