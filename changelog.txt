@@ -1,3 +1,6 @@
+Upcoming:
+- Added back SideOnly(Side.CLIENT) to some spots to avoid crashes on server
+
 1.7.4:
 - Needs McJtyLib 3.1.0
 - Support for COFH RF API is removed. Only Forge Energy is supported now
