@@ -1,32 +1,45 @@
-item.deepresonance.DeepResonanceManual.name=Руководство по Deep Resonance
-item.deepresonance.RadiationMonitor.name=Дозиметр
-item.deepresonance.ResonatingPlate.name=Резонирующая пластина
-item.deepresonance.FilterMaterial.name=Отфильтрованный материал
-item.deepresonance.SpentFilterMaterial.name=Использованные отфильтрованный материал
+item.deepresonance.dr_manual.name=Руководство по Deep Resonance
+item.deepresonance.radiation_module.name=Модуль отображения дозиметрии
+item.deepresonance.rcl_module.name=RCL модуль отображения
+item.deepresonance.radiation_monitor.name=Дозиметр
+item.deepresonance.resonating_plate.name=Резонирующая пластина
+item.deepresonance.filter.name=Отфильтрованный материал
+item.deepresonance.spent_filter.name=Использованный отфильтрованный материал
+item.deepresonance.insert_liquid.name=Инъектор жидкостей
+
 item.deepresonance.helmet.name=Шлем радиационно-защитного костюма (WIP)
 item.deepresonance.chest.name=Кираса радиационно-защитного костюма (WIP)
 item.deepresonance.leggings.name=Поножи радиационно-защитного костюма (WIP)
 item.deepresonance.boots.name=Ботинки радиационно-защитного костюма (WIP)
 
-tile.deepresonance.oreResonating.name=Резонирующая руда
-tile.deepresonance.blockResonating.name=Resonating Plate Block
-tile.deepresonance.denseObsidian.name=Плотный обсидиан
-tile.deepresonance.denseGlass.name=Плотное стекло
-tile.deepresonance.poisonedDirt.name=Отравленная земля
-tile.deepresonance.resonatingCrystalBlock.name=Резонирующий кристалл
-tile.deepresonance.generatorBlock.name=Генератор
-tile.deepresonance.generatorControllerBlock.name=Контроллер генератора
-tile.deepresonance.energyCollectorBlock.name=Сборщик энергии
-tile.deepresonance.machineFrame.name=Каркас механизма
-tile.deepresonance.tankBlock.name=Цистерна
-tile.deepresonance.crystalizerBlock.name=Кристаллизатор
-tile.deepresonance.smelterBlock.name=Плавильня
-tile.deepresonance.purifierBlock.name=Очиститель
-tile.deepresonance.pedestalBlock.name=Пьедестал
-tile.deepresonance.valveBlock.name=Вентиль
-tile.deepresonance.lensBlock.name=Lens
-tile.deepresonance.laserBlock.name=Laser
+tile.deepresonance.liquid_crystal.name=Жидкий кристалл
+
+
+tile.deepresonance.resonating_ore.name=Резонирующая руда
+tile.deepresonance.resonating_block.name=Резонирующая плита
+tile.deepresonance.dense_obsidian.name=Плотный обсидиан
+tile.deepresonance.dense_glass.name=Плотное стекло
+tile.deepresonance.poisoned_dirt.name=Отравленная земля
+tile.deepresonance.resonating_crystal.name=Резонирующий кристалл
+tile.deepresonance.generator.name=Генератор
+tile.deepresonance.generator_controller.name=Контроллер генератора
+tile.deepresonance.energy_collector.name=Сборщик энергии
+tile.deepresonance.machine_frame.name= Резонирующий Каркас механизма
+tile.deepresonance.tank.name=Цистерна
+tile.deepresonance.crystalizer.name=Кристаллизатор
+tile.deepresonance.smelter.name=Плавильня
+tile.deepresonance.purifier.name=Очиститель
+tile.deepresonance.pulser.name=Импульсный генератор
+tile.deepresonance.pedestal.name=Пьедестал
+tile.deepresonance.advanced_pedestal.name=Продвинутый пьедестал
+tile.deepresonance.valve.name=Вентиль
+tile.deepresonance.lens.name=Окуляр (Lens)
+tile.deepresonance.laser.name=Внедряющий лазер
+tile.deepresonance.cooldown_sensor.name=Датчик охлаждения
+tile.deepresonance.instability_sensor.name=Нестабильный сенсор
 
 itemGroup.DeepResonance=Deep Resonance
 
 message.shiftMessage=Нажмите Shift
+
+fluid.deepresonance.liquid_crystal=Жидкие резонирующие кристаллы
