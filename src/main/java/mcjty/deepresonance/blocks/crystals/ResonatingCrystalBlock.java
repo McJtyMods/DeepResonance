@@ -1,6 +1,6 @@
 package mcjty.deepresonance.blocks.crystals;
 
-import elec332.core.main.ElecCore;
+import elec332.core.ElecCore;
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.blocks.collector.EnergyCollectorTileEntity;
 import mcjty.deepresonance.network.DRMessages;

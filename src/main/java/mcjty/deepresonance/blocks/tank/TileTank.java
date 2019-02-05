@@ -1,7 +1,7 @@
 package mcjty.deepresonance.blocks.tank;
 
 import com.google.common.collect.Maps;
-import elec332.core.main.ElecCore;
+import elec332.core.ElecCore;
 import elec332.core.network.IElecCoreNetworkTile;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.config.ConfigMachines;
