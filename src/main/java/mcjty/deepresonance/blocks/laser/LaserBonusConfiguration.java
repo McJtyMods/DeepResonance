@@ -51,7 +51,6 @@ public class LaserBonusConfiguration {
                 String key = entry.getKey();
                 if (key.endsWith("_color")) {
                     String name = key.substring(0, key.indexOf("_color"));
-                    Logging.log("Found infusion bonus for: " + name);
                     items.add(name);
                 }
             }
