@@ -23,36 +23,19 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 
 repositories {
-    maven { // The repo from which to get waila
+    maven { //JEI, IntWheel, McJtyLib, XNet, RFTools, TOP, OpenComputers & ElecCore
+        name = "ModMaven"
+        url = "https://modmaven.k-4u.nl"
+    }
+    maven { // Waila
         name "Mobius Repo"
         url "https://tehnut.info/maven"
-        //url "http://mobiusstrip.eu/maven"
     }
-    maven { // JEI
-        url "http://dvs1.progwml6.com/files/maven"
-    }
-    maven { // TOP
-        name 'tterrag maven'
-        url "https://maven.tterrag.com/"
-    }
-    maven { // McJtyLib
-        url "http://maven.k-4u.nl"
-    }
-    maven { // OC Repo
-        url "http://maven.cil.li/"
-    }
-    maven {
-        name = "sonatype"
-        url = "https://oss.sonatype.org/content/repositories/snapshots/"
-    }
-    maven {
+    maven { //RF
         name = "CoFH Maven"
         url = "http://maven.covers1624.net"
     }
-	maven {
-        url = "https://minecraft.curseforge.com/api/maven/"
-    }
-    maven {
+    maven { //Tesla
         name = "TESLA"
         url = "https://maven.mcmoddev.com"
     }
@@ -98,12 +81,12 @@ dependencies {
         deobfCompile "com.github.mcjty:xnet:1.12-1.7.0"
         deobfCompile "com.github.mcjty:rftools:1.12-7.58"
     } else {
-	compile project(':McJtyLib')
-	compile project(':XNet')
-	compile project(':RFTools')
+	    compile project(':McJtyLib')
+	    compile project(':XNet')
+	    compile project(':RFTools')
     }
     compile "li.cil.oc:OpenComputers:${oc_version}"
-    //deobfCompile "eleccore-rendering-library:ElecCore:1.12:1.8.429"
+    deobfCompile "nl.elec332.core:ElecCore:1.12.2-1.9.452"
 }
 
 jar {
