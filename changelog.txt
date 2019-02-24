@@ -1,3 +1,6 @@
+1.7.6:
+- Compatibility with latest ElecCore
+
 1.7.5:
 - Added back SideOnly(Side.CLIENT) to some spots to avoid crashes on server
 
