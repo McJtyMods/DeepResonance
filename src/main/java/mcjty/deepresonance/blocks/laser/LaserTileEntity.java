@@ -324,7 +324,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
                 new InfusingBonus.Modifier(1.0f, 30.0f),
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(1.0f, 40.0f)));
-        if (DeepResonance.instance.rftools) {
+        if (DeepResonance.setup.rftools) {
             infusingBonusMap.put(new ResourceLocation("rftools", "dimensional_shard").toString(), new InfusingBonus(
                     COLOR_BLUE,
                     new InfusingBonus.Modifier(1.0f, 100.0f),

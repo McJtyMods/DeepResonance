@@ -30,7 +30,7 @@ public class ResonatingPlateBlock extends Block {
         }
         setUnlocalizedName(DeepResonance.MODID + ".resonating_block");
         setRegistryName("resonating_block");
-        setCreativeTab(DeepResonance.tabDeepResonance);
+        setCreativeTab(DeepResonance.setup.getTab());
 
     }
 

@@ -20,7 +20,7 @@ public class RadiationSensorBlock extends Block {
         setHarvestLevel("pickaxe", 0);
         setUnlocalizedName(DeepResonance.MODID + ".radiation_sensor");
         setRegistryName("radiation_sensor");
-        setCreativeTab(DeepResonance.tabDeepResonance);
+        setCreativeTab(DeepResonance.setup.getTab());
     }
 
     @SideOnly(Side.CLIENT)

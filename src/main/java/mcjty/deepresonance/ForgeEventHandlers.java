@@ -48,7 +48,7 @@ public class ForgeEventHandlers {
         event.getRegistry().register(ModBlocks.machineFrame);
         event.getRegistry().register(ModBlocks.resonatingPlateBlock);
         event.getRegistry().register(ModBlocks.resonatingOreBlock);
-        if (DeepResonance.instance.rftools) {
+        if (DeepResonance.setup.rftools) {
             event.getRegistry().register(RFToolsSupport.getRadiationSensorBlock());
         }
     }
@@ -64,7 +64,7 @@ public class ForgeEventHandlers {
         event.getRegistry().register(new ItemBlock(ModBlocks.resonatingPlateBlock).setRegistryName(ModBlocks.resonatingPlateBlock.getRegistryName()));
         event.getRegistry().register(new DamageMetadataItemBlock(ModBlocks.resonatingOreBlock).setRegistryName(ModBlocks.resonatingOreBlock.getRegistryName()));
 
-        if (DeepResonance.instance.rftools) {
+        if (DeepResonance.setup.rftools) {
             event.getRegistry().register(new ItemBlock(RFToolsSupport.getRadiationSensorBlock()).setRegistryName(RFToolsSupport.getRadiationSensorBlock().getRegistryName()));
         }
         event.getRegistry().register(ModItems.boots);

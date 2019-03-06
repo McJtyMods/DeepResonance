@@ -44,7 +44,7 @@ public final class ModBlocks {
         denseGlassBlock = new DenseGlassBlock();
         poisonedDirtBlock = new PoisonedDirtBlock();
         resonatingCrystalBlock = new ResonatingCrystalBlock();
-        if (DeepResonance.instance.rftools) {
+        if (DeepResonance.setup.rftools) {
             RFToolsSupport.initBlocks();
         }
 
@@ -91,7 +91,7 @@ public final class ModBlocks {
         LaserSetup.setupModels();
 //        PulserSetup.setupModels();
 //        SensorSetup.setupModels();
-        if (DeepResonance.instance.rftools) {
+        if (DeepResonance.setup.rftools) {
             RFToolsSupport.initBlockModels();
         }
     }

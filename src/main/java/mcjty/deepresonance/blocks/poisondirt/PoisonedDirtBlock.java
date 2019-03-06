@@ -18,7 +18,7 @@ public class PoisonedDirtBlock extends Block {
         setHarvestLevel("pickaxe", 2);
         setUnlocalizedName(DeepResonance.MODID + ".poisoned_dirt");
         setRegistryName("poisoned_dirt");
-        setCreativeTab(DeepResonance.tabDeepResonance);
+        setCreativeTab(DeepResonance.setup.getTab());
     }
 
     @SideOnly(Side.CLIENT)

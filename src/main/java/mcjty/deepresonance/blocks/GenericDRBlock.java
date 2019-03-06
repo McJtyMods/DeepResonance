@@ -20,13 +20,13 @@ public abstract class GenericDRBlock<T extends GenericTileEntity, C extends Cont
 
     public GenericDRBlock(Material material, Class<? extends T> tileEntityClass, BiFunction<EntityPlayer, IInventory, C> containerFactory, String name, boolean isContainer) {
         super(DeepResonance.instance, material, tileEntityClass, containerFactory, GenericItemBlock::new, name, isContainer);
-        setCreativeTab(DeepResonance.tabDeepResonance);
+        setCreativeTab(DeepResonance.setup.getTab());
     }
 
     public GenericDRBlock(Material material, Class<? extends T> tileEntityClass, BiFunction<EntityPlayer, IInventory, C> containerFactory,
                           Function<Block, ItemBlock> itemBlockFunction, String name, boolean isContainer) {
         super(DeepResonance.instance, material, tileEntityClass, containerFactory, itemBlockFunction, name, isContainer);
-        setCreativeTab(DeepResonance.tabDeepResonance);
+        setCreativeTab(DeepResonance.setup.getTab());
     }
 
 

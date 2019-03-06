@@ -17,7 +17,7 @@ public class MachineFrame extends Block {
         super(Material.IRON);
         setUnlocalizedName(DeepResonance.MODID + ".machine_frame");
         setRegistryName("machine_frame");
-        setCreativeTab(DeepResonance.tabDeepResonance);
+        setCreativeTab(DeepResonance.setup.getTab());
     }
 
     @SideOnly(Side.CLIENT)

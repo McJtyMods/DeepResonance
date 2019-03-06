@@ -44,7 +44,7 @@ public class ResonatingOreBlock extends Block {
         setHarvestLevel("pickaxe", 2);
         setUnlocalizedName(DeepResonance.MODID + ".resonating_ore");
         setRegistryName("resonating_ore");
-        setCreativeTab(DeepResonance.tabDeepResonance);
+        setCreativeTab(DeepResonance.setup.getTab());
     }
 
     @Override

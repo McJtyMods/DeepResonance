@@ -30,7 +30,7 @@ public final class ModItems {
         filterMaterialItem = new FilterMaterialItem();
         spentFilterMaterialItem = new SpentFilterMaterialItem();
         insertLiquidItem = new InsertLiquidItem();
-        if (DeepResonance.instance.rftools) {
+        if (DeepResonance.setup.rftools) {
             RFToolsSupport.initItems();
         }
 
@@ -48,7 +48,7 @@ public final class ModItems {
         filterMaterialItem.initModel();
         spentFilterMaterialItem.initModel();
         insertLiquidItem.initModel();
-        if (DeepResonance.instance.rftools) {
+        if (DeepResonance.setup.rftools) {
             RFToolsSupport.initItemModels();
         }
 
@@ -69,7 +69,7 @@ public final class ModItems {
     private static class TestItem extends BaseItem {
 
         public TestItem() {
-            super("GridDebugger", DeepResonance.tabDeepResonance, DeepResonance.MODID);
+            super("GridDebugger", DeepResonance.setup.getCreativeTab(), DeepResonance.MODID);
         }
 
         @Override

@@ -28,7 +28,7 @@ public class ItemRadiationSuit extends ItemArmor implements IRadiationArmor{
         setUnlocalizedName(DeepResonance.MODID + "." + name);
         setRegistryName(name);
         this.textureSuffix = name;
-        setCreativeTab(DeepResonance.tabDeepResonance);
+        setCreativeTab(DeepResonance.setup.getTab());
     }
 
     @Override

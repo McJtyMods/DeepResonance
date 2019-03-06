@@ -13,7 +13,7 @@ public class GenericDRItem extends Item {
     public GenericDRItem(String name) {
         setUnlocalizedName(DeepResonance.MODID + "." + name);
         setRegistryName(name);
-        setCreativeTab(DeepResonance.tabDeepResonance);
+        setCreativeTab(DeepResonance.setup.getTab());
         McJtyRegister.registerLater(this, DeepResonance.instance);
     }
 

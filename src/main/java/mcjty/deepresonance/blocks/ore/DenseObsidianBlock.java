@@ -20,7 +20,7 @@ public class DenseObsidianBlock extends Block {
         setHarvestLevel("pickaxe", 3);
         setUnlocalizedName(DeepResonance.MODID + ".dense_obsidian");
         setRegistryName("dense_obsidian");
-        setCreativeTab(DeepResonance.tabDeepResonance);
+        setCreativeTab(DeepResonance.setup.getTab());
     }
 
     @SideOnly(Side.CLIENT)

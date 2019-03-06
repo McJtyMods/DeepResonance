@@ -25,7 +25,7 @@ public class DenseGlassBlock extends Block {
         setHarvestLevel("pickaxe", 2);
         setUnlocalizedName(DeepResonance.MODID + ".dense_glass");
         setRegistryName("dense_glass");
-        setCreativeTab(DeepResonance.tabDeepResonance);
+        setCreativeTab(DeepResonance.setup.getTab());
     }
 
     @SideOnly(Side.CLIENT)
