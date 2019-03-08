@@ -3,14 +3,14 @@ package mcjty.deepresonance.network;
 import io.netty.buffer.ByteBuf;
 import mcjty.deepresonance.items.RadiationMonitorItem;
 import mcjty.lib.network.IClientServerDelayed;
+import mcjty.lib.thirteen.Context;
 import mcjty.lib.varia.GlobalCoordinate;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+
+import java.util.function.Supplier;
 
 public class PacketGetRadiationLevel implements IMessage, IClientServerDelayed {
 
@@ -36,25 +36,23 @@ public class PacketGetRadiationLevel implements IMessage, IClientServerDelayed {
     public PacketGetRadiationLevel() {
     }
 
+    public PacketGetRadiationLevel(ByteBuf buf) {
+        fromBytes(buf);
+    }
+
     public PacketGetRadiationLevel(GlobalCoordinate coordinate) {
         this.coordinate = coordinate;
     }
 
-    public static class Handler implements IMessageHandler<PacketGetRadiationLevel, IMessage> {
-        @Override
-        public IMessage onMessage(PacketGetRadiationLevel message, MessageContext ctx) {
-            FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> handle(message, ctx));
-            return null;
-        }
-
-        private void handle(PacketGetRadiationLevel message, MessageContext ctx) {
-            EntityPlayerMP player = ctx.getServerHandler().player;
+    public void handle(Supplier<Context> supplier) {
+        Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
+            EntityPlayerMP player = ctx.getSender();
             World world = player.getEntityWorld();
-            float strength = RadiationMonitorItem.calculateRadiationStrength(world, message.coordinate);
+            float strength = RadiationMonitorItem.calculateRadiationStrength(world, coordinate);
             PacketReturnRadiation packet = new PacketReturnRadiation(strength);
-            DRMessages.INSTANCE.sendTo(packet, ctx.getServerHandler().player);
-        }
-
+            DRMessages.INSTANCE.sendTo(packet, ctx.getSender());
+        });
+        ctx.setPacketHandled(true);
     }
-
 }

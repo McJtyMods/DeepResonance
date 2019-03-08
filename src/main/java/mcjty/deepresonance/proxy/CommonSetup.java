@@ -19,7 +19,6 @@ import mcjty.deepresonance.worldgen.WorldGen;
 import mcjty.deepresonance.worldgen.WorldGenConfiguration;
 import mcjty.deepresonance.worldgen.WorldTickHandler;
 import mcjty.lib.compat.MainCompatHandler;
-import mcjty.lib.network.PacketHandler;
 import mcjty.lib.setup.DefaultCommonSetup;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.WrenchChecker;
@@ -33,7 +32,6 @@ import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import org.apache.logging.log4j.Level;
 
 import java.io.File;
@@ -57,8 +55,7 @@ public class CommonSetup extends DefaultCommonSetup {
         mainConfig = new Configuration(new File(modConfigDir, "main.cfg"));
         readMainConfig();
 
-        SimpleNetworkWrapper network = PacketHandler.registerMessages(DeepResonance.MODID, "deepresonance");
-        DRMessages.registerNetworkMessages(network);
+        DRMessages.registerMessages("deepresonance");
 
         ModItems.init();
         ModBlocks.init();

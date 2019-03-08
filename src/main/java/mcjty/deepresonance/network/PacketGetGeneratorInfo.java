@@ -2,11 +2,11 @@ package mcjty.deepresonance.network;
 
 import io.netty.buffer.ByteBuf;
 import mcjty.deepresonance.generatornetwork.DRGeneratorNetwork;
+import mcjty.lib.thirteen.Context;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+
+import java.util.function.Supplier;
 
 public class PacketGetGeneratorInfo implements IMessage {
     private int networkId;
@@ -24,28 +24,27 @@ public class PacketGetGeneratorInfo implements IMessage {
     public PacketGetGeneratorInfo() {
     }
 
+    public PacketGetGeneratorInfo(ByteBuf buf) {
+        fromBytes(buf);
+    }
+
     public PacketGetGeneratorInfo(int networkId) {
         this.networkId = networkId;
     }
 
-
-    public static class Handler implements IMessageHandler<PacketGetGeneratorInfo, IMessage> {
-        @Override
-        public IMessage onMessage(PacketGetGeneratorInfo message, MessageContext ctx) {
-            FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> handle(message, ctx));
-            return null;
-        }
-
-        private void handle(PacketGetGeneratorInfo message, MessageContext ctx) {
-            World world = ctx.getServerHandler().player.getEntityWorld();
+    public void handle(Supplier<Context> supplier) {
+        Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
+            World world = ctx.getSender().getEntityWorld();
             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(world);
-            DRGeneratorNetwork.Network network = generatorNetwork.getChannel(message.networkId);
+            DRGeneratorNetwork.Network network = generatorNetwork.getChannel(networkId);
             if (network == null) {
                 return;
             }
 
-            PacketReturnGeneratorInfo packet = new PacketReturnGeneratorInfo(message.networkId, network.getEnergy(), network.getGeneratorBlocks(), network.getLastRfPerTick());
-            DRMessages.INSTANCE.sendTo(packet, ctx.getServerHandler().player);
-        }
+            PacketReturnGeneratorInfo packet = new PacketReturnGeneratorInfo(networkId, network.getEnergy(), network.getGeneratorBlocks(), network.getLastRfPerTick());
+            DRMessages.INSTANCE.sendTo(packet, ctx.getSender());
+        });
+        ctx.setPacketHandled(true);
     }
 }

@@ -1,9 +1,10 @@
 package mcjty.deepresonance.network;
 
 import io.netty.buffer.ByteBuf;
+import mcjty.lib.thirteen.Context;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+
+import java.util.function.Supplier;
 
 public class PacketReturnGeneratorInfo implements IMessage {
     private int id;
@@ -46,6 +47,10 @@ public class PacketReturnGeneratorInfo implements IMessage {
     public PacketReturnGeneratorInfo() {
     }
 
+    public PacketReturnGeneratorInfo(ByteBuf buf) {
+        fromBytes(buf);
+    }
+
     public PacketReturnGeneratorInfo(int id, int energy, int refcount, int rfPerTick) {
         this.id = id;
         this.energy = energy;
@@ -53,12 +58,11 @@ public class PacketReturnGeneratorInfo implements IMessage {
         this.rfPerTick = rfPerTick;
     }
 
-    public static class Handler implements IMessageHandler<PacketReturnGeneratorInfo, IMessage> {
-        @Override
-        public IMessage onMessage(PacketReturnGeneratorInfo message, MessageContext ctx) {
-            ReturnGeneratorInfoHelper.setEnergyLevel(message);
-            return null;
-        }
-
+    public void handle(Supplier<Context> supplier) {
+        Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
+            ReturnGeneratorInfoHelper.setEnergyLevel(this);
+        });
+        ctx.setPacketHandled(true);
     }
 }

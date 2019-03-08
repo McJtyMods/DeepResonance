@@ -3,13 +3,13 @@ package mcjty.deepresonance.network;
 import io.netty.buffer.ByteBuf;
 import mcjty.deepresonance.blocks.crystals.ResonatingCrystalTileEntity;
 import mcjty.lib.network.NetworkTools;
+import mcjty.lib.thirteen.Context;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+
+import java.util.function.Supplier;
 
 public class PacketGetCrystalInfo implements IMessage {
     private BlockPos pos;
@@ -27,26 +27,25 @@ public class PacketGetCrystalInfo implements IMessage {
     public PacketGetCrystalInfo() {
     }
 
+    public PacketGetCrystalInfo(ByteBuf buf) {
+        fromBytes(buf);
+    }
+
     public PacketGetCrystalInfo(BlockPos pos) {
         this.pos = pos;
     }
 
-    public static class Handler implements IMessageHandler<PacketGetCrystalInfo, IMessage> {
-        @Override
-        public IMessage onMessage(PacketGetCrystalInfo message, MessageContext ctx) {
-            FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> handle(message, ctx));
-            return null;
-        }
-
-        private void handle(PacketGetCrystalInfo message, MessageContext ctx) {
-            World world = ctx.getServerHandler().player.getEntityWorld();
-            TileEntity tileEntity = world.getTileEntity(message.pos);
+    public void handle(Supplier<Context> supplier) {
+        Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
+            World world = ctx.getSender().getEntityWorld();
+            TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof ResonatingCrystalTileEntity) {
                 ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
                 PacketReturnCrystalInfo packet = new PacketReturnCrystalInfo(resonatingCrystalTileEntity.getRfPerTick(), resonatingCrystalTileEntity.getPower());
-                DRMessages.INSTANCE.sendTo(packet, ctx.getServerHandler().player);
+                DRMessages.INSTANCE.sendTo(packet, ctx.getSender());
             }
-        }
+        });
+        ctx.setPacketHandled(true);
     }
-
 }

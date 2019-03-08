@@ -2,11 +2,12 @@ package mcjty.deepresonance.network;
 
 import io.netty.buffer.ByteBuf;
 import mcjty.lib.network.NetworkTools;
+import mcjty.lib.thirteen.Context;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+
+import java.util.function.Supplier;
 
 public class PacketReturnTankInfo implements IMessage {
     private int amount;
@@ -49,6 +50,10 @@ public class PacketReturnTankInfo implements IMessage {
     public PacketReturnTankInfo() {
     }
 
+    public PacketReturnTankInfo(ByteBuf buf) {
+        fromBytes(buf);
+    }
+
     public PacketReturnTankInfo(int amount, int capacity, String fluidName, NBTTagCompound tag) {
         this.amount = amount;
         this.capacity = capacity;
@@ -56,12 +61,11 @@ public class PacketReturnTankInfo implements IMessage {
         this.tag = tag;
     }
 
-    public static class Handler implements IMessageHandler<PacketReturnTankInfo, IMessage> {
-        @Override
-        public IMessage onMessage(PacketReturnTankInfo message, MessageContext ctx) {
-            ReturnTankInfoHelper.setEnergyLevel(message);
-            return null;
-        }
-
+    public void handle(Supplier<Context> supplier) {
+        Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
+            ReturnTankInfoHelper.setEnergyLevel(this);
+        });
+        ctx.setPacketHandled(true);
     }
 }
