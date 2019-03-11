@@ -6,7 +6,6 @@ import mcjty.deepresonance.ForgeEventHandlers;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.config.ConfigSetup;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
-import mcjty.deepresonance.gui.GuiProxy;
 import mcjty.deepresonance.integration.computers.OpenComputersIntegration;
 import mcjty.deepresonance.items.ModItems;
 import mcjty.deepresonance.network.DRMessages;
@@ -36,11 +35,13 @@ public class CommonSetup extends DefaultCommonSetup {
         super.preInit(e);
 
         MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
-        NetworkRegistry.INSTANCE.registerGuiHandler(DeepResonance.instance, new GuiProxy());
         MinecraftForge.EVENT_BUS.register(WorldTickHandler.instance);
         MinecraftForge.EVENT_BUS.register(new RadiationTickEvent());
+        NetworkRegistry.INSTANCE.registerGuiHandler(DeepResonance.instance, new GuiProxy());
 
         DRMessages.registerMessages("deepresonance");
+
+        ElecCoreRegistrar.GRIDHANDLERS.register(new TankGridHandler());
 
         ConfigSetup.init();
         ModItems.init();
@@ -55,7 +56,6 @@ public class CommonSetup extends DefaultCommonSetup {
         rftools = Loader.isModLoaded("rftools");
         rftoolsControl = Loader.isModLoaded("rftoolscontrol");
 
-        ElecCoreRegistrar.GRIDHANDLERS.register(new TankGridHandler());
         MainCompatHandler.registerWaila();
         MainCompatHandler.registerTOP();
 

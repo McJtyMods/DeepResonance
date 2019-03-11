@@ -2,7 +2,7 @@ package mcjty.deepresonance.blocks.pedestal;
 
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
-import mcjty.deepresonance.gui.GuiProxy;
+import mcjty.deepresonance.proxy.GuiProxy;
 import mcjty.lib.gui.GenericGuiContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;

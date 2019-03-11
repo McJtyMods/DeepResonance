@@ -1,4 +1,4 @@
-package mcjty.deepresonance.gui;
+package mcjty.deepresonance.proxy;
 
 import mcjty.deepresonance.items.manual.GuiDeepResonanceManual;
 import mcjty.lib.blocks.GenericBlock;

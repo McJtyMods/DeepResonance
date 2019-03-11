@@ -1,7 +1,7 @@
 package mcjty.deepresonance.items.manual;
 
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.gui.GuiProxy;
+import mcjty.deepresonance.proxy.GuiProxy;
 import mcjty.deepresonance.items.GenericDRItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

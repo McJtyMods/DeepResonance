@@ -2,7 +2,7 @@ package mcjty.deepresonance.blocks.crystalizer;
 
 import mcjty.deepresonance.blocks.GenericDRBlock;
 import mcjty.deepresonance.client.ClientHandler;
-import mcjty.deepresonance.gui.GuiProxy;
+import mcjty.deepresonance.proxy.GuiProxy;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
