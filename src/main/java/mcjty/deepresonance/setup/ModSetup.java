@@ -14,7 +14,7 @@ import mcjty.deepresonance.tanks.TankGridHandler;
 import mcjty.deepresonance.worldgen.WorldGen;
 import mcjty.deepresonance.worldgen.WorldTickHandler;
 import mcjty.lib.compat.MainCompatHandler;
-import mcjty.lib.setup.DefaultCommonSetup;
+import mcjty.lib.setup.DefaultModSetup;
 import mcjty.lib.varia.Logging;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,7 +24,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
-public class CommonSetup extends DefaultCommonSetup {
+public class ModSetup extends DefaultModSetup {
 
     public boolean rftools = false;
     public boolean rftoolsControl = false;

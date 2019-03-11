@@ -3,7 +3,7 @@ package mcjty.deepresonance;
 import mcjty.deepresonance.commands.CommandDRGen;
 import mcjty.deepresonance.compat.CompatHandler;
 import mcjty.deepresonance.items.manual.GuiDeepResonanceManual;
-import mcjty.deepresonance.setup.CommonSetup;
+import mcjty.deepresonance.setup.ModSetup;
 import mcjty.lib.base.ModBase;
 import mcjty.lib.proxy.IProxy;
 import net.minecraft.entity.player.EntityPlayer;
@@ -35,7 +35,7 @@ public class DeepResonance implements ModBase {
 
     @SidedProxy(clientSide="mcjty.deepresonance.setup.ClientProxy", serverSide="mcjty.deepresonance.setup.ServerProxy")
     public static IProxy proxy;
-    public static CommonSetup setup = new CommonSetup();
+    public static ModSetup setup = new ModSetup();
 
     @Mod.Instance("deepresonance")
     public static DeepResonance instance;
