@@ -1,4 +1,4 @@
-package mcjty.deepresonance.proxy;
+package mcjty.deepresonance.setup;
 
 import elec332.core.api.client.IIconRegistrar;
 import elec332.core.api.client.ITextureLoader;

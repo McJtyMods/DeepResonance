@@ -3,7 +3,7 @@ package mcjty.deepresonance;
 import mcjty.deepresonance.commands.CommandDRGen;
 import mcjty.deepresonance.compat.CompatHandler;
 import mcjty.deepresonance.items.manual.GuiDeepResonanceManual;
-import mcjty.deepresonance.proxy.CommonSetup;
+import mcjty.deepresonance.setup.CommonSetup;
 import mcjty.lib.base.ModBase;
 import mcjty.lib.proxy.IProxy;
 import net.minecraft.entity.player.EntityPlayer;

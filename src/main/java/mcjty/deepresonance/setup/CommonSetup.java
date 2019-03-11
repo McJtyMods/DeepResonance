@@ -1,4 +1,4 @@
-package mcjty.deepresonance.proxy;
+package mcjty.deepresonance.setup;
 
 import elec332.core.handler.ElecCoreRegistrar;
 import mcjty.deepresonance.DeepResonance;

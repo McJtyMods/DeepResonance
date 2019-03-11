@@ -1,4 +1,4 @@
-package mcjty.deepresonance.proxy;
+package mcjty.deepresonance.setup;
 
 import mcjty.lib.setup.DefaultServerProxy;
 
