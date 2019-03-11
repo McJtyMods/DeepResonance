@@ -4,12 +4,9 @@ import elec332.core.api.client.IIconRegistrar;
 import elec332.core.api.client.ITextureLoader;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.RadiationOverlayRenderer;
-import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.client.sound.GeneratorSoundController;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
-import mcjty.deepresonance.items.ModItems;
 import mcjty.lib.setup.DefaultClientProxy;
-import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
@@ -31,12 +28,6 @@ public class ClientProxy extends DefaultClientProxy implements ITextureLoader {
     @Override
     public void init(FMLInitializationEvent e) {
         super.init(e);
-    }
-
-    @SubscribeEvent
-    public void registerModels(ModelRegistryEvent event) {
-        ModBlocks.initModels();
-        ModItems.initModels();
     }
 
     @Override
