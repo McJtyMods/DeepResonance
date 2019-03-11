@@ -17,11 +17,9 @@ import mcjty.deepresonance.worldgen.WorldTickHandler;
 import mcjty.lib.compat.MainCompatHandler;
 import mcjty.lib.setup.DefaultCommonSetup;
 import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.WrenchChecker;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -42,8 +40,6 @@ public class CommonSetup extends DefaultCommonSetup {
         MinecraftForge.EVENT_BUS.register(WorldTickHandler.instance);
         MinecraftForge.EVENT_BUS.register(new RadiationTickEvent());
 
-        setupModCompat();
-
         DRMessages.registerMessages("deepresonance");
 
         ConfigSetup.init();
@@ -54,7 +50,8 @@ public class CommonSetup extends DefaultCommonSetup {
 
     }
 
-    private void setupModCompat() {
+    @Override
+    protected void setupModCompat() {
         rftools = Loader.isModLoaded("rftools");
         rftoolsControl = Loader.isModLoaded("rftoolscontrol");
 
@@ -71,6 +68,10 @@ public class CommonSetup extends DefaultCommonSetup {
             FMLInterModComms.sendFunctionMessage("rftoolscontrol", "getOpcodeRegistry", "mcjty.deepresonance.compat.rftoolscontrol.RFToolsControlSupport$GetOpcodeRegistry");
         }
 
+        if (Loader.isModLoaded("opencomputers")) {
+            OpenComputersIntegration.init();
+        }
+
         //@todo
 //        FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
     }
@@ -81,17 +82,8 @@ public class CommonSetup extends DefaultCommonSetup {
     }
 
     @Override
-    public void init(FMLInitializationEvent e) {
-        super.init(e);
-        if (Loader.isModLoaded("opencomputers")) {
-            OpenComputersIntegration.init();
-        }
-    }
-
-    @Override
     public void postInit(FMLPostInitializationEvent e) {
         super.postInit(e);
         ConfigSetup.postInit();
-        WrenchChecker.init();
     }
 }
