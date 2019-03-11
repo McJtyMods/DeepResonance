@@ -33,7 +33,7 @@ public class DeepResonance implements ModBase {
     public static final String MIN_MCJTYLIB_VER = "3.1.0";
     public static final String MIN_RFTOOLS_VER = "7.58";
 
-    @SidedProxy(clientSide="mcjty.deepresonance.proxy.ClientProxy", serverSide="mcjty.deepresonance.proxy.ServerProxy")
+    @SidedProxy(clientSide="mcjty.deepresonance.setup.ClientProxy", serverSide="mcjty.deepresonance.setup.ServerProxy")
     public static IProxy proxy;
     public static CommonSetup setup = new CommonSetup();
 
