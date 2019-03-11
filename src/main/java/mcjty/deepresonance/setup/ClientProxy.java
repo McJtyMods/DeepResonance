@@ -10,8 +10,6 @@ import mcjty.lib.setup.DefaultClientProxy;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -23,16 +21,6 @@ public class ClientProxy extends DefaultClientProxy implements ITextureLoader {
         MinecraftForge.EVENT_BUS.register(this);
         OBJLoader.INSTANCE.addDomain(DeepResonance.MODID);
         GeneratorSoundController.init();
-    }
-
-    @Override
-    public void init(FMLInitializationEvent e) {
-        super.init(e);
-    }
-
-    @Override
-    public void postInit(FMLPostInitializationEvent e) {
-        super.postInit(e);
     }
 
     @SubscribeEvent
