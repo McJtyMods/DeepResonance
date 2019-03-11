@@ -1,26 +1,25 @@
-package mcjty.deepresonance.integration.computers;
+package mcjty.deepresonance.compat.computers;
 
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.prefab.AbstractManagedEnvironment;
-import mcjty.deepresonance.blocks.laser.LaserTileEntity;
-import mcjty.deepresonance.config.ConfigMachines;
+import mcjty.deepresonance.blocks.smelter.SmelterTileEntity;
 import mcjty.lib.integration.computers.AbstractOCDriver;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class LaserDriver {
+public class SmelterDriver {
     public static class OCDriver extends AbstractOCDriver {
         public OCDriver() {
-            super("deepresonance_laser", LaserTileEntity.class);
+            super("deepresonance_smelter", SmelterTileEntity.class);
         }
 
-        public static class InternalManagedEnvironment extends AbstractOCDriver.InternalManagedEnvironment<LaserTileEntity> {
-            public InternalManagedEnvironment(LaserTileEntity tile) {
-                super(tile, "deepresonance_laser");
+        public static class InternalManagedEnvironment extends AbstractOCDriver.InternalManagedEnvironment<SmelterTileEntity> {
+            public InternalManagedEnvironment(SmelterTileEntity tile) {
+                super(tile, "deepresonance_smelter");
             }
 
             @Callback(doc="function():number; Get the currently stored energy")
@@ -33,14 +32,10 @@ public class LaserDriver {
                 return new Object[]{tile.getCapacity()};
             }
 
-            @Callback(doc="function():number; Get the currently stored liquid crystal")
-            public Object[] getCrystalLiquid(Context c, Arguments a) {
-                return new Object[]{tile.getCrystalLiquid()};
-            }
-
-            @Callback(doc="function():number; Get the currently stored liquid crystal")
-            public Object[] getMaxCrystalLiquid(Context c, Arguments a) {
-                return new Object[]{ConfigMachines.laser.crystalLiquidMaximum};
+            @Callback(doc="function():number; Get the current progress in percent")
+            public Object[] getProgress(Context c, Arguments a) {
+                Integer progress = tile.getProgress();
+                return new Object[]{progress};
             }
 
             @Override
@@ -51,7 +46,7 @@ public class LaserDriver {
 
         @Override
         public AbstractManagedEnvironment createEnvironment(World world, BlockPos pos, EnumFacing side, TileEntity tile) {
-            return new InternalManagedEnvironment((LaserTileEntity)tile);
+            return new InternalManagedEnvironment((SmelterTileEntity)tile);
         }
     }
 }

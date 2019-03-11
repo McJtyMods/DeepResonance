@@ -6,7 +6,7 @@ import mcjty.deepresonance.ForgeEventHandlers;
 import mcjty.deepresonance.blocks.ModBlocks;
 import mcjty.deepresonance.config.ConfigSetup;
 import mcjty.deepresonance.fluid.DRFluidRegistry;
-import mcjty.deepresonance.integration.computers.OpenComputersIntegration;
+import mcjty.deepresonance.compat.computers.OpenComputersIntegration;
 import mcjty.deepresonance.items.ModItems;
 import mcjty.deepresonance.network.DRMessages;
 import mcjty.deepresonance.radiation.RadiationTickEvent;

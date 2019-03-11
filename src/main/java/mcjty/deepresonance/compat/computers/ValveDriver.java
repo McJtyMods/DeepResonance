@@ -1,4 +1,4 @@
-package mcjty.deepresonance.integration.computers;
+package mcjty.deepresonance.compat.computers;
 
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
