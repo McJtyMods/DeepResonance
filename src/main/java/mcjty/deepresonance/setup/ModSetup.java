@@ -39,11 +39,12 @@ public class ModSetup extends DefaultModSetup {
         MinecraftForge.EVENT_BUS.register(new RadiationTickEvent());
         NetworkRegistry.INSTANCE.registerGuiHandler(DeepResonance.instance, new GuiProxy());
 
+        ConfigSetup.init();
+
         DRMessages.registerMessages("deepresonance");
 
         ElecCoreRegistrar.GRIDHANDLERS.register(new TankGridHandler());
 
-        ConfigSetup.init();
         ModItems.init();
         ModBlocks.init();
         WorldGen.init();
