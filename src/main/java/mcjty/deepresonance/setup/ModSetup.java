@@ -39,8 +39,6 @@ public class ModSetup extends DefaultModSetup {
         MinecraftForge.EVENT_BUS.register(new RadiationTickEvent());
         NetworkRegistry.INSTANCE.registerGuiHandler(DeepResonance.instance, new GuiProxy());
 
-        ConfigSetup.init();
-
         DRMessages.registerMessages("deepresonance");
 
         ElecCoreRegistrar.GRIDHANDLERS.register(new TankGridHandler());
@@ -75,6 +73,11 @@ public class ModSetup extends DefaultModSetup {
 
         //@todo
 //        FMLInterModComms.sendMessage("rftools", "dimlet_configure", "Material.tile.oreResonating=30000,6000,400,5");
+    }
+
+    @Override
+    protected void setupConfig() {
+        ConfigSetup.init();
     }
 
     @Override
