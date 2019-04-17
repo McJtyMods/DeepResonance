@@ -1,0 +1,39 @@
+item.deepresonance.dr_manual.name=깊은 공명 설명서
+item.deepresonance.radiation_module.name=방사선 스크린 모듈
+item.deepresonance.rcl_module.name=RCL 스크린 모듈
+item.deepresonance.radiation_monitor.name=방사선 모니터
+item.deepresonance.resonating_plate.name=공명판
+item.deepresonance.filter.name=필터 물질
+item.deepresonance.spent_filter.name=사용된 필터 물질
+item.deepresonance.insert_liquid.name=액체 주입기
+//Maybe should be different?
+item.deepresonance.helmet.name=방사선 수트 투구
+item.deepresonance.chest.name=방사선 수트 흉갑
+item.deepresonance.leggings.name=방사선 수트 각반
+item.deepresonance.boots.name=방사선 수트 부츠
+
+tile.deepresonance.liquid_crystal.name=액체 수정
+
+tile.deepresonance.radiation_sensor.name=방사선 감지기
+tile.deepresonance.resonating_ore.name=공명 광석
+tile.deepresonance.resonating_block.name=공명판 블록
+tile.deepresonance.dense_obsidian.name=고밀도 흑요석
+tile.deepresonance.dense_glass.name=고밀도 유리
+tile.deepresonance.poisoned_dirt.name=독 흙
+tile.deepresonance.resonating_crystal.name=공명 수정
+tile.deepresonance.generator.name=발전기
+tile.deepresonance.generator_controller.name=발전기 조절기
+tile.deepresonance.energy_collector.name=에너지 수집기
+tile.deepresonance.machine_frame.name=기계 틀
+tile.deepresonance.tank.name=탱크
+tile.deepresonance.crystalizer.name=결정기
+tile.deepresonance.smelter.name=제련기
+tile.deepresonance.purifier.name=정화기
+tile.deepresonance.pedestal.name=받침대
+tile.deepresonance.valve.name=밸브
+tile.deepresonance.lens.name=렌즈
+tile.deepresonance.laser.name=주입 광선기
+
+itemGroup.DeepResonance=깊은 공명
+
+message.shiftMessage=Shift키를 누르세요.
