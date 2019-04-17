@@ -1,3 +1,10 @@
+Upcoming:
+- Russian manual by kellixon
+- Kroatian language by Mindy
+- Manual in XML format (for GuideBook) by Shazuli
+- Small fix in the gui for the laser by Geratheon
+- CTM support for dense glass by Mallrat208
+
 1.7.6:
 - Compatibility with latest ElecCore
 
