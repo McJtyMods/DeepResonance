@@ -450,7 +450,7 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
             case LaserContainer.SLOT_CRYSTAL:
                 return item.isItemEqual(new ItemStack(ModBlocks.resonatingCrystalBlock));
             case LaserContainer.SLOT_CATALYST:
-                return true;
+                return !item.isItemEqual(new ItemStack(ModBlocks.resonatingCrystalBlock));
         }
         return false;
     }
@@ -474,6 +474,8 @@ public class LaserTileEntity extends GenericEnergyReceiverTileEntity implements 
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         if (index == LaserContainer.SLOT_CRYSTAL) {
             return stack.getItem() == Item.getItemFromBlock(ModBlocks.resonatingCrystalBlock);
+        } else if (index == LaserContainer.SLOT_CATALYST) {
+            return stack.getItem() != Item.getItemFromBlock(ModBlocks.resonatingCrystalBlock);
         } else {
             return true;
         }

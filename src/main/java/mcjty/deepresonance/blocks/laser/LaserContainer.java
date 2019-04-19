@@ -19,7 +19,7 @@ public class LaserContainer extends GenericContainer {
         @Override
         protected void setup() {
             addSlotBox(new SlotDefinition(SlotType.SLOT_SPECIFICITEM, new ItemStack(ModBlocks.resonatingCrystalBlock)), CONTAINER_INVENTORY, SLOT_CRYSTAL, 154, 48, 1, 18, 1, 18);
-            addSlotBox(new SlotDefinition(SlotType.SLOT_INPUT), CONTAINER_INVENTORY, SLOT_CATALYST, 21, 8, 1, 18, 1, 18);
+            addSlotBox(new SlotDefinition(SlotType.SLOT_SPECIFICITEM, stack -> !stack.isItemEqual(new ItemStack(ModBlocks.resonatingCrystalBlock))), CONTAINER_INVENTORY, SLOT_CATALYST, 21, 8, 1, 18, 1, 18);
             layoutPlayerInventorySlots(10, 70);
         }
     };
