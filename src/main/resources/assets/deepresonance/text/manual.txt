@@ -262,7 +262,8 @@ a certain amount of RCL liquid in it.
 {rb:crystalizer}
 The crystalizer needs to be placed on top of a tank filled with RCL. It
 will consume the liquid in that tank and form a crystal out of it. The
-crystalizer also needs power.
+crystalizer also needs power. By default 6000 RCL is needed for one
+crystal.
 {-------------------------------------------------------------}
 {b}Pedestal
 {n:pedestal}

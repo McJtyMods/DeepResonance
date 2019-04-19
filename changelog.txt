@@ -5,6 +5,7 @@ Upcoming:
 - Small fix in the gui for the laser by Geratheon
 - CTM support for dense glass by Mallrat208
 - The laser catalyst slot no longer accepts crystals
+- Added mention of 6000 RCL to the manual (for the crystalizer)
 
 1.7.6:
 - Compatibility with latest ElecCore
