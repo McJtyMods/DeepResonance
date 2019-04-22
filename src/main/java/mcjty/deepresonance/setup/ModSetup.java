@@ -82,7 +82,7 @@ public class ModSetup extends DefaultModSetup {
 
     @Override
     public void createTabs() {
-        createTab("DeepResonance", new ItemStack(ModBlocks.resonatingCrystalBlock));
+        createTab("DeepResonance", () -> new ItemStack(ModBlocks.resonatingCrystalBlock));
     }
 
     @Override
