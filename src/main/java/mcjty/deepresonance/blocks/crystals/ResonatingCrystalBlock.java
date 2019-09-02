@@ -44,6 +44,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -131,6 +132,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
         }
         if (tagCompound != null) {
             DecimalFormat decimalFormat = new DecimalFormat("#.##");
+            decimalFormat.setRoundingMode(RoundingMode.DOWN);
             list.add(TextFormatting.GREEN + "Strength/Efficiency/Purity: " + decimalFormat.format(tagCompound.getFloat("strength")) + "% "
                     + decimalFormat.format(tagCompound.getFloat("efficiency")) + "% "
                     + decimalFormat.format(tagCompound.getFloat("purity")) + "%");
@@ -145,6 +147,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity crystal = (ResonatingCrystalTileEntity) te;
             DecimalFormat fmt = new DecimalFormat("#.#");
+            fmt.setRoundingMode(RoundingMode.DOWN);
             probeInfo.text(TextFormatting.GREEN + "Strength/Efficiency/Purity: " + fmt.format(crystal.getStrength()) + "% "
                     + fmt.format(crystal.getEfficiency()) + "% "
                     + fmt.format(crystal.getPurity()) + "%");
@@ -175,6 +178,7 @@ public class ResonatingCrystalBlock extends GenericDRBlock<ResonatingCrystalTile
         if (tileEntity instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) tileEntity;
             DecimalFormat decimalFormat = new DecimalFormat("#.##");
+            decimalFormat.setRoundingMode(RoundingMode.DOWN);
             currenttip.add(TextFormatting.GREEN + "Strength/Efficiency/Purity: " + decimalFormat.format(resonatingCrystalTileEntity.getStrength()) + "% "
                     + decimalFormat.format(resonatingCrystalTileEntity.getEfficiency()) + "% "
                     + decimalFormat.format(resonatingCrystalTileEntity.getPurity()) + "%");

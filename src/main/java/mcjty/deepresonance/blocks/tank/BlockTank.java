@@ -44,6 +44,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
@@ -136,6 +137,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
             LiquidCrystalFluidTagData lcd = LiquidCrystalFluidTagData.fromStack(tank.getFluid());
             if (lcd != null) {
                 DecimalFormat decimalFormat = new DecimalFormat("#.#");
+                decimalFormat.setRoundingMode(RoundingMode.DOWN);
                 probeInfo.text(TextFormatting.YELLOW + "Quality: " + decimalFormat.format(lcd.getQuality() * 100) + "%");
                 probeInfo.text(TextFormatting.YELLOW + "Purity: " + decimalFormat.format(lcd.getPurity() * 100) + "%");
                 probeInfo.text(TextFormatting.YELLOW + "Strength: " + decimalFormat.format(lcd.getStrength() * 100) + "%");
@@ -155,6 +157,7 @@ public class BlockTank extends GenericDRBlock<TileTank, EmptyContainer> implemen
         currentTip.add("Amount: "+totalFluidAmount + " (" + tankCapacity + ")");
         if (fluidData != null) {
             DecimalFormat decimalFormat = new DecimalFormat("#.#");
+            decimalFormat.setRoundingMode(RoundingMode.DOWN);
             currentTip.add(TextFormatting.YELLOW + "Quality: " + decimalFormat.format(fluidData.getQuality() * 100) + "%");
             currentTip.add(TextFormatting.YELLOW + "Purity: " + decimalFormat.format(fluidData.getPurity() * 100) + "%");
             currentTip.add(TextFormatting.YELLOW + "Strength: " + decimalFormat.format(fluidData.getStrength() * 100) + "%");
