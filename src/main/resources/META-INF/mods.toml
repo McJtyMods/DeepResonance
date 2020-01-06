@@ -39,7 +39,7 @@ description="Power generation based on resonating crystals."
 	
 [[dependencies.deepresonance]]
     modId="rftoolsbase"
-    mandatory=true
+    mandatory=false #Until maven is fixed
     versionRange="[${baseversion},)"
     ordering="AFTER"
     side="BOTH"

@@ -1,8 +1,8 @@
 package mcjty.deepresonance;
 
 import elec332.core.util.FMLHelper;
+import mcjty.deepresonance.setup.ModSetup;
 import mcjty.lib.base.ModBase;
-import mcjty.lib.setup.ModSetup;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
@@ -26,7 +26,6 @@ public class DeepResonance implements ModBase {
         setup = new ModSetup();
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener((FMLCommonSetupEvent event) -> setup.init(event));
-        //FMLJavaModLoadingContext.get().getModEventBus().addListener((FMLClientSetupEvent event) -> setup.initClient(event));
     }
 
     public static final String MODID = "deepresonance";

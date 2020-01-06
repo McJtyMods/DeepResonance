@@ -133,8 +133,8 @@ processResources {
                 loaderversion: config.minecraft_version.replace('1.', ''),
                 forgeversion: config.forge_version,
                 coreversion: config.eleccore_version,
-                libversion: config.eleccore_version, 
-                baseversion: config.eleccore_version
+                libversion: config.mcjtylib_version,
+                baseversion: config.rftoolsbase_version
         ])
     }
 
