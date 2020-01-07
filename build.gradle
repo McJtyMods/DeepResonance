@@ -51,7 +51,7 @@ minecraft {
 
     accessTransformer = file 'src/main/resources/META-INF/accesstransformer.cfg'
 
-    mappings channel: 'snapshot', version: config.mappings
+    mappings channel: 'snapshot', version: config.mcp_mappings
 
     runs {
         client {
@@ -77,8 +77,8 @@ minecraft {
 dependencies {
     minecraft 'net.minecraftforge:forge:' + config.minecraft_version + "-" + config.forge_version
 	
-    compileOnly "mcp.mobius.waila:Hwyla:${config.waila_version}:api"
-	runtime fg.deobf("mcp.mobius.waila:Hwyla:${config.waila_version}")
+    //compileOnly "mcp.mobius.waila:Hwyla:${config.waila_version}:api"
+	//runtime fg.deobf("mcp.mobius.waila:Hwyla:${config.waila_version}")
 	
     compileOnly "mezz.jei:jei-${config.jei_version}:api"
 	runtime fg.deobf("mezz.jei:jei-${config.jei_version}")
