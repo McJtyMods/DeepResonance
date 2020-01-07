@@ -78,7 +78,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:' + config.minecraft_version + "-" + config.forge_version
 	
     //compileOnly "mcp.mobius.waila:Hwyla:${config.waila_version}:api"
-	//runtime fg.deobf("mcp.mobius.waila:Hwyla:${config.waila_version}")
+	runtime fg.deobf("mcp.mobius.waila:Hwyla:${config.waila_version}")
 	
     compileOnly "mezz.jei:jei-${config.jei_version}:api"
 	runtime fg.deobf("mezz.jei:jei-${config.jei_version}")

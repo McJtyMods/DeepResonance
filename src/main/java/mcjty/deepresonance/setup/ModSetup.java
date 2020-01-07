@@ -1,6 +1,8 @@
 package mcjty.deepresonance.setup;
 
+import elec332.core.handler.ElecCoreRegistrar;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.tanks.TankGridHandler;
 import mcjty.lib.compat.MainCompatHandler;
 import mcjty.lib.setup.DefaultModSetup;
 import net.minecraft.item.ItemStack;
@@ -20,7 +22,7 @@ public class ModSetup extends DefaultModSetup {
     @Override
     public void init(FMLCommonSetupEvent e) {
         super.init(e);
-        getLogger().info("Init");
+        ElecCoreRegistrar.GRIDHANDLERS.register(new TankGridHandler());
     }
 
     @Override
