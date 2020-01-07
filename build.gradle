@@ -83,10 +83,8 @@ dependencies {
     compileOnly "mezz.jei:jei-${config.jei_version}:api"
 	runtime fg.deobf("mezz.jei:jei-${config.jei_version}")
 	
-	compile fg.deobf("vazkii.patchouli:Patchouli:${config.patchouli_version}") {
-        transitive = false
-    }
-/*
+	compile fg.deobf("vazkii.patchouli:Patchouli:${config.patchouli_version}")
+
     if (findProject(':TheOneProbe') != null) {
         compile project(':TheOneProbe')
     } else {
@@ -94,7 +92,7 @@ dependencies {
             transitive = false
         })
     }
-*/
+
     if (findProject(':McJtyLib') != null) {
         compile project(':McJtyLib')
     } else {
@@ -102,7 +100,7 @@ dependencies {
             transitive = false
         })
     }
-/*
+
     if (findProject(':RFToolsBase') != null) {
         compile project(':RFToolsBase')
     } else {
@@ -110,13 +108,11 @@ dependencies {
             transitive = false
         })
     }
-*/
+
     if (findProject(':ElecCore') != null) {
         compile project(":ElecCore")
     } else {
-        compile fg.deobf("nl.elec332.core:ElecCore:" + config.minecraft_version + "-" + config.eleccore_version) {
-			transitive = false
-		}
+        compile fg.deobf("nl.elec332.core:ElecCore:" + config.minecraft_version + "-" + config.eleccore_version)
     }
 }
 
