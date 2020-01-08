@@ -1,4 +1,4 @@
-package mcjty.deepresonance.tanks;
+package mcjty.deepresonance.modules.tank.grid;
 
 import com.google.common.collect.Sets;
 import elec332.core.util.FluidTankWrapper;
@@ -20,6 +20,12 @@ import java.util.Set;
  */
 public class TankGrid implements ICapabilityProvider {
 
+    public static final int TANK_BUCKETS = 16;
+    private final InternalGridTank tank;
+    private final IFluidHandler fluidHandler;
+    private final Set<TankTileLink> tanks, tanks_;
+    private LazyOptional<IFluidHandler> capability;
+
     TankGrid(TankTileLink tank) {
         this.tanks = Sets.newHashSet();
         this.tanks_ = Collections.unmodifiableSet(this.tanks);
@@ -29,14 +35,6 @@ public class TankGrid implements ICapabilityProvider {
         this.capability = null;
         resetCapability();
     }
-
-    public static final int TANK_BUCKETS = 16;
-
-    private final InternalGridTank tank;
-    private final IFluidHandler fluidHandler;
-    private final Set<TankTileLink> tanks, tanks_;
-
-    private LazyOptional<IFluidHandler> capability;
 
     public Set<TankTileLink> getComponents() {
         return tanks_;

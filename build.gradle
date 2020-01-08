@@ -109,8 +109,10 @@ dependencies {
         })
     }
 
-    if (findProject(':ElecCore') != null) {
-        compile project(":ElecCore")
+    if (project(":ElecCore") != null) {
+        compile (project(":ElecCore")) {
+            exclude group: "*"
+        }
     } else {
         compile fg.deobf("nl.elec332.core:ElecCore:" + config.minecraft_version + "-" + config.eleccore_version)
     }

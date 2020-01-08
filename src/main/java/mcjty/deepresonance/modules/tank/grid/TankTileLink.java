@@ -1,8 +1,8 @@
-package mcjty.deepresonance.tanks;
+package mcjty.deepresonance.modules.tank.grid;
 
 import com.google.common.base.Preconditions;
 import elec332.core.grid.DefaultTileEntityLink;
-import mcjty.deepresonance.tile.TileEntityTank;
+import mcjty.deepresonance.modules.tank.tile.TileEntityTank;
 
 import javax.annotation.Nullable;
 
@@ -11,11 +11,11 @@ import javax.annotation.Nullable;
  */
 class TankTileLink extends DefaultTileEntityLink {
 
+    private TankGrid grid;
+
     TankTileLink(TileEntityTank tile) {
         super(tile);
     }
-
-    private TankGrid grid;
 
     @Nullable
     TankGrid getGrid() {

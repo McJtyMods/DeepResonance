@@ -1,10 +1,10 @@
-package mcjty.deepresonance.tanks;
+package mcjty.deepresonance.modules.tank.grid;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import elec332.core.grid.AbstractGridHandler;
 import elec332.core.world.DimensionCoordinate;
-import mcjty.deepresonance.tile.TileEntityTank;
+import mcjty.deepresonance.modules.tank.tile.TileEntityTank;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -16,11 +16,11 @@ import java.util.Set;
  */
 public class TankGridHandler extends AbstractGridHandler<TankTileLink> {
 
+    private final Set<TankGrid> grids;
+
     public TankGridHandler() {
         this.grids = Sets.newHashSet();
     }
-
-    private final Set<TankGrid> grids;
 
     @Override
     protected void onObjectRemoved(TankTileLink o, Set<DimensionCoordinate> set) {

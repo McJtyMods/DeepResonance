@@ -1,4 +1,4 @@
-package mcjty.deepresonance.tile;
+package mcjty.deepresonance.util;
 
 import elec332.core.api.registration.RegisteredTileEntity;
 import elec332.core.handler.annotations.TileEntityAnnotationProcessor;
@@ -12,6 +12,8 @@ import javax.annotation.Nonnull;
  */
 public class AbstractTileEntity extends GenericTileEntity implements RegisteredTileEntity.TypeSetter {
 
+    private TileEntityType<?> type;
+
     public AbstractTileEntity() {
         super(null);
         this.setTileEntityType(TileEntityAnnotationProcessor.getTileType(this.getClass()));
@@ -21,8 +23,6 @@ public class AbstractTileEntity extends GenericTileEntity implements RegisteredT
         super(type);
         this.type = type;
     }
-
-    private TileEntityType<?> type;
 
     @Override
     public void setTileEntityType(TileEntityType<?> type) {

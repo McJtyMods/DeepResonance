@@ -1,4 +1,4 @@
-package mcjty.deepresonance.tanks;
+package mcjty.deepresonance.modules.tank.grid;
 
 import com.google.common.base.Preconditions;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
@@ -18,15 +18,15 @@ import javax.annotation.Nonnull;
  */
 public class InternalGridTank implements IFluidTank {
 
+    private int maxAmount;
+    private ILiquidCrystalData tank;
+    private FluidTank extraTank;
+
     public InternalGridTank(int maxAmount) {
         this.maxAmount = maxAmount;
         this.tank = LiquidCrystalData.fromNBT(new CompoundNBT(), 0);
         this.extraTank = new FluidTank(maxAmount);
     }
-
-    private int maxAmount;
-    private ILiquidCrystalData tank;
-    private FluidTank extraTank;
 
     public Fluid getStoredFluid() {
         FluidStack stored = getFluid();

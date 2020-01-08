@@ -11,21 +11,21 @@ public interface ILiquidCrystalData {
 
     public float getQuality();
 
-    public float getPurity();
-
-    public float getStrength();
-
-    public float getEfficiency();
-
-    public int getAmount();
-
     public void setQuality(float quality);
+
+    public float getPurity();
 
     public void setPurity(float purity);
 
+    public float getStrength();
+
     public void setStrength(float strength);
 
+    public float getEfficiency();
+
     public void setEfficiency(float efficiency);
+
+    public int getAmount();
 
     public void setAmount(int i);
 

@@ -10,6 +10,15 @@ import net.minecraftforge.fluids.FluidStack;
  */
 public class LiquidCrystalData implements ILiquidCrystalData {
 
+    private FluidStack referenceStack;
+    private float quality;
+    private float purity;
+    private float strength;
+    private float efficiency;
+
+    private LiquidCrystalData() {
+    }
+
     public static LiquidCrystalData fromNBT(CompoundNBT tag, int amount) {
         return fromStack(new FluidStack(FluidRegister.liquidCrystal, amount, tag));
     }
@@ -24,19 +33,12 @@ public class LiquidCrystalData implements ILiquidCrystalData {
         return data.makeLiquidCrystalStack();
     }
 
-    public FluidStack makeLiquidCrystalStack() {
-        FluidStack stack = new FluidStack(FluidRegister.liquidCrystal, referenceStack.getAmount());
-        writeDataToNBT(stack.getOrCreateTag());
-        return stack;
-    }
-
     public static LiquidCrystalData fromStack(FluidStack stack) {
         if (!FluidRegister.isValidLiquidCrystalStack(stack)) {
             return null;
         }
         CompoundNBT fluidTag = stack.getOrCreateTag();
         LiquidCrystalData ret = fromNBT(fluidTag);
-        ret.valid = stack.getAmount() > 0;
         ret.referenceStack = stack;
         return ret;
     }
@@ -46,7 +48,6 @@ public class LiquidCrystalData implements ILiquidCrystalData {
             return null;
         }
         LiquidCrystalData ret = new LiquidCrystalData();
-        ret.valid = true;
         ret.quality = fluidTag.getFloat("quality");
         ret.purity = fluidTag.getFloat("purity");
         ret.strength = fluidTag.getFloat("strength");
@@ -55,15 +56,11 @@ public class LiquidCrystalData implements ILiquidCrystalData {
         return ret;
     }
 
-    private LiquidCrystalData() {
+    public FluidStack makeLiquidCrystalStack() {
+        FluidStack stack = new FluidStack(FluidRegister.liquidCrystal, referenceStack.getAmount());
+        writeDataToNBT(stack.getOrCreateTag());
+        return stack;
     }
-
-    private FluidStack referenceStack;
-    private boolean valid;
-    private float quality;
-    private float purity;
-    private float strength;
-    private float efficiency;
 
     @Override
     public void merge(ILiquidCrystalData otherTag) {
@@ -98,7 +95,7 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     }
 
     private void checkNullity() {
-        valid = isValid(this);
+        isValid(this);
     }
 
     private boolean isValid(ILiquidCrystalData data) {
@@ -118,26 +115,6 @@ public class LiquidCrystalData implements ILiquidCrystalData {
         return quality;
     }
 
-    @Override
-    public float getPurity() {
-        return purity;
-    }
-
-    @Override
-    public float getStrength() {
-        return strength;
-    }
-
-    @Override
-    public float getEfficiency() {
-        return efficiency;
-    }
-
-    @Override
-    public int getAmount() {
-        return referenceStack.getAmount();
-    }
-
     /**
      * Setters
      */
@@ -147,8 +124,18 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     }
 
     @Override
+    public float getPurity() {
+        return purity;
+    }
+
+    @Override
     public void setPurity(float purity) {
         this.purity = purity;
+    }
+
+    @Override
+    public float getStrength() {
+        return strength;
     }
 
     @Override
@@ -157,8 +144,18 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     }
 
     @Override
+    public float getEfficiency() {
+        return efficiency;
+    }
+
+    @Override
     public void setEfficiency(float efficiency) {
         this.efficiency = efficiency;
+    }
+
+    @Override
+    public int getAmount() {
+        return referenceStack.getAmount();
     }
 
     @Override

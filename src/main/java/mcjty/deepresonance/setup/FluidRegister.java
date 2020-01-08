@@ -1,5 +1,6 @@
 package mcjty.deepresonance.setup;
 
+import elec332.core.api.annotations.StaticLoad;
 import elec332.core.api.registration.IObjectRegister;
 import elec332.core.util.StatCollector;
 import mcjty.deepresonance.fluids.FluidLiquidCrystal;
@@ -10,19 +11,10 @@ import net.minecraftforge.registries.IForgeRegistry;
 /**
  * Created by Elec332 on 7-1-2020
  */
+@StaticLoad
 public class FluidRegister implements IObjectRegister<Fluid> {
 
     public static Fluid liquidCrystal;
-
-    @Override
-    public void preRegister() {
-        liquidCrystal = new FluidLiquidCrystal();
-    }
-
-    @Override
-    public void register(IForgeRegistry<Fluid> registry) {
-        registry.register(liquidCrystal);
-    }
 
     public static boolean isValidLiquidCrystalStack(FluidStack stack) {
         return getFluidFromStack(stack) == liquidCrystal;
@@ -43,6 +35,16 @@ public class FluidRegister implements IObjectRegister<Fluid> {
 
     public static int getAmount(FluidStack stack) {
         return stack == null ? 0 : stack.getAmount();
+    }
+
+    @Override
+    public void preRegister() {
+        liquidCrystal = new FluidLiquidCrystal();
+    }
+
+    @Override
+    public void register(IForgeRegistry<Fluid> registry) {
+        registry.register(liquidCrystal);
     }
 
 }

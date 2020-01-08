@@ -1,7 +1,7 @@
-package mcjty.deepresonance.blocks;
+package mcjty.deepresonance.modules.tank.blocks;
 
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.tile.TileEntityTank;
+import mcjty.deepresonance.modules.tank.tile.TileEntityTank;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
 import net.minecraft.block.BlockState;
