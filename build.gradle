@@ -109,7 +109,7 @@ dependencies {
         })
     }
 
-    if (project(":ElecCore") != null) {
+    if (findProject(":ElecCore") != null) {
         compile (project(":ElecCore")) {
             exclude group: "*"
         }

@@ -1,6 +1,8 @@
 package mcjty.deepresonance.modules.tank.tile;
 
+import elec332.core.api.registration.HasSpecialRenderer;
 import elec332.core.api.registration.RegisteredTileEntity;
+import mcjty.deepresonance.modules.tank.client.TankTESR;
 import mcjty.deepresonance.util.AbstractTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -14,6 +16,7 @@ import javax.annotation.Nullable;
  * Created by Elec332 on 7-1-2020
  */
 @RegisteredTileEntity("tank")
+@HasSpecialRenderer(TankTESR.class)
 public class TileEntityTank extends AbstractTileEntity {
 
     private ICapabilityProvider grid;
