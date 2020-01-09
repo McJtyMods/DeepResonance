@@ -17,7 +17,7 @@ public class FluidRegister implements IObjectRegister<Fluid> {
     public static Fluid liquidCrystal;
 
     public static boolean isValidLiquidCrystalStack(FluidStack stack) {
-        return getFluidFromStack(stack) == liquidCrystal;
+        return stack != null && stack.getRawFluid() == liquidCrystal; //Stack might have size 0
     }
 
     public static Fluid getFluidFromStack(FluidStack stack) {

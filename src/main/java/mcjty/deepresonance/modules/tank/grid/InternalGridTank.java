@@ -18,13 +18,13 @@ import javax.annotation.Nonnull;
  */
 public class InternalGridTank implements IFluidTank {
 
+    private final ILiquidCrystalData tank;
     private int maxAmount;
-    private ILiquidCrystalData tank;
     private FluidTank extraTank;
 
     public InternalGridTank(int maxAmount) {
         this.maxAmount = maxAmount;
-        this.tank = LiquidCrystalData.fromNBT(new CompoundNBT(), 0);
+        this.tank = Preconditions.checkNotNull(LiquidCrystalData.fromNBT(new CompoundNBT(), 0));
         this.extraTank = new FluidTank(maxAmount);
     }
 
