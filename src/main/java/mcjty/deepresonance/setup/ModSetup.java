@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 public class ModSetup extends DefaultModSetup {
 
     public ModSetup() {
-        createTab("deepresonance", () -> new ItemStack(Items.CARVED_PUMPKIN));
+        createTab("deepresonance", () -> new ItemStack(Items.CARVED_PUMPKIN)); //resonating crystal
     }
 
     @Override

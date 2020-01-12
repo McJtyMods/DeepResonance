@@ -66,12 +66,16 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
-            args '--mod', 'deepresonance', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'deepresonance', '--all', '--output', file('src/generated/resources/'), '--existing', sourceSets.main.resources.srcDirs[0]
             source sourceSets.main
         }
 
     }
 
+}
+
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
 }
 
 dependencies {

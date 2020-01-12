@@ -53,7 +53,7 @@ public class TileEntityTank extends AbstractTileEntity {
             dirty = true;
         }
         if (dirty) {
-            markDirtyClient();
+            this.markDirtyClient();
         }
     }
 
@@ -92,6 +92,12 @@ public class TileEntityTank extends AbstractTileEntity {
     public void read(CompoundNBT tagCompound) {
         this.gridData = tagCompound.getCompound("gridData");
         super.read(tagCompound);
+    }
+
+    @Override //TODO: Remove when McJtyLib updates
+    public void handleUpdateTag(CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        readClientDataFromNBT(tag);
     }
 
     @Override

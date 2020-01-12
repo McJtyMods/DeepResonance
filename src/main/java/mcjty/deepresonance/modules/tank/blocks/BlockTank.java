@@ -3,6 +3,7 @@ package mcjty.deepresonance.modules.tank.blocks;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.tank.tile.TileEntityTank;
+import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
@@ -25,7 +26,7 @@ public class BlockTank extends BaseBlock {
         super(new BlockBuilder()
                 .tileEntitySupplier(TileEntityTank::new)
                 .info(DeepResonance.SHIFT_MESSAGE)
-                .infoExtended("tooltip.deepresonance.tank_extended")
+                .infoExtended(TranslationHelper.getExtendedTooltipKey("tank"))
                 .infoParameter(itemStack -> {
                     CompoundNBT tagCompound = itemStack.getTag();
                     if (tagCompound != null) {

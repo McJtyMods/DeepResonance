@@ -1,0 +1,13 @@
+{
+  "block.deepresonance.tank": "Tank",
+  "fluid.deepresonance.liquid_crystal": "Liquid Crystal",
+  "item.deepresonance.filter_material": "Filter Material",
+  "item.deepresonance.liquid_injector": "Liquid Injector",
+  "item.deepresonance.resonating_plate": "Resonating Plate",
+  "item.deepresonance.spent_filter": "Spent Filter Material",
+  "itemGroup.deepresonance": "Deep Resonance",
+  "message.deepresonance.no_tank": "This is not a tank!",
+  "tooltip.deepresonance.filter_material": "This material can be used in the purifier \nto purify the crystal liquid.",
+  "tooltip.deepresonance.liquid_injector": "Creative only item to inject 100mb \nof liquid crystal into a tank.",
+  "tooltip.deepresonance.tank.extended": "This tank can hold up to 16 buckets of liquid. \nIt is also capable of mixing the characteristics \nof liquid crystal. \nPlace a comparator next to this tank to detect \nhow full the tank is"
+}
