@@ -1,5 +1,6 @@
 package mcjty.deepresonance;
 
+import elec332.core.api.config.IConfigWrapper;
 import elec332.core.api.mod.IElecCoreMod;
 import elec332.core.api.module.IModuleController;
 import elec332.core.api.registration.IObjectRegister;
@@ -18,7 +19,6 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +42,7 @@ public class DeepResonance implements ModBase, IElecCoreMod, IModuleController {
     public static String SHIFT_MESSAGE = "<Press Shift>"; //Todo: move to McJtyLib and localize from there
 
     public static DeepResonance instance;
-    public static ConfigWrapper config, clientConfig;
+    public static IConfigWrapper config, clientConfig;
     public static ModSetup setup;
     public static Logger logger;
 
@@ -61,7 +61,8 @@ public class DeepResonance implements ModBase, IElecCoreMod, IModuleController {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
         FLUIDS.register(modBus);
-        modBus.addListener((FMLCommonSetupEvent event) -> setup.init(event));
+        modBus.addListener(setup::init);
+        modBus.addListener(setup::clientSetup);
     }
 
     public static Item.Properties createStandardProperties() {

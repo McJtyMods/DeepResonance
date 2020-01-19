@@ -23,9 +23,9 @@ import java.util.List;
  */
 public class TankRenderer implements IModelAndTextureLoader {
 
-    public static final ResourceLocation TOP_TEXTURE = new DeepResonanceResourceLocation("blocks/tanktop");
-    public static final ResourceLocation BOTTOM_TEXTURE = new DeepResonanceResourceLocation("blocks/tankbottom");
-    public static final ResourceLocation SIDE_TEXTURE = new DeepResonanceResourceLocation("blocks/tankside");
+    public static final ResourceLocation TOP_TEXTURE = new DeepResonanceResourceLocation("blocks/tank_top");
+    public static final ResourceLocation BOTTOM_TEXTURE = new DeepResonanceResourceLocation("blocks/tank_bottom");
+    public static final ResourceLocation SIDE_TEXTURE = new DeepResonanceResourceLocation("blocks/tank_side");
 
     public static final TankRenderer INSTANCE = new TankRenderer();
 

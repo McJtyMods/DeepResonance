@@ -1,4 +1,6 @@
 {
+  "block.deepresonance.machine_frame": "Resonating Machine Frame",
+  "block.deepresonance.resonating_crystal": "Resonating Crystal",
   "block.deepresonance.tank": "Tank",
   "fluid.deepresonance.liquid_crystal": "Liquid Crystal",
   "item.deepresonance.filter_material": "Filter Material",
@@ -7,6 +9,9 @@
   "item.deepresonance.spent_filter": "Spent Filter Material",
   "itemGroup.deepresonance": "Deep Resonance",
   "message.deepresonance.no_tank": "This is not a tank!",
+  "tooltip.deepresonance.crystal_empty": "This crystal is depleted. Perhaps it still has a future use?",
+  "tooltip.deepresonance.crystal_power": "You can feel the latent power present in this crystal.",
+  "tooltip.deepresonance.crystal_sep": "Strength/Efficiency/Purity",
   "tooltip.deepresonance.filter_material": "This material can be used in the purifier \nto purify the crystal liquid.",
   "tooltip.deepresonance.liquid_injector": "Creative only item to inject 100mb \nof liquid crystal into a tank.",
   "tooltip.deepresonance.tank.extended": "This tank can hold up to 16 buckets of liquid. \nIt is also capable of mixing the characteristics \nof liquid crystal. \nPlace a comparator next to this tank to detect \nhow full the tank is"

@@ -39,6 +39,9 @@ public class TranslationProvider extends LanguageProvider {
         add(TranslationHelper.getTooltipKey(CoreModule.LIQUID_INJECTOR_ITEM),
                 "Creative only item to inject 100mb \n" +
                         "of liquid crystal into a tank.");
+        add(TranslationHelper.getTooltipKey("crystal_power"), "You can feel the latent power present in this crystal.");
+        add(TranslationHelper.getTooltipKey("crystal_empty"), "This crystal is depleted. Perhaps it still has a future use?");
+        add(TranslationHelper.getTooltipKey("crystal_sep"), "Strength/Efficiency/Purity");
 
         //Items
         addItem(CoreModule.FILTER_MATERIAL_ITEM, "Filter Material");
@@ -46,9 +49,10 @@ public class TranslationProvider extends LanguageProvider {
         addItem(CoreModule.RESONATING_PLATE_ITEM, "Resonating Plate");
         addItem(CoreModule.SPENT_FILTER_ITEM, "Spent Filter Material");
 
-
         //Blocks
         addBlock(TankModule.TANK_BLOCK, "Tank");
+        addBlock(CoreModule.RESONATING_CRYSTAL_BLOCK, "Resonating Crystal");
+        addBlock(CoreModule.MACHINE_FRAME_BLOCK, "Resonating Machine Frame");
     }
 
 }

@@ -1,8 +1,8 @@
 {
   "parent": "block/cube_bottom_top",
   "textures": {
-    "side": "deepresonance:blocks/tankside",
-    "bottom": "deepresonance:blocks/tankbottom",
-    "top": "deepresonance:blocks/tanktop"
+    "side": "deepresonance:blocks/tank_side",
+    "bottom": "deepresonance:blocks/tank_bottom",
+    "top": "deepresonance:blocks/tank_top"
   }
 }

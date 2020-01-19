@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "deepresonance:block/machine_frame"
+    }
+  }
+}

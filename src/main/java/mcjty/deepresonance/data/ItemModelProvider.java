@@ -34,6 +34,7 @@ class ItemModelProvider extends BaseItemModelProvider {
 
         //Blocks
         parentedModel(TankModule.TANK_ITEM, "block/tank");
+        parentedModel(CoreModule.MACHINE_FRAME_ITEM, "block/machine_frame");
     }
 
     private void simpleModel(Supplier<Item> item, String... textures) {
@@ -43,8 +44,8 @@ class ItemModelProvider extends BaseItemModelProvider {
         }
     }
 
-    private void parentedModel(Supplier<Item> item, String parent) {
-        this.getBuilder(Preconditions.checkNotNull(item.get().getRegistryName()).getPath()).parent(new ModelFile.UncheckedModelFile(this.modLoc(parent)));
+    private ItemModelBuilder parentedModel(Supplier<Item> item, String parent) {
+        return this.getBuilder(Preconditions.checkNotNull(item.get().getRegistryName()).getPath()).parent(new ModelFile.UncheckedModelFile(this.modLoc(parent)));
     }
 
     @Nonnull
