@@ -14,6 +14,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -21,11 +23,12 @@ import java.util.List;
 /**
  * Created by Elec332 on 11-1-2020
  */
+@OnlyIn(Dist.CLIENT)
 public class TankRenderer implements IModelAndTextureLoader {
 
-    public static final ResourceLocation TOP_TEXTURE = new DeepResonanceResourceLocation("blocks/tank_top");
-    public static final ResourceLocation BOTTOM_TEXTURE = new DeepResonanceResourceLocation("blocks/tank_bottom");
-    public static final ResourceLocation SIDE_TEXTURE = new DeepResonanceResourceLocation("blocks/tank_side");
+    public static final ResourceLocation TOP_TEXTURE = new DeepResonanceResourceLocation("block/tank_top");
+    public static final ResourceLocation BOTTOM_TEXTURE = new DeepResonanceResourceLocation("block/tank_bottom");
+    public static final ResourceLocation SIDE_TEXTURE = new DeepResonanceResourceLocation("block/tank_side");
 
     public static final TankRenderer INSTANCE = new TankRenderer();
 

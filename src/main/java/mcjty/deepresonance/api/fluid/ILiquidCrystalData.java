@@ -7,31 +7,31 @@ import net.minecraftforge.fluids.FluidStack;
  */
 public interface ILiquidCrystalData {
 
-    public void merge(ILiquidCrystalData otherStack);
+    void merge(ILiquidCrystalData otherStack);
 
-    public float getQuality();
+    float getQuality();
 
-    public void setQuality(float quality);
+    void setQuality(float quality);
 
-    public float getPurity();
+    float getPurity();
 
-    public void setPurity(float purity);
+    void setPurity(float purity);
 
-    public float getStrength();
+    float getStrength();
 
-    public void setStrength(float strength);
+    void setStrength(float strength);
 
-    public float getEfficiency();
+    float getEfficiency();
 
-    public void setEfficiency(float efficiency);
+    void setEfficiency(float efficiency);
 
-    public int getAmount();
+    int getAmount();
 
-    public void setAmount(int i);
+    void setAmount(int i);
 
-    public FluidStack getReferenceStack();
+    FluidStack getReferenceStack();
 
-    default public FluidStack getReferenceStack(int amount) {
+    default FluidStack getReferenceStack(int amount) {
         FluidStack ret = getReferenceStack();
         ret.setAmount(amount);
         return ret;

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "radiation",
+  "pattern": [
+    "ppp",
+    "p p",
+    "p p"
+  ],
+  "key": {
+    "p": {
+      "item": "deepresonance:resonating_plate"
+    }
+  },
+  "result": {
+    "item": "deepresonance:radiation_suit_leggings"
+  }
+}

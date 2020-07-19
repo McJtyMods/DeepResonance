@@ -13,6 +13,7 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
 import mcjty.deepresonance.util.Constants;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.model.BakedQuad;
@@ -21,15 +22,15 @@ import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IEnviromentBlockReader;
+import net.minecraft.world.ILightReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -65,12 +66,12 @@ public class ModelLoaderCoreModule implements IModelHandler {
     public static final ModelProperty<Float> POWER = new ModelProperty<>();
     public static final ModelProperty<Float> PURITY = new ModelProperty<>();
 
-    private static BlockState state;
+    public static StateContainer<Block, BlockState> stateContainer;
 
     @APIHandlerInject
     @OnlyIn(Dist.CLIENT)
     private static void registerBlockState(IElecRenderingRegistry renderingRegistry) {
-        state = renderingRegistry.registerBlockStateLocation(RESONATING_CRYSTAL, FACING, EMPTY, VERY_PURE).getBaseState();
+        stateContainer = renderingRegistry.registerBlockStateLocation(RESONATING_CRYSTAL, FACING, EMPTY, VERY_PURE);
     }
 
     @Nonnull
@@ -81,7 +82,7 @@ public class ModelLoaderCoreModule implements IModelHandler {
 
     @Override
     public void registerBakedModels(Function<ModelResourceLocation, IBakedModel> bakedModelGetter, ModelLoader modelLoader, BiConsumer<ModelResourceLocation, IBakedModel> registry) {
-
+        BlockState state = stateContainer.getBaseState();
         BiFunction<Float, Float, IBakedModel> itemModelGetter_ = null;
         for (Direction dir : FACING.getAllowedValues()) {
             IBakedModel emptyNaturalModel = bakedModelGetter.apply(getLocation(state.with(FACING, dir).with(EMPTY, true).with(VERY_PURE, false)));
@@ -115,7 +116,7 @@ public class ModelLoaderCoreModule implements IModelHandler {
 
                 @Nonnull
                 @Override //Todo: Move to tile?
-                public IModelData getModelData(@Nonnull IEnviromentBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData) {
+                public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData) {
                     if (tileData == EmptyModelData.INSTANCE) {
                         tileData = new ModelDataMap.Builder().build();
                     }
@@ -143,8 +144,8 @@ public class ModelLoaderCoreModule implements IModelHandler {
             @Nullable
             @Override
             protected IBakedModel getModel(@Nonnull IBakedModel model, @Nonnull ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entityIn) {
-                float power = getTileData(stack).getFloat("power");
-                float purity = getTileData(stack).getFloat("purity");
+                float power = AbstractItemBlock.getTileData(stack).getFloat("power");
+                float purity = AbstractItemBlock.getTileData(stack).getFloat("purity");
                 return itemModelGetter.apply(power, purity);
             }
 
@@ -159,10 +160,6 @@ public class ModelLoaderCoreModule implements IModelHandler {
 
         };
         registry.accept(new ModelResourceLocation(CoreModule.RESONATING_CRYSTAL_ITEM.getId(), "inventory"), wrapped);
-    }
-
-    private CompoundNBT getTileData(ItemStack stack) {
-        return stack.getOrCreateChildTag(AbstractItemBlock.TILE_DATA_TAG);
     }
 
     private ModelResourceLocation getLocation(BlockState state) {

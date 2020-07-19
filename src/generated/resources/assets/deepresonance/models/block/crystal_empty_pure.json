@@ -1,0 +1,6 @@
+{
+  "parent": "deepresonance:block/crystal_generated",
+  "textures": {
+    "crystal_texture": "deepresonance:block/empty_crystal"
+  }
+}

@@ -1,6 +1,5 @@
 package mcjty.deepresonance.util;
 
-import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -14,7 +13,7 @@ public class DeepResonanceWorldEventHandler {
         if (event.world.isRemote) {
             return;
         }
-        DeepResonanceTickHandler.INSTANCE.tickType(TileEntityResonatingCrystal.class);
+        //DeepResonanceTickHandler.INSTANCE.tickType(TileEntityResonatingCrystal.class);
     }
 
 }

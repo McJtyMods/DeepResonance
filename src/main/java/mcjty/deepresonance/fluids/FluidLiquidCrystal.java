@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
  */
 public class FluidLiquidCrystal extends EmptyFluid {
 
-    private static final ResourceLocation texture = new DeepResonanceResourceLocation("blocks/rclfluid");
+    private static final ResourceLocation texture = new DeepResonanceResourceLocation("block/rclfluid");
 
     public FluidLiquidCrystal() {
         setRegistryName(new DeepResonanceResourceLocation("liquid_crystal"));

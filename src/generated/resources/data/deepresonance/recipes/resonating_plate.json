@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "core",
+  "ingredients": [
+    {
+      "item": "deepresonance:resonating_block"
+    }
+  ],
+  "result": {
+    "item": "deepresonance:resonating_plate",
+    "count": 9
+  }
+}

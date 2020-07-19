@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "deepresonance:items/resonatingplate"
+    "layer0": "deepresonance:item/resonating_plate"
   }
 }

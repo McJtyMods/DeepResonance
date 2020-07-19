@@ -1,24 +1,25 @@
 package mcjty.deepresonance.data;
 
+import elec332.core.data.AbstractTranslationProvider;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.setup.FluidRegister;
 import mcjty.deepresonance.util.TranslationHelper;
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.common.data.LanguageProvider;
 
 /**
  * Created by Elec332 on 10-1-2020
  */
-public class TranslationProvider extends LanguageProvider {
+public class TranslationProvider extends AbstractTranslationProvider {
 
     TranslationProvider(DataGenerator gen) {
-        super(gen, DeepResonance.MODID, "en_us");
+        super(gen, DeepResonance.MODID);
     }
 
     @Override
-    protected void addTranslations() {
+    protected void registerTranslations() {
         //Misc
         add("itemGroup.deepresonance", "Deep Resonance");
         add(FluidRegister.liquidCrystal.getAttributes().getTranslationKey(), "Liquid Crystal");
@@ -48,11 +49,21 @@ public class TranslationProvider extends LanguageProvider {
         addItem(CoreModule.LIQUID_INJECTOR_ITEM, "Liquid Injector");
         addItem(CoreModule.RESONATING_PLATE_ITEM, "Resonating Plate");
         addItem(CoreModule.SPENT_FILTER_ITEM, "Spent Filter Material");
+        addItem(CoreModule.MACHINE_FRAME_ITEM, "Resonating Machine Frame");
+        addItem(RadiationModule.RADIATION_SUIT_HELMET, "Radiation Suit Helmet");
+        addItem(RadiationModule.RADIATION_SUIT_CHESTPLATE, "Radiation Suit Chestplate");
+        addItem(RadiationModule.RADIATION_SUIT_LEGGINGS, "Radiation Suit Leggings");
+        addItem(RadiationModule.RADIATION_SUIT_BOOTS, "Radiation Suit Boots");
 
         //Blocks
         addBlock(TankModule.TANK_BLOCK, "Tank");
         addBlock(CoreModule.RESONATING_CRYSTAL_BLOCK, "Resonating Crystal");
-        addBlock(CoreModule.MACHINE_FRAME_BLOCK, "Resonating Machine Frame");
+        addBlock(CoreModule.RESONATING_ORE_STONE_BLOCK, "Resonating Ore");
+        addBlock(CoreModule.RESONATING_ORE_NETHER_BLOCK, "Resonating Nether Ore");
+        addBlock(CoreModule.RESONATING_ORE_END_BLOCK, "Resonating End Ore");
+        addBlock(RadiationModule.POISONED_DIRT_BLOCK, "Poisoned Dirt");
+        addBlock(RadiationModule.DENSE_GLASS_BLOCK, "Dense Glass");
+        addBlock(RadiationModule.DENSE_OBSIDIAN_BLOCK, "Dense Obsidian");
     }
 
 }

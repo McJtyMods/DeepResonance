@@ -40,14 +40,14 @@ public class CrystalConfig implements IConfigurableElement {
         INSTABILITY_HANDLING_CHANCE = config.comment("When the crystal has accumulated instability then this is the chance that (at any tick) we actually handle that instability")
                 .defineInRange("instabilityHandlingChance", 0.3, 0, 1);
         INSTABILITY_EXPLOSION_THRESHOLD = config.comment("When accumulated instability is handled then we handle a random amount of that instability. When that random amount is greater then this value we cause a massive explosion")
-                .defineInRange("instabilityExplosionThresshold", 5d, 0, 10000000);
+                .defineInRange("instabilityExplosionThreshold", 5d, 0, 10000000);
         INSTABILITY_BIG_DAMAGE_THRESHOLD = config.comment("When accumulated instability is handled then we handle a random amount of that instability. When that random amount is greater then this value we cause big damage on the crystal")
-                .defineInRange("instabilityBigDamageThresshold", 1.25, 0, 10000000);
+                .defineInRange("instabilityBigDamageThreshold", 1.25, 0, 10000000);
         INSTABILITY_SMALL_DAMAGE_THRESHOLD = config.comment("When accumulated instability is handled then we handle a random amount of that instability. When that random amount is greater then this value we cause minor damage on the crystal")
-                .defineInRange("instabilitySmallDamageThresshold", 0.5, 0, 10000000);
+                .defineInRange("instabilitySmallDamageThreshold", 0.5, 0, 10000000);
 
         INSTABILITY_SENSOR_THRESHOLD = config.comment("The amount of instability in the crystal that corresponds to redstone level 15 in the instability sensor")
-                .defineInRange("instabilitySensorThresshold", 0.3, 0, 10000000);
+                .defineInRange("instabilitySensorThreshold", 0.3, 0, 10000000);
 
     }
 

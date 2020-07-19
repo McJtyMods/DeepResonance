@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "core",
+  "pattern": [
+    "rcr",
+    "csc",
+    "rcr"
+  ],
+  "key": {
+    "r": {
+      "tag": "forge:gravel"
+    },
+    "c": {
+      "tag": "minecraft:coals"
+    },
+    "s": {
+      "tag": "minecraft:sand"
+    }
+  },
+  "result": {
+    "item": "deepresonance:filter_material",
+    "count": 8
+  }
+}

@@ -6,12 +6,12 @@ import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.modules.core.util.CrystalConfig;
 import mcjty.deepresonance.modules.core.util.CrystalHelper;
 import mcjty.deepresonance.util.AbstractTileEntity;
-import mcjty.deepresonance.util.IDelayedTickableTileEntity;
 import mcjty.lib.varia.SoundTools;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 
@@ -22,7 +22,7 @@ import java.util.UUID;
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 @RegisteredTileEntity("resonating_crystal")
-public class TileEntityResonatingCrystal extends AbstractTileEntity implements IDelayedTickableTileEntity {
+public class TileEntityResonatingCrystal extends AbstractTileEntity implements ITickableTileEntity {
 
     // The total maximum RF you can get out of a crystal with the following characteristics:
     //    * S: Strength (0-100%)
@@ -98,10 +98,6 @@ public class TileEntityResonatingCrystal extends AbstractTileEntity implements I
         return efficiency;
     }
 
-    // We enqueue crystals for processing later
-    //I see no reason why...
-    //public static Set<TileEntityResonatingCrystal> todoCrystals = new HashSet<>();
-
     public void setEfficiency(float efficiency) {
         this.efficiency = efficiency;
         markDirtyClient();
@@ -138,15 +134,12 @@ public class TileEntityResonatingCrystal extends AbstractTileEntity implements I
     }
 
     @Override
-    public void postTick() {
+    public void tick() {
         markDirtyQuick();
 
         // Handle the next 1000 microticks
         int microTicksLeft = 1000;
 
-//        if (purity > 20) {
-//            System.out.println("Cool=" + cooldown + ", Pulses=" + pulses + ", Resist=" + resistance);
-//        }
 
         // Handle pulses
         while (pulses > 0) {

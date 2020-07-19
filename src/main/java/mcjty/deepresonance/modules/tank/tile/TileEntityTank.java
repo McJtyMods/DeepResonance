@@ -10,6 +10,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -84,20 +85,14 @@ public class TileEntityTank extends AbstractTileEntity {
         if (grid != null) {
             grid.setDataToTile(this);
         }
-        tagCompound.put("gridData", gridData);
+        tagCompound.put("grid_data", gridData);
         return super.write(tagCompound);
     }
 
     @Override
     public void read(CompoundNBT tagCompound) {
-        this.gridData = tagCompound.getCompound("gridData");
+        this.gridData = tagCompound.getCompound("grid_data");
         super.read(tagCompound);
-    }
-
-    @Override //TODO: Remove when McJtyLib updates
-    public void handleUpdateTag(CompoundNBT tag) {
-        super.handleUpdateTag(tag);
-        readClientDataFromNBT(tag);
     }
 
     @Override
@@ -121,12 +116,12 @@ public class TileEntityTank extends AbstractTileEntity {
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
+    public ActionResultType onBlockActivated(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
         if (FluidUtil.getFluidHandler(player.getHeldItem(hand)).isPresent()) {
             if (!Preconditions.checkNotNull(getWorld()).isRemote) {
                 FluidUtil.interactWithFluidHandler(player, hand, Preconditions.checkNotNull(getWorld()), result.getPos(), result.getFace());
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
         return super.onBlockActivated(state, player, hand, result);
     }

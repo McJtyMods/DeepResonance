@@ -5,7 +5,6 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.util.DeepResonanceWorldEventHandler;
 import mcjty.lib.setup.DefaultModSetup;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -27,7 +26,7 @@ public class ModSetup extends DefaultModSetup {
     }
 
     public void clientSetup(FMLClientSetupEvent event) {
-        OBJLoader.INSTANCE.addDomain(DeepResonance.MODID);
+        //OBJLoader.INSTANCE.addDomain(DeepResonance.MODID);
     }
 
     @Override

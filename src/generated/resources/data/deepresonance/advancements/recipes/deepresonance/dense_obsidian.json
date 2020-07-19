@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "deepresonance:dense_obsidian"
+    ]
+  },
+  "criteria": {
+    "has_spent_filter": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "deepresonance:spent_filter_material"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "deepresonance:dense_obsidian"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_spent_filter",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -17,6 +17,8 @@ public final class DataGenerators {
         if (event.includeServer()) {
             generator.addProvider(new RecipesProvider(generator));
             generator.addProvider(new LootTablesProvider(generator));
+            generator.addProvider(new BlockTagsProvider(generator));
+            generator.addProvider(new ItemTagsProvider(generator));
         }
         if (event.includeClient()) {
             generator.addProvider(new TranslationProvider(generator));

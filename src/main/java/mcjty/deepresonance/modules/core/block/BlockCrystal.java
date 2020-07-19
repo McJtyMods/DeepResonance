@@ -21,7 +21,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -61,12 +60,6 @@ public class BlockCrystal extends BaseBlock implements IInfoProvider {
         return AABB;
     }
 
-    @Nonnull
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.TRANSLUCENT;
-    }
-
     @Override
     public RotationType getRotationType() {
         return RotationType.HORIZROTATION;
@@ -85,6 +78,15 @@ public class BlockCrystal extends BaseBlock implements IInfoProvider {
         return getStack(world, pos);
     }
 
+    public ItemStack getStack(IBlockReader world, BlockPos pos) {
+        ItemStack ret = new ItemStack(this);
+        TileEntity tile = WorldHelper.getTileAt(world, pos);
+        if (tile instanceof TileEntityResonatingCrystal) {
+            ret.setTagInfo(AbstractItemBlock.TILE_DATA_TAG, tile.write(new CompoundNBT()));
+        }
+        return ret;
+    }
+
     @Override
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
         TileEntityResonatingCrystal crystal = new TileEntityResonatingCrystal();
@@ -98,16 +100,6 @@ public class BlockCrystal extends BaseBlock implements IInfoProvider {
             }
         }
     }
-
-    public ItemStack getStack(IBlockReader world, BlockPos pos) {
-        ItemStack ret = new ItemStack(this);
-        TileEntity tile = WorldHelper.getTileAt(world, pos);
-        if (tile instanceof TileEntityResonatingCrystal) {
-            ret.setTagInfo(AbstractItemBlock.TILE_DATA_TAG, tile.write(new CompoundNBT()));
-        }
-        return ret;
-    }
-
 
     @Override
     public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag advanced) {
