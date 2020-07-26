@@ -3,9 +3,11 @@ package mcjty.deepresonance.data;
 import elec332.core.api.data.recipe.IGroupedRecipeManager;
 import elec332.core.data.AbstractRecipeProvider;
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.item.Items;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
 
@@ -35,10 +37,10 @@ public class RecipesProvider extends AbstractRecipeProvider {
                     .patternLine("ipi").patternLine("pqp").patternLine("ipi").build();
 
             recipes.addCriterion("has_resonant_plate", hasItem(CoreModule.RESONATING_PLATE_ITEM.get()));
-            recipes.shapedRecipe(CoreModule.RESONATING_BLOCK_ITEM.get())
+            recipes.shapedRecipe(CoreModule.RESONATING_PLATE_BLOCK_ITEM.get())
                     .patternLine("ppp").patternLine("ppp").patternLine("ppp").build();
             recipes.shapelessRecipe(CoreModule.RESONATING_PLATE_ITEM.get(), 9)
-                    .addIngredient(CoreModule.RESONATING_BLOCK_ITEM.get()).build();
+                    .addIngredient(CoreModule.RESONATING_PLATE_BLOCK_ITEM.get()).build();
         });
         recipeBuilder.grouped("tank", recipes -> {
             recipes.shapedRecipe(TankModule.TANK_ITEM.get())
@@ -64,6 +66,16 @@ public class RecipesProvider extends AbstractRecipeProvider {
                     .patternLine("fgf").patternLine("gog").patternLine("fgf").build();
             recipes.shapedRecipe(RadiationModule.DENSE_OBSIDIAN_ITEM.get(), 4)
                     .patternLine("ofo").patternLine("fof").patternLine("ofo").build();
+        });
+        recipeBuilder.grouped("machines", recipes -> {
+            recipes.key('m', CoreModule.MACHINE_FRAME_ITEM.get());
+            recipes.key('f', CoreModule.FILTER_MATERIAL_ITEM.get());
+            recipes.addCriterion("has_machine_frame", hasItem(CoreModule.MACHINE_FRAME_ITEM.get()));
+            recipes.shapedRecipe(MachinesModule.VALVE_ITEM.get())
+                    .addCriterion("has_comparator", hasItem(Items.COMPARATOR))
+                    .key('C', Items.COMPARATOR)
+                    .key('q', Items.QUARTZ)
+                    .patternLine("gqg").patternLine("fmf").patternLine("gCg").build();
         });
     }
 

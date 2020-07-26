@@ -6,8 +6,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 
-import javax.annotation.Nonnull;
-
 /**
  * Created by Elec332 on 9-7-2020
  */

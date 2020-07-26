@@ -22,6 +22,8 @@ import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
@@ -55,12 +57,12 @@ public class TankModule implements IConfigurableElement {
         ElecCoreRegistrar.GRIDHANDLERS.register(new TankGridHandler());
     }
 
+    @OnlyIn(Dist.CLIENT)
     @ElecModule.EventHandler
     public void setupClient(FMLClientSetupEvent event) {
         RenderingRegistry.instance().registerLoader(TankRenderer.INSTANCE);
+        final TankTESR tesr = new TankTESR();
         RenderingRegistry.instance().setItemRenderer(TANK_ITEM.get(), new ItemStackTileEntityRenderer() {
-
-            private final TankTESR tesr = new TankTESR();
 
             @Override
             public void render(@Nonnull ItemStack itemStackIn, @Nonnull MatrixStack matrixStackIn, @Nonnull IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
@@ -73,6 +75,7 @@ public class TankModule implements IConfigurableElement {
         });
     }
 
+    @OnlyIn(Dist.CLIENT)
     @ElecModule.EventHandler
     public void loadModels(ModelLoadEvent event) {
         ModelResourceLocation location = new ModelResourceLocation(new DeepResonanceResourceLocation("tank"), "");

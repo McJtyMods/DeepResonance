@@ -20,7 +20,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -32,7 +31,6 @@ import java.util.stream.Collectors;
  * Created by Elec332 on 9-1-2020
  */
 @OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber
 public class TankTESR extends AbstractTileEntityRenderer<TileEntityTank> {
 
     private static final EnumSet<Direction> ITEM_DIRECTIONS = EnumSet.range(Direction.UP, Direction.EAST); //All except bottom

@@ -1,22 +1,31 @@
 package mcjty.deepresonance.data;
 
+import com.google.common.base.Preconditions;
 import elec332.core.data.AbstractBlockStateProvider;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.client.ModelLoaderCoreModule;
+import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.tank.client.TankRenderer;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
+import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.client.model.generators.ModelFile;
+
+import java.util.function.Supplier;
 
 /**
  * Created by Elec332 on 10-1-2020
  */
 public class BlockStateProvider extends AbstractBlockStateProvider {
+
+    private static final ResourceLocation DEFAULT_TOP = new DeepResonanceResourceLocation("block/machine_top");
+    private static final ResourceLocation DEFAULT_BOTTOM = new DeepResonanceResourceLocation("block/machine_bottom");
 
     BlockStateProvider(DataGenerator gen, ExistingFileHelper exFileHelper) {
         super(gen, DeepResonance.MODID, exFileHelper);
@@ -31,6 +40,9 @@ public class BlockStateProvider extends AbstractBlockStateProvider {
         simpleBlock(RadiationModule.POISONED_DIRT_BLOCK);
         simpleBlock(RadiationModule.DENSE_GLASS_BLOCK);
         simpleBlock(RadiationModule.DENSE_OBSIDIAN_BLOCK);
+        simpleBlock(CoreModule.RESONATING_PLATE_BLOCK_BLOCK);
+
+        simpleSide(MachinesModule.VALVE_BLOCK, new DeepResonanceResourceLocation("block/valve"));
 
         registerCrystalModel();
     }
@@ -61,6 +73,11 @@ public class BlockStateProvider extends AbstractBlockStateProvider {
                     .rotationY(((int) state.get(ModelLoaderCoreModule.FACING).getHorizontalAngle() + 180) % 360)
                     .build();
         });
+    }
+
+    private void simpleSide(Supplier<Block> blockSupplier, ResourceLocation sides) {
+        Block block = blockSupplier.get();
+        simpleBlock(block, models().cubeBottomTop(Preconditions.checkNotNull(block.getRegistryName()).getPath(), sides, BlockStateProvider.DEFAULT_BOTTOM, BlockStateProvider.DEFAULT_TOP));
     }
 
 }

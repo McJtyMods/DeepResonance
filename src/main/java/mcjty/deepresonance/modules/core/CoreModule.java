@@ -26,7 +26,7 @@ public class CoreModule {
     public static final RegistryObject<Block> RESONATING_ORE_STONE_BLOCK = DeepResonance.BLOCKS.register("resonating_ore_stone", () -> new Block(ORE_PROPERTIES));
     public static final RegistryObject<Block> RESONATING_ORE_NETHER_BLOCK = DeepResonance.BLOCKS.register("resonating_ore_nether", () -> new Block(ORE_PROPERTIES));
     public static final RegistryObject<Block> RESONATING_ORE_END_BLOCK = DeepResonance.BLOCKS.register("resonating_ore_end", () -> new Block(ORE_PROPERTIES));
-    public static final RegistryObject<Block> RESONATING_BLOCK_BLOCK = DeepResonance.BLOCKS.register("resonating_block", () -> new BlockResonatingPlate(Block.Properties.create(Material.ROCK).hardnessAndResistance(3, 5).harvestLevel(2).harvestTool(ToolType.PICKAXE)));
+    public static final RegistryObject<Block> RESONATING_PLATE_BLOCK_BLOCK = DeepResonance.BLOCKS.register("resonating_plate_block", () -> new BlockResonatingPlate(Block.Properties.create(Material.ROCK).hardnessAndResistance(3, 5).harvestLevel(2).harvestTool(ToolType.PICKAXE)));
 
     public static final RegistryObject<Item> RESONATING_PLATE_ITEM = DeepResonance.ITEMS.register("resonating_plate", () -> new Item(DeepResonance.createStandardProperties()));
     public static final RegistryObject<Item> FILTER_MATERIAL_ITEM = DeepResonance.ITEMS.register("filter_material", () -> new ItemWithTooltip(DeepResonance.createStandardProperties()));
@@ -37,7 +37,7 @@ public class CoreModule {
     public static final RegistryObject<Item> RESONATING_ORE_STONE_ITEM = DeepResonance.fromBlock(RESONATING_ORE_STONE_BLOCK);
     public static final RegistryObject<Item> RESONATING_ORE_NETHER_ITEM = DeepResonance.fromBlock(RESONATING_ORE_NETHER_BLOCK);
     public static final RegistryObject<Item> RESONATING_ORE_END_ITEM = DeepResonance.fromBlock(RESONATING_ORE_END_BLOCK);
-    public static final RegistryObject<Item> RESONATING_BLOCK_ITEM = DeepResonance.fromBlock(RESONATING_BLOCK_BLOCK);
+    public static final RegistryObject<Item> RESONATING_PLATE_BLOCK_ITEM = DeepResonance.fromBlock(RESONATING_PLATE_BLOCK_BLOCK);
 
     public CoreModule() {
         DeepResonance.config.configureSubConfig("core_module", "Core module settings", config -> {

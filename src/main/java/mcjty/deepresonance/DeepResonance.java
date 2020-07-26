@@ -13,11 +13,14 @@ import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.setup.Config;
 import mcjty.deepresonance.setup.FluidRegister;
 import mcjty.deepresonance.setup.ModSetup;
+import mcjty.lib.McJtyLib;
 import mcjty.lib.base.ModBase;
+import mcjty.lib.network.PacketHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -45,6 +48,7 @@ public class DeepResonance implements ModBase, IElecCoreMod, IModuleController {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, MODID);
+    public static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
 
     public static String SHIFT_MESSAGE = "message.rftoolsbase.shiftmessage";
 
@@ -68,15 +72,20 @@ public class DeepResonance implements ModBase, IElecCoreMod, IModuleController {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
         FLUIDS.register(modBus);
+        CONTAINERS.register(modBus);
         modBus.addListener(setup::init);
         modBus.addListener(setup::clientSetup);
         modBus.addListener(new Consumer<FMLLoadCompleteEvent>() {
 
             @Override
             public void accept(FMLLoadCompleteEvent event) {
-                RenderTypeLookup.setRenderLayer(TankModule.TANK_BLOCK.get(), RenderType.getTranslucent());
-                RenderTypeLookup.setRenderLayer(CoreModule.RESONATING_CRYSTAL_BLOCK.get(), RenderType.getTranslucent());
+                PacketHandler.registerStandardMessages(9, McJtyLib.networkHandler);
+                if (FMLHelper.getDist().isClient()) {
+                    RenderTypeLookup.setRenderLayer(TankModule.TANK_BLOCK.get(), RenderType.getTranslucent());
+                    RenderTypeLookup.setRenderLayer(CoreModule.RESONATING_CRYSTAL_BLOCK.get(), RenderType.getTranslucent());
+                }
             }
+
         });
     }
 

@@ -3,6 +3,7 @@ package mcjty.deepresonance.data;
 import elec332.core.data.AbstractTranslationProvider;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.setup.FluidRegister;
@@ -43,6 +44,7 @@ public class TranslationProvider extends AbstractTranslationProvider {
         add(TranslationHelper.getTooltipKey("crystal_power"), "You can feel the latent power present in this crystal.");
         add(TranslationHelper.getTooltipKey("crystal_empty"), "This crystal is depleted. Perhaps it still has a future use?");
         add(TranslationHelper.getTooltipKey("crystal_sep"), "Strength/Efficiency/Purity");
+        add(TranslationHelper.getTooltipKey("valve"), "This machine will transfer fluids from the upper tank to a tank below if the fluid matches certain conditions.");
 
         //Items
         addItem(CoreModule.FILTER_MATERIAL_ITEM, "Filter Material");
@@ -64,6 +66,8 @@ public class TranslationProvider extends AbstractTranslationProvider {
         addBlock(RadiationModule.POISONED_DIRT_BLOCK, "Poisoned Dirt");
         addBlock(RadiationModule.DENSE_GLASS_BLOCK, "Dense Glass");
         addBlock(RadiationModule.DENSE_OBSIDIAN_BLOCK, "Dense Obsidian");
+        addBlock(CoreModule.RESONATING_PLATE_BLOCK_BLOCK, "Resonating Plate Block");
+        addBlock(MachinesModule.VALVE_BLOCK, "Valve");
     }
 
 }

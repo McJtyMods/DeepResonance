@@ -56,7 +56,7 @@ public class BlockCrystal extends BaseBlock implements IInfoProvider {
     @Nonnull
     @Override
     @SuppressWarnings("deprecation")
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos, @Nonnull ISelectionContext context) {
         return AABB;
     }
 
@@ -66,7 +66,7 @@ public class BlockCrystal extends BaseBlock implements IInfoProvider {
     }
 
     @Override
-    public void onBlockHarvested(World worldIn, @Nonnull BlockPos pos, BlockState state, @Nonnull PlayerEntity player) {
+    public void onBlockHarvested(World worldIn, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull PlayerEntity player) {
         if (!worldIn.isRemote) {
             WorldHelper.dropStack(worldIn, pos, getStack(worldIn, pos));
         }
@@ -88,7 +88,7 @@ public class BlockCrystal extends BaseBlock implements IInfoProvider {
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         TileEntityResonatingCrystal crystal = new TileEntityResonatingCrystal();
         for (int power : new int[]{0, 50}) {
             for (int purity : new int[]{0, 50}) {

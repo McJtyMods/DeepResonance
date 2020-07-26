@@ -6,7 +6,9 @@
   "block.deepresonance.resonating_ore_end": "Resonating End Ore",
   "block.deepresonance.resonating_ore_nether": "Resonating Nether Ore",
   "block.deepresonance.resonating_ore_stone": "Resonating Ore",
+  "block.deepresonance.resonating_plate_block": "Resonating Plate Block",
   "block.deepresonance.tank": "Tank",
+  "block.deepresonance.valve": "Valve",
   "fluid.deepresonance.liquid_crystal": "Liquid Crystal",
   "item.deepresonance.filter_material": "Filter Material",
   "item.deepresonance.liquid_injector": "Liquid Injector",
@@ -24,5 +26,6 @@
   "tooltip.deepresonance.crystal_sep": "Strength/Efficiency/Purity",
   "tooltip.deepresonance.filter_material": "This material can be used in the purifier \nto purify the crystal liquid.",
   "tooltip.deepresonance.liquid_injector": "Creative only item to inject 100mb \nof liquid crystal into a tank.",
-  "tooltip.deepresonance.tank.extended": "This tank can hold up to 16 buckets of liquid. \nIt is also capable of mixing the characteristics \nof liquid crystal. \nPlace a comparator next to this tank to detect \nhow full the tank is"
+  "tooltip.deepresonance.tank.extended": "This tank can hold up to 16 buckets of liquid. \nIt is also capable of mixing the characteristics \nof liquid crystal. \nPlace a comparator next to this tank to detect \nhow full the tank is",
+  "tooltip.deepresonance.valve": "This machine will transfer fluids from the upper tank to a tank below if the fluid matches certain conditions."
 }

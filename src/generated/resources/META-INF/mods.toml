@@ -1,0 +1,46 @@
+modLoader="javafml"
+loaderVersion="[${loaderversion},)"
+issueTrackerURL="https://github.com/McJtyMods/DeepResonance/issues"
+displayURL="https://github.com/McJtyMods/DeepResonance"
+authors="Elec332, McJty"
+
+[[mods]]
+modId="deepresonance"
+version="${version}"
+displayName="DeepResonance"
+description="Power generation based on resonating crystals."
+
+[[dependencies.deepresonance]]
+    modId="eleccore"
+    mandatory=true
+    versionRange="[2.1.43-Beta,)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.deepresonance]]
+    modId="forge"
+    mandatory=true
+    versionRange="[${forgeversion},)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.deepresonance]]
+    modId="mcjtylib"
+    mandatory=true
+    versionRange="[1.15-4.1.0-beta.12,)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.deepresonance]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[${mcversion},)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.deepresonance]]
+    modId="rftoolsbase"
+    mandatory=true
+    versionRange="[1.15-1.1.0-beta-10,)"
+    ordering="AFTER"
+    side="BOTH"

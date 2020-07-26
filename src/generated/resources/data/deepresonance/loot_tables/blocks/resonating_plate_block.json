@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "deepresonance:resonating_block"
+          "name": "deepresonance:resonating_plate_block"
         }
       ],
       "conditions": [

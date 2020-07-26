@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import elec332.core.data.AbstractItemModelProvider;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
@@ -49,6 +50,8 @@ class ItemModelProvider extends AbstractItemModelProvider {
         parentedModel(RadiationModule.POISONED_DIRT_ITEM, RadiationModule.POISONED_DIRT_BLOCK);
         parentedModel(RadiationModule.DENSE_GLASS_ITEM, RadiationModule.DENSE_GLASS_BLOCK);
         parentedModel(RadiationModule.DENSE_OBSIDIAN_ITEM, RadiationModule.DENSE_OBSIDIAN_BLOCK);
+        parentedModel(CoreModule.RESONATING_PLATE_BLOCK_ITEM, CoreModule.RESONATING_PLATE_BLOCK_BLOCK);
+        parentedModel(MachinesModule.VALVE_ITEM, MachinesModule.VALVE_BLOCK);
     }
 
     private void cubeAll(Supplier<Item> item, String texture) {
