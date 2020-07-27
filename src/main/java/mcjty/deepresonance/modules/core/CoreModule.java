@@ -29,8 +29,8 @@ public class CoreModule {
     public static final RegistryObject<Block> RESONATING_PLATE_BLOCK_BLOCK = DeepResonance.BLOCKS.register("resonating_plate_block", () -> new BlockResonatingPlate(Block.Properties.create(Material.ROCK).hardnessAndResistance(3, 5).harvestLevel(2).harvestTool(ToolType.PICKAXE)));
 
     public static final RegistryObject<Item> RESONATING_PLATE_ITEM = DeepResonance.ITEMS.register("resonating_plate", () -> new Item(DeepResonance.createStandardProperties()));
-    public static final RegistryObject<Item> FILTER_MATERIAL_ITEM = DeepResonance.ITEMS.register("filter_material", () -> new ItemWithTooltip(DeepResonance.createStandardProperties()));
-    public static final RegistryObject<Item> SPENT_FILTER_ITEM = DeepResonance.ITEMS.register("spent_filter_material", () -> new Item(DeepResonance.createStandardProperties()));
+    public static final RegistryObject<Item> FILTER_MATERIAL_ITEM = DeepResonance.ITEMS.register("filter_material", () -> new ItemWithTooltip(DeepResonance.createStandardProperties().maxStackSize(1)));
+    public static final RegistryObject<Item> SPENT_FILTER_ITEM = DeepResonance.ITEMS.register("spent_filter_material", () -> new Item(DeepResonance.createStandardProperties().maxStackSize(1)));
     public static final RegistryObject<Item> LIQUID_INJECTOR_ITEM = DeepResonance.ITEMS.register("liquid_injector", () -> new ItemLiquidInjector(DeepResonance.createStandardProperties()));
     public static final RegistryObject<Item> MACHINE_FRAME_ITEM = DeepResonance.ITEMS.register("machine_frame", () -> new Item(DeepResonance.createStandardProperties()));
     public static final RegistryObject<Item> RESONATING_CRYSTAL_ITEM = DeepResonance.fromBlock(RESONATING_CRYSTAL_BLOCK);

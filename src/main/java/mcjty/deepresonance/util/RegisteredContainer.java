@@ -23,15 +23,16 @@ import java.util.function.Consumer;
 /**
  * Created by Elec332 on 25-7-2020
  */
-public abstract class RegisteredContainer<G extends GenericGuiContainer<T, GenericContainer>, T extends GenericTileEntity> {
+public abstract class RegisteredContainer<C extends GenericContainer, G extends GenericGuiContainer<T, C>, T extends GenericTileEntity> {
 
-    public static <G extends GenericGuiContainer<T, GenericContainer>, T extends GenericTileEntity> RegisteredContainer<G, T> create(String name, int slots, Consumer<ContainerFactory> containerBuilder, IGuiFactory<T> gui) {
-        return new RegisteredContainer<G, T>(name, slots, containerBuilder) {
+    public static <C extends GenericContainer, G extends GenericGuiContainer<T, C>, T extends GenericTileEntity> RegisteredContainer<C, G, T> create(String name, int slots, Consumer<ContainerFactory> containerBuilder, IGuiFactory<C, T> gui) {
+        return new RegisteredContainer<C, G, T>(name, slots, containerBuilder) {
 
             @Override
             @OnlyIn(Dist.CLIENT)
+            @SuppressWarnings("unchecked")
             public Object createGui(T tile, GenericContainer container, PlayerInventory inventory) {
-                return gui.createGui(tile, container, inventory);
+                return gui.createGui(tile, (C) container, inventory);
             }
 
         };
@@ -45,28 +46,32 @@ public abstract class RegisteredContainer<G extends GenericGuiContainer<T, Gener
             containerBuilder.accept(f);
             if (FMLHelper.getDist().isClient()) {
                 //Type args needed for compiler
-                GenericGuiContainer.<GenericContainer, G, T>register(RegisteredContainer.this.type.get(), (genericTileEntity, genericContainer, playerInventory) -> (G) createGui(genericTileEntity, genericContainer, playerInventory));
+                GenericGuiContainer.<C, G, T>register(RegisteredContainer.this.type.get(), (genericTileEntity, genericContainer, playerInventory) -> (G) createGui(genericTileEntity, genericContainer, playerInventory));
             }
             return f;
         });
         this.type = DeepResonance.CONTAINERS.register(this.name, GenericContainer::createContainerType);
         this.modifier = (c, t) -> {
         };
-        this.locked = true;
+        this.locked = false;
     }
 
     private final String name;
-    private final RegistryObject<ContainerType<GenericContainer>> type;
+    private final RegistryObject<ContainerType<C>> type;
     private final Lazy<ContainerFactory> factory;
     private BiConsumer<DefaultContainerProvider<GenericContainer>, T> modifier;
     private boolean locked;
 
-    public RegisteredContainer<G, T> modifyContainer(BiConsumer<DefaultContainerProvider<GenericContainer>, T> modifier) {
+    public RegisteredContainer<C, G, T> modifyContainer(BiConsumer<DefaultContainerProvider<GenericContainer>, T> modifier) {
         if (locked) {
             throw new IllegalStateException();
         }
         this.modifier = this.modifier.andThen(modifier);
         return this;
+    }
+
+    public RegisteredContainer<C, G, T> modifyContainer(Consumer<DefaultContainerProvider<GenericContainer>> modifier) {
+        return modifyContainer((p, t) -> modifier.accept(p));
     }
 
     public LazyOptional<INamedContainerProvider> build(T tile) {
@@ -75,7 +80,7 @@ public abstract class RegisteredContainer<G extends GenericGuiContainer<T, Gener
         }
         return LazyOptional.of(() -> {
             DefaultContainerProvider<GenericContainer> provider = new DefaultContainerProvider<>(name);
-            provider.containerSupplier((id, player) -> new GenericContainer(type.get(), id, factory.get(), tile.getPos(), tile));
+            provider.containerSupplier((id, player) -> new DeepResonanceContainer(type.get(), id, factory.get(), tile.getPos(), tile));
             modifier.accept(provider, tile);
             return provider;
         });
@@ -84,10 +89,10 @@ public abstract class RegisteredContainer<G extends GenericGuiContainer<T, Gener
     @OnlyIn(Dist.CLIENT)
     public abstract Object createGui(T tile, GenericContainer container, PlayerInventory inventory);
 
-    public interface IGuiFactory<T extends GenericTileEntity> {
+    public interface IGuiFactory<C extends GenericContainer, T extends GenericTileEntity> {
 
         @OnlyIn(Dist.CLIENT)
-        Object createGui(T tile, GenericContainer container, PlayerInventory inventory);
+        Object createGui(T tile, C container, PlayerInventory inventory);
 
     }
 

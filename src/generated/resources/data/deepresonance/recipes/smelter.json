@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "machines",
+  "pattern": [
+    "ppp",
+    "imi",
+    "bbb"
+  ],
+  "key": {
+    "p": {
+      "item": "deepresonance:resonating_plate"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "m": {
+      "item": "deepresonance:machine_frame"
+    },
+    "b": {
+      "item": "minecraft:nether_brick"
+    }
+  },
+  "result": {
+    "item": "deepresonance:smelter"
+  }
+}

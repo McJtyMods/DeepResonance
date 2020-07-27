@@ -29,10 +29,10 @@ public interface ILiquidCrystalData {
 
     void setAmount(int i);
 
-    FluidStack getReferenceStack();
+    FluidStack toFluidStack();
 
-    default FluidStack getReferenceStack(int amount) {
-        FluidStack ret = getReferenceStack();
+    default FluidStack toFluidStack(int amount) {
+        FluidStack ret = toFluidStack();
         ret.setAmount(amount);
         return ret;
     }

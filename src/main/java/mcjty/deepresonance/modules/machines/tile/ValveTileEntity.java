@@ -1,13 +1,11 @@
 package mcjty.deepresonance.modules.machines.tile;
 
-import com.google.common.base.Preconditions;
-import elec332.core.api.annotations.StaticLoad;
 import elec332.core.api.registration.RegisteredTileEntity;
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.fluids.LiquidCrystalData;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.client.ValveGui;
+import mcjty.deepresonance.modules.tank.util.DualTankHook;
 import mcjty.deepresonance.setup.FluidRegister;
 import mcjty.deepresonance.util.AbstractTileEntity;
 import mcjty.deepresonance.util.RegisteredContainer;
@@ -23,12 +21,10 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
@@ -36,7 +32,6 @@ import javax.annotation.Nonnull;
 /**
  * Created by Elec332 on 25-7-2020
  */
-@StaticLoad
 @RegisteredTileEntity("valve")
 public class ValveTileEntity extends AbstractTileEntity implements ITickableTileEntity {
 
@@ -47,7 +42,7 @@ public class ValveTileEntity extends AbstractTileEntity implements ITickableTile
     public static final Key<Double> PARAM_EFFICIENCY = new Key<>("efficiency", Type.DOUBLE);
     public static final Key<Integer> PARAM_MAXMB = new Key<>("max_mb", Type.INTEGER);
 
-    private static final RegisteredContainer<ValveGui, ValveTileEntity> container = new RegisteredContainer<ValveGui, ValveTileEntity>("valve", 0, factory -> factory.playerSlots(10, 70)) {
+    private static final RegisteredContainer<GenericContainer, ValveGui, ValveTileEntity> container = new RegisteredContainer<GenericContainer, ValveGui, ValveTileEntity>("valve", 0, factory -> factory.playerSlots(10, 70)) {
 
         @Override
         public Object createGui(ValveTileEntity tile, GenericContainer container, PlayerInventory inventory) {
@@ -56,9 +51,8 @@ public class ValveTileEntity extends AbstractTileEntity implements ITickableTile
 
     };
     private final LazyOptional<INamedContainerProvider> screenHandler = container.build(this);
+    private final DualTankHook tankHook = new DualTankHook(this, Direction.UP, Direction.DOWN);
 
-    private LazyOptional<IFluidHandler> bottomTank;
-    private LazyOptional<IFluidHandler> topTank;
     private int progress = 0;
 
     private float minPurity = 1.0f;
@@ -97,12 +91,12 @@ public class ValveTileEntity extends AbstractTileEntity implements ITickableTile
         }
         progress = MachinesModule.valveConfig.ticksPerOperation.get();
 
-        if (!checkTanks()) {
+        if (!tankHook.checkTanks()) {
             return;
         }
 
-        IFluidHandler top = topTank.orElseThrow(NullPointerException::new);
-        IFluidHandler bottom = bottomTank.orElseThrow(NullPointerException::new);
+        IFluidHandler top = tankHook.getTank1();
+        IFluidHandler bottom = tankHook.getTank2();
 
         int rcl = MachinesModule.valveConfig.rclPerOperation.get();
         FluidStack fluidStack = top.drain(rcl, IFluidHandler.FluidAction.SIMULATE);
@@ -138,46 +132,6 @@ public class ValveTileEntity extends AbstractTileEntity implements ITickableTile
                 bottom.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
             }
         }
-    }
-
-    private boolean checkTanks() {
-        if (topTank == null || !topTank.isPresent()) {
-            TileEntity tile = WorldHelper.getTileAt(Preconditions.checkNotNull(world), pos.up());
-            if (tile != null) {
-                LazyOptional<IFluidHandler> f = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN);
-                if (f.isPresent()) {
-                    topTank = f;
-                    if (bottomTank != null && bottomTank.isPresent() && bottomTank.orElseThrow(NullPointerException::new).equals(f.orElseThrow(NullPointerException::new))) {
-                        topTank = null; //Do not circle-inject
-                        return false;
-                    }
-                } else {
-                    topTank = null;
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
-        if (bottomTank == null || !bottomTank.isPresent()) {
-            TileEntity tile = WorldHelper.getTileAt(Preconditions.checkNotNull(world), pos.down());
-            if (tile != null) {
-                LazyOptional<IFluidHandler> f = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP);
-                if (f.isPresent()) {
-                    bottomTank = f;
-                    if (topTank != null && topTank.isPresent() && topTank.orElseThrow(NullPointerException::new).equals(f.orElseThrow(NullPointerException::new))) {
-                        bottomTank = null; //Do not circle-inject
-                        return false;
-                    }
-                } else {
-                    bottomTank = null;
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
-        return true;
     }
 
     public int getMaxMb() {

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "deepresonance:block/purifier"
+    },
+    "facing=south": {
+      "model": "deepresonance:block/purifier",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "deepresonance:block/purifier",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "deepresonance:block/purifier",
+      "y": 90
+    }
+  }
+}

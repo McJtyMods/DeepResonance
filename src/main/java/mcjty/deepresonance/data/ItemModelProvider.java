@@ -44,14 +44,17 @@ class ItemModelProvider extends AbstractItemModelProvider {
 
         //Blocks
         parentedModel(TankModule.TANK_ITEM, "builtin/entity");
-        parentedModel(CoreModule.RESONATING_ORE_STONE_ITEM, CoreModule.RESONATING_ORE_STONE_BLOCK);
-        parentedModel(CoreModule.RESONATING_ORE_NETHER_ITEM, CoreModule.RESONATING_ORE_NETHER_BLOCK);
-        parentedModel(CoreModule.RESONATING_ORE_END_ITEM, CoreModule.RESONATING_ORE_END_BLOCK);
-        parentedModel(RadiationModule.POISONED_DIRT_ITEM, RadiationModule.POISONED_DIRT_BLOCK);
-        parentedModel(RadiationModule.DENSE_GLASS_ITEM, RadiationModule.DENSE_GLASS_BLOCK);
-        parentedModel(RadiationModule.DENSE_OBSIDIAN_ITEM, RadiationModule.DENSE_OBSIDIAN_BLOCK);
-        parentedModel(CoreModule.RESONATING_PLATE_BLOCK_ITEM, CoreModule.RESONATING_PLATE_BLOCK_BLOCK);
-        parentedModel(MachinesModule.VALVE_ITEM, MachinesModule.VALVE_BLOCK);
+        parentedModel(CoreModule.RESONATING_ORE_STONE_BLOCK);
+        parentedModel(CoreModule.RESONATING_ORE_NETHER_BLOCK);
+        parentedModel(CoreModule.RESONATING_ORE_END_BLOCK);
+        parentedModel(RadiationModule.POISONED_DIRT_BLOCK);
+        parentedModel(RadiationModule.DENSE_GLASS_BLOCK);
+        parentedModel(RadiationModule.DENSE_OBSIDIAN_BLOCK);
+        parentedModel(CoreModule.RESONATING_PLATE_BLOCK_BLOCK);
+        parentedModel(MachinesModule.VALVE_BLOCK);
+        parentedModel(MachinesModule.SMELTER_ITEM, "block/smelter_inactive");
+        parentedModel(MachinesModule.PURIFIER_BLOCK);
+        parentedModel(MachinesModule.PULSER_BLOCK);
     }
 
     private void cubeAll(Supplier<Item> item, String texture) {
@@ -67,6 +70,10 @@ class ItemModelProvider extends AbstractItemModelProvider {
         for (int i = 0; i < textures.length; i++) {
             imb.texture("layer" + i, textures[i]);
         }
+    }
+
+    private ItemModelBuilder parentedModel(Supplier<Block> block) {
+        return parentedModel(() -> block.get().asItem(), "block/" + Preconditions.checkNotNull(block.get().getRegistryName()).getPath());
     }
 
     private ItemModelBuilder parentedModel(Supplier<Item> item, Supplier<Block> block) {

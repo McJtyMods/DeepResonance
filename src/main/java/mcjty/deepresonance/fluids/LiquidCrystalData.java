@@ -30,20 +30,19 @@ public class LiquidCrystalData implements ILiquidCrystalData {
         data.setPurity(purity);
         data.setStrength(strength);
         data.setEfficiency(efficiency);
-        return data.makeLiquidCrystalStack();
+        return data.toFluidStack();
     }
 
     public static LiquidCrystalData fromStack(FluidStack stack) {
         if (!FluidRegister.isValidLiquidCrystalStack(stack)) {
             return null;
         }
-        CompoundNBT fluidTag = stack.getOrCreateTag();
-        LiquidCrystalData ret = fromNBT(fluidTag);
+        LiquidCrystalData ret = fromNBT(stack.getOrCreateTag());
         ret.referenceStack = stack;
         return ret;
     }
 
-    public static LiquidCrystalData fromNBT(CompoundNBT fluidTag) {
+    private static LiquidCrystalData fromNBT(CompoundNBT fluidTag) {
         if (fluidTag == null) {
             return null;
         }
@@ -54,12 +53,6 @@ public class LiquidCrystalData implements ILiquidCrystalData {
         ret.efficiency = fluidTag.getFloat("efficiency");
 
         return ret;
-    }
-
-    public FluidStack makeLiquidCrystalStack() {
-        FluidStack stack = new FluidStack(FluidRegister.liquidCrystal, referenceStack.getAmount());
-        writeDataToNBT(stack.getOrCreateTag());
-        return stack;
     }
 
     @Override
@@ -99,7 +92,7 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     }
 
     private boolean isValid(ILiquidCrystalData data) {
-        FluidStack stack = data.getReferenceStack();
+        FluidStack stack = data.toFluidStack();
         if (stack == null || stack.isEmpty() || stack.getAmount() == 0) {
             data.setPurity(0);
             return false;
@@ -107,17 +100,11 @@ public class LiquidCrystalData implements ILiquidCrystalData {
         return true;
     }
 
-    /**
-     * Getters
-     */
     @Override
     public float getQuality() {
         return quality;
     }
 
-    /**
-     * Setters
-     */
     @Override
     public void setQuality(float quality) {
         this.quality = quality;
@@ -164,8 +151,10 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     }
 
     @Override
-    public FluidStack getReferenceStack() {
-        return referenceStack.copy();
+    public FluidStack toFluidStack() {
+        FluidStack stack = new FluidStack(FluidRegister.liquidCrystal, referenceStack.getAmount());
+        writeDataToNBT(stack.getOrCreateTag());
+        return stack;
     }
 
     @Override

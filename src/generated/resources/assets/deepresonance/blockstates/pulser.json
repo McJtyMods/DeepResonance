@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "deepresonance:block/pulser"
+    },
+    "facing=south": {
+      "model": "deepresonance:block/pulser",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "deepresonance:block/pulser",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "deepresonance:block/pulser",
+      "y": 90
+    }
+  }
+}

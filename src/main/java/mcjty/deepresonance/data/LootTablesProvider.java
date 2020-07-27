@@ -34,6 +34,9 @@ public class LootTablesProvider extends AbstractLootTableProvider {
                 registerDropSelfLootTable(RadiationModule.DENSE_OBSIDIAN_BLOCK);
 
                 registerDropSelfLootTable(MachinesModule.VALVE_BLOCK);
+                registerDropSelfLootTable(MachinesModule.SMELTER_BLOCK);
+                registerDropSelfLootTable(MachinesModule.PURIFIER_BLOCK);
+                registerDropSelfLootTable(MachinesModule.PULSER_BLOCK);
 
                 //todo: tank & crystal
                 registerEmptyLootTable(CoreModule.RESONATING_CRYSTAL_BLOCK.get());

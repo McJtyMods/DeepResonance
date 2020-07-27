@@ -29,22 +29,16 @@ public class TranslationProvider extends AbstractTranslationProvider {
         add(TranslationHelper.getMessageKey("no_tank"), "This is not a tank!");
 
         //Tooltips
-        add(TranslationHelper.getExtendedTooltipKey("tank"),
-                "This tank can hold up to 16 buckets of liquid. \n" +
-                        "It is also capable of mixing the characteristics \n" +
-                        "of liquid crystal. \n" +
-                        "Place a comparator next to this tank to detect \n" +
-                        "how full the tank is");
-        add(TranslationHelper.getTooltipKey(CoreModule.FILTER_MATERIAL_ITEM),
-                "This material can be used in the purifier \n" +
-                        "to purify the crystal liquid.");
-        add(TranslationHelper.getTooltipKey(CoreModule.LIQUID_INJECTOR_ITEM),
-                "Creative only item to inject 100mb \n" +
-                        "of liquid crystal into a tank.");
+        add(TranslationHelper.getExtendedTooltipKey("tank"), "This tank can hold up to 16 buckets of liquid. It is also capable of mixing the characteristics of liquid crystal. Place a comparator next to this tank to detect how full the tank is");
+        add(TranslationHelper.getTooltipKey(CoreModule.FILTER_MATERIAL_ITEM), "This material can be used in the purifier to purify the crystal liquid.");
+        add(TranslationHelper.getTooltipKey(CoreModule.LIQUID_INJECTOR_ITEM), "Creative only item to inject 100mb of liquid crystal into a tank.");
         add(TranslationHelper.getTooltipKey("crystal_power"), "You can feel the latent power present in this crystal.");
         add(TranslationHelper.getTooltipKey("crystal_empty"), "This crystal is depleted. Perhaps it still has a future use?");
         add(TranslationHelper.getTooltipKey("crystal_sep"), "Strength/Efficiency/Purity");
         add(TranslationHelper.getTooltipKey("valve"), "This machine will transfer fluids from the upper tank to a tank below if the fluid matches certain conditions.");
+        add(TranslationHelper.getTooltipKey("smelter"), "This machine smelts resonating ore and produces liquid crystal in a tank placed on top of this. Place a tank below the smelter about half-filled with lava");
+        add(TranslationHelper.getTooltipKey("purifier"), "This machine needs filter material and will purify the liquid crystal from the top tank and place it in another tank below this block.");
+        add(TranslationHelper.getTooltipKey("pulser"), "This machine will send an EMP pulse every time when it has collected enough power. The strength of the input redstone signal controls the power input speed.");
 
         //Items
         addItem(CoreModule.FILTER_MATERIAL_ITEM, "Filter Material");
@@ -68,6 +62,9 @@ public class TranslationProvider extends AbstractTranslationProvider {
         addBlock(RadiationModule.DENSE_OBSIDIAN_BLOCK, "Dense Obsidian");
         addBlock(CoreModule.RESONATING_PLATE_BLOCK_BLOCK, "Resonating Plate Block");
         addBlock(MachinesModule.VALVE_BLOCK, "Valve");
+        addBlock(MachinesModule.SMELTER_BLOCK, "Smelter");
+        addBlock(MachinesModule.PURIFIER_BLOCK, "Purifier");
+        addBlock(MachinesModule.PULSER_BLOCK, "Pulser");
     }
 
 }

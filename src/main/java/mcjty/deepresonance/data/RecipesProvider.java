@@ -42,11 +42,9 @@ public class RecipesProvider extends AbstractRecipeProvider {
             recipes.shapelessRecipe(CoreModule.RESONATING_PLATE_ITEM.get(), 9)
                     .addIngredient(CoreModule.RESONATING_PLATE_BLOCK_ITEM.get()).build();
         });
-        recipeBuilder.grouped("tank", recipes -> {
-            recipes.shapedRecipe(TankModule.TANK_ITEM.get())
-                    .addCriterion("has_resonant_plate", hasItem(CoreModule.RESONATING_PLATE_ITEM.get()))
-                    .patternLine("ipi").patternLine("ggg").patternLine("ioi").build();
-        });
+        recipeBuilder.grouped("tank", recipes -> recipes.shapedRecipe(TankModule.TANK_ITEM.get())
+                .addCriterion("has_resonant_plate", hasItem(CoreModule.RESONATING_PLATE_ITEM.get()))
+                .patternLine("ipi").patternLine("ggg").patternLine("ioi").build());
         recipeBuilder.grouped("radiation", recipes -> {
             recipes.key('f', CoreModule.SPENT_FILTER_ITEM.get());
             recipes.grouped(armor -> {
@@ -76,6 +74,13 @@ public class RecipesProvider extends AbstractRecipeProvider {
                     .key('C', Items.COMPARATOR)
                     .key('q', Items.QUARTZ)
                     .patternLine("gqg").patternLine("fmf").patternLine("gCg").build();
+            recipes.shapedRecipe(MachinesModule.SMELTER_ITEM.get())
+                    .addCriterion("has_nether_brick", hasItem(Items.NETHER_BRICK))
+                    .key('b', Items.NETHER_BRICK)
+                    .patternLine("ppp").patternLine("imi").patternLine("bbb").build();
+            recipes.shapedRecipe(MachinesModule.PURIFIER_ITEM.get())
+                    .addCriterion("has_filter", hasItem(CoreModule.FILTER_MATERIAL_ITEM.get()))
+                    .patternLine("fff").patternLine("imi").patternLine("fff").build();
         });
     }
 

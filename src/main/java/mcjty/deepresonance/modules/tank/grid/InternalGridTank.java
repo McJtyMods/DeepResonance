@@ -78,7 +78,7 @@ public class InternalGridTank implements IFluidTank {
             if (action.execute()) {
                 tank.setAmount(stored - maxDrain);
             }
-            return tank.getReferenceStack(maxDrain);
+            return tank.toFluidStack(maxDrain);
         } else {
             return extraTank.drain(maxDrain, action);
         }
@@ -90,7 +90,7 @@ public class InternalGridTank implements IFluidTank {
             if (first) {
                 ret += getFluidAmount() % i;
             }
-            return tank.getReferenceStack(ret);
+            return tank.toFluidStack(ret);
         } else if (extraTank.getFluidAmount() > 0) {
             FluidStack ret = extraTank.getFluid().copy();
             ret.setAmount(extraTank.getFluidAmount() / i);
@@ -114,7 +114,7 @@ public class InternalGridTank implements IFluidTank {
     @Nonnull
     @Override
     public FluidStack getFluid() {
-        return tank.getAmount() > 0 ? tank.getReferenceStack() : (extraTank.getFluid().isEmpty() ? FluidStack.EMPTY : extraTank.getFluid().copy());
+        return tank.getAmount() > 0 ? tank.toFluidStack() : (extraTank.getFluid().isEmpty() ? FluidStack.EMPTY : extraTank.getFluid().copy());
     }
 
     @Override

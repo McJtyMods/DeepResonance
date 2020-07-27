@@ -1,12 +1,11 @@
 package mcjty.deepresonance.modules.machines.client;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.client.AbstractDeepResonanceGui;
 import mcjty.deepresonance.modules.machines.tile.ValveTileEntity;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.gui.GenericGuiContainer;
-import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.layout.HorizontalLayout;
@@ -30,7 +29,7 @@ import static mcjty.deepresonance.modules.machines.tile.ValveTileEntity.*;
 /**
  * Created by Elec332 on 25-7-2020
  */
-public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContainer> {
+public class ValveGui extends AbstractDeepResonanceGui<ValveTileEntity> {
 
     public static final int VALVE_WIDTH = 180;
     public static final int VALVE_HEIGHT = 152;
@@ -44,7 +43,7 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
     private TextField maxAmount;
 
     public ValveGui(ValveTileEntity tileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(null, tileEntity, container, inventory, ManualEntry.EMPTY);
+        super(tileEntity, container, inventory);
 
         xSize = VALVE_WIDTH;
         ySize = VALVE_HEIGHT;
@@ -197,11 +196,6 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
                         .put(PARAM_EFFICIENCY, efficiency / 100.0)
                         .put(PARAM_MAXMB, maxMb)
                         .build());
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float v, int i, int i2) {
-        drawWindow();
     }
 
 }
