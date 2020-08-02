@@ -1,30 +1,24 @@
 package mcjty.deepresonance.data;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 import elec332.core.data.AbstractBlockStateProvider;
+import elec332.core.util.BlockProperties;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.client.ModelLoaderCoreModule;
+import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.pulser.PulserModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.tank.client.TankRenderer;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
+import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
-
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Created by Elec332 on 10-1-2020
@@ -41,7 +35,9 @@ public class BlockStateProvider extends AbstractBlockStateProvider {
 
     @Override
     protected void registerBlockStatesAndModels() {
-        simpleBlock(TankModule.TANK_BLOCK.get(), models().cubeBottomTop("tank", TankRenderer.SIDE_TEXTURE, TankRenderer.BOTTOM_TEXTURE, TankRenderer.TOP_TEXTURE));
+        registerCrystalModel();
+
+        simpleBlock(TankModule.TANK_BLOCK, models().cubeBottomTop("tank", TankRenderer.SIDE_TEXTURE, TankRenderer.BOTTOM_TEXTURE, TankRenderer.TOP_TEXTURE));
         simpleBlock(CoreModule.RESONATING_ORE_STONE_BLOCK);
         simpleBlock(CoreModule.RESONATING_ORE_NETHER_BLOCK);
         simpleBlock(CoreModule.RESONATING_ORE_END_BLOCK);
@@ -50,11 +46,27 @@ public class BlockStateProvider extends AbstractBlockStateProvider {
         simpleBlock(RadiationModule.DENSE_OBSIDIAN_BLOCK);
         simpleBlock(CoreModule.RESONATING_PLATE_BLOCK_BLOCK);
         simpleSide(MachinesModule.VALVE_BLOCK, new DeepResonanceResourceLocation("block/valve"));
-        simpleFacingModel(MachinesModule.SMELTER_BLOCK, (state, generator) -> state.get(BlockStateProperties.LIT) ? generator.apply(new DeepResonanceResourceLocation("block/smelter_active")) : generator.apply(new DeepResonanceResourceLocation("block/smelter_inactive")));
+        simpleFacingModel(MachinesModule.SMELTER_BLOCK, BlockProperties.ACTIVE);
         simpleFront(MachinesModule.PURIFIER_BLOCK);
-        simpleFront(MachinesModule.PULSER_BLOCK);
-
-        registerCrystalModel();
+        simpleFront(PulserModule.PULSER_BLOCK);
+        simpleBlock(MachinesModule.LENS_BLOCK, models().withExistingParent("lens_mc", new DeepResonanceResourceLocation("lens")).texture("lens_texture", "deepresonance:block/lens"));
+        simpleFacingModel(MachinesModule.LASER_BLOCK, createLaserModel());
+        simpleFacingModel(MachinesModule.CRYSTALLIZER_BLOCK, createCrystallizerModel());
+        simpleBlock(GeneratorModule.ENERGY_COLLECTOR_BLOCK, models().withExistingParent("energy_collector", new DeepResonanceResourceLocation("collector")).texture("collector_texture", "deepresonance:block/energy_collector"));
+        simpleFacingModel(GeneratorModule.GENERATOR_CONTROLLER_BLOCK, BlockProperties.ON);
+        simpleSide(GeneratorModule.GENERATOR_PART_BLOCK, state -> {
+            String extra = "";
+            if (state.get(BlockProperties.UP)) {
+                extra += "_up";
+            }
+            if (state.get(BlockProperties.DOWN)) {
+                extra += "_down";
+            }
+            if (state.get(BlockProperties.ON)) {
+                extra += "_on";
+            }
+            return new DeepResonanceResourceLocation("block/generator_part_side" + extra);
+        });
     }
 
     private void registerCrystalModel() {
@@ -80,50 +92,45 @@ public class BlockStateProvider extends AbstractBlockStateProvider {
         });
     }
 
-    private void simpleSide(Supplier<Block> blockSupplier, ResourceLocation sides) {
-        Block block = blockSupplier.get();
-        simpleBlock(block, models().cubeBottomTop(Preconditions.checkNotNull(block.getRegistryName()).getPath(), sides, BlockStateProvider.DEFAULT_BOTTOM, BlockStateProvider.DEFAULT_TOP));
+    public BlockModelBuilder createCrystallizerModel() {
+        BlockModelBuilder ret = simpleFront("crystallizer", new DeepResonanceResourceLocation("block/crystallizer"));
+        ModelBuilder<BlockModelBuilder>.ElementBuilder elem = ret.element();
+        for (Direction direction : Direction.values()) {
+            elem = elem.face(direction).cullface(direction).texture("#" + direction.getName()).end();
+        }
+        ret = elem.end();
+        ret = ret.element().from(0, 0, 0).to(16, 7, 16).face(Direction.UP).texture("#" + Direction.UP.getName()).end().end();
+        elem = ret.element().from(16, 16, 16).to(0, 0, 0);
+        for (Direction direction : Direction.values()) {
+            elem = elem.face(direction.getOpposite()).cullface(Direction.NORTH).texture("#" + Direction.UP.getName()).end();
+        }
+        return elem.end();
     }
 
-    private void simpleFacingModel(Supplier<Block> blockSupplier, BiFunction<BlockState, Function<ResourceLocation, ModelFile>, ModelFile> front) {
-        simpleFacingModel(blockSupplier.get(), front);
+    public BlockModelBuilder createLaserModel() {
+        BlockModelBuilder ret = simpleFront("laser", new DeepResonanceResourceLocation("block/laser"), new DeepResonanceResourceLocation("block/laser_back"));
+        ret.texture("back", new DeepResonanceResourceLocation("block/laser_back_color"));
+        ModelBuilder<BlockModelBuilder>.ElementBuilder elem = ret.element();
+        for (Direction direction : Direction.values()) {
+            elem = elem.face(direction).cullface(direction).texture("#" + direction.getName()).end();
+        }
+        ret = elem.end();
+        return ret.element().from(0, 0, 1).to(16, 16, 16).face(Direction.SOUTH).cullface(Direction.SOUTH).texture("#back").tintindex(1).end().end();
     }
 
-    private void simpleFront(Supplier<Block> blockSupplier) {
-        Block block = blockSupplier.get();
-        simpleFront(block, blockTexture(block));
+    @Override
+    protected ResourceLocation getDefaultTopLocation() {
+        return DEFAULT_TOP;
     }
 
-    private void simpleFront(Block block, ResourceLocation front) {
-        ModelFile model = simpleFront(Preconditions.checkNotNull(block.getRegistryName()).getPath(), front);
-        simpleFacingModel(block, state -> model);
+    @Override
+    protected ResourceLocation getDefaultBottomLocation() {
+        return DEFAULT_BOTTOM;
     }
 
-    private void simpleFacingModel(Supplier<Block> blockSupplier, Function<BlockState, ModelFile> front) {
-        simpleFacingModel(blockSupplier.get(), front);
-    }
-
-    private void simpleFacingModel(Block block, BiFunction<BlockState, Function<ResourceLocation, ModelFile>, ModelFile> front) {
-        Map<String, ModelFile> map = Maps.newHashMap();
-        simpleFacingModel(block, state -> front.apply(state, rl -> {
-            String path = rl.getPath();
-            int idx = path.lastIndexOf("/");
-            if (idx >= 0) {
-                path = path.substring(idx + 1);
-            }
-            return map.computeIfAbsent(path, name -> simpleFront(name, rl));
-        }));
-    }
-
-    private void simpleFacingModel(Block block, Function<BlockState, ModelFile> front) {
-        getVariantBuilder(block).forAllStates(state -> ConfiguredModel.builder()
-                .modelFile(front.apply(state))
-                .rotationY(((int) state.get(ModelLoaderCoreModule.FACING).getHorizontalAngle() + 180) % 360)
-                .build());
-    }
-
-    private BlockModelBuilder simpleFront(String name, ResourceLocation front) {
-        return models().cube(Preconditions.checkNotNull(name), BlockStateProvider.DEFAULT_BOTTOM, BlockStateProvider.DEFAULT_TOP, front, DEFAULT_SIDE, DEFAULT_SIDE, DEFAULT_SIDE);
+    @Override
+    protected ResourceLocation getDefaultSideLocation() {
+        return DEFAULT_SIDE;
     }
 
 }

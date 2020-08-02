@@ -6,6 +6,7 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.radiation.IWorldRadiationManager;
 import mcjty.deepresonance.modules.radiation.item.ItemRadiationSuit;
 import mcjty.deepresonance.modules.radiation.manager.RadiationEventHandler;
+import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import net.minecraft.block.Block;
 import net.minecraft.block.GlassBlock;
@@ -48,6 +49,7 @@ public class RadiationModule {
     public static ResourceLocation CAPABILITY_NAME = new DeepResonanceResourceLocation("radiation");
 
     public RadiationModule() {
+        DeepResonance.config.registerConfigurableElement(new RadiationConfiguration(), "radiation", "Radiation settings");
         RegistryHelper.registerEmptyCapability(IWorldRadiationManager.class);
     }
 

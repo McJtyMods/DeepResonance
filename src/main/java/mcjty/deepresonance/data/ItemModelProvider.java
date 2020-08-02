@@ -1,22 +1,15 @@
 package mcjty.deepresonance.data;
 
-import com.google.common.base.Preconditions;
 import elec332.core.data.AbstractItemModelProvider;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.pulser.PulserModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
-import mcjty.deepresonance.util.DeepResonanceResourceLocation;
-import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.Item;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
-import net.minecraftforge.client.model.generators.ItemModelBuilder;
-import net.minecraftforge.client.model.generators.ModelFile;
-
-import javax.annotation.Nonnull;
-import java.util.function.Supplier;
 
 /**
  * Created by Elec332 on 10-1-2020
@@ -54,40 +47,13 @@ class ItemModelProvider extends AbstractItemModelProvider {
         parentedModel(MachinesModule.VALVE_BLOCK);
         parentedModel(MachinesModule.SMELTER_ITEM, "block/smelter_inactive");
         parentedModel(MachinesModule.PURIFIER_BLOCK);
-        parentedModel(MachinesModule.PULSER_BLOCK);
-    }
-
-    private void cubeAll(Supplier<Item> item, String texture) {
-        cubeAll(Preconditions.checkNotNull(item.get().getRegistryName()).getPath(), new DeepResonanceResourceLocation(texture));
-    }
-
-    private void simpleModel(Supplier<Item> item) {
-        simpleModel(item, "item/" + Preconditions.checkNotNull(item.get().getRegistryName()).getPath());
-    }
-
-    private void simpleModel(Supplier<Item> item, String... textures) {
-        ItemModelBuilder imb = this.getBuilder(Preconditions.checkNotNull(item.get().getRegistryName()).getPath()).parent(this.getExistingFile(this.mcLoc("item/generated")));
-        for (int i = 0; i < textures.length; i++) {
-            imb.texture("layer" + i, textures[i]);
-        }
-    }
-
-    private ItemModelBuilder parentedModel(Supplier<Block> block) {
-        return parentedModel(() -> block.get().asItem(), "block/" + Preconditions.checkNotNull(block.get().getRegistryName()).getPath());
-    }
-
-    private ItemModelBuilder parentedModel(Supplier<Item> item, Supplier<Block> block) {
-        return parentedModel(item, "block/" + Preconditions.checkNotNull(block.get().getRegistryName()).getPath());
-    }
-
-    private ItemModelBuilder parentedModel(Supplier<Item> item, String parent) {
-        return this.getBuilder(Preconditions.checkNotNull(item.get().getRegistryName()).getPath()).parent(new ModelFile.UncheckedModelFile(this.modLoc(parent)));
-    }
-
-    @Nonnull
-    @Override
-    public String getName() {
-        return "Item States";
+        parentedModel(PulserModule.PULSER_BLOCK);
+        parentedModel(MachinesModule.LENS_ITEM, "block/lens_mc");
+        parentedModel(MachinesModule.LASER_BLOCK);
+        parentedModel(MachinesModule.CRYSTALLIZER_BLOCK);
+        parentedModel(GeneratorModule.ENERGY_COLLECTOR_BLOCK);
+        parentedModel(GeneratorModule.GENERATOR_CONTROLLER_BLOCK);
+        parentedModel(GeneratorModule.GENERATOR_PART_ITEM, "block/generator_part_side");
     }
 
 }

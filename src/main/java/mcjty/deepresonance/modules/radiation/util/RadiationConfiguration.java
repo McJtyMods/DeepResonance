@@ -55,17 +55,17 @@ public class RadiationConfiguration implements IConfigurableElement {
 
         RADIATION_EFFECT_LEVEL_NONE = config.comment("Below this level no effects occur")
                 .defineInRange("radiationEffectLevelNone", 2000.0, 100.0, 10000.0);
-        RADIATION_EFFECT_LEVEL_NONE = config.comment("Radiation strength level 0")
+        RADIATION_EFFECT_LEVEL_0 = config.comment("Radiation strength level 0")
                 .defineInRange("radiationEffectLevel0", 20000.0, 1000.0, 100000.0);
-        RADIATION_EFFECT_LEVEL_NONE = config.comment("Radiation strength level 1")
+        RADIATION_EFFECT_LEVEL_1 = config.comment("Radiation strength level 1")
                 .defineInRange("radiationEffectLevel1", 50000.0, 2500.0, 250000.0);
-        RADIATION_EFFECT_LEVEL_NONE = config.comment("Radiation strength level 2")
+        RADIATION_EFFECT_LEVEL_2 = config.comment("Radiation strength level 2")
                 .defineInRange("radiationEffectLevel2", 100000.0, 5000.0, 500000.0);
-        RADIATION_EFFECT_LEVEL_NONE = config.comment("Radiation strength level 3")
+        RADIATION_EFFECT_LEVEL_3 = config.comment("Radiation strength level 3")
                 .defineInRange("radiationEffectLevel3", 200000.0, 10000.0, 1000000.0);
-        RADIATION_EFFECT_LEVEL_NONE = config.comment("Radiation strength level 4")
+        RADIATION_EFFECT_LEVEL_4 = config.comment("Radiation strength level 4")
                 .defineInRange("radiationEffectLevel4", 500000.0, 25000.0, 2500000.0);
-        RADIATION_EFFECT_LEVEL_NONE = config.comment("Radiation strength level 5")
+        RADIATION_EFFECT_LEVEL_5 = config.comment("Radiation strength level 5")
                 .defineInRange("radiationEffectLevel5", 1000000.0, 50000.0, 5000000.0);
     }
 

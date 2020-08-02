@@ -1,0 +1,106 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "deepresonance:block/machine_bottom",
+    "up": "deepresonance:block/machine_top",
+    "north": "deepresonance:block/crystallizer",
+    "south": "deepresonance:block/machine_side",
+    "east": "deepresonance:block/machine_side",
+    "west": "deepresonance:block/machine_side"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#down",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#up",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#north",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#south",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#west",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#east",
+          "cullface": "east"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        7,
+        16
+      ],
+      "faces": {
+        "up": {
+          "texture": "#up"
+        }
+      }
+    },
+    {
+      "from": [
+        16,
+        16,
+        16
+      ],
+      "to": [
+        0,
+        0,
+        0
+      ],
+      "faces": {
+        "down": {
+          "texture": "#up",
+          "cullface": "north"
+        },
+        "up": {
+          "texture": "#up",
+          "cullface": "north"
+        },
+        "north": {
+          "texture": "#up",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#up",
+          "cullface": "north"
+        },
+        "west": {
+          "texture": "#up",
+          "cullface": "north"
+        },
+        "east": {
+          "texture": "#up",
+          "cullface": "north"
+        }
+      }
+    }
+  ]
+}

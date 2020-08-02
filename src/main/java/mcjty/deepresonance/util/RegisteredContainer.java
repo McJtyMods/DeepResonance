@@ -52,6 +52,9 @@ public abstract class RegisteredContainer<C extends GenericContainer, G extends 
         });
         this.type = DeepResonance.CONTAINERS.register(this.name, GenericContainer::createContainerType);
         this.modifier = (c, t) -> {
+            if (t instanceof Modifier) {
+                ((Modifier) t).modify(c);
+            }
         };
         this.locked = false;
     }
@@ -70,8 +73,8 @@ public abstract class RegisteredContainer<C extends GenericContainer, G extends 
         return this;
     }
 
-    public RegisteredContainer<C, G, T> modifyContainer(Consumer<DefaultContainerProvider<GenericContainer>> modifier) {
-        return modifyContainer((p, t) -> modifier.accept(p));
+    public RegisteredContainer<C, G, T> modifyContainer(Modifier modifier) {
+        return modifyContainer((p, t) -> modifier.modify(p));
     }
 
     public LazyOptional<INamedContainerProvider> build(T tile) {
@@ -88,6 +91,12 @@ public abstract class RegisteredContainer<C extends GenericContainer, G extends 
 
     @OnlyIn(Dist.CLIENT)
     public abstract Object createGui(T tile, GenericContainer container, PlayerInventory inventory);
+
+    public interface Modifier {
+
+        void modify(DefaultContainerProvider<GenericContainer> container);
+
+    }
 
     public interface IGuiFactory<C extends GenericContainer, T extends GenericTileEntity> {
 

@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 /**
  * Created by Elec332 on 7-1-2020
  */
-class TankTileLink extends DefaultTileEntityLink {
+class TankTileLink extends DefaultTileEntityLink<TileEntityTank> {
 
     private TankGrid grid;
 
@@ -25,12 +25,6 @@ class TankTileLink extends DefaultTileEntityLink {
     void setGrid(TankGrid grid) {
         this.grid = grid;
         Preconditions.checkNotNull(getTileEntity()).setGrid(grid);
-    }
-
-    @Nullable
-    @Override
-    public TileEntityTank getTileEntity() {
-        return (TileEntityTank) super.getTileEntity();
     }
 
 }

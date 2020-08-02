@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,on=false": {
+      "model": "deepresonance:block/generator_controller"
+    },
+    "facing=south,on=false": {
+      "model": "deepresonance:block/generator_controller",
+      "y": 180
+    },
+    "facing=west,on=false": {
+      "model": "deepresonance:block/generator_controller",
+      "y": 270
+    },
+    "facing=east,on=false": {
+      "model": "deepresonance:block/generator_controller",
+      "y": 90
+    },
+    "facing=north,on=true": {
+      "model": "deepresonance:block/generator_controller_on"
+    },
+    "facing=south,on=true": {
+      "model": "deepresonance:block/generator_controller_on",
+      "y": 180
+    },
+    "facing=west,on=true": {
+      "model": "deepresonance:block/generator_controller_on",
+      "y": 270
+    },
+    "facing=east,on=true": {
+      "model": "deepresonance:block/generator_controller_on",
+      "y": 90
+    }
+  }
+}

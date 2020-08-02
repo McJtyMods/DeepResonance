@@ -1,0 +1,24 @@
+{
+  "ingredient": {
+    "tag": "forge:gems/quartz"
+  },
+  "bonus": {
+    "color": 16383998,
+    "duration": 40,
+    "powerPerTick": 100,
+    "crystalLiquidCostPerCatalyst": 25,
+    "rclImprovedPerCatalyst": 500,
+    "purityModifier": {
+      "bonus": -1.0,
+      "maxOrMin": 0.0
+    },
+    "strengthModifier": {
+      "bonus": 0.0,
+      "maxOrMin": 0.0
+    },
+    "efficiencyModifier": {
+      "bonus": 7.0,
+      "maxOrMin": 80.0
+    }
+  }
+}

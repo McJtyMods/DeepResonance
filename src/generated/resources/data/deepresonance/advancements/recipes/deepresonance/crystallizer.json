@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "deepresonance:crystallizer"
+    ]
+  },
+  "criteria": {
+    "has_machine_frame": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "deepresonance:machine_frame"
+          }
+        ]
+      }
+    },
+    "has_quartz": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:quartz"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "deepresonance:crystallizer"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_machine_frame",
+      "has_quartz",
+      "has_the_recipe"
+    ]
+  ]
+}

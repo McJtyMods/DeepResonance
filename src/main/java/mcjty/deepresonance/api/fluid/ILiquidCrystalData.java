@@ -11,19 +11,19 @@ public interface ILiquidCrystalData {
 
     float getQuality();
 
-    void setQuality(float quality);
+    void setQuality(double quality);
 
     float getPurity();
 
-    void setPurity(float purity);
+    void setPurity(double purity);
 
     float getStrength();
 
-    void setStrength(float strength);
+    void setStrength(double strength);
 
     float getEfficiency();
 
-    void setEfficiency(float efficiency);
+    void setEfficiency(double efficiency);
 
     int getAmount();
 

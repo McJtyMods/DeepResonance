@@ -1,0 +1,24 @@
+{
+  "ingredient": {
+    "item": "minecraft:prismarine_shard"
+  },
+  "bonus": {
+    "color": 3949738,
+    "duration": 40,
+    "powerPerTick": 100,
+    "crystalLiquidCostPerCatalyst": 25,
+    "rclImprovedPerCatalyst": 500,
+    "purityModifier": {
+      "bonus": 0.0,
+      "maxOrMin": 0.0
+    },
+    "strengthModifier": {
+      "bonus": 3.0,
+      "maxOrMin": 30.0
+    },
+    "efficiencyModifier": {
+      "bonus": 3.0,
+      "maxOrMin": 30.0
+    }
+  }
+}

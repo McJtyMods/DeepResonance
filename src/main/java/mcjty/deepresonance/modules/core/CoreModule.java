@@ -22,7 +22,7 @@ public class CoreModule {
 
     public static final Block.Properties ORE_PROPERTIES = Block.Properties.create(Material.ROCK).hardnessAndResistance(3, 5).harvestLevel(3).harvestTool(ToolType.PICKAXE);
 
-    public static final RegistryObject<Block> RESONATING_CRYSTAL_BLOCK = DeepResonance.BLOCKS.register("resonating_crystal", BlockCrystal::new);
+    public static final RegistryObject<BlockCrystal> RESONATING_CRYSTAL_BLOCK = DeepResonance.BLOCKS.register("resonating_crystal", BlockCrystal::new);
     public static final RegistryObject<Block> RESONATING_ORE_STONE_BLOCK = DeepResonance.BLOCKS.register("resonating_ore_stone", () -> new Block(ORE_PROPERTIES));
     public static final RegistryObject<Block> RESONATING_ORE_NETHER_BLOCK = DeepResonance.BLOCKS.register("resonating_ore_nether", () -> new Block(ORE_PROPERTIES));
     public static final RegistryObject<Block> RESONATING_ORE_END_BLOCK = DeepResonance.BLOCKS.register("resonating_ore_end", () -> new Block(ORE_PROPERTIES));

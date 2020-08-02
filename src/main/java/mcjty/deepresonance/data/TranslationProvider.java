@@ -3,7 +3,9 @@ package mcjty.deepresonance.data;
 import elec332.core.data.AbstractTranslationProvider;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.pulser.PulserModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.setup.FluidRegister;
@@ -39,6 +41,11 @@ public class TranslationProvider extends AbstractTranslationProvider {
         add(TranslationHelper.getTooltipKey("smelter"), "This machine smelts resonating ore and produces liquid crystal in a tank placed on top of this. Place a tank below the smelter about half-filled with lava");
         add(TranslationHelper.getTooltipKey("purifier"), "This machine needs filter material and will purify the liquid crystal from the top tank and place it in another tank below this block.");
         add(TranslationHelper.getTooltipKey("pulser"), "This machine will send an EMP pulse every time when it has collected enough power. The strength of the input redstone signal controls the power input speed.");
+        add(TranslationHelper.getTooltipKey("laser"), "Place this laser so it faces a lens. It will infuse the liquid in the tank depending on the materials used.");
+        add(TranslationHelper.getTooltipKey("crystallizer"), "This machine will crystallize the liquid crystal from the tank below it and eventually produce a crystal.");
+        add(TranslationHelper.getTooltipKey("energy_collector"), "Part of a generator multi-block. Place this on top of a generator with crystals nearby.");
+        add(TranslationHelper.getTooltipKey("generator_controller"), "Part of a generator multi-block. Use this block to turn on/off the reactor with a redstone signal.");
+        add(TranslationHelper.getTooltipKey("generator_part"), "Part of a generator multi-block. You can place these in any configuration.");
 
         //Items
         addItem(CoreModule.FILTER_MATERIAL_ITEM, "Filter Material");
@@ -50,6 +57,7 @@ public class TranslationProvider extends AbstractTranslationProvider {
         addItem(RadiationModule.RADIATION_SUIT_CHESTPLATE, "Radiation Suit Chestplate");
         addItem(RadiationModule.RADIATION_SUIT_LEGGINGS, "Radiation Suit Leggings");
         addItem(RadiationModule.RADIATION_SUIT_BOOTS, "Radiation Suit Boots");
+        addItem(MachinesModule.LENS_ITEM, "Lens");
 
         //Blocks
         addBlock(TankModule.TANK_BLOCK, "Tank");
@@ -64,7 +72,12 @@ public class TranslationProvider extends AbstractTranslationProvider {
         addBlock(MachinesModule.VALVE_BLOCK, "Valve");
         addBlock(MachinesModule.SMELTER_BLOCK, "Smelter");
         addBlock(MachinesModule.PURIFIER_BLOCK, "Purifier");
-        addBlock(MachinesModule.PULSER_BLOCK, "Pulser");
+        addBlock(PulserModule.PULSER_BLOCK, "Pulser");
+        addBlock(MachinesModule.LASER_BLOCK, "Laser");
+        addBlock(MachinesModule.CRYSTALLIZER_BLOCK, "Crystallizer");
+        addBlock(GeneratorModule.ENERGY_COLLECTOR_BLOCK, "Energy Collector");
+        addBlock(GeneratorModule.GENERATOR_CONTROLLER_BLOCK, "Generator Controller");
+        addBlock(GeneratorModule.GENERATOR_PART_BLOCK, "Generator Part");
     }
 
 }

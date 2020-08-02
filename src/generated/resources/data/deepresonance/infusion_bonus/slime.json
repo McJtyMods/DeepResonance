@@ -1,0 +1,24 @@
+{
+  "ingredient": {
+    "item": "minecraft:slime_ball"
+  },
+  "bonus": {
+    "color": 6192150,
+    "duration": 40,
+    "powerPerTick": 100,
+    "crystalLiquidCostPerCatalyst": 25,
+    "rclImprovedPerCatalyst": 500,
+    "purityModifier": {
+      "bonus": 0.0,
+      "maxOrMin": 0.0
+    },
+    "strengthModifier": {
+      "bonus": 0.0,
+      "maxOrMin": 0.0
+    },
+    "efficiencyModifier": {
+      "bonus": -10.0,
+      "maxOrMin": 1.0
+    }
+  }
+}

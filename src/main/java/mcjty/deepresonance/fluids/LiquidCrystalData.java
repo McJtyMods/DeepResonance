@@ -92,8 +92,7 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     }
 
     private boolean isValid(ILiquidCrystalData data) {
-        FluidStack stack = data.toFluidStack();
-        if (stack == null || stack.isEmpty() || stack.getAmount() == 0) {
+        if (data.getAmount() <= 0) {
             data.setPurity(0);
             return false;
         }
@@ -106,8 +105,8 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     }
 
     @Override
-    public void setQuality(float quality) {
-        this.quality = quality;
+    public void setQuality(double quality) {
+        this.quality = (float) quality;
     }
 
     @Override
@@ -116,8 +115,8 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     }
 
     @Override
-    public void setPurity(float purity) {
-        this.purity = purity;
+    public void setPurity(double purity) {
+        this.purity = (float) purity;
     }
 
     @Override
@@ -126,8 +125,8 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     }
 
     @Override
-    public void setStrength(float strength) {
-        this.strength = strength;
+    public void setStrength(double strength) {
+        this.strength = (float) strength;
     }
 
     @Override
@@ -136,8 +135,8 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     }
 
     @Override
-    public void setEfficiency(float efficiency) {
-        this.efficiency = efficiency;
+    public void setEfficiency(double efficiency) {
+        this.efficiency = (float) efficiency;
     }
 
     @Override

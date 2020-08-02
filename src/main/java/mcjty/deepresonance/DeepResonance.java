@@ -9,20 +9,30 @@ import elec332.core.api.registration.IWorldGenRegister;
 import elec332.core.config.ConfigWrapper;
 import elec332.core.util.FMLHelper;
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.setup.Config;
 import mcjty.deepresonance.setup.FluidRegister;
 import mcjty.deepresonance.setup.ModSetup;
+import mcjty.deepresonance.util.DeepResonanceBlock;
+import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.base.ModBase;
+import mcjty.lib.blocks.RotationType;
+import mcjty.lib.builder.BlockBuilder;
+import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.network.PacketHandler;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.state.IProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
@@ -35,6 +45,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 /**
  * Created by Elec332 on 6-1-2020
@@ -83,6 +95,8 @@ public class DeepResonance implements ModBase, IElecCoreMod, IModuleController {
                 if (FMLHelper.getDist().isClient()) {
                     RenderTypeLookup.setRenderLayer(TankModule.TANK_BLOCK.get(), RenderType.getTranslucent());
                     RenderTypeLookup.setRenderLayer(CoreModule.RESONATING_CRYSTAL_BLOCK.get(), RenderType.getTranslucent());
+                    RenderTypeLookup.setRenderLayer(MachinesModule.CRYSTALLIZER_BLOCK.get(), RenderType.getTranslucent());
+                    RenderTypeLookup.setRenderLayer(MachinesModule.LASER_BLOCK.get(), RenderType.getTranslucent());
                 }
             }
 
@@ -119,7 +133,43 @@ public class DeepResonance implements ModBase, IElecCoreMod, IModuleController {
         return config.registerConfig(builder -> builder.define(moduleName.toLowerCase() + ".enabled", true));
     }
 
-    public static RegistryObject<Item> fromBlock(RegistryObject<Block> block) {
+    public static RegistryObject<Block> defaultBlock(final String name, final Supplier<TileEntity> tile) {
+        return defaultBlock(name, tile, null);
+    }
+
+    public static RegistryObject<Block> defaultBlock(final String name, final Supplier<TileEntity> tile, UnaryOperator<BlockState> mod, IProperty<?>... props) {
+        return DeepResonance.BLOCKS.register(name, () -> new DeepResonanceBlock(new BlockBuilder().tileEntitySupplier(tile).infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey(name)))) {
+
+            @Override
+            protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+                super.fillStateContainer(builder);
+                builder.add(props);
+            }
+
+        }.modifyDefaultState(mod));
+    }
+
+    public static RegistryObject<Block> nonRotatingBlock(final String name, final Supplier<TileEntity> tile) {
+        return nonRotatingBlock(name, tile, null);
+    }
+
+    public static RegistryObject<Block> nonRotatingBlock(final String name, final Supplier<TileEntity> tile, UnaryOperator<BlockState> mod, IProperty<?>... props) {
+        return DeepResonance.BLOCKS.register(name, () -> new DeepResonanceBlock(new BlockBuilder().tileEntitySupplier(tile).infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey(name)))) {
+
+            @Override
+            public RotationType getRotationType() {
+                return RotationType.NONE;
+            }
+
+            @Override
+            protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+                builder.add(props);
+            }
+
+        }.modifyDefaultState(mod));
+    }
+
+    public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {
         Preconditions.checkNotNull(block.getId().getPath());
         return DeepResonance.ITEMS.register(block.getId().getPath(), () -> new BlockItem(Preconditions.checkNotNull(block.get()), DeepResonance.createStandardProperties()));
     }

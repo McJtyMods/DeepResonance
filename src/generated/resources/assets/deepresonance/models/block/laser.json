@@ -1,0 +1,71 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "deepresonance:block/machine_bottom",
+    "up": "deepresonance:block/machine_top",
+    "north": "deepresonance:block/laser",
+    "south": "deepresonance:block/laser_back",
+    "east": "deepresonance:block/machine_side",
+    "west": "deepresonance:block/machine_side",
+    "back": "deepresonance:block/laser_back_color"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#down",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#up",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#north",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#south",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#west",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#east",
+          "cullface": "east"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        1
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "south": {
+          "texture": "#back",
+          "cullface": "south",
+          "tintindex": 1
+        }
+      }
+    }
+  ]
+}

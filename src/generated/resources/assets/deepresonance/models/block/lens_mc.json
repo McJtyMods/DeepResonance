@@ -1,0 +1,6 @@
+{
+  "parent": "deepresonance:block/lens",
+  "textures": {
+    "lens_texture": "deepresonance:block/lens"
+  }
+}

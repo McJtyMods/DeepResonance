@@ -3,9 +3,11 @@ package mcjty.deepresonance.data;
 import elec332.core.api.data.recipe.IGroupedRecipeManager;
 import elec332.core.data.AbstractRecipeProvider;
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Items;
 import net.minecraft.tags.ItemTags;
@@ -81,6 +83,37 @@ public class RecipesProvider extends AbstractRecipeProvider {
             recipes.shapedRecipe(MachinesModule.PURIFIER_ITEM.get())
                     .addCriterion("has_filter", hasItem(CoreModule.FILTER_MATERIAL_ITEM.get()))
                     .patternLine("fff").patternLine("imi").patternLine("fff").build();
+            recipes.shapedRecipe(MachinesModule.LASER_ITEM.get())
+                    .addCriterion("has_diamond", hasItem(Items.DIAMOND))
+                    .addCriterion("has_emerald", hasItem(Items.EMERALD))
+                    .key('d', Items.DIAMOND)
+                    .key('e', Items.EMERALD)
+                    .patternLine("ggg").patternLine("eme").patternLine("ddd").build();
+            recipes.shapedRecipe(MachinesModule.CRYSTALLIZER_ITEM.get())
+                    .addCriterion("has_quartz", hasItem(Items.QUARTZ))
+                    .key('q', Items.QUARTZ)
+                    .patternLine("ggg").patternLine("qmq").patternLine("iii").build();
+        });
+        recipeBuilder.grouped("generator", recipes -> {
+            recipes.key('m', CoreModule.MACHINE_FRAME_ITEM.get());
+            recipes.key('G', Tags.Items.INGOTS_GOLD);
+            recipes.addCriterion("has_machine_frame", hasItem(CoreModule.MACHINE_FRAME_ITEM.get()));
+            recipes.addCriterion("has_resonant_plate", hasItem(CoreModule.RESONATING_PLATE_ITEM.get()));
+            recipes.shapedRecipe(GeneratorModule.ENERGY_COLLECTOR_ITEM.get())
+                    .addCriterion("has_diamond", hasItem(Items.DIAMOND))
+                    .addCriterion("has_quartz", hasItem(Tags.Items.GEMS_QUARTZ))
+                    .key('d', Items.DIAMOND)
+                    .key('q', Tags.Items.GEMS_QUARTZ)
+                    .patternLine("pdp").patternLine("qmq").patternLine("GGG").build();
+            recipes.shapedRecipe(GeneratorModule.GENERATOR_PART_ITEM.get())
+                    .key('r', Blocks.REDSTONE_BLOCK)
+                    .patternLine("GrG").patternLine("imi").patternLine("prp").build();
+            recipes.shapedRecipe(GeneratorModule.GENERATOR_CONTROLLER_ITEM.get())
+                    .addCriterion("has_comparator", hasItem(Blocks.COMPARATOR))
+                    .key('C', Blocks.COMPARATOR)
+                    .key('r', Tags.Items.DUSTS_REDSTONE)
+                    .patternLine("rCr").patternLine("imi").patternLine("pip").build();
+
         });
     }
 

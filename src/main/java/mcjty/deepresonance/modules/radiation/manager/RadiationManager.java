@@ -30,6 +30,7 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -58,9 +59,10 @@ class RadiationManager implements IWorldRadiationManager, INBTSerializable<Compo
         sources.clear();
     }
 
+    @Nonnull
     @Override
     public RadiationSource getOrCreateRadiationSource(BlockPos coordinate) {
-        RadiationSource source = sources.get(coordinate);
+        RadiationSource source = getRadiationSource(coordinate);
         if (source == null) {
             source = new RadiationSource();
             sources.put(coordinate, source);

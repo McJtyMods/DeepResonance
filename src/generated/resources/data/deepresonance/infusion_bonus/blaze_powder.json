@@ -1,0 +1,24 @@
+{
+  "ingredient": {
+    "item": "minecraft:blaze_powder"
+  },
+  "bonus": {
+    "color": 16701501,
+    "duration": 40,
+    "powerPerTick": 100,
+    "crystalLiquidCostPerCatalyst": 25,
+    "rclImprovedPerCatalyst": 500,
+    "purityModifier": {
+      "bonus": -6.0,
+      "maxOrMin": 0.0
+    },
+    "strengthModifier": {
+      "bonus": 5.0,
+      "maxOrMin": 70.0
+    },
+    "efficiencyModifier": {
+      "bonus": 5.0,
+      "maxOrMin": 70.0
+    }
+  }
+}

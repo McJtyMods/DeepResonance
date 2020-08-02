@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "deepresonance:generator_part"
+    ]
+  },
+  "criteria": {
+    "has_machine_frame": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "deepresonance:machine_frame"
+          }
+        ]
+      }
+    },
+    "has_resonant_plate": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "deepresonance:resonating_plate"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "deepresonance:generator_part"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_machine_frame",
+      "has_resonant_plate",
+      "has_the_recipe"
+    ]
+  ]
+}

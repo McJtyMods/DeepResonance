@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "deepresonance:block/laser"
+    },
+    "facing=south": {
+      "model": "deepresonance:block/laser",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "deepresonance:block/laser",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "deepresonance:block/laser",
+      "y": 90
+    }
+  }
+}

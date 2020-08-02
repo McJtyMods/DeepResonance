@@ -19,6 +19,7 @@ public final class DataGenerators {
             generator.addProvider(new LootTablesProvider(generator));
             generator.addProvider(new BlockTagsProvider(generator));
             generator.addProvider(new ItemTagsProvider(generator));
+            generator.addProvider(new InfusionBonusProvider(generator));
         }
         if (event.includeClient()) {
             generator.addProvider(new TranslationProvider(generator));

@@ -58,8 +58,7 @@ public class TankGrid implements ICapabilityProvider, IFluidHandler {
     }
 
     public void onComponentRemoved(TankTileLink link) {
-        FluidStack stack = getFluidShare(link.getTileEntity());
-        setDataToTile(link.getTileEntity(), stack);
+        setDataToTile(link.getTileEntity());
         link.setGrid(null);
         resetCapability();
     }

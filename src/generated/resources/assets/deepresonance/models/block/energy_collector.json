@@ -1,0 +1,6 @@
+{
+  "parent": "deepresonance:block/collector",
+  "textures": {
+    "collector_texture": "deepresonance:block/energy_collector"
+  }
+}

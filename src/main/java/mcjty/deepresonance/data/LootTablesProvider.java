@@ -4,7 +4,9 @@ import elec332.core.data.AbstractLootTableProvider;
 import elec332.core.data.loottable.AbstractBlockLootTables;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.pulser.PulserModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import net.minecraft.data.DataGenerator;
@@ -36,7 +38,13 @@ public class LootTablesProvider extends AbstractLootTableProvider {
                 registerDropSelfLootTable(MachinesModule.VALVE_BLOCK);
                 registerDropSelfLootTable(MachinesModule.SMELTER_BLOCK);
                 registerDropSelfLootTable(MachinesModule.PURIFIER_BLOCK);
-                registerDropSelfLootTable(MachinesModule.PULSER_BLOCK);
+                registerDropSelfLootTable(PulserModule.PULSER_BLOCK);
+                registerEmptyLootTable(MachinesModule.LENS_BLOCK.get());
+                registerDropSelfLootTable(MachinesModule.LASER_BLOCK);
+                registerDropSelfLootTable(MachinesModule.CRYSTALLIZER_BLOCK);
+                registerDropSelfLootTable(GeneratorModule.ENERGY_COLLECTOR_BLOCK);
+                registerDropSelfLootTable(GeneratorModule.GENERATOR_CONTROLLER_BLOCK);
+                registerDropSelfLootTable(GeneratorModule.GENERATOR_PART_BLOCK);
 
                 //todo: tank & crystal
                 registerEmptyLootTable(CoreModule.RESONATING_CRYSTAL_BLOCK.get());

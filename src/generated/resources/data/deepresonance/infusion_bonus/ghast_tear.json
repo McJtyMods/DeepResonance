@@ -1,0 +1,24 @@
+{
+  "ingredient": {
+    "item": "minecraft:ghast_tear"
+  },
+  "bonus": {
+    "color": 16383998,
+    "duration": 40,
+    "powerPerTick": 100,
+    "crystalLiquidCostPerCatalyst": 25,
+    "rclImprovedPerCatalyst": 500,
+    "purityModifier": {
+      "bonus": -20.0,
+      "maxOrMin": 0.0
+    },
+    "strengthModifier": {
+      "bonus": 25.0,
+      "maxOrMin": 100.0
+    },
+    "efficiencyModifier": {
+      "bonus": 15.0,
+      "maxOrMin": 100.0
+    }
+  }
+}

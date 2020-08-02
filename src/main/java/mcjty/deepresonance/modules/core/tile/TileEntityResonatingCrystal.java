@@ -1,28 +1,48 @@
 package mcjty.deepresonance.modules.core.tile;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
+import elec332.core.api.info.IInfoDataAccessorBlock;
+import elec332.core.api.info.IInfoProvider;
+import elec332.core.api.info.IInformation;
+import elec332.core.api.info.InfoMod;
 import elec332.core.api.registration.RegisteredTileEntity;
 import elec332.core.world.WorldHelper;
-import mcjty.deepresonance.modules.core.util.CrystalConfig;
+import mcjty.deepresonance.api.crystal.ICrystalModifier;
+import mcjty.deepresonance.api.radiation.IWorldRadiationManager;
+import mcjty.deepresonance.modules.core.block.BlockCrystal;
 import mcjty.deepresonance.modules.core.util.CrystalHelper;
+import mcjty.deepresonance.modules.radiation.RadiationModule;
+import mcjty.deepresonance.modules.radiation.util.RadiationHelper;
 import mcjty.deepresonance.util.AbstractTileEntity;
-import mcjty.lib.varia.SoundTools;
+import mcjty.theoneprobe.api.IProbeInfo;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.World;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
+import javax.annotation.Nonnull;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Created by Elec332 on 18-1-2020
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 @RegisteredTileEntity("resonating_crystal")
-public class TileEntityResonatingCrystal extends AbstractTileEntity implements ITickableTileEntity {
+public class TileEntityResonatingCrystal extends AbstractTileEntity implements ITickableTileEntity, IInfoProvider {
+
+    private static final Set<Capability<? extends ICrystalModifier>> MODIFIERS = Sets.newHashSet();
+    private static final int RADIATION_COOLDOWN = 22;
 
     // The total maximum RF you can get out of a crystal with the following characteristics:
     //    * S: Strength (0-100%)
@@ -38,34 +58,14 @@ public class TileEntityResonatingCrystal extends AbstractTileEntity implements I
     private float efficiency = 1.0f;    // Default 1%
     private float purity = 1.0f;        // Default 1% purity
 
-    // These values are used during super powergen
-    private int cooldown;           // In microticks
-    private int resistance;         // Current maximum cooldown when a pulse is received
-    private float instability;      // Current instability
-    private int pulses;             // Number of EMP pulses since last tick
+    private int radiationCooldown = 0;
+    private Set<ICrystalModifier> modifiers;
+    private LazyOptional<TileEntityResonatingCrystal> reference;
+    private float crystalPowerDrain = -1;    // Calculated value that contains the power/tick that is drained for this crystal.
+    private int powerProvided = -1;         // Calculated value that contains the RF/tick for this crystal.
 
-    private float powerPerTick = -1;    // Calculated value that contains the power/tick that is drained for this crystal.
-    private int rfPerTick = -1;         // Calculated value that contains the RF/tick for this crystal.
-
-    private boolean glowing = false;
-
-    public TileEntityResonatingCrystal() {
-        cooldown = 0;
-        resistance = CrystalConfig.MAX_RESISTANCE.get();
-        instability = 0;
-        pulses = 0;
-    }
-
-    public int getResistance() {
-        return resistance;
-    }
-
-    public int getCooldown() {
-        return cooldown;
-    }
-
-    public float getInstability() {
-        return instability;
+    public static void registerModifier(Capability<? extends ICrystalModifier> type) {
+        MODIFIERS.add(type);
     }
 
     public float getStrength() {
@@ -87,9 +87,7 @@ public class TileEntityResonatingCrystal extends AbstractTileEntity implements I
         markDirty();
         boolean newempty = isEmpty();
         if (oldempty != newempty) {
-            if (newempty) {
-                resistance = CrystalConfig.MAX_RESISTANCE.get();
-            }
+            getModifiers().forEach(mod -> mod.onPowerChanged(newempty));
             markDirtyClient();
         }
     }
@@ -112,161 +110,92 @@ public class TileEntityResonatingCrystal extends AbstractTileEntity implements I
         markDirtyClient();
     }
 
-    public boolean isGlowing() {
-        return glowing;
-    }
-
-    public void setGlowing(boolean glowing) {
-        if (isGlowing() == glowing) {
-            return;
-        }
-        this.glowing = glowing;
-        pulses = 0;         // Clear pulses
-        if (getWorld() != null) {
-            markDirtyClient();
-        } else {
-            markDirty();
-        }
-    }
-
     public boolean isEmpty() {
         return CrystalHelper.isEmpty(getPower());
     }
 
     @Override
     public void tick() {
-        markDirtyQuick();
-
-        // Handle the next 1000 microticks
-        int microTicksLeft = 1000;
-
-
-        // Handle pulses
-        while (pulses > 0) {
-            pulses--;
-
-            // We can delay the pulse until after the cooldown has finished
-            if (cooldown <= microTicksLeft) {
-                // We have enough ticks left to go after the cooldown
-                microTicksLeft -= cooldown;
-                cooldown = 0;
-            } else {
-                // Not enough ticks left
-                cooldown -= microTicksLeft;
-                microTicksLeft = 0;
-            }
-
-            // Actually handle the pulse
-            handleSinglePulse();
-        }
-
-        // No more pulses. Just handle cooldown and resistance
-        if (cooldown < microTicksLeft) {
-            // We have less then 1 tick of cooldown. So that means we only
-            // have to increase resistance for the actual cooldown period
-            resistance += (microTicksLeft - cooldown) / 12;
-            if (resistance > CrystalConfig.MAX_RESISTANCE.get()) {
-                resistance = CrystalConfig.MAX_RESISTANCE.get();
-            }
-            cooldown = 0;
-        } else {
-            cooldown -= microTicksLeft;
-        }
-
-        if (getInstability() > 0) {
-            // We're currently having some instability issues
-            handleInstability();
-        }
+        getModifiers().forEach(ICrystalModifier::tick);
     }
 
-    private void handleInstability() {
-        // The 'instability' value accumulates. Every time we handle instability there is a chance
-        // we act on it. Not acting on instability is actually a bad thing as it means the instability will
-        // stay and possibly be augmented in the near future
-        World world = Preconditions.checkNotNull(getWorld());
-        if (world.getRandom().nextFloat() < CrystalConfig.INSTABILITY_HANDLING_CHANCE.get()) {
-            // We handle the instability. How much do we handle?
-            float tohandle = world.getRandom().nextFloat() * getInstability();
-            instability -= tohandle;
-            if (tohandle > CrystalConfig.INSTABILITY_EXPLOSION_THRESHOLD.get()) {
-                SoundTools.playSound(world, SoundEvents.ENTITY_GENERIC_EXPLODE, pos.getX(), pos.getY(), pos.getZ(), 1.0, 1.0);
+    public int providePower(float percentage, boolean simulate) {
+        percentage = Math.min(percentage, 1);
+        if (isEmpty()) {
+            return 0;
+        }
+        float power = getPower();
+        if (power < crystalPowerDrain) {
+            if (!simulate) {
                 setPower(0);
-//                ResonatingCrystalBlock.explode(world, pos, true);
-            } else if (tohandle > CrystalConfig.INSTABILITY_BIG_DAMAGE_THRESHOLD.get()) {
-                // Damage crystal
-                setPower(Math.max(0, getPower() - 10));
-                setPurity(Math.max(1, getPurity() - 10));
-            } else if (tohandle > CrystalConfig.INSTABILITY_SMALL_DAMAGE_THRESHOLD.get()) {
-                // Damage crystal
-                setPower(Math.max(0, getPower() - 1));
-                setPurity(Math.max(1, getPurity() - 1));
-            } // Otherwise we just got lucky
-        }
-    }
-
-    private void handleSinglePulse() {
-        // We got a pulse. If our cooldown is > 0 we have to do some bad things
-        if (cooldown > 0) {
-            // The bad things depend on how far we actually are from our current resistance value. We do a
-            // down cap of cooldown to 10 to make sure we have a minimum badness
-            // @todo config for min cap
-            float badness = (float) Math.min(cooldown, 10) / resistance;
-            instability += badness;
-
-            // Decrease resistance as well but not as much
-            // @todo config the /10?
-            resistance = (int) ((resistance - 1000 * (1 - badness)) / 10.0f);
-            if (resistance < 1) {
-                resistance = 1;
             }
-        } else {
-            // Otherwise we can decrease our resistance a bit
-            resistance -= 120;// @todo SuperGenerationConfiguration.resistanceDecreasePerPulse;
-            if (resistance < 1) {
-                resistance = 1; // @todo cap?
+            return 0;
+        }
+        if (crystalPowerDrain < 0 || powerProvided < 0) {
+            powerProvided = CrystalHelper.getRfPerTick(getEfficiency(), getPurity());
+
+            float totalPower = CrystalHelper.getTotalPower(getStrength(), getPurity());
+            float ticks = totalPower / powerProvided;
+            crystalPowerDrain = 100.0f / ticks;
+        }
+        if (!simulate) {
+            setPower(power - crystalPowerDrain);
+            radiationCooldown--;
+            if (radiationCooldown <= 0) {
+                spreadRadiation();
+                radiationCooldown = RADIATION_COOLDOWN;
             }
         }
-
-        // Now we have to set the cooldown back to our resistance
-        cooldown = resistance;
+        float mod = 1;
+        for (ICrystalModifier modifier : getModifiers()) {
+            mod *= modifier.getPowerModifier(percentage, simulate);
+        }
+        return (int) (powerProvided * Math.min(mod, 100));
     }
 
-    // A pulse is received
-    public void pulse() {
-        if (isGlowing() && getPower() > 0) {
-            // If we're not glowing (not active) we ignore pulses
-            pulses++;
-            markDirtyQuick();
-        }
+    public void recalculateEnergy() {
+        crystalPowerDrain = powerProvided = -1;
     }
 
-    public float getPowerPerTick() {
-        if (powerPerTick < 0) {
-            float totalRF = CrystalHelper.getTotalPower(getStrength(), getPurity());
-            float numticks = totalRF / CrystalHelper.getRfPerTick(getEfficiency(), getPurity());
-            powerPerTick = 100.0f / numticks;
-        }
-        return powerPerTick;
+    private void spreadRadiation() {
+        LazyOptional<IWorldRadiationManager> cap = Preconditions.checkNotNull(getWorld()).getCapability(RadiationModule.CAPABILITY);
+        cap.ifPresent(radiationManager -> {
+            float purity = getPurity();
+            float strength = getStrength();
+            float radius = RadiationHelper.calculateRadiationRadius(strength, getEfficiency(), purity);
+            float radiationStrength = RadiationHelper.calculateRadiationStrength(strength, purity);
+            for (ICrystalModifier modifier : getModifiers()) {
+                radiationStrength *= modifier.getRadiationModifier();
+            }
+            radiationManager.getOrCreateRadiationSource(TileEntityResonatingCrystal.this.getPos()).update(radius, radiationStrength, RADIATION_COOLDOWN);
+        });
     }
 
-    public int getRfPerTick() {
-        if (rfPerTick == -1) {
-            rfPerTick = CrystalHelper.getRfPerTick(getEfficiency(), getPurity());
+    private Set<ICrystalModifier> getModifiers() {
+        if (modifiers == null) {
+            modifiers = MODIFIERS.stream()
+                    .map(this::getCapability)
+                    .filter(LazyOptional::isPresent)
+                    .map(o -> o.orElseThrow(NullPointerException::new))
+                    .collect(Collectors.toSet());
         }
+        return modifiers;
+    }
 
-        // If we are super generating then we modify the RF here. To see that we're doing this we
-        // can basically check our resistance value
-
-        // resistance 1: factor 20
-        // resistance MAX: factor 1
-        double maxResistance = CrystalConfig.MAX_RESISTANCE.get();
-        if (getResistance() < maxResistance) {
-            double factor = ((maxResistance - getResistance()) * 19.0f / maxResistance) + 1.0f;
-            System.out.println("rfPerTick = " + rfPerTick + ", factor = " + factor);
-            return (int) (rfPerTick * factor);
+    public LazyOptional<TileEntityResonatingCrystal> getReference() {
+        if (reference == null) {
+            reference = LazyOptional.of(() -> this);
         }
+        return reference;
+    }
 
-        return rfPerTick;
+
+    @Override
+    protected void invalidateCaps() {
+        super.invalidateCaps();
+        if (reference != null) {
+            reference.invalidate();
+        }
     }
 
     @Override
@@ -285,6 +214,12 @@ public class TileEntityResonatingCrystal extends AbstractTileEntity implements I
     }
 
     @Override
+    public void validate() {
+        super.validate();
+        getModifiers().forEach(mod -> mod.setCrystal(this));
+    }
+
+    @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
         boolean oldempty = isEmpty();
         boolean oldVeryPure = CrystalHelper.isVeryPure(getPurity());
@@ -298,32 +233,60 @@ public class TileEntityResonatingCrystal extends AbstractTileEntity implements I
     @Override
     public void read(CompoundNBT tagCompound) {
         super.read(tagCompound);
-        cooldown = tagCompound.getInt("cool");
-        resistance = tagCompound.getInt("resist");
-        if (resistance <= 0) {
-            resistance = CrystalConfig.MAX_RESISTANCE.get();
-        }
-        instability = tagCompound.getFloat("instability");
-        pulses = tagCompound.getInt("pulses");
+
         strength = tagCompound.getFloat("strength");
         power = tagCompound.getFloat("power");
         efficiency = tagCompound.getFloat("efficiency");
         purity = tagCompound.getFloat("purity");
-        glowing = tagCompound.getBoolean("glowing");
     }
 
     @Override
     public CompoundNBT write(CompoundNBT tagCompound) {
-        tagCompound.putInt("cool", cooldown);
-        tagCompound.putInt("resist", resistance);
-        tagCompound.putFloat("instability", instability);
-        tagCompound.putInt("pulses", pulses);
         tagCompound.putFloat("strength", strength);
         tagCompound.putFloat("power", power);
         tagCompound.putFloat("efficiency", efficiency);
         tagCompound.putFloat("purity", purity);
-        tagCompound.putBoolean("glowing", glowing);
         return super.write(tagCompound);
+    }
+
+    @Override
+    public void addInformation(@Nonnull IInformation information, @Nonnull IInfoDataAccessorBlock hitData) {
+        DecimalFormat decimalFormat = new DecimalFormat("#.#");
+        decimalFormat.setRoundingMode(RoundingMode.DOWN);
+        CompoundNBT tag = hitData.getData();
+        float power = tag.getFloat("power");
+        BlockCrystal.addBasicInformation(information::addInformation, tag, power, information.getProviderType() == InfoMod.WAILA);
+        getModifiers().forEach(mod -> {
+            if (mod instanceof IInfoProvider) {
+                ((IInfoProvider) mod).addInformation(information, hitData);
+            }
+        });
+        if (information.isDebugMode() == Boolean.TRUE) { //Debug, no translation
+            information.addInformation("Power: " + decimalFormat.format(power) + "%");
+        } else if (information.getProviderType() == InfoMod.TOP) {
+            information.addInformation(new StringTextComponent("Power: " + decimalFormat.format(power) + "%").applyTextStyle(TextFormatting.YELLOW));
+            IProbeInfo probeInfo = (IProbeInfo) information.getInformationComponent();
+            probeInfo.progress((int) power, 100, probeInfo.defaultProgressStyle()
+                    .suffix("%")
+                    .width(40)
+                    .height(10)
+                    .showText(false)
+                    .filledColor(0xffff0000)
+                    .alternateFilledColor(0xff990000));
+        }
+    }
+
+    @Override
+    public void gatherInformation(@Nonnull CompoundNBT tag, @Nonnull ServerPlayerEntity player, @Nonnull IInfoDataAccessorBlock hitData) {
+        tag.putFloat("strength", getStrength());
+        tag.putFloat("efficiency", getEfficiency());
+        tag.putFloat("purity", getPurity());
+        tag.putFloat("power", getPower());
+        getModifiers().forEach(mod -> {
+            if (mod instanceof IInfoProvider) {
+                ((IInfoProvider) mod).gatherInformation(tag, player, hitData);
+            }
+        });
     }
 
 }

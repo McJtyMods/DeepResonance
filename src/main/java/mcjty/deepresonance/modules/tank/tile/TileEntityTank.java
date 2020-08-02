@@ -1,13 +1,19 @@
 package mcjty.deepresonance.modules.tank.tile;
 
 import com.google.common.base.Preconditions;
+import elec332.core.api.info.IInfoDataAccessorBlock;
+import elec332.core.api.info.IInfoProvider;
+import elec332.core.api.info.IInformation;
 import elec332.core.api.registration.HasSpecialRenderer;
 import elec332.core.api.registration.RegisteredTileEntity;
+import elec332.core.util.RegistryHelper;
+import elec332.core.util.StatCollector;
 import mcjty.deepresonance.modules.tank.client.TankTESR;
 import mcjty.deepresonance.modules.tank.grid.TankGrid;
 import mcjty.deepresonance.util.AbstractTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
@@ -30,7 +36,7 @@ import javax.annotation.Nullable;
  */
 @RegisteredTileEntity("tank")
 @HasSpecialRenderer(TankTESR.class)
-public class TileEntityTank extends AbstractTileEntity {
+public class TileEntityTank extends AbstractTileEntity implements IInfoProvider {
 
     private TankGrid grid;
     private CompoundNBT gridData;
@@ -133,6 +139,32 @@ public class TileEntityTank extends AbstractTileEntity {
             return grid.getCapability(cap, side);
         } else { //Early checks or client
             return super.getCapability(cap, side);
+        }
+    }
+
+    @Override
+    public void addInformation(@Nonnull IInformation information, @Nonnull IInfoDataAccessorBlock hitData) {
+        CompoundNBT tag = hitData.getData();
+        if (tag.contains("capacity")) {
+            if (tag.contains("fluid")) {
+                Fluid fluid = RegistryHelper.getFluidRegistry().getValue(new ResourceLocation(tag.getString("fluid")));
+                if (fluid != null) {
+                    information.addInformation(StatCollector.translateToLocal(fluid.getAttributes().getTranslationKey()));
+                }
+            }
+            information.addInformation(tag.getInt("amt") + "/" + tag.getInt("capacity") + "mB");
+        }
+    }
+
+    @Override
+    public void gatherInformation(@Nonnull CompoundNBT tag, @Nonnull ServerPlayerEntity player, @Nonnull IInfoDataAccessorBlock hitData) {
+        if (grid != null) {
+            tag.putInt("capacity", grid.getTankCapacity(0));
+            tag.putInt("amt", grid.getFluidAmount());
+            Fluid fluid = grid.getStoredFluid();
+            if (fluid != null) {
+                tag.putString("fluid", Preconditions.checkNotNull(fluid.getRegistryName()).toString());
+            }
         }
     }
 
