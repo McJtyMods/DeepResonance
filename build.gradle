@@ -1,99 +1,201 @@
-plugins {
-    id "nl.elec332.gradle.minecraft.moddev" version "0.2.1-Beta"
-    //id "nl.elec332.gradle.minecraft.modmaven" version "0.2.1-Beta"
-}
+import com.google.common.base.Strings
 
-group = "com.github.mcjty" //Keep the old maven structure
-
-modSettings {
-    modName = "DeepResonance"
-    modId = "deepresonance"
-    basePackage = "mcjty.deepresonance"
-
-    addWailaMaven = true
-    fgTweaks = true
-}
-
-generateToml {
-    description = "Power generation based on resonating crystals."
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
     dependencies {
-        eleccore {
-            versionRange = "[${config.eleccore_version},)"
-            ordering = "AFTER"
-        }
-        mcjtylib {
-            versionRange = "[${config.mcjtylib_version},)"
-            ordering = "AFTER"
-        }
-        rftoolsbase {
-            versionRange = "[${config.rftoolsbase_version},)"
-            ordering = "AFTER"
-        }
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
 
+apply plugin: 'net.minecraftforge.gradle'
 
+repositories {
+    maven {
+        url = "https://modmaven.k-4u.nl"
+    }
+    maven { //Waila
+        url "http://tehnut.info/maven"
+    }
+}
+
+ext.configFile = file "build.properties"
+
+configFile.withReader {
+    def prop = new Properties()
+    prop.load(it)
+    project.ext.config = new ConfigSlurper().parse prop
+    String build = System.getenv("BUILD_NUMBER")
+    boolean localBuild = Strings.isNullOrEmpty(build)
+
+    String temp = config.mod_version
+    String classifier = config.mod_classifier
+    classifier = Strings.isNullOrEmpty(classifier) ? "" : "-" + classifier
+    project.ext.modVersion = temp + "." + (localBuild ? "9999.custom" : build)
+    config.mod_version = "${config.minecraft_version}-" + temp + "." + (localBuild ? "localBuild" : build) + classifier
+}
+
+version = config.mod_version
+group = "com.github.mcjty"
+archivesBaseName = "DeepResonance"
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+minecraft {
+
+    accessTransformer = file 'src/main/resources/META-INF/accesstransformer.cfg'
+
+    mappings channel: 'snapshot', version: config.mappings
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            source sourceSets.main
+        }
+
+        server {
+            workingDirectory project.file('run')
+            source sourceSets.main
+        }
+
+        data {
+            workingDirectory project.file('run')
+            args '--mod', 'deepresonance', '--all', '--output', file('src/generated/resources/'), '--existing', sourceSets.main.resources.srcDirs[0]
+            source sourceSets.main
+        }
+
+    }
+
+}
+
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+}
 
 dependencies {
-    //compileOnly "mcp.mobius.waila:Hwyla:${config.waila_version}:api"
-    //modRuntime "mcp.mobius.waila:Hwyla:${config.waila_version}"
+    minecraft 'net.minecraftforge:forge:' + config.minecraft_version + "-" + config.forge_version
 	
     compileOnly "mezz.jei:jei-${config.jei_version}:api"
-    modRuntime "mezz.jei:jei-${config.jei_version}"
-	
-	mod "vazkii.patchouli:Patchouli:${config.patchouli_version}"
+    runtime fg.deobf("mezz.jei:jei-${config.jei_version}")
+
+    compile fg.deobf("vazkii.patchouli:Patchouli:${config.patchouli_version}")
 
     if (findProject(':TheOneProbe') != null) {
-        mod project(':TheOneProbe')
+        compile project(':TheOneProbe')
     } else {
-        mod ("mcjty.theoneprobe:TheOneProbe-${config.top_version}") {
+        compile fg.deobf("mcjty.theoneprobe:TheOneProbe-${config.top_version}") {
             transitive = false
         }
     }
 
     if (findProject(':McJtyLib') != null) {
-        mod project(':McJtyLib')
+        compile project(':McJtyLib')
     } else {
-        mod ("com.github.mcjty:mcjtylib:${config.mcjtylib_version}") {
+        compile fg.deobf("com.github.mcjty:mcjtylib:${config.mcjtylib_version}") {
             transitive = false
         }
     }
 
     if (findProject(':RFToolsBase') != null) {
-        mod project(':RFToolsBase')
+        compile project(':RFToolsBase')
     } else {
-        mod ("com.github.mcjty:rftoolsbase:${config.rftoolsbase_version}") {
+        compile fg.deobf("com.github.mcjty:rftoolsbase:${config.rftoolsbase_version}") {
             transitive = false
         }
     }
 
     if (findProject(":ElecCore") != null) {
-        mod (project(":ElecCore")) {
+        compile (project(":ElecCore")) {
             exclude group: "*"
         }
     } else {
-        mod "nl.elec332.core:ElecCore:" + config.minecraft_version + "-" + config.eleccore_version
+        compile fg.deobf("nl.elec332.core:ElecCore:" + config.minecraft_version + "-" + config.eleccore_version)
     }
 }
 
-//modMaven {
-//    githubUrl = "https://github.com/McJtyMods/DeepResonance"
-//    forceLicense = false
-//
-//    developers {
-//        developer {
-//            id "Elec332"
-//            name "Elec332"
-//            roles {
-//                role "developer"
-//            }
-//        }
-//        developer {
-//            id "McJty"
-//            name "McJty"
-//            roles {
-//                role "developer"
-//            }
-//        }
-//    }
-//}
+processResources {
+    // this will ensure that this task is redone every time.
+    inputs.property "timeStamp", new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'META-INF/mods.toml'
+        expand([
+                version: modVersion,
+                mcversion: config.minecraft_version,
+                loaderversion: config.minecraft_version.replace('1.', ''),
+                forgeversion: config.forge_version,
+                coreversion: config.eleccore_version,
+                libversion: config.mcjtylib_version,
+                baseversion: config.rftoolsbase_version
+        ])
+    }
+
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'META-INF/mods.toml'
+    }
+}
+
+jar {
+    manifest {
+        attributes "Specification-Title": "deepresonance",
+                "Specification-Vendor": "McJty",
+                "Specification-Version": "2",
+                "Implementation-Title": project.name,
+                "Implementation-Version": project.version,
+                "Implementation-Vendor" :"McJty",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+    }
+}
+
+//Maven magic
+task("uploadJars", dependsOn: "reobf") {
+    description = "uploads JARs"
+    if (System.getenv("local_maven") != null) {
+        apply plugin: 'maven'
+        uploadArchives {
+            repositories {
+                mavenDeployer {
+                    repository(url: "file://" + System.getenv("local_maven"))
+                    pom {
+                        groupId = project.group
+                        version = project.version
+                        artifactId = project.archivesBaseName
+                        project {
+                            name project.archivesBaseName
+                            packaging 'jar'
+                            description project.archivesBaseName
+                            issueManagement {
+                                system 'github'
+                                url 'https://github.com/McJtyMods/DeepResonance/issues'
+                            }
+                            developers {
+                                developer {
+                                    id 'Elec332'
+                                    name 'Elec332'
+                                    roles {
+                                        role 'developer'
+                                    }
+                                }
+                                developer {
+                                    id 'McJty'
+                                    name 'McJty'
+                                    roles {
+                                        role 'developer'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
