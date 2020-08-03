@@ -20,9 +20,6 @@ repositories {
     maven {
         url = "https://modmaven.k-4u.nl"
     }
-    maven { //Waila
-        url "http://tehnut.info/maven"
-    }
 }
 
 ext.configFile = file "build.properties"
