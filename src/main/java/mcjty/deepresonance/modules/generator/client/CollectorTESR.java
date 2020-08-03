@@ -23,7 +23,7 @@ public class CollectorTESR extends AbstractTileEntityRenderer<TileEntityEnergyCo
 
     @Override
     public void render(@Nonnull TileEntityEnergyCollector tileEntity, float partialTicks, @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer buffer_, int combinedLightIn, int combinedOverlayIn) {
-        if (tileEntity.getCrystals().isEmpty()) {
+        if (tileEntity.getStartupTimer() != 0 || tileEntity.getCrystals().isEmpty()) {
             return;
         }
         matrixStack.translate(0.5, 0.6, 0.5);

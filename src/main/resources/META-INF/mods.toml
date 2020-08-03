@@ -13,7 +13,7 @@ description="Power generation based on resonating crystals."
 [[dependencies.deepresonance]]
     modId="eleccore"
     mandatory=true
-    versionRange="[2.1.43-Beta,)"
+    versionRange="[${coreversion},)"
     ordering="AFTER"
     side="BOTH"
 
@@ -27,7 +27,7 @@ description="Power generation based on resonating crystals."
 [[dependencies.deepresonance]]
     modId="mcjtylib"
     mandatory=true
-    versionRange="[1.15-4.1.0-beta.12,)"
+    versionRange="[${libversion},)"
     ordering="AFTER"
     side="BOTH"
 
@@ -41,6 +41,6 @@ description="Power generation based on resonating crystals."
 [[dependencies.deepresonance]]
     modId="rftoolsbase"
     mandatory=true
-    versionRange="[1.15-1.1.0-beta-10,)"
+    versionRange="[${baseversion},)"
     ordering="AFTER"
     side="BOTH"

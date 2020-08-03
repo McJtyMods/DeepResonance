@@ -45,10 +45,8 @@ public class GeneratorGrid extends AbstractDynamicMultiblock<AbstractTileEntityG
     private boolean hasDuplicates = false;
     private ITileEntityLink controller = null;
     private ITileEntityLink collector = null;
-    private int startup = -1;
+    private int startup = -1, oldStartup = -1;
     private boolean redstone = false;
-
-    private boolean needsOnSync = true;
 
     @Override
     public boolean canMerge(GeneratorGrid other) {
@@ -92,9 +90,6 @@ public class GeneratorGrid extends AbstractDynamicMultiblock<AbstractTileEntityG
                 controller = link;
                 setStartup(tile.getStartupTimer());
             }
-        }
-        if (redstone && controller != null && collector != null) {
-            needsOnSync = true;
         }
     }
 
@@ -141,9 +136,8 @@ public class GeneratorGrid extends AbstractDynamicMultiblock<AbstractTileEntityG
 
     @Override
     public void tick() {
-        if (needsOnSync) {
-            needsOnSync = false;
-            syncRedstone();
+        if ((oldStartup != startup) && controller != null && collector != null) {
+            setStartup(startup);
         }
         if (controller == null || startup < 0 || hasDuplicates) {
             return;
@@ -186,59 +180,27 @@ public class GeneratorGrid extends AbstractDynamicMultiblock<AbstractTileEntityG
     }
 
     public void onRedstoneChanged(boolean hasRedstone) {
-        if (hasRedstone == redstone) {
-            return;
-        }
         redstone = hasRedstone;
-        if (collector == null || controller == null) {
-            return;
-        }
-        syncRedstone();
-    }
-
-    private void syncRedstone() {
+        oldStartup = startup;
         if (redstone) {
             if (startup >= 0) {
                 return;
             }
-            setStartup(GeneratorModule.generatorConfig.startupTime.get());
+            startup = GeneratorModule.generatorConfig.startupTime.get();
         } else {
-            setStartup(-1);
+            startup = -1;
         }
-        getComponents().forEach(c -> {
-            AbstractTileEntityGeneratorComponent tile = c.getTileEntity();
-            if (tile != null) {
-                tile.generatorTurnedOn(startup >= 0);
-            }
-        });
     }
 
     private void setStartup(int startup) {
+        this.oldStartup = startup;
         this.startup = startup;
-        if (collector != null) {
-            TileEntityEnergyCollector collector = (TileEntityEnergyCollector) this.collector.getTileEntity();
-            if (collector != null) {
-                collector.setStartupTimer(startup);
+        getComponents().forEach(link -> {
+            AbstractTileEntityGeneratorComponent tile = link.getTileEntity();
+            if (tile != null) {
+                tile.setStartupTimer(startup);
             }
-        }
-        Preconditions.checkNotNull(((TileEntityGeneratorController) controller.getTileEntity())).setStartupTimer(startup);
-    }
-
-    public void writeData(TileEntity tile) {
-        DimensionCoordinate coord = DimensionCoordinate.fromTileEntity(tile);
-        if (!capacities.containsKey(coord)) {
-            return;
-        }
-        float share = capacities.get(coord);
-        share /= capacity;
-        writeData(((TileEntityGeneratorPart) tile), (int) Math.floor(share * energyStored));
-    }
-
-    private void writeData(TileEntityGeneratorPart tile, int energy) {
-        tile.setStoredEnergy(energy);
-        if (WorldHelper.chunkLoaded(tile.getWorld(), tile.getPos())) {
-            tile.markDirty();
-        }
+        });
     }
 
     public int getMaxSupportedCrystals() {
@@ -258,6 +220,23 @@ public class GeneratorGrid extends AbstractDynamicMultiblock<AbstractTileEntityG
             return " Startup " + (100 - (int) ((startup / (float) GeneratorModule.generatorConfig.startupTime.get()) * 100)) + "%";
         }
         return startup == -1 ? "Off" : "On";
+    }
+
+    public void writeData(TileEntity tile) {
+        DimensionCoordinate coord = DimensionCoordinate.fromTileEntity(tile);
+        if (!capacities.containsKey(coord)) {
+            return;
+        }
+        float share = capacities.get(coord);
+        share /= capacity;
+        writeData(((TileEntityGeneratorPart) tile), (int) Math.floor(share * energyStored));
+    }
+
+    private void writeData(TileEntityGeneratorPart tile, int energy) {
+        tile.setStoredEnergy(energy);
+        if (WorldHelper.chunkLoaded(tile.getWorld(), tile.getPos())) {
+            tile.markDirty();
+        }
     }
 
     @Nonnull

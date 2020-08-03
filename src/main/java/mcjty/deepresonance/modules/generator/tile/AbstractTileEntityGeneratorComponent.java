@@ -11,6 +11,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 
@@ -30,7 +32,6 @@ public abstract class AbstractTileEntityGeneratorComponent extends AbstractTileE
     @Override
     public void addInformation(@Nonnull IInformation information, @Nonnull IInfoDataAccessorBlock hitData) {
         CompoundNBT data = hitData.getData();
-        information.addInformation(data.getString("grty"));
         if (data.getBoolean("grid")) {
             if (data.getBoolean("dup")) {
                 information.addInformation(TextFormatting.ITALIC + "Multiple controllers or collectors detected!");
@@ -44,7 +45,6 @@ public abstract class AbstractTileEntityGeneratorComponent extends AbstractTileE
     @Override
     public void gatherInformation(@Nonnull CompoundNBT tag, @Nonnull ServerPlayerEntity player, @Nonnull IInfoDataAccessorBlock hitData) {
         tag.putBoolean("grid", grid != null);
-        tag.putString("grty", grid + "");
         if (grid != null) {
             tag.putBoolean("dup", grid.hasDuplicates());
             tag.putInt("maxPower", grid.getMaxEnergyStored());
@@ -54,17 +54,27 @@ public abstract class AbstractTileEntityGeneratorComponent extends AbstractTileE
     }
 
     @Override
+    public CompoundNBT write(CompoundNBT tagCompound) {
+        tagCompound.putBoolean("isOn", isOn);
+        return super.write(tagCompound);
+    }
+
+    @Override
+    public void read(CompoundNBT tagCompound) {
+        isOn = tagCompound.getBoolean("isOn");
+        super.read(tagCompound);
+    }
+
+    @Override
     public void writeClientDataToNBT(CompoundNBT tagCompound) {
         super.writeClientDataToNBT(tagCompound);
         tagCompound.putInt("startup", startupTimer);
-        tagCompound.putBoolean("isOn", isOn);
     }
 
     @Override
     public void readClientDataFromNBT(CompoundNBT tagCompound) {
         super.readClientDataFromNBT(tagCompound);
         startupTimer = tagCompound.getInt("startup");
-        isOn = tagCompound.getBoolean("isOn");
     }
 
     public int getStartupTimer() {
@@ -74,6 +84,8 @@ public abstract class AbstractTileEntityGeneratorComponent extends AbstractTileE
     public void setStartupTimer(int startupTimer) {
         this.startupTimer = startupTimer;
         if (WorldHelper.chunkLoaded(getWorld(), getPos())) {
+            boolean on = startupTimer >= 0;
+            generatorTurnedOn(on);
             markDirtyClient();
         }
     }
