@@ -1,6 +1,6 @@
 plugins {
     id "nl.elec332.gradle.minecraft.moddev" version "0.2.1-Beta"
-    id "nl.elec332.gradle.minecraft.modmaven" version "0.2.1-Beta"
+    //id "nl.elec332.gradle.minecraft.modmaven" version "0.2.1-Beta"
 }
 
 group = "com.github.mcjty" //Keep the old maven structure
@@ -76,24 +76,24 @@ dependencies {
     }
 }
 
-modMaven {
-    githubUrl = "https://github.com/McJtyMods/DeepResonance"
-    forceLicense = false
-
-    developers {
-        developer {
-            id "Elec332"
-            name "Elec332"
-            roles {
-                role "developer"
-            }
-        }
-        developer {
-            id "McJty"
-            name "McJty"
-            roles {
-                role "developer"
-            }
-        }
-    }
-}
+//modMaven {
+//    githubUrl = "https://github.com/McJtyMods/DeepResonance"
+//    forceLicense = false
+//
+//    developers {
+//        developer {
+//            id "Elec332"
+//            name "Elec332"
+//            roles {
+//                role "developer"
+//            }
+//        }
+//        developer {
+//            id "McJty"
+//            name "McJty"
+//            roles {
+//                role "developer"
+//            }
+//        }
+//    }
+//}
