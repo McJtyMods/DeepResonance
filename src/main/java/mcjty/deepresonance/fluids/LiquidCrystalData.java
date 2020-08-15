@@ -10,13 +10,14 @@ import net.minecraftforge.fluids.FluidStack;
  */
 public class LiquidCrystalData implements ILiquidCrystalData {
 
-    private FluidStack referenceStack;
+    private final FluidStack referenceStack;
     private float quality;
     private float purity;
     private float strength;
     private float efficiency;
 
-    private LiquidCrystalData() {
+    private LiquidCrystalData(FluidStack referenceStack) {
+        this.referenceStack = referenceStack;
     }
 
     public static LiquidCrystalData fromNBT(CompoundNBT tag, int amount) {
@@ -24,7 +25,7 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     }
 
     public static FluidStack makeLiquidCrystalStack(int amount, float quality, float purity, float strength, float efficiency) {
-        LiquidCrystalData data = new LiquidCrystalData();
+        LiquidCrystalData data = new LiquidCrystalData(new FluidStack(FluidRegister.liquidCrystal, amount));
         data.setAmount(amount);
         data.setQuality(quality);
         data.setPurity(purity);
@@ -37,16 +38,11 @@ public class LiquidCrystalData implements ILiquidCrystalData {
         if (!FluidRegister.isValidLiquidCrystalStack(stack)) {
             return null;
         }
-        LiquidCrystalData ret = fromNBT(stack.getOrCreateTag());
-        ret.referenceStack = stack;
-        return ret;
-    }
-
-    private static LiquidCrystalData fromNBT(CompoundNBT fluidTag) {
+        CompoundNBT fluidTag = stack.getOrCreateTag();
         if (fluidTag == null) {
             return null;
         }
-        LiquidCrystalData ret = new LiquidCrystalData();
+        LiquidCrystalData ret = new LiquidCrystalData(stack);
         ret.quality = fluidTag.getFloat("quality");
         ret.purity = fluidTag.getFloat("purity");
         ret.strength = fluidTag.getFloat("strength");

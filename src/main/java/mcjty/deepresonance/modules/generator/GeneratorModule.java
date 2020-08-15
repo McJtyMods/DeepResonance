@@ -6,6 +6,7 @@ import elec332.core.grid.multiblock.SimpleDynamicMultiblockTileLink;
 import elec332.core.handler.ElecCoreRegistrar;
 import elec332.core.util.BlockProperties;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.modules.generator.block.BlockCollector;
 import mcjty.deepresonance.modules.generator.grid.GeneratorGrid;
 import mcjty.deepresonance.modules.generator.tile.AbstractTileEntityGeneratorComponent;
 import mcjty.deepresonance.modules.generator.tile.TileEntityEnergyCollector;
@@ -26,7 +27,7 @@ import static mcjty.deepresonance.DeepResonance.MODID;
 @ElecModule(owner = MODID, name = "Generator")
 public class GeneratorModule {
 
-    public static final RegistryObject<Block> ENERGY_COLLECTOR_BLOCK = DeepResonance.nonRotatingBlock("energy_collector", TileEntityEnergyCollector::new);
+    public static final RegistryObject<Block> ENERGY_COLLECTOR_BLOCK = DeepResonance.block("energy_collector", TileEntityEnergyCollector::new, BlockCollector::new);
     public static final RegistryObject<Block> GENERATOR_CONTROLLER_BLOCK = DeepResonance.defaultBlock("generator_controller", TileEntityGeneratorController::new, state -> state.with(BlockProperties.ON, false), BlockProperties.ON);
     public static final RegistryObject<Block> GENERATOR_PART_BLOCK = DeepResonance.nonRotatingBlock("generator_part", TileEntityGeneratorPart::new, state -> state.with(BlockProperties.ON, false).with(BlockProperties.UP, false).with(BlockProperties.DOWN, false), BlockProperties.ON, BlockProperties.UP, BlockProperties.DOWN);
 

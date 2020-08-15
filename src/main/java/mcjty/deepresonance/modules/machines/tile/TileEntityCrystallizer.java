@@ -1,14 +1,16 @@
 package mcjty.deepresonance.modules.machines.tile;
 
-import com.google.common.base.Preconditions;
+import elec332.core.api.registration.HasSpecialRenderer;
 import elec332.core.api.registration.RegisteredTileEntity;
 import elec332.core.inventory.BasicItemHandler;
+import elec332.core.util.ServerHelper;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.fluids.LiquidCrystalData;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
 import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.machines.client.CrystallizerTESR;
 import mcjty.deepresonance.modules.machines.client.gui.CrystallizerGui;
 import mcjty.deepresonance.setup.FluidRegister;
 import mcjty.deepresonance.util.AbstractPoweredTileEntity;
@@ -20,6 +22,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,6 +40,7 @@ import javax.annotation.Nullable;
  * Created by Elec332 on 30-7-2020
  */
 @RegisteredTileEntity("crystallizer")
+@HasSpecialRenderer(CrystallizerTESR.class)
 public class TileEntityCrystallizer extends AbstractPoweredTileEntity implements ITickableTileEntity {
 
     public static final int SLOT = 0;
@@ -50,8 +55,7 @@ public class TileEntityCrystallizer extends AbstractPoweredTileEntity implements
             return new CrystallizerGui(tile, container, inventory);
         }
 
-
-    }.modifyContainer((container, tile) -> container.shortListener(syncValue(() -> tile.crystalData == null ? 0 : (int) ((tile.crystalData.getAmount() / (float) getRclPerCrystal()) * 100), i -> tile.progress = i)));
+    };
 
     private int progress = 0;
     private ILiquidCrystalData crystalData;
@@ -82,7 +86,7 @@ public class TileEntityCrystallizer extends AbstractPoweredTileEntity implements
 
     @Override
     public void tick() {
-        if (Preconditions.checkNotNull(world).isRemote) {
+        if (WorldHelper.isClient(getWorld())) {
             return;
         }
 
@@ -90,9 +94,12 @@ public class TileEntityCrystallizer extends AbstractPoweredTileEntity implements
             return;
         }
 
-        energyHandler.extractEnergy(MachinesModule.crystallizerConfig.powerPerTick.get(), false);
+        energyHandler.consumeEnergy(MachinesModule.crystallizerConfig.powerPerTick.get());
         int rclPerCrystal = getRclPerCrystal();
-        int drain = Math.min(MachinesModule.crystallizerConfig.rclPerTick.get(), rclPerCrystal - crystalData.getAmount());
+        int drain = MachinesModule.crystallizerConfig.rclPerTick.get();
+        if (crystalData != null) {
+            drain = Math.min(drain, rclPerCrystal - crystalData.getAmount());
+        }
         if (drain > 0) { //Config can change between ticks
             FluidStack stack = rclTank.orElseThrow(NullPointerException::new).drain(drain, IFluidHandler.FluidAction.EXECUTE);
             ILiquidCrystalData data = LiquidCrystalData.fromStack(stack);
@@ -112,7 +119,14 @@ public class TileEntityCrystallizer extends AbstractPoweredTileEntity implements
             crystal.setPower(100);
             crystalData = null;
             itemHandler.setStackInSlot(SLOT, CoreModule.RESONATING_CRYSTAL_BLOCK.get().createStack(crystal));
-            markDirty();
+            markDirtyClient();
+        }
+        int newProgress = crystalData == null ? 0 : (int) ((crystalData.getAmount() / (float) getRclPerCrystal()) * 100);
+        if (progress != newProgress) {
+            CompoundNBT packet = new CompoundNBT();
+            packet.putInt("progress", newProgress);
+            ServerHelper.sendTileUpdatePackets(this, 3, packet);
+            progress = newProgress;
         }
     }
 
@@ -143,6 +157,7 @@ public class TileEntityCrystallizer extends AbstractPoweredTileEntity implements
     private boolean checkTank() {
         rclTank = null;
         if (tankCooldown <= 0) {
+            tankCooldown = 21;
             TileEntity tile = WorldHelper.getTileAt(getWorld(), pos.down());
             if (tile != null) {
                 rclTank = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
@@ -154,6 +169,15 @@ public class TileEntityCrystallizer extends AbstractPoweredTileEntity implements
 
     public boolean hasCrystal() {
         return !itemHandler.getStackInSlot(SLOT).isEmpty();
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
+        if (packet.getTileEntityType() == 3) {
+            progress = packet.getNbtCompound().getInt("progress");
+            return;
+        }
+        super.onDataPacket(net, packet);
     }
 
     @Override

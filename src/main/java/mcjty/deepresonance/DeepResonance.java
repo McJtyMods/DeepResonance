@@ -8,9 +8,6 @@ import elec332.core.api.registration.IObjectRegister;
 import elec332.core.api.registration.IWorldGenRegister;
 import elec332.core.config.ConfigWrapper;
 import elec332.core.util.FMLHelper;
-import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.deepresonance.modules.machines.MachinesModule;
-import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.setup.Config;
 import mcjty.deepresonance.setup.FluidRegister;
 import mcjty.deepresonance.setup.ModSetup;
@@ -24,8 +21,6 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.network.PacketHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
@@ -45,6 +40,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
@@ -92,12 +88,6 @@ public class DeepResonance implements ModBase, IElecCoreMod, IModuleController {
             @Override
             public void accept(FMLLoadCompleteEvent event) {
                 PacketHandler.registerStandardMessages(9, McJtyLib.networkHandler);
-                if (FMLHelper.getDist().isClient()) {
-                    RenderTypeLookup.setRenderLayer(TankModule.TANK_BLOCK.get(), RenderType.getTranslucent());
-                    RenderTypeLookup.setRenderLayer(CoreModule.RESONATING_CRYSTAL_BLOCK.get(), RenderType.getTranslucent());
-                    RenderTypeLookup.setRenderLayer(MachinesModule.CRYSTALLIZER_BLOCK.get(), RenderType.getTranslucent());
-                    RenderTypeLookup.setRenderLayer(MachinesModule.LASER_BLOCK.get(), RenderType.getTranslucent());
-                }
             }
 
         });
@@ -130,7 +120,7 @@ public class DeepResonance implements ModBase, IElecCoreMod, IModuleController {
 
     @Override
     public ForgeConfigSpec.BooleanValue getModuleConfig(String moduleName) {
-        return config.registerConfig(builder -> builder.define(moduleName.toLowerCase() + ".enabled", true));
+        return config.registerConfig(builder -> builder.comment("Whether the " + moduleName.toLowerCase() + " should be enabled").define(moduleName.toLowerCase() + ".enabled", true));
     }
 
     public static RegistryObject<Block> defaultBlock(final String name, final Supplier<TileEntity> tile) {
@@ -138,7 +128,7 @@ public class DeepResonance implements ModBase, IElecCoreMod, IModuleController {
     }
 
     public static RegistryObject<Block> defaultBlock(final String name, final Supplier<TileEntity> tile, UnaryOperator<BlockState> mod, IProperty<?>... props) {
-        return DeepResonance.BLOCKS.register(name, () -> new DeepResonanceBlock(new BlockBuilder().tileEntitySupplier(tile).infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey(name)))) {
+        return block(name, tile, builder -> new DeepResonanceBlock(builder) {
 
             @Override
             protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
@@ -154,7 +144,7 @@ public class DeepResonance implements ModBase, IElecCoreMod, IModuleController {
     }
 
     public static RegistryObject<Block> nonRotatingBlock(final String name, final Supplier<TileEntity> tile, UnaryOperator<BlockState> mod, IProperty<?>... props) {
-        return DeepResonance.BLOCKS.register(name, () -> new DeepResonanceBlock(new BlockBuilder().tileEntitySupplier(tile).infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey(name)))) {
+        return block(name, tile, builder -> new DeepResonanceBlock(builder) {
 
             @Override
             public RotationType getRotationType() {
@@ -167,6 +157,10 @@ public class DeepResonance implements ModBase, IElecCoreMod, IModuleController {
             }
 
         }.modifyDefaultState(mod));
+    }
+
+    public static RegistryObject<Block> block(final String name, final Supplier<TileEntity> tile, final Function<BlockBuilder, DeepResonanceBlock> constructor) {
+        return DeepResonance.BLOCKS.register(name, () -> constructor.apply(new BlockBuilder().tileEntitySupplier(tile).infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey(name)))));
     }
 
     public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {

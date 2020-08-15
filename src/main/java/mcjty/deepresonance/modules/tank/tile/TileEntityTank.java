@@ -8,6 +8,8 @@ import elec332.core.api.registration.HasSpecialRenderer;
 import elec332.core.api.registration.RegisteredTileEntity;
 import elec332.core.util.RegistryHelper;
 import elec332.core.util.StatCollector;
+import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
+import mcjty.deepresonance.fluids.LiquidCrystalData;
 import mcjty.deepresonance.modules.tank.client.TankTESR;
 import mcjty.deepresonance.modules.tank.grid.TankGrid;
 import mcjty.deepresonance.util.AbstractTileEntity;
@@ -30,6 +32,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 /**
  * Created by Elec332 on 7-1-2020
@@ -150,6 +154,15 @@ public class TileEntityTank extends AbstractTileEntity implements IInfoProvider 
                 Fluid fluid = RegistryHelper.getFluidRegistry().getValue(new ResourceLocation(tag.getString("fluid")));
                 if (fluid != null) {
                     information.addInformation(StatCollector.translateToLocal(fluid.getAttributes().getTranslationKey()));
+                    if (tag.contains("efficiency")) {
+                        DecimalFormat decimalFormat = new DecimalFormat("#.#");
+                        decimalFormat.setRoundingMode(RoundingMode.DOWN);
+                        information.addInformation("");
+                        information.addInformation("Efficiency: " + decimalFormat.format(tag.getFloat("efficiency") * 100) + "%");
+                        information.addInformation("Purity: " + decimalFormat.format(tag.getFloat("purity") * 100) + "%");
+                        information.addInformation("Quality: " + decimalFormat.format(tag.getFloat("quality") * 100) + "%");
+                        information.addInformation("Strength: " + decimalFormat.format(tag.getFloat("strength") * 100) + "%");
+                    }
                 }
             }
             information.addInformation(tag.getInt("amt") + "/" + tag.getInt("capacity") + "mB");
@@ -164,6 +177,13 @@ public class TileEntityTank extends AbstractTileEntity implements IInfoProvider 
             Fluid fluid = grid.getStoredFluid();
             if (fluid != null) {
                 tag.putString("fluid", Preconditions.checkNotNull(fluid.getRegistryName()).toString());
+                ILiquidCrystalData data = LiquidCrystalData.fromStack(grid.getFluidInTank(0));
+                if (data != null) {
+                    tag.putFloat("efficiency", data.getEfficiency());
+                    tag.putFloat("purity", data.getPurity());
+                    tag.putFloat("quality", data.getQuality());
+                    tag.putFloat("strength", data.getStrength());
+                }
             }
         }
     }

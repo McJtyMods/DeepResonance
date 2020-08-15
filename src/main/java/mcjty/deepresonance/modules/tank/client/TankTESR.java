@@ -44,7 +44,7 @@ public class TankTESR extends AbstractTileEntityRenderer<TileEntityTank> {
         BlockPos pos = tileTank.getPos();
         final Fluid renderFluid = tileTank.getClientRenderFluid();
         EnumSet<Direction> dirs = Arrays.stream(Direction.values()).filter(dir -> {
-            if (dir == Direction.DOWN && !(renderFluid == null || renderFluid == Fluids.EMPTY) && RenderTypeLookup.canRenderInLayer(renderFluid.getDefaultState(), RenderType.getSolid())) {
+            if (dir == Direction.DOWN && tileTank.getClientRenderHeight() > 0.0001 && !(renderFluid == null || renderFluid == Fluids.EMPTY) && RenderTypeLookup.canRenderInLayer(renderFluid.getDefaultState(), RenderType.getSolid())) {
                 return false; //If there is a fluid being rendered, the bottom doesn't need to be checked if the fluid is opaque
             }
             TileEntity tile = WorldHelper.getTileAt(Preconditions.checkNotNull(tileTank.getWorld()), pos.offset(dir));

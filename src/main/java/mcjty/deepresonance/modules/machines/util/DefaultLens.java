@@ -27,14 +27,11 @@ import java.util.function.Consumer;
 public class DefaultLens implements ILens {
 
     private static final VoxelShape SHAPE = VoxelShapes.create(2.1f / 16, 0, 2.1f / 16, 13.9f / 16, 1.7f / 16, 13.9f / 16);
-    private LazyOptional<IFluidHandler> fluidHandler = null;
+    private LazyOptional<IFluidHandler> fluidHandler = LazyOptional.empty();
 
     @Override
-    public void onNeighborUpdate(IWorld world, BlockPos pos, Direction side) {
-        if (fluidHandler != null && !fluidHandler.isPresent()) {
-            fluidHandler = null;
-        }
-        if (fluidHandler == null) {
+    public void checkNeighbors(IWorld world, BlockPos pos, Direction side) {
+        if (!fluidHandler.isPresent()) {
             TileEntity tile = WorldHelper.getTileAt(world, pos.offset(side));
             if (tile != null) {
                 LazyOptional<IFluidHandler> handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
@@ -66,7 +63,7 @@ public class DefaultLens implements ILens {
 
     @Override
     public void infuseFluid(int amount, Consumer<ILiquidCrystalData> modifier) {
-        if (fluidHandler != null && fluidHandler.isPresent()) {
+        if (amount > 0 && fluidHandler.isPresent()) {
             fluidHandler.ifPresent(tank -> {
                 FluidStack fluid = tank.drain(amount, IFluidHandler.FluidAction.SIMULATE);
                 if (FluidRegister.isValidLiquidCrystalStack(fluid)) {

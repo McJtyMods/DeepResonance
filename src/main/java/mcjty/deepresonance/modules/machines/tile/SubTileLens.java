@@ -2,6 +2,7 @@ package mcjty.deepresonance.modules.machines.tile;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import elec332.core.ElecCore;
 import elec332.core.tile.sub.SubTileLogicBase;
 import elec332.core.util.RegistryHelper;
 import elec332.core.util.math.HitboxHelper;
@@ -78,7 +79,6 @@ public class SubTileLens extends SubTileLogicBase {
     }
 
     private void addLens_(ILens lens, Direction side) {
-        System.out.println("ADDLENS " + side);
         lenses.put(side, lens);
         VoxelShape shape = new IndexedVoxelShape(HitboxHelper.rotateFromDown(lens.getHitbox(), side), 0, lens);
         if (this.shape == null) {
@@ -148,7 +148,7 @@ public class SubTileLens extends SubTileLogicBase {
 
     @Override
     public void neighborChanged(BlockPos neighborPos, Block changedBlock, boolean observer) {
-        lenses.forEach((dir, lens) -> lens.onNeighborUpdate(getWorld(), getPos(), dir));
+        lenses.forEach((dir, lens) -> lens.checkNeighbors(getWorld(), getPos(), dir));
         for (Direction direction : Direction.values()) {
             ILens lens = lenses.get(direction);
             if (lens != null) {
@@ -157,6 +157,13 @@ public class SubTileLens extends SubTileLogicBase {
                     WorldHelper.dropStack(getWorld(), getPos(), lens.getPickBlock());
                 }
             }
+        }
+    }
+
+    @Override
+    public void onLoad() {
+        if (WorldHelper.isServer(getWorld())) {
+            ElecCore.tickHandler.registerCall(() -> lenses.forEach((dir, lens) -> lens.checkNeighbors(getWorld(), getPos(), dir)), getWorld());
         }
     }
 

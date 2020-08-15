@@ -26,7 +26,6 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,19 +59,7 @@ public class BlockCrystal extends BaseBlock {
     }
 
     @Override
-    public void onBlockHarvested(World worldIn, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull PlayerEntity player) {
-        if (!worldIn.isRemote) {
-            WorldHelper.dropStack(worldIn, pos, getStack(worldIn, pos));
-        }
-        super.onBlockHarvested(worldIn, pos, state, player);
-    }
-
-    @Override
     public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
-        return getStack(world, pos);
-    }
-
-    public ItemStack getStack(IBlockReader world, BlockPos pos) {
         TileEntity tile = WorldHelper.getTileAt(world, pos);
         if (tile instanceof TileEntityResonatingCrystal) {
             return createStack((TileEntityResonatingCrystal) tile);

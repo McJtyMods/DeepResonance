@@ -46,9 +46,8 @@ public class LootTablesProvider extends AbstractLootTableProvider {
                 registerDropSelfLootTable(GeneratorModule.GENERATOR_CONTROLLER_BLOCK);
                 registerDropSelfLootTable(GeneratorModule.GENERATOR_PART_BLOCK);
 
-                //todo: tank & crystal
-                registerEmptyLootTable(CoreModule.RESONATING_CRYSTAL_BLOCK.get());
-                registerEmptyLootTable(TankModule.TANK_BLOCK.get());
+                registerDropSelfLootTable(CoreModule.RESONATING_CRYSTAL_BLOCK, builder -> builder.acceptFunction(copyAllTileTags()));
+                registerDropSelfLootTable(TankModule.TANK_BLOCK, builder -> builder.acceptFunction(copyAllTileTags()));
             }
 
         });

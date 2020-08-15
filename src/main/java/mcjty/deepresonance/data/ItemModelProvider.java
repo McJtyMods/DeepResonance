@@ -36,7 +36,7 @@ class ItemModelProvider extends AbstractItemModelProvider {
         cubeAll(CoreModule.MACHINE_FRAME_ITEM, "block/machine_side");
 
         //Blocks
-        parentedModel(TankModule.TANK_ITEM, "builtin/entity");
+        parentedModel(TankModule.TANK_ITEM, BUILTIN_ENTITY);
         parentedModel(CoreModule.RESONATING_ORE_STONE_BLOCK);
         parentedModel(CoreModule.RESONATING_ORE_NETHER_BLOCK);
         parentedModel(CoreModule.RESONATING_ORE_END_BLOCK);
@@ -45,7 +45,7 @@ class ItemModelProvider extends AbstractItemModelProvider {
         parentedModel(RadiationModule.DENSE_OBSIDIAN_BLOCK);
         parentedModel(CoreModule.RESONATING_PLATE_BLOCK_BLOCK);
         parentedModel(MachinesModule.VALVE_BLOCK);
-        parentedModel(MachinesModule.SMELTER_ITEM, "block/smelter_inactive");
+        parentedModel(MachinesModule.SMELTER_BLOCK);
         parentedModel(MachinesModule.PURIFIER_BLOCK);
         parentedModel(PulserModule.PULSER_BLOCK);
         parentedModel(MachinesModule.LENS_ITEM, "block/lens_mc");

@@ -11,6 +11,8 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
@@ -35,7 +37,7 @@ public class ItemLens extends ItemSubTile {
 
     @Override
     @SuppressWarnings("all")
-    public void onEmptySolidSideClicked(@Nonnull TileEntity tile, @Nonnull Direction hit, PlayerEntity player, ItemStack stack, BlockState state) {
+    public void onEmptySolidSideClicked(@Nonnull World world, @Nonnull BlockPos clickedPos, @Nonnull TileEntity tile, @Nonnull Direction hit, PlayerEntity player, ItemStack stack, BlockState state) {
         ILens lens = new DefaultLens();
         SubTileLens handler = tile.getCapability(SubTileLens.LENSES).orElse(null);
         if (handler != null && handler.addLens(lens, hit)) {

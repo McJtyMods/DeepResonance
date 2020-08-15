@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.machines.tile;
 
-import com.google.common.base.Preconditions;
 import elec332.core.api.registration.RegisteredTileEntity;
 import elec332.core.inventory.BasicItemHandler;
 import elec332.core.util.BlockProperties;
@@ -40,7 +39,7 @@ public class TileEntitySmelter extends AbstractPoweredTileEntity implements ITic
     public static final int SLOT = 0;
 
     private final DualTankHook tankHook = new DualTankHook(this, Direction.DOWN, Direction.UP);
-    private static final RegisteredContainer<GenericContainer, SmelterGui, TileEntitySmelter> container = new RegisteredContainer<GenericContainer, SmelterGui, TileEntitySmelter>("smelter", 1, factory -> {
+    private static final RegisteredContainer<GenericContainer, SmelterGui, TileEntitySmelter> container = new RegisteredContainer<GenericContainer, SmelterGui, TileEntitySmelter>("smelter", 3, factory -> {
         factory.playerSlots(10, 70);
         factory.slot(SlotDefinition.container(), ContainerFactory.CONTAINER_CONTAINER, SLOT, 64, 24);
     }) {
@@ -64,11 +63,6 @@ public class TileEntitySmelter extends AbstractPoweredTileEntity implements ITic
         super(MachinesModule.smelterConfig.powerMaximum.get(), MachinesModule.smelterConfig.powerPerTickIn.get(), new BasicItemHandler(1) {
 
             @Override
-            public boolean canExtract(int slot) {
-                return false;
-            }
-
-            @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 return DeepResonanceTags.RESONANT_ORE_ITEM.contains(stack.getItem());
             }
@@ -84,13 +78,13 @@ public class TileEntitySmelter extends AbstractPoweredTileEntity implements ITic
 
     @Override
     public void tick() {
-        if (Preconditions.checkNotNull(getWorld()).isRemote) {
+        if (WorldHelper.isClient(getWorld())) {
             return;
         }
         if (processTimeLeft > 0) {
             if (canWork()) {
                 processTimeLeft--;
-                energyHandler.extractEnergy(MachinesModule.smelterConfig.powerPerOreTick.get(), false);
+                energyHandler.consumeEnergy(MachinesModule.smelterConfig.powerPerOreTick.get());
                 if (processTimeLeft == 0) {
                     // Done!
                     finishSmelting();

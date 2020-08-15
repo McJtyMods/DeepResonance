@@ -1,5 +1,6 @@
 package mcjty.deepresonance.modules.machines;
 
+import com.google.common.base.Preconditions;
 import elec332.core.api.client.model.ModelLoadEvent;
 import elec332.core.api.module.ElecModule;
 import elec332.core.block.BlockSubTile;
@@ -12,6 +13,7 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.infusion.InfusionBonus;
 import mcjty.deepresonance.api.laser.ILens;
 import mcjty.deepresonance.api.laser.ILensMirror;
+import mcjty.deepresonance.modules.machines.client.CrystallizerTESR;
 import mcjty.deepresonance.modules.machines.client.LensModelCache;
 import mcjty.deepresonance.modules.machines.item.ItemLens;
 import mcjty.deepresonance.modules.machines.tile.*;
@@ -21,6 +23,8 @@ import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
@@ -29,6 +33,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
 /**
@@ -85,6 +90,8 @@ public class MachinesModule {
     public void loadModels(ModelLoadEvent event) {
         ModelResourceLocation location = new ModelResourceLocation(new DeepResonanceResourceLocation("lens"), "");
         event.registerModel(location, LensModelCache.INSTANCE.setModel(event.getModel(location)));
+        location = new ModelResourceLocation(new DeepResonanceResourceLocation("resonating_crystal_model"), "empty=false,facing=north,very_pure=true");
+        CrystallizerTESR.setModel(Preconditions.checkNotNull(event.getModel(location)));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -104,6 +111,13 @@ public class MachinesModule {
             return -1;
         }, MachinesModule.LASER_BLOCK.get());
         RenderHelper.getItemColors().register((stack, index) -> index == 1 ? 0x484B52 : -1, MachinesModule.LASER_ITEM.get());
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @ElecModule.EventHandler
+    public void clientSetup(FMLClientSetupEvent event) {
+        RenderTypeLookup.setRenderLayer(MachinesModule.CRYSTALLIZER_BLOCK.get(), RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(MachinesModule.LASER_BLOCK.get(), RenderType.getCutout());
     }
 
 }

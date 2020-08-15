@@ -17,11 +17,15 @@ import mcjty.deepresonance.modules.tank.grid.TankGridHandler;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -59,20 +63,29 @@ public class TankModule implements IConfigurableElement {
 
     @OnlyIn(Dist.CLIENT)
     @ElecModule.EventHandler
-    public void setupClient(FMLClientSetupEvent event) {
+    public void clientSetup(FMLClientSetupEvent event) {
         RenderingRegistry.instance().registerLoader(TankRenderer.INSTANCE);
         final TankTESR tesr = new TankTESR();
         RenderingRegistry.instance().setItemRenderer(TANK_ITEM.get(), new ItemStackTileEntityRenderer() {
 
             @Override
             public void render(@Nonnull ItemStack itemStackIn, @Nonnull MatrixStack matrixStackIn, @Nonnull IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+                matrixStackIn.push();
                 FluidStack stack = BlockTank.readFromTileNbt(AbstractItemBlock.getTileData(itemStackIn));
                 if (!stack.isEmpty()) {
-                    tesr.render(matrixStackIn, bufferIn, stack.getFluid(), (stack.getAmount() / (float) TankGrid.TANK_BUCKETS), combinedLightIn);
+                    tesr.render(matrixStackIn, bufferIn, stack.getFluid(), (stack.getAmount() / ((float) TankGrid.TANK_BUCKETS * 1000)), combinedLightIn);
                 }
+                for (Direction dir : Direction.values()) {
+                    for (BakedQuad quad : TankRenderer.INSTANCE.getModelQuads(dir)) {
+                        bufferIn.getBuffer(RenderType.getTranslucent()).addVertexData(matrixStackIn.getLast(), quad, 1, 1, 1, 1, combinedLightIn, combinedOverlayIn);
+                    }
+                }
+                matrixStackIn.pop();
             }
 
         });
+
+        RenderTypeLookup.setRenderLayer(TankModule.TANK_BLOCK.get(), RenderType.getTranslucent());
     }
 
     @OnlyIn(Dist.CLIENT)

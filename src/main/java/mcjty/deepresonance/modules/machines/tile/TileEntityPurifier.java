@@ -3,6 +3,7 @@ package mcjty.deepresonance.modules.machines.tile;
 import com.google.common.base.Preconditions;
 import elec332.core.api.registration.RegisteredTileEntity;
 import elec332.core.inventory.BasicItemHandler;
+import elec332.core.inventory.ItemEjector;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.fluids.LiquidCrystalData;
 import mcjty.deepresonance.modules.core.CoreModule;
@@ -37,6 +38,7 @@ public class TileEntityPurifier extends AbstractTileEntity implements ITickableT
     public static final int SLOT = 0;
 
     private final DualTankHook tankHook = new DualTankHook(this, Direction.UP, Direction.DOWN).allowDuplicates().setTimeout(10);
+    private final ItemEjector ejector = new ItemEjector();
 
     private static final RegisteredContainer<GenericContainer, PurifierGui, TileEntityPurifier> container = new RegisteredContainer<GenericContainer, PurifierGui, TileEntityPurifier>("purifier", 1, factory -> {
         factory.playerSlots(10, 70);
@@ -59,6 +61,11 @@ public class TileEntityPurifier extends AbstractTileEntity implements ITickableT
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 return stack.getItem() == CoreModule.FILTER_MATERIAL_ITEM.get();
+            }
+
+            @Override
+            protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
+                return 1;
             }
 
         });
@@ -113,10 +120,16 @@ public class TileEntityPurifier extends AbstractTileEntity implements ITickableT
             }
         }
         timeToGo = -1;
+        markDirty();
     }
 
-    private void consumeFilter() { //TODO: Auto-eject upgrade
-        itemHandler.setStackInSlot(SLOT, new ItemStack(CoreModule.SPENT_FILTER_ITEM.get()));
+    private void consumeFilter() {
+        ItemStack stack = new ItemStack(CoreModule.SPENT_FILTER_ITEM.get());
+        if (true) { //TODO: Auto-eject upgrade
+            ejector.eject(getWorld(), getPos(), Direction.Plane.HORIZONTAL, stack);
+            stack = ItemStack.EMPTY;
+        }
+        itemHandler.setStackInSlot(SLOT, stack);
     }
 
     private int doPurify(@Nonnull ILiquidCrystalData fluidData) {

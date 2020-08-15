@@ -16,6 +16,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
@@ -56,7 +57,7 @@ public class TileEntityEnergyCollector extends AbstractTileEntityGeneratorCompon
                         TileEntity tile = WorldHelper.getTileAt(getWorld(), pos);
                         //Also check if there are obstructions
                         if (tile instanceof TileEntityResonatingCrystal) {
-                            BlockPos res = RayTraceHelper.rayTrace(getWorld(), getPos(), pos).getPos();
+                            BlockPos res = RayTraceHelper.rayTrace(getWorld(), new Vec3d(getPos()).add(0.5, 0.6, 0.5), pos).getPos();
                             if (res.equals(pos)) {
                                 crystalz.add((TileEntityResonatingCrystal) tile);
                             } else {

@@ -53,19 +53,7 @@ public class BlockTank extends BaseBlock {
     }
 
     @Override
-    public void onBlockHarvested(World worldIn, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull PlayerEntity player) {
-        if (!worldIn.isRemote) {
-            WorldHelper.dropStack(worldIn, pos, getStack(worldIn, pos));
-        }
-        super.onBlockHarvested(worldIn, pos, state, player);
-    }
-
-    @Override
     public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
-        return getStack(world, pos);
-    }
-
-    public ItemStack getStack(IBlockReader world, BlockPos pos) {
         ItemStack ret = new ItemStack(this);
         TileEntity tile = WorldHelper.getTileAt(world, pos);
         if (tile instanceof TileEntityTank) {

@@ -1,7 +1,7 @@
 package mcjty.deepresonance.modules.machines.tile;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import elec332.core.ElecCore;
 import elec332.core.api.registration.HasSpecialRenderer;
 import elec332.core.api.registration.RegisteredTileEntity;
 import elec332.core.inventory.BasicItemHandler;
@@ -73,14 +73,14 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
             return new LaserGui(tile, container, inventory);
         }
 
-    }.modifyContainer((container, tile) -> container.shortListener(syncValue(tile::getProgressCounter, i -> tile.progressCounter = i)));
+    };
 
     public TileEntityLaser() {
-        super(MachinesModule.laserConfig.powerMaximum.get(), MachinesModule.laserConfig.powerPerTickIn.get(), new BasicItemHandler(2) {
+        super(MachinesModule.laserConfig.powerMaximum.get(), MachinesModule.laserConfig.powerPerTickIn.get(), new BasicItemHandler(3) {
 
             @Override
             public boolean canExtract(int slot) {
-                return false;
+                return true;
             }
 
             @Override
@@ -112,7 +112,7 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
 
     @Override
     public void tick() {
-        if (Preconditions.checkNotNull(world).isRemote) {
+        if (WorldHelper.isClient(getWorld())) {
             return;
         }
 
@@ -148,6 +148,7 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
                 processBonus();
             }
         }
+        progressCounter--;
         if (progressCounter <= 0) {
             processBonus();
         } else if (dirty) { //Above also marks dirty, no need to do this twice
@@ -167,15 +168,16 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
         }
         activeBonus = InfusionBonus.EMPTY;
         efficiency = 0;
-        if (crystalLiquid > 0 && lens != null && lens.isPresent()) {
+        if (energyHandler.getEnergyStored() > 1000 && crystalLiquid > 0 && lens != null && lens.isPresent()) {
             ItemStack stack = itemHandler.extractItem(SLOT_CATALYST, 1, true);
             InfusionBonus bonus = MachinesModule.INFUSION_BONUSES.getInfusionBonus(stack);
             if (!bonus.isEmpty()) {
                 bonus = MachinesModule.INFUSION_BONUSES.getInfusionBonus(itemHandler.extractItem(SLOT_CATALYST, 1, false));
             }
-            progressCounter = bonus.getDuration();
+            activeBonus = bonus;
         }
-        markDirty();
+        progressCounter = activeBonus.getDuration();
+        markDirtyClient();
     }
 
     private void checkCrystal() {
@@ -234,6 +236,7 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
         for (int i = 0; i < list.size(); i++) {
             laserBeam.add(NBTUtil.readBlockPos(list.getCompound(i)));
         }
+        ElecCore.tickHandler.registerCall(() -> WorldHelper.markBlockForRenderUpdate(getWorld(), getPos()), getWorld());
     }
 
     @Override
@@ -279,11 +282,6 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
     @OnlyIn(Dist.CLIENT)
     public float getCrystalLiquid() {
         return crystalLiquid;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public int getProgressCounter() {
-        return progressCounter;
     }
 
     @OnlyIn(Dist.CLIENT)

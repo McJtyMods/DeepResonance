@@ -16,7 +16,7 @@ import java.util.function.Consumer;
  */
 public interface ILens extends INBTSerializable<CompoundNBT> {
 
-    default void onNeighborUpdate(IWorld world, BlockPos pos, Direction side) {
+    default void checkNeighbors(IWorld world, BlockPos pos, Direction side) {
     }
 
     VoxelShape getHitbox();
