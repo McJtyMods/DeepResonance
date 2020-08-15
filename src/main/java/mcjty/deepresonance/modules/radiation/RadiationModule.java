@@ -48,8 +48,10 @@ public class RadiationModule {
     public static Capability<IWorldRadiationManager> CAPABILITY;
     public static ResourceLocation CAPABILITY_NAME = new DeepResonanceResourceLocation("radiation");
 
+    public static RadiationConfiguration config;
+
     public RadiationModule() {
-        DeepResonance.config.registerConfigurableElement(new RadiationConfiguration(), "radiation", "Radiation settings");
+        config = DeepResonance.configuration.registerConfig(RadiationConfiguration::new, "radiation", "Radiation settings");
         RegistryHelper.registerEmptyCapability(IWorldRadiationManager.class);
     }
 

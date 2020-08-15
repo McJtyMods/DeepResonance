@@ -2,8 +2,8 @@ package mcjty.deepresonance.modules.core.item;
 
 import elec332.core.util.PlayerHelper;
 import elec332.core.world.WorldHelper;
-import mcjty.deepresonance.fluids.LiquidCrystalData;
 import mcjty.deepresonance.modules.tank.tile.TileEntityTank;
+import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.deepresonance.util.TranslationHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -46,7 +46,7 @@ public class ItemLiquidInjector extends Item {
             TileEntity tile = WorldHelper.getTileAt(world, context.getPos());
             if (tile instanceof TileEntityTank) {
                 LazyOptional<IFluidHandler> fluidHanderCap = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
-                fluidHanderCap.ifPresent(fluidHander -> fluidHander.fill(LiquidCrystalData.makeLiquidCrystalStack(100, 1.0f, 0.1f, 0.1f, 0.1f), IFluidHandler.FluidAction.EXECUTE));
+                fluidHanderCap.ifPresent(fluidHander -> fluidHander.fill(DeepResonanceFluidHelper.makeLiquidCrystalStack(100, 1.0f, 0.1f, 0.1f, 0.1f), IFluidHandler.FluidAction.EXECUTE));
             } else if (context.getPlayer() != null) {
                 PlayerHelper.sendMessageToPlayer(context.getPlayer(), new TranslationTextComponent(TranslationHelper.getMessageKey("no_tank")).applyTextStyle(TextFormatting.YELLOW));
             }

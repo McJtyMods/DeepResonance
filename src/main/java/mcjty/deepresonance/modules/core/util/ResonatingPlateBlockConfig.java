@@ -1,22 +1,19 @@
 package mcjty.deepresonance.modules.core.util;
 
-import elec332.core.api.config.IConfigurableElement;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig;
 
 import javax.annotation.Nonnull;
 
 /**
  * Created by Elec332 on 15-7-2020
  */
-public class ResonatingPlateBlockConfig implements IConfigurableElement {
+public class ResonatingPlateBlockConfig {
 
-    public static ForgeConfigSpec.IntValue RADIATION_STRENGTH;
-    public static ForgeConfigSpec.IntValue RADIATION_RADIUS;
-    public static ForgeConfigSpec.IntValue RADIATION_TICKS;
+    public final ForgeConfigSpec.IntValue RADIATION_STRENGTH;
+    public final ForgeConfigSpec.IntValue RADIATION_RADIUS;
+    public final ForgeConfigSpec.IntValue RADIATION_TICKS;
 
-    @Override
-    public void registerProperties(@Nonnull ForgeConfigSpec.Builder config, ModConfig.Type type) {
+    public ResonatingPlateBlockConfig(@Nonnull ForgeConfigSpec.Builder config) {
         RADIATION_STRENGTH = config.comment("Strength of radiation that a plate block gives when it has a redstone signal. 0 to disable")
                 .defineInRange("radiationStrength", 20000, 0, 100000);
         RADIATION_RADIUS = config.comment("Radius of radiation that a plate block gives when it has a redstone signal")

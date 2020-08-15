@@ -1,14 +1,14 @@
-package mcjty.deepresonance.fluids;
+package mcjty.deepresonance.util;
 
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
-import mcjty.deepresonance.setup.FluidRegister;
+import mcjty.deepresonance.modules.core.CoreModule;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
  * Created by Elec332 on 7-1-2020
  */
-public class LiquidCrystalData implements ILiquidCrystalData {
+class LiquidCrystalData implements ILiquidCrystalData {
 
     private final FluidStack referenceStack;
     private float quality;
@@ -20,12 +20,12 @@ public class LiquidCrystalData implements ILiquidCrystalData {
         this.referenceStack = referenceStack;
     }
 
-    public static LiquidCrystalData fromNBT(CompoundNBT tag, int amount) {
-        return fromStack(new FluidStack(FluidRegister.liquidCrystal, amount, tag));
+    static LiquidCrystalData fromNBT(CompoundNBT tag, int amount) {
+        return fromStack(new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), amount, tag));
     }
 
-    public static FluidStack makeLiquidCrystalStack(int amount, float quality, float purity, float strength, float efficiency) {
-        LiquidCrystalData data = new LiquidCrystalData(new FluidStack(FluidRegister.liquidCrystal, amount));
+    static FluidStack makeLiquidCrystalStack(int amount, float quality, float purity, float strength, float efficiency) {
+        LiquidCrystalData data = new LiquidCrystalData(new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), amount));
         data.setAmount(amount);
         data.setQuality(quality);
         data.setPurity(purity);
@@ -34,8 +34,8 @@ public class LiquidCrystalData implements ILiquidCrystalData {
         return data.toFluidStack();
     }
 
-    public static LiquidCrystalData fromStack(FluidStack stack) {
-        if (!FluidRegister.isValidLiquidCrystalStack(stack)) {
+    static LiquidCrystalData fromStack(FluidStack stack) {
+        if (!DeepResonanceFluidHelper.isValidLiquidCrystalStack(stack)) {
             return null;
         }
         CompoundNBT fluidTag = stack.getOrCreateTag();
@@ -147,7 +147,7 @@ public class LiquidCrystalData implements ILiquidCrystalData {
 
     @Override
     public FluidStack toFluidStack() {
-        FluidStack stack = new FluidStack(FluidRegister.liquidCrystal, referenceStack.getAmount());
+        FluidStack stack = new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), referenceStack.getAmount());
         writeDataToNBT(stack.getOrCreateTag());
         return stack;
     }

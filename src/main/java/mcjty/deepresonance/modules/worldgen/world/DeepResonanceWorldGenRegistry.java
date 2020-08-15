@@ -6,7 +6,7 @@ import elec332.core.api.world.IBiomeGenWrapper;
 import elec332.core.api.world.RetroGenFeatureWrapper;
 import elec332.core.world.FeaturePlacers;
 import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.deepresonance.modules.worldgen.util.WorldGenConfiguration;
+import mcjty.deepresonance.modules.worldgen.WorldGenModule;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.pattern.BlockMatcher;
@@ -23,15 +23,10 @@ import net.minecraftforge.registries.IForgeRegistry;
 public class DeepResonanceWorldGenRegistry implements IWorldGenRegister {
 
     public boolean doRegister = false;
-    private final WorldGenConfiguration configuration;
 
     private static final OreFeatureConfig.FillerBlockType STONE, NETHERRACK, END_STONE;
     private Feature<OreFeatureConfig> RESONATING_ORE;
     private Feature<ResonantCrystalFeatureConfig> RESONANT_CRYSTAL;
-
-    public DeepResonanceWorldGenRegistry(WorldGenConfiguration configuration) {
-        this.configuration = configuration;
-    }
 
     @Override
     public void registerFeatures(IForgeRegistry<Feature<?>> featureRegistry) {
@@ -44,26 +39,26 @@ public class DeepResonanceWorldGenRegistry implements IWorldGenRegister {
         if (!doRegister) {
             return;
         }
-        if (!WorldGenConfiguration.ORE_BLACKLIST.get().contains(Preconditions.checkNotNull(biome.getRegistryName()).toString())) {
-            if (biome.getCategory() == Biome.Category.NETHER && WorldGenConfiguration.NETHER_ORE.get()) {
+        if (!WorldGenModule.config.ore_blacklist.get().contains(Preconditions.checkNotNull(biome.getRegistryName()).toString())) {
+            if (biome.getCategory() == Biome.Category.NETHER && WorldGenModule.config.nether_ore.get()) {
                 registry.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES,
-                        RESONATING_ORE.withConfiguration(new OreFeatureConfig(NETHERRACK, CoreModule.RESONATING_ORE_NETHER_BLOCK.get().getDefaultState(), WorldGenConfiguration.VEIN_SIZE.get())),
-                        FeaturePlacers.COUNT_RANGE.configure(new CountRangeConfig(WorldGenConfiguration.SPAWN_CHANCES.get(), WorldGenConfiguration.MIN_Y.get() * 2, WorldGenConfiguration.MIN_Y.get() * 2, WorldGenConfiguration.MAX_Y.get() * 2)));
-            } else if (biome.getCategory() == Biome.Category.THEEND && WorldGenConfiguration.END_ORE.get()) {
+                        RESONATING_ORE.withConfiguration(new OreFeatureConfig(NETHERRACK, CoreModule.RESONATING_ORE_NETHER_BLOCK.get().getDefaultState(), WorldGenModule.config.veinSize.get())),
+                        FeaturePlacers.COUNT_RANGE.configure(new CountRangeConfig(WorldGenModule.config.spawnChances.get(), WorldGenModule.config.minY.get() * 2, WorldGenModule.config.minY.get() * 2, WorldGenModule.config.maxY.get() * 2)));
+            } else if (biome.getCategory() == Biome.Category.THEEND && WorldGenModule.config.end_ore.get()) {
                 registry.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES,
-                        RESONATING_ORE.withConfiguration(new OreFeatureConfig(END_STONE, CoreModule.RESONATING_ORE_END_BLOCK.get().getDefaultState(), WorldGenConfiguration.VEIN_SIZE.get())),
-                        FeaturePlacers.COUNT_RANGE.configure(new CountRangeConfig(WorldGenConfiguration.SPAWN_CHANCES.get(), WorldGenConfiguration.MIN_Y.get(), WorldGenConfiguration.MIN_Y.get(), WorldGenConfiguration.MAX_Y.get())));
-            } else if (WorldGenConfiguration.OTHER_ORE.get()) {
+                        RESONATING_ORE.withConfiguration(new OreFeatureConfig(END_STONE, CoreModule.RESONATING_ORE_END_BLOCK.get().getDefaultState(), WorldGenModule.config.veinSize.get())),
+                        FeaturePlacers.COUNT_RANGE.configure(new CountRangeConfig(WorldGenModule.config.spawnChances.get(), WorldGenModule.config.minY.get(), WorldGenModule.config.minY.get(), WorldGenModule.config.maxY.get())));
+            } else if (WorldGenModule.config.other_ore.get()) {
                 registry.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES,
-                        RESONATING_ORE.withConfiguration(new OreFeatureConfig(STONE, CoreModule.RESONATING_ORE_STONE_BLOCK.get().getDefaultState(), WorldGenConfiguration.VEIN_SIZE.get())),
-                        FeaturePlacers.COUNT_RANGE.configure(new CountRangeConfig(WorldGenConfiguration.SPAWN_CHANCES.get(), WorldGenConfiguration.MIN_Y.get(), WorldGenConfiguration.MIN_Y.get(), WorldGenConfiguration.MAX_Y.get())));
+                        RESONATING_ORE.withConfiguration(new OreFeatureConfig(STONE, CoreModule.RESONATING_ORE_STONE_BLOCK.get().getDefaultState(), WorldGenModule.config.veinSize.get())),
+                        FeaturePlacers.COUNT_RANGE.configure(new CountRangeConfig(WorldGenModule.config.spawnChances.get(), WorldGenModule.config.minY.get(), WorldGenModule.config.minY.get(), WorldGenModule.config.maxY.get())));
             }
         }
-        if (!WorldGenConfiguration.CRYSTAL_BLACKLIST.get().contains(Preconditions.checkNotNull(biome.getRegistryName()).toString())) {
-            if (biome.getCategory() == Biome.Category.NETHER && WorldGenConfiguration.NETHER_CRYSTALS.get()) {
+        if (!WorldGenModule.config.crystal_blacklist.get().contains(Preconditions.checkNotNull(biome.getRegistryName()).toString())) {
+            if (biome.getCategory() == Biome.Category.NETHER && WorldGenModule.config.nether_crystals.get()) {
                 registry.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES,
                         RESONANT_CRYSTAL.withConfiguration(new ResonantCrystalFeatureConfig("resonant_crystal_nether", 3.0f, 1.5f, 2.0f, 0.5f)));
-            } else if (WorldGenConfiguration.OTHER_CRYSTALS.get()) {
+            } else if (WorldGenModule.config.other_crystals.get()) {
                 registry.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES,
                         RESONANT_CRYSTAL.withConfiguration(new ResonantCrystalFeatureConfig("resonant_crystal_overworld", 1.0f, 1.0f, 1.0f, 1.0f)));
             }

@@ -5,8 +5,9 @@ import elec332.core.util.RegistryHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
 import mcjty.deepresonance.modules.pulser.tile.TileEntityPulser;
+import mcjty.deepresonance.modules.pulser.util.PulserBlockConfig;
 import mcjty.deepresonance.modules.pulser.util.PulserCapability;
-import mcjty.deepresonance.modules.pulser.util.PulserConfig;
+import mcjty.deepresonance.modules.pulser.util.PulserCrystalConfig;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -35,10 +36,14 @@ public class PulserModule {
     @CapabilityInject(PulserCapability.class)
     public static Capability<PulserCapability> PULSER_CAPABILITY;
 
-    public static PulserConfig pulserConfig;
+    public static PulserBlockConfig pulserBlockConfig;
+    public static PulserCrystalConfig pulserCrystalConfig;
 
     public PulserModule() {
-        DeepResonance.config.configureSubConfig("pulser", "Pulser settings (power overdrive)", config -> pulserConfig = config.registerConfig(PulserConfig::new));
+        DeepResonance.configuration.configureSubConfig("pulser", "Pulser settings (power overdrive)", config -> {
+            pulserBlockConfig = config.registerConfig(PulserBlockConfig::new, "pulser_block", "Settings for the Pulser (Block)");
+            pulserCrystalConfig = config.registerConfig(PulserCrystalConfig::new, "pulser_crystal", "Instability and resistance settings for the crystal");
+        });
         RegistryHelper.registerEmptyCapability(PulserCapability.class);
     }
 

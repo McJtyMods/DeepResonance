@@ -1,4 +1,4 @@
-package mcjty.deepresonance.fluids;
+package mcjty.deepresonance.modules.core.fluid;
 
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import mcjty.deepresonance.util.TranslationHelper;
@@ -14,10 +14,6 @@ import javax.annotation.Nonnull;
 public class FluidLiquidCrystal extends EmptyFluid {
 
     private static final ResourceLocation texture = new DeepResonanceResourceLocation("block/rclfluid");
-
-    public FluidLiquidCrystal() {
-        setRegistryName(new DeepResonanceResourceLocation("liquid_crystal"));
-    }
 
     @Nonnull
     @Override

@@ -51,8 +51,8 @@ public class TankModule implements IConfigurableElement {
     public static ForgeConfigSpec.BooleanValue quickRender;
 
     public TankModule() {
-        DeepResonance.config.registerConfigurableElement(this);
-        DeepResonance.clientConfig.registerConfigurableElement(this);
+        DeepResonance.configuration.registerConfigurableElement(this);
+        DeepResonance.clientConfiguration.registerConfigurableElement(this);
     }
 
     @ElecModule.EventHandler

@@ -17,13 +17,11 @@ import static mcjty.deepresonance.DeepResonance.MODID;
 public class WorldGenModule {
 
     private final DeepResonanceWorldGenRegistry worldGenRegistry;
+    public static WorldGenConfiguration config;
 
     public WorldGenModule() {
-        WorldGenConfiguration configuration = new WorldGenConfiguration();
-        DeepResonance.config.configureSubConfig("worldgen", "WorldGen module settings", config -> {
-            config.registerConfigurableElement(configuration);
-        });
-        this.worldGenRegistry = new DeepResonanceWorldGenRegistry(configuration);
+        config = DeepResonance.configuration.registerConfig(WorldGenConfiguration::new, "worldgen", "WorldGen module settings");
+        this.worldGenRegistry = new DeepResonanceWorldGenRegistry();
     }
 
     @ElecModule.EventHandler

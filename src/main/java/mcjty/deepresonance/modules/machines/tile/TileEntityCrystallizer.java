@@ -6,14 +6,13 @@ import elec332.core.inventory.BasicItemHandler;
 import elec332.core.util.ServerHelper;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
-import mcjty.deepresonance.fluids.LiquidCrystalData;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.client.CrystallizerTESR;
 import mcjty.deepresonance.modules.machines.client.gui.CrystallizerGui;
-import mcjty.deepresonance.setup.FluidRegister;
 import mcjty.deepresonance.util.AbstractPoweredTileEntity;
+import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.deepresonance.util.RegisteredContainer;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
@@ -26,6 +25,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
@@ -102,7 +102,7 @@ public class TileEntityCrystallizer extends AbstractPoweredTileEntity implements
         }
         if (drain > 0) { //Config can change between ticks
             FluidStack stack = rclTank.orElseThrow(NullPointerException::new).drain(drain, IFluidHandler.FluidAction.EXECUTE);
-            ILiquidCrystalData data = LiquidCrystalData.fromStack(stack);
+            ILiquidCrystalData data = DeepResonanceFluidHelper.readCrystalDataFromStack(stack);
             if (data != null) {
                 if (crystalData == null) {
                     crystalData = data;
@@ -151,7 +151,7 @@ public class TileEntityCrystallizer extends AbstractPoweredTileEntity implements
             return false;
         }
 
-        return FluidRegister.isValidLiquidCrystalStack(fluidStack);
+        return DeepResonanceFluidHelper.isValidLiquidCrystalStack(fluidStack);
     }
 
     private boolean checkTank() {
@@ -193,7 +193,7 @@ public class TileEntityCrystallizer extends AbstractPoweredTileEntity implements
     @Override
     public void read(CompoundNBT tagCompound) {
         if (tagCompound.contains("crystalData")) {
-            crystalData = LiquidCrystalData.fromStack(FluidStack.loadFluidStackFromNBT(tagCompound.getCompound("crystalData")));
+            crystalData = DeepResonanceFluidHelper.readCrystalDataFromStack(FluidStack.loadFluidStackFromNBT(tagCompound.getCompound("crystalData")));
         } else {
             crystalData = null;
         }
@@ -202,6 +202,12 @@ public class TileEntityCrystallizer extends AbstractPoweredTileEntity implements
 
     private static int getRclPerCrystal() {
         return MachinesModule.crystallizerConfig.rclPerCrystal.get();
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public AxisAlignedBB getRenderBoundingBox() {
+        return new AxisAlignedBB(getPos().getX() - 10, getPos().getY() - 10, getPos().getZ() - 10, getPos().getX() + 10, getPos().getY() + 10, getPos().getZ() + 10);
     }
 
     @OnlyIn(Dist.CLIENT)

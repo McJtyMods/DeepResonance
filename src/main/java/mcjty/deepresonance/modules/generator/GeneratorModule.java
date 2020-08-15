@@ -23,6 +23,8 @@ import static mcjty.deepresonance.DeepResonance.MODID;
 
 /**
  * Created by Elec332 on 30-7-2020
+ * <p>
+ * TODO: Generator sounds
  */
 @ElecModule(owner = MODID, name = "Generator")
 public class GeneratorModule {
@@ -39,7 +41,7 @@ public class GeneratorModule {
     public static GeneratorConfig generatorConfig;
 
     public GeneratorModule() {
-        DeepResonance.config.configureSubConfig("generator", "Generator module settings", config -> {
+        DeepResonance.configuration.configureSubConfig("generator", "Generator module settings", config -> {
             collectorConfig = config.registerConfig(CollectorConfig::new, "collector", "Collector settings");
             generatorConfig = config.registerConfig(GeneratorConfig::new, "generator_settings", "Generator settings");
         });

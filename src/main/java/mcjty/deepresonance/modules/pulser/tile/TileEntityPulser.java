@@ -33,7 +33,7 @@ public class TileEntityPulser extends AbstractPoweredTileEntity implements ITick
     private int pulsePower = 0;
 
     public TileEntityPulser() {
-        super(PulserModule.pulserConfig.powerMaximum.get(), PulserModule.pulserConfig.powerPerTickIn.get());
+        super(PulserModule.pulserBlockConfig.powerMaximum.get(), PulserModule.pulserBlockConfig.powerPerTickIn.get());
     }
 
     @Override
@@ -44,7 +44,7 @@ public class TileEntityPulser extends AbstractPoweredTileEntity implements ITick
         if (checkCooldown > 0) {
             checkCooldown--;
         }
-        int powerPulse = PulserModule.pulserConfig.powerPerPulse.get();
+        int powerPulse = PulserModule.pulserBlockConfig.powerPerPulse.get();
         if (powerLevel > 0) {
             long power = energyHandler.getEnergy();
             long powerTransfer = powerPulse * powerLevel;
@@ -61,7 +61,7 @@ public class TileEntityPulser extends AbstractPoweredTileEntity implements ITick
 
             if (checkCooldown <= 0) {
                 crystals.clear();
-                int range = PulserModule.pulserConfig.crystalRange.get();
+                int range = PulserModule.pulserBlockConfig.crystalRange.get();
                 for (int x = -range; x < range + 1; x++) {
                     for (int y = -range; y < range + 1; y++) {
                         for (int z = -range; z < range + 1; z++) {
@@ -94,7 +94,7 @@ public class TileEntityPulser extends AbstractPoweredTileEntity implements ITick
     @Override
     public void addInformation(@Nonnull IInformation information, @Nonnull IInfoDataAccessorBlock hitData) {
         if (information.getProviderType() == InfoMod.TOP) {
-            int rfPulse = PulserModule.pulserConfig.powerPerPulse.get() * 15;
+            int rfPulse = PulserModule.pulserBlockConfig.powerPerPulse.get() * 15;
             IProbeInfo probeInfo = (IProbeInfo) information.getInformationComponent();
             probeInfo.progress(Math.min(hitData.getData().getInt("pulsePower"), rfPulse), rfPulse);
         }

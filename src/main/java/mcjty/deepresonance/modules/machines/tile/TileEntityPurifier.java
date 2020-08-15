@@ -5,13 +5,12 @@ import elec332.core.api.registration.RegisteredTileEntity;
 import elec332.core.inventory.BasicItemHandler;
 import elec332.core.inventory.ItemEjector;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
-import mcjty.deepresonance.fluids.LiquidCrystalData;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.client.gui.PurifierGui;
 import mcjty.deepresonance.modules.tank.util.DualTankHook;
-import mcjty.deepresonance.setup.FluidRegister;
 import mcjty.deepresonance.util.AbstractTileEntity;
+import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.deepresonance.util.RegisteredContainer;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
@@ -96,11 +95,11 @@ public class TileEntityPurifier extends AbstractTileEntity implements ITickableT
             }
             timeToGo--;
         } else {
-            if (!FluidRegister.isValidLiquidCrystalStack(tankHook.getTank1().drain(1, IFluidHandler.FluidAction.SIMULATE))) {
+            if (!DeepResonanceFluidHelper.isValidLiquidCrystalStack(tankHook.getTank1().drain(1, IFluidHandler.FluidAction.SIMULATE))) {
                 timeToGo = 20; //Wait 1 second before re-trying
                 return;
             }
-            processing = LiquidCrystalData.fromStack(tankHook.getTank1().drain(MachinesModule.purifierConfig.rclPerPurify.get(), IFluidHandler.FluidAction.EXECUTE));
+            processing = DeepResonanceFluidHelper.readCrystalDataFromStack(tankHook.getTank1().drain(MachinesModule.purifierConfig.rclPerPurify.get(), IFluidHandler.FluidAction.EXECUTE));
             timeToGo = MachinesModule.purifierConfig.ticksPerPurify.get();
         }
         markDirty();
@@ -180,7 +179,7 @@ public class TileEntityPurifier extends AbstractTileEntity implements ITickableT
     public void read(CompoundNBT tagCompound) {
         timeToGo = tagCompound.getInt("timeToGo");
         if (tagCompound.contains("processing")) {
-            processing = LiquidCrystalData.fromStack(FluidStack.loadFluidStackFromNBT(tagCompound.getCompound("processing")));
+            processing = DeepResonanceFluidHelper.readCrystalDataFromStack(FluidStack.loadFluidStackFromNBT(tagCompound.getCompound("processing")));
         } else {
             processing = null;
         }

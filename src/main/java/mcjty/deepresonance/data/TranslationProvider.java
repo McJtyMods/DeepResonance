@@ -8,7 +8,6 @@ import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.pulser.PulserModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
-import mcjty.deepresonance.setup.FluidRegister;
 import mcjty.deepresonance.util.TranslationHelper;
 import net.minecraft.data.DataGenerator;
 
@@ -25,7 +24,7 @@ public class TranslationProvider extends AbstractTranslationProvider {
     protected void registerTranslations() {
         //Misc
         add("itemGroup.deepresonance", "Deep Resonance");
-        add(FluidRegister.liquidCrystal.getAttributes().getTranslationKey(), "Liquid Crystal");
+        add(CoreModule.LIQUID_CRYSTAL.get().getAttributes().getTranslationKey(), "Liquid Crystal");
 
         //Messages
         add(TranslationHelper.getMessageKey("no_tank"), "This is not a tank!");

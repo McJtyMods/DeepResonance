@@ -72,7 +72,7 @@ public class MachinesModule {
     public static ValveConfig valveConfig;
 
     public MachinesModule() {
-        DeepResonance.config.configureSubConfig("machines", "Machines module settings", config -> {
+        DeepResonance.configuration.configureSubConfig("machines", "Machines module settings", config -> {
             crystallizerConfig = config.registerConfig(CrystallizerConfig::new, "crystallizer", "Crystallizer settings");
             laserConfig = config.registerConfig(LaserConfig::new, "laser", "Laser settings");
             purifierConfig = config.registerConfig(PurifierConfig::new, "purifier", "Purifier settings");

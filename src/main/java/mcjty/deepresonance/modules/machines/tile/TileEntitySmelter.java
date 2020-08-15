@@ -4,12 +4,11 @@ import elec332.core.api.registration.RegisteredTileEntity;
 import elec332.core.inventory.BasicItemHandler;
 import elec332.core.util.BlockProperties;
 import elec332.core.world.WorldHelper;
-import mcjty.deepresonance.fluids.LiquidCrystalData;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.client.gui.SmelterGui;
 import mcjty.deepresonance.modules.tank.util.DualTankHook;
-import mcjty.deepresonance.setup.FluidRegister;
 import mcjty.deepresonance.util.AbstractPoweredTileEntity;
+import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.deepresonance.util.DeepResonanceTags;
 import mcjty.deepresonance.util.RegisteredContainer;
 import mcjty.lib.container.ContainerFactory;
@@ -115,7 +114,7 @@ public class TileEntitySmelter extends AbstractPoweredTileEntity implements ITic
             return false;
         }
         int fill = MachinesModule.smelterConfig.rclPerOre.get();
-        if (tankHook.getTank2().fill(new FluidStack(FluidRegister.liquidCrystal, fill), IFluidHandler.FluidAction.SIMULATE) != fill) {
+        if (tankHook.getTank2().fill(DeepResonanceFluidHelper.makeLiquidCrystalStack(fill), IFluidHandler.FluidAction.SIMULATE) != fill) {
             return false;
         }
         return energyHandler.getEnergyStored() >= MachinesModule.smelterConfig.powerPerOreTick.get();
@@ -161,7 +160,7 @@ public class TileEntitySmelter extends AbstractPoweredTileEntity implements ITic
 
     private void finishSmelting() {
         if (finalQuality > 0.0f) {
-            FluidStack stack = LiquidCrystalData.makeLiquidCrystalStack(MachinesModule.smelterConfig.rclPerOre.get(), finalQuality, finalPurity, 0.1f, 0.1f);
+            FluidStack stack = DeepResonanceFluidHelper.makeLiquidCrystalStack(MachinesModule.smelterConfig.rclPerOre.get(), finalQuality, finalPurity, 0.1f, 0.1f);
             tankHook.getTank2().fill(stack, IFluidHandler.FluidAction.EXECUTE);
         }
     }

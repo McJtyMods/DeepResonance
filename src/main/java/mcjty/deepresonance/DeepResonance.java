@@ -4,12 +4,8 @@ import com.google.common.base.Preconditions;
 import elec332.core.api.config.IConfigWrapper;
 import elec332.core.api.mod.IElecCoreMod;
 import elec332.core.api.module.IModuleController;
-import elec332.core.api.registration.IObjectRegister;
-import elec332.core.api.registration.IWorldGenRegister;
 import elec332.core.config.ConfigWrapper;
 import elec332.core.util.FMLHelper;
-import mcjty.deepresonance.setup.Config;
-import mcjty.deepresonance.setup.FluidRegister;
 import mcjty.deepresonance.setup.ModSetup;
 import mcjty.deepresonance.util.DeepResonanceBlock;
 import mcjty.deepresonance.util.TranslationHelper;
@@ -61,7 +57,7 @@ public class DeepResonance implements ModBase, IElecCoreMod, IModuleController {
     public static String SHIFT_MESSAGE = "message.rftoolsbase.shiftmessage";
 
     public static DeepResonance instance;
-    public static IConfigWrapper config, clientConfig;
+    public static IConfigWrapper configuration, clientConfiguration;
     public static ModSetup setup;
     public static Logger logger;
 
@@ -72,9 +68,8 @@ public class DeepResonance implements ModBase, IElecCoreMod, IModuleController {
         instance = this;
         logger = LogManager.getLogger(MODNAME);
         setup = new ModSetup();
-        config = new ConfigWrapper(FMLHelper.getActiveModContainer());
-        clientConfig = new ConfigWrapper(FMLHelper.getActiveModContainer(), ModConfig.Type.CLIENT);
-        config.registerConfigurableElement(new Config());
+        configuration = new ConfigWrapper(FMLHelper.getActiveModContainer());
+        clientConfiguration = new ConfigWrapper(FMLHelper.getActiveModContainer(), ModConfig.Type.CLIENT);
 
         IEventBus modBus = FMLHelper.getActiveModEventBus();
         BLOCKS.register(modBus);
@@ -82,35 +77,25 @@ public class DeepResonance implements ModBase, IElecCoreMod, IModuleController {
         FLUIDS.register(modBus);
         CONTAINERS.register(modBus);
         modBus.addListener(setup::init);
-        modBus.addListener(setup::clientSetup);
         modBus.addListener(new Consumer<FMLLoadCompleteEvent>() {
 
             @Override
-            public void accept(FMLLoadCompleteEvent event) {
+            public void accept(FMLLoadCompleteEvent event) { //Todo: Pull for McJtyLib
                 PacketHandler.registerStandardMessages(9, McJtyLib.networkHandler);
             }
 
         });
     }
 
-    public static Item.Properties createStandardProperties() {
-        return new Item.Properties().group(setup.getTab());
-    }
-
     @Override
     public void afterConstruction() {
-        config.register();
-        clientConfig.register();
+        configuration.register();
+        clientConfiguration.register();
     }
 
     @Override
     public String getModId() {
         return MODID;
-    }
-
-    @Override
-    public void registerRegisters(Consumer<IObjectRegister<?>> objectHandler, Consumer<IWorldGenRegister> worldHandler) {
-        objectHandler.accept(new FluidRegister());
     }
 
     @Override
@@ -120,7 +105,11 @@ public class DeepResonance implements ModBase, IElecCoreMod, IModuleController {
 
     @Override
     public ForgeConfigSpec.BooleanValue getModuleConfig(String moduleName) {
-        return config.registerConfig(builder -> builder.comment("Whether the " + moduleName.toLowerCase() + " should be enabled").define(moduleName.toLowerCase() + ".enabled", true));
+        return configuration.registerConfig(builder -> builder.comment("Whether the " + moduleName.toLowerCase() + " should be enabled").define(moduleName.toLowerCase() + ".enabled", true));
+    }
+
+    public static Item.Properties createStandardProperties() {
+        return new Item.Properties().group(setup.getTab());
     }
 
     public static RegistryObject<Block> defaultBlock(final String name, final Supplier<TileEntity> tile) {

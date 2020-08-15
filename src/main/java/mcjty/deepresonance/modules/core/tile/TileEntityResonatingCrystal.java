@@ -11,6 +11,7 @@ import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.api.crystal.ICrystalModifier;
 import mcjty.deepresonance.api.radiation.IWorldRadiationManager;
 import mcjty.deepresonance.modules.core.block.BlockCrystal;
+import mcjty.deepresonance.modules.core.client.ModelLoaderCoreModule;
 import mcjty.deepresonance.modules.core.util.CrystalHelper;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.radiation.util.RadiationHelper;
@@ -24,6 +25,10 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -226,6 +231,7 @@ public class TileEntityResonatingCrystal extends AbstractTileEntity implements I
         super.onDataPacket(net, packet);
         boolean newempty = isEmpty();
         if (oldempty != newempty || oldVeryPure != CrystalHelper.isVeryPure(getPurity())) {
+            requestModelDataUpdate();
             WorldHelper.markBlockForRenderUpdate(Preconditions.checkNotNull(getWorld()), getPos());
         }
     }
@@ -287,6 +293,16 @@ public class TileEntityResonatingCrystal extends AbstractTileEntity implements I
                 ((IInfoProvider) mod).gatherInformation(tag, player, hitData);
             }
         });
+    }
+
+    @Nonnull
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public IModelData getModelData() {
+        IModelData tileData = new ModelDataMap.Builder().build();
+        tileData.setData(ModelLoaderCoreModule.POWER, getPower());
+        tileData.setData(ModelLoaderCoreModule.PURITY, getPurity());
+        return tileData;
     }
 
 }

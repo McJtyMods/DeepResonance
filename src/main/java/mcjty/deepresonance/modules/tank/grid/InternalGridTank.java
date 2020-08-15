@@ -2,8 +2,7 @@ package mcjty.deepresonance.modules.tank.grid;
 
 import com.google.common.base.Preconditions;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
-import mcjty.deepresonance.fluids.LiquidCrystalData;
-import mcjty.deepresonance.setup.FluidRegister;
+import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
@@ -24,7 +23,7 @@ public class InternalGridTank implements IFluidTank {
 
     public InternalGridTank(int maxAmount) {
         this.maxAmount = maxAmount;
-        this.tank = Preconditions.checkNotNull(LiquidCrystalData.fromNBT(new CompoundNBT(), 0));
+        this.tank = Preconditions.checkNotNull(DeepResonanceFluidHelper.readCrystalDataFromNBT(new CompoundNBT(), 0));
         this.extraTank = new FluidTank(maxAmount);
     }
 
@@ -35,7 +34,7 @@ public class InternalGridTank implements IFluidTank {
 
     @Override
     public int fill(FluidStack stack, IFluidHandler.FluidAction action) {
-        if (FluidRegister.isValidLiquidCrystalStack(stack)) {
+        if (DeepResonanceFluidHelper.isValidLiquidCrystalStack(stack)) {
             if (extraTank.getFluidAmount() > 0) {
                 return 0;
             }
@@ -47,7 +46,7 @@ public class InternalGridTank implements IFluidTank {
                 ret = toAdd.getAmount();
             }
             if (action.execute()) {
-                tank.merge(Preconditions.checkNotNull(LiquidCrystalData.fromStack(toAdd)));
+                tank.merge(Preconditions.checkNotNull(DeepResonanceFluidHelper.readCrystalDataFromStack(toAdd)));
             }
             return ret;
         } else {
@@ -134,7 +133,7 @@ public class InternalGridTank implements IFluidTank {
 
     @Override
     public String toString() {
-        return getStoredFluid() == FluidRegister.liquidCrystal ? tank.toString() : "Fluid: " + getStoredFluid() + " Amount: " + extraTank.getFluidAmount();
+        return DeepResonanceFluidHelper.isLiquidCrystal(getStoredFluid()) ? tank.toString() : "Fluid: " + getStoredFluid() + " Amount: " + extraTank.getFluidAmount();
     }
 
 }

@@ -2,12 +2,11 @@ package mcjty.deepresonance.modules.machines.tile;
 
 import elec332.core.api.registration.RegisteredTileEntity;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
-import mcjty.deepresonance.fluids.LiquidCrystalData;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.client.gui.ValveGui;
 import mcjty.deepresonance.modules.tank.util.DualTankHook;
-import mcjty.deepresonance.setup.FluidRegister;
 import mcjty.deepresonance.util.AbstractTileEntity;
+import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.deepresonance.util.RegisteredContainer;
 import mcjty.lib.bindings.DefaultValue;
 import mcjty.lib.bindings.IValue;
@@ -107,8 +106,8 @@ public class TileEntityValve extends AbstractTileEntity implements ITickableTile
             return;
         }
         int amt = fluidStack.getAmount();
-        if (bottom.fill(new FluidStack(FluidRegister.liquidCrystal, amt), IFluidHandler.FluidAction.SIMULATE) == amt) {
-            ILiquidCrystalData data = LiquidCrystalData.fromStack(fluidStack);
+        if (bottom.fill(DeepResonanceFluidHelper.makeLiquidCrystalStack(amt), IFluidHandler.FluidAction.SIMULATE) == amt) {
+            ILiquidCrystalData data = DeepResonanceFluidHelper.readCrystalDataFromStack(fluidStack);
             if (data == null) {
                 return;
             }

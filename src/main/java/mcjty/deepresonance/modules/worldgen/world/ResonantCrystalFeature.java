@@ -5,7 +5,7 @@ import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
-import mcjty.deepresonance.modules.worldgen.util.WorldGenConfiguration;
+import mcjty.deepresonance.modules.worldgen.WorldGenModule;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -40,14 +40,14 @@ public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig
 
     @Override
     public boolean place(@Nonnull IWorld worldIn, @Nonnull ChunkGenerator<? extends GenerationSettings> generator, @Nonnull Random rand, @Nonnull BlockPos pos, @Nonnull ResonantCrystalFeatureConfig config) {
-        if (rand.nextDouble() < WorldGenConfiguration.SPAWN_CHANCE_CRYSTALS.get()) {
+        if (rand.nextDouble() < WorldGenModule.config.crystalSpwanChance.get()) {
             return trySpawnCrystal(worldIn, generator, new ChunkPos(pos), rand, config);
         }
         return false;
     }
 
     private boolean trySpawnCrystal(@Nonnull IWorld world, @Nonnull ChunkGenerator<? extends GenerationSettings> generator, ChunkPos chunkPos, Random random, ResonantCrystalFeatureConfig config) {
-        for (int i = 0; i < WorldGenConfiguration.SPAWN_TRIES_CRYSTAL.get(); i++) {
+        for (int i = 0; i < WorldGenModule.config.crystalSpawnTries.get(); i++) {
             BlockPos pos = chunkPos.getBlock(random.nextInt(16), 0, random.nextInt(16));
             if (WorldHelper.hasCeiling(generator)) {
                 pos = new BlockPos(pos.getX(), 60, pos.getZ());
@@ -64,7 +64,7 @@ public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig
             if (world.getBlockState(poz).isSolid()) {
                 pos = poz.up();
                 if (world.isAirBlock(pos)) {
-                    if (WorldGenConfiguration.VERBOSE.get()) {
+                    if (WorldGenModule.config.verbose.get()) {
                         DeepResonance.logger.info("Spawned crystal at: " + pos);
                     }
                     spawnRandomCrystal(world, random, pos, config.strength, config.power, config.efficiency, config.purity);

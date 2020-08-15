@@ -6,7 +6,7 @@ import elec332.core.api.info.IInfoProvider;
 import elec332.core.api.info.IInformation;
 import mcjty.deepresonance.api.crystal.ICrystalModifier;
 import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
-import mcjty.deepresonance.modules.core.util.CrystalConfig;
+import mcjty.deepresonance.modules.pulser.PulserModule;
 import mcjty.lib.varia.SoundTools;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -33,7 +33,7 @@ public class PulserCapability implements ICrystalModifier, INBTSerializable<Comp
 
     public PulserCapability() {
         cooldown = 0;
-        resistance = CrystalConfig.MAX_RESISTANCE.get();
+        resistance = PulserModule.pulserCrystalConfig.MAX_RESISTANCE.get();
         instability = 0;
         pulses = 0;
     }
@@ -46,13 +46,13 @@ public class PulserCapability implements ICrystalModifier, INBTSerializable<Comp
     @Override
     public void onPowerChanged(boolean isEmpty) {
         if (isEmpty) {
-            resistance = CrystalConfig.MAX_RESISTANCE.get();
+            resistance = PulserModule.pulserCrystalConfig.MAX_RESISTANCE.get();
         }
     }
 
     @Override
     public float getRadiationModifier() {
-        float maxResistance = CrystalConfig.MAX_RESISTANCE.get();
+        float maxResistance = PulserModule.pulserCrystalConfig.MAX_RESISTANCE.get();
         if (resistance < maxResistance) {
             return maxResistance / resistance;
         }
@@ -102,8 +102,8 @@ public class PulserCapability implements ICrystalModifier, INBTSerializable<Comp
             // We have less then 1 tick of cooldown. So that means we only
             // have to increase resistance for the actual cooldown period
             resistance += (microTicksLeft - cooldown) / 12;
-            if (resistance > CrystalConfig.MAX_RESISTANCE.get()) {
-                resistance = CrystalConfig.MAX_RESISTANCE.get();
+            if (resistance > PulserModule.pulserCrystalConfig.MAX_RESISTANCE.get()) {
+                resistance = PulserModule.pulserCrystalConfig.MAX_RESISTANCE.get();
             }
             cooldown = 0;
         } else {
@@ -121,19 +121,19 @@ public class PulserCapability implements ICrystalModifier, INBTSerializable<Comp
         // we act on it. Not acting on instability is actually a bad thing as it means the instability will
         // stay and possibly be augmented in the near future
         World world = Preconditions.checkNotNull(crystal.getWorld());
-        if (world.getRandom().nextFloat() < CrystalConfig.INSTABILITY_HANDLING_CHANCE.get()) {
+        if (world.getRandom().nextFloat() < PulserModule.pulserCrystalConfig.INSTABILITY_HANDLING_CHANCE.get()) {
             // We handle the instability. How much do we handle?
             float tohandle = world.getRandom().nextFloat() * getInstability();
             instability -= tohandle;
-            if (tohandle > CrystalConfig.INSTABILITY_EXPLOSION_THRESHOLD.get()) {
+            if (tohandle > PulserModule.pulserCrystalConfig.INSTABILITY_EXPLOSION_THRESHOLD.get()) {
                 SoundTools.playSound(world, SoundEvents.ENTITY_GENERIC_EXPLODE, crystal.getPos().getX(), crystal.getPos().getY(), crystal.getPos().getZ(), 1.0, 1.0);
                 crystal.setPower(0);
 //                ResonatingCrystalBlock.explode(world, pos, true);
-            } else if (tohandle > CrystalConfig.INSTABILITY_BIG_DAMAGE_THRESHOLD.get()) {
+            } else if (tohandle > PulserModule.pulserCrystalConfig.INSTABILITY_BIG_DAMAGE_THRESHOLD.get()) {
                 // Damage crystal
                 crystal.setPower(Math.max(0, crystal.getPower() - 10));
                 crystal.setPurity(Math.max(1, crystal.getPurity() - 10));
-            } else if (tohandle > CrystalConfig.INSTABILITY_SMALL_DAMAGE_THRESHOLD.get()) {
+            } else if (tohandle > PulserModule.pulserCrystalConfig.INSTABILITY_SMALL_DAMAGE_THRESHOLD.get()) {
                 // Damage crystal
                 crystal.setPower(Math.max(0, crystal.getPower() - 1));
                 crystal.setPurity(Math.max(1, crystal.getPurity() - 1));
@@ -172,7 +172,7 @@ public class PulserCapability implements ICrystalModifier, INBTSerializable<Comp
     public float getPowerModifier(float percentage, boolean simulate) {
         // resistance 1: factor 20
         // resistance MAX: factor 1
-        double maxResistance = CrystalConfig.MAX_RESISTANCE.get();
+        double maxResistance = PulserModule.pulserCrystalConfig.MAX_RESISTANCE.get();
         if (getResistance() < maxResistance) {
             double factor = ((maxResistance - getResistance()) * 19.0f / maxResistance) + 1.0f;
             return (float) factor;
@@ -204,7 +204,7 @@ public class PulserCapability implements ICrystalModifier, INBTSerializable<Comp
         cooldown = tagCompound.getInt("cool");
         resistance = tagCompound.getInt("resist");
         if (resistance <= 0) {
-            resistance = CrystalConfig.MAX_RESISTANCE.get();
+            resistance = PulserModule.pulserCrystalConfig.MAX_RESISTANCE.get();
         }
         instability = tagCompound.getFloat("instability");
         pulses = tagCompound.getInt("pulses");

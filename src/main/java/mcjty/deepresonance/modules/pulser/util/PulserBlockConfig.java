@@ -7,14 +7,14 @@ import javax.annotation.Nonnull;
 /**
  * Created by Elec332 on 27-7-2020
  */
-public class PulserConfig {
+public class PulserBlockConfig {
 
     public final ForgeConfigSpec.IntValue powerPerTickIn;
     public final ForgeConfigSpec.IntValue powerMaximum;
     public final ForgeConfigSpec.IntValue powerPerPulse;
     public final ForgeConfigSpec.IntValue crystalRange;
 
-    public PulserConfig(@Nonnull ForgeConfigSpec.Builder builder) {
+    public PulserBlockConfig(@Nonnull ForgeConfigSpec.Builder builder) {
         this.powerPerTickIn = builder.comment("How much power/t this machine can input from a generator/capacitor")
                 .defineInRange("powerPerTickIn", 100, 1, 1000);
         this.powerMaximum = builder.comment("Maximum RF that can be stored in this machine")

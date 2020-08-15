@@ -24,11 +24,11 @@ public class CrystalHelper {
     }
 
     public static int getRfPerTick(float efficiency, float purity) {
-        return (int) (CrystalConfig.MAX_POWER_TICK.get() * efficiency / 100.1f * (purity + 2.0f) / 102.0f + 1);
+        return (int) (CoreModule.crystalConfig.MAX_POWER_TICK.get() * efficiency / 100.1f * (purity + 2.0f) / 102.0f + 1);
     }
 
     public static float getTotalPower(float strength, float purity) {
-        return 1000.0f * CrystalConfig.MAX_POWER_STORED.get() * strength / 100.0f * (purity + 30.0f) / 130.0f;
+        return 1000.0f * CoreModule.crystalConfig.MAX_POWER_STORED.get() * strength / 100.0f * (purity + 30.0f) / 130.0f;
     }
 
     // Special == 0, normal
@@ -73,10 +73,10 @@ public class CrystalHelper {
         TileEntity te = world.getTileEntity(pos);
         if (te instanceof TileEntityResonatingCrystal) {
             TileEntityResonatingCrystal resonatingCrystalTileEntity = (TileEntityResonatingCrystal) te;
-//            resonatingCrystalTileEntity.setPurity(purity);
-//            resonatingCrystalTileEntity.setStrength(strength);
-//            resonatingCrystalTileEntity.setEfficiency(efficiency);
-//            resonatingCrystalTileEntity.setPower(power); todo
+            resonatingCrystalTileEntity.setPurity(purity);
+            resonatingCrystalTileEntity.setStrength(strength);
+            resonatingCrystalTileEntity.setEfficiency(efficiency);
+            resonatingCrystalTileEntity.setPower(power);
         }
     }
 

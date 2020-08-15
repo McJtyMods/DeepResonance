@@ -1,7 +1,7 @@
 package mcjty.deepresonance.modules.radiation.manager;
 
 import mcjty.deepresonance.api.radiation.IRadiationSource;
-import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
+import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.radiation.util.RadiationShieldRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
@@ -69,7 +69,7 @@ class RadiationSource implements IRadiationSource, INBTSerializable<CompoundNBT>
     public void update(float radius, float maxStrenght, int ticks) {
         this.maxStrength = maxStrenght;
         this.radius = radius;
-        float toadd = (float) (maxStrenght * RadiationConfiguration.STRENGTH_GROWTH_FACTOR.get() * ticks);
+        float toadd = (float) (maxStrenght * RadiationModule.config.strengthGrowthFactor.get() * ticks);
         if ((strength + toadd) > maxStrenght) {
             toadd = maxStrenght - strength;
             if (toadd < 0) {

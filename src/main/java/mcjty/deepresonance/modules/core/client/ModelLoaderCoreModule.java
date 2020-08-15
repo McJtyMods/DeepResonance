@@ -8,10 +8,8 @@ import elec332.core.api.client.model.loading.ModelHandler;
 import elec332.core.client.model.WrappedModel;
 import elec332.core.client.util.AbstractItemOverrideList;
 import elec332.core.item.AbstractItemBlock;
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
-import mcjty.deepresonance.util.Constants;
+import mcjty.deepresonance.modules.core.util.CrystalHelper;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -26,18 +24,13 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ILightReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 import javax.annotation.Nonnull;
@@ -94,14 +87,14 @@ public class ModelLoaderCoreModule implements IModelHandler {
                 if (power == null || purity == null) {
                     return fullNaturalModel;
                 }
-                if (power < Constants.CRYSTAL_MIN_POWER) {
-                    if (purity > 30.0f) {
+                if (CrystalHelper.isEmpty(power)) {
+                    if (CrystalHelper.isVeryPure(purity)) {
                         return emptyPureModel;
                     } else {
                         return emptyNaturalModel;
                     }
                 } else {
-                    if (purity > 30.0f) {
+                    if (CrystalHelper.isVeryPure(purity)) {
                         return fullPureModel;
                     } else {
                         return fullNaturalModel;
@@ -113,20 +106,6 @@ public class ModelLoaderCoreModule implements IModelHandler {
             }
 
             IBakedModel wrapped = new WrappedModel(fullNaturalModel) {
-
-                @Nonnull
-                @Override //Todo: Move to tile?
-                public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData) {
-                    if (tileData == EmptyModelData.INSTANCE) {
-                        tileData = new ModelDataMap.Builder().build();
-                    }
-                    TileEntity tile = WorldHelper.getTileAt(world, pos);
-                    if (tile instanceof TileEntityResonatingCrystal) {
-                        tileData.setData(POWER, ((TileEntityResonatingCrystal) tile).getPower());
-                        tileData.setData(PURITY, ((TileEntityResonatingCrystal) tile).getPurity());
-                    }
-                    return tileData;
-                }
 
                 @Nonnull
                 @Override

@@ -9,10 +9,10 @@ import elec332.core.api.registration.RegisteredTileEntity;
 import elec332.core.util.RegistryHelper;
 import elec332.core.util.StatCollector;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
-import mcjty.deepresonance.fluids.LiquidCrystalData;
 import mcjty.deepresonance.modules.tank.client.TankTESR;
 import mcjty.deepresonance.modules.tank.grid.TankGrid;
 import mcjty.deepresonance.util.AbstractTileEntity;
+import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -177,7 +177,7 @@ public class TileEntityTank extends AbstractTileEntity implements IInfoProvider 
             Fluid fluid = grid.getStoredFluid();
             if (fluid != null) {
                 tag.putString("fluid", Preconditions.checkNotNull(fluid.getRegistryName()).toString());
-                ILiquidCrystalData data = LiquidCrystalData.fromStack(grid.getFluidInTank(0));
+                ILiquidCrystalData data = DeepResonanceFluidHelper.readCrystalDataFromStack(grid.getFluidInTank(0));
                 if (data != null) {
                     tag.putFloat("efficiency", data.getEfficiency());
                     tag.putFloat("purity", data.getPurity());
