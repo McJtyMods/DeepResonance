@@ -10,8 +10,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
@@ -19,7 +17,6 @@ import javax.annotation.Nonnull;
 /**
  * Created by Elec332 on 16-8-2020
  */
-@OnlyIn(Dist.CLIENT)
 public class TankItemRenderer implements ITESRItem {
 
     private final TankTESR tesr = new TankTESR();

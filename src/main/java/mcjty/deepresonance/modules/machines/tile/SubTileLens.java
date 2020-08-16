@@ -22,8 +22,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.LazyOptional;
@@ -54,7 +52,6 @@ public class SubTileLens extends SubTileLogicBase {
     }
 
     @Nonnull
-    @OnlyIn(Dist.CLIENT)
     public EnumSet<Direction> getLenses() {
         Collection<Direction> dirs = lenses.keySet();
         return dirs.isEmpty() ? EnumSet.noneOf(Direction.class) : EnumSet.copyOf(dirs);

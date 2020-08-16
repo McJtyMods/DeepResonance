@@ -17,8 +17,6 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.Collection;
@@ -148,7 +146,6 @@ public class TileEntityEnergyCollector extends AbstractTileEntityGeneratorCompon
         updateRefs = true;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public Set<BlockPos> getCrystals() {
         return crystals;
     }

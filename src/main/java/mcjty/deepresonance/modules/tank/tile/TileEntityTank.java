@@ -23,8 +23,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidUtil;
@@ -68,12 +66,10 @@ public class TileEntityTank extends AbstractTileEntity implements IInfoProvider 
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     public float getClientRenderHeight() {
         return renderHeight;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public Fluid getClientRenderFluid() {
         return clientRenderFluid;
     }

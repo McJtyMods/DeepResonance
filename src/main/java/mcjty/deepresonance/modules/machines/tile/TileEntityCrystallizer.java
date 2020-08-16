@@ -26,8 +26,6 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -205,12 +203,10 @@ public class TileEntityCrystallizer extends AbstractPoweredTileEntity implements
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         return new AxisAlignedBB(getPos().getX() - 10, getPos().getY() - 10, getPos().getZ() - 10, getPos().getX() + 10, getPos().getY() + 10, getPos().getZ() + 10);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public int getProgress() {
         return progress;
     }

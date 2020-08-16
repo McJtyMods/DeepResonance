@@ -33,8 +33,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
@@ -274,22 +272,18 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         return new AxisAlignedBB(getPos().getX() - 10, getPos().getY() - 10, getPos().getZ() - 10, getPos().getX() + 10, getPos().getY() + 10, getPos().getZ() + 10);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public float getCrystalLiquid() {
         return crystalLiquid;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public InfusionBonus getActiveBonus() {
         return activeBonus;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public Collection<BlockPos> getLaserBeam() {
         return laserBeam;
     }

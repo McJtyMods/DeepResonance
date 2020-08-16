@@ -27,8 +27,6 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -47,7 +45,6 @@ import java.util.function.Function;
  * Created by Elec332 on 19-1-2020
  */
 @ModelHandler
-@OnlyIn(Dist.CLIENT)
 public class ModelLoaderCoreModule implements IModelHandler {
 
     public static final ResourceLocation RESONATING_CRYSTAL = new DeepResonanceResourceLocation("resonating_crystal_model");
@@ -62,7 +59,6 @@ public class ModelLoaderCoreModule implements IModelHandler {
     public static StateContainer<Block, BlockState> stateContainer;
 
     @APIHandlerInject
-    @OnlyIn(Dist.CLIENT)
     private static void registerBlockState(IElecRenderingRegistry renderingRegistry) {
         stateContainer = renderingRegistry.registerBlockStateLocation(RESONATING_CRYSTAL, FACING, EMPTY, VERY_PURE);
     }

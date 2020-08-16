@@ -25,8 +25,6 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.common.capabilities.Capability;
@@ -297,7 +295,6 @@ public class TileEntityResonatingCrystal extends AbstractTileEntity implements I
 
     @Nonnull
     @Override
-    @OnlyIn(Dist.CLIENT)
     public IModelData getModelData() {
         IModelData tileData = new ModelDataMap.Builder().build();
         tileData.setData(ModelLoaderCoreModule.POWER, getPower());
