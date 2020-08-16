@@ -2,7 +2,6 @@ package mcjty.deepresonance.modules.machines;
 
 import com.google.common.base.Preconditions;
 import elec332.core.api.client.model.ModelLoadEvent;
-import elec332.core.api.module.ElecModule;
 import elec332.core.block.BlockSubTile;
 import elec332.core.client.RenderHelper;
 import elec332.core.tile.sub.SubTileRegistry;
@@ -28,19 +27,16 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
 /**
  * Created by Elec332 on 25-7-2020
  */
 @SuppressWarnings("unchecked")
-@ElecModule(owner = DeepResonance.MODID, name = "Machines")
 public class MachinesModule {
 
     public static final RegistryObject<Block> VALVE_BLOCK = DeepResonance.nonRotatingBlock("valve", TileEntityValve::new);
@@ -71,7 +67,7 @@ public class MachinesModule {
     public static SmelterConfig smelterConfig;
     public static ValveConfig valveConfig;
 
-    public MachinesModule() {
+    public MachinesModule(IEventBus eventBus) {
         DeepResonance.configuration.configureSubConfig("machines", "Machines module settings", config -> {
             crystallizerConfig = config.registerConfig(CrystallizerConfig::new, "crystallizer", "Crystallizer settings");
             laserConfig = config.registerConfig(LaserConfig::new, "laser", "Laser settings");
@@ -83,20 +79,22 @@ public class MachinesModule {
         RegistryHelper.registerEmptyCapability(ILensMirror.class);
         SubTileRegistry.INSTANCE.registerSubTile(SubTileLens.class, new DeepResonanceResourceLocation("lens"));
         SubTileRegistry.INSTANCE.registerSubTile(SubTileLensMirror.class, new DeepResonanceResourceLocation("lens_mirror"));
+
+        eventBus.addListener(this::loadModels);
+        eventBus.addListener(this::clientSetup);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    @ElecModule.EventHandler
-    public void loadModels(ModelLoadEvent event) {
+    private void loadModels(ModelLoadEvent event) {
         ModelResourceLocation location = new ModelResourceLocation(new DeepResonanceResourceLocation("lens"), "");
         event.registerModel(location, LensModelCache.INSTANCE.setModel(event.getModel(location)));
         location = new ModelResourceLocation(new DeepResonanceResourceLocation("resonating_crystal_model"), "empty=false,facing=north,very_pure=true");
         CrystallizerTESR.setModel(Preconditions.checkNotNull(event.getModel(location)));
     }
 
-    @OnlyIn(Dist.CLIENT)
-    @ElecModule.EventHandler
-    public void registerLaserColors(FMLLoadCompleteEvent event) {
+    private void clientSetup(FMLClientSetupEvent event) {
+        RenderTypeLookup.setRenderLayer(MachinesModule.CRYSTALLIZER_BLOCK.get(), RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(MachinesModule.LASER_BLOCK.get(), RenderType.getCutout());
+
         RenderHelper.getBlockColors().register((s, world, pos, index) -> {
             if (index == 1) {
                 TileEntity tile = WorldHelper.getTileAt(world, pos);
@@ -111,13 +109,6 @@ public class MachinesModule {
             return -1;
         }, MachinesModule.LASER_BLOCK.get());
         RenderHelper.getItemColors().register((stack, index) -> index == 1 ? 0x484B52 : -1, MachinesModule.LASER_ITEM.get());
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @ElecModule.EventHandler
-    public void clientSetup(FMLClientSetupEvent event) {
-        RenderTypeLookup.setRenderLayer(MachinesModule.CRYSTALLIZER_BLOCK.get(), RenderType.getTranslucent());
-        RenderTypeLookup.setRenderLayer(MachinesModule.LASER_BLOCK.get(), RenderType.getCutout());
     }
 
 }

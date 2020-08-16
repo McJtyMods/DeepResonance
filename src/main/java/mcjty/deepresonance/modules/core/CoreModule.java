@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.core;
 
-import elec332.core.api.module.ElecModule;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.block.BlockCrystal;
 import mcjty.deepresonance.modules.core.block.BlockResonatingPlate;
@@ -15,16 +14,14 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 /**
  * Created by Elec332 on 10-1-2020
  */
-@ElecModule(owner = DeepResonance.MODID, name = "Core", alwaysEnabled = true)
 public class CoreModule {
 
     private static final Block.Properties ORE_PROPERTIES = Block.Properties.create(Material.ROCK).hardnessAndResistance(3, 5).harvestLevel(3).harvestTool(ToolType.PICKAXE);
@@ -51,16 +48,15 @@ public class CoreModule {
     public static CrystalConfig crystalConfig;
     public static ResonatingPlateBlockConfig resonatingPlateConfig;
 
-    public CoreModule() {
+    public CoreModule(IEventBus eventBus) {
         DeepResonance.configuration.configureSubConfig("core", "Core module settings", config -> {
             crystalConfig = config.registerConfig(CrystalConfig::new, "resonating_crystal", "Resonating Crystal settings");
             resonatingPlateConfig = config.registerConfig(ResonatingPlateBlockConfig::new, "resonating_plate_block", "Resonating Plate Block settings");
         });
+        eventBus.addListener(this::clientSetup);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    @ElecModule.EventHandler
-    public void clientSetup(FMLClientSetupEvent event) {
+    private void clientSetup(FMLClientSetupEvent event) {
         RenderTypeLookup.setRenderLayer(CoreModule.RESONATING_CRYSTAL_BLOCK.get(), RenderType.getTranslucent());
     }
 

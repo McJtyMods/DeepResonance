@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.pulser;
 
-import elec332.core.api.module.ElecModule;
 import elec332.core.util.RegistryHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
@@ -17,6 +16,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
@@ -25,7 +25,6 @@ import java.util.function.Consumer;
 /**
  * Created by Elec332 on 31-7-2020
  */
-@ElecModule(owner = DeepResonance.MODID, name = "Pulser")
 public class PulserModule {
 
     public static final RegistryObject<Block> PULSER_BLOCK = DeepResonance.defaultBlock("pulser", TileEntityPulser::new);
@@ -39,17 +38,17 @@ public class PulserModule {
     public static PulserBlockConfig pulserBlockConfig;
     public static PulserCrystalConfig pulserCrystalConfig;
 
-    public PulserModule() {
+    public PulserModule(IEventBus eventBus) {
         DeepResonance.configuration.configureSubConfig("pulser", "Pulser settings (power overdrive)", config -> {
             pulserBlockConfig = config.registerConfig(PulserBlockConfig::new, "pulser_block", "Settings for the Pulser (Block)");
             pulserCrystalConfig = config.registerConfig(PulserCrystalConfig::new, "pulser_crystal", "Instability and resistance settings for the crystal");
         });
         RegistryHelper.registerEmptyCapability(PulserCapability.class);
+
+        eventBus.addListener(this::setup);
     }
 
-
-    @ElecModule.EventHandler
-    public void setup(FMLCommonSetupEvent event) {
+    private void setup(FMLCommonSetupEvent event) {
         TileEntityResonatingCrystal.registerModifier(PULSER_CAPABILITY);
         MinecraftForge.EVENT_BUS.addGenericListener(TileEntity.class, (Consumer<AttachCapabilitiesEvent<? extends TileEntity>>) tileCaps -> RegistryHelper.registerCapability(tileCaps, CAPABILITY_NAME, PULSER_CAPABILITY, new PulserCapability()));
     }

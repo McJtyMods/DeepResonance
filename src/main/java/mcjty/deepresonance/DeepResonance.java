@@ -4,8 +4,16 @@ import com.google.common.base.Preconditions;
 import elec332.core.api.config.IConfigWrapper;
 import elec332.core.api.mod.IElecCoreMod;
 import elec332.core.api.module.IModuleController;
+import elec332.core.api.module.IModuleInfo;
 import elec332.core.config.ConfigWrapper;
 import elec332.core.util.FMLHelper;
+import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.generator.GeneratorModule;
+import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.pulser.PulserModule;
+import mcjty.deepresonance.modules.radiation.RadiationModule;
+import mcjty.deepresonance.modules.tank.TankModule;
+import mcjty.deepresonance.modules.worldgen.WorldGenModule;
 import mcjty.deepresonance.setup.ModSetup;
 import mcjty.deepresonance.util.DeepResonanceBlock;
 import mcjty.deepresonance.util.TranslationHelper;
@@ -35,10 +43,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 
 /**
  * Created by Elec332 on 6-1-2020
@@ -101,6 +106,17 @@ public class DeepResonance implements ModBase, IElecCoreMod, IModuleController {
     @Override
     public boolean isModuleEnabled(String moduleName) {
         return true;
+    }
+
+    @Override
+    public void registerAdditionalModules(Consumer<IModuleInfo> registry, BiFunction<String, Class<?>, IModuleInfo.Builder> factory1, BiFunction<String, String, IModuleInfo.Builder> factory2) {
+        registry.accept(factory1.apply("Core", CoreModule.class).alwaysEnabled().build());
+        registry.accept(factory1.apply("Generator", GeneratorModule.class).build());
+        registry.accept(factory1.apply("Machines", MachinesModule.class).build());
+        registry.accept(factory1.apply("Pulser", PulserModule.class).build());
+        registry.accept(factory1.apply("Radiation", RadiationModule.class).build());
+        registry.accept(factory1.apply("Tanks", TankModule.class).build());
+        registry.accept(factory1.apply("WorldGen", WorldGenModule.class).build());
     }
 
     @Override

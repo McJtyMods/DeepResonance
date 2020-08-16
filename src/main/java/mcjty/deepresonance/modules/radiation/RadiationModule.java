@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.radiation;
 
-import elec332.core.api.module.ElecModule;
 import elec332.core.util.RegistryHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.radiation.IWorldRadiationManager;
@@ -20,15 +19,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-
-import static mcjty.deepresonance.DeepResonance.MODID;
 
 /**
  * Created by Elec332 on 12-7-2020
  */
-@ElecModule(owner = MODID, name = "Radiation")
 public class RadiationModule {
 
     public static final RegistryObject<Block> POISONED_DIRT_BLOCK = DeepResonance.BLOCKS.register("poisoned_dirt", () -> new Block(Block.Properties.create(Material.EARTH, MaterialColor.DIRT).hardnessAndResistance(0.5f).sound(SoundType.GROUND)));
@@ -50,13 +47,14 @@ public class RadiationModule {
 
     public static RadiationConfiguration config;
 
-    public RadiationModule() {
+    public RadiationModule(IEventBus eventBus) {
         config = DeepResonance.configuration.registerConfig(RadiationConfiguration::new, "radiation", "Radiation settings");
         RegistryHelper.registerEmptyCapability(IWorldRadiationManager.class);
+
+        eventBus.addListener(this::setup);
     }
 
-    @ElecModule.EventHandler
-    public void setup(FMLCommonSetupEvent event) {
+    private void setup(FMLCommonSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(new RadiationEventHandler());
     }
 
