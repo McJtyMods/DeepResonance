@@ -3,7 +3,6 @@ package mcjty.deepresonance.modules.generator.tile;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import elec332.core.ElecCore;
-import elec332.core.api.registration.RegisteredTileEntity;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import net.minecraft.block.BlockState;
@@ -21,7 +20,6 @@ import java.util.function.Consumer;
 /**
  * Created by Elec332 on 30-7-2020
  */
-@RegisteredTileEntity("generator_part")
 public class TileEntityGeneratorPart extends AbstractTileEntityGeneratorComponent {
 
     private final Map<Direction, LazyOptional<IEnergyStorage>> surroundings = Maps.newEnumMap(Direction.class);

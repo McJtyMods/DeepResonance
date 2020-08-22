@@ -13,6 +13,7 @@ import mcjty.deepresonance.api.infusion.InfusionBonus;
 import mcjty.deepresonance.api.laser.ILens;
 import mcjty.deepresonance.api.laser.ILensMirror;
 import mcjty.deepresonance.modules.machines.client.CrystallizerTESR;
+import mcjty.deepresonance.modules.machines.client.LaserTESR;
 import mcjty.deepresonance.modules.machines.client.LensModelCache;
 import mcjty.deepresonance.modules.machines.item.ItemLens;
 import mcjty.deepresonance.modules.machines.tile.*;
@@ -77,6 +78,11 @@ public class MachinesModule {
         });
         RegistryHelper.registerEmptyCapability(ILens.class);
         RegistryHelper.registerEmptyCapability(ILensMirror.class);
+        RegistryHelper.registerTileEntityLater(TileEntityLaser.class, new DeepResonanceResourceLocation("laser"));
+        RegistryHelper.registerTileEntityLater(TileEntitySmelter.class, new DeepResonanceResourceLocation("smelter"));
+        RegistryHelper.registerTileEntityLater(TileEntityPurifier.class, new DeepResonanceResourceLocation("purifier"));
+        RegistryHelper.registerTileEntityLater(TileEntityCrystallizer.class, new DeepResonanceResourceLocation("crystallizer"));
+        RegistryHelper.registerTileEntityLater(TileEntityValve.class, new DeepResonanceResourceLocation("valve"));
         SubTileRegistry.INSTANCE.registerSubTile(SubTileLens.class, new DeepResonanceResourceLocation("lens"));
         SubTileRegistry.INSTANCE.registerSubTile(SubTileLensMirror.class, new DeepResonanceResourceLocation("lens_mirror"));
 
@@ -94,6 +100,9 @@ public class MachinesModule {
     private void clientSetup(FMLClientSetupEvent event) {
         RenderTypeLookup.setRenderLayer(MachinesModule.CRYSTALLIZER_BLOCK.get(), RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(MachinesModule.LASER_BLOCK.get(), RenderType.getCutout());
+
+        RenderHelper.registerTESR(TileEntityCrystallizer.class, new CrystallizerTESR());
+        RenderHelper.registerTESR(TileEntityLaser.class, new LaserTESR());
 
         RenderHelper.getBlockColors().register((s, world, pos, index) -> {
             if (index == 1) {

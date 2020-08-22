@@ -2,11 +2,10 @@ package mcjty.deepresonance.modules.machines.tile;
 
 import com.google.common.collect.Lists;
 import elec332.core.ElecCore;
-import elec332.core.api.registration.HasSpecialRenderer;
-import elec332.core.api.registration.RegisteredTileEntity;
 import elec332.core.inventory.BasicItemHandler;
 import elec332.core.item.AbstractItemBlock;
 import elec332.core.util.BlockProperties;
+import elec332.core.util.FMLHelper;
 import elec332.core.util.NBTTypes;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.api.infusion.InfusionBonus;
@@ -14,7 +13,6 @@ import mcjty.deepresonance.api.laser.ILens;
 import mcjty.deepresonance.api.laser.ILensMirror;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
-import mcjty.deepresonance.modules.machines.client.LaserTESR;
 import mcjty.deepresonance.modules.machines.client.gui.LaserGui;
 import mcjty.deepresonance.modules.machines.util.InfusionBonusRegistry;
 import mcjty.deepresonance.util.AbstractPoweredTileEntity;
@@ -33,8 +31,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
@@ -44,8 +40,6 @@ import java.util.Collection;
 /**
  * Created by Elec332 on 28-7-2020
  */
-@RegisteredTileEntity("laser")
-@HasSpecialRenderer(LaserTESR.class)
 public class TileEntityLaser extends AbstractPoweredTileEntity implements ITickableTileEntity {
 
     public static final int SLOT_CRYSTAL = 0;
@@ -274,23 +268,31 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
+        if (!FMLHelper.getDist().isClient()) {
+            throw new UnsupportedOperationException();
+        }
         return new AxisAlignedBB(getPos().getX() - 10, getPos().getY() - 10, getPos().getZ() - 10, getPos().getX() + 10, getPos().getY() + 10, getPos().getZ() + 10);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public float getCrystalLiquid() {
+        if (!FMLHelper.getDist().isClient()) {
+            throw new UnsupportedOperationException();
+        }
         return crystalLiquid;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public InfusionBonus getActiveBonus() {
+        if (!FMLHelper.getDist().isClient()) {
+            throw new UnsupportedOperationException();
+        }
         return activeBonus;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public Collection<BlockPos> getLaserBeam() {
+        if (!FMLHelper.getDist().isClient()) {
+            throw new UnsupportedOperationException();
+        }
         return laserBeam;
     }
 

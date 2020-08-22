@@ -1,7 +1,6 @@
 package mcjty.deepresonance.modules.machines.tile;
 
 import com.google.common.base.Preconditions;
-import elec332.core.api.registration.RegisteredTileEntity;
 import elec332.core.inventory.BasicItemHandler;
 import elec332.core.inventory.ItemEjector;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
@@ -31,7 +30,6 @@ import javax.annotation.Nullable;
 /**
  * Created by Elec332 on 27-7-2020
  */
-@RegisteredTileEntity("purifier")
 public class TileEntityPurifier extends AbstractTileEntity implements ITickableTileEntity {
 
     public static final int SLOT = 0;

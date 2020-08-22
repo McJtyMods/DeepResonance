@@ -6,7 +6,9 @@ import elec332.core.api.mod.IElecCoreMod;
 import elec332.core.api.module.IModuleController;
 import elec332.core.api.module.IModuleInfo;
 import elec332.core.config.ConfigWrapper;
+import elec332.core.data.AbstractDataGenerator;
 import elec332.core.util.FMLHelper;
+import mcjty.deepresonance.data.DataGenerators;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
@@ -82,6 +84,7 @@ public class DeepResonance implements ModBase, IElecCoreMod, IModuleController {
         FLUIDS.register(modBus);
         CONTAINERS.register(modBus);
         modBus.addListener(setup::init);
+        modBus.addListener(AbstractDataGenerator.toEventListener(new DataGenerators()));
         modBus.addListener(new Consumer<FMLLoadCompleteEvent>() {
 
             @Override

@@ -4,18 +4,22 @@ import elec332.core.util.RegistryHelper;
 import mcjty.deepresonance.api.radiation.IWorldRadiationManager;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /**
  * Created by Elec332 on 13-7-2020
  */
 public class RadiationEventHandler {
 
-    @SubscribeEvent
-    public void registerWorldCapabilities(AttachCapabilitiesEvent<World> worldCapabilitiesEvent) {
+    public static void register() {
+        MinecraftForge.EVENT_BUS.addGenericListener(World.class, RadiationEventHandler::registerWorldCapabilities);
+        MinecraftForge.EVENT_BUS.addListener(RadiationEventHandler::onTick);
+    }
+
+    private static void registerWorldCapabilities(AttachCapabilitiesEvent<World> worldCapabilitiesEvent) {
         if (worldCapabilitiesEvent.getObject().isRemote) {
             return;
         }
@@ -23,8 +27,7 @@ public class RadiationEventHandler {
         RegistryHelper.registerCapability(worldCapabilitiesEvent, RadiationModule.CAPABILITY_NAME, RadiationModule.CAPABILITY, manager);
     }
 
-    @SubscribeEvent
-    public void onTick(TickEvent.WorldTickEvent evt) {
+    private static void onTick(TickEvent.WorldTickEvent evt) {
         if (evt.phase != TickEvent.Phase.END) {
             return;
         }

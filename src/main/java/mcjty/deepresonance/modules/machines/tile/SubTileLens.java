@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import elec332.core.ElecCore;
 import elec332.core.tile.sub.SubTileLogicBase;
+import elec332.core.util.FMLHelper;
 import elec332.core.util.RegistryHelper;
 import elec332.core.util.math.HitboxHelper;
 import elec332.core.util.math.IndexedVoxelShape;
@@ -22,8 +23,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.LazyOptional;
@@ -54,8 +53,10 @@ public class SubTileLens extends SubTileLogicBase {
     }
 
     @Nonnull
-    @OnlyIn(Dist.CLIENT)
     public EnumSet<Direction> getLenses() {
+        if (!FMLHelper.getDist().isClient()) {
+            throw new UnsupportedOperationException();
+        }
         Collection<Direction> dirs = lenses.keySet();
         return dirs.isEmpty() ? EnumSet.noneOf(Direction.class) : EnumSet.copyOf(dirs);
     }

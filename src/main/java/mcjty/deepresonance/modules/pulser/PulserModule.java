@@ -44,6 +44,7 @@ public class PulserModule {
             pulserCrystalConfig = config.registerConfig(PulserCrystalConfig::new, "pulser_crystal", "Instability and resistance settings for the crystal");
         });
         RegistryHelper.registerEmptyCapability(PulserCapability.class);
+        RegistryHelper.registerTileEntityLater(TileEntityPulser.class, new DeepResonanceResourceLocation("pulser"));
 
         eventBus.addListener(this::setup);
     }

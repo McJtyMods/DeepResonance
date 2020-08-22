@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.machines.tile;
 
-import elec332.core.api.registration.RegisteredTileEntity;
 import elec332.core.inventory.BasicItemHandler;
 import elec332.core.util.BlockProperties;
 import elec332.core.world.WorldHelper;
@@ -32,7 +31,6 @@ import javax.annotation.Nullable;
 /**
  * Created by Elec332 on 26-7-2020
  */
-@RegisteredTileEntity("smelter")
 public class TileEntitySmelter extends AbstractPoweredTileEntity implements ITickableTileEntity {
 
     public static final int SLOT = 0;

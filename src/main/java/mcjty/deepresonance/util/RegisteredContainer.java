@@ -11,8 +11,6 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.RegistryObject;
@@ -29,7 +27,6 @@ public abstract class RegisteredContainer<C extends GenericContainer, G extends 
         return new RegisteredContainer<C, G, T>(name, slots, containerBuilder) {
 
             @Override
-            @OnlyIn(Dist.CLIENT)
             @SuppressWarnings("unchecked")
             public Object createGui(T tile, GenericContainer container, PlayerInventory inventory) {
                 return gui.createGui(tile, (C) container, inventory);
@@ -89,7 +86,6 @@ public abstract class RegisteredContainer<C extends GenericContainer, G extends 
         });
     }
 
-    @OnlyIn(Dist.CLIENT)
     public abstract Object createGui(T tile, GenericContainer container, PlayerInventory inventory);
 
     public interface Modifier {
@@ -100,7 +96,6 @@ public abstract class RegisteredContainer<C extends GenericContainer, G extends 
 
     public interface IGuiFactory<C extends GenericContainer, T extends GenericTileEntity> {
 
-        @OnlyIn(Dist.CLIENT)
         Object createGui(T tile, C container, PlayerInventory inventory);
 
     }

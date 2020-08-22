@@ -2,12 +2,11 @@ package mcjty.deepresonance.modules.machines.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import elec332.core.api.annotations.StaticLoad;
 import elec332.core.api.client.IIconRegistrar;
-import elec332.core.api.client.model.IElecModelBakery;
-import elec332.core.api.client.model.IElecQuadBakery;
-import elec332.core.api.client.model.IElecTemplateBakery;
 import elec332.core.api.client.model.IModelAndTextureLoader;
+import elec332.core.api.client.model.IModelBakery;
+import elec332.core.api.client.model.IQuadBakery;
+import elec332.core.api.client.model.ITemplateBakery;
 import elec332.core.client.util.AbstractTileEntityRenderer;
 import elec332.core.loader.client.RenderingRegistry;
 import mcjty.deepresonance.modules.machines.tile.TileEntityLaser;
@@ -22,8 +21,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.IForgeTransformationMatrix;
 
 import javax.annotation.Nonnull;
@@ -31,8 +28,6 @@ import javax.annotation.Nonnull;
 /**
  * Created by Elec332 on 29-7-2020
  */
-@StaticLoad
-@OnlyIn(Dist.CLIENT)
 public class LaserTESR extends AbstractTileEntityRenderer<TileEntityLaser> {
 
     private static final float BEAM_WIDTH = 3.8f;
@@ -94,7 +89,7 @@ public class LaserTESR extends AbstractTileEntityRenderer<TileEntityLaser> {
             }
 
             @Override
-            public void registerModels(IElecQuadBakery quadBakery, IElecModelBakery modelBakery, IElecTemplateBakery templateBakery) {
+            public void registerModels(IQuadBakery quadBakery, IModelBakery modelBakery, ITemplateBakery templateBakery) {
                 IForgeTransformationMatrix m = new TransformationMatrix(new Vector3f(0, 0, -1), null, null, null);
                 LaserTESR.quad = quadBakery.bakeQuad(new Vector3f(-BEAM_WIDTH / 2, BEAM_WIDTH / 2, 0), new Vector3f(BEAM_WIDTH / 2, BEAM_WIDTH / 2, 16), tex, Direction.UP, m);
             }

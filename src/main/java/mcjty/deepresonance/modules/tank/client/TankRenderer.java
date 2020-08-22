@@ -2,10 +2,10 @@ package mcjty.deepresonance.modules.tank.client;
 
 import com.google.common.base.Preconditions;
 import elec332.core.api.client.IIconRegistrar;
-import elec332.core.api.client.model.IElecModelBakery;
-import elec332.core.api.client.model.IElecQuadBakery;
-import elec332.core.api.client.model.IElecTemplateBakery;
 import elec332.core.api.client.model.IModelAndTextureLoader;
+import elec332.core.api.client.model.IModelBakery;
+import elec332.core.api.client.model.IQuadBakery;
+import elec332.core.api.client.model.ITemplateBakery;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.BakedQuad;
@@ -14,8 +14,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -23,7 +21,6 @@ import java.util.List;
 /**
  * Created by Elec332 on 11-1-2020
  */
-@OnlyIn(Dist.CLIENT)
 public class TankRenderer implements IModelAndTextureLoader {
 
     public static final ResourceLocation TOP_TEXTURE = new DeepResonanceResourceLocation("block/tank_top");
@@ -70,7 +67,7 @@ public class TankRenderer implements IModelAndTextureLoader {
     }
 
     @Override
-    public void registerModels(IElecQuadBakery quadBakery, IElecModelBakery modelBakery, IElecTemplateBakery templateBakery) {
+    public void registerModels(IQuadBakery quadBakery, IModelBakery modelBakery, ITemplateBakery templateBakery) {
         float offset = 0.05f;
         for (Direction dir : Direction.values()) {
             TextureAtlasSprite tex = textures[dir.getAxis() == Direction.Axis.Y ? dir.ordinal() : 2];

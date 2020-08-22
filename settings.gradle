@@ -1,0 +1,4 @@
+include ":ElecCore"
+project(":ElecCore").setProjectDir(new File("../ElecCore"))
+
+includeBuild 'D:/Programming/Github/Java/Gradle/GradleModDev'
