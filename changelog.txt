@@ -1,0 +1,41 @@
+2.0.0-beta:
+- Port to 1.15
+
+1.8.0:
+- Depends on McJtyLib 3.5.0!
+- Russian manual by kellixon
+- Kroatian language by Mindy
+- Manual in XML format (for GuideBook) by Shazuli
+- Small fix in the gui for the laser by Geratheon
+- CTM support for dense glass by Mallrat208
+- The laser catalyst slot no longer accepts crystals
+- Added mention of 6000 RCL to the manual (for the crystalizer)
+
+1.7.6:
+- Compatibility with latest ElecCore
+
+1.7.5:
+- Added back SideOnly(Side.CLIENT) to some spots to avoid crashes on server
+
+1.7.4:
+- Needs McJtyLib 3.1.0
+- Support for COFH RF API is removed. Only Forge Energy is supported now
+- Some small cleanups
+
+1.7.3:
+- Protection for mods that call onBlockPlaceEvent from client
+- Made compatible with RFTools 7.58
+
+1.7.2:
+- Needs McJtyLib 3.0.5
+- Fixed a problem (using support in McJtyLib) for a packet that was sent too early
+- Fixed the inventory model for the tank
+
+1.7.1:
+- Removed some spam output
+
+1.7.0:
+- Made compatible with the latest McJtyLib (3.0.0)
+
+1.7.0alpha:
+- Made compatible with the latest McJtyLib (3.0.0)
