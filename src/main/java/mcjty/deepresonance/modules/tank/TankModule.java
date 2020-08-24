@@ -3,13 +3,17 @@ package mcjty.deepresonance.modules.tank;
 import com.google.common.base.Preconditions;
 import elec332.core.api.client.model.ModelLoadEvent;
 import elec332.core.api.config.IConfigurableElement;
+import elec332.core.client.RenderHelper;
 import elec332.core.handler.ElecCoreRegistrar;
 import elec332.core.loader.client.RenderingRegistry;
+import elec332.core.util.RegistryHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.tank.blocks.BlockTank;
 import mcjty.deepresonance.modules.tank.client.TankItemRenderer;
 import mcjty.deepresonance.modules.tank.client.TankRenderer;
+import mcjty.deepresonance.modules.tank.client.TankTESR;
 import mcjty.deepresonance.modules.tank.grid.TankGridHandler;
+import mcjty.deepresonance.modules.tank.tile.TileEntityTank;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderType;
@@ -43,6 +47,8 @@ public class TankModule implements IConfigurableElement {
         eventBus.addListener(this::setup);
         eventBus.addListener(this::clientSetup);
         eventBus.addListener(this::loadModels);
+
+        RegistryHelper.registerTileEntityLater(TileEntityTank.class, new DeepResonanceResourceLocation("tank"));
     }
 
     private void setup(FMLCommonSetupEvent event) {
@@ -54,6 +60,7 @@ public class TankModule implements IConfigurableElement {
         RenderingRegistry.instance().registerLoader(TankRenderer.INSTANCE);
         RenderingRegistry.instance().setItemRenderer(TANK_ITEM.get(), new TankItemRenderer());
         RenderTypeLookup.setRenderLayer(TankModule.TANK_BLOCK.get(), RenderType.getTranslucent());
+        RenderHelper.registerTESR(TileEntityTank.class, new TankTESR());
     }
 
     private void loadModels(ModelLoadEvent event) {

@@ -1,12 +1,10 @@
 package mcjty.deepresonance.modules.generator.tile;
 
-import elec332.core.api.registration.RegisteredTileEntity;
 import net.minecraft.nbt.CompoundNBT;
 
 /**
  * Created by Elec332 on 30-7-2020
  */
-@RegisteredTileEntity("generator_controller")
 public class TileEntityGeneratorController extends AbstractTileEntityGeneratorComponent {
 
     @Override

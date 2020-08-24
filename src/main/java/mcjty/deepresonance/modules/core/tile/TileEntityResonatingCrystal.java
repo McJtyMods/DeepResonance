@@ -6,7 +6,6 @@ import elec332.core.api.info.IInfoDataAccessorBlock;
 import elec332.core.api.info.IInfoProvider;
 import elec332.core.api.info.IInformation;
 import elec332.core.api.info.InfoMod;
-import elec332.core.api.registration.RegisteredTileEntity;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.api.crystal.ICrystalModifier;
 import mcjty.deepresonance.api.radiation.IWorldRadiationManager;
@@ -41,7 +40,6 @@ import java.util.stream.Collectors;
  * Created by Elec332 on 18-1-2020
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
-@RegisteredTileEntity("resonating_crystal")
 public class TileEntityResonatingCrystal extends AbstractTileEntity implements ITickableTileEntity, IInfoProvider {
 
     private static final Set<Capability<? extends ICrystalModifier>> MODIFIERS = Sets.newHashSet();

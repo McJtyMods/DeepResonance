@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.machines.tile;
 
-import elec332.core.api.registration.RegisteredTileEntity;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.client.gui.ValveGui;
@@ -29,7 +28,6 @@ import javax.annotation.Nullable;
 /**
  * Created by Elec332 on 25-7-2020
  */
-@RegisteredTileEntity("valve")
 public class TileEntityValve extends AbstractTileEntity implements ITickableTileEntity {
 
     public static final String CMD_SETTINGS = "valve.settings";

@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import elec332.core.ElecCore;
 import elec332.core.tile.sub.SubTileLogicBase;
+import elec332.core.util.FMLHelper;
 import elec332.core.util.RegistryHelper;
 import elec332.core.util.math.HitboxHelper;
 import elec332.core.util.math.IndexedVoxelShape;
@@ -53,6 +54,9 @@ public class SubTileLens extends SubTileLogicBase {
 
     @Nonnull
     public EnumSet<Direction> getLenses() {
+        if (!FMLHelper.getDist().isClient()) {
+            throw new UnsupportedOperationException();
+        }
         Collection<Direction> dirs = lenses.keySet();
         return dirs.isEmpty() ? EnumSet.noneOf(Direction.class) : EnumSet.copyOf(dirs);
     }

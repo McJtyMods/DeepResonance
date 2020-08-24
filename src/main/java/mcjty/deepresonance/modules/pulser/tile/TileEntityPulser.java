@@ -6,7 +6,6 @@ import elec332.core.api.info.IInfoDataAccessorBlock;
 import elec332.core.api.info.IInfoProvider;
 import elec332.core.api.info.IInformation;
 import elec332.core.api.info.InfoMod;
-import elec332.core.api.registration.RegisteredTileEntity;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
 import mcjty.deepresonance.modules.pulser.PulserModule;
@@ -25,7 +24,6 @@ import java.util.Set;
 /**
  * Created by Elec332 on 27-7-2020
  */
-@RegisteredTileEntity("pulser")
 public class TileEntityPulser extends AbstractPoweredTileEntity implements ITickableTileEntity, IInfoProvider {
 
     private final Set<LazyOptional<PulserCapability>> crystals = Sets.newHashSet();

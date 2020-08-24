@@ -4,12 +4,10 @@ import com.google.common.base.Preconditions;
 import elec332.core.api.info.IInfoDataAccessorBlock;
 import elec332.core.api.info.IInfoProvider;
 import elec332.core.api.info.IInformation;
-import elec332.core.api.registration.HasSpecialRenderer;
-import elec332.core.api.registration.RegisteredTileEntity;
+import elec332.core.util.FMLHelper;
 import elec332.core.util.RegistryHelper;
 import elec332.core.util.StatCollector;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
-import mcjty.deepresonance.modules.tank.client.TankTESR;
 import mcjty.deepresonance.modules.tank.grid.TankGrid;
 import mcjty.deepresonance.util.AbstractTileEntity;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
@@ -36,8 +34,6 @@ import java.text.DecimalFormat;
 /**
  * Created by Elec332 on 7-1-2020
  */
-@RegisteredTileEntity("tank")
-@HasSpecialRenderer(TankTESR.class)
 public class TileEntityTank extends AbstractTileEntity implements IInfoProvider {
 
     private TankGrid grid;
@@ -67,10 +63,16 @@ public class TileEntityTank extends AbstractTileEntity implements IInfoProvider 
     }
 
     public float getClientRenderHeight() {
+        if (!FMLHelper.getDist().isClient()) {
+            throw new UnsupportedOperationException();
+        }
         return renderHeight;
     }
 
     public Fluid getClientRenderFluid() {
+        if (!FMLHelper.getDist().isClient()) {
+            throw new UnsupportedOperationException();
+        }
         return clientRenderFluid;
     }
 

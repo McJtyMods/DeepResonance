@@ -1,13 +1,12 @@
 package mcjty.deepresonance.modules.core.client;
 
 import com.google.common.base.Preconditions;
-import elec332.core.api.APIHandlerInject;
-import elec332.core.api.client.model.IElecRenderingRegistry;
+import com.google.common.collect.Lists;
 import elec332.core.api.client.model.loading.IModelHandler;
-import elec332.core.api.client.model.loading.ModelHandler;
 import elec332.core.client.model.WrappedModel;
 import elec332.core.client.util.AbstractItemOverrideList;
 import elec332.core.item.AbstractItemBlock;
+import elec332.core.loader.client.RenderingRegistry;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.util.CrystalHelper;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
@@ -34,7 +33,6 @@ import net.minecraftforge.client.model.data.ModelProperty;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.function.BiConsumer;
@@ -44,7 +42,6 @@ import java.util.function.Function;
 /**
  * Created by Elec332 on 19-1-2020
  */
-@ModelHandler
 public class ModelLoaderCoreModule implements IModelHandler {
 
     public static final ResourceLocation RESONATING_CRYSTAL = new DeepResonanceResourceLocation("resonating_crystal_model");
@@ -53,20 +50,15 @@ public class ModelLoaderCoreModule implements IModelHandler {
     public static final BooleanProperty EMPTY = BooleanProperty.create("empty");
     public static final BooleanProperty VERY_PURE = BooleanProperty.create("very_pure");
 
+    public static final StateContainer<Block, BlockState> stateContainer = RenderingRegistry.instance().registerBlockStateLocation(RESONATING_CRYSTAL, FACING, EMPTY, VERY_PURE);
+
     public static final ModelProperty<Float> POWER = new ModelProperty<>();
     public static final ModelProperty<Float> PURITY = new ModelProperty<>();
-
-    public static StateContainer<Block, BlockState> stateContainer;
-
-    @APIHandlerInject
-    private static void registerBlockState(IElecRenderingRegistry renderingRegistry) {
-        stateContainer = renderingRegistry.registerBlockStateLocation(RESONATING_CRYSTAL, FACING, EMPTY, VERY_PURE);
-    }
 
     @Nonnull
     @Override
     public Collection<ResourceLocation> getHandlerModelLocations() {
-        return Collections.singletonList(CoreModule.RESONATING_CRYSTAL_BLOCK.getId());
+        return Lists.newArrayList(CoreModule.RESONATING_CRYSTAL_BLOCK.getId());
     }
 
     @Override

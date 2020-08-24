@@ -1,31 +1,22 @@
 package mcjty.deepresonance.data;
 
-import net.minecraft.data.DataGenerator;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+import elec332.core.data.AbstractDataGenerator;
 
 /**
  * Created by Elec332 on 10-1-2020
  */
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public final class DataGenerators {
+public final class DataGenerators extends AbstractDataGenerator {
 
-    @SubscribeEvent
-    public static void gatherData(GatherDataEvent event) {
-        DataGenerator generator = event.getGenerator();
-        if (event.includeServer()) {
-            generator.addProvider(new RecipesProvider(generator));
-            generator.addProvider(new LootTablesProvider(generator));
-            generator.addProvider(new BlockTagsProvider(generator));
-            generator.addProvider(new ItemTagsProvider(generator));
-            generator.addProvider(new InfusionBonusProvider(generator));
-        }
-        if (event.includeClient()) {
-            generator.addProvider(new TranslationProvider(generator));
-            generator.addProvider(new BlockStateProvider(generator, event.getExistingFileHelper()));
-            generator.addProvider(new ItemModelProvider(generator, event.getExistingFileHelper()));
-        }
+    @Override
+    public void registerDataProviders(DataRegistry registry) {
+        registry.register(RecipesProvider::new);
+        registry.register(LootTablesProvider::new);
+        registry.register(BlockTagsProvider::new);
+        registry.register(ItemTagsProvider::new);
+        registry.register(InfusionBonusProvider::new);
+        registry.register(TranslationProvider::new);
+        registry.register(BlockStateProvider::new);
+        registry.register(ItemModelProvider::new);
     }
 
 }

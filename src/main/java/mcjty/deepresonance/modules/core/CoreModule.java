@@ -1,12 +1,18 @@
 package mcjty.deepresonance.modules.core;
 
+import elec332.core.api.client.model.loading.IModelManager;
+import elec332.core.api.registration.APIInjectedEvent;
+import elec332.core.util.RegistryHelper;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.block.BlockCrystal;
 import mcjty.deepresonance.modules.core.block.BlockResonatingPlate;
+import mcjty.deepresonance.modules.core.client.ModelLoaderCoreModule;
 import mcjty.deepresonance.modules.core.fluid.FluidLiquidCrystal;
 import mcjty.deepresonance.modules.core.item.ItemLiquidInjector;
+import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
 import mcjty.deepresonance.modules.core.util.CrystalConfig;
 import mcjty.deepresonance.modules.core.util.ResonatingPlateBlockConfig;
+import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import mcjty.deepresonance.util.ItemWithTooltip;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -54,10 +60,17 @@ public class CoreModule {
             resonatingPlateConfig = config.registerConfig(ResonatingPlateBlockConfig::new, "resonating_plate_block", "Resonating Plate Block settings");
         });
         eventBus.addListener(this::clientSetup);
+        eventBus.addGenericListener(IModelManager.class, this::registerModelLoader);
+
+        RegistryHelper.registerTileEntityLater(TileEntityResonatingCrystal.class, new DeepResonanceResourceLocation("resonating_crystal"));
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
         RenderTypeLookup.setRenderLayer(CoreModule.RESONATING_CRYSTAL_BLOCK.get(), RenderType.getTranslucent());
+    }
+
+    private void registerModelLoader(APIInjectedEvent<IModelManager> event) {
+        event.getInjectedAPI().registerModelHandler(new ModelLoaderCoreModule());
     }
 
 }

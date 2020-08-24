@@ -15,7 +15,6 @@ import net.minecraft.block.material.MaterialColor;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -55,7 +54,7 @@ public class RadiationModule {
     }
 
     private void setup(FMLCommonSetupEvent event) {
-        MinecraftForge.EVENT_BUS.register(new RadiationEventHandler());
+        RadiationEventHandler.register();
     }
 
 }
