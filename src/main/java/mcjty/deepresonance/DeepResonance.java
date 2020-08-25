@@ -20,7 +20,6 @@ import mcjty.deepresonance.setup.ModSetup;
 import mcjty.deepresonance.util.DeepResonanceBlock;
 import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.McJtyLib;
-import mcjty.lib.base.ModBase;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.builder.TooltipBuilder;
@@ -51,7 +50,7 @@ import java.util.function.*;
  * Created by Elec332 on 6-1-2020
  */
 @Mod(DeepResonance.MODID)
-public class DeepResonance implements ModBase, IElecCoreMod, IModuleController {
+public class DeepResonance implements IElecCoreMod, IModuleController {
 
     public static final String MODID = "deepresonance";
     public static final String MODNAME = FMLHelper.getModNameEarly(MODID);
@@ -99,11 +98,6 @@ public class DeepResonance implements ModBase, IElecCoreMod, IModuleController {
     public void afterConstruction() {
         configuration.register();
         clientConfiguration.register();
-    }
-
-    @Override
-    public String getModId() {
-        return MODID;
     }
 
     @Override

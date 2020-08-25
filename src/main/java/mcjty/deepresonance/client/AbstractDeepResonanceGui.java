@@ -12,7 +12,7 @@ import net.minecraft.entity.player.PlayerInventory;
 public abstract class AbstractDeepResonanceGui<T extends AbstractTileEntity> extends GenericGuiContainer<T, GenericContainer> {
 
     public AbstractDeepResonanceGui(T tileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(null, tileEntity, container, inventory, ManualEntry.EMPTY);
+        super(tileEntity, container, inventory, ManualEntry.EMPTY);
     }
 
 }
