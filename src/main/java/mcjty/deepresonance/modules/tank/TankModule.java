@@ -2,7 +2,7 @@ package mcjty.deepresonance.modules.tank;
 
 import com.google.common.base.Preconditions;
 import elec332.core.api.client.model.ModelLoadEvent;
-import elec332.core.api.config.IConfigurableElement;
+import elec332.core.api.config.IConfigWrapper;
 import elec332.core.client.RenderHelper;
 import elec332.core.handler.ElecCoreRegistrar;
 import elec332.core.loader.client.RenderingRegistry;
@@ -14,6 +14,7 @@ import mcjty.deepresonance.modules.tank.client.TankRenderer;
 import mcjty.deepresonance.modules.tank.client.TankTESR;
 import mcjty.deepresonance.modules.tank.grid.TankGridHandler;
 import mcjty.deepresonance.modules.tank.tile.TileEntityTank;
+import mcjty.deepresonance.setup.Registration;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderType;
@@ -24,31 +25,36 @@ import net.minecraft.item.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-
-import javax.annotation.Nonnull;
 
 /**
  * Created by Elec332 on 8-1-2020
  */
-public class TankModule implements IConfigurableElement {
+public class TankModule {
 
-    public static final RegistryObject<Block> TANK_BLOCK = DeepResonance.BLOCKS.register("tank", BlockTank::new);
-    public static final RegistryObject<Item> TANK_ITEM = DeepResonance.ITEMS.register("tank", () -> new BlockItem(Preconditions.checkNotNull(TANK_BLOCK.get()), DeepResonance.createStandardProperties()));
+    public static final RegistryObject<Block> TANK_BLOCK = Registration.BLOCKS.register("tank", BlockTank::new);
+    public static final RegistryObject<Item> TANK_ITEM = Registration.ITEMS.register("tank", () -> new BlockItem(Preconditions.checkNotNull(TANK_BLOCK.get()), Registration.createStandardProperties()));
 
     public static ForgeConfigSpec.BooleanValue quickRender;
 
     public TankModule(IEventBus eventBus) {
-        DeepResonance.configuration.registerConfigurableElement(this);
-        DeepResonance.clientConfiguration.registerConfigurableElement(this);
-
         eventBus.addListener(this::setup);
-        eventBus.addListener(this::clientSetup);
         eventBus.addListener(this::loadModels);
 
         RegistryHelper.registerTileEntityLater(TileEntityTank.class, new DeepResonanceResourceLocation("tank"));
+    }
+
+    public static void setupConfig(IConfigWrapper configuration, IConfigWrapper clientConfiguration) {
+        configuration.registerConfigurableElement((config, type) -> {
+            config.comment("Tank settings").push("tanks");
+            config.pop();
+        });
+        clientConfiguration.registerConfigurableElement((config, type) -> {
+            config.comment("Tank settings").push("tanks");
+            quickRender = config.comment("Whether to use the fast renderer or the fancy one when rendering the inside of tanks.").define("fastRenderer", false);
+            config.pop();
+        });
     }
 
     private void setup(FMLCommonSetupEvent event) {
@@ -56,7 +62,7 @@ public class TankModule implements IConfigurableElement {
         ElecCoreRegistrar.GRIDHANDLERS.register(new TankGridHandler());
     }
 
-    private void clientSetup(FMLClientSetupEvent event) {
+    public static void initClient(FMLClientSetupEvent event) {
         RenderingRegistry.instance().registerLoader(TankRenderer.INSTANCE);
         RenderingRegistry.instance().setItemRenderer(TANK_ITEM.get(), new TankItemRenderer());
         RenderTypeLookup.setRenderLayer(TankModule.TANK_BLOCK.get(), RenderType.getTranslucent());
@@ -66,17 +72,6 @@ public class TankModule implements IConfigurableElement {
     private void loadModels(ModelLoadEvent event) {
         ModelResourceLocation location = new ModelResourceLocation(new DeepResonanceResourceLocation("tank"), "");
         event.registerModel(location, TankRenderer.INSTANCE.setModel(event.getModel(location)));
-    }
-
-    @Override
-    public void registerProperties(@Nonnull ForgeConfigSpec.Builder config, ModConfig.Type type) {
-        config.comment("Tank settings").push("tanks");
-
-        if (type == ModConfig.Type.CLIENT) {
-            quickRender = config.comment("Whether to use the fast renderer or the fancy one when rendering the inside of tanks.").define("fastRenderer", false);
-        }
-
-        config.pop();
     }
 
 }

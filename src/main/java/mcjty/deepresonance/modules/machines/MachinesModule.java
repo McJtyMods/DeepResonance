@@ -2,13 +2,13 @@ package mcjty.deepresonance.modules.machines;
 
 import com.google.common.base.Preconditions;
 import elec332.core.api.client.model.ModelLoadEvent;
+import elec332.core.api.config.IConfigWrapper;
 import elec332.core.block.BlockSubTile;
 import elec332.core.client.RenderHelper;
 import elec332.core.tile.sub.SubTileRegistry;
 import elec332.core.util.BlockProperties;
 import elec332.core.util.RegistryHelper;
 import elec332.core.world.WorldHelper;
-import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.infusion.InfusionBonus;
 import mcjty.deepresonance.api.laser.ILens;
 import mcjty.deepresonance.api.laser.ILensMirror;
@@ -19,6 +19,7 @@ import mcjty.deepresonance.modules.machines.item.ItemLens;
 import mcjty.deepresonance.modules.machines.tile.*;
 import mcjty.deepresonance.modules.machines.util.InfusionBonusRegistry;
 import mcjty.deepresonance.modules.machines.util.config.*;
+import mcjty.deepresonance.setup.Registration;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -40,19 +41,19 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 @SuppressWarnings("unchecked")
 public class MachinesModule {
 
-    public static final RegistryObject<Block> VALVE_BLOCK = DeepResonance.nonRotatingBlock("valve", TileEntityValve::new);
-    public static final RegistryObject<Block> SMELTER_BLOCK = DeepResonance.defaultBlock("smelter", TileEntitySmelter::new, state -> state.with(BlockProperties.ACTIVE, false), BlockProperties.ACTIVE);
-    public static final RegistryObject<Block> PURIFIER_BLOCK = DeepResonance.defaultBlock("purifier", TileEntityPurifier::new);
-    public static final RegistryObject<BlockSubTile> LENS_BLOCK = DeepResonance.BLOCKS.register("lens", () -> new BlockSubTile(Block.Properties.create(Material.IRON).hardnessAndResistance(2.0F).sound(SoundType.METAL), SubTileLens.class, SubTileLensMirror.class));
-    public static final RegistryObject<Block> LASER_BLOCK = DeepResonance.defaultBlock("laser", TileEntityLaser::new);
-    public static final RegistryObject<Block> CRYSTALLIZER_BLOCK = DeepResonance.defaultBlock("crystallizer", TileEntityCrystallizer::new);
+    public static final RegistryObject<Block> VALVE_BLOCK = Registration.nonRotatingBlock("valve", TileEntityValve::new);
+    public static final RegistryObject<Block> SMELTER_BLOCK = Registration.defaultBlock("smelter", TileEntitySmelter::new, state -> state.with(BlockProperties.ACTIVE, false), BlockProperties.ACTIVE);
+    public static final RegistryObject<Block> PURIFIER_BLOCK = Registration.defaultBlock("purifier", TileEntityPurifier::new);
+    public static final RegistryObject<BlockSubTile> LENS_BLOCK = Registration.BLOCKS.register("lens", () -> new BlockSubTile(Block.Properties.create(Material.IRON).hardnessAndResistance(2.0F).sound(SoundType.METAL), SubTileLens.class, SubTileLensMirror.class));
+    public static final RegistryObject<Block> LASER_BLOCK = Registration.defaultBlock("laser", TileEntityLaser::new);
+    public static final RegistryObject<Block> CRYSTALLIZER_BLOCK = Registration.defaultBlock("crystallizer", TileEntityCrystallizer::new);
 
-    public static final RegistryObject<Item> VALVE_ITEM = DeepResonance.fromBlock(VALVE_BLOCK);
-    public static final RegistryObject<Item> SMELTER_ITEM = DeepResonance.fromBlock(SMELTER_BLOCK);
-    public static final RegistryObject<Item> PURIFIER_ITEM = DeepResonance.fromBlock(PURIFIER_BLOCK);
-    public static final RegistryObject<Item> LENS_ITEM = DeepResonance.ITEMS.register("lens", () -> new ItemLens(LENS_BLOCK.get(), DeepResonance.createStandardProperties()));
-    public static final RegistryObject<Item> LASER_ITEM = DeepResonance.fromBlock(LASER_BLOCK);
-    public static final RegistryObject<Item> CRYSTALLIZER_ITEM = DeepResonance.fromBlock(CRYSTALLIZER_BLOCK);
+    public static final RegistryObject<Item> VALVE_ITEM = Registration.fromBlock(VALVE_BLOCK);
+    public static final RegistryObject<Item> SMELTER_ITEM = Registration.fromBlock(SMELTER_BLOCK);
+    public static final RegistryObject<Item> PURIFIER_ITEM = Registration.fromBlock(PURIFIER_BLOCK);
+    public static final RegistryObject<Item> LENS_ITEM = Registration.ITEMS.register("lens", () -> new ItemLens(LENS_BLOCK.get(), Registration.createStandardProperties()));
+    public static final RegistryObject<Item> LASER_ITEM = Registration.fromBlock(LASER_BLOCK);
+    public static final RegistryObject<Item> CRYSTALLIZER_ITEM = Registration.fromBlock(CRYSTALLIZER_BLOCK);
 
     public static final InfusionBonusRegistry INFUSION_BONUSES = new InfusionBonusRegistry();
 
@@ -69,13 +70,6 @@ public class MachinesModule {
     public static ValveConfig valveConfig;
 
     public MachinesModule(IEventBus eventBus) {
-        DeepResonance.configuration.configureSubConfig("machines", "Machines module settings", config -> {
-            crystallizerConfig = config.registerConfig(CrystallizerConfig::new, "crystallizer", "Crystallizer settings");
-            laserConfig = config.registerConfig(LaserConfig::new, "laser", "Laser settings");
-            purifierConfig = config.registerConfig(PurifierConfig::new, "purifier", "Purifier settings");
-            smelterConfig = config.registerConfig(SmelterConfig::new, "smelter", "Smelter settings");
-            valveConfig = config.registerConfig(ValveConfig::new, "valve", "Valve settings");
-        });
         RegistryHelper.registerEmptyCapability(ILens.class);
         RegistryHelper.registerEmptyCapability(ILensMirror.class);
         RegistryHelper.registerTileEntityLater(TileEntityLaser.class, new DeepResonanceResourceLocation("laser"));
@@ -87,7 +81,16 @@ public class MachinesModule {
         SubTileRegistry.INSTANCE.registerSubTile(SubTileLensMirror.class, new DeepResonanceResourceLocation("lens_mirror"));
 
         eventBus.addListener(this::loadModels);
-        eventBus.addListener(this::clientSetup);
+    }
+
+    public static void setupConfig(IConfigWrapper configuration) {
+        configuration.configureSubConfig("machines", "Machines module settings", config -> {
+            crystallizerConfig = config.registerConfig(CrystallizerConfig::new, "crystallizer", "Crystallizer settings");
+            laserConfig = config.registerConfig(LaserConfig::new, "laser", "Laser settings");
+            purifierConfig = config.registerConfig(PurifierConfig::new, "purifier", "Purifier settings");
+            smelterConfig = config.registerConfig(SmelterConfig::new, "smelter", "Smelter settings");
+            valveConfig = config.registerConfig(ValveConfig::new, "valve", "Valve settings");
+        });
     }
 
     private void loadModels(ModelLoadEvent event) {
@@ -97,7 +100,7 @@ public class MachinesModule {
         CrystallizerTESR.setModel(Preconditions.checkNotNull(event.getModel(location)));
     }
 
-    private void clientSetup(FMLClientSetupEvent event) {
+    public static void initClient(FMLClientSetupEvent event) {
         RenderTypeLookup.setRenderLayer(MachinesModule.CRYSTALLIZER_BLOCK.get(), RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(MachinesModule.LASER_BLOCK.get(), RenderType.getCutout());
 

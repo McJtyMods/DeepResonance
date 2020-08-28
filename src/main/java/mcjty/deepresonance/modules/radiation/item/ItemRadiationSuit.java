@@ -1,9 +1,9 @@
 package mcjty.deepresonance.modules.radiation.item;
 
 import elec332.core.item.SimpleArmorMaterial;
-import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.armor.IRadiationArmor;
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.setup.Registration;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
@@ -26,7 +26,7 @@ public class ItemRadiationSuit extends ArmorItem implements IRadiationArmor {
     public static IArmorMaterial ARMOR_TYPE = new SimpleArmorMaterial("deepresonance:resonating_armor", 12, new int[]{1, 4, 5, 2}, 12, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 0.5f, () -> Ingredient.fromItems(CoreModule.RESONATING_PLATE_ITEM.get()));
 
     public ItemRadiationSuit(EquipmentSlotType slot) {
-        super(ARMOR_TYPE, slot, DeepResonance.createStandardProperties());
+        super(ARMOR_TYPE, slot, Registration.createStandardProperties());
     }
 
     @Override

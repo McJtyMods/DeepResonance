@@ -1,11 +1,8 @@
 package mcjty.deepresonance;
 
-import com.google.common.base.Preconditions;
-import elec332.core.api.config.IConfigWrapper;
 import elec332.core.api.mod.IElecCoreMod;
 import elec332.core.api.module.IModuleController;
 import elec332.core.api.module.IModuleInfo;
-import elec332.core.config.ConfigWrapper;
 import elec332.core.data.AbstractDataGenerator;
 import elec332.core.util.FMLHelper;
 import mcjty.deepresonance.data.DataGenerators;
@@ -16,35 +13,19 @@ import mcjty.deepresonance.modules.pulser.PulserModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.worldgen.WorldGenModule;
+import mcjty.deepresonance.setup.Config;
 import mcjty.deepresonance.setup.ModSetup;
-import mcjty.deepresonance.util.DeepResonanceBlock;
-import mcjty.deepresonance.util.TranslationHelper;
-import mcjty.lib.McJtyLib;
-import mcjty.lib.blocks.RotationType;
-import mcjty.lib.builder.BlockBuilder;
-import mcjty.lib.builder.TooltipBuilder;
-import mcjty.lib.network.PacketHandler;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.state.IProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
+import mcjty.deepresonance.setup.Registration;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.function.*;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 /**
  * Created by Elec332 on 6-1-2020
@@ -55,15 +36,9 @@ public class DeepResonance implements IElecCoreMod, IModuleController {
     public static final String MODID = "deepresonance";
     public static final String MODNAME = FMLHelper.getModNameEarly(MODID);
 
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, MODID);
-    public static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
-
     public static String SHIFT_MESSAGE = "message.rftoolsbase.shiftmessage";
 
     public static DeepResonance instance;
-    public static IConfigWrapper configuration, clientConfiguration;
     public static ModSetup setup;
     public static Logger logger;
 
@@ -74,30 +49,24 @@ public class DeepResonance implements IElecCoreMod, IModuleController {
         instance = this;
         logger = LogManager.getLogger(MODNAME);
         setup = new ModSetup();
-        configuration = new ConfigWrapper(FMLHelper.getActiveModContainer());
-        clientConfiguration = new ConfigWrapper(FMLHelper.getActiveModContainer(), ModConfig.Type.CLIENT);
 
-        IEventBus modBus = FMLHelper.getActiveModEventBus();
-        BLOCKS.register(modBus);
-        ITEMS.register(modBus);
-        FLUIDS.register(modBus);
-        CONTAINERS.register(modBus);
-        modBus.addListener(setup::init);
-        modBus.addListener(AbstractDataGenerator.toEventListener(new DataGenerators()));
-        modBus.addListener(new Consumer<FMLLoadCompleteEvent>() {
+        Config.register();
+        Registration.register();
 
-            @Override
-            public void accept(FMLLoadCompleteEvent event) { //Todo: Pull for McJtyLib
-                PacketHandler.registerStandardMessages(9, McJtyLib.networkHandler);
-            }
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(setup::init);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(AbstractDataGenerator.toEventListener(new DataGenerators()));
 
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(CoreModule::initClient);
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(GeneratorModule::initClient);
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(MachinesModule::initClient);
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(TankModule::initClient);
         });
     }
 
     @Override
     public void afterConstruction() {
-        configuration.register();
-        clientConfiguration.register();
+        Config.afterRegister();
     }
 
     @Override
@@ -118,56 +87,7 @@ public class DeepResonance implements IElecCoreMod, IModuleController {
 
     @Override
     public ForgeConfigSpec.BooleanValue getModuleConfig(String moduleName) {
-        return configuration.registerConfig(builder -> builder.comment("Whether the " + moduleName.toLowerCase() + " should be enabled").define(moduleName.toLowerCase() + ".enabled", true));
-    }
-
-    public static Item.Properties createStandardProperties() {
-        return new Item.Properties().group(setup.getTab());
-    }
-
-    public static RegistryObject<Block> defaultBlock(final String name, final Supplier<TileEntity> tile) {
-        return defaultBlock(name, tile, null);
-    }
-
-    public static RegistryObject<Block> defaultBlock(final String name, final Supplier<TileEntity> tile, UnaryOperator<BlockState> mod, IProperty<?>... props) {
-        return block(name, tile, builder -> new DeepResonanceBlock(builder) {
-
-            @Override
-            protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-                super.fillStateContainer(builder);
-                builder.add(props);
-            }
-
-        }.modifyDefaultState(mod));
-    }
-
-    public static RegistryObject<Block> nonRotatingBlock(final String name, final Supplier<TileEntity> tile) {
-        return nonRotatingBlock(name, tile, null);
-    }
-
-    public static RegistryObject<Block> nonRotatingBlock(final String name, final Supplier<TileEntity> tile, UnaryOperator<BlockState> mod, IProperty<?>... props) {
-        return block(name, tile, builder -> new DeepResonanceBlock(builder) {
-
-            @Override
-            public RotationType getRotationType() {
-                return RotationType.NONE;
-            }
-
-            @Override
-            protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-                builder.add(props);
-            }
-
-        }.modifyDefaultState(mod));
-    }
-
-    public static RegistryObject<Block> block(final String name, final Supplier<TileEntity> tile, final Function<BlockBuilder, DeepResonanceBlock> constructor) {
-        return DeepResonance.BLOCKS.register(name, () -> constructor.apply(new BlockBuilder().tileEntitySupplier(tile).infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey(name)))));
-    }
-
-    public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {
-        Preconditions.checkNotNull(block.getId().getPath());
-        return DeepResonance.ITEMS.register(block.getId().getPath(), () -> new BlockItem(Preconditions.checkNotNull(block.get()), DeepResonance.createStandardProperties()));
+        return Config.configuration.registerConfig(builder -> builder.comment("Whether the " + moduleName.toLowerCase() + " should be enabled").define(moduleName.toLowerCase() + ".enabled", true));
     }
 
 }

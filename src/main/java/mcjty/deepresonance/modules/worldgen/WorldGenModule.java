@@ -1,5 +1,6 @@
 package mcjty.deepresonance.modules.worldgen;
 
+import elec332.core.api.config.IConfigWrapper;
 import elec332.core.api.registration.APIInjectedEvent;
 import elec332.core.api.world.IWorldGenManager;
 import mcjty.deepresonance.DeepResonance;
@@ -17,11 +18,14 @@ public class WorldGenModule {
     public static WorldGenConfiguration config;
 
     public WorldGenModule(IEventBus eventBus) {
-        config = DeepResonance.configuration.registerConfig(WorldGenConfiguration::new, "worldgen", "WorldGen module settings");
         this.worldGenRegistry = new DeepResonanceWorldGenRegistry();
 
         eventBus.addListener(this::setup);
         eventBus.addGenericListener(IWorldGenManager.class, this::registerWorldGen);
+    }
+
+    public static void setupConfig(IConfigWrapper configuration) {
+        config = configuration.registerConfig(WorldGenConfiguration::new, "worldgen", "WorldGen module settings");
     }
 
     private void setup(FMLCommonSetupEvent event) {

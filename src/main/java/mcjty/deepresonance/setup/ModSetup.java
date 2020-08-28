@@ -4,6 +4,7 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.lib.setup.DefaultModSetup;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import org.apache.logging.log4j.Logger;
 
 /**
@@ -13,6 +14,12 @@ public class ModSetup extends DefaultModSetup {
 
     public ModSetup() {
         createTab("deepresonance", () -> new ItemStack(CoreModule.RESONATING_CRYSTAL_ITEM.get())); //resonating crystal
+    }
+
+    @Override
+    public void init(FMLCommonSetupEvent e) {
+        super.init(e);
+        DeepResonanceMessages.registerMessages("deepresonance");
     }
 
     @Override

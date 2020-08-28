@@ -1,5 +1,6 @@
 package mcjty.deepresonance.modules.generator;
 
+import elec332.core.api.config.IConfigWrapper;
 import elec332.core.client.RenderHelper;
 import elec332.core.grid.multiblock.DynamicMultiblockGridHandler;
 import elec332.core.grid.multiblock.SimpleDynamicMultiblockTileLink;
@@ -16,6 +17,7 @@ import mcjty.deepresonance.modules.generator.tile.TileEntityGeneratorController;
 import mcjty.deepresonance.modules.generator.tile.TileEntityGeneratorPart;
 import mcjty.deepresonance.modules.generator.util.CollectorConfig;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
+import mcjty.deepresonance.setup.Registration;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -31,28 +33,30 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
  */
 public class GeneratorModule {
 
-    public static final RegistryObject<Block> ENERGY_COLLECTOR_BLOCK = DeepResonance.block("energy_collector", TileEntityEnergyCollector::new, BlockCollector::new);
-    public static final RegistryObject<Block> GENERATOR_CONTROLLER_BLOCK = DeepResonance.defaultBlock("generator_controller", TileEntityGeneratorController::new, state -> state.with(BlockProperties.ON, false), BlockProperties.ON);
-    public static final RegistryObject<Block> GENERATOR_PART_BLOCK = DeepResonance.nonRotatingBlock("generator_part", TileEntityGeneratorPart::new, state -> state.with(BlockProperties.ON, false).with(BlockProperties.UP, false).with(BlockProperties.DOWN, false), BlockProperties.ON, BlockProperties.UP, BlockProperties.DOWN);
+    public static final RegistryObject<Block> ENERGY_COLLECTOR_BLOCK = Registration.block("energy_collector", TileEntityEnergyCollector::new, BlockCollector::new);
+    public static final RegistryObject<Block> GENERATOR_CONTROLLER_BLOCK = Registration.defaultBlock("generator_controller", TileEntityGeneratorController::new, state -> state.with(BlockProperties.ON, false), BlockProperties.ON);
+    public static final RegistryObject<Block> GENERATOR_PART_BLOCK = Registration.nonRotatingBlock("generator_part", TileEntityGeneratorPart::new, state -> state.with(BlockProperties.ON, false).with(BlockProperties.UP, false).with(BlockProperties.DOWN, false), BlockProperties.ON, BlockProperties.UP, BlockProperties.DOWN);
 
-    public static final RegistryObject<Item> ENERGY_COLLECTOR_ITEM = DeepResonance.fromBlock(ENERGY_COLLECTOR_BLOCK);
-    public static final RegistryObject<Item> GENERATOR_CONTROLLER_ITEM = DeepResonance.fromBlock(GENERATOR_CONTROLLER_BLOCK);
-    public static final RegistryObject<Item> GENERATOR_PART_ITEM = DeepResonance.fromBlock(GENERATOR_PART_BLOCK);
+    public static final RegistryObject<Item> ENERGY_COLLECTOR_ITEM = Registration.fromBlock(ENERGY_COLLECTOR_BLOCK);
+    public static final RegistryObject<Item> GENERATOR_CONTROLLER_ITEM = Registration.fromBlock(GENERATOR_CONTROLLER_BLOCK);
+    public static final RegistryObject<Item> GENERATOR_PART_ITEM = Registration.fromBlock(GENERATOR_PART_BLOCK);
 
     public static CollectorConfig collectorConfig;
     public static GeneratorConfig generatorConfig;
 
     public GeneratorModule(IEventBus eventBus) {
-        DeepResonance.configuration.configureSubConfig("generator", "Generator module settings", config -> {
-            collectorConfig = config.registerConfig(CollectorConfig::new, "collector", "Collector settings");
-            generatorConfig = config.registerConfig(GeneratorConfig::new, "generator_settings", "Generator settings");
-        });
         eventBus.addListener(this::setup);
-        eventBus.addListener(this::clientSetup);
 
         RegistryHelper.registerTileEntityLater(TileEntityEnergyCollector.class, new DeepResonanceResourceLocation("energy_collector"));
         RegistryHelper.registerTileEntityLater(TileEntityGeneratorController.class, new DeepResonanceResourceLocation("generator_controller"));
         RegistryHelper.registerTileEntityLater(TileEntityGeneratorPart.class, new DeepResonanceResourceLocation("generator_part"));
+    }
+
+    public static void setupConfig(IConfigWrapper configuration) {
+        configuration.configureSubConfig("generator", "Generator module settings", config -> {
+            collectorConfig = config.registerConfig(CollectorConfig::new, "collector", "Collector settings");
+            generatorConfig = config.registerConfig(GeneratorConfig::new, "generator_settings", "Generator settings");
+        });
     }
 
     private void setup(FMLCommonSetupEvent event) {
@@ -60,7 +64,7 @@ public class GeneratorModule {
         ElecCoreRegistrar.GRIDHANDLERS.register(new DynamicMultiblockGridHandler<>(t -> t instanceof AbstractTileEntityGeneratorComponent, t -> new SimpleDynamicMultiblockTileLink<>((AbstractTileEntityGeneratorComponent) t, AbstractTileEntityGeneratorComponent::setGrid), GeneratorGrid::new));
     }
 
-    private void clientSetup(FMLClientSetupEvent event) {
+    public static void initClient(FMLClientSetupEvent event) {
         RenderHelper.registerTESR(TileEntityEnergyCollector.class, new CollectorTESR());
     }
 

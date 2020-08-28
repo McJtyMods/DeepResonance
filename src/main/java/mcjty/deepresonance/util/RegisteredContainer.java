@@ -2,7 +2,7 @@ package mcjty.deepresonance.util;
 
 import com.google.common.base.Preconditions;
 import elec332.core.util.FMLHelper;
-import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.setup.Registration;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
@@ -47,7 +47,7 @@ public abstract class RegisteredContainer<C extends GenericContainer, G extends 
             }
             return f;
         });
-        this.type = DeepResonance.CONTAINERS.register(this.name, GenericContainer::createContainerType);
+        this.type = Registration.CONTAINERS.register(this.name, GenericContainer::createContainerType);
         this.modifier = (c, t) -> {
             if (t instanceof Modifier) {
                 ((Modifier) t).modify(c);
