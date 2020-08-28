@@ -1,8 +1,6 @@
 package mcjty.deepresonance;
 
 import elec332.core.api.mod.IElecCoreMod;
-import elec332.core.api.module.IModuleController;
-import elec332.core.api.module.IModuleInfo;
 import elec332.core.data.AbstractDataGenerator;
 import elec332.core.util.FMLHelper;
 import mcjty.deepresonance.data.DataGenerators;
@@ -16,22 +14,19 @@ import mcjty.deepresonance.modules.worldgen.WorldGenModule;
 import mcjty.deepresonance.setup.Config;
 import mcjty.deepresonance.setup.ModSetup;
 import mcjty.deepresonance.setup.Registration;
+import mcjty.lib.modules.Modules;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-
 /**
  * Created by Elec332 on 6-1-2020
  */
 @Mod(DeepResonance.MODID)
-public class DeepResonance implements IElecCoreMod, IModuleController {
+public class DeepResonance implements IElecCoreMod {
 
     public static final String MODID = "deepresonance";
     public static final String MODNAME = FMLHelper.getModNameEarly(MODID);
@@ -42,6 +37,8 @@ public class DeepResonance implements IElecCoreMod, IModuleController {
     public static ModSetup setup;
     public static Logger logger;
 
+    private Modules modules = new Modules();
+
     public DeepResonance() {
         if (instance != null) {
             throw new RuntimeException();
@@ -50,44 +47,32 @@ public class DeepResonance implements IElecCoreMod, IModuleController {
         logger = LogManager.getLogger(MODNAME);
         setup = new ModSetup();
 
-        Config.register();
+        setupModules();
+
+        Config.register(modules);
         Registration.register();
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(setup::init);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(AbstractDataGenerator.toEventListener(new DataGenerators()));
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(modules::init);
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(CoreModule::initClient);
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(GeneratorModule::initClient);
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(MachinesModule::initClient);
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(TankModule::initClient);
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(modules::initClient);
         });
+    }
+
+    private void setupModules() {
+        modules.register(new CoreModule());
+        modules.register(new GeneratorModule());
+        modules.register(new MachinesModule());
+        modules.register(new PulserModule());
+        modules.register(new RadiationModule());
+        modules.register(new TankModule());
+        modules.register(new WorldGenModule());
     }
 
     @Override
     public void afterConstruction() {
         Config.afterRegister();
     }
-
-    @Override
-    public boolean isModuleEnabled(String moduleName) {
-        return true;
-    }
-
-    @Override
-    public void registerAdditionalModules(Consumer<IModuleInfo> registry, BiFunction<String, Class<?>, IModuleInfo.Builder> factory1, BiFunction<String, String, IModuleInfo.Builder> factory2) {
-        registry.accept(factory1.apply("Core", CoreModule.class).alwaysEnabled().build());
-        registry.accept(factory1.apply("Generator", GeneratorModule.class).build());
-        registry.accept(factory1.apply("Machines", MachinesModule.class).build());
-        registry.accept(factory1.apply("Pulser", PulserModule.class).build());
-        registry.accept(factory1.apply("Radiation", RadiationModule.class).build());
-        registry.accept(factory1.apply("Tanks", TankModule.class).build());
-        registry.accept(factory1.apply("WorldGen", WorldGenModule.class).build());
-    }
-
-    @Override
-    public ForgeConfigSpec.BooleanValue getModuleConfig(String moduleName) {
-        return Config.configuration.registerConfig(builder -> builder.comment("Whether the " + moduleName.toLowerCase() + " should be enabled").define(moduleName.toLowerCase() + ".enabled", true));
-    }
-
 }

@@ -2,7 +2,6 @@ package mcjty.deepresonance.modules.machines;
 
 import com.google.common.base.Preconditions;
 import elec332.core.api.client.model.ModelLoadEvent;
-import elec332.core.api.config.IConfigWrapper;
 import elec332.core.block.BlockSubTile;
 import elec332.core.client.RenderHelper;
 import elec332.core.tile.sub.SubTileRegistry;
@@ -19,8 +18,10 @@ import mcjty.deepresonance.modules.machines.item.ItemLens;
 import mcjty.deepresonance.modules.machines.tile.*;
 import mcjty.deepresonance.modules.machines.util.InfusionBonusRegistry;
 import mcjty.deepresonance.modules.machines.util.config.*;
+import mcjty.deepresonance.setup.Config;
 import mcjty.deepresonance.setup.Registration;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
+import mcjty.lib.modules.IModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -31,15 +32,16 @@ import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 /**
  * Created by Elec332 on 25-7-2020
  */
 @SuppressWarnings("unchecked")
-public class MachinesModule {
+public class MachinesModule implements IModule {
 
     public static final RegistryObject<Block> VALVE_BLOCK = Registration.nonRotatingBlock("valve", TileEntityValve::new);
     public static final RegistryObject<Block> SMELTER_BLOCK = Registration.defaultBlock("smelter", TileEntitySmelter::new, state -> state.with(BlockProperties.ACTIVE, false), BlockProperties.ACTIVE);
@@ -69,7 +71,7 @@ public class MachinesModule {
     public static SmelterConfig smelterConfig;
     public static ValveConfig valveConfig;
 
-    public MachinesModule(IEventBus eventBus) {
+    public MachinesModule() {
         RegistryHelper.registerEmptyCapability(ILens.class);
         RegistryHelper.registerEmptyCapability(ILensMirror.class);
         RegistryHelper.registerTileEntityLater(TileEntityLaser.class, new DeepResonanceResourceLocation("laser"));
@@ -80,17 +82,7 @@ public class MachinesModule {
         SubTileRegistry.INSTANCE.registerSubTile(SubTileLens.class, new DeepResonanceResourceLocation("lens"));
         SubTileRegistry.INSTANCE.registerSubTile(SubTileLensMirror.class, new DeepResonanceResourceLocation("lens_mirror"));
 
-        eventBus.addListener(this::loadModels);
-    }
-
-    public static void setupConfig(IConfigWrapper configuration) {
-        configuration.configureSubConfig("machines", "Machines module settings", config -> {
-            crystallizerConfig = config.registerConfig(CrystallizerConfig::new, "crystallizer", "Crystallizer settings");
-            laserConfig = config.registerConfig(LaserConfig::new, "laser", "Laser settings");
-            purifierConfig = config.registerConfig(PurifierConfig::new, "purifier", "Purifier settings");
-            smelterConfig = config.registerConfig(SmelterConfig::new, "smelter", "Smelter settings");
-            valveConfig = config.registerConfig(ValveConfig::new, "valve", "Valve settings");
-        });
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadModels);
     }
 
     private void loadModels(ModelLoadEvent event) {
@@ -100,7 +92,8 @@ public class MachinesModule {
         CrystallizerTESR.setModel(Preconditions.checkNotNull(event.getModel(location)));
     }
 
-    public static void initClient(FMLClientSetupEvent event) {
+    @Override
+    public void initClient(FMLClientSetupEvent event) {
         RenderTypeLookup.setRenderLayer(MachinesModule.CRYSTALLIZER_BLOCK.get(), RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(MachinesModule.LASER_BLOCK.get(), RenderType.getCutout());
 
@@ -123,4 +116,19 @@ public class MachinesModule {
         RenderHelper.getItemColors().register((stack, index) -> index == 1 ? 0x484B52 : -1, MachinesModule.LASER_ITEM.get());
     }
 
+    @Override
+    public void init(FMLCommonSetupEvent event) {
+
+    }
+
+    @Override
+    public void initConfig() {
+        Config.configuration.configureSubConfig("machines", "Machines module settings", config -> {
+            crystallizerConfig = config.registerConfig(CrystallizerConfig::new, "crystallizer", "Crystallizer settings");
+            laserConfig = config.registerConfig(LaserConfig::new, "laser", "Laser settings");
+            purifierConfig = config.registerConfig(PurifierConfig::new, "purifier", "Purifier settings");
+            smelterConfig = config.registerConfig(SmelterConfig::new, "smelter", "Smelter settings");
+            valveConfig = config.registerConfig(ValveConfig::new, "valve", "Valve settings");
+        });
+    }
 }

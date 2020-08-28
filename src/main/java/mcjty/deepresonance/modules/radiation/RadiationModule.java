@@ -1,13 +1,14 @@
 package mcjty.deepresonance.modules.radiation;
 
-import elec332.core.api.config.IConfigWrapper;
 import elec332.core.util.RegistryHelper;
 import mcjty.deepresonance.api.radiation.IWorldRadiationManager;
 import mcjty.deepresonance.modules.radiation.item.ItemRadiationSuit;
 import mcjty.deepresonance.modules.radiation.manager.RadiationEventHandler;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
+import mcjty.deepresonance.setup.Config;
 import mcjty.deepresonance.setup.Registration;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
+import mcjty.lib.modules.IModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.GlassBlock;
 import net.minecraft.block.SoundType;
@@ -19,14 +20,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 /**
  * Created by Elec332 on 12-7-2020
  */
-public class RadiationModule {
+public class RadiationModule implements IModule {
 
     public static final RegistryObject<Block> POISONED_DIRT_BLOCK = Registration.BLOCKS.register("poisoned_dirt", () -> new Block(Block.Properties.create(Material.EARTH, MaterialColor.DIRT).hardnessAndResistance(0.5f).sound(SoundType.GROUND)));
     public static final RegistryObject<Block> DENSE_GLASS_BLOCK = Registration.BLOCKS.register("dense_glass", () -> new GlassBlock(Block.Properties.create(Material.GLASS).hardnessAndResistance(3.0f, 500.0f).sound(SoundType.GLASS).notSolid().harvestTool(ToolType.PICKAXE).harvestLevel(2)));
@@ -47,18 +48,22 @@ public class RadiationModule {
 
     public static RadiationConfiguration config;
 
-    public RadiationModule(IEventBus eventBus) {
+    public RadiationModule() {
         RegistryHelper.registerEmptyCapability(IWorldRadiationManager.class);
-
-        eventBus.addListener(this::setup);
     }
 
-    public static void setupConfig(IConfigWrapper configuration) {
-        config = configuration.registerConfig(RadiationConfiguration::new, "radiation", "Radiation settings");
-    }
-
-    private void setup(FMLCommonSetupEvent event) {
+    @Override
+    public void init(FMLCommonSetupEvent event) {
         RadiationEventHandler.register();
     }
 
+    @Override
+    public void initClient(FMLClientSetupEvent event) {
+
+    }
+
+    @Override
+    public void initConfig() {
+        config = Config.configuration.registerConfig(RadiationConfiguration::new, "radiation", "Radiation settings");
+    }
 }

@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.generator;
 
-import elec332.core.api.config.IConfigWrapper;
 import elec332.core.client.RenderHelper;
 import elec332.core.grid.multiblock.DynamicMultiblockGridHandler;
 import elec332.core.grid.multiblock.SimpleDynamicMultiblockTileLink;
@@ -17,11 +16,12 @@ import mcjty.deepresonance.modules.generator.tile.TileEntityGeneratorController;
 import mcjty.deepresonance.modules.generator.tile.TileEntityGeneratorPart;
 import mcjty.deepresonance.modules.generator.util.CollectorConfig;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
+import mcjty.deepresonance.setup.Config;
 import mcjty.deepresonance.setup.Registration;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
+import mcjty.lib.modules.IModule;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -31,7 +31,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
  * <p>
  * TODO: Generator sounds
  */
-public class GeneratorModule {
+public class GeneratorModule implements IModule {
 
     public static final RegistryObject<Block> ENERGY_COLLECTOR_BLOCK = Registration.block("energy_collector", TileEntityEnergyCollector::new, BlockCollector::new);
     public static final RegistryObject<Block> GENERATOR_CONTROLLER_BLOCK = Registration.defaultBlock("generator_controller", TileEntityGeneratorController::new, state -> state.with(BlockProperties.ON, false), BlockProperties.ON);
@@ -44,28 +44,28 @@ public class GeneratorModule {
     public static CollectorConfig collectorConfig;
     public static GeneratorConfig generatorConfig;
 
-    public GeneratorModule(IEventBus eventBus) {
-        eventBus.addListener(this::setup);
-
+    public GeneratorModule() {
         RegistryHelper.registerTileEntityLater(TileEntityEnergyCollector.class, new DeepResonanceResourceLocation("energy_collector"));
         RegistryHelper.registerTileEntityLater(TileEntityGeneratorController.class, new DeepResonanceResourceLocation("generator_controller"));
         RegistryHelper.registerTileEntityLater(TileEntityGeneratorPart.class, new DeepResonanceResourceLocation("generator_part"));
     }
 
-    public static void setupConfig(IConfigWrapper configuration) {
-        configuration.configureSubConfig("generator", "Generator module settings", config -> {
-            collectorConfig = config.registerConfig(CollectorConfig::new, "collector", "Collector settings");
-            generatorConfig = config.registerConfig(GeneratorConfig::new, "generator_settings", "Generator settings");
-        });
-    }
-
-    private void setup(FMLCommonSetupEvent event) {
+    @Override
+    public void init(FMLCommonSetupEvent event) {
         DeepResonance.logger.info("Registering generator grid handler");
         ElecCoreRegistrar.GRIDHANDLERS.register(new DynamicMultiblockGridHandler<>(t -> t instanceof AbstractTileEntityGeneratorComponent, t -> new SimpleDynamicMultiblockTileLink<>((AbstractTileEntityGeneratorComponent) t, AbstractTileEntityGeneratorComponent::setGrid), GeneratorGrid::new));
     }
 
-    public static void initClient(FMLClientSetupEvent event) {
+    @Override
+    public void initClient(FMLClientSetupEvent event) {
         RenderHelper.registerTESR(TileEntityEnergyCollector.class, new CollectorTESR());
     }
 
+    @Override
+    public void initConfig() {
+        Config.configuration.configureSubConfig("generator", "Generator module settings", config -> {
+            collectorConfig = config.registerConfig(CollectorConfig::new, "collector", "Collector settings");
+            generatorConfig = config.registerConfig(GeneratorConfig::new, "generator_settings", "Generator settings");
+        });
+    }
 }
