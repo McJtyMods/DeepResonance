@@ -5,21 +5,33 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import elec332.core.api.client.ITessellator;
 import elec332.core.client.RenderHelper;
 import elec332.core.client.util.AbstractTileEntityRenderer;
+import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.tile.TileEntityEnergyCollector;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import javax.annotation.Nonnull;
 
 /**
  * Created by Elec332 on 2-8-2020
  */
-public class CollectorTESR extends AbstractTileEntityRenderer<TileEntityEnergyCollector> {
+public class CollectorTESR extends TileEntityRenderer<TileEntityEnergyCollector> {
 
     private static final RenderType CRYSTAL_HALO, COLLECTOR_HALO;
     private static final double SIZE = 0.6;
+
+    public CollectorTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+        super(rendererDispatcherIn);
+    }
+
+    public static void register() {
+        ClientRegistry.bindTileEntityRenderer(GeneratorModule.TYPE_ENERGY_COLLECTOR.get(), CollectorTESR::new);
+    }
 
     @Override
     public void render(@Nonnull TileEntityEnergyCollector tileEntity, float partialTicks, @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer buffer_, int combinedLightIn, int combinedOverlayIn) {

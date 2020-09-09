@@ -5,19 +5,22 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import elec332.core.api.client.ITessellator;
 import elec332.core.client.RenderHelper;
-import elec332.core.client.util.AbstractTileEntityRenderer;
 import elec332.core.world.WorldHelper;
+import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.tank.tile.TileEntityTank;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -28,9 +31,17 @@ import java.util.stream.Collectors;
 /**
  * Created by Elec332 on 9-1-2020
  */
-public class TankTESR extends AbstractTileEntityRenderer<TileEntityTank> {
+public class TankTESR extends TileEntityRenderer<TileEntityTank> {
 
     private static final EnumSet<Direction> ITEM_DIRECTIONS = EnumSet.range(Direction.UP, Direction.EAST); //All except bottom
+
+    public TankTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+        super(rendererDispatcherIn);
+    }
+
+    public static void register() {
+        ClientRegistry.bindTileEntityRenderer(TankModule.TYPE_TANK.get(), TankTESR::new);
+    }
 
     @Override
     public void render(@Nonnull TileEntityTank tileTank, float partialTicks, @Nonnull MatrixStack matrixStackIn, @Nonnull IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
@@ -57,7 +68,7 @@ public class TankTESR extends AbstractTileEntityRenderer<TileEntityTank> {
         render(matrixStackIn, bufferIn, renderFluid, dirs, combinedLightIn, scale, color);
     }
 
-    public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, Fluid renderFluid, float height, int brightness) {
+    public static void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, Fluid renderFluid, float height, int brightness) {
         int color = 0;
         if (renderFluid != null) {
             color = renderFluid.getAttributes().getColor();
@@ -65,7 +76,7 @@ public class TankTESR extends AbstractTileEntityRenderer<TileEntityTank> {
         render(matrixStackIn, bufferIn, renderFluid, ITEM_DIRECTIONS, brightness, height, color);
     }
 
-    private void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, Fluid renderFluid, Set<Direction> dirs, int brightness, float scale, int color) {
+    private static void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, Fluid renderFluid, Set<Direction> dirs, int brightness, float scale, int color) {
         matrixStackIn.push();
 
         renderModel(matrixStackIn, bufferIn.getBuffer(RenderType.getTranslucent()), dirs, brightness);
@@ -81,13 +92,13 @@ public class TankTESR extends AbstractTileEntityRenderer<TileEntityTank> {
         matrixStackIn.pop();
     }
 
-    private void renderModel(MatrixStack matrixStack, IVertexBuilder vertexBuilder, Set<Direction> dirs, int brightness) {
+    private static void renderModel(MatrixStack matrixStack, IVertexBuilder vertexBuilder, Set<Direction> dirs, int brightness) {
         for (Direction dir : dirs) {
             vertexBuilder.addVertexData(matrixStack.getLast(), TankRenderer.INSTANCE.getInsideQuad(dir), 1, 1, 1, brightness, OverlayTexture.NO_OVERLAY, true);
         }
     }
 
-    private void renderFluid(float scale, int color, ITessellator tessellator, Fluid renderFluid, Set<Direction> dirs, int brightness, MatrixStack matrixStack) {
+    private static void renderFluid(float scale, int color, ITessellator tessellator, Fluid renderFluid, Set<Direction> dirs, int brightness, MatrixStack matrixStack) {
 
         float offset = -0.002f;
         TextureAtlasSprite fluid = RenderHelper.getFluidTexture(renderFluid, false);

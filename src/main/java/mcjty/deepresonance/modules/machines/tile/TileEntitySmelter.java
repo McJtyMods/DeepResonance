@@ -57,14 +57,15 @@ public class TileEntitySmelter extends AbstractPoweredTileEntity implements ITic
     private float finalPurity = 0.1f;   // Calculated quality based on the amount of lava in the lava tank
 
     public TileEntitySmelter() {
-        super(MachinesModule.smelterConfig.powerMaximum.get(), MachinesModule.smelterConfig.powerPerTickIn.get(), new BasicItemHandler(1) {
+        super(MachinesModule.TYPE_SMELTER.get(),
+                MachinesModule.smelterConfig.powerMaximum.get(), MachinesModule.smelterConfig.powerPerTickIn.get(), new BasicItemHandler(1) {
 
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return DeepResonanceTags.RESONANT_ORE_ITEM.contains(stack.getItem());
-            }
+                    @Override
+                    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                        return DeepResonanceTags.RESONANT_ORE_ITEM.contains(stack.getItem());
+                    }
 
-        });
+                });
     }
 
     @Nullable

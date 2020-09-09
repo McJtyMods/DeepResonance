@@ -31,7 +31,7 @@ public class TileEntityPulser extends AbstractPoweredTileEntity implements ITick
     private int pulsePower = 0;
 
     public TileEntityPulser() {
-        super(PulserModule.pulserBlockConfig.powerMaximum.get(), PulserModule.pulserBlockConfig.powerPerTickIn.get());
+        super(PulserModule.TYPE_PULSER.get(), PulserModule.pulserBlockConfig.powerMaximum.get(), PulserModule.pulserBlockConfig.powerPerTickIn.get());
     }
 
     @Override

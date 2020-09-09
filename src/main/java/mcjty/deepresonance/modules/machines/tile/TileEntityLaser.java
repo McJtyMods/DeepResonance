@@ -70,7 +70,7 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
     };
 
     public TileEntityLaser() {
-        super(MachinesModule.laserConfig.powerMaximum.get(), MachinesModule.laserConfig.powerPerTickIn.get(), new BasicItemHandler(3) {
+        super(MachinesModule.TYPE_LASER.get(), MachinesModule.laserConfig.powerMaximum.get(), MachinesModule.laserConfig.powerPerTickIn.get(), new BasicItemHandler(3) {
 
             @Override
             public boolean canExtract(int slot) {

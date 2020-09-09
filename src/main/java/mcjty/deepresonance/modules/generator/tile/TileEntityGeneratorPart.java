@@ -49,6 +49,10 @@ public class TileEntityGeneratorPart extends AbstractTileEntityGeneratorComponen
         return GeneratorModule.generatorConfig.powerPerTickOut.get();
     }
 
+    public TileEntityGeneratorPart() {
+        super(GeneratorModule.TYPE_GENERATOR_PART.get());
+    }
+
     public void distributeEnergy(Consumer<IEnergyStorage> distributor) {
         surroundings.values().forEach(cap -> {
             if (cap == null) {

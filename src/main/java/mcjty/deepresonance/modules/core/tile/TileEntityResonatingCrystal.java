@@ -9,6 +9,7 @@ import elec332.core.api.info.InfoMod;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.api.crystal.ICrystalModifier;
 import mcjty.deepresonance.api.radiation.IWorldRadiationManager;
+import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.BlockCrystal;
 import mcjty.deepresonance.modules.core.client.ModelLoaderCoreModule;
 import mcjty.deepresonance.modules.core.util.CrystalHelper;
@@ -64,6 +65,10 @@ public class TileEntityResonatingCrystal extends AbstractTileEntity implements I
     private LazyOptional<TileEntityResonatingCrystal> reference;
     private float crystalPowerDrain = -1;    // Calculated value that contains the power/tick that is drained for this crystal.
     private int powerProvided = -1;         // Calculated value that contains the RF/tick for this crystal.
+
+    public TileEntityResonatingCrystal() {
+        super(CoreModule.TYPE_RESONATING_CRYSTAL.get());
+    }
 
     public static void registerModifier(Capability<? extends ICrystalModifier> type) {
         MODIFIERS.add(type);

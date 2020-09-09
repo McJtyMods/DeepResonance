@@ -33,6 +33,7 @@ public class TileEntityEnergyCollector extends AbstractTileEntityGeneratorCompon
     private boolean updateRefs = false;
 
     public TileEntityEnergyCollector() {
+        super(GeneratorModule.TYPE_ENERGY_COLLECTOR.get());
         this.crystals = Sets.newHashSet();
         this.crystalRefs = Sets.newHashSet();
     }

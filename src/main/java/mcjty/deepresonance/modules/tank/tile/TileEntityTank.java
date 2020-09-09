@@ -8,6 +8,7 @@ import elec332.core.util.FMLHelper;
 import elec332.core.util.RegistryHelper;
 import elec332.core.util.StatCollector;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
+import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.tank.grid.TankGrid;
 import mcjty.deepresonance.util.AbstractTileEntity;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
@@ -44,6 +45,7 @@ public class TileEntityTank extends AbstractTileEntity implements IInfoProvider 
     private float renderHeight; //Value from 0.0f to 1.0f
 
     public TileEntityTank() {
+        super(TankModule.TYPE_TANK.get());
         gridData = new CompoundNBT();
     }
 

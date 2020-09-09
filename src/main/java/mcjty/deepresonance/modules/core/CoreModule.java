@@ -1,7 +1,6 @@
 package mcjty.deepresonance.modules.core;
 
 import elec332.core.api.client.model.loading.IModelManager;
-import elec332.core.api.config.IConfigWrapper;
 import elec332.core.api.registration.APIInjectedEvent;
 import elec332.core.util.RegistryHelper;
 import mcjty.deepresonance.modules.core.block.BlockCrystal;
@@ -23,12 +22,14 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.ToolType;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+
+import static mcjty.deepresonance.setup.Registration.TILES;
 
 /**
  * Created by Elec332 on 10-1-2020
@@ -40,6 +41,8 @@ public class CoreModule implements IModule {
     public static final RegistryObject<Fluid> LIQUID_CRYSTAL = Registration.FLUIDS.register("liquid_crystal", FluidLiquidCrystal::new);
 
     public static final RegistryObject<BlockCrystal> RESONATING_CRYSTAL_BLOCK = Registration.BLOCKS.register("resonating_crystal", BlockCrystal::new);
+    public static final RegistryObject<TileEntityType<TileEntityResonatingCrystal>> TYPE_RESONATING_CRYSTAL = TILES.register("resonating_crystal", () -> TileEntityType.Builder.create(TileEntityResonatingCrystal::new, RESONATING_CRYSTAL_BLOCK.get()).build(null));
+
     public static final RegistryObject<Block> RESONATING_ORE_STONE_BLOCK = Registration.BLOCKS.register("resonating_ore_stone", () -> new Block(ORE_PROPERTIES));
     public static final RegistryObject<Block> RESONATING_ORE_NETHER_BLOCK = Registration.BLOCKS.register("resonating_ore_nether", () -> new Block(ORE_PROPERTIES));
     public static final RegistryObject<Block> RESONATING_ORE_END_BLOCK = Registration.BLOCKS.register("resonating_ore_end", () -> new Block(ORE_PROPERTIES));
@@ -61,7 +64,6 @@ public class CoreModule implements IModule {
 
     public CoreModule() {
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(IModelManager.class, this::registerModelLoader);
-        RegistryHelper.registerTileEntityLater(TileEntityResonatingCrystal.class, new DeepResonanceResourceLocation("resonating_crystal"));
     }
 
     private void registerModelLoader(APIInjectedEvent<IModelManager> event) {

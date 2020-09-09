@@ -7,8 +7,8 @@ import elec332.core.api.client.model.IModelAndTextureLoader;
 import elec332.core.api.client.model.IModelBakery;
 import elec332.core.api.client.model.IQuadBakery;
 import elec332.core.api.client.model.ITemplateBakery;
-import elec332.core.client.util.AbstractTileEntityRenderer;
 import elec332.core.loader.client.RenderingRegistry;
+import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.tile.TileEntityLaser;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -18,20 +18,31 @@ import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.extensions.IForgeTransformationMatrix;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import javax.annotation.Nonnull;
 
 /**
  * Created by Elec332 on 29-7-2020
  */
-public class LaserTESR extends AbstractTileEntityRenderer<TileEntityLaser> {
+public class LaserTESR extends TileEntityRenderer<TileEntityLaser> {
 
     private static final float BEAM_WIDTH = 3.8f;
     private static BakedQuad quad;
+
+    public LaserTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+        super(rendererDispatcherIn);
+    }
+
+    public static void register() {
+        ClientRegistry.bindTileEntityRenderer(MachinesModule.TYPE_LASER.get(), LaserTESR::new);
+    }
 
     @Override
     public void render(@Nonnull TileEntityLaser tileEntityIn, float partialTicks, @Nonnull MatrixStack matrixStackIn, @Nonnull IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {

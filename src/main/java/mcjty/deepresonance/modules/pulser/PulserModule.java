@@ -13,6 +13,7 @@ import mcjty.lib.modules.IModule;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -24,6 +25,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import java.util.function.Consumer;
 
+import static mcjty.deepresonance.setup.Registration.TILES;
+
 /**
  * Created by Elec332 on 31-7-2020
  */
@@ -31,6 +34,7 @@ public class PulserModule implements IModule {
 
     public static final RegistryObject<Block> PULSER_BLOCK = Registration.defaultBlock("pulser", TileEntityPulser::new);
     public static final RegistryObject<Item> PULSER_ITEM = Registration.fromBlock(PULSER_BLOCK);
+    public static final RegistryObject<TileEntityType<TileEntityPulser>> TYPE_PULSER = TILES.register("pulser", () -> TileEntityType.Builder.create(TileEntityPulser::new, PULSER_BLOCK.get()).build(null));
 
     private static final ResourceLocation CAPABILITY_NAME = new DeepResonanceResourceLocation("crystal_capability/pulser");
 
@@ -42,7 +46,6 @@ public class PulserModule implements IModule {
 
     public PulserModule() {
         RegistryHelper.registerEmptyCapability(PulserCapability.class);
-        RegistryHelper.registerTileEntityLater(TileEntityPulser.class, new DeepResonanceResourceLocation("pulser"));
     }
 
     @Override

@@ -10,6 +10,7 @@ import mcjty.deepresonance.util.AbstractTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
@@ -22,6 +23,10 @@ public abstract class AbstractTileEntityGeneratorComponent extends AbstractTileE
     protected GeneratorGrid grid;
     protected int startupTimer = -1;
     protected boolean isOn = false;
+
+    public AbstractTileEntityGeneratorComponent(TileEntityType<?> type) {
+        super(type);
+    }
 
     public void setGrid(GeneratorGrid grid) {
         this.grid = grid;

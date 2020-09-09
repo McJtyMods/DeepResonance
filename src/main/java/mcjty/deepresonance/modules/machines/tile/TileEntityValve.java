@@ -54,6 +54,10 @@ public class TileEntityValve extends AbstractTileEntity implements ITickableTile
     private float minEfficiency = 1.0f;
     private int maxMb = 0;
 
+    public TileEntityValve() {
+        super(MachinesModule.TYPE_VALVE.get());
+    }
+
     @Nullable
     @Override
     protected LazyOptional<INamedContainerProvider> createScreenHandler() {

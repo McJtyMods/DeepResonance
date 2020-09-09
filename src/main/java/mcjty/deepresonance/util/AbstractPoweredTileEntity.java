@@ -4,6 +4,7 @@ import elec332.core.inventory.BasicItemHandler;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.GenericEnergyStorage;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -20,12 +21,12 @@ public abstract class AbstractPoweredTileEntity extends AbstractTileEntity imple
     protected final GenericEnergyStorage energyHandler;
     private final LazyOptional<IEnergyStorage> power;
 
-    public AbstractPoweredTileEntity(int powerMax, int powerPerTickIn) {
-        this(powerMax, powerPerTickIn, null);
+    public AbstractPoweredTileEntity(TileEntityType<?> type, int powerMax, int powerPerTickIn) {
+        this(type, powerMax, powerPerTickIn, null);
     }
 
-    public AbstractPoweredTileEntity(int powerMax, int powerPerTickIn, BasicItemHandler itemHandler) {
-        super(itemHandler);
+    public AbstractPoweredTileEntity(TileEntityType<?> type, int powerMax, int powerPerTickIn, BasicItemHandler itemHandler) {
+        super(type, itemHandler);
         this.energyHandler = new GenericEnergyStorage(this, true, powerMax, powerPerTickIn);
         this.power = LazyOptional.of(() -> this.energyHandler);
     }

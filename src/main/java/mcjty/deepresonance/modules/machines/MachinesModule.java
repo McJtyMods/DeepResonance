@@ -30,12 +30,15 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+
+import static mcjty.deepresonance.setup.Registration.TILES;
 
 /**
  * Created by Elec332 on 25-7-2020
@@ -44,18 +47,27 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class MachinesModule implements IModule {
 
     public static final RegistryObject<Block> VALVE_BLOCK = Registration.nonRotatingBlock("valve", TileEntityValve::new);
-    public static final RegistryObject<Block> SMELTER_BLOCK = Registration.defaultBlock("smelter", TileEntitySmelter::new, state -> state.with(BlockProperties.ACTIVE, false), BlockProperties.ACTIVE);
-    public static final RegistryObject<Block> PURIFIER_BLOCK = Registration.defaultBlock("purifier", TileEntityPurifier::new);
-    public static final RegistryObject<BlockSubTile> LENS_BLOCK = Registration.BLOCKS.register("lens", () -> new BlockSubTile(Block.Properties.create(Material.IRON).hardnessAndResistance(2.0F).sound(SoundType.METAL), SubTileLens.class, SubTileLensMirror.class));
-    public static final RegistryObject<Block> LASER_BLOCK = Registration.defaultBlock("laser", TileEntityLaser::new);
-    public static final RegistryObject<Block> CRYSTALLIZER_BLOCK = Registration.defaultBlock("crystallizer", TileEntityCrystallizer::new);
-
     public static final RegistryObject<Item> VALVE_ITEM = Registration.fromBlock(VALVE_BLOCK);
+    public static final RegistryObject<TileEntityType<TileEntityValve>> TYPE_VALVE = TILES.register("valve", () -> TileEntityType.Builder.create(TileEntityValve::new, VALVE_BLOCK.get()).build(null));
+
+    public static final RegistryObject<Block> SMELTER_BLOCK = Registration.defaultBlock("smelter", TileEntitySmelter::new, state -> state.with(BlockProperties.ACTIVE, false), BlockProperties.ACTIVE);
     public static final RegistryObject<Item> SMELTER_ITEM = Registration.fromBlock(SMELTER_BLOCK);
+    public static final RegistryObject<TileEntityType<TileEntitySmelter>> TYPE_SMELTER = TILES.register("smelter", () -> TileEntityType.Builder.create(TileEntitySmelter::new, SMELTER_BLOCK.get()).build(null));
+
+    public static final RegistryObject<Block> PURIFIER_BLOCK = Registration.defaultBlock("purifier", TileEntityPurifier::new);
     public static final RegistryObject<Item> PURIFIER_ITEM = Registration.fromBlock(PURIFIER_BLOCK);
+    public static final RegistryObject<TileEntityType<TileEntityPurifier>> TYPE_PURIFIER = TILES.register("purifier", () -> TileEntityType.Builder.create(TileEntityPurifier::new, PURIFIER_BLOCK.get()).build(null));
+
+    public static final RegistryObject<BlockSubTile> LENS_BLOCK = Registration.BLOCKS.register("lens", () -> new BlockSubTile(Block.Properties.create(Material.IRON).hardnessAndResistance(2.0F).sound(SoundType.METAL), SubTileLens.class, SubTileLensMirror.class));
     public static final RegistryObject<Item> LENS_ITEM = Registration.ITEMS.register("lens", () -> new ItemLens(LENS_BLOCK.get(), Registration.createStandardProperties()));
+
+    public static final RegistryObject<Block> LASER_BLOCK = Registration.defaultBlock("laser", TileEntityLaser::new);
     public static final RegistryObject<Item> LASER_ITEM = Registration.fromBlock(LASER_BLOCK);
+    public static final RegistryObject<TileEntityType<TileEntityLaser>> TYPE_LASER = TILES.register("laser", () -> TileEntityType.Builder.create(TileEntityLaser::new, LASER_BLOCK.get()).build(null));
+
+    public static final RegistryObject<Block> CRYSTALLIZER_BLOCK = Registration.defaultBlock("crystallizer", TileEntityCrystallizer::new);
     public static final RegistryObject<Item> CRYSTALLIZER_ITEM = Registration.fromBlock(CRYSTALLIZER_BLOCK);
+    public static final RegistryObject<TileEntityType<TileEntityCrystallizer>> TYPE_CRYSTALIZER = TILES.register("crystallizer", () -> TileEntityType.Builder.create(TileEntityCrystallizer::new, CRYSTALLIZER_BLOCK.get()).build(null));
 
     public static final InfusionBonusRegistry INFUSION_BONUSES = new InfusionBonusRegistry();
 
@@ -74,11 +86,6 @@ public class MachinesModule implements IModule {
     public MachinesModule() {
         RegistryHelper.registerEmptyCapability(ILens.class);
         RegistryHelper.registerEmptyCapability(ILensMirror.class);
-        RegistryHelper.registerTileEntityLater(TileEntityLaser.class, new DeepResonanceResourceLocation("laser"));
-        RegistryHelper.registerTileEntityLater(TileEntitySmelter.class, new DeepResonanceResourceLocation("smelter"));
-        RegistryHelper.registerTileEntityLater(TileEntityPurifier.class, new DeepResonanceResourceLocation("purifier"));
-        RegistryHelper.registerTileEntityLater(TileEntityCrystallizer.class, new DeepResonanceResourceLocation("crystallizer"));
-        RegistryHelper.registerTileEntityLater(TileEntityValve.class, new DeepResonanceResourceLocation("valve"));
         SubTileRegistry.INSTANCE.registerSubTile(SubTileLens.class, new DeepResonanceResourceLocation("lens"));
         SubTileRegistry.INSTANCE.registerSubTile(SubTileLensMirror.class, new DeepResonanceResourceLocation("lens_mirror"));
 
@@ -97,8 +104,8 @@ public class MachinesModule implements IModule {
         RenderTypeLookup.setRenderLayer(MachinesModule.CRYSTALLIZER_BLOCK.get(), RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(MachinesModule.LASER_BLOCK.get(), RenderType.getCutout());
 
-        RenderHelper.registerTESR(TileEntityCrystallizer.class, new CrystallizerTESR());
-        RenderHelper.registerTESR(TileEntityLaser.class, new LaserTESR());
+        CrystallizerTESR.register();
+        LaserTESR.register();
 
         RenderHelper.getBlockColors().register((s, world, pos, index) -> {
             if (index == 1) {

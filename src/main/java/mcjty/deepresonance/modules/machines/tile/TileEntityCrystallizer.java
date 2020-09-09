@@ -57,7 +57,7 @@ public class TileEntityCrystallizer extends AbstractPoweredTileEntity implements
     private int tankCooldown = 0;
 
     public TileEntityCrystallizer() {
-        super(MachinesModule.crystallizerConfig.powerMaximum.get(), MachinesModule.crystallizerConfig.powerPerTickIn.get(), new BasicItemHandler(1) {
+        super(MachinesModule.TYPE_CRYSTALIZER.get(), MachinesModule.crystallizerConfig.powerMaximum.get(), MachinesModule.crystallizerConfig.powerPerTickIn.get(), new BasicItemHandler(1) {
 
             @Override
             public boolean canInsert(int slot, @Nonnull ItemStack stack) {

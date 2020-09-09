@@ -53,7 +53,7 @@ public class TileEntityPurifier extends AbstractTileEntity implements ITickableT
     private ILiquidCrystalData processing = null;
 
     public TileEntityPurifier() {
-        super(new BasicItemHandler(1) {
+        super(MachinesModule.TYPE_PURIFIER.get(), new BasicItemHandler(1) {
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {

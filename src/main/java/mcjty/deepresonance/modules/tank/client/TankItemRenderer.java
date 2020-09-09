@@ -19,14 +19,12 @@ import javax.annotation.Nonnull;
  */
 public class TankItemRenderer implements ITESRItem {
 
-    private final TankTESR tesr = new TankTESR();
-
     @Override
     public void renderItem(ItemStack itemStack, @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer renderTypeBuffer, int combinedLightIn, int combinedOverlayIn) {
         matrixStack.push();
         FluidStack stack = BlockTank.readFromTileNbt(AbstractItemBlock.getTileData(itemStack));
         if (!stack.isEmpty()) {
-            tesr.render(matrixStack, renderTypeBuffer, stack.getFluid(), (stack.getAmount() / ((float) TankGrid.TANK_BUCKETS * 1000)), combinedLightIn);
+            TankTESR.render(matrixStack, renderTypeBuffer, stack.getFluid(), (stack.getAmount() / ((float) TankGrid.TANK_BUCKETS * 1000)), combinedLightIn);
         }
         for (Direction dir : Direction.values()) {
             for (BakedQuad quad : TankRenderer.INSTANCE.getModelQuads(dir)) {
