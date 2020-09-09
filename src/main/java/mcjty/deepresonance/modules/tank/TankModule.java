@@ -3,10 +3,9 @@ package mcjty.deepresonance.modules.tank;
 import com.google.common.base.Preconditions;
 import elec332.core.api.client.model.ModelLoadEvent;
 import elec332.core.handler.ElecCoreRegistrar;
-import elec332.core.loader.client.RenderingRegistry;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.tank.blocks.BlockTank;
-import mcjty.deepresonance.modules.tank.client.TankItemRenderer;
+import mcjty.deepresonance.modules.tank.client.ClientSetup;
 import mcjty.deepresonance.modules.tank.client.TankRenderer;
 import mcjty.deepresonance.modules.tank.client.TankTESR;
 import mcjty.deepresonance.modules.tank.grid.TankGridHandler;
@@ -16,8 +15,6 @@ import mcjty.deepresonance.setup.Registration;
 import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import mcjty.lib.modules.IModule;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -58,9 +55,7 @@ public class TankModule implements IModule {
 
     @Override
     public void initClient(FMLClientSetupEvent event) {
-        RenderingRegistry.instance().registerLoader(TankRenderer.INSTANCE);
-        RenderingRegistry.instance().setItemRenderer(TANK_ITEM.get(), new TankItemRenderer());
-        RenderTypeLookup.setRenderLayer(TankModule.TANK_BLOCK.get(), RenderType.getTranslucent());
+        ClientSetup.initClient();
         TankTESR.register();
     }
 

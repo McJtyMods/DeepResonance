@@ -3,14 +3,12 @@ package mcjty.deepresonance.modules.machines;
 import com.google.common.base.Preconditions;
 import elec332.core.api.client.model.ModelLoadEvent;
 import elec332.core.block.BlockSubTile;
-import elec332.core.client.RenderHelper;
 import elec332.core.tile.sub.SubTileRegistry;
 import elec332.core.util.BlockProperties;
 import elec332.core.util.RegistryHelper;
-import elec332.core.world.WorldHelper;
-import mcjty.deepresonance.api.infusion.InfusionBonus;
 import mcjty.deepresonance.api.laser.ILens;
 import mcjty.deepresonance.api.laser.ILensMirror;
+import mcjty.deepresonance.modules.machines.client.ClientSetup;
 import mcjty.deepresonance.modules.machines.client.CrystallizerTESR;
 import mcjty.deepresonance.modules.machines.client.LaserTESR;
 import mcjty.deepresonance.modules.machines.client.LensModelCache;
@@ -25,14 +23,12 @@ import mcjty.lib.modules.IModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -101,26 +97,14 @@ public class MachinesModule implements IModule {
 
     @Override
     public void initClient(FMLClientSetupEvent event) {
-        RenderTypeLookup.setRenderLayer(MachinesModule.CRYSTALLIZER_BLOCK.get(), RenderType.getTranslucent());
-        RenderTypeLookup.setRenderLayer(MachinesModule.LASER_BLOCK.get(), RenderType.getCutout());
+        ClientSetup.initClient();
 
         CrystallizerTESR.register();
         LaserTESR.register();
 
-        RenderHelper.getBlockColors().register((s, world, pos, index) -> {
-            if (index == 1) {
-                TileEntity tile = WorldHelper.getTileAt(world, pos);
-                if (tile instanceof TileEntityLaser) {
-                    InfusionBonus bonus = ((TileEntityLaser) tile).getActiveBonus();
-                    if (!bonus.isEmpty()) {
-                        return bonus.getColor();
-                    }
-                }
-                return 0x484B52;
-            }
-            return -1;
-        }, MachinesModule.LASER_BLOCK.get());
-        RenderHelper.getItemColors().register((stack, index) -> index == 1 ? 0x484B52 : -1, MachinesModule.LASER_ITEM.get());
+        DeferredWorkQueue.runLater(() -> {
+            ClientSetup.setupBlockColors();
+        });
     }
 
     @Override

@@ -2,9 +2,9 @@ package mcjty.deepresonance.modules.core;
 
 import elec332.core.api.client.model.loading.IModelManager;
 import elec332.core.api.registration.APIInjectedEvent;
-import elec332.core.util.RegistryHelper;
 import mcjty.deepresonance.modules.core.block.BlockCrystal;
 import mcjty.deepresonance.modules.core.block.BlockResonatingPlate;
+import mcjty.deepresonance.modules.core.client.ClientSetup;
 import mcjty.deepresonance.modules.core.client.ModelLoaderCoreModule;
 import mcjty.deepresonance.modules.core.fluid.FluidLiquidCrystal;
 import mcjty.deepresonance.modules.core.item.ItemLiquidInjector;
@@ -13,13 +13,10 @@ import mcjty.deepresonance.modules.core.util.CrystalConfig;
 import mcjty.deepresonance.modules.core.util.ResonatingPlateBlockConfig;
 import mcjty.deepresonance.setup.Config;
 import mcjty.deepresonance.setup.Registration;
-import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import mcjty.deepresonance.util.ItemWithTooltip;
 import mcjty.lib.modules.IModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
@@ -76,7 +73,7 @@ public class CoreModule implements IModule {
 
     @Override
     public void initClient(FMLClientSetupEvent event) {
-        RenderTypeLookup.setRenderLayer(CoreModule.RESONATING_CRYSTAL_BLOCK.get(), RenderType.getTranslucent());
+        ClientSetup.initClient();
     }
 
     @Override
