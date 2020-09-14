@@ -14,7 +14,6 @@ import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.deepresonance.util.RegisteredContainer;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.container.SlotDefinition;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
@@ -32,6 +31,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static mcjty.lib.container.SlotDefinition.generic;
+
 /**
  * Created by Elec332 on 30-7-2020
  */
@@ -41,7 +42,7 @@ public class TileEntityCrystallizer extends AbstractPoweredTileEntity implements
 
     private static final RegisteredContainer<GenericContainer, CrystallizerGui, TileEntityCrystallizer> container = new RegisteredContainer<GenericContainer, CrystallizerGui, TileEntityCrystallizer>("crystallizer", 1, factory -> {
         factory.playerSlots(10, 70);
-        factory.slot(SlotDefinition.container(), ContainerFactory.CONTAINER_CONTAINER, SLOT, 64, 24);
+        factory.slot(generic(), ContainerFactory.CONTAINER_CONTAINER, SLOT, 64, 24);
     }) {
 
         @Override

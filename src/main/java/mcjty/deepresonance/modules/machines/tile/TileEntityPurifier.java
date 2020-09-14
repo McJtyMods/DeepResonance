@@ -27,6 +27,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static mcjty.lib.container.SlotDefinition.generic;
+
 /**
  * Created by Elec332 on 27-7-2020
  */
@@ -39,7 +41,7 @@ public class TileEntityPurifier extends AbstractTileEntity implements ITickableT
 
     private static final RegisteredContainer<GenericContainer, PurifierGui, TileEntityPurifier> container = new RegisteredContainer<GenericContainer, PurifierGui, TileEntityPurifier>("purifier", 1, factory -> {
         factory.playerSlots(10, 70);
-        factory.slot(SlotDefinition.container(), ContainerFactory.CONTAINER_CONTAINER, SLOT, 64, 24);
+        factory.slot(generic(), ContainerFactory.CONTAINER_CONTAINER, SLOT, 64, 24);
     }) {
 
         @Override

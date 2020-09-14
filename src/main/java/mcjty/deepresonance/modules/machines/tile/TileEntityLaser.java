@@ -37,6 +37,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 
+import static mcjty.lib.container.SlotDefinition.generic;
+
 /**
  * Created by Elec332 on 28-7-2020
  */
@@ -57,9 +59,9 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
 
     private static final RegisteredContainer<GenericContainer, LaserGui, TileEntityLaser> container = new RegisteredContainer<GenericContainer, LaserGui, TileEntityLaser>("laser", 3, factory -> {
         factory.playerSlots(10, 70);
-        factory.slot(SlotDefinition.container(), ContainerFactory.CONTAINER_CONTAINER, SLOT_CRYSTAL, 154, 48);
-        factory.slot(SlotDefinition.container(), ContainerFactory.CONTAINER_CONTAINER, SLOT_CATALYST, 21, 8);
-        factory.slot(SlotDefinition.container(), ContainerFactory.CONTAINER_CONTAINER, SLOT_ACTIVE_CATALYST, 21, 48);
+        factory.slot(generic(), ContainerFactory.CONTAINER_CONTAINER, SLOT_CRYSTAL, 154, 48);
+        factory.slot(generic(), ContainerFactory.CONTAINER_CONTAINER, SLOT_CATALYST, 21, 8);
+        factory.slot(generic(), ContainerFactory.CONTAINER_CONTAINER, SLOT_ACTIVE_CATALYST, 21, 48);
     }) {
 
         @Override

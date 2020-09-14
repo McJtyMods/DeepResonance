@@ -28,6 +28,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static mcjty.lib.container.SlotDefinition.generic;
+
 /**
  * Created by Elec332 on 26-7-2020
  */
@@ -38,7 +40,7 @@ public class TileEntitySmelter extends AbstractPoweredTileEntity implements ITic
     private final DualTankHook tankHook = new DualTankHook(this, Direction.DOWN, Direction.UP);
     private static final RegisteredContainer<GenericContainer, SmelterGui, TileEntitySmelter> container = new RegisteredContainer<GenericContainer, SmelterGui, TileEntitySmelter>("smelter", 3, factory -> {
         factory.playerSlots(10, 70);
-        factory.slot(SlotDefinition.container(), ContainerFactory.CONTAINER_CONTAINER, SLOT, 64, 24);
+        factory.slot(generic(), ContainerFactory.CONTAINER_CONTAINER, SLOT, 64, 24);
     }) {
 
         @Override
