@@ -10,7 +10,6 @@ import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
 import mcjty.deepresonance.modules.pulser.PulserModule;
 import mcjty.deepresonance.modules.pulser.util.PulserCapability;
-import mcjty.deepresonance.util.AbstractPoweredTileEntity;
 import mcjty.theoneprobe.api.IProbeInfo;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;

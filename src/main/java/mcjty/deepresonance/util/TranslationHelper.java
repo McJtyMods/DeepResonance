@@ -6,10 +6,6 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.function.Supplier;
 
-/**
- * Created by Elec332 on 10-1-2020
- */
-@SuppressWarnings("WeakerAccess")
 public class TranslationHelper {
 
     public static final String TOOLTIP_PREFIX = "tooltip";

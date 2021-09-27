@@ -2,7 +2,6 @@ package mcjty.deepresonance.modules.tank.tile;
 
 import com.google.common.base.Preconditions;
 import elec332.core.api.info.IInfoDataAccessorBlock;
-import elec332.core.api.info.IInfoProvider;
 import elec332.core.api.info.IInformation;
 import elec332.core.util.FMLHelper;
 import elec332.core.util.RegistryHelper;
@@ -10,8 +9,8 @@ import elec332.core.util.StatCollector;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.tank.grid.TankGrid;
-import mcjty.deepresonance.util.AbstractTileEntity;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
+import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -32,10 +31,7 @@ import javax.annotation.Nullable;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
-/**
- * Created by Elec332 on 7-1-2020
- */
-public class TileEntityTank extends AbstractTileEntity implements IInfoProvider {
+public class TileEntityTank extends GenericTileEntity {
 
     private TankGrid grid;
     private CompoundNBT gridData;

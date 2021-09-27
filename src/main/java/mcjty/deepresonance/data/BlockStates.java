@@ -1,7 +1,6 @@
 package mcjty.deepresonance.data;
 
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import mcjty.lib.datagen.BaseBlockStateProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.ModelFile;

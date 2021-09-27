@@ -2,8 +2,8 @@ package mcjty.deepresonance.setup;
 
 import com.google.common.base.Preconditions;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.util.DeepResonanceBlock;
 import mcjty.deepresonance.util.TranslationHelper;
+import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.builder.TooltipBuilder;
@@ -13,7 +13,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -43,31 +43,36 @@ public class Registration {
     }
 
     public static Item.Properties createStandardProperties() {
-        return new Item.Properties().group(DeepResonance.setup.getTab());
+        return new Item.Properties().tab(DeepResonance.setup.getTab());
     }
 
     public static RegistryObject<Block> defaultBlock(final String name, final Supplier<TileEntity> tile) {
         return defaultBlock(name, tile, null);
     }
 
-    public static RegistryObject<Block> defaultBlock(final String name, final Supplier<TileEntity> tile, UnaryOperator<BlockState> mod, IProperty<?>... props) {
-        return block(name, tile, builder -> new DeepResonanceBlock(builder) {
+    public static RegistryObject<Block> defaultBlock(final String name, final Supplier<TileEntity> tile, UnaryOperator<BlockState> mod, Property<?>... props) {
+        return block(name, tile, builder -> new BaseBlock(builder) {
 
             @Override
-            protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-                super.fillStateContainer(builder);
+            public RotationType getRotationType() {
+                return RotationType.HORIZROTATION;
+            }
+
+            @Override
+            protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+                super.createBlockStateDefinition(builder);
                 builder.add(props);
             }
 
-        }.modifyDefaultState(mod));
+        });
     }
 
     public static RegistryObject<Block> nonRotatingBlock(final String name, final Supplier<TileEntity> tile) {
         return nonRotatingBlock(name, tile, null);
     }
 
-    public static RegistryObject<Block> nonRotatingBlock(final String name, final Supplier<TileEntity> tile, UnaryOperator<BlockState> mod, IProperty<?>... props) {
-        return block(name, tile, builder -> new DeepResonanceBlock(builder) {
+    public static RegistryObject<Block> nonRotatingBlock(final String name, final Supplier<TileEntity> tile, UnaryOperator<BlockState> mod, Property<?>... props) {
+        return block(name, tile, builder -> new BaseBlock(builder) {
 
             @Override
             public RotationType getRotationType() {
@@ -75,14 +80,15 @@ public class Registration {
             }
 
             @Override
-            protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+            protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+                super.createBlockStateDefinition(builder);
                 builder.add(props);
             }
 
-        }.modifyDefaultState(mod));
+        });
     }
 
-    public static RegistryObject<Block> block(final String name, final Supplier<TileEntity> tile, final Function<BlockBuilder, DeepResonanceBlock> constructor) {
+    public static RegistryObject<Block> block(final String name, final Supplier<TileEntity> tile, final Function<BlockBuilder, BaseBlock> constructor) {
         return BLOCKS.register(name, () -> constructor.apply(new BlockBuilder().tileEntitySupplier(tile).infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey(name)))));
     }
 

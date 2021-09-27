@@ -1,19 +1,14 @@
 package mcjty.deepresonance.modules.core;
 
-import elec332.core.api.client.model.loading.IModelManager;
-import elec332.core.api.registration.APIInjectedEvent;
 import mcjty.deepresonance.modules.core.block.BlockCrystal;
 import mcjty.deepresonance.modules.core.block.BlockResonatingPlate;
 import mcjty.deepresonance.modules.core.client.ClientSetup;
-import mcjty.deepresonance.modules.core.client.ModelLoaderCoreModule;
 import mcjty.deepresonance.modules.core.fluid.FluidLiquidCrystal;
 import mcjty.deepresonance.modules.core.item.ItemLiquidInjector;
 import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
 import mcjty.deepresonance.modules.core.util.CrystalConfig;
 import mcjty.deepresonance.modules.core.util.ResonatingPlateBlockConfig;
-import mcjty.deepresonance.setup.Config;
 import mcjty.deepresonance.setup.Registration;
-import mcjty.deepresonance.util.ItemWithTooltip;
 import mcjty.lib.modules.IModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -24,7 +19,6 @@ import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import static mcjty.deepresonance.setup.Registration.TILES;
 
@@ -33,7 +27,9 @@ import static mcjty.deepresonance.setup.Registration.TILES;
  */
 public class CoreModule implements IModule {
 
-    private static final Block.Properties ORE_PROPERTIES = Block.Properties.create(Material.ROCK).hardnessAndResistance(3, 5).harvestLevel(3).harvestTool(ToolType.PICKAXE);
+    public static final String TILE_DATA_TAG = "tileDataTag";   // @todo 1.16 change this!
+
+    private static final Block.Properties ORE_PROPERTIES = Block.Properties.of(Material.ROCK).hardnessAndResistance(3, 5).harvestLevel(3).harvestTool(ToolType.PICKAXE);
 
     public static final RegistryObject<Fluid> LIQUID_CRYSTAL = Registration.FLUIDS.register("liquid_crystal", FluidLiquidCrystal::new);
 
@@ -60,12 +56,14 @@ public class CoreModule implements IModule {
     public static ResonatingPlateBlockConfig resonatingPlateConfig;
 
     public CoreModule() {
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(IModelManager.class, this::registerModelLoader);
+        // @todo 1.16
+//        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(IModelManager.class, this::registerModelLoader);
     }
 
-    private void registerModelLoader(APIInjectedEvent<IModelManager> event) {
-        event.getInjectedAPI().registerModelHandler(new ModelLoaderCoreModule());
-    }
+    // @todo 1.16
+//    private void registerModelLoader(APIInjectedEvent<IModelManager> event) {
+//        event.getInjectedAPI().registerModelHandler(new ModelLoaderCoreModule());
+//    }
 
     @Override
     public void init(FMLCommonSetupEvent event) {
@@ -78,9 +76,10 @@ public class CoreModule implements IModule {
 
     @Override
     public void initConfig() {
-        Config.configuration.configureSubConfig("core", "Core module settings", config -> {
-            crystalConfig = config.registerConfig(CrystalConfig::new, "resonating_crystal", "Resonating Crystal settings");
-            resonatingPlateConfig = config.registerConfig(ResonatingPlateBlockConfig::new, "resonating_plate_block", "Resonating Plate Block settings");
-        });
+        // @todo 1.16
+//        Config.configuration.configureSubConfig("core", "Core module settings", config -> {
+//            crystalConfig = config.registerConfig(CrystalConfig::new, "resonating_crystal", "Resonating Crystal settings");
+//            resonatingPlateConfig = config.registerConfig(ResonatingPlateBlockConfig::new, "resonating_plate_block", "Resonating Plate Block settings");
+//        });
     }
 }

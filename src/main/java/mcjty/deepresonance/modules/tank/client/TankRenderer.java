@@ -6,7 +6,6 @@ import elec332.core.api.client.model.IModelAndTextureLoader;
 import elec332.core.api.client.model.IModelBakery;
 import elec332.core.api.client.model.IQuadBakery;
 import elec332.core.api.client.model.ITemplateBakery;
-import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;

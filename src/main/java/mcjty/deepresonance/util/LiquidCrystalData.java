@@ -5,9 +5,6 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
-/**
- * Created by Elec332 on 7-1-2020
- */
 class LiquidCrystalData implements ILiquidCrystalData {
 
     private final FluidStack referenceStack;

@@ -8,7 +8,6 @@ import mcjty.deepresonance.modules.pulser.util.PulserCapability;
 import mcjty.deepresonance.modules.pulser.util.PulserCrystalConfig;
 import mcjty.deepresonance.setup.Config;
 import mcjty.deepresonance.setup.Registration;
-import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import mcjty.lib.modules.IModule;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;

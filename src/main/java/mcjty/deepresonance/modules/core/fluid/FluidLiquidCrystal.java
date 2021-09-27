@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.core.fluid;
 
-import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import mcjty.deepresonance.util.TranslationHelper;
 import net.minecraft.fluid.EmptyFluid;
 import net.minecraft.util.ResourceLocation;

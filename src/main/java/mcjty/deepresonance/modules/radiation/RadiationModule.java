@@ -7,7 +7,6 @@ import mcjty.deepresonance.modules.radiation.manager.RadiationEventHandler;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.setup.Config;
 import mcjty.deepresonance.setup.Registration;
-import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import mcjty.lib.modules.IModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.GlassBlock;

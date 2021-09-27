@@ -12,7 +12,6 @@ import mcjty.deepresonance.modules.tank.grid.TankGridHandler;
 import mcjty.deepresonance.modules.tank.tile.TileEntityTank;
 import mcjty.deepresonance.setup.Config;
 import mcjty.deepresonance.setup.Registration;
-import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import mcjty.lib.modules.IModule;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.model.ModelResourceLocation;

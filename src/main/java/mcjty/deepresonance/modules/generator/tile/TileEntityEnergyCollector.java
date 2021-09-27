@@ -3,10 +3,7 @@ package mcjty.deepresonance.modules.generator.tile;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import elec332.core.util.FMLHelper;
-import elec332.core.util.NBTTypes;
-import elec332.core.util.math.RayTraceHelper;
-import elec332.core.world.WorldHelper;
+import com.sun.javafx.geom.Vec3d;
 import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import net.minecraft.nbt.CompoundNBT;
@@ -14,7 +11,6 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.Collection;
@@ -48,8 +44,8 @@ public class TileEntityEnergyCollector extends AbstractTileEntityGeneratorCompon
             for (int i = -rangeHor; i < rangeHor + 1; i++) {
                 for (int j = -rangeHor; j < rangeHor + 1; j++) {
                     for (int k = -rangeHor; k < rangeVer + 1; k++) {
-                        BlockPos pos = getPos().add(i, k, j);
-                        TileEntity tile = WorldHelper.getTileAt(getLevel(), pos);
+                        BlockPos pos = getBlockPos().offset(i, k, j);
+                        TileEntity tile = level.getBlockEntity(pos);
                         //Also check if there are obstructions
                         if (tile instanceof TileEntityResonatingCrystal) {
                             BlockPos res = RayTraceHelper.rayTrace(getLevel(), new Vec3d(getPos()).add(0.5, 0.6, 0.5), pos).getPos();

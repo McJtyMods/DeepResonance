@@ -6,9 +6,6 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
-/**
- * Created by Elec332 on 15-8-2020
- */
 public class DeepResonanceFluidHelper {
 
     public static boolean isValidLiquidCrystalStack(FluidStack stack) {

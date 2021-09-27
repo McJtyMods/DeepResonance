@@ -5,7 +5,6 @@ import elec332.core.client.RenderHelper;
 import elec332.core.client.model.SimpleModelCache;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.modules.machines.tile.SubTileLens;
-import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.Vector3f;

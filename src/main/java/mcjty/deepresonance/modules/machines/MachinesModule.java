@@ -18,7 +18,6 @@ import mcjty.deepresonance.modules.machines.util.InfusionBonusRegistry;
 import mcjty.deepresonance.modules.machines.util.config.*;
 import mcjty.deepresonance.setup.Config;
 import mcjty.deepresonance.setup.Registration;
-import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import mcjty.lib.modules.IModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;

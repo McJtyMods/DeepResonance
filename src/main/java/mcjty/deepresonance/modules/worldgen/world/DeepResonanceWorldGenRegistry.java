@@ -7,7 +7,6 @@ import elec332.core.api.world.RetroGenFeatureWrapper;
 import elec332.core.world.FeaturePlacers;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.worldgen.WorldGenModule;
-import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.pattern.BlockMatcher;
 import net.minecraft.world.biome.Biome;

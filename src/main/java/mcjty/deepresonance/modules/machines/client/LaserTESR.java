@@ -10,7 +10,6 @@ import elec332.core.api.client.model.ITemplateBakery;
 import elec332.core.loader.client.RenderingRegistry;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.tile.TileEntityLaser;
-import mcjty.deepresonance.util.DeepResonanceResourceLocation;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.TransformationMatrix;

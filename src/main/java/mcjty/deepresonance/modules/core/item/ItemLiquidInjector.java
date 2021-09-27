@@ -1,7 +1,5 @@
 package mcjty.deepresonance.modules.core.item;
 
-import elec332.core.util.PlayerHelper;
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.modules.tank.tile.TileEntityTank;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.deepresonance.util.TranslationHelper;
@@ -11,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -19,7 +18,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -29,26 +27,25 @@ import java.util.List;
 public class ItemLiquidInjector extends Item {
 
     public ItemLiquidInjector(Properties properties) {
-        super(properties.maxStackSize(1));
+        super(properties.stacksTo(1));
     }
 
     @Override
-    public void addInformation(@Nonnull ItemStack stack, @Nullable World worldIn, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> tooltip, ITooltipFlag flags) {
+        super.appendHoverText(stack, level, tooltip, flags);
         tooltip.add(new TranslationTextComponent(TranslationHelper.getTooltipKey(this)));
     }
 
-    @Nonnull
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
         World world = context.getLevel();
-        if (!world.isRemote) {
-            TileEntity tile = WorldHelper.getTileAt(world, context.getPos());
+        if (!world.isClientSide) {
+            TileEntity tile = world.getBlockEntity(context.getClickedPos());
             if (tile instanceof TileEntityTank) {
                 LazyOptional<IFluidHandler> fluidHanderCap = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
                 fluidHanderCap.ifPresent(fluidHander -> fluidHander.fill(DeepResonanceFluidHelper.makeLiquidCrystalStack(100, 1.0f, 0.1f, 0.1f, 0.1f), IFluidHandler.FluidAction.EXECUTE));
             } else if (context.getPlayer() != null) {
-                PlayerHelper.sendMessageToPlayer(context.getPlayer(), new TranslationTextComponent(TranslationHelper.getMessageKey("no_tank")).applyTextStyle(TextFormatting.YELLOW));
+                context.getPlayer().sendMessage(new TranslationTextComponent(TranslationHelper.getMessageKey("no_tank")).withStyle(TextFormatting.YELLOW), Util.NIL_UUID);
             }
         }
         return ActionResultType.SUCCESS;

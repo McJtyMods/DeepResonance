@@ -6,7 +6,7 @@ import elec332.core.api.info.IInformation;
 import elec332.core.util.BlockProperties;
 import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.modules.generator.grid.GeneratorGrid;
-import mcjty.deepresonance.util.AbstractTileEntity;
+import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 /**
  * Created by Elec332 on 1-8-2020
  */
-public abstract class AbstractTileEntityGeneratorComponent extends AbstractTileEntity implements IInfoProvider {
+public abstract class AbstractTileEntityGeneratorComponent extends GenericTileEntity {
 
     protected GeneratorGrid grid;
     protected int startupTimer = -1;

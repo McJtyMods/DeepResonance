@@ -1,7 +1,6 @@
 package mcjty.deepresonance.modules.core.block;
 
-import elec332.core.item.AbstractItemBlock;
-import elec332.core.world.WorldHelper;
+import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
 import mcjty.deepresonance.util.Constants;
 import mcjty.deepresonance.util.TranslationHelper;
@@ -34,12 +33,9 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * Created by Elec332 on 18-1-2020
- */
 public class BlockCrystal extends BaseBlock {
 
-    private static final VoxelShape AABB = VoxelShapes.create(0.1f, 0, 0.1f, 0.9f, 0.8f, 0.9f);
+    private static final VoxelShape AABB = VoxelShapes.box(0.1f, 0, 0.1f, 0.9f, 0.8f, 0.9f);
 
     public BlockCrystal() {
         super(new BlockBuilder()
@@ -60,7 +56,7 @@ public class BlockCrystal extends BaseBlock {
 
     @Override
     public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
-        TileEntity tile = WorldHelper.getTileAt(world, pos);
+        TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileEntityResonatingCrystal) {
             return createStack((TileEntityResonatingCrystal) tile);
         }
@@ -69,32 +65,32 @@ public class BlockCrystal extends BaseBlock {
 
     public ItemStack createStack(TileEntityResonatingCrystal crystal) {
         ItemStack ret = new ItemStack(this);
-        ret.setTagInfo(AbstractItemBlock.TILE_DATA_TAG, crystal.write(new CompoundNBT()));
+        ret.addTagElement(CoreModule.TILE_DATA_TAG, crystal.save(new CompoundNBT()));
         return ret;
     }
 
     @Override
-    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
         TileEntityResonatingCrystal crystal = new TileEntityResonatingCrystal();
         for (int power : new int[]{0, 50}) {
             for (int purity : new int[]{0, 50}) {
                 ItemStack stack = new ItemStack(this);
                 crystal.setPurity(purity);
                 crystal.setPower(power);
-                stack.setTagInfo(AbstractItemBlock.TILE_DATA_TAG, crystal.write(new CompoundNBT()));
+                stack.addTagElement(CoreModule.TILE_DATA_TAG, crystal.save(new CompoundNBT()));
                 items.add(stack);
             }
         }
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag advanced) {
+    public void appendHoverText(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag advanced) {
         CompoundNBT tagCompound = stack.getTag();
         if (tagCompound != null) {
-            tagCompound = tagCompound.getCompound(AbstractItemBlock.TILE_DATA_TAG);
+            tagCompound = tagCompound.getCompound(CoreModule.TILE_DATA_TAG);
         }
 
-        super.addInformation(stack, world, tooltip, advanced);
+        super.appendHoverText(stack, world, tooltip, advanced);
 
         float power = 100.0f;
         if (tagCompound != null) {
@@ -114,8 +110,8 @@ public class BlockCrystal extends BaseBlock {
         DecimalFormat decimalFormat = new DecimalFormat("#.#");
         decimalFormat.setRoundingMode(RoundingMode.DOWN);
         tooltip.accept(new TranslationTextComponent(TranslationHelper.getTooltipKey("crystal_sep"))
-                .applyTextStyle(TextFormatting.GREEN)
-                .appendText(": "
+                .withStyle(TextFormatting.GREEN)
+                .append(": "
                         + decimalFormat.format(tag.getFloat("strength")) + "% "
                         + decimalFormat.format(tag.getFloat("efficiency")) + "% "
                         + decimalFormat.format(tag.getFloat("purity")) + "%"
