@@ -14,9 +14,6 @@ import net.minecraft.util.ResourceLocation;
 
 import static net.minecraftforge.common.Tags.Items.*;
 
-/**
- * Created by Elec332 on 28-7-2020
- */
 public class InfusionBonusProvider extends AbstractInfusionBonusProvider {
 
     public InfusionBonusProvider(DataGenerator generatorIn) {
