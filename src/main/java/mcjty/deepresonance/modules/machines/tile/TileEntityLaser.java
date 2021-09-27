@@ -101,14 +101,14 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
     @Override
     protected void dropInventory() {
         for (int i = 0; i < 2; i++) { //Don't drop item that is being processed
-            WorldHelper.dropStack(getWorld(), getPos(), itemHandler.getStackInSlot(i));
+            WorldHelper.dropStack(getLevel(), getPos(), itemHandler.getStackInSlot(i));
         }
         itemHandler.clear();
     }
 
     @Override
     public void tick() {
-        if (WorldHelper.isClient(getWorld())) {
+        if (WorldHelper.isClient(getLevel())) {
             return;
         }
 
@@ -199,20 +199,20 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
             lens = null;
             laserBeam.clear();
         }
-        Direction facing = WorldHelper.getBlockState(getWorld(), getPos()).get(BlockProperties.FACING_HORIZONTAL);
+        Direction facing = WorldHelper.getBlockState(getLevel(), getPos()).get(BlockProperties.FACING_HORIZONTAL);
         BlockPos pos = getPos();
         Collection<BlockPos> laser = Lists.newArrayList();
         int c = 1;
         while (c < 8) {
             pos = pos.offset(facing);
             laser.add(pos);
-            TileEntity tile = WorldHelper.getTileAt(getWorld(), pos);
+            TileEntity tile = WorldHelper.getTileAt(getLevel(), pos);
             if (tile != null) {
                 LazyOptional<ILens> lens = tile.getCapability(MachinesModule.LENS_CAPABILITY, facing);
                 if (lens.isPresent()) {
                     this.lens = lens;
                     this.laserBeam.addAll(laser);
-                    WorldHelper.markBlockForUpdate(getWorld(), getPos());
+                    WorldHelper.markBlockForUpdate(getLevel(), getPos());
                     return;
                 }
                 LazyOptional<ILensMirror> mirror = tile.getCapability(MachinesModule.LENS_MIRROR_CAPABILITY, facing);
@@ -232,7 +232,7 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
         for (int i = 0; i < list.size(); i++) {
             laserBeam.add(NBTUtil.readBlockPos(list.getCompound(i)));
         }
-        ElecCore.tickHandler.registerCall(() -> WorldHelper.markBlockForRenderUpdate(getWorld(), getPos()), getWorld());
+        ElecCore.tickHandler.registerCall(() -> WorldHelper.markBlockForRenderUpdate(getLevel(), getPos()), getLevel());
     }
 
     @Override

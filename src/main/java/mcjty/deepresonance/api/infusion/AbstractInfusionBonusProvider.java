@@ -2,8 +2,6 @@ package mcjty.deepresonance.api.infusion;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
-import elec332.core.data.custom.AbstractDataProvider;
-import elec332.core.util.function.TriConsumer;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;

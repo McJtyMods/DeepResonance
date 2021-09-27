@@ -81,7 +81,7 @@ public class TileEntityCrystallizer extends AbstractPoweredTileEntity implements
 
     @Override
     public void tick() {
-        if (WorldHelper.isClient(getWorld())) {
+        if (WorldHelper.isClient(getLevel())) {
             return;
         }
 
@@ -153,7 +153,7 @@ public class TileEntityCrystallizer extends AbstractPoweredTileEntity implements
         rclTank = null;
         if (tankCooldown <= 0) {
             tankCooldown = 21;
-            TileEntity tile = WorldHelper.getTileAt(getWorld(), pos.down());
+            TileEntity tile = WorldHelper.getTileAt(getLevel(), pos.down());
             if (tile != null) {
                 rclTank = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
                 return rclTank.isPresent();

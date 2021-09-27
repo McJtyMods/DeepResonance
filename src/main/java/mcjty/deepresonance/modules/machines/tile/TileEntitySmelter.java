@@ -78,7 +78,7 @@ public class TileEntitySmelter extends AbstractPoweredTileEntity implements ITic
 
     @Override
     public void tick() {
-        if (WorldHelper.isClient(getWorld())) {
+        if (WorldHelper.isClient(getLevel())) {
             return;
         }
         if (processTimeLeft > 0) {
@@ -91,7 +91,7 @@ public class TileEntitySmelter extends AbstractPoweredTileEntity implements ITic
                 }
             }
         } else {
-            BlockState state = WorldHelper.getBlockState(getWorld(), getPos());
+            BlockState state = WorldHelper.getBlockState(getLevel(), getPos());
             boolean oldworking = state.get(BlockProperties.ACTIVE);
             boolean newworking;
             if (canWork() && inputSlotValid()) {
@@ -102,7 +102,7 @@ public class TileEntitySmelter extends AbstractPoweredTileEntity implements ITic
             }
             if (newworking != oldworking) {
                 state = state.with(BlockProperties.ACTIVE, newworking);
-                WorldHelper.setBlockState(getWorld(), getPos(), state, 3);
+                WorldHelper.setBlockState(getLevel(), getPos(), state, 3);
             }
         }
     }

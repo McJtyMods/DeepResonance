@@ -128,8 +128,8 @@ public class TileEntityTank extends AbstractTileEntity implements IInfoProvider 
     @Override
     public ActionResultType onBlockActivated(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
         if (FluidUtil.getFluidHandler(player.getHeldItem(hand)).isPresent()) {
-            if (!Preconditions.checkNotNull(getWorld()).isRemote) {
-                FluidUtil.interactWithFluidHandler(player, hand, Preconditions.checkNotNull(getWorld()), result.getPos(), result.getFace());
+            if (!Preconditions.checkNotNull(getLevel()).isRemote) {
+                FluidUtil.interactWithFluidHandler(player, hand, Preconditions.checkNotNull(getLevel()), result.getPos(), result.getFace());
             }
             return ActionResultType.SUCCESS;
         }

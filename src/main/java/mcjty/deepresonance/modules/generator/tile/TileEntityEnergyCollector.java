@@ -49,10 +49,10 @@ public class TileEntityEnergyCollector extends AbstractTileEntityGeneratorCompon
                 for (int j = -rangeHor; j < rangeHor + 1; j++) {
                     for (int k = -rangeHor; k < rangeVer + 1; k++) {
                         BlockPos pos = getPos().add(i, k, j);
-                        TileEntity tile = WorldHelper.getTileAt(getWorld(), pos);
+                        TileEntity tile = WorldHelper.getTileAt(getLevel(), pos);
                         //Also check if there are obstructions
                         if (tile instanceof TileEntityResonatingCrystal) {
-                            BlockPos res = RayTraceHelper.rayTrace(getWorld(), new Vec3d(getPos()).add(0.5, 0.6, 0.5), pos).getPos();
+                            BlockPos res = RayTraceHelper.rayTrace(getLevel(), new Vec3d(getPos()).add(0.5, 0.6, 0.5), pos).getPos();
                             if (res.equals(pos)) {
                                 crystalz.add((TileEntityResonatingCrystal) tile);
                             } else {
@@ -102,7 +102,7 @@ public class TileEntityEnergyCollector extends AbstractTileEntityGeneratorCompon
     }
 
     private void updateRefs() {
-        if (!updateRefs || Preconditions.checkNotNull(getWorld()).isRemote) {
+        if (!updateRefs || Preconditions.checkNotNull(getLevel()).isRemote) {
             return;
         }
         crystalRefs.clear();
@@ -110,7 +110,7 @@ public class TileEntityEnergyCollector extends AbstractTileEntityGeneratorCompon
             return;
         }
         for (BlockPos pos : crystals) {
-            TileEntity tile = WorldHelper.getTileAt(getWorld(), getPos().add(pos));
+            TileEntity tile = WorldHelper.getTileAt(getLevel(), getPos().add(pos));
             if (tile instanceof TileEntityResonatingCrystal) {
                 crystalRefs.add(((TileEntityResonatingCrystal) tile).getReference());
             }

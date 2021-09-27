@@ -92,7 +92,7 @@ public abstract class AbstractTileEntity extends GenericTileEntity implements Re
     }
 
     protected void dropInventory() {
-        WorldHelper.dropInventoryItems(getWorld(), getPos(), itemHandler);
+        WorldHelper.dropInventoryItems(getLevel(), getPos(), itemHandler);
         itemHandler.clear();
     }
 

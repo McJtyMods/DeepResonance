@@ -233,7 +233,7 @@ public class GeneratorGrid extends AbstractDynamicMultiblock<AbstractTileEntityG
 
     private void writeData(TileEntityGeneratorPart tile, int energy) {
         tile.setStoredEnergy(energy);
-        if (WorldHelper.chunkLoaded(tile.getWorld(), tile.getPos())) {
+        if (WorldHelper.chunkLoaded(tile.getLevel(), tile.getPos())) {
             tile.markDirty();
         }
     }

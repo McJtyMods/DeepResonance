@@ -41,7 +41,7 @@ public class ItemLiquidInjector extends Item {
     @Nonnull
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
-        World world = context.getWorld();
+        World world = context.getLevel();
         if (!world.isRemote) {
             TileEntity tile = WorldHelper.getTileAt(world, context.getPos());
             if (tile instanceof TileEntityTank) {

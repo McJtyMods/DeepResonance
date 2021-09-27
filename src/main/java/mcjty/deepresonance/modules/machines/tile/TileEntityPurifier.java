@@ -125,7 +125,7 @@ public class TileEntityPurifier extends AbstractTileEntity implements ITickableT
     private void consumeFilter() {
         ItemStack stack = new ItemStack(CoreModule.SPENT_FILTER_ITEM.get());
         if (true) { //TODO: Auto-eject upgrade
-            ejector.eject(getWorld(), getPos(), Direction.Plane.HORIZONTAL, stack);
+            ejector.eject(getLevel(), getPos(), Direction.Plane.HORIZONTAL, stack);
             stack = ItemStack.EMPTY;
         }
         itemHandler.setStackInSlot(SLOT, stack);

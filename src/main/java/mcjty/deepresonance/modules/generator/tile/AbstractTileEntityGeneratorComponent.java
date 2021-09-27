@@ -86,7 +86,7 @@ public abstract class AbstractTileEntityGeneratorComponent extends AbstractTileE
 
     public void setStartupTimer(int startupTimer) {
         this.startupTimer = startupTimer;
-        if (WorldHelper.chunkLoaded(getWorld(), getPos())) {
+        if (WorldHelper.chunkLoaded(getLevel(), getPos())) {
             boolean on = startupTimer >= 0;
             generatorTurnedOn(on);
             markDirtyClient();
@@ -96,8 +96,8 @@ public abstract class AbstractTileEntityGeneratorComponent extends AbstractTileE
     public void generatorTurnedOn(boolean on) {
         if (on != isOn) {
             this.isOn = on;
-            BlockState state = WorldHelper.getBlockState(getWorld(), getPos());
-            WorldHelper.setBlockState(getWorld(), getPos(), state.with(BlockProperties.ON, on), 3);
+            BlockState state = WorldHelper.getBlockState(getLevel(), getPos());
+            WorldHelper.setBlockState(getLevel(), getPos(), state.with(BlockProperties.ON, on), 3);
         }
     }
 

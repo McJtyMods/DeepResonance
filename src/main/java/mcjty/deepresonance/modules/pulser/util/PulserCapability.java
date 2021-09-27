@@ -120,7 +120,7 @@ public class PulserCapability implements ICrystalModifier, INBTSerializable<Comp
         // The 'instability' value accumulates. Every time we handle instability there is a chance
         // we act on it. Not acting on instability is actually a bad thing as it means the instability will
         // stay and possibly be augmented in the near future
-        World world = Preconditions.checkNotNull(crystal.getWorld());
+        World world = Preconditions.checkNotNull(crystal.getLevel());
         if (world.getRandom().nextFloat() < PulserModule.pulserCrystalConfig.INSTABILITY_HANDLING_CHANCE.get()) {
             // We handle the instability. How much do we handle?
             float tohandle = world.getRandom().nextFloat() * getInstability();

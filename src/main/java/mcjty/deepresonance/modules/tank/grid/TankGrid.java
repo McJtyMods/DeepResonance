@@ -181,7 +181,7 @@ public class TankGrid implements ICapabilityProvider, IFluidHandler {
             tagCompound.put("fluid", fluidTag);
         }
         tile.setGridData(tagCompound);
-        if (WorldHelper.chunkLoaded(Preconditions.checkNotNull(tile.getWorld()), tile.getPos())) {
+        if (WorldHelper.chunkLoaded(Preconditions.checkNotNull(tile.getLevel()), tile.getPos())) {
             tile.markDirty();
         }
     }
@@ -197,7 +197,7 @@ public class TankGrid implements ICapabilityProvider, IFluidHandler {
     }
 
     private void markDirty(TileEntityTank tank) {
-        if (tank != null && WorldHelper.chunkLoaded(Preconditions.checkNotNull(tank.getWorld()), tank.getPos())) {
+        if (tank != null && WorldHelper.chunkLoaded(Preconditions.checkNotNull(tank.getLevel()), tank.getPos())) {
             tank.markDirty();
         }
     }

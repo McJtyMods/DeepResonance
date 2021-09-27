@@ -72,7 +72,7 @@ public class SubTileLens extends SubTileLogicBase {
             return false;
         }
         VoxelShape shape = HitboxHelper.rotateFromDown(lens.getHitbox(), side);
-        if (VoxelShapes.compare(WorldHelper.getShape(getWorld(), getPos()), shape, IBooleanFunction.AND)) {
+        if (VoxelShapes.compare(WorldHelper.getShape(getLevel(), getPos()), shape, IBooleanFunction.AND)) {
             return false;
         }
         addLens_(lens, side);
@@ -97,7 +97,7 @@ public class SubTileLens extends SubTileLogicBase {
             lensCapabilities.put(side, newCap);
         }
         syncSides();
-        WorldHelper.markBlockForUpdate(getWorld(), getPos());
+        WorldHelper.markBlockForUpdate(getLevel(), getPos());
     }
 
     private void removeLens_(ILens lenz) {
@@ -113,7 +113,7 @@ public class SubTileLens extends SubTileLogicBase {
         }, HitboxHelper::combineShapes);
 
         syncSides();
-        WorldHelper.markBlockForUpdate(getWorld(), getPos());
+        WorldHelper.markBlockForUpdate(getLevel(), getPos());
     }
 
     private void syncSides() {
@@ -134,7 +134,7 @@ public class SubTileLens extends SubTileLogicBase {
 
     @SuppressWarnings("all")
     private boolean isValidLocation(Direction side) {
-        return WorldHelper.getBlockState(getWorld(), getPos().offset(side)).isSolidSide(getWorld(), getPos().offset(side), side.getOpposite());
+        return WorldHelper.getBlockState(getLevel(), getPos().offset(side)).isSolidSide(getLevel(), getPos().offset(side), side.getOpposite());
     }
 
 //    private void validateCapabilities() {
@@ -149,13 +149,13 @@ public class SubTileLens extends SubTileLogicBase {
 
     @Override
     public void neighborChanged(BlockPos neighborPos, Block changedBlock, boolean observer) {
-        lenses.forEach((dir, lens) -> lens.checkNeighbors(getWorld(), getPos(), dir));
+        lenses.forEach((dir, lens) -> lens.checkNeighbors(getLevel(), getPos(), dir));
         for (Direction direction : Direction.values()) {
             ILens lens = lenses.get(direction);
             if (lens != null) {
                 if (!isValidLocation(direction)) {
                     removeLens_(lens);
-                    WorldHelper.dropStack(getWorld(), getPos(), lens.getPickBlock());
+                    WorldHelper.dropStack(getLevel(), getPos(), lens.getPickBlock());
                 }
             }
         }
@@ -163,8 +163,8 @@ public class SubTileLens extends SubTileLogicBase {
 
     @Override
     public void onLoad() {
-        if (WorldHelper.isServer(getWorld())) {
-            ElecCore.tickHandler.registerCall(() -> lenses.forEach((dir, lens) -> lens.checkNeighbors(getWorld(), getPos(), dir)), getWorld());
+        if (WorldHelper.isServer(getLevel())) {
+            ElecCore.tickHandler.registerCall(() -> lenses.forEach((dir, lens) -> lens.checkNeighbors(getLevel(), getPos(), dir)), getLevel());
         }
     }
 
@@ -184,7 +184,7 @@ public class SubTileLens extends SubTileLogicBase {
                     addLens_(lens, dir);
                 }
             }
-            WorldHelper.markBlockForRenderUpdate(getWorld(), getPos());
+            WorldHelper.markBlockForRenderUpdate(getLevel(), getPos());
         }
     }
 
@@ -206,7 +206,7 @@ public class SubTileLens extends SubTileLogicBase {
 
     @Override
     public boolean removedByPlayer(@Nonnull PlayerEntity player, boolean willHarvest, @Nonnull RayTraceResult hit) {
-        if (!Preconditions.checkNotNull(getWorld()).isRemote && hit.hitInfo instanceof ILens) {
+        if (!Preconditions.checkNotNull(getLevel()).isRemote && hit.hitInfo instanceof ILens) {
             ILens lens = (ILens) hit.hitInfo;
             removeLens_(lens);
         }
@@ -240,7 +240,7 @@ public class SubTileLens extends SubTileLogicBase {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (side == null || Preconditions.checkNotNull(getWorld()).isRemote) {
+        if (side == null || Preconditions.checkNotNull(getLevel()).isRemote) {
             return LENSES.orEmpty(cap, capability);
         }
         return MachinesModule.LENS_CAPABILITY.orEmpty(cap, lensCapabilities.getOrDefault(side, LazyOptional.empty()));

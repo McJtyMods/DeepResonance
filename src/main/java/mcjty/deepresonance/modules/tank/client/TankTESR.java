@@ -55,14 +55,14 @@ public class TankTESR extends TileEntityRenderer<TileEntityTank> {
             if (dir == Direction.DOWN && tileTank.getClientRenderHeight() > 0.0001 && !(renderFluid == null || renderFluid == Fluids.EMPTY) && RenderTypeLookup.canRenderInLayer(renderFluid.getDefaultState(), RenderType.getSolid())) {
                 return false; //If there is a fluid being rendered, the bottom doesn't need to be checked if the fluid is opaque
             }
-            TileEntity tile = WorldHelper.getTileAt(Preconditions.checkNotNull(tileTank.getWorld()), pos.offset(dir));
+            TileEntity tile = WorldHelper.getTileAt(Preconditions.checkNotNull(tileTank.getLevel()), pos.offset(dir));
             return !(tile instanceof TileEntityTank && ((TileEntityTank) tile).getClientRenderFluid() == renderFluid);
         }).collect(Collectors.toCollection(() -> EnumSet.noneOf(Direction.class)));
 
         float scale = tileTank.getClientRenderHeight();
         int color = 0;
         if (renderFluid != null) {
-            color = renderFluid.getAttributes().getColor(tileTank.getWorld(), tileTank.getPos());
+            color = renderFluid.getAttributes().getColor(tileTank.getLevel(), tileTank.getPos());
         }
 
         render(matrixStackIn, bufferIn, renderFluid, dirs, combinedLightIn, scale, color);

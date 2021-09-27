@@ -53,7 +53,7 @@ public class LaserTESR extends TileEntityRenderer<TileEntityLaser> {
         int color = tileEntityIn.getActiveBonus().getColor();
         for (BlockPos pos : tileEntityIn.getLaserBeam()) {
             pos = pos.subtract(tileEntityIn.getPos());
-            drawBeamPart(prev, pos, color, tileEntityIn.getWorld(), matrixStackIn, bufferIn.getBuffer(RenderType.getTranslucent()));
+            drawBeamPart(prev, pos, color, tileEntityIn.getLevel(), matrixStackIn, bufferIn.getBuffer(RenderType.getTranslucent()));
             prev = pos;
         }
     }

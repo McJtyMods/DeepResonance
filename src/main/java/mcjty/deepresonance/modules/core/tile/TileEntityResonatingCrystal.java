@@ -2,37 +2,26 @@ package mcjty.deepresonance.modules.core.tile;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
-import elec332.core.api.info.IInfoDataAccessorBlock;
-import elec332.core.api.info.IInfoProvider;
-import elec332.core.api.info.IInformation;
-import elec332.core.api.info.InfoMod;
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.api.crystal.ICrystalModifier;
 import mcjty.deepresonance.api.radiation.IWorldRadiationManager;
 import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.deepresonance.modules.core.block.BlockCrystal;
 import mcjty.deepresonance.modules.core.client.ModelLoaderCoreModule;
 import mcjty.deepresonance.modules.core.util.CrystalHelper;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.radiation.util.RadiationHelper;
-import mcjty.deepresonance.util.AbstractTileEntity;
-import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -41,7 +30,7 @@ import java.util.stream.Collectors;
  * Created by Elec332 on 18-1-2020
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
-public class TileEntityResonatingCrystal extends AbstractTileEntity implements ITickableTileEntity, IInfoProvider {
+public class TileEntityResonatingCrystal extends GenericTileEntity implements ITickableTileEntity {
 
     private static final Set<Capability<? extends ICrystalModifier>> MODIFIERS = Sets.newHashSet();
     private static final int RADIATION_COOLDOWN = 22;
@@ -164,7 +153,7 @@ public class TileEntityResonatingCrystal extends AbstractTileEntity implements I
     }
 
     private void spreadRadiation() {
-        LazyOptional<IWorldRadiationManager> cap = Preconditions.checkNotNull(getWorld()).getCapability(RadiationModule.CAPABILITY);
+        LazyOptional<IWorldRadiationManager> cap = Preconditions.checkNotNull(getLevel()).getCapability(RadiationModule.CAPABILITY);
         cap.ifPresent(radiationManager -> {
             float purity = getPurity();
             float strength = getStrength();
@@ -173,7 +162,7 @@ public class TileEntityResonatingCrystal extends AbstractTileEntity implements I
             for (ICrystalModifier modifier : getModifiers()) {
                 radiationStrength *= modifier.getRadiationModifier();
             }
-            radiationManager.getOrCreateRadiationSource(TileEntityResonatingCrystal.this.getPos()).update(radius, radiationStrength, RADIATION_COOLDOWN);
+            radiationManager.getOrCreateRadiationSource(TileEntityResonatingCrystal.this.getBlockPos()).update(radius, radiationStrength, RADIATION_COOLDOWN);
         });
     }
 
@@ -219,11 +208,13 @@ public class TileEntityResonatingCrystal extends AbstractTileEntity implements I
         return null;
     }
 
-    @Override
-    public void validate() {
-        super.validate();
-        getModifiers().forEach(mod -> mod.setCrystal(this));
-    }
+
+    // @todo 1.16
+//    @Override
+//    public void validate() {
+//        super.validate();
+//        getModifiers().forEach(mod -> mod.setCrystal(this));
+//    }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
@@ -233,7 +224,7 @@ public class TileEntityResonatingCrystal extends AbstractTileEntity implements I
         boolean newempty = isEmpty();
         if (oldempty != newempty || oldVeryPure != CrystalHelper.isVeryPure(getPurity())) {
             requestModelDataUpdate();
-            WorldHelper.markBlockForRenderUpdate(Preconditions.checkNotNull(getWorld()), getPos());
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
         }
     }
 
@@ -247,54 +238,56 @@ public class TileEntityResonatingCrystal extends AbstractTileEntity implements I
         purity = tagCompound.getFloat("purity");
     }
 
+
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
+    public CompoundNBT save(CompoundNBT tagCompound) {
         tagCompound.putFloat("strength", strength);
         tagCompound.putFloat("power", power);
         tagCompound.putFloat("efficiency", efficiency);
         tagCompound.putFloat("purity", purity);
-        return super.write(tagCompound);
+        return super.save(tagCompound);
     }
 
-    @Override
-    public void addInformation(@Nonnull IInformation information, @Nonnull IInfoDataAccessorBlock hitData) {
-        DecimalFormat decimalFormat = new DecimalFormat("#.#");
-        decimalFormat.setRoundingMode(RoundingMode.DOWN);
-        CompoundNBT tag = hitData.getData();
-        float power = tag.getFloat("power");
-        BlockCrystal.addBasicInformation(information::addInformation, tag, power, information.getProviderType() == InfoMod.WAILA);
-        getModifiers().forEach(mod -> {
-            if (mod instanceof IInfoProvider) {
-                ((IInfoProvider) mod).addInformation(information, hitData);
-            }
-        });
-        if (information.isDebugMode() == Boolean.TRUE) { //Debug, no translation
-            information.addInformation("Power: " + decimalFormat.format(power) + "%");
-        } else if (information.getProviderType() == InfoMod.TOP) {
-            information.addInformation(new StringTextComponent("Power: " + decimalFormat.format(power) + "%").applyTextStyle(TextFormatting.YELLOW));
-            IProbeInfo probeInfo = (IProbeInfo) information.getInformationComponent();
-            probeInfo.progress((int) power, 100, probeInfo.defaultProgressStyle()
-                    .suffix("%")
-                    .width(40)
-                    .height(10)
-                    .showText(false)
-                    .filledColor(0xffff0000)
-                    .alternateFilledColor(0xff990000));
-        }
-    }
-
-    @Override
-    public void gatherInformation(@Nonnull CompoundNBT tag, @Nonnull ServerPlayerEntity player, @Nonnull IInfoDataAccessorBlock hitData) {
-        tag.putFloat("strength", getStrength());
-        tag.putFloat("efficiency", getEfficiency());
-        tag.putFloat("purity", getPurity());
-        tag.putFloat("power", getPower());
-        getModifiers().forEach(mod -> {
-            if (mod instanceof IInfoProvider) {
-                ((IInfoProvider) mod).gatherInformation(tag, player, hitData);
-            }
-        });
-    }
+    // @todo 1.16
+//    @Override
+//    public void addInformation(@Nonnull IInformation information, @Nonnull IInfoDataAccessorBlock hitData) {
+//        DecimalFormat decimalFormat = new DecimalFormat("#.#");
+//        decimalFormat.setRoundingMode(RoundingMode.DOWN);
+//        CompoundNBT tag = hitData.getData();
+//        float power = tag.getFloat("power");
+//        BlockCrystal.addBasicInformation(information::addInformation, tag, power, information.getProviderType() == InfoMod.WAILA);
+//        getModifiers().forEach(mod -> {
+//            if (mod instanceof IInfoProvider) {
+//                ((IInfoProvider) mod).addInformation(information, hitData);
+//            }
+//        });
+//        if (information.isDebugMode() == Boolean.TRUE) { //Debug, no translation
+//            information.addInformation("Power: " + decimalFormat.format(power) + "%");
+//        } else if (information.getProviderType() == InfoMod.TOP) {
+//            information.addInformation(new StringTextComponent("Power: " + decimalFormat.format(power) + "%").applyTextStyle(TextFormatting.YELLOW));
+//            IProbeInfo probeInfo = (IProbeInfo) information.getInformationComponent();
+//            probeInfo.progress((int) power, 100, probeInfo.defaultProgressStyle()
+//                    .suffix("%")
+//                    .width(40)
+//                    .height(10)
+//                    .showText(false)
+//                    .filledColor(0xffff0000)
+//                    .alternateFilledColor(0xff990000));
+//        }
+//    }
+//
+//    @Override
+//    public void gatherInformation(@Nonnull CompoundNBT tag, @Nonnull ServerPlayerEntity player, @Nonnull IInfoDataAccessorBlock hitData) {
+//        tag.putFloat("strength", getStrength());
+//        tag.putFloat("efficiency", getEfficiency());
+//        tag.putFloat("purity", getPurity());
+//        tag.putFloat("power", getPower());
+//        getModifiers().forEach(mod -> {
+//            if (mod instanceof IInfoProvider) {
+//                ((IInfoProvider) mod).gatherInformation(tag, player, hitData);
+//            }
+//        });
+//    }
 
     @Nonnull
     @Override

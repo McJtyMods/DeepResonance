@@ -1,9 +1,5 @@
 package mcjty.deepresonance;
 
-import elec332.core.api.mod.IElecCoreMod;
-import elec332.core.data.AbstractDataGenerator;
-import elec332.core.util.FMLHelper;
-import mcjty.deepresonance.data.DataGenerators;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
@@ -22,16 +18,13 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Created by Elec332 on 6-1-2020
- */
 @Mod(DeepResonance.MODID)
-public class DeepResonance implements IElecCoreMod {
+public class DeepResonance {
 
     public static final String MODID = "deepresonance";
-    public static final String MODNAME = FMLHelper.getModNameEarly(MODID);
+    public static final String MODNAME = "DeepResonance";
 
-    public static String SHIFT_MESSAGE = "message.rftoolsbase.shiftmessage";
+    public static String SHIFT_MESSAGE = "message.deepresonance.shiftmessage";
 
     public static DeepResonance instance;
     public static ModSetup setup;
@@ -53,7 +46,7 @@ public class DeepResonance implements IElecCoreMod {
         Registration.register();
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(setup::init);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(AbstractDataGenerator.toEventListener(new DataGenerators()));
+//        FMLJavaModLoadingContext.get().getModEventBus().addListener(AbstractDataGenerator.toEventListener(new DataGenerators()));
         FMLJavaModLoadingContext.get().getModEventBus().addListener(modules::init);
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
@@ -71,8 +64,8 @@ public class DeepResonance implements IElecCoreMod {
         modules.register(new WorldGenModule());
     }
 
-    @Override
-    public void afterConstruction() {
-        Config.afterRegister();
-    }
+//    @Override
+//    public void afterConstruction() {
+//        Config.afterRegister();
+//    }
 }

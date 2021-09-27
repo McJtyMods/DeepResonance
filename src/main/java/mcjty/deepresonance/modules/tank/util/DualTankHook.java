@@ -82,7 +82,7 @@ public class DualTankHook {
         if (tile_ == null) {
             throw new IllegalStateException();
         }
-        World world = Preconditions.checkNotNull(tile_.getWorld());
+        World world = Preconditions.checkNotNull(tile_.getLevel());
         BlockPos pos = tile_.getPos();
         boolean check = false;
         if (!tank1Present()) {

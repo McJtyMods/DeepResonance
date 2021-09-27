@@ -92,24 +92,24 @@ public class TileEntityGeneratorPart extends AbstractTileEntityGeneratorComponen
     @Override
     public void validate() {
         super.validate();
-        if (Preconditions.checkNotNull(getWorld()).isRemote) {
+        if (Preconditions.checkNotNull(getLevel()).isRemote) {
             return;
         }
         ElecCore.tickHandler.registerCall(() -> {
             surroundings.clear();
             for (Direction dir : Direction.values()) {
                 BlockPos pos = getPos().offset(dir);
-                TileEntity tile = WorldHelper.getTileAt(getWorld(), pos);
+                TileEntity tile = WorldHelper.getTileAt(getLevel(), pos);
                 if (tile != null) {
                     surroundings.put(dir, tile.getCapability(CapabilityEnergy.ENERGY, dir.getOpposite()));
                 }
             }
-        }, getWorld());
+        }, getLevel());
     }
 
     @Override
     public void onNeighborChange(BlockState myState, BlockPos neighbor) {
-        if (Preconditions.checkNotNull(getWorld()).isRemote) {
+        if (Preconditions.checkNotNull(getLevel()).isRemote) {
             return;
         }
         BlockPos offset = getPos().subtract(neighbor);
@@ -117,7 +117,7 @@ public class TileEntityGeneratorPart extends AbstractTileEntityGeneratorComponen
         LazyOptional<IEnergyStorage> cap = surroundings.get(side);
         if (cap == null || !cap.isPresent()) {
             cap = null;
-            TileEntity tile = WorldHelper.getTileAt(getWorld(), neighbor);
+            TileEntity tile = WorldHelper.getTileAt(getLevel(), neighbor);
             if (tile != null) {
                 cap = tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite());
             }

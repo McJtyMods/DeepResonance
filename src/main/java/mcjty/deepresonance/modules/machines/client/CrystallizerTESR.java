@@ -49,7 +49,7 @@ public class CrystallizerTESR extends TileEntityRenderer<TileEntityCrystallizer>
         if (progress > 0) {
             matrixStack.push();
             float scale = 0.15f + 0.35f * (progress / 100.0f);
-            float f = (float) Math.floorMod(Preconditions.checkNotNull(tile.getWorld()).getGameTime(), 120);
+            float f = (float) Math.floorMod(Preconditions.checkNotNull(tile.getLevel()).getGameTime(), 120);
             matrixStack.translate(0.5, 0.52 + (0.002 * progress), 0.5);
             matrixStack.rotate(Vector3f.YP.rotationDegrees(f * 3));
             matrixStack.scale(scale, scale, scale);
