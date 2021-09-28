@@ -3,7 +3,6 @@ package mcjty.deepresonance.modules.generator.tile;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.sun.javafx.geom.Vec3d;
 import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import net.minecraft.nbt.CompoundNBT;
@@ -11,6 +10,9 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.Collection;
@@ -48,7 +50,10 @@ public class TileEntityEnergyCollector extends AbstractTileEntityGeneratorCompon
                         TileEntity tile = level.getBlockEntity(pos);
                         //Also check if there are obstructions
                         if (tile instanceof TileEntityResonatingCrystal) {
-                            BlockPos res = RayTraceHelper.rayTrace(getLevel(), new Vec3d(getPos()).add(0.5, 0.6, 0.5), pos).getPos();
+                            RayTraceContext context = new RayTraceContext(
+                                    new Vector3d(worldPosition.getX()+.5, worldPosition.getY()+.6, worldPosition.getZ()+.5),
+                                    new Vector3d(pos.getX(), pos.getY(), pos.getZ()), RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, null);
+                            BlockPos res = level.clip(context).getBlockPos();
                             if (res.equals(pos)) {
                                 crystalz.add((TileEntityResonatingCrystal) tile);
                             } else {
@@ -59,11 +64,11 @@ public class TileEntityEnergyCollector extends AbstractTileEntityGeneratorCompon
                 }
             }
             //Closest first
-            crystalz = crystalz.stream().sorted(Comparator.comparingDouble(t -> t.getPos().distanceSq(getPos()))).collect(Collectors.toList());
+            crystalz = crystalz.stream().sorted(Comparator.comparingDouble(t -> t.getBlockPos().distSqr(getBlockPos()))).collect(Collectors.toList());
             Iterator<TileEntityResonatingCrystal> it = crystalz.iterator();
             for (int i = 0; i < Math.min(grid.getMaxSupportedCrystals(), crystalz.size()); i++) {
                 TileEntityResonatingCrystal crystal = it.next();
-                crystals.add(crystal.getPos().subtract(getPos()));
+                crystals.add(crystal.getBlockPos().subtract(getBlockPos()));
                 crystalRefs.add(crystal.getReference());
             }
         }
@@ -98,7 +103,7 @@ public class TileEntityEnergyCollector extends AbstractTileEntityGeneratorCompon
     }
 
     private void updateRefs() {
-        if (!updateRefs || Preconditions.checkNotNull(getLevel()).isRemote) {
+        if (!updateRefs || Preconditions.checkNotNull(getLevel()).isClientSide()) {
             return;
         }
         crystalRefs.clear();
@@ -106,7 +111,7 @@ public class TileEntityEnergyCollector extends AbstractTileEntityGeneratorCompon
             return;
         }
         for (BlockPos pos : crystals) {
-            TileEntity tile = WorldHelper.getTileAt(getLevel(), getPos().add(pos));
+            TileEntity tile = level.getBlockEntity(getBlockPos().offset(pos));
             if (tile instanceof TileEntityResonatingCrystal) {
                 crystalRefs.add(((TileEntityResonatingCrystal) tile).getReference());
             }
@@ -119,20 +124,20 @@ public class TileEntityEnergyCollector extends AbstractTileEntityGeneratorCompon
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
+    public CompoundNBT save(CompoundNBT tagCompound) {
         ListNBT list = new ListNBT();
         for (BlockPos pos : crystals) {
             list.add(NBTUtil.writeBlockPos(pos));
         }
         tagCompound.put("crystals", list);
-        return super.write(tagCompound);
+        return super.save(tagCompound);
     }
 
     @Override
     public void read(CompoundNBT tagCompound) {
         super.read(tagCompound);
         crystals.clear();
-        ListNBT list = tagCompound.getList("crystals", NBTTypes.COMPOUND.getID());
+        ListNBT list = tagCompound.getList("crystals", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < list.size(); i++) {
             crystals.add(NBTUtil.readBlockPos(list.getCompound(i)));
         }
@@ -140,9 +145,10 @@ public class TileEntityEnergyCollector extends AbstractTileEntityGeneratorCompon
     }
 
     public Set<BlockPos> getCrystals() {
-        if (!FMLHelper.getDist().isClient()) {
-            throw new UnsupportedOperationException();
-        }
+        // @todo 1.16
+//        if (!FMLHelper.getDist().isClient()) {
+//            throw new UnsupportedOperationException();
+//        }
         return crystals;
     }
 

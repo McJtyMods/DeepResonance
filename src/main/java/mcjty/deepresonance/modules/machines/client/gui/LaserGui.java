@@ -1,13 +1,15 @@
 package mcjty.deepresonance.modules.machines.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.infusion.InfusionBonus;
 import mcjty.deepresonance.api.infusion.InfusionModifier;
-import mcjty.deepresonance.client.AbstractDeepResonanceGui;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.tile.TileEntityLaser;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.layout.PositionalLayout;
@@ -20,10 +22,7 @@ import net.minecraft.util.ResourceLocation;
 import java.awt.*;
 import java.text.DecimalFormat;
 
-/**
- * Created by Elec332 on 29-7-2020
- */
-public class LaserGui extends AbstractDeepResonanceGui<TileEntityLaser> {
+public class LaserGui extends GenericGuiContainer<TileEntityLaser, GenericContainer> {
 
     public static final int LASER_WIDTH = 180;
     public static final int LASER_HEIGHT = 152;
@@ -34,13 +33,13 @@ public class LaserGui extends AbstractDeepResonanceGui<TileEntityLaser> {
     private Label strengthBonus;
     private Label efficiencyBonus;
 
-    private static final ResourceLocation iconLocation = new ResourceLocation(DeepResonance.MODID, "textures/gui/laser.png");
+    private static final ResourceLocation GUI = new ResourceLocation(DeepResonance.MODID, "textures/gui/laser.png");
 
     public LaserGui(TileEntityLaser tileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(tileEntity, container, inventory);
+        super(tileEntity, container, inventory, ManualEntry.EMPTY); // @todo 1.16 manual
 
-        xSize = LASER_WIDTH;
-        ySize = LASER_HEIGHT;
+        imageWidth = LASER_WIDTH;
+        imageHeight = LASER_HEIGHT;
     }
 
     @Override
@@ -82,16 +81,16 @@ public class LaserGui extends AbstractDeepResonanceGui<TileEntityLaser> {
                 .children(purifyBonus, strengthBonus, efficiencyBonus);
 
         Panel toplevel = new Panel()
-                .background(iconLocation)
+                .background(GUI)
                 .layout(new PositionalLayout())
                 .children(energyBar, catalystPanel, crystalBar);
-        toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
+        toplevel.setBounds(new Rectangle(leftPos, topPos, imageWidth, imageHeight));
 
         window = new Window(this, toplevel);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float v, int i, int i2) {
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
         InfusionBonus bonus = tileEntity.getActiveBonus();
         if (bonus.isEmpty()) {
             purifyBonus.text("No active catalyst");
@@ -105,7 +104,7 @@ public class LaserGui extends AbstractDeepResonanceGui<TileEntityLaser> {
         energyBar.value(tileEntity.getCurrentPower());
         crystalBar.value((int) tileEntity.getCrystalLiquid());
 
-        super.drawGuiContainerBackgroundLayer(v, i, i2);
+        super.renderBg(matrixStack, partialTicks, x, y);
     }
 
     private void setBonusText(InfusionModifier modifier, String prefix, Label label) {

@@ -1,19 +1,13 @@
 package mcjty.deepresonance.modules.generator.tile;
 
-import elec332.core.api.info.IInfoDataAccessorBlock;
-import elec332.core.api.info.IInfoProvider;
-import elec332.core.api.info.IInformation;
-import elec332.core.util.BlockProperties;
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.modules.generator.grid.GeneratorGrid;
 import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.varia.WorldTools;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.text.TextFormatting;
-
-import javax.annotation.Nonnull;
+import net.minecraftforge.common.util.Constants;
 
 /**
  * Created by Elec332 on 1-8-2020
@@ -32,34 +26,37 @@ public abstract class AbstractTileEntityGeneratorComponent extends GenericTileEn
         this.grid = grid;
     }
 
-    @Override
-    public void addInformation(@Nonnull IInformation information, @Nonnull IInfoDataAccessorBlock hitData) {
-        CompoundNBT data = hitData.getData();
-        if (data.getBoolean("grid")) {
-            if (data.getBoolean("dup")) {
-                information.addInformation(TextFormatting.ITALIC + "Multiple controllers or collectors detected!");
-            } else {
-                information.addInformation(TextFormatting.GREEN + "Energy: " + data.getInt("storedPower") + "/" + data.getInt("maxPower"));
-                information.addInformation(TextFormatting.ITALIC + "Status: " + data.getString("startup"));
-            }
-        }
-    }
+    // @todo 1.16
+//
+//    @Override
+//    public void addInformation(@Nonnull IInformation information, @Nonnull IInfoDataAccessorBlock hitData) {
+//        CompoundNBT data = hitData.getData();
+//        if (data.getBoolean("grid")) {
+//            if (data.getBoolean("dup")) {
+//                information.addInformation(TextFormatting.ITALIC + "Multiple controllers or collectors detected!");
+//            } else {
+//                information.addInformation(TextFormatting.GREEN + "Energy: " + data.getInt("storedPower") + "/" + data.getInt("maxPower"));
+//                information.addInformation(TextFormatting.ITALIC + "Status: " + data.getString("startup"));
+//            }
+//        }
+//    }
+
+    // @todo 1.16
+//    @Override
+//    public void gatherInformation(@Nonnull CompoundNBT tag, @Nonnull ServerPlayerEntity player, @Nonnull IInfoDataAccessorBlock hitData) {
+//        tag.putBoolean("grid", grid != null);
+//        if (grid != null) {
+//            tag.putBoolean("dup", grid.hasDuplicates());
+//            tag.putInt("maxPower", grid.getMaxEnergyStored());
+//            tag.putInt("storedPower", grid.getEnergyStored());
+//            tag.putString("startup", grid.getStartupText());
+//        }
+//    }
 
     @Override
-    public void gatherInformation(@Nonnull CompoundNBT tag, @Nonnull ServerPlayerEntity player, @Nonnull IInfoDataAccessorBlock hitData) {
-        tag.putBoolean("grid", grid != null);
-        if (grid != null) {
-            tag.putBoolean("dup", grid.hasDuplicates());
-            tag.putInt("maxPower", grid.getMaxEnergyStored());
-            tag.putInt("storedPower", grid.getEnergyStored());
-            tag.putString("startup", grid.getStartupText());
-        }
-    }
-
-    @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
+    public CompoundNBT save(CompoundNBT tagCompound) {
         tagCompound.putBoolean("isOn", isOn);
-        return super.write(tagCompound);
+        return super.save(tagCompound);
     }
 
     @Override
@@ -86,7 +83,7 @@ public abstract class AbstractTileEntityGeneratorComponent extends GenericTileEn
 
     public void setStartupTimer(int startupTimer) {
         this.startupTimer = startupTimer;
-        if (WorldHelper.chunkLoaded(getLevel(), getPos())) {
+        if (WorldTools.isLoaded(getLevel(), getBlockPos())) {
             boolean on = startupTimer >= 0;
             generatorTurnedOn(on);
             markDirtyClient();
@@ -96,8 +93,8 @@ public abstract class AbstractTileEntityGeneratorComponent extends GenericTileEn
     public void generatorTurnedOn(boolean on) {
         if (on != isOn) {
             this.isOn = on;
-            BlockState state = WorldHelper.getBlockState(getLevel(), getPos());
-            WorldHelper.setBlockState(getLevel(), getPos(), state.with(BlockProperties.ON, on), 3);
+            BlockState state = level.getBlockState(getBlockPos());
+            level.setBlock(getBlockPos(), state.setValue(BlockStateProperties.POWERED, on), Constants.BlockFlags.DEFAULT);
         }
     }
 

@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.machines.client;
 
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.api.infusion.InfusionBonus;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.tile.TileEntityLaser;
@@ -11,14 +10,14 @@ import net.minecraft.tileentity.TileEntity;
 
 public class ClientSetup {
     public static void initClient() {
-        RenderTypeLookup.setRenderLayer(MachinesModule.CRYSTALLIZER_BLOCK.get(), RenderType.getTranslucent());
-        RenderTypeLookup.setRenderLayer(MachinesModule.LASER_BLOCK.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(MachinesModule.CRYSTALLIZER_BLOCK.get(), RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(MachinesModule.LASER_BLOCK.get(), RenderType.cutout());
     }
 
     public static void setupBlockColors() {
         Minecraft.getInstance().getBlockColors().register((s, world, pos, index) -> {
             if (index == 1) {
-                TileEntity tile = WorldHelper.getTileAt(world, pos);
+                TileEntity tile = world.getBlockEntity(pos);
                 if (tile instanceof TileEntityLaser) {
                     InfusionBonus bonus = ((TileEntityLaser) tile).getActiveBonus();
                     if (!bonus.isEmpty()) {

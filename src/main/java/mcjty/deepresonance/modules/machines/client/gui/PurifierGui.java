@@ -1,9 +1,10 @@
 package mcjty.deepresonance.modules.machines.client.gui;
 
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.client.AbstractDeepResonanceGui;
 import mcjty.deepresonance.modules.machines.tile.TileEntityPurifier;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.Panel;
@@ -15,18 +16,18 @@ import java.awt.*;
 /**
  * Created by Elec332 on 27-7-2020
  */
-public class PurifierGui extends AbstractDeepResonanceGui<TileEntityPurifier> {
+public class PurifierGui extends GenericGuiContainer<TileEntityPurifier, GenericContainer> {
 
     public static final int PURIFIER_WIDTH = 180;
     public static final int PURIFIER_HEIGHT = 152;
 
-    private static final ResourceLocation iconLocation = new ResourceLocation(DeepResonance.MODID, "textures/gui/purifier.png");
+    private static final ResourceLocation GUI = new ResourceLocation(DeepResonance.MODID, "textures/gui/purifier.png");
 
     public PurifierGui(TileEntityPurifier tileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(tileEntity, container, inventory);
+        super(tileEntity, container, inventory, ManualEntry.EMPTY); // @todo 1.16 manual
 
-        xSize = PURIFIER_WIDTH;
-        ySize = PURIFIER_HEIGHT;
+        imageWidth = PURIFIER_WIDTH;
+        imageHeight = PURIFIER_HEIGHT;
     }
 
     @Override
@@ -34,9 +35,9 @@ public class PurifierGui extends AbstractDeepResonanceGui<TileEntityPurifier> {
         super.init();
 
         Panel toplevel = new Panel()
-                .background(iconLocation)
+                .background(GUI)
                 .layout(new PositionalLayout());
-        toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
+        toplevel.setBounds(new Rectangle(leftPos, topPos, imageWidth, imageHeight));
 
         window = new Window(this, toplevel);
     }

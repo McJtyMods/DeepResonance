@@ -1,17 +1,10 @@
 package mcjty.deepresonance.modules.generator.tile;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import elec332.core.ElecCore;
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
-import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import java.util.Map;
@@ -75,12 +68,12 @@ public class TileEntityGeneratorPart extends AbstractTileEntityGeneratorComponen
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
+    public CompoundNBT save(CompoundNBT tagCompound) {
         if (grid != null) {
             grid.writeData(this);
         }
         tagCompound.putInt("storedEnergy", storedEnergy);
-        return super.write(tagCompound);
+        return super.save(tagCompound);
     }
 
     @Override
@@ -89,40 +82,42 @@ public class TileEntityGeneratorPart extends AbstractTileEntityGeneratorComponen
         storedEnergy = tagCompound.getInt("storedEnergy");
     }
 
-    @Override
-    public void validate() {
-        super.validate();
-        if (Preconditions.checkNotNull(getLevel()).isRemote) {
-            return;
-        }
-        ElecCore.tickHandler.registerCall(() -> {
-            surroundings.clear();
-            for (Direction dir : Direction.values()) {
-                BlockPos pos = getPos().offset(dir);
-                TileEntity tile = WorldHelper.getTileAt(getLevel(), pos);
-                if (tile != null) {
-                    surroundings.put(dir, tile.getCapability(CapabilityEnergy.ENERGY, dir.getOpposite()));
-                }
-            }
-        }, getLevel());
-    }
+    // @todo 1.16
+//    @Override
+//    public void validate() {
+//        super.validate();
+//        if (Preconditions.checkNotNull(getLevel()).isRemote) {
+//            return;
+//        }
+//        ElecCore.tickHandler.registerCall(() -> {
+//            surroundings.clear();
+//            for (Direction dir : Direction.values()) {
+//                BlockPos pos = getPos().offset(dir);
+//                TileEntity tile = WorldHelper.getTileAt(getLevel(), pos);
+//                if (tile != null) {
+//                    surroundings.put(dir, tile.getCapability(CapabilityEnergy.ENERGY, dir.getOpposite()));
+//                }
+//            }
+//        }, getLevel());
+//    }
 
-    @Override
-    public void onNeighborChange(BlockState myState, BlockPos neighbor) {
-        if (Preconditions.checkNotNull(getLevel()).isRemote) {
-            return;
-        }
-        BlockPos offset = getPos().subtract(neighbor);
-        Direction side = Preconditions.checkNotNull(Direction.byLong(offset.getX(), offset.getY(), offset.getZ()));
-        LazyOptional<IEnergyStorage> cap = surroundings.get(side);
-        if (cap == null || !cap.isPresent()) {
-            cap = null;
-            TileEntity tile = WorldHelper.getTileAt(getLevel(), neighbor);
-            if (tile != null) {
-                cap = tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite());
-            }
-            surroundings.put(side, cap);
-        }
-    }
+    // @todo 1.16
+//    @Override
+//    public void onNeighborChange(BlockState myState, BlockPos neighbor) {
+//        if (Preconditions.checkNotNull(getLevel()).isRemote) {
+//            return;
+//        }
+//        BlockPos offset = getPos().subtract(neighbor);
+//        Direction side = Preconditions.checkNotNull(Direction.byLong(offset.getX(), offset.getY(), offset.getZ()));
+//        LazyOptional<IEnergyStorage> cap = surroundings.get(side);
+//        if (cap == null || !cap.isPresent()) {
+//            cap = null;
+//            TileEntity tile = WorldHelper.getTileAt(getLevel(), neighbor);
+//            if (tile != null) {
+//                cap = tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite());
+//            }
+//            surroundings.put(side, cap);
+//        }
+//    }
 
 }

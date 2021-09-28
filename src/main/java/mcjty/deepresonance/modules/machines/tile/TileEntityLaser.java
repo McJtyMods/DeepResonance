@@ -1,45 +1,49 @@
 package mcjty.deepresonance.modules.machines.tile;
 
 import com.google.common.collect.Lists;
-import elec332.core.ElecCore;
-import elec332.core.inventory.BasicItemHandler;
-import elec332.core.item.AbstractItemBlock;
-import elec332.core.util.BlockProperties;
-import elec332.core.util.FMLHelper;
-import elec332.core.util.NBTTypes;
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.api.infusion.InfusionBonus;
 import mcjty.deepresonance.api.laser.ILens;
 import mcjty.deepresonance.api.laser.ILensMirror;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
-import mcjty.deepresonance.modules.machines.client.gui.LaserGui;
 import mcjty.deepresonance.modules.machines.util.InfusionBonusRegistry;
+import mcjty.lib.api.container.CapabilityContainerProvider;
+import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.container.AutomationFilterItemHander;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
-import net.minecraft.entity.player.PlayerInventory;
+import mcjty.lib.container.NoDirectionItemHander;
+import mcjty.lib.tileentity.GenericEnergyStorage;
+import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 
+import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.generic;
 
 /**
  * Created by Elec332 on 28-7-2020
  */
-public class TileEntityLaser extends AbstractPoweredTileEntity implements ITickableTileEntity {
+public class TileEntityLaser extends GenericTileEntity implements ITickableTileEntity {
 
     public static final int SLOT_CRYSTAL = 0;
     public static final int SLOT_CATALYST = 1;
@@ -54,58 +58,38 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
     private InfusionBonus activeBonus = InfusionBonus.EMPTY;
     private LazyOptional<ILens> lens;
 
-    private static final RegisteredContainer<GenericContainer, LaserGui, TileEntityLaser> container = new RegisteredContainer<GenericContainer, LaserGui, TileEntityLaser>("laser", 3, factory -> {
-        factory.playerSlots(10, 70);
-        factory.slot(generic(), ContainerFactory.CONTAINER_CONTAINER, SLOT_CRYSTAL, 154, 48);
-        factory.slot(generic(), ContainerFactory.CONTAINER_CONTAINER, SLOT_CATALYST, 21, 8);
-        factory.slot(generic(), ContainerFactory.CONTAINER_CONTAINER, SLOT_ACTIVE_CATALYST, 21, 48);
-    }) {
+    public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(3)
+            .slot(generic().in().out(), CONTAINER_CONTAINER, SLOT_CRYSTAL, 154, 48)
+            .slot(generic().in().out(), CONTAINER_CONTAINER, SLOT_CATALYST, 21, 8)
+            .slot(generic().out(), CONTAINER_CONTAINER, SLOT_ACTIVE_CATALYST, 21, 48)
+            .playerSlots(10, 70));
 
-        @Override
-        public Object createGui(TileEntityLaser tile, GenericContainer container, PlayerInventory inventory) {
-            return new LaserGui(tile, container, inventory);
-        }
+    private final NoDirectionItemHander items = createItemHandler();
+    private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
-    };
+    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Laser")
+            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.LASER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), TileEntityLaser.this))
+            .itemHandler(() -> items));
+
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, MachinesModule.laserConfig.powerMaximum.get(), 0);
+    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
 
     public TileEntityLaser() {
-        super(MachinesModule.TYPE_LASER.get(), MachinesModule.laserConfig.powerMaximum.get(), MachinesModule.laserConfig.powerPerTickIn.get(), new BasicItemHandler(3) {
-
-            @Override
-            public boolean canExtract(int slot) {
-                return true;
-            }
-
-            @Override
-            public boolean canInsert(int slot, @Nonnull ItemStack stack) {
-                return slot != SLOT_ACTIVE_CATALYST;
-            }
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if (slot == SLOT_CRYSTAL) {
-                    return stack.getItem() == CoreModule.RESONATING_CRYSTAL_ITEM.get();
-                }
-                if (slot == SLOT_CATALYST) {
-                    return stack.getItem() != CoreModule.RESONATING_CRYSTAL_ITEM.get();
-                }
-                return false;
-            }
-
-        });
+        super(MachinesModule.TYPE_LASER.get());
     }
 
-    @Override
-    protected void dropInventory() {
-        for (int i = 0; i < 2; i++) { //Don't drop item that is being processed
-            WorldHelper.dropStack(getLevel(), getPos(), itemHandler.getStackInSlot(i));
-        }
-        itemHandler.clear();
-    }
+    // @todo 1.16
+//    @Override
+//    protected void dropInventory() {
+//        for (int i = 0; i < 2; i++) { //Don't drop item that is being processed
+//            WorldHelper.dropStack(getLevel(), getPos(), itemHandler.getStackInSlot(i));
+//        }
+//        itemHandler.clear();
+//    }
 
     @Override
     public void tick() {
-        if (WorldHelper.isClient(getLevel())) {
+        if (level.isClientSide()) {
             return;
         }
 
@@ -124,10 +108,10 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
         boolean dirty = false;
         int powerRequired = activeBonus.getPowerPerTick();
         if (powerRequired > 0) {
-            int storedEnergy = energyHandler.getEnergyStored();
+            int storedEnergy = energyStorage.getEnergyStored();
             int powerDraw = Math.min(storedEnergy, powerRequired);
             float eff = powerDraw / (float) powerRequired;
-            energyHandler.consumeEnergy(powerDraw);
+            energyStorage.consumeEnergy(powerDraw);
             this.efficiency += eff / activeBonus.getDuration();
             dirty = true;
         }
@@ -161,11 +145,11 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
         }
         activeBonus = InfusionBonus.EMPTY;
         efficiency = 0;
-        if (energyHandler.getEnergyStored() > 1000 && crystalLiquid > 0 && lens != null && lens.isPresent()) {
-            ItemStack stack = itemHandler.extractItem(SLOT_CATALYST, 1, true);
+        if (energyStorage.getEnergyStored() > 1000 && crystalLiquid > 0 && lens != null && lens.isPresent()) {
+            ItemStack stack = items.extractItem(SLOT_CATALYST, 1, true);
             InfusionBonus bonus = MachinesModule.INFUSION_BONUSES.getInfusionBonus(stack);
             if (!bonus.isEmpty()) {
-                bonus = MachinesModule.INFUSION_BONUSES.getInfusionBonus(itemHandler.extractItem(SLOT_CATALYST, 1, false));
+                bonus = MachinesModule.INFUSION_BONUSES.getInfusionBonus(items.extractItem(SLOT_CATALYST, 1, false));
             }
             activeBonus = bonus;
         }
@@ -174,9 +158,9 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
     }
 
     private void checkCrystal() {
-        ItemStack stack = itemHandler.getStackInSlot(SLOT_CRYSTAL);
+        ItemStack stack = items.getStackInSlot(SLOT_CRYSTAL);
         if (!stack.isEmpty()) {
-            CompoundNBT tagCompound = stack.getOrCreateTag().getCompound(AbstractItemBlock.TILE_DATA_TAG);
+            CompoundNBT tagCompound = stack.getOrCreateTag().getCompound(CoreModule.TILE_DATA_TAG);
             float strength = tagCompound.contains("strength") ? tagCompound.getFloat("strength") / 100.0f : 0;
             int toAdd = (int) (MachinesModule.laserConfig.minCrystalLiquidPerCrystal.get() + strength * (MachinesModule.laserConfig.maxCrystalLiquidPerCrystal.get() - MachinesModule.laserConfig.minCrystalLiquidPerCrystal.get()));
             float amt = crystalLiquid + toAdd;
@@ -185,7 +169,7 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
             }
             stack.shrink(1);
             crystalLiquid = amt;
-            markDirty();
+            setChanged();
         }
     }
 
@@ -196,20 +180,20 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
             lens = null;
             laserBeam.clear();
         }
-        Direction facing = WorldHelper.getBlockState(getLevel(), getPos()).get(BlockProperties.FACING_HORIZONTAL);
-        BlockPos pos = getPos();
+        Direction facing = level.getBlockState(getBlockPos()).getValue(BlockStateProperties.HORIZONTAL_FACING);
+        BlockPos pos = getBlockPos();
         Collection<BlockPos> laser = Lists.newArrayList();
         int c = 1;
         while (c < 8) {
-            pos = pos.offset(facing);
+            pos = pos.relative(facing);
             laser.add(pos);
-            TileEntity tile = WorldHelper.getTileAt(getLevel(), pos);
+            TileEntity tile = level.getBlockEntity(pos);
             if (tile != null) {
                 LazyOptional<ILens> lens = tile.getCapability(MachinesModule.LENS_CAPABILITY, facing);
                 if (lens.isPresent()) {
                     this.lens = lens;
                     this.laserBeam.addAll(laser);
-                    WorldHelper.markBlockForUpdate(getLevel(), getPos());
+                    markDirtyClient();
                     return;
                 }
                 LazyOptional<ILensMirror> mirror = tile.getCapability(MachinesModule.LENS_MIRROR_CAPABILITY, facing);
@@ -225,11 +209,12 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
     public void readClientDataFromNBT(CompoundNBT tagCompound) {
         super.readClientDataFromNBT(tagCompound);
         laserBeam.clear();
-        ListNBT list = tagCompound.getList("laserBeam", NBTTypes.COMPOUND.getID());
+        ListNBT list = tagCompound.getList("laserBeam", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < list.size(); i++) {
             laserBeam.add(NBTUtil.readBlockPos(list.getCompound(i)));
         }
-        ElecCore.tickHandler.registerCall(() -> WorldHelper.markBlockForRenderUpdate(getLevel(), getPos()), getLevel());
+        // @todo 1.16
+//        ElecCore.tickHandler.registerCall(() -> WorldHelper.markBlockForRenderUpdate(getLevel(), getPos()), getLevel());
     }
 
     @Override
@@ -242,19 +227,13 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
         tagCompound.put("laserBeam", list);
     }
 
-    @Nullable
     @Override
-    protected LazyOptional<INamedContainerProvider> createScreenHandler() {
-        return container.build(this);
-    }
-
-    @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
+    public CompoundNBT save(CompoundNBT tagCompound) {
         tagCompound.putInt("progress", progressCounter);
         tagCompound.putFloat("liquid", crystalLiquid);
         tagCompound.putFloat("efficiency", efficiency);
         tagCompound.putString("bonus", InfusionBonusRegistry.toString(activeBonus));
-        return super.write(tagCompound);
+        return super.save(tagCompound);
     }
 
     @Override
@@ -266,33 +245,66 @@ public class TileEntityLaser extends AbstractPoweredTileEntity implements ITicka
         super.read(tagCompound);
     }
 
-    @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        if (!FMLHelper.getDist().isClient()) {
-            throw new UnsupportedOperationException();
-        }
-        return new AxisAlignedBB(getPos().getX() - 10, getPos().getY() - 10, getPos().getZ() - 10, getPos().getX() + 10, getPos().getY() + 10, getPos().getZ() + 10);
+    public int getMaxPower() {
+        return energyStorage.getMaxEnergyStored();
     }
 
+    public int getCurrentPower() {
+        return energyStorage.getEnergyStored();
+    }
+
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        return new AxisAlignedBB(getBlockPos().getX() - 10, getBlockPos().getY() - 10, getBlockPos().getZ() - 10, getBlockPos().getX() + 10, getBlockPos().getY() + 10, getBlockPos().getZ() + 10);
+    }
+
+    // Client side
     public float getCrystalLiquid() {
-        if (!FMLHelper.getDist().isClient()) {
-            throw new UnsupportedOperationException();
-        }
         return crystalLiquid;
     }
 
+    // Client side
     public InfusionBonus getActiveBonus() {
-        if (!FMLHelper.getDist().isClient()) {
-            throw new UnsupportedOperationException();
-        }
         return activeBonus;
     }
 
+    // Client
     public Collection<BlockPos> getLaserBeam() {
-        if (!FMLHelper.getDist().isClient()) {
-            throw new UnsupportedOperationException();
-        }
         return laserBeam;
     }
 
+    private NoDirectionItemHander createItemHandler() {
+        return new NoDirectionItemHander(this, CONTAINER_FACTORY.get()) {
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                if (slot == SLOT_CRYSTAL) {
+                    return stack.getItem() == CoreModule.RESONATING_CRYSTAL_ITEM.get();
+                }
+                if (slot == SLOT_CATALYST) {
+                    return stack.getItem() != CoreModule.RESONATING_CRYSTAL_ITEM.get();
+                }
+                return false;
+            }
+
+            @Override
+            public boolean isItemInsertable(int slot, @Nonnull ItemStack stack) {
+                return slot != SLOT_ACTIVE_CATALYST;
+            }
+        };
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return itemHandler.cast();
+        }
+        if (cap == CapabilityEnergy.ENERGY) {
+            return energyHandler.cast();
+        }
+        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
+            return screenHandler.cast();
+        }
+        return super.getCapability(cap, facing);
+    }
 }

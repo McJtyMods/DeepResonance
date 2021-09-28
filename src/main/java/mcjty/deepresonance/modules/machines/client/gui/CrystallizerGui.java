@@ -1,9 +1,11 @@
 package mcjty.deepresonance.modules.machines.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.client.AbstractDeepResonanceGui;
 import mcjty.deepresonance.modules.machines.tile.TileEntityCrystallizer;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.EnergyBar;
@@ -14,24 +16,21 @@ import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
 
-/**
- * Created by Elec332 on 30-7-2020
- */
-public class CrystallizerGui extends AbstractDeepResonanceGui<TileEntityCrystallizer> {
+public class CrystallizerGui extends GenericGuiContainer<TileEntityCrystallizer, GenericContainer> {
 
     public static final int CRYSTALIZER_WIDTH = 180;
     public static final int CRYSTALIZER_HEIGHT = 152;
 
-    private static final ResourceLocation iconLocation = new ResourceLocation(DeepResonance.MODID, "textures/gui/crystallizer.png");
+    private static final ResourceLocation GUI = new ResourceLocation(DeepResonance.MODID, "textures/gui/crystallizer.png");
 
     private EnergyBar energyBar;
     private Label percentage;
 
     public CrystallizerGui(TileEntityCrystallizer tileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(tileEntity, container, inventory);
+        super(tileEntity, container, inventory, ManualEntry.EMPTY); // @todo 1.16 manual
 
-        xSize = CRYSTALIZER_WIDTH;
-        ySize = CRYSTALIZER_HEIGHT;
+        imageWidth = CRYSTALIZER_WIDTH;
+        imageHeight = CRYSTALIZER_HEIGHT;
     }
 
     @Override
@@ -50,21 +49,19 @@ public class CrystallizerGui extends AbstractDeepResonanceGui<TileEntityCrystall
                 .hint(new PositionalLayout.PositionalHint(54, 44, 32, 14));
 
         Panel toplevel = new Panel()
-                .background(iconLocation)
+                .background(GUI)
                 .layout(new PositionalLayout())
                 .children(energyBar, percentage);
-        toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
+        toplevel.setBounds(new Rectangle(leftPos, topPos, imageWidth, imageHeight));
 
         window = new Window(this, toplevel);
     }
 
-
     @Override
-    protected void drawGuiContainerBackgroundLayer(float v, int i, int i2) {
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
         percentage.text(tileEntity.getProgress() + "%");
         energyBar.value(tileEntity.getCurrentPower());
-
-        super.drawGuiContainerBackgroundLayer(v, i, i2);
+        super.renderBg(matrixStack, partialTicks, x, y);
     }
 
 }

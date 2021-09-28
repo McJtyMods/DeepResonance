@@ -18,11 +18,13 @@ import mcjty.deepresonance.modules.machines.util.InfusionBonusRegistry;
 import mcjty.deepresonance.modules.machines.util.config.*;
 import mcjty.deepresonance.setup.Config;
 import mcjty.deepresonance.setup.Registration;
+import mcjty.lib.container.GenericContainer;
 import mcjty.lib.modules.IModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.capabilities.Capability;
@@ -33,6 +35,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
+import static mcjty.deepresonance.setup.Registration.CONTAINERS;
 import static mcjty.deepresonance.setup.Registration.TILES;
 
 /**
@@ -52,6 +55,7 @@ public class MachinesModule implements IModule {
     public static final RegistryObject<Block> PURIFIER_BLOCK = Registration.defaultBlock("purifier", TileEntityPurifier::new);
     public static final RegistryObject<Item> PURIFIER_ITEM = Registration.fromBlock(PURIFIER_BLOCK);
     public static final RegistryObject<TileEntityType<TileEntityPurifier>> TYPE_PURIFIER = TILES.register("purifier", () -> TileEntityType.Builder.create(TileEntityPurifier::new, PURIFIER_BLOCK.get()).build(null));
+    public static final RegistryObject<ContainerType<GenericContainer>> PURIFIER_CONTAINER = CONTAINERS.register("purifier", GenericContainer::createContainerType);
 
     public static final RegistryObject<BlockSubTile> LENS_BLOCK = Registration.BLOCKS.register("lens", () -> new BlockSubTile(Block.Properties.create(Material.IRON).hardnessAndResistance(2.0F).sound(SoundType.METAL), SubTileLens.class, SubTileLensMirror.class));
     public static final RegistryObject<Item> LENS_ITEM = Registration.ITEMS.register("lens", () -> new ItemLens(LENS_BLOCK.get(), Registration.createStandardProperties()));
@@ -59,10 +63,12 @@ public class MachinesModule implements IModule {
     public static final RegistryObject<Block> LASER_BLOCK = Registration.defaultBlock("laser", TileEntityLaser::new);
     public static final RegistryObject<Item> LASER_ITEM = Registration.fromBlock(LASER_BLOCK);
     public static final RegistryObject<TileEntityType<TileEntityLaser>> TYPE_LASER = TILES.register("laser", () -> TileEntityType.Builder.create(TileEntityLaser::new, LASER_BLOCK.get()).build(null));
+    public static final RegistryObject<ContainerType<GenericContainer>> LASER_CONTAINER = CONTAINERS.register("laser", GenericContainer::createContainerType);
 
     public static final RegistryObject<Block> CRYSTALLIZER_BLOCK = Registration.defaultBlock("crystallizer", TileEntityCrystallizer::new);
     public static final RegistryObject<Item> CRYSTALLIZER_ITEM = Registration.fromBlock(CRYSTALLIZER_BLOCK);
-    public static final RegistryObject<TileEntityType<TileEntityCrystallizer>> TYPE_CRYSTALIZER = TILES.register("crystallizer", () -> TileEntityType.Builder.create(TileEntityCrystallizer::new, CRYSTALLIZER_BLOCK.get()).build(null));
+    public static final RegistryObject<TileEntityType<TileEntityCrystallizer>> TYPE_CRYSTALIZER = TILES.register("crystallizer", () -> TileEntityType.Builder.of(TileEntityCrystallizer::new, CRYSTALLIZER_BLOCK.get()).build(null));
+    public static final RegistryObject<ContainerType<GenericContainer>> CRYSTALIZER_CONTAINER = CONTAINERS.register("crystallizer", GenericContainer::createContainerType);
 
     public static final InfusionBonusRegistry INFUSION_BONUSES = new InfusionBonusRegistry();
 

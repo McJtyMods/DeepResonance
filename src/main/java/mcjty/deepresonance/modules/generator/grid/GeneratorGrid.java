@@ -1,19 +1,17 @@
 package mcjty.deepresonance.modules.generator.grid;
 
 import com.google.common.collect.Maps;
-import elec332.core.grid.ITileEntityLink;
-import elec332.core.grid.multiblock.AbstractDynamicMultiblock;
-import elec332.core.grid.multiblock.SimpleDynamicMultiblockTileLink;
-import elec332.core.world.DimensionCoordinate;
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.tile.AbstractTileEntityGeneratorComponent;
 import mcjty.deepresonance.modules.generator.tile.TileEntityEnergyCollector;
 import mcjty.deepresonance.modules.generator.tile.TileEntityGeneratorController;
 import mcjty.deepresonance.modules.generator.tile.TileEntityGeneratorPart;
+import mcjty.lib.varia.GlobalCoordinate;
+import mcjty.lib.varia.WorldTools;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IntReferenceHolder;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -24,16 +22,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 
-/**
- * Created by Elec332 on 30-7-2020
- */
-public class GeneratorGrid extends AbstractDynamicMultiblock<AbstractTileEntityGeneratorComponent, GeneratorGrid, SimpleDynamicMultiblockTileLink<AbstractTileEntityGeneratorComponent, GeneratorGrid>> implements IEnergyStorage, ICapabilityProvider {
+public class GeneratorGrid { // @todo 1.16 extends AbstractDynamicMultiblock<AbstractTileEntityGeneratorComponent, GeneratorGrid, SimpleDynamicMultiblockTileLink<AbstractTileEntityGeneratorComponent, GeneratorGrid>> implements IEnergyStorage, ICapabilityProvider {
 
     public GeneratorGrid() {
         this.capacities = Maps.newHashMap();
     }
 
-    private final Map<DimensionCoordinate, Integer> capacities;
+    private final Map<GlobalCoordinate, Integer> capacities;
     private int capacity = 0;
     private int energyStored = 0;
     private int oldCapacity = 0;
@@ -42,141 +37,141 @@ public class GeneratorGrid extends AbstractDynamicMultiblock<AbstractTileEntityG
     private int supportedCrystals = 0;
     private int crystalPowerIn = 0;
     private boolean hasDuplicates = false;
-    private ITileEntityLink controller = null;
-    private ITileEntityLink collector = null;
+    private BlockPos controller = null;
+    private BlockPos collector = null;
     private int startup = -1, oldStartup = -1;
     private boolean redstone = false;
 
-    @Override
+//    @Override
     public boolean canMerge(GeneratorGrid other) {
         return true;
     }
 
-    @Override
+//    @Override
     protected void onMergedWith(GeneratorGrid other) {
         this.energyStored += other.energyStored;
     }
 
-    @Override
-    protected void onComponentAdded(SimpleDynamicMultiblockTileLink<AbstractTileEntityGeneratorComponent, GeneratorGrid> link, boolean mergeAdd) {
-        AbstractTileEntityGeneratorComponent tile = link.getTileEntity();
-        if (tile == null) {
-            return;
-        }
-        if (tile instanceof TileEntityGeneratorPart) {
-            TileEntityGeneratorPart gen = (TileEntityGeneratorPart) tile;
-            int power = gen.getMaximumPowerStored();
-            capacity += power;
-            capacities.put(link.getPosition(), power);
+//    @Override
+//    protected void onComponentAdded(SimpleDynamicMultiblockTileLink<AbstractTileEntityGeneratorComponent, GeneratorGrid> link, boolean mergeAdd) {
+//        AbstractTileEntityGeneratorComponent tile = link.getTileEntity();
+//        if (tile == null) {
+//            return;
+//        }
+//        if (tile instanceof TileEntityGeneratorPart) {
+//            TileEntityGeneratorPart gen = (TileEntityGeneratorPart) tile;
+//            int power = gen.getMaximumPowerStored();
+//            capacity += power;
+//            capacities.put(link.getPosition(), power);
+//
+//            if (!mergeAdd) {
+//                energyStored += gen.getStoredEnergy();
+//                gen.setStoredEnergy(0);
+//            }
+//
+//            supportedCrystals += gen.getSupportedCrystals();
+//            crystalPowerIn += gen.getSupportedCrystalPower();
+//        } else if (tile instanceof TileEntityEnergyCollector) {
+//            if (collector != null) {
+//                hasDuplicates = true;
+//            } else {
+//                collector = link;
+//            }
+//        } else if (tile instanceof TileEntityGeneratorController) {
+//            if (controller != null) {
+//                hasDuplicates = true;
+//            } else {
+//                controller = link;
+//                setStartup(tile.getStartupTimer());
+//            }
+//        }
+//    }
 
-            if (!mergeAdd) {
-                energyStored += gen.getStoredEnergy();
-                gen.setStoredEnergy(0);
-            }
+//    @Override
+//    public void onComponentRemoved(SimpleDynamicMultiblockTileLink<AbstractTileEntityGeneratorComponent, GeneratorGrid> link) {
+//        TileEntity tile = link.getTileEntity();
+//        if (tile != null) {
+//            DimensionCoordinate coord = DimensionCoordinate.fromTileEntity(tile);
+//            if (capacities.containsKey(coord)) {
+//                float share;
+//                if (capacities.size() == 1) {
+//                    share = 1;
+//                } else {
+//                    share = capacities.get(coord) / (float) capacity;
+//                }
+//                capacities.remove(coord);
+//                int energy = (int) Math.floor(share * energyStored);
+//                writeData((TileEntityGeneratorPart) tile, energy);
+//            }
+//            if (controller != null && controller.getPosition().equals(coord)) {
+//                ((TileEntityGeneratorController) tile).setStartupTimer(startup);
+//            }
+//        }
+//        super.onComponentRemoved(link);
+//    }
 
-            supportedCrystals += gen.getSupportedCrystals();
-            crystalPowerIn += gen.getSupportedCrystalPower();
-        } else if (tile instanceof TileEntityEnergyCollector) {
-            if (collector != null) {
-                hasDuplicates = true;
-            } else {
-                collector = link;
-            }
-        } else if (tile instanceof TileEntityGeneratorController) {
-            if (controller != null) {
-                hasDuplicates = true;
-            } else {
-                controller = link;
-                setStartup(tile.getStartupTimer());
-            }
-        }
-    }
+//    @Override
+//    protected void onGridChanged() {
+//        if (hasDuplicates || controller == null) {
+//            if (energyCapability != null) {
+//                energyCapability.invalidate();
+//            }
+//            energyCapability = LazyOptional.empty();
+//            return;
+//        }
+//        if (oldCapacity != capacity) {
+//            if (energyCapability != null) {
+//                energyCapability.invalidate();
+//            }
+//            energyCapability = LazyOptional.of(() -> this);
+//            oldCapacity = capacity;
+//        }
+//    }
 
-    @Override
-    public void onComponentRemoved(SimpleDynamicMultiblockTileLink<AbstractTileEntityGeneratorComponent, GeneratorGrid> link) {
-        TileEntity tile = link.getTileEntity();
-        if (tile != null) {
-            DimensionCoordinate coord = DimensionCoordinate.fromTileEntity(tile);
-            if (capacities.containsKey(coord)) {
-                float share;
-                if (capacities.size() == 1) {
-                    share = 1;
-                } else {
-                    share = capacities.get(coord) / (float) capacity;
-                }
-                capacities.remove(coord);
-                int energy = (int) Math.floor(share * energyStored);
-                writeData((TileEntityGeneratorPart) tile, energy);
-            }
-            if (controller != null && controller.getPosition().equals(coord)) {
-                ((TileEntityGeneratorController) tile).setStartupTimer(startup);
-            }
-        }
-        super.onComponentRemoved(link);
-    }
-
-    @Override
-    protected void onGridChanged() {
-        if (hasDuplicates || controller == null) {
-            if (energyCapability != null) {
-                energyCapability.invalidate();
-            }
-            energyCapability = LazyOptional.empty();
-            return;
-        }
-        if (oldCapacity != capacity) {
-            if (energyCapability != null) {
-                energyCapability.invalidate();
-            }
-            energyCapability = LazyOptional.of(() -> this);
-            oldCapacity = capacity;
-        }
-    }
-
-    @Override
-    public void tick() {
-        if ((oldStartup != startup) && controller != null && collector != null) {
-            setStartup(startup);
-        }
-        if (controller == null || startup < 0 || hasDuplicates) {
-            return;
-        }
-        TileEntityGeneratorController controller = (TileEntityGeneratorController) this.controller.getTileEntity();
-        if (controller == null) {
-            return;
-        }
-        if (collector == null) {
-            return;
-        }
-        TileEntityEnergyCollector collector = (TileEntityEnergyCollector) this.collector.getTileEntity();
-        if (collector == null) {
-            return;
-        }
-        if (startup > 0) {
-            setStartup(startup - 1);
-            if (startup == 0) {
-                collector.updateCrystals();
-            }
-        }
-        if (startup == 0) {
-            energyStored = Math.min(capacity, energyStored + collector.collectPower());
-            for (ITileEntityLink link : getComponents()) {
-                TileEntity tile = link.getTileEntity();
-                if (tile instanceof TileEntityGeneratorPart) {
-                    int maxout = Math.min(energyStored, ((TileEntityGeneratorPart) tile).getMaximumPowerDistributed());
-                    IntReferenceHolder ref = IntReferenceHolder.single();
-                    ref.set(maxout);
-                    ((TileEntityGeneratorPart) tile).distributeEnergy(energyObj -> {
-                        int max = ref.get();
-                        if (max > 0) {
-                            ref.set(max - energyObj.receiveEnergy(max, false));
-                        }
-                    });
-                    energyStored -= (maxout - ref.get());
-                }
-            }
-        }
-    }
+//    @Override
+//    public void tick() {
+//        if ((oldStartup != startup) && controller != null && collector != null) {
+//            setStartup(startup);
+//        }
+//        if (controller == null || startup < 0 || hasDuplicates) {
+//            return;
+//        }
+//        TileEntityGeneratorController controller = (TileEntityGeneratorController) this.controller.getTileEntity();
+//        if (controller == null) {
+//            return;
+//        }
+//        if (collector == null) {
+//            return;
+//        }
+//        TileEntityEnergyCollector collector = (TileEntityEnergyCollector) this.collector.getTileEntity();
+//        if (collector == null) {
+//            return;
+//        }
+//        if (startup > 0) {
+//            setStartup(startup - 1);
+//            if (startup == 0) {
+//                collector.updateCrystals();
+//            }
+//        }
+//        if (startup == 0) {
+//            energyStored = Math.min(capacity, energyStored + collector.collectPower());
+//            for (ITileEntityLink link : getComponents()) {
+//                TileEntity tile = link.getTileEntity();
+//                if (tile instanceof TileEntityGeneratorPart) {
+//                    int maxout = Math.min(energyStored, ((TileEntityGeneratorPart) tile).getMaximumPowerDistributed());
+//                    IntReferenceHolder ref = IntReferenceHolder.single();
+//                    ref.set(maxout);
+//                    ((TileEntityGeneratorPart) tile).distributeEnergy(energyObj -> {
+//                        int max = ref.get();
+//                        if (max > 0) {
+//                            ref.set(max - energyObj.receiveEnergy(max, false));
+//                        }
+//                    });
+//                    energyStored -= (maxout - ref.get());
+//                }
+//            }
+//        }
+//    }
 
     public void onRedstoneChanged(boolean hasRedstone) {
         redstone = hasRedstone;
@@ -194,12 +189,13 @@ public class GeneratorGrid extends AbstractDynamicMultiblock<AbstractTileEntityG
     private void setStartup(int startup) {
         this.oldStartup = startup;
         this.startup = startup;
-        getComponents().forEach(link -> {
-            AbstractTileEntityGeneratorComponent tile = link.getTileEntity();
-            if (tile != null) {
-                tile.setStartupTimer(startup);
-            }
-        });
+        // @todo 1.16
+//        getComponents().forEach(link -> {
+//            AbstractTileEntityGeneratorComponent tile = link.getTileEntity();
+//            if (tile != null) {
+//                tile.setStartupTimer(startup);
+//            }
+//        });
     }
 
     public int getMaxSupportedCrystals() {
@@ -222,7 +218,7 @@ public class GeneratorGrid extends AbstractDynamicMultiblock<AbstractTileEntityG
     }
 
     public void writeData(TileEntity tile) {
-        DimensionCoordinate coord = DimensionCoordinate.fromTileEntity(tile);
+        GlobalCoordinate coord = new GlobalCoordinate(tile.getBlockPos(), tile.getLevel());
         if (!capacities.containsKey(coord)) {
             return;
         }
@@ -233,49 +229,51 @@ public class GeneratorGrid extends AbstractDynamicMultiblock<AbstractTileEntityG
 
     private void writeData(TileEntityGeneratorPart tile, int energy) {
         tile.setStoredEnergy(energy);
-        if (WorldHelper.chunkLoaded(tile.getLevel(), tile.getPos())) {
-            tile.markDirty();
+        if (WorldTools.isLoaded(tile.getLevel(), tile.getBlockPos())) {
+            tile.setChanged();
         }
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return CapabilityEnergy.ENERGY.orEmpty(cap, energyCapability);
-    }
+    // @todo 1.16
+//    @Nonnull
+//    @Override
+//    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+//        return CapabilityEnergy.ENERGY.orEmpty(cap, energyCapability);
+//    }
+//
+//    @Override
+//    public int receiveEnergy(int maxReceive, boolean simulate) {
+//        return 0;
+//    }
+//
+//    @Override
+//    public int extractEnergy(int maxExtract, boolean simulate) {
+//        int energyExtracted = Math.min(energyStored, maxExtract);
+//        if (!simulate) {
+//            energyStored -= energyExtracted;
+//        }
+//        return energyExtracted;
+//    }
 
-    @Override
-    public int receiveEnergy(int maxReceive, boolean simulate) {
-        return 0;
-    }
-
-    @Override
-    public int extractEnergy(int maxExtract, boolean simulate) {
-        int energyExtracted = Math.min(energyStored, maxExtract);
-        if (!simulate) {
-            energyStored -= energyExtracted;
-        }
-        return energyExtracted;
-    }
-
-    @Override
-    public int getEnergyStored() {
-        return energyStored;
-    }
-
-    @Override
-    public int getMaxEnergyStored() {
-        return capacity;
-    }
-
-    @Override
-    public boolean canExtract() {
-        return false;
-    }
-
-    @Override
-    public boolean canReceive() {
-        return true;
-    }
+    // @todo 1.16
+//    @Override
+//    public int getEnergyStored() {
+//        return energyStored;
+//    }
+//
+//    @Override
+//    public int getMaxEnergyStored() {
+//        return capacity;
+//    }
+//
+//    @Override
+//    public boolean canExtract() {
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean canReceive() {
+//        return true;
+//    }
 
 }

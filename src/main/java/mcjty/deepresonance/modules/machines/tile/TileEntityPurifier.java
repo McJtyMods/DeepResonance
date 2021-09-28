@@ -1,81 +1,64 @@
 package mcjty.deepresonance.modules.machines.tile;
 
-import com.google.common.base.Preconditions;
-import elec332.core.inventory.BasicItemHandler;
-import elec332.core.inventory.ItemEjector;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
-import mcjty.deepresonance.modules.machines.client.gui.PurifierGui;
 import mcjty.deepresonance.modules.tank.util.DualTankHook;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
+import mcjty.lib.api.container.CapabilityContainerProvider;
+import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.container.AutomationFilterItemHander;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
-import net.minecraft.entity.player.PlayerInventory;
+import mcjty.lib.container.NoDirectionItemHander;
+import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.generic;
 
-/**
- * Created by Elec332 on 27-7-2020
- */
-public class TileEntityPurifier extends AbstractTileEntity implements ITickableTileEntity {
+public class TileEntityPurifier extends GenericTileEntity implements ITickableTileEntity {
 
     public static final int SLOT = 0;
 
     private final DualTankHook tankHook = new DualTankHook(this, Direction.UP, Direction.DOWN).allowDuplicates().setTimeout(10);
-    private final ItemEjector ejector = new ItemEjector();
 
-    private static final RegisteredContainer<GenericContainer, PurifierGui, TileEntityPurifier> container = new RegisteredContainer<GenericContainer, PurifierGui, TileEntityPurifier>("purifier", 1, factory -> {
-        factory.playerSlots(10, 70);
-        factory.slot(generic(), ContainerFactory.CONTAINER_CONTAINER, SLOT, 64, 24);
-    }) {
+    public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
+            .slot(generic().out(), CONTAINER_CONTAINER, SLOT, 64, 24)
+            .playerSlots(10, 70));
 
-        @Override
-        public Object createGui(TileEntityPurifier tile, GenericContainer container, PlayerInventory inventory) {
-            return new PurifierGui(tile, container, inventory);
-        }
+    private final NoDirectionItemHander items = createItemHandler();
+    private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
-    };
+    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Purifier")
+            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.PURIFIER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), TileEntityPurifier.this))
+            .itemHandler(() -> items));
+
 
     private int timeToGo = 0;
     private ILiquidCrystalData processing = null;
 
     public TileEntityPurifier() {
-        super(MachinesModule.TYPE_PURIFIER.get(), new BasicItemHandler(1) {
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return stack.getItem() == CoreModule.FILTER_MATERIAL_ITEM.get();
-            }
-
-            @Override
-            protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
-                return 1;
-            }
-
-        });
+        super(MachinesModule.TYPE_PURIFIER.get());
     }
 
-    @Nullable
-    @Override
-    protected LazyOptional<INamedContainerProvider> createScreenHandler() {
-        return container.build(this);
-    }
 
     @Override
     public void tick() {
-        if (Preconditions.checkNotNull(world).isRemote) {
+        if (level.isClientSide()) {
             return;
         }
         if (!tankHook.checkTanks()) {
@@ -99,7 +82,7 @@ public class TileEntityPurifier extends AbstractTileEntity implements ITickableT
             processing = DeepResonanceFluidHelper.readCrystalDataFromStack(tankHook.getTank1().drain(MachinesModule.purifierConfig.rclPerPurify.get(), IFluidHandler.FluidAction.EXECUTE));
             timeToGo = MachinesModule.purifierConfig.ticksPerPurify.get();
         }
-        markDirty();
+        setChanged();
     }
 
     private void maybeOutput() {
@@ -111,21 +94,22 @@ public class TileEntityPurifier extends AbstractTileEntity implements ITickableT
             if (purify < 0) {
                 return;
             }
-            if (Preconditions.checkNotNull(world).rand.nextInt(purify) == 0) {
+            if (level.random.nextInt(purify) == 0) {
                 consumeFilter();
             }
         }
         timeToGo = -1;
-        markDirty();
+        setChanged();
     }
 
     private void consumeFilter() {
         ItemStack stack = new ItemStack(CoreModule.SPENT_FILTER_ITEM.get());
         if (true) { //TODO: Auto-eject upgrade
-            ejector.eject(getLevel(), getPos(), Direction.Plane.HORIZONTAL, stack);
+            // @todo 1.16
+//            ejector.eject(getLevel(), getPos(), Direction.Plane.HORIZONTAL, stack);
             stack = ItemStack.EMPTY;
         }
-        itemHandler.setStackInSlot(SLOT, stack);
+        items.setStackInSlot(SLOT, stack);
     }
 
     private int doPurify(@Nonnull ILiquidCrystalData fluidData) {
@@ -157,11 +141,11 @@ public class TileEntityPurifier extends AbstractTileEntity implements ITickableT
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted") //Shaddap
     private boolean hasFilter() {
-        return itemHandler.getStackInSlot(SLOT).getItem() == CoreModule.FILTER_MATERIAL_ITEM.get();
+        return items.getStackInSlot(SLOT).getItem() == CoreModule.FILTER_MATERIAL_ITEM.get();
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
+    public CompoundNBT save(CompoundNBT tagCompound) {
         tagCompound.putInt("timeToGo", timeToGo);
         if (processing != null) {
             CompoundNBT tag = new CompoundNBT();
@@ -169,7 +153,7 @@ public class TileEntityPurifier extends AbstractTileEntity implements ITickableT
             tagCompound.put("processing", tag);
         }
 
-        return super.write(tagCompound);
+        return super.save(tagCompound);
     }
 
     @Override
@@ -184,4 +168,29 @@ public class TileEntityPurifier extends AbstractTileEntity implements ITickableT
         super.read(tagCompound);
     }
 
+    private NoDirectionItemHander createItemHandler() {
+        return new NoDirectionItemHander(this, CONTAINER_FACTORY.get()) {
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                return stack.getItem() == CoreModule.FILTER_MATERIAL_ITEM.get();
+            }
+
+            @Override
+            public int getSlotLimit(int slot) {
+                return 1;
+            }
+        };
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return itemHandler.cast();
+        }
+        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
+            return screenHandler.cast();
+        }
+        return super.getCapability(cap, facing);
+    }
 }
