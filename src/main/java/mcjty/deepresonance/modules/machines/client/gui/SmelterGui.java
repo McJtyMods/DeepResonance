@@ -1,9 +1,11 @@
 package mcjty.deepresonance.modules.machines.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.client.AbstractDeepResonanceGui;
 import mcjty.deepresonance.modules.machines.tile.TileEntitySmelter;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.EnergyBar;
@@ -18,7 +20,7 @@ import java.awt.*;
 /**
  * Created by Elec332 on 27-7-2020
  */
-public class SmelterGui extends AbstractDeepResonanceGui<TileEntitySmelter> {
+public class SmelterGui extends GenericGuiContainer<TileEntitySmelter, GenericContainer> {
 
     public static final int SMELTER_WIDTH = 180;
     public static final int SMELTER_HEIGHT = 152;
@@ -31,10 +33,10 @@ public class SmelterGui extends AbstractDeepResonanceGui<TileEntitySmelter> {
     private static final ResourceLocation iconBurning = new ResourceLocation(DeepResonance.MODID, "textures/gui/burning.png");
 
     public SmelterGui(TileEntitySmelter tile, GenericContainer container, PlayerInventory inventory) {
-        super(tile, container, inventory);
+        super(tile, container, inventory, ManualEntry.EMPTY);   // @todo 1.16 manual
 
-        xSize = SMELTER_WIDTH;
-        ySize = SMELTER_HEIGHT;
+        imageWidth = SMELTER_WIDTH;
+        imageHeight = SMELTER_HEIGHT;
     }
 
     @Override
@@ -56,26 +58,26 @@ public class SmelterGui extends AbstractDeepResonanceGui<TileEntitySmelter> {
                 .background(iconLocation)
                 .layout(new PositionalLayout())
                 .children(energyBar, burningImage, percentage);
-        toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
+        toplevel.setBounds(new Rectangle(leftPos, topPos, imageWidth, imageHeight));
 
         window = new Window(this, toplevel);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float v, int i, int i2) {
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
         int progress = tileEntity.getProgress();
         if (0 < progress && progress < 100) {
             int p = ((progress / 3) % 9) + 1;
-            int x = (p % 4) * 64;
-            int y = (p / 4) * 64;
-            burningImage.image(iconBurning, x, y);
+            int xx = (p % 4) * 64;
+            int yy = (p / 4) * 64;
+            burningImage.image(iconBurning, xx, yy);
         } else {
             burningImage.image(iconBurning, 0, 0);
         }
         percentage.text(progress + "%");
         energyBar.value(tileEntity.getCurrentPower());
 
-        super.drawGuiContainerBackgroundLayer(v, i, i2);
+        super.renderBg(matrixStack, partialTicks, x, y);
     }
 
 }

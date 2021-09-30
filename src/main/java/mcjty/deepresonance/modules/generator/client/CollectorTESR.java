@@ -36,9 +36,8 @@ public class CollectorTESR extends TileEntityRenderer<TileEntityEnergyCollector>
         }
         matrixStack.translate(0.5, 0.6, 0.5);
         IVertexBuilder buffer;
-        ITessellator tessellator;
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0, 0.25, 0);
         RenderHelper.facingPlayer(matrixStack);
         buffer = buffer_.getBuffer(COLLECTOR_HALO);
@@ -53,7 +52,7 @@ public class CollectorTESR extends TileEntityRenderer<TileEntityEnergyCollector>
         buffer = buffer_.getBuffer(CRYSTAL_HALO);
         tessellator = RenderHelper.forWorldRenderer(buffer);
         for (BlockPos pos : tileEntity.getCrystals()) {
-            matrixStack.push();
+            matrixStack.pushPose();
             tessellator.setTransformation(matrixStack);
             matrixStack.translate(pos.getX(), pos.getY(), pos.getZ());
             RenderHelper.facingPlayer(matrixStack);

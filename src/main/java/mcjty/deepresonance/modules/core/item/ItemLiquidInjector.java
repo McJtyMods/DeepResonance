@@ -21,9 +21,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import javax.annotation.Nullable;
 import java.util.List;
 
-/**
- * Created by Elec332 on 10-1-2020
- */
 public class ItemLiquidInjector extends Item {
 
     public ItemLiquidInjector(Properties properties) {

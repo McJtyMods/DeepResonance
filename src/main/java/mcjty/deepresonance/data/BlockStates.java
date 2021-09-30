@@ -3,6 +3,7 @@ package mcjty.deepresonance.data;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.lib.datagen.BaseBlockStateProvider;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -50,10 +51,10 @@ public class BlockStates extends BaseBlockStateProvider {
     }
 
     private void registerCrystalModel() {
-        ModelFile empty = models().withExistingParent("crystal_empty", new DeepResonanceResourceLocation("crystal")).texture("crystal_texture", "deepresonance:block/empty_crystal");
-        ModelFile empty_pure = models().withExistingParent("crystal_empty_pure", new DeepResonanceResourceLocation("crystal_generated")).texture("crystal_texture", "deepresonance:block/empty_crystal");
-        ModelFile full = models().withExistingParent("crystal_full", new DeepResonanceResourceLocation("crystal")).texture("crystal_texture", "deepresonance:block/crystal");
-        ModelFile full_pure = models().withExistingParent("crystal_full_pure", new DeepResonanceResourceLocation("crystal_generated")).texture("crystal_texture", "deepresonance:block/crystal");
+        ModelFile empty = models().withExistingParent("crystal_empty", new ResourceLocation(DeepResonance.MODID, "crystal")).texture("crystal_texture", "deepresonance:block/empty_crystal");
+        ModelFile empty_pure = models().withExistingParent("crystal_empty_pure", new ResourceLocation(DeepResonance.MODID, "crystal_generated")).texture("crystal_texture", "deepresonance:block/empty_crystal");
+        ModelFile full = models().withExistingParent("crystal_full", new ResourceLocation(DeepResonance.MODID, "crystal")).texture("crystal_texture", "deepresonance:block/crystal");
+        ModelFile full_pure = models().withExistingParent("crystal_full_pure", new ResourceLocation(DeepResonance.MODID, "crystal_generated")).texture("crystal_texture", "deepresonance:block/crystal");
 
         // @todo 1.16
 //        simpleFacingModel(ModelLoaderCoreModule.stateContainer.getOwner(), state -> {

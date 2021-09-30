@@ -26,10 +26,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-/**
- * Created by Elec332 on 18-1-2020
- */
-@SuppressWarnings({"unused", "WeakerAccess"})
 public class TileEntityResonatingCrystal extends GenericTileEntity implements ITickableTileEntity {
 
     private static final Set<Capability<? extends ICrystalModifier>> MODIFIERS = Sets.newHashSet();
@@ -79,7 +75,7 @@ public class TileEntityResonatingCrystal extends GenericTileEntity implements IT
     public void setPower(float power) {
         boolean oldempty = isEmpty();
         this.power = power;
-        markDirty();
+        setChanged();
         boolean newempty = isEmpty();
         if (oldempty != newempty) {
             getModifiers().forEach(mod -> mod.onPowerChanged(newempty));

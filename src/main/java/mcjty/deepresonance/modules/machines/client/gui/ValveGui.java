@@ -1,11 +1,12 @@
 package mcjty.deepresonance.modules.machines.client.gui;
 
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.client.AbstractDeepResonanceGui;
 import mcjty.deepresonance.modules.machines.tile.TileEntityValve;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.layout.HorizontalLayout;
@@ -29,7 +30,7 @@ import static mcjty.deepresonance.modules.machines.tile.TileEntityValve.*;
 /**
  * Created by Elec332 on 25-7-2020
  */
-public class ValveGui extends AbstractDeepResonanceGui<TileEntityValve> {
+public class ValveGui extends GenericGuiContainer<TileEntityValve, GenericContainer> {
 
     public static final int VALVE_WIDTH = 180;
     public static final int VALVE_HEIGHT = 152;
@@ -43,10 +44,10 @@ public class ValveGui extends AbstractDeepResonanceGui<TileEntityValve> {
     private TextField maxAmount;
 
     public ValveGui(TileEntityValve tileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(tileEntity, container, inventory);
+        super(tileEntity, container, inventory, ManualEntry.EMPTY); // @todo 1.16 manual
 
-        xSize = VALVE_WIDTH;
-        ySize = VALVE_HEIGHT;
+        imageWidth = VALVE_WIDTH;
+        imageHeight = VALVE_HEIGHT;
     }
 
     private ImageChoiceLabel initRedstoneMode() {
@@ -80,7 +81,7 @@ public class ValveGui extends AbstractDeepResonanceGui<TileEntityValve> {
 
         toplevel.children(inputPanel, outputPanel, applyButton, redstoneMode);
 
-        toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
+        toplevel.setBounds(new Rectangle(leftPos, topPos, imageWidth, imageHeight));
 
         window = new Window(this, toplevel);
 

@@ -40,9 +40,6 @@ import java.util.Collection;
 import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.generic;
 
-/**
- * Created by Elec332 on 28-7-2020
- */
 public class TileEntityLaser extends GenericTileEntity implements ITickableTileEntity {
 
     public static final int SLOT_CRYSTAL = 0;

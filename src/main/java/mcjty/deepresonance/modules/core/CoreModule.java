@@ -29,17 +29,17 @@ public class CoreModule implements IModule {
 
     public static final String TILE_DATA_TAG = "tileDataTag";   // @todo 1.16 change this!
 
-    private static final Block.Properties ORE_PROPERTIES = Block.Properties.of(Material.ROCK).hardnessAndResistance(3, 5).harvestLevel(3).harvestTool(ToolType.PICKAXE);
+    private static final Block.Properties ORE_PROPERTIES = Block.Properties.of(Material.STONE).strength(3, 5).harvestLevel(3).harvestTool(ToolType.PICKAXE);
 
     public static final RegistryObject<Fluid> LIQUID_CRYSTAL = Registration.FLUIDS.register("liquid_crystal", FluidLiquidCrystal::new);
 
     public static final RegistryObject<BlockCrystal> RESONATING_CRYSTAL_BLOCK = Registration.BLOCKS.register("resonating_crystal", BlockCrystal::new);
-    public static final RegistryObject<TileEntityType<TileEntityResonatingCrystal>> TYPE_RESONATING_CRYSTAL = TILES.register("resonating_crystal", () -> TileEntityType.Builder.create(TileEntityResonatingCrystal::new, RESONATING_CRYSTAL_BLOCK.get()).build(null));
+    public static final RegistryObject<TileEntityType<TileEntityResonatingCrystal>> TYPE_RESONATING_CRYSTAL = TILES.register("resonating_crystal", () -> TileEntityType.Builder.of(TileEntityResonatingCrystal::new, RESONATING_CRYSTAL_BLOCK.get()).build(null));
 
     public static final RegistryObject<Block> RESONATING_ORE_STONE_BLOCK = Registration.BLOCKS.register("resonating_ore_stone", () -> new Block(ORE_PROPERTIES));
     public static final RegistryObject<Block> RESONATING_ORE_NETHER_BLOCK = Registration.BLOCKS.register("resonating_ore_nether", () -> new Block(ORE_PROPERTIES));
     public static final RegistryObject<Block> RESONATING_ORE_END_BLOCK = Registration.BLOCKS.register("resonating_ore_end", () -> new Block(ORE_PROPERTIES));
-    public static final RegistryObject<Block> RESONATING_PLATE_BLOCK_BLOCK = Registration.BLOCKS.register("resonating_plate_block", () -> new BlockResonatingPlate(Block.Properties.create(Material.ROCK).hardnessAndResistance(3, 5).harvestLevel(2).harvestTool(ToolType.PICKAXE)));
+    public static final RegistryObject<Block> RESONATING_PLATE_BLOCK_BLOCK = Registration.BLOCKS.register("resonating_plate_block", () -> new BlockResonatingPlate(Block.Properties.of(Material.STONE).strength(3, 5).harvestLevel(2).harvestTool(ToolType.PICKAXE)));
 
     public static final RegistryObject<Item> RESONATING_PLATE_ITEM = Registration.ITEMS.register("resonating_plate", () -> new Item(Registration.createStandardProperties()));
     public static final RegistryObject<Item> FILTER_MATERIAL_ITEM = Registration.ITEMS.register("filter_material", () -> new ItemWithTooltip(Registration.createStandardProperties()));

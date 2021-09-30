@@ -1,12 +1,11 @@
 package mcjty.deepresonance.modules.machines.item;
 
-import elec332.core.block.BlockSubTile;
-import elec332.core.item.ItemSubTile;
 import mcjty.deepresonance.api.laser.ILens;
 import mcjty.deepresonance.modules.machines.tile.SubTileLens;
 import mcjty.deepresonance.modules.machines.util.DefaultLens;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -16,10 +15,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-/**
- * Created by Elec332 on 28-7-2020
- */
-public class ItemLens extends ItemSubTile {
+public class ItemLens extends BlockItem {
 
     public ItemLens(BlockSubTile block, Properties builder) {
         super(block, builder);

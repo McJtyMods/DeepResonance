@@ -118,7 +118,7 @@ public class BlockCrystal extends BaseBlock {
                 )
         );
         if (showPower) {
-            tooltip.accept(new StringTextComponent("Power left: " + decimalFormat.format(power) + "%").applyTextStyle(TextFormatting.YELLOW));
+            tooltip.accept(new StringTextComponent("Power left: " + decimalFormat.format(power) + "%").withStyle(TextFormatting.YELLOW));
         }
 
     }

@@ -2,24 +2,14 @@ package mcjty.deepresonance.modules.generator.grid;
 
 import com.google.common.collect.Maps;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
-import mcjty.deepresonance.modules.generator.tile.AbstractTileEntityGeneratorComponent;
-import mcjty.deepresonance.modules.generator.tile.TileEntityEnergyCollector;
-import mcjty.deepresonance.modules.generator.tile.TileEntityGeneratorController;
 import mcjty.deepresonance.modules.generator.tile.TileEntityGeneratorPart;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.WorldTools;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IntReferenceHolder;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Map;
 
 public class GeneratorGrid { // @todo 1.16 extends AbstractDynamicMultiblock<AbstractTileEntityGeneratorComponent, GeneratorGrid, SimpleDynamicMultiblockTileLink<AbstractTileEntityGeneratorComponent, GeneratorGrid>> implements IEnergyStorage, ICapabilityProvider {

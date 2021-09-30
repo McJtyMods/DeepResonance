@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.machines.util;
 
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.api.laser.ILens;
 import mcjty.deepresonance.modules.machines.MachinesModule;
@@ -25,13 +24,13 @@ import java.util.function.Consumer;
  */
 public class DefaultLens implements ILens {
 
-    private static final VoxelShape SHAPE = VoxelShapes.create(2.1f / 16, 0, 2.1f / 16, 13.9f / 16, 1.7f / 16, 13.9f / 16);
+    private static final VoxelShape SHAPE = VoxelShapes.box(2.1f / 16, 0, 2.1f / 16, 13.9f / 16, 1.7f / 16, 13.9f / 16);
     private LazyOptional<IFluidHandler> fluidHandler = LazyOptional.empty();
 
     @Override
     public void checkNeighbors(IWorld world, BlockPos pos, Direction side) {
         if (!fluidHandler.isPresent()) {
-            TileEntity tile = WorldHelper.getTileAt(world, pos.offset(side));
+            TileEntity tile = world.getBlockEntity(pos.relative(side));
             if (tile != null) {
                 LazyOptional<IFluidHandler> handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
                 if (handler.isPresent()) {

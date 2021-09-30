@@ -1,95 +1,91 @@
 package mcjty.deepresonance.modules.machines.tile;
 
-import elec332.core.inventory.BasicItemHandler;
-import elec332.core.util.BlockProperties;
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.modules.machines.MachinesModule;
-import mcjty.deepresonance.modules.machines.client.gui.SmelterGui;
 import mcjty.deepresonance.modules.tank.util.DualTankHook;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
-import mcjty.deepresonance.util.DeepResonanceTags;
+import mcjty.lib.api.container.CapabilityContainerProvider;
+import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.container.AutomationFilterItemHander;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.container.NoDirectionItemHander;
+import mcjty.lib.tileentity.GenericEnergyStorage;
+import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.varia.Tools;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.generic;
 
 /**
  * Created by Elec332 on 26-7-2020
  */
-public class TileEntitySmelter extends AbstractPoweredTileEntity implements ITickableTileEntity {
+public class TileEntitySmelter extends GenericTileEntity implements ITickableTileEntity {
 
     public static final int SLOT = 0;
 
     private final DualTankHook tankHook = new DualTankHook(this, Direction.DOWN, Direction.UP);
-    private static final RegisteredContainer<GenericContainer, SmelterGui, TileEntitySmelter> container = new RegisteredContainer<GenericContainer, SmelterGui, TileEntitySmelter>("smelter", 3, factory -> {
-        factory.playerSlots(10, 70);
-        factory.slot(generic(), ContainerFactory.CONTAINER_CONTAINER, SLOT, 64, 24);
-    }) {
-
-        @Override
-        public Object createGui(TileEntitySmelter tile, GenericContainer container, PlayerInventory inventory) {
-            return new SmelterGui(tile, container, inventory);
-        }
-
-    }.modifyContainer((container, tile) -> {
-        container.shortListener(syncValue(() -> tile.processTime, i -> tile.processTime = i));
-        container.shortListener(syncValue(() -> tile.processTimeLeft, i -> tile.processTimeLeft = i));
-    });
-
     private int processTimeLeft = 0;
     private int processTime = 0;
+
+    public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
+            .slot(generic().out(), CONTAINER_CONTAINER, SLOT, 64, 24)
+            .playerSlots(10, 70));
+
+    private final NoDirectionItemHander items = createItemHandler();
+    private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
+
+    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Purifier")
+            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.SMELTER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), TileEntitySmelter.this))
+            .itemHandler(() -> items)
+            .shortListener(Tools.holder(() -> processTime, v -> processTime = v))
+            .shortListener(Tools.holder(() -> processTimeLeft, v -> processTimeLeft = v)));
+
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, MachinesModule.smelterConfig.powerMaximum.get(), MachinesModule.smelterConfig.powerPerTickIn.get());
+    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
+
     private float finalQuality = 1.0f;  // Calculated quality based on the amount of lava in the lava tank
     private float finalPurity = 0.1f;   // Calculated quality based on the amount of lava in the lava tank
 
     public TileEntitySmelter() {
-        super(MachinesModule.TYPE_SMELTER.get(),
-                MachinesModule.smelterConfig.powerMaximum.get(), MachinesModule.smelterConfig.powerPerTickIn.get(), new BasicItemHandler(1) {
-
-                    @Override
-                    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                        return DeepResonanceTags.RESONANT_ORE_ITEM.contains(stack.getItem());
-                    }
-
-                });
-    }
-
-    @Nullable
-    @Override
-    protected LazyOptional<INamedContainerProvider> createScreenHandler() {
-        return container.build(this);
+        super(MachinesModule.TYPE_SMELTER.get());
     }
 
     @Override
     public void tick() {
-        if (WorldHelper.isClient(getLevel())) {
+        if (level.isClientSide()) {
             return;
         }
         if (processTimeLeft > 0) {
             if (canWork()) {
                 processTimeLeft--;
-                energyHandler.consumeEnergy(MachinesModule.smelterConfig.powerPerOreTick.get());
+                energyStorage.consumeEnergy(MachinesModule.smelterConfig.powerPerOreTick.get());
                 if (processTimeLeft == 0) {
                     // Done!
                     finishSmelting();
                 }
             }
         } else {
-            BlockState state = WorldHelper.getBlockState(getLevel(), getPos());
-            boolean oldworking = state.get(BlockProperties.ACTIVE);
+            BlockState state = level.getBlockState(getBlockPos());
+            boolean oldworking = state.getValue(BlockStateProperties.POWERED);
             boolean newworking;
             if (canWork() && inputSlotValid()) {
                 startSmelting();
@@ -98,8 +94,8 @@ public class TileEntitySmelter extends AbstractPoweredTileEntity implements ITic
                 newworking = false;
             }
             if (newworking != oldworking) {
-                state = state.with(BlockProperties.ACTIVE, newworking);
-                WorldHelper.setBlockState(getLevel(), getPos(), state, 3);
+                state = state.setValue(BlockStateProperties.POWERED, newworking);
+                level.setBlock(getBlockPos(), state, Constants.BlockFlags.DEFAULT);
             }
         }
     }
@@ -115,16 +111,18 @@ public class TileEntitySmelter extends AbstractPoweredTileEntity implements ITic
         if (tankHook.getTank2().fill(DeepResonanceFluidHelper.makeLiquidCrystalStack(fill), IFluidHandler.FluidAction.SIMULATE) != fill) {
             return false;
         }
-        return energyHandler.getEnergyStored() >= MachinesModule.smelterConfig.powerPerOreTick.get();
+        return energyStorage.getEnergyStored() >= MachinesModule.smelterConfig.powerPerOreTick.get();
     }
 
 
     private boolean inputSlotValid() {
-        return !itemHandler.getStackInSlot(SLOT).isEmpty() && DeepResonanceTags.RESONANT_ORE_ITEM.contains(itemHandler.getStackInSlot(SLOT).getItem());
+        return true;
+        // @todo 1.16
+//        return !items.getStackInSlot(SLOT).isEmpty() && DeepResonanceTags.RESONANT_ORE_ITEM.contains(items.getStackInSlot(SLOT).getItem());
     }
 
     private void startSmelting() {
-        ItemStack stack = itemHandler.extractItem(SLOT, 1, false);
+        ItemStack stack = items.extractItem(SLOT, 1, false);
         if (stack.isEmpty()) {
             return;
         }
@@ -164,13 +162,13 @@ public class TileEntitySmelter extends AbstractPoweredTileEntity implements ITic
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
+    public CompoundNBT save(CompoundNBT tagCompound) {
         tagCompound.putInt("processTime", processTime);
         tagCompound.putInt("processTimeLeft", processTimeLeft);
         tagCompound.putFloat("finalQuality", finalQuality);
         tagCompound.putFloat("finalPurity", finalPurity);
 
-        return super.write(tagCompound);
+        return super.save(tagCompound);
     }
 
     @Override
@@ -191,4 +189,35 @@ public class TileEntitySmelter extends AbstractPoweredTileEntity implements ITic
         }
     }
 
+    public int getMaxPower() {
+        return energyStorage.getMaxEnergyStored();
+    }
+
+    public int getCurrentPower() {
+        return energyStorage.getEnergyStored();
+    }
+
+    private NoDirectionItemHander createItemHandler() {
+        return new NoDirectionItemHander(this, CONTAINER_FACTORY.get()) {
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                return true; // @todo 1.16 DeepResonanceTags.RESONANT_ORE_ITEM.contains(stack.getItem());
+            }
+        };
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return itemHandler.cast();
+        }
+        if (cap == CapabilityEnergy.ENERGY) {
+            return energyHandler.cast();
+        }
+        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
+            return screenHandler.cast();
+        }
+        return super.getCapability(cap, facing);
+    }
 }

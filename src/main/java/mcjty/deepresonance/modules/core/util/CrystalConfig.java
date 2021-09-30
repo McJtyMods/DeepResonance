@@ -4,9 +4,6 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 import javax.annotation.Nonnull;
 
-/**
- * Created by Elec332 on 18-1-2020
- */
 public class CrystalConfig {
 
     public final ForgeConfigSpec.IntValue MAX_POWER_STORED;

@@ -2,31 +2,31 @@ package mcjty.deepresonance.modules.machines.tile;
 
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.machines.MachinesModule;
-import mcjty.deepresonance.modules.machines.client.gui.ValveGui;
 import mcjty.deepresonance.modules.tank.util.DualTankHook;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
+import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.DefaultValue;
 import mcjty.lib.bindings.IValue;
+import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import javax.annotation.Nullable;
-
 /**
  * Created by Elec332 on 25-7-2020
  */
-public class TileEntityValve extends AbstractTileEntity implements ITickableTileEntity {
+public class TileEntityValve extends GenericTileEntity implements ITickableTileEntity {
 
     public static final String CMD_SETTINGS = "valve.settings";
 
@@ -35,14 +35,11 @@ public class TileEntityValve extends AbstractTileEntity implements ITickableTile
     public static final Key<Double> PARAM_EFFICIENCY = new Key<>("efficiency", Type.DOUBLE);
     public static final Key<Integer> PARAM_MAXMB = new Key<>("max_mb", Type.INTEGER);
 
-    private static final RegisteredContainer<GenericContainer, ValveGui, TileEntityValve> container = new RegisteredContainer<GenericContainer, ValveGui, TileEntityValve>("valve", 0, factory -> factory.playerSlots(10, 70)) {
+    public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(0));
 
-        @Override
-        public Object createGui(TileEntityValve tile, GenericContainer container, PlayerInventory inventory) {
-            return new ValveGui(tile, container, inventory);
-        }
+    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Laser")
+            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.VALVE_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), TileEntityValve.this)));
 
-    };
     private final DualTankHook tankHook = new DualTankHook(this, Direction.UP, Direction.DOWN);
 
     private int progress = 0;
@@ -54,12 +51,6 @@ public class TileEntityValve extends AbstractTileEntity implements ITickableTile
 
     public TileEntityValve() {
         super(MachinesModule.TYPE_VALVE.get());
-    }
-
-    @Nullable
-    @Override
-    protected LazyOptional<INamedContainerProvider> createScreenHandler() {
-        return container.build(this);
     }
 
     @Override
@@ -76,7 +67,7 @@ public class TileEntityValve extends AbstractTileEntity implements ITickableTile
 
     @Override
     public void tick() {
-        if (world != null && !world.isRemote) {
+        if (level != null && !level.isClientSide()) {
             tickServer();
         }
     }
@@ -87,7 +78,7 @@ public class TileEntityValve extends AbstractTileEntity implements ITickableTile
         }
 
         progress--;
-        markDirty();
+        setChanged();
         if (progress > 0) {
             return;
         }
@@ -142,7 +133,7 @@ public class TileEntityValve extends AbstractTileEntity implements ITickableTile
 
     public void setMaxMb(int maxMb) {
         this.maxMb = maxMb;
-        markDirty();
+        setChanged();
     }
 
     public float getMinEfficiency() {
@@ -151,7 +142,7 @@ public class TileEntityValve extends AbstractTileEntity implements ITickableTile
 
     public void setMinEfficiency(float minEfficiency) {
         this.minEfficiency = minEfficiency;
-        markDirty();
+        setChanged();
     }
 
     public float getMinPurity() {
@@ -160,7 +151,7 @@ public class TileEntityValve extends AbstractTileEntity implements ITickableTile
 
     public void setMinPurity(float minPurity) {
         this.minPurity = minPurity;
-        markDirty();
+        setChanged();
     }
 
     public float getMinStrength() {
@@ -169,11 +160,11 @@ public class TileEntityValve extends AbstractTileEntity implements ITickableTile
 
     public void setMinStrength(float minStrength) {
         this.minStrength = minStrength;
-        markDirty();
+        setChanged();
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
+    public CompoundNBT save(CompoundNBT tagCompound) {
         tagCompound.putInt("progress", progress);
 
         tagCompound.putFloat("minPurity", minPurity);
@@ -181,7 +172,7 @@ public class TileEntityValve extends AbstractTileEntity implements ITickableTile
         tagCompound.putFloat("minEfficiency", minEfficiency);
         tagCompound.putInt("maxMb", maxMb);
 
-        return super.write(tagCompound);
+        return super.save(tagCompound);
     }
 
     @Override

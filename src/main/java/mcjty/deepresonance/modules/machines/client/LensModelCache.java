@@ -1,33 +1,6 @@
 package mcjty.deepresonance.modules.machines.client;
 
-import com.google.common.base.Preconditions;
-import elec332.core.client.RenderHelper;
-import elec332.core.client.model.SimpleModelCache;
-import elec332.core.world.WorldHelper;
-import mcjty.deepresonance.modules.machines.tile.SubTileLens;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ILightReader;
-import net.minecraftforge.client.model.QuadTransformer;
-import net.minecraftforge.client.model.data.EmptyModelData;
-
-import javax.annotation.Nonnull;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Random;
-
-/**
- * Created by Elec332 on 28-7-2020
- */
-public class LensModelCache extends SimpleModelCache<EnumSet<Direction>> {
+public class LensModelCache {} /* @todo 1.16 extends SimpleModelCache<EnumSet<Direction>> {
 
     public static final EnumSet<Direction> EMPTY_DIRS = EnumSet.noneOf(Direction.class);
     public static final LensModelCache INSTANCE = new LensModelCache();
@@ -95,3 +68,4 @@ public class LensModelCache extends SimpleModelCache<EnumSet<Direction>> {
     }
 
 }
+*/

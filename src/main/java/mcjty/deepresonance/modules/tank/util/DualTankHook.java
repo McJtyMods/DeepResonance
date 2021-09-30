@@ -1,7 +1,6 @@
 package mcjty.deepresonance.modules.tank.util;
 
 import com.google.common.base.Preconditions;
-import elec332.core.world.WorldHelper;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -83,7 +82,7 @@ public class DualTankHook {
             throw new IllegalStateException();
         }
         World world = Preconditions.checkNotNull(tile_.getLevel());
-        BlockPos pos = tile_.getPos();
+        BlockPos pos = tile_.getBlockPos();
         boolean check = false;
         if (!tank1Present()) {
             if (timeCounter > 0) {
@@ -91,7 +90,7 @@ public class DualTankHook {
                 return false;
             }
             check = true;
-            TileEntity tile = WorldHelper.getTileAt(world, pos.offset(dir1));
+            TileEntity tile = world.getBlockEntity(pos.relative(dir1));
             if (tile != null) {
                 LazyOptional<IFluidHandler> f = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN);
                 if (f.isPresent()) {
@@ -114,7 +113,7 @@ public class DualTankHook {
                 return false;
             }
             check = true;
-            TileEntity tile = WorldHelper.getTileAt(world, pos.offset(dir2));
+            TileEntity tile = world.getBlockEntity(pos.relative(dir2));
             if (tile != null) {
                 LazyOptional<IFluidHandler> f = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP);
                 if (f.isPresent()) {

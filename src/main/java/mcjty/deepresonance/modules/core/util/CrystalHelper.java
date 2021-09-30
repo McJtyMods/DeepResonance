@@ -10,9 +10,6 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-/**
- * Created by Elec332 on 18-1-2020
- */
 public class CrystalHelper {
 
     public static boolean isEmpty(float power) {
@@ -69,8 +66,8 @@ public class CrystalHelper {
     }
 
     public static void spawnCrystal(World world, BlockPos pos, float purity, float strength, float efficiency, float power) {
-        world.setBlockState(pos, Preconditions.checkNotNull(CoreModule.RESONATING_CRYSTAL_BLOCK.get()).getDefaultState(), 3);
-        TileEntity te = world.getTileEntity(pos);
+        world.setBlock(pos, Preconditions.checkNotNull(CoreModule.RESONATING_CRYSTAL_BLOCK.get()).defaultBlockState(), net.minecraftforge.common.util.Constants.BlockFlags.DEFAULT);
+        TileEntity te = world.getBlockEntity(pos);
         if (te instanceof TileEntityResonatingCrystal) {
             TileEntityResonatingCrystal resonatingCrystalTileEntity = (TileEntityResonatingCrystal) te;
             resonatingCrystalTileEntity.setPurity(purity);

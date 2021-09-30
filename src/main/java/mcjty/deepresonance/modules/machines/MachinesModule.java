@@ -47,10 +47,12 @@ public class MachinesModule implements IModule {
     public static final RegistryObject<Block> VALVE_BLOCK = Registration.nonRotatingBlock("valve", TileEntityValve::new);
     public static final RegistryObject<Item> VALVE_ITEM = Registration.fromBlock(VALVE_BLOCK);
     public static final RegistryObject<TileEntityType<TileEntityValve>> TYPE_VALVE = TILES.register("valve", () -> TileEntityType.Builder.create(TileEntityValve::new, VALVE_BLOCK.get()).build(null));
+    public static final RegistryObject<ContainerType<GenericContainer>> VALVE_CONTAINER = CONTAINERS.register("valve", GenericContainer::createContainerType);
 
     public static final RegistryObject<Block> SMELTER_BLOCK = Registration.defaultBlock("smelter", TileEntitySmelter::new, state -> state.with(BlockProperties.ACTIVE, false), BlockProperties.ACTIVE);
     public static final RegistryObject<Item> SMELTER_ITEM = Registration.fromBlock(SMELTER_BLOCK);
     public static final RegistryObject<TileEntityType<TileEntitySmelter>> TYPE_SMELTER = TILES.register("smelter", () -> TileEntityType.Builder.create(TileEntitySmelter::new, SMELTER_BLOCK.get()).build(null));
+    public static final RegistryObject<ContainerType<GenericContainer>> SMELTER_CONTAINER = CONTAINERS.register("smelter", GenericContainer::createContainerType);
 
     public static final RegistryObject<Block> PURIFIER_BLOCK = Registration.defaultBlock("purifier", TileEntityPurifier::new);
     public static final RegistryObject<Item> PURIFIER_ITEM = Registration.fromBlock(PURIFIER_BLOCK);
