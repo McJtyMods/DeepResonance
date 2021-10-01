@@ -21,8 +21,8 @@ public class RadiationHelper {
         int cnt = 0;
         float ret = 0;
         for (EquipmentSlotType slot : EquipmentSlotType.values()) {
-            if (slot.getSlotType() == EquipmentSlotType.Group.ARMOR) {
-                ItemStack stack = entity.getItemStackFromSlot(slot);
+            if (slot.getType() == EquipmentSlotType.Group.ARMOR) {
+                ItemStack stack = entity.getItemBySlot(slot);
                 float f = 0;
                 if (!stack.isEmpty() && stack.getItem() instanceof IRadiationArmor) {
                     IRadiationArmor armor = (IRadiationArmor) stack.getItem();

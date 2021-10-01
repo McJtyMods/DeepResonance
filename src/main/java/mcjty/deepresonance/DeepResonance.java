@@ -3,7 +3,6 @@ package mcjty.deepresonance;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
-import mcjty.deepresonance.modules.pulser.PulserModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.worldgen.WorldGenModule;
@@ -58,7 +57,6 @@ public class DeepResonance {
         modules.register(new CoreModule());
         modules.register(new GeneratorModule());
         modules.register(new MachinesModule());
-        modules.register(new PulserModule());
         modules.register(new RadiationModule());
         modules.register(new TankModule());
         modules.register(new WorldGenModule());

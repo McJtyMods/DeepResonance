@@ -2,10 +2,8 @@ package mcjty.deepresonance.modules.tank.grid;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
-import elec332.core.util.FluidTankWrapper;
-import elec332.core.world.DimensionCoordinate;
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.modules.tank.tile.TileEntityTank;
+import mcjty.lib.varia.WorldTools;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -21,10 +19,6 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Set;
 
-/**
- * Created by Elec332 on 7-1-2020
- */
-@SuppressWarnings("WeakerAccess")
 public class TankGrid implements ICapabilityProvider, IFluidHandler {
 
     public static final int UPDATE_INTERVAL = 20;
@@ -41,16 +35,18 @@ public class TankGrid implements ICapabilityProvider, IFluidHandler {
         this.tanks_ = Collections.unmodifiableSet(this.tanks);
         this.tanks.add(tank);
         this.tank = new InternalGridTank(TANK_BUCKETS * 1000);
-        this.fluidHandler = FluidTankWrapper.of(this.tank);
+        this.fluidHandler = null; // @todo 1.16 FluidTankWrapper.of(this.tank);
         this.capability = null;
-        CompoundNBT tag = Preconditions.checkNotNull(tank.getTileEntity()).getGridData();
-        if (tag.contains("fluid")) {
-            CompoundNBT fluid = tag.getCompound("fluid");
-            this.tank.fill(FluidStack.loadFluidStackFromNBT(fluid), FluidAction.EXECUTE);
-        }
+        // @todo 1.16
+//        CompoundNBT tag = Preconditions.checkNotNull(tank.getTileEntity()).getGridData();
+//        if (tag.contains("fluid")) {
+//            CompoundNBT fluid = tag.getCompound("fluid");
+//            this.tank.fill(FluidStack.loadFluidStackFromNBT(fluid), FluidAction.EXECUTE);
+//        }
         resetCapability();
-        this.renderHandler = new TankRenderHandler(this);
-        this.renderHandler.needsResort();
+        // @todo 1.16
+        this.renderHandler = null;//new TankRenderHandler(this);
+//        this.renderHandler.needsResort();
     }
 
     public Set<TankTileLink> getComponents() {
@@ -58,14 +54,16 @@ public class TankGrid implements ICapabilityProvider, IFluidHandler {
     }
 
     public void onComponentRemoved(TankTileLink link) {
-        setDataToTile(link.getTileEntity());
-        link.setGrid(null);
+        // @todo 1.16
+//        setDataToTile(link.getTileEntity());
+//        link.setGrid(null);
         resetCapability();
     }
 
     public void tick() {
         if (counter <= 0) {
-            renderHandler.checkForChanges();
+            // @todo 1.16
+//            renderHandler.checkForChanges();
             counter = UPDATE_INTERVAL;
         }
         counter--;
@@ -77,12 +75,14 @@ public class TankGrid implements ICapabilityProvider, IFluidHandler {
 
     public void mergeWith(TankGrid other) {
         for (TankTileLink tank : other.getComponents()) {
-            tank.setGrid(this);
+            // @todo 1.16
+//            tank.setGrid(this);
             tanks.add(tank);
         }
         tank.merge(other.tank);
-        renderHandler.needsResort();
-        renderHandler.checkForChanges();
+        // @todo 1.16
+//        renderHandler.needsResort();
+//        renderHandler.checkForChanges();
         resetCapability();
     }
 
@@ -141,7 +141,8 @@ public class TankGrid implements ICapabilityProvider, IFluidHandler {
     public int fill(FluidStack resource, FluidAction action) {
         int ret = fluidHandler.fill(resource, action);
         if (action.execute()) {
-            renderHandler.onFluidContentsChanged();
+            // @todo 1.16
+//            renderHandler.onFluidContentsChanged();
             markDirty();
         }
         return ret;
@@ -152,7 +153,8 @@ public class TankGrid implements ICapabilityProvider, IFluidHandler {
     public FluidStack drain(FluidStack resource, FluidAction action) {
         FluidStack ret = fluidHandler.drain(resource, action);
         if (action.execute()) {
-            renderHandler.onFluidContentsChanged();
+            // @todo 1.16
+//            renderHandler.onFluidContentsChanged();
             markDirty();
         }
         return ret;
@@ -163,7 +165,8 @@ public class TankGrid implements ICapabilityProvider, IFluidHandler {
     public FluidStack drain(int maxDrain, FluidAction action) {
         FluidStack ret = fluidHandler.drain(maxDrain, action);
         if (action.execute()) {
-            renderHandler.onFluidContentsChanged();
+            // @todo 1.16
+//            renderHandler.onFluidContentsChanged();
             markDirty();
         }
         return ret;
@@ -181,24 +184,27 @@ public class TankGrid implements ICapabilityProvider, IFluidHandler {
             tagCompound.put("fluid", fluidTag);
         }
         tile.setGridData(tagCompound);
-        if (WorldHelper.chunkLoaded(Preconditions.checkNotNull(tile.getLevel()), tile.getPos())) {
-            tile.markDirty();
+        if (WorldTools.isLoaded(Preconditions.checkNotNull(tile.getLevel()), tile.getBlockPos())) {
+            tile.setChanged();
         }
     }
 
     private FluidStack getFluidShare(TileEntityTank tile) {
-        return tank.getShare(tanks_.size(), tanks_.iterator().next().getPosition().equals(DimensionCoordinate.fromTileEntity(tile)));
+        // @todo 1.16
+//        return tank.getShare(tanks_.size(), tanks_.iterator().next().getPosition().equals(DimensionCoordinate.fromTileEntity(tile)));
+        return null;
     }
 
     private void markDirty() {
         for (TankTileLink tank : tanks_) {
-            markDirty(tank.getTileEntity());
+            // @todo 1.16
+//            markDirty(tank.getTileEntity());
         }
     }
 
     private void markDirty(TileEntityTank tank) {
-        if (tank != null && WorldHelper.chunkLoaded(Preconditions.checkNotNull(tank.getLevel()), tank.getPos())) {
-            tank.markDirty();
+        if (tank != null && WorldTools.isLoaded(Preconditions.checkNotNull(tank.getLevel()), tank.getBlockPos())) {
+            tank.setChanged();
         }
     }
 

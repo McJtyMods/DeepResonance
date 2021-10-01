@@ -2,18 +2,14 @@ package mcjty.deepresonance.modules.radiation.manager;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import elec332.core.api.util.IClearable;
-import elec332.core.util.NBTTypes;
-import elec332.core.world.WorldHelper;
 import mcjty.deepresonance.api.radiation.IWorldRadiationManager;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.radiation.util.RadiationHelper;
+import mcjty.lib.varia.WorldTools;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.FireBlock;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.FlintAndSteelItem;
+import net.minecraft.inventory.IClearable;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.potion.Effect;
@@ -27,6 +23,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nonnull;
@@ -49,7 +46,7 @@ class RadiationManager implements IWorldRadiationManager, INBTSerializable<Compo
     private int counter = MAXTICKS;
 
     @Override
-    public void clear() {
+    public void clearContent() {
         sources.clear();
     }
 
@@ -96,7 +93,7 @@ class RadiationManager implements IWorldRadiationManager, INBTSerializable<Compo
 
         for (Map.Entry<BlockPos, RadiationSource> source : sources.entrySet()) {
             BlockPos coordinate = source.getKey();
-            if (WorldHelper.chunkLoaded(world, coordinate)) {
+            if (WorldTools.isLoaded(world, coordinate)) {
                 // The world is loaded and the chunk containing the radiation source is also loaded.
                 RadiationSource radiationSource = source.getValue();
                 float strength = radiationSource.getStrength();
@@ -140,7 +137,7 @@ class RadiationManager implements IWorldRadiationManager, INBTSerializable<Compo
         double destz = cz + dist * Math.sin(theta) * cosphi;
         double desty;
         if (random.nextFloat() > 0.5f) {
-            desty = WorldHelper.getTopBlock(world, new BlockPos(destx, 0, destz), Heightmap.Type.WORLD_SURFACE).getY();
+            desty = world.getHeight(Heightmap.Type.WORLD_SURFACE, (int)destx, (int)destz);
         } else {
             desty = cy + dist * Math.sin(phi);
         }
@@ -180,9 +177,9 @@ class RadiationManager implements IWorldRadiationManager, INBTSerializable<Compo
             return;
         }
 
-        List<LivingEntity> list = world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(destx - eventradius, desty - eventradius, destz - eventradius, destx + eventradius, desty + eventradius, destz + eventradius), null);
+        List<LivingEntity> list = world.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(destx - eventradius, desty - eventradius, destz - eventradius, destx + eventradius, desty + eventradius, destz + eventradius), null);
         for (LivingEntity entityLivingBase : list) {
-            entityLivingBase.addPotionEffect(new EffectInstance(Effects.INSTANT_DAMAGE, 10, damage));
+            entityLivingBase.addEffect(new EffectInstance(Effects.HARM, 10, damage));
         }
 
         BlockPos.Mutable currentPos = new BlockPos.Mutable();
@@ -192,24 +189,26 @@ class RadiationManager implements IWorldRadiationManager, INBTSerializable<Compo
                     double dSq = x * x + y * y + z * z;
                     double d = Math.sqrt(dSq);
                     double str = (eventradius - d) / eventradius;
-                    currentPos.setPos(x + destx, y + desty, z + destz);
+                    currentPos.set(x + destx, y + desty, z + destz);
                     Block block = world.getBlockState(currentPos).getBlock();
                     if (Tags.Blocks.DIRT.contains(block) || block == Blocks.FARMLAND) {
                         if (random.nextFloat() < poisonBlockChance * str) {
-                            world.setBlockState(currentPos, RadiationModule.POISONED_DIRT_BLOCK.get().getDefaultState(), 2);
+                            world.setBlock(currentPos, RadiationModule.POISONED_DIRT_BLOCK.get().defaultBlockState(), Constants.BlockFlags.BLOCK_UPDATE);
                         }
                     } else if (BlockTags.LEAVES.contains(block) || block instanceof IPlantable) {
                         if (random.nextFloat() < removeLeafChance * str) {
-                            world.setBlockState(currentPos, Blocks.AIR.getDefaultState());
+                            world.setBlock(currentPos, Blocks.AIR.defaultBlockState(), Constants.BlockFlags.BLOCK_UPDATE);
                         }
                     }
                     if (random.nextFloat() < setOnFireChance * str) {
-                        if ((!world.isAirBlock(currentPos))) {
+                        if ((!world.getBlockState(currentPos).isAir())) {
                             currentPos.move(Direction.UP);
-                            if (FlintAndSteelItem.canSetFire(WorldHelper.getBlockState(world, currentPos), world, currentPos)) {
-                                BlockState blockstate1 = ((FireBlock) Blocks.FIRE).getStateForPlacement(world, currentPos);
-                                world.setBlockState(currentPos, blockstate1, 11);
-                            }
+                            // @todo 1.16
+//                            if (FlintAndSteelItem.canSetFire(WorldHelper.getBlockState(world, currentPos), world, currentPos)) {
+//                                BlockItemUseContext context = new BlockItemUseContext()
+//                                BlockState blockstate1 = ((FireBlock) Blocks.FIRE).getStateForPlacement(world, currentPos);
+//                                world.setBlock(currentPos, blockstate1, 11);
+//                            }
                         }
                     }
                 }
@@ -225,49 +224,49 @@ class RadiationManager implements IWorldRadiationManager, INBTSerializable<Compo
         double radiusSq = radius * radius;
         float baseStrength = radiationSource.getStrength();
 
-        List<LivingEntity> list = world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(cx - radius, cy - radius, cz - radius, cx + radius, cy + radius, cz + radius), null);
+        List<LivingEntity> list = world.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(cx - radius, cy - radius, cz - radius, cx + radius, cy + radius, cz + radius), null);
         for (LivingEntity entityLivingBase : list) {
 
-            double distanceSq = entityLivingBase.getDistanceSq(cx, cy, cz);
+            double distanceSq = entityLivingBase.distanceToSqr(cx, cy, cz);
 
             if (distanceSq < radiusSq) {
                 double distance = Math.sqrt(distanceSq);
                 QuadTree radiationTree = radiationSource.getRadiationTree(world, cx, cy, cz);
                 float strength = (float) (baseStrength * (radius - distance) / radius);
                 strength *= 1 - RadiationHelper.getSuitProtection(entityLivingBase, strength);
-                strength *= (float) radiationTree.factor2(cx, cy, cz, (int) entityLivingBase.getPosX(), (int) entityLivingBase.getPosY() + 1, (int) entityLivingBase.getPosZ());
+                strength *= (float) radiationTree.factor2(cx, cy, cz, (int) entityLivingBase.getX(), (int) entityLivingBase.getY() + 1, (int) entityLivingBase.getZ());
 
                 Map<Effect, Integer> effects = Maps.newHashMap();
 
                 if (strength > RadiationModule.config.radiationEffectLevel5.get()) {
                     effects.put(Effects.HUNGER, 2);
-                    effects.put(Effects.SLOWNESS, 2);
+                    effects.put(Effects.MOVEMENT_SLOWDOWN, 2);
                     effects.put(Effects.WEAKNESS, 3);
                     effects.put(Effects.POISON, 3);
                     effects.put(Effects.WITHER, 2);
                 } else if (strength > RadiationModule.config.radiationEffectLevel4.get()) {
                     effects.put(Effects.HUNGER, 2);
-                    effects.put(Effects.SLOWNESS, 2);
+                    effects.put(Effects.MOVEMENT_SLOWDOWN, 2);
                     effects.put(Effects.WEAKNESS, 3);
                     effects.put(Effects.POISON, 2);
                 } else if (strength > RadiationModule.config.radiationEffectLevel3.get()) {
                     effects.put(Effects.HUNGER, 2);
-                    effects.put(Effects.SLOWNESS, 2);
+                    effects.put(Effects.MOVEMENT_SLOWDOWN, 2);
                     effects.put(Effects.WEAKNESS, 2);
                     effects.put(Effects.POISON, 1);
                 } else if (strength > RadiationModule.config.radiationEffectLevel2.get()) {
                     effects.put(Effects.HUNGER, 2);
-                    effects.put(Effects.SLOWNESS, 2);
+                    effects.put(Effects.MOVEMENT_SLOWDOWN, 2);
                     effects.put(Effects.WEAKNESS, 1);
                 } else if (strength > RadiationModule.config.radiationEffectLevel1.get()) {
                     effects.put(Effects.HUNGER, 2);
-                    effects.put(Effects.SLOWNESS, 1);
+                    effects.put(Effects.MOVEMENT_SLOWDOWN, 1);
                 } else if (strength > RadiationModule.config.radiationEffectLevel0.get()) {
                     effects.put(Effects.HUNGER, 1);
                 } else if (strength > RadiationModule.config.radiationEffectLevelNone.get()) {
                     effects.put(Effects.HUNGER, 0);
                 }
-                effects.forEach((effect, amplifier) -> entityLivingBase.addPotionEffect(new EffectInstance(effect, EFFECTS_MAX * (MAXTICKS + 1), amplifier, true, true)));
+                effects.forEach((effect, amplifier) -> entityLivingBase.addEffect(new EffectInstance(effect, EFFECTS_MAX * (MAXTICKS + 1), amplifier, true, true)));
             }
         }
 
@@ -279,7 +278,7 @@ class RadiationManager implements IWorldRadiationManager, INBTSerializable<Compo
         ListNBT lst = new ListNBT();
         for (Map.Entry<BlockPos, RadiationSource> entry : sources.entrySet()) {
             CompoundNBT tc = new CompoundNBT();
-            tc.putLong("coord", entry.getKey().toLong());
+            tc.putLong("coord", entry.getKey().asLong());
             tc.put("radiation_source", entry.getValue().serializeNBT());
             lst.add(tc);
         }
@@ -290,10 +289,10 @@ class RadiationManager implements IWorldRadiationManager, INBTSerializable<Compo
     @Override
     public void deserializeNBT(CompoundNBT tag) {
         sources.clear();
-        ListNBT lst = tag.getList("radiation", NBTTypes.COMPOUND.getID());
+        ListNBT lst = tag.getList("radiation", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < lst.size(); i++) {
             CompoundNBT tc = lst.getCompound(i);
-            BlockPos coordinate = BlockPos.fromLong(tc.getLong("coord"));
+            BlockPos coordinate = BlockPos.of(tc.getLong("coord"));
             RadiationSource value = new RadiationSource();
             value.deserializeNBT(tc.getCompound("radiation_source"));
             sources.put(coordinate, value);

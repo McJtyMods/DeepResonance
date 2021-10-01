@@ -87,7 +87,7 @@ public class LaserTESR extends TileEntityRenderer<TileEntityLaser> {
 //
 //            @Override
 //            public void registerTextures(IIconRegistrar iconRegistrar) {
-//                tex = iconRegistrar.registerSprite(new DeepResonanceResourceLocation("effects/laserbeam"));
+//                tex = iconRegistrar.registerSprite(new ResourceLocation(DeepResonance.MODID, "effects/laserbeam"));
 //            }
 //
 //            @Override

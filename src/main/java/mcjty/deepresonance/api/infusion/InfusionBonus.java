@@ -5,9 +5,6 @@ import net.minecraft.item.DyeColor;
 
 import java.io.Serializable;
 
-/**
- * Created by Elec332 on 28-7-2020
- */
 public final class InfusionBonus implements Serializable {
 
     public static final InfusionBonus EMPTY = new InfusionBonus(0, 30, 0, 0, 0, InfusionModifier.NONE, InfusionModifier.NONE, InfusionModifier.NONE);

@@ -1,30 +1,10 @@
 package mcjty.deepresonance.modules.tank.client;
 
-import com.google.common.base.Preconditions;
-import elec332.core.api.client.IIconRegistrar;
-import elec332.core.api.client.model.IModelAndTextureLoader;
-import elec332.core.api.client.model.IModelBakery;
-import elec332.core.api.client.model.IQuadBakery;
-import elec332.core.api.client.model.ITemplateBakery;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+public class TankRenderer {} /* @todo 1.16 implements IModelAndTextureLoader {
 
-import javax.annotation.Nonnull;
-import java.util.List;
-
-/**
- * Created by Elec332 on 11-1-2020
- */
-public class TankRenderer implements IModelAndTextureLoader {
-
-    public static final ResourceLocation TOP_TEXTURE = new DeepResonanceResourceLocation("block/tank_top");
-    public static final ResourceLocation BOTTOM_TEXTURE = new DeepResonanceResourceLocation("block/tank_bottom");
-    public static final ResourceLocation SIDE_TEXTURE = new DeepResonanceResourceLocation("block/tank_side");
+    public static final ResourceLocation TOP_TEXTURE = new ResourceLocation(DeepResonance.MODID, "block/tank_top");
+    public static final ResourceLocation BOTTOM_TEXTURE = new ResourceLocation(DeepResonance.MODID, "block/tank_bottom");
+    public static final ResourceLocation SIDE_TEXTURE = new ResourceLocation(DeepResonance.MODID, "block/tank_side");
 
     public static final TankRenderer INSTANCE = new TankRenderer();
 
@@ -82,3 +62,4 @@ public class TankRenderer implements IModelAndTextureLoader {
     }
 
 }
+*/

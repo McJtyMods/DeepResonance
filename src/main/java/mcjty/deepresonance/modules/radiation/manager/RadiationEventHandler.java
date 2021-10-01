@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.radiation.manager;
 
-import elec332.core.util.RegistryHelper;
 import mcjty.deepresonance.api.radiation.IWorldRadiationManager;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import net.minecraft.world.World;
@@ -20,11 +19,12 @@ public class RadiationEventHandler {
     }
 
     private static void registerWorldCapabilities(AttachCapabilitiesEvent<World> worldCapabilitiesEvent) {
-        if (worldCapabilitiesEvent.getObject().isRemote) {
+        if (worldCapabilitiesEvent.getObject().isClientSide()) {
             return;
         }
         final IWorldRadiationManager manager = new RadiationManager();
-        RegistryHelper.registerCapability(worldCapabilitiesEvent, RadiationModule.CAPABILITY_NAME, RadiationModule.CAPABILITY, manager);
+        // @todo 1.16
+//        RegistryHelper.registerCapability(worldCapabilitiesEvent, RadiationModule.CAPABILITY_NAME, RadiationModule.CAPABILITY, manager);
     }
 
     private static void onTick(TickEvent.WorldTickEvent evt) {

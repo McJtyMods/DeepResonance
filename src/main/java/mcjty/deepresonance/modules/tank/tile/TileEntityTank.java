@@ -1,19 +1,11 @@
 package mcjty.deepresonance.modules.tank.tile;
 
 import com.google.common.base.Preconditions;
-import elec332.core.api.info.IInfoDataAccessorBlock;
-import elec332.core.api.info.IInformation;
-import elec332.core.util.FMLHelper;
-import elec332.core.util.RegistryHelper;
-import elec332.core.util.StatCollector;
-import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.tank.grid.TankGrid;
-import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
@@ -28,8 +20,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 
 public class TileEntityTank extends GenericTileEntity {
 
@@ -60,17 +50,13 @@ public class TileEntityTank extends GenericTileEntity {
         }
     }
 
+    // Client side
     public float getClientRenderHeight() {
-        if (!FMLHelper.getDist().isClient()) {
-            throw new UnsupportedOperationException();
-        }
         return renderHeight;
     }
 
+    // Client side
     public Fluid getClientRenderFluid() {
-        if (!FMLHelper.getDist().isClient()) {
-            throw new UnsupportedOperationException();
-        }
         return clientRenderFluid;
     }
 
@@ -87,12 +73,12 @@ public class TileEntityTank extends GenericTileEntity {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
+    public CompoundNBT save(CompoundNBT tagCompound) {
         if (grid != null) {
             grid.setDataToTile(this);
         }
         tagCompound.put("grid_data", gridData);
-        return super.write(tagCompound);
+        return super.save(tagCompound);
     }
 
     @Override
@@ -123,9 +109,9 @@ public class TileEntityTank extends GenericTileEntity {
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
-        if (FluidUtil.getFluidHandler(player.getHeldItem(hand)).isPresent()) {
-            if (!Preconditions.checkNotNull(getLevel()).isRemote) {
-                FluidUtil.interactWithFluidHandler(player, hand, Preconditions.checkNotNull(getLevel()), result.getPos(), result.getFace());
+        if (FluidUtil.getFluidHandler(player.getItemInHand(hand)).isPresent()) {
+            if (!level.isClientSide) {
+                FluidUtil.interactWithFluidHandler(player, hand, Preconditions.checkNotNull(getLevel()), result.getBlockPos(), result.getDirection());
             }
             return ActionResultType.SUCCESS;
         }
@@ -142,46 +128,48 @@ public class TileEntityTank extends GenericTileEntity {
         }
     }
 
-    @Override
-    public void addInformation(@Nonnull IInformation information, @Nonnull IInfoDataAccessorBlock hitData) {
-        CompoundNBT tag = hitData.getData();
-        if (tag.contains("capacity")) {
-            if (tag.contains("fluid")) {
-                Fluid fluid = RegistryHelper.getFluidRegistry().getValue(new ResourceLocation(tag.getString("fluid")));
-                if (fluid != null) {
-                    information.addInformation(StatCollector.translateToLocal(fluid.getAttributes().getTranslationKey()));
-                    if (tag.contains("efficiency")) {
-                        DecimalFormat decimalFormat = new DecimalFormat("#.#");
-                        decimalFormat.setRoundingMode(RoundingMode.DOWN);
-                        information.addInformation("");
-                        information.addInformation("Efficiency: " + decimalFormat.format(tag.getFloat("efficiency") * 100) + "%");
-                        information.addInformation("Purity: " + decimalFormat.format(tag.getFloat("purity") * 100) + "%");
-                        information.addInformation("Quality: " + decimalFormat.format(tag.getFloat("quality") * 100) + "%");
-                        information.addInformation("Strength: " + decimalFormat.format(tag.getFloat("strength") * 100) + "%");
-                    }
-                }
-            }
-            information.addInformation(tag.getInt("amt") + "/" + tag.getInt("capacity") + "mB");
-        }
-    }
+// @todo 1.16
+//    @Override
+//    public void addInformation(@Nonnull IInformation information, @Nonnull IInfoDataAccessorBlock hitData) {
+//        CompoundNBT tag = hitData.getData();
+//        if (tag.contains("capacity")) {
+//            if (tag.contains("fluid")) {
+//                Fluid fluid = RegistryHelper.getFluidRegistry().getValue(new ResourceLocation(tag.getString("fluid")));
+//                if (fluid != null) {
+//                    information.addInformation(StatCollector.translateToLocal(fluid.getAttributes().getTranslationKey()));
+//                    if (tag.contains("efficiency")) {
+//                        DecimalFormat decimalFormat = new DecimalFormat("#.#");
+//                        decimalFormat.setRoundingMode(RoundingMode.DOWN);
+//                        information.addInformation("");
+//                        information.addInformation("Efficiency: " + decimalFormat.format(tag.getFloat("efficiency") * 100) + "%");
+//                        information.addInformation("Purity: " + decimalFormat.format(tag.getFloat("purity") * 100) + "%");
+//                        information.addInformation("Quality: " + decimalFormat.format(tag.getFloat("quality") * 100) + "%");
+//                        information.addInformation("Strength: " + decimalFormat.format(tag.getFloat("strength") * 100) + "%");
+//                    }
+//                }
+//            }
+//            information.addInformation(tag.getInt("amt") + "/" + tag.getInt("capacity") + "mB");
+//        }
+//    }
 
-    @Override
-    public void gatherInformation(@Nonnull CompoundNBT tag, @Nonnull ServerPlayerEntity player, @Nonnull IInfoDataAccessorBlock hitData) {
-        if (grid != null) {
-            tag.putInt("capacity", grid.getTankCapacity(0));
-            tag.putInt("amt", grid.getFluidAmount());
-            Fluid fluid = grid.getStoredFluid();
-            if (fluid != null) {
-                tag.putString("fluid", Preconditions.checkNotNull(fluid.getRegistryName()).toString());
-                ILiquidCrystalData data = DeepResonanceFluidHelper.readCrystalDataFromStack(grid.getFluidInTank(0));
-                if (data != null) {
-                    tag.putFloat("efficiency", data.getEfficiency());
-                    tag.putFloat("purity", data.getPurity());
-                    tag.putFloat("quality", data.getQuality());
-                    tag.putFloat("strength", data.getStrength());
-                }
-            }
-        }
-    }
+    // @todo 1.16
+//    @Override
+//    public void gatherInformation(@Nonnull CompoundNBT tag, @Nonnull ServerPlayerEntity player, @Nonnull IInfoDataAccessorBlock hitData) {
+//        if (grid != null) {
+//            tag.putInt("capacity", grid.getTankCapacity(0));
+//            tag.putInt("amt", grid.getFluidAmount());
+//            Fluid fluid = grid.getStoredFluid();
+//            if (fluid != null) {
+//                tag.putString("fluid", Preconditions.checkNotNull(fluid.getRegistryName()).toString());
+//                ILiquidCrystalData data = DeepResonanceFluidHelper.readCrystalDataFromStack(grid.getFluidInTank(0));
+//                if (data != null) {
+//                    tag.putFloat("efficiency", data.getEfficiency());
+//                    tag.putFloat("purity", data.getPurity());
+//                    tag.putFloat("quality", data.getQuality());
+//                    tag.putFloat("strength", data.getStrength());
+//                }
+//            }
+//        }
+//    }
 
 }

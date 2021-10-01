@@ -1,20 +1,6 @@
 package mcjty.deepresonance.modules.tank.grid;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Sets;
-import elec332.core.grid.AbstractGridHandler;
-import elec332.core.world.DimensionCoordinate;
-import mcjty.deepresonance.modules.tank.tile.TileEntityTank;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-
-import java.util.Set;
-
-/**
- * Created by Elec332 on 7-1-2020
- */
-public class TankGridHandler extends AbstractGridHandler<TankTileLink> {
+public class TankGridHandler {} /* @todo 1.16 extends AbstractGridHandler<TankTileLink> {
 
     private final Set<TankGrid> grids;
 
@@ -80,3 +66,4 @@ public class TankGridHandler extends AbstractGridHandler<TankTileLink> {
     }
 
 }
+*/

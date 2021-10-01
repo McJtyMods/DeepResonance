@@ -8,11 +8,11 @@ public class DeepResonanceTags {
 //    public static final Tag<Item> RESONANT_ORE_ITEM = tagItem("resonant_ore");
 //
 //    private static Tag<Block> tagBlock(String name) {
-//        return new BlockTags.Wrapper(new DeepResonanceResourceLocation(name));
+//        return new BlockTags.Wrapper(new ResourceLocation(DeepResonance.MODID, name));
 //    }
 //
 //    private static Tag<Item> tagItem(String name) {
-//        return new ItemTags.Wrapper(new DeepResonanceResourceLocation(name));
+//        return new ItemTags.Wrapper(new ResourceLocation(DeepResonance.MODID, name));
 //    }
 
 }

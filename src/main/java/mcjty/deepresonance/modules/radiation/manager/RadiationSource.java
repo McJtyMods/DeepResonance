@@ -50,7 +50,7 @@ class RadiationSource implements IRadiationSource, INBTSerializable<CompoundNBT>
             for (int x = (int) (centerX - radius); x < centerX + radius; x++) {
                 for (int y = (int) (centerY - radius); y < centerY + radius; y++) {
                     for (int z = (int) (centerZ - radius); z < centerZ + radius; z++) {
-                        pos.setPos(x, y, z);
+                        pos.set(x, y, z);
                         BlockState block = world.getBlockState(pos);
                         float blocker = RadiationShieldRegistry.getBlocker(block);
                         if (blocker < 0.99f) {

@@ -1,31 +1,8 @@
 package mcjty.deepresonance.modules.worldgen.world;
 
-import elec332.core.api.world.IRetroGenFeature;
-import elec332.core.world.WorldHelper;
-import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
-import mcjty.deepresonance.modules.worldgen.WorldGenModule;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.feature.Feature;
+public class ResonantCrystalFeature {} /* @todo 1.16 extends Feature<ResonantCrystalFeatureConfig> implements IRetroGenFeature<ResonantCrystalFeatureConfig> {
 
-import javax.annotation.Nonnull;
-import java.util.Random;
-
-/**
- * Created by Elec332 on 10-7-2020
- */
-public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig> implements IRetroGenFeature<ResonantCrystalFeatureConfig> {
-
-    private static final ResourceLocation NAME = new DeepResonanceResourceLocation("resonant_crystal");
+    private static final ResourceLocation NAME = new ResourceLocation(DeepResonance.MODID, "resonant_crystal");
 
     public ResonantCrystalFeature() {
         super(ResonantCrystalFeatureConfig::deserialize);
@@ -87,3 +64,4 @@ public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig
     }
 
 }
+*/

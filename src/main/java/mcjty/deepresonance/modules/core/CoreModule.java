@@ -22,12 +22,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import static mcjty.deepresonance.setup.Registration.TILES;
 
-/**
- * Created by Elec332 on 10-1-2020
- */
 public class CoreModule implements IModule {
 
-    public static final String TILE_DATA_TAG = "tileDataTag";   // @todo 1.16 change this!
+    public static final String TILE_DATA_TAG = "BlockEntityTag";
 
     private static final Block.Properties ORE_PROPERTIES = Block.Properties.of(Material.STONE).strength(3, 5).harvestLevel(3).harvestTool(ToolType.PICKAXE);
 
@@ -42,7 +39,7 @@ public class CoreModule implements IModule {
     public static final RegistryObject<Block> RESONATING_PLATE_BLOCK_BLOCK = Registration.BLOCKS.register("resonating_plate_block", () -> new BlockResonatingPlate(Block.Properties.of(Material.STONE).strength(3, 5).harvestLevel(2).harvestTool(ToolType.PICKAXE)));
 
     public static final RegistryObject<Item> RESONATING_PLATE_ITEM = Registration.ITEMS.register("resonating_plate", () -> new Item(Registration.createStandardProperties()));
-    public static final RegistryObject<Item> FILTER_MATERIAL_ITEM = Registration.ITEMS.register("filter_material", () -> new ItemWithTooltip(Registration.createStandardProperties()));
+    public static final RegistryObject<Item> FILTER_MATERIAL_ITEM = Registration.ITEMS.register("filter_material", () -> new Item(Registration.createStandardProperties()));    // @todo 1.16 ItemWithTooltip?
     public static final RegistryObject<Item> SPENT_FILTER_ITEM = Registration.ITEMS.register("spent_filter_material", () -> new Item(Registration.createStandardProperties()));
     public static final RegistryObject<Item> LIQUID_INJECTOR_ITEM = Registration.ITEMS.register("liquid_injector", () -> new ItemLiquidInjector(Registration.createStandardProperties()));
     public static final RegistryObject<Item> MACHINE_FRAME_ITEM = Registration.ITEMS.register("machine_frame", () -> new Item(Registration.createStandardProperties()));

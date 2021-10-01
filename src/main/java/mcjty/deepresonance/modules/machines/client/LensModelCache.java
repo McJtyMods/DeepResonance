@@ -9,7 +9,7 @@ public class LensModelCache {} /* @todo 1.16 extends SimpleModelCache<EnumSet<Di
     private IBakedModel model;
 
     private LensModelCache() {
-        super(new DeepResonanceResourceLocation("block/lens"));
+        super(new ResourceLocation(DeepResonance.MODID, "block/lens"));
     }
 
     public IBakedModel setModel(IBakedModel model) {

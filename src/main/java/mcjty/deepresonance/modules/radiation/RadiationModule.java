@@ -1,11 +1,10 @@
 package mcjty.deepresonance.modules.radiation;
 
-import elec332.core.util.RegistryHelper;
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.radiation.IWorldRadiationManager;
 import mcjty.deepresonance.modules.radiation.item.ItemRadiationSuit;
 import mcjty.deepresonance.modules.radiation.manager.RadiationEventHandler;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
-import mcjty.deepresonance.setup.Config;
 import mcjty.deepresonance.setup.Registration;
 import mcjty.lib.modules.IModule;
 import net.minecraft.block.Block;
@@ -23,14 +22,11 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-/**
- * Created by Elec332 on 12-7-2020
- */
 public class RadiationModule implements IModule {
 
-    public static final RegistryObject<Block> POISONED_DIRT_BLOCK = Registration.BLOCKS.register("poisoned_dirt", () -> new Block(Block.Properties.create(Material.EARTH, MaterialColor.DIRT).hardnessAndResistance(0.5f).sound(SoundType.GROUND)));
-    public static final RegistryObject<Block> DENSE_GLASS_BLOCK = Registration.BLOCKS.register("dense_glass", () -> new GlassBlock(Block.Properties.create(Material.GLASS).hardnessAndResistance(3.0f, 500.0f).sound(SoundType.GLASS).notSolid().harvestTool(ToolType.PICKAXE).harvestLevel(2)));
-    public static final RegistryObject<Block> DENSE_OBSIDIAN_BLOCK = Registration.BLOCKS.register("dense_obsidian", () -> new Block(Block.Properties.create(Material.ROCK, MaterialColor.BLACK).hardnessAndResistance(50.0f, 2000.0f).sound(SoundType.STONE).harvestTool(ToolType.PICKAXE).harvestLevel(3)));
+    public static final RegistryObject<Block> POISONED_DIRT_BLOCK = Registration.BLOCKS.register("poisoned_dirt", () -> new Block(Block.Properties.of(Material.DIRT, MaterialColor.DIRT).strength(0.5f).sound(SoundType.GRASS)));
+    public static final RegistryObject<Block> DENSE_GLASS_BLOCK = Registration.BLOCKS.register("dense_glass", () -> new GlassBlock(Block.Properties.of(Material.GLASS).strength(3.0f, 500.0f).sound(SoundType.GLASS).noCollission().harvestTool(ToolType.PICKAXE).harvestLevel(2)));
+    public static final RegistryObject<Block> DENSE_OBSIDIAN_BLOCK = Registration.BLOCKS.register("dense_obsidian", () -> new Block(Block.Properties.of(Material.STONE, MaterialColor.COLOR_BLACK).strength(50.0f, 2000.0f).sound(SoundType.STONE).harvestTool(ToolType.PICKAXE).harvestLevel(3)));
 
     public static final RegistryObject<Item> POISONED_DIRT_ITEM = Registration.fromBlock(POISONED_DIRT_BLOCK);
     public static final RegistryObject<Item> DENSE_GLASS_ITEM = Registration.fromBlock(DENSE_GLASS_BLOCK);
@@ -43,12 +39,13 @@ public class RadiationModule implements IModule {
 
     @CapabilityInject(IWorldRadiationManager.class)
     public static Capability<IWorldRadiationManager> CAPABILITY;
-    public static ResourceLocation CAPABILITY_NAME = new DeepResonanceResourceLocation("radiation");
+    public static ResourceLocation CAPABILITY_NAME = new ResourceLocation(DeepResonance.MODID, "radiation");
 
     public static RadiationConfiguration config;
 
     public RadiationModule() {
-        RegistryHelper.registerEmptyCapability(IWorldRadiationManager.class);
+        // @todo 1.16
+//        RegistryHelper.registerEmptyCapability(IWorldRadiationManager.class);
     }
 
     @Override
@@ -63,6 +60,7 @@ public class RadiationModule implements IModule {
 
     @Override
     public void initConfig() {
-        config = Config.configuration.registerConfig(RadiationConfiguration::new, "radiation", "Radiation settings");
+        // @todo 1.16
+//        config = Config.configuration.registerConfig(RadiationConfiguration::new, "radiation", "Radiation settings");
     }
 }

@@ -1,15 +1,6 @@
 package mcjty.deepresonance.modules.tank.grid;
 
-import com.google.common.base.Preconditions;
-import elec332.core.grid.DefaultTileEntityLink;
-import mcjty.deepresonance.modules.tank.tile.TileEntityTank;
-
-import javax.annotation.Nullable;
-
-/**
- * Created by Elec332 on 7-1-2020
- */
-class TankTileLink extends DefaultTileEntityLink<TileEntityTank> {
+class TankTileLink {} /* @todo 1.16 extends DefaultTileEntityLink<TileEntityTank> {
 
     private TankGrid grid;
 
@@ -28,3 +19,4 @@ class TankTileLink extends DefaultTileEntityLink<TileEntityTank> {
     }
 
 }
+*/

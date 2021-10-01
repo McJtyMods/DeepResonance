@@ -1,25 +1,6 @@
 package mcjty.deepresonance.modules.worldgen.world;
 
-import com.google.common.base.Preconditions;
-import elec332.core.api.registration.IWorldGenRegister;
-import elec332.core.api.world.IBiomeGenWrapper;
-import elec332.core.api.world.RetroGenFeatureWrapper;
-import elec332.core.world.FeaturePlacers;
-import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.deepresonance.modules.worldgen.WorldGenModule;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.pattern.BlockMatcher;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
-import net.minecraft.world.gen.placement.CountRangeConfig;
-import net.minecraftforge.registries.IForgeRegistry;
-
-/**
- * Created by Elec332 on 9-7-2020
- */
-public class DeepResonanceWorldGenRegistry implements IWorldGenRegister {
+public class DeepResonanceWorldGenRegistry {} /* @todo 1.16 implements IWorldGenRegister {
 
     public boolean doRegister = false;
 
@@ -29,7 +10,7 @@ public class DeepResonanceWorldGenRegistry implements IWorldGenRegister {
 
     @Override
     public void registerFeatures(IForgeRegistry<Feature<?>> featureRegistry) {
-        featureRegistry.register(RESONATING_ORE = new RetroGenFeatureWrapper<>(Feature.ORE, new DeepResonanceResourceLocation("resonating_ore")));
+        featureRegistry.register(RESONATING_ORE = new RetroGenFeatureWrapper<>(Feature.ORE, new ResourceLocation(DeepResonance.MODID, "resonating_ore")));
         featureRegistry.register(RESONANT_CRYSTAL = new ResonantCrystalFeature());
     }
 
@@ -71,3 +52,4 @@ public class DeepResonanceWorldGenRegistry implements IWorldGenRegister {
     }
 
 }
+*/

@@ -1,25 +1,6 @@
 package mcjty.deepresonance.modules.tank.grid;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import elec332.core.world.DimensionCoordinate;
-import mcjty.deepresonance.modules.tank.tile.TileEntityTank;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-
-import javax.annotation.Nullable;
-import java.util.*;
-
-import static mcjty.deepresonance.modules.tank.grid.TankGrid.TANK_BUCKETS;
-
-/**
- * Created by Elec332 on 9-1-2020
- * <p>
- * Created to un-clutter the main TankGrid class
- */
-@SuppressWarnings("WeakerAccess")
-public class TankRenderHandler {
+public class TankRenderHandler {} /* @todo 1.16 {
 
     private final TankGrid grid;
     private final Map<Integer, List<DimensionCoordinate>> renderData;
@@ -100,3 +81,4 @@ public class TankRenderHandler {
     }
 
 }
+*/

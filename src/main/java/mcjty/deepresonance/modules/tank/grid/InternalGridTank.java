@@ -12,9 +12,6 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 
-/**
- * Created by Elec332 on 7-1-2020
- */
 public class InternalGridTank implements IFluidTank {
 
     private final ILiquidCrystalData tank;

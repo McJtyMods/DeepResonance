@@ -3,9 +3,6 @@ package mcjty.deepresonance.modules.generator.tile;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import net.minecraft.nbt.CompoundNBT;
 
-/**
- * Created by Elec332 on 30-7-2020
- */
 public class TileEntityGeneratorController extends AbstractTileEntityGeneratorComponent {
 
     public TileEntityGeneratorController() {
@@ -21,9 +18,9 @@ public class TileEntityGeneratorController extends AbstractTileEntityGeneratorCo
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
+    public CompoundNBT save(CompoundNBT tagCompound) {
         tagCompound.putInt("startup", startupTimer);
-        return super.write(tagCompound);
+        return super.save(tagCompound);
     }
 
     @Override

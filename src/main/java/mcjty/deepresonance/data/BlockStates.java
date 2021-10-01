@@ -26,14 +26,14 @@ public class BlockStates extends BaseBlockStateProvider {
 //        simpleBlock(RadiationModule.DENSE_GLASS_BLOCK);
 //        simpleBlock(RadiationModule.DENSE_OBSIDIAN_BLOCK);
 //        simpleBlock(CoreModule.RESONATING_PLATE_BLOCK_BLOCK);
-//        simpleSide(MachinesModule.VALVE_BLOCK, new DeepResonanceResourceLocation("block/valve"));
+//        simpleSide(MachinesModule.VALVE_BLOCK, new ResourceLocation(DeepResonance.MODID, "block/valve"));
 //        simpleFacingModel(MachinesModule.SMELTER_BLOCK, BlockProperties.ACTIVE);
 //        simpleFront(MachinesModule.PURIFIER_BLOCK);
 //        simpleFront(PulserModule.PULSER_BLOCK);
-//        simpleBlock(MachinesModule.LENS_BLOCK, models().withExistingParent("lens_mc", new DeepResonanceResourceLocation("lens")).texture("lens_texture", "deepresonance:block/lens"));
+//        simpleBlock(MachinesModule.LENS_BLOCK, models().withExistingParent("lens_mc", new ResourceLocation(DeepResonance.MODID, "lens")).texture("lens_texture", "deepresonance:block/lens"));
 //        simpleFacingModel(MachinesModule.LASER_BLOCK, createLaserModel());
 //        simpleFacingModel(MachinesModule.CRYSTALLIZER_BLOCK, createCrystallizerModel());
-//        simpleBlock(GeneratorModule.ENERGY_COLLECTOR_BLOCK, models().withExistingParent("energy_collector", new DeepResonanceResourceLocation("collector")).texture("collector_texture", "deepresonance:block/energy_collector"));
+//        simpleBlock(GeneratorModule.ENERGY_COLLECTOR_BLOCK, models().withExistingParent("energy_collector", new ResourceLocation(DeepResonance.MODID, "collector")).texture("collector_texture", "deepresonance:block/energy_collector"));
 //        simpleFacingModel(GeneratorModule.GENERATOR_CONTROLLER_BLOCK, BlockProperties.ON);
 //        simpleSide(GeneratorModule.GENERATOR_PART_BLOCK, state -> {
 //            String extra = "";
@@ -46,7 +46,7 @@ public class BlockStates extends BaseBlockStateProvider {
 //            if (state.get(BlockProperties.ON)) {
 //                extra += "_on";
 //            }
-//            return new DeepResonanceResourceLocation("block/generator_part_side" + extra);
+//            return new ResourceLocation(DeepResonance.MODID, "block/generator_part_side" + extra);
 //        });
     }
 
@@ -76,7 +76,7 @@ public class BlockStates extends BaseBlockStateProvider {
 
     // @todo 1.16
 //    public BlockModelBuilder createCrystallizerModel() {
-//        BlockModelBuilder ret = simpleFront("crystallizer", new DeepResonanceResourceLocation("block/crystallizer"));
+//        BlockModelBuilder ret = simpleFront("crystallizer", new ResourceLocation(DeepResonance.MODID, "block/crystallizer"));
 //        ModelBuilder<BlockModelBuilder>.ElementBuilder elem = ret.element();
 //        for (Direction direction : Direction.values()) {
 //            elem = elem.face(direction).cullface(direction).texture("#" + direction.getName()).end();
@@ -91,8 +91,8 @@ public class BlockStates extends BaseBlockStateProvider {
 //    }
 //
 //    public BlockModelBuilder createLaserModel() {
-//        BlockModelBuilder ret = simpleFront("laser", new DeepResonanceResourceLocation("block/laser"), new DeepResonanceResourceLocation("block/laser_back"));
-//        ret.texture("back", new DeepResonanceResourceLocation("block/laser_back_color"));
+//        BlockModelBuilder ret = simpleFront("laser", new ResourceLocation(DeepResonance.MODID, "block/laser"), new ResourceLocation(DeepResonance.MODID, "block/laser_back"));
+//        ret.texture("back", new ResourceLocation(DeepResonance.MODID, "block/laser_back_color"));
 //        ModelBuilder<BlockModelBuilder>.ElementBuilder elem = ret.element();
 //        for (Direction direction : Direction.values()) {
 //            elem = elem.face(direction).cullface(direction).texture("#" + direction.getName()).end();

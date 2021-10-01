@@ -1,42 +1,6 @@
 package mcjty.deepresonance.modules.machines.tile;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
-import elec332.core.ElecCore;
-import elec332.core.tile.sub.SubTileLogicBase;
-import elec332.core.util.FMLHelper;
-import elec332.core.util.RegistryHelper;
-import elec332.core.util.math.HitboxHelper;
-import elec332.core.util.math.IndexedVoxelShape;
-import elec332.core.world.WorldHelper;
-import mcjty.deepresonance.api.laser.ILens;
-import mcjty.deepresonance.modules.machines.MachinesModule;
-import mcjty.deepresonance.modules.machines.util.DefaultLens;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.util.LazyOptional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.EnumSet;
-
-/**
- * Created by Elec332 on 28-7-2020
- */
-public class SubTileLens extends SubTileLogicBase {
+public class SubTileLens {} /* @todo 1.16 extends SubTileLogicBase {
 
     @CapabilityInject(SubTileLens.class)
     public static Capability<SubTileLens> LENSES;
@@ -251,3 +215,4 @@ public class SubTileLens extends SubTileLogicBase {
     }
 
 }
+*/
