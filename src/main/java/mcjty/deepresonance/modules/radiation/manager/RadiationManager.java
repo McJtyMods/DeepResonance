@@ -32,9 +32,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-/**
- * Created by Elec332 on 12-7-2020
- */
 class RadiationManager implements IWorldRadiationManager, INBTSerializable<CompoundNBT>, IClearable {
 
     private static final int EFFECTS_MAX = 12;

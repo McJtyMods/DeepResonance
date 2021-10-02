@@ -59,6 +59,26 @@ public class TileEntityResonatingCrystal extends GenericTileEntity implements IT
         MODIFIERS.add(type);
     }
 
+    public boolean isGlowing() {
+        return false;   // @todo 1.16
+    }
+
+    public void setGlowing(boolean b) {
+        // @todo 1.16
+    }
+
+    public int getPowerPerTick() {
+        return 0;   // @todo 1.16
+    }
+
+    public int getRfPerTick() {
+        return 0;   // @todo 1.16
+    }
+
+    public int getResistance() {
+        return 0;   // @todo 1.16
+    }
+
     public float getStrength() {
         return strength;
     }
