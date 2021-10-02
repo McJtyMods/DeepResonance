@@ -10,13 +10,20 @@ import mcjty.deepresonance.modules.machines.tile.*;
 import mcjty.deepresonance.modules.machines.util.InfusionBonusRegistry;
 import mcjty.deepresonance.modules.machines.util.config.*;
 import mcjty.deepresonance.setup.Registration;
+import mcjty.deepresonance.util.TranslationHelper;
+import mcjty.lib.blocks.BaseBlock;
+import mcjty.lib.blocks.RotationType;
+import mcjty.lib.builder.BlockBuilder;
+import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.modules.IModule;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
+import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.capabilities.Capability;
@@ -34,17 +41,65 @@ import static mcjty.deepresonance.setup.Registration.TILES;
 @SuppressWarnings("unchecked")
 public class MachinesModule implements IModule {
 
-    public static final RegistryObject<Block> VALVE_BLOCK = Registration.nonRotatingBlock("valve", TileEntityValve::new);
+    public static final RegistryObject<Block> VALVE_BLOCK = Registration.BLOCKS.register("valve", () -> new BaseBlock(
+            new BlockBuilder()
+                    .tileEntitySupplier(TileEntityValve::new)
+                    .infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("valve")))) {
+
+        @Override
+        public RotationType getRotationType() {
+            return RotationType.NONE;
+        }
+
+        @Override
+        protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+            super.createBlockStateDefinition(builder);
+            builder.add();
+        }
+
+    });
     public static final RegistryObject<Item> VALVE_ITEM = Registration.fromBlock(VALVE_BLOCK);
     public static final RegistryObject<TileEntityType<TileEntityValve>> TYPE_VALVE = TILES.register("valve", () -> TileEntityType.Builder.of(TileEntityValve::new, VALVE_BLOCK.get()).build(null));
     public static final RegistryObject<ContainerType<GenericContainer>> VALVE_CONTAINER = CONTAINERS.register("valve", GenericContainer::createContainerType);
 
-    public static final RegistryObject<Block> SMELTER_BLOCK = Registration.defaultBlock("smelter", TileEntitySmelter::new, state -> state.setValue(BlockStateProperties.POWERED, false), BlockStateProperties.POWERED);
+    public static final RegistryObject<Block> SMELTER_BLOCK = Registration.BLOCKS.register("smelter", () -> new BaseBlock(
+            new BlockBuilder()
+                    .tileEntitySupplier(TileEntitySmelter::new)
+                    .infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("smelter")))) {
+
+        @Override
+        public RotationType getRotationType() {
+            return RotationType.HORIZROTATION;
+        }
+
+        @Override
+        protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+            super.createBlockStateDefinition(builder);
+            builder.add(BlockStateProperties.POWERED);
+        }
+
+    });
     public static final RegistryObject<Item> SMELTER_ITEM = Registration.fromBlock(SMELTER_BLOCK);
     public static final RegistryObject<TileEntityType<TileEntitySmelter>> TYPE_SMELTER = TILES.register("smelter", () -> TileEntityType.Builder.of(TileEntitySmelter::new, SMELTER_BLOCK.get()).build(null));
     public static final RegistryObject<ContainerType<GenericContainer>> SMELTER_CONTAINER = CONTAINERS.register("smelter", GenericContainer::createContainerType);
 
-    public static final RegistryObject<Block> PURIFIER_BLOCK = Registration.defaultBlock("purifier", TileEntityPurifier::new);
+    public static final RegistryObject<Block> PURIFIER_BLOCK = Registration.BLOCKS.register("purifier", () -> new BaseBlock(
+            new BlockBuilder()
+                    .tileEntitySupplier(TileEntityPurifier::new)
+                    .infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("purifier")))) {
+
+        @Override
+        public RotationType getRotationType() {
+            return RotationType.HORIZROTATION;
+        }
+
+        @Override
+        protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+            super.createBlockStateDefinition(builder);
+            builder.add();
+        }
+
+    });
     public static final RegistryObject<Item> PURIFIER_ITEM = Registration.fromBlock(PURIFIER_BLOCK);
     public static final RegistryObject<TileEntityType<TileEntityPurifier>> TYPE_PURIFIER = TILES.register("purifier", () -> TileEntityType.Builder.of(TileEntityPurifier::new, PURIFIER_BLOCK.get()).build(null));
     public static final RegistryObject<ContainerType<GenericContainer>> PURIFIER_CONTAINER = CONTAINERS.register("purifier", GenericContainer::createContainerType);
@@ -53,12 +108,38 @@ public class MachinesModule implements IModule {
     public static final RegistryObject<Item> LENS_ITEM = Registration.ITEMS.register("lens", () -> new ItemLens(LENS_BLOCK.get(), Registration.createStandardProperties()));
     public static final RegistryObject<TileEntityType<TileEntityLens>> TYPE_LENS = TILES.register("lens", () -> TileEntityType.Builder.of(TileEntityLens::new, LENS_BLOCK.get()).build(null));
 
-    public static final RegistryObject<Block> LASER_BLOCK = Registration.defaultBlock("laser", TileEntityLaser::new);
+    public static final RegistryObject<Block> LASER_BLOCK = Registration.BLOCKS.register("laser", () -> new BaseBlock(new BlockBuilder().tileEntitySupplier(TileEntityLaser::new).infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("laser")))) {
+
+        @Override
+        public RotationType getRotationType() {
+            return RotationType.HORIZROTATION;
+        }
+
+        @Override
+        protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+            super.createBlockStateDefinition(builder);
+            builder.add();
+        }
+
+    });
     public static final RegistryObject<Item> LASER_ITEM = Registration.fromBlock(LASER_BLOCK);
     public static final RegistryObject<TileEntityType<TileEntityLaser>> TYPE_LASER = TILES.register("laser", () -> TileEntityType.Builder.of(TileEntityLaser::new, LASER_BLOCK.get()).build(null));
     public static final RegistryObject<ContainerType<GenericContainer>> LASER_CONTAINER = CONTAINERS.register("laser", GenericContainer::createContainerType);
 
-    public static final RegistryObject<Block> CRYSTALLIZER_BLOCK = Registration.defaultBlock("crystallizer", TileEntityCrystallizer::new);
+    public static final RegistryObject<Block> CRYSTALLIZER_BLOCK = Registration.BLOCKS.register("crystallizer", () -> new BaseBlock(new BlockBuilder().tileEntitySupplier(TileEntityCrystallizer::new).infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("crystallizer")))) {
+
+        @Override
+        public RotationType getRotationType() {
+            return RotationType.HORIZROTATION;
+        }
+
+        @Override
+        protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+            super.createBlockStateDefinition(builder);
+            builder.add();
+        }
+
+    });
     public static final RegistryObject<Item> CRYSTALLIZER_ITEM = Registration.fromBlock(CRYSTALLIZER_BLOCK);
     public static final RegistryObject<TileEntityType<TileEntityCrystallizer>> TYPE_CRYSTALIZER = TILES.register("crystallizer", () -> TileEntityType.Builder.of(TileEntityCrystallizer::new, CRYSTALLIZER_BLOCK.get()).build(null));
     public static final RegistryObject<ContainerType<GenericContainer>> CRYSTALIZER_CONTAINER = CONTAINERS.register("crystallizer", GenericContainer::createContainerType);

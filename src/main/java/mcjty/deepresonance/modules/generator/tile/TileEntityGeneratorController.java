@@ -30,10 +30,6 @@ public class TileEntityGeneratorController extends GenericTileEntity implements 
         super(GeneratorModule.TYPE_GENERATOR_CONTROLLER.get());
     }
 
-    public boolean isPowered() {
-        return powerLevel > 0;
-    }
-
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
         boolean working = isPowered();
@@ -196,14 +192,24 @@ public class TileEntityGeneratorController extends GenericTileEntity implements 
     }
 
 
-//@todo 1.16
-//    @Override
-//    public void setPowerInput(int powered) {
-//        super.setPowerInput(powered);
-//        if (grid != null) {
-//            grid.onRedstoneChanged(this.powerLevel > 0);
-//        }
-//    }
+    @Override
+    public void setPowerInput(int powered) {
+        boolean changed = powerLevel != powered;
+        super.setPowerInput(powered);
+        // @todo 1.16 check, do we need this?
+        if (changed) {
+            markDirtyClient();
+        }
+    }
+
+    public boolean isPowered() {
+        return powerLevel > 0;
+    }
+
+    @Override
+    protected boolean needsRedstoneMode() {
+        return true;
+    }
 
     @Override
     public CompoundNBT save(CompoundNBT tagCompound) {
