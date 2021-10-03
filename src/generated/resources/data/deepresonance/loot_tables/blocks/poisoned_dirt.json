@@ -2,16 +2,12 @@
   "type": "minecraft:block",
   "pools": [
     {
+      "name": "poisoned_dirt",
       "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
           "name": "deepresonance:poisoned_dirt"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
         }
       ]
     }

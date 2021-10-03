@@ -1,5 +1,10 @@
 package mcjty.deepresonance.data;
 
+import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.generator.GeneratorModule;
+import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.radiation.RadiationModule;
+import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.lib.datagen.BaseLootTableProvider;
 import net.minecraft.data.DataGenerator;
 
@@ -11,36 +16,28 @@ public class LootTables extends BaseLootTableProvider {
 
     @Override
     protected void addTables() {
-        // @todo 1.16
-//        addBlockLootTable(new AbstractBlockLootTables(DeepResonance.MODID) {
-//
-//            @Override
-//            protected void registerBlockTables() {
-//                registerDropSelfLootTable(CoreModule.RESONATING_ORE_STONE_BLOCK);
-//                registerDropSelfLootTable(CoreModule.RESONATING_ORE_NETHER_BLOCK);
-//                registerDropSelfLootTable(CoreModule.RESONATING_ORE_END_BLOCK);
-//                registerDropSelfLootTable(CoreModule.RESONATING_PLATE_BLOCK_BLOCK);
-//
-//                registerDropSelfLootTable(RadiationModule.POISONED_DIRT_BLOCK);
-//                registerSilkTouch(RadiationModule.DENSE_GLASS_BLOCK.get());
-//                registerDropSelfLootTable(RadiationModule.DENSE_OBSIDIAN_BLOCK);
-//
-//                registerDropSelfLootTable(MachinesModule.VALVE_BLOCK);
-//                registerDropSelfLootTable(MachinesModule.SMELTER_BLOCK);
-//                registerDropSelfLootTable(MachinesModule.PURIFIER_BLOCK);
-//                registerDropSelfLootTable(PulserModule.PULSER_BLOCK);
-//                registerEmptyLootTable(MachinesModule.LENS_BLOCK.get());
-//                registerDropSelfLootTable(MachinesModule.LASER_BLOCK);
-//                registerDropSelfLootTable(MachinesModule.CRYSTALLIZER_BLOCK);
-//                registerDropSelfLootTable(GeneratorModule.ENERGY_COLLECTOR_BLOCK);
-//                registerDropSelfLootTable(GeneratorModule.GENERATOR_CONTROLLER_BLOCK);
-//                registerDropSelfLootTable(GeneratorModule.GENERATOR_PART_BLOCK);
-//
-//                registerDropSelfLootTable(CoreModule.RESONATING_CRYSTAL_BLOCK, builder -> builder.acceptFunction(copyAllTileTags()));
-//                registerDropSelfLootTable(TankModule.TANK_BLOCK, builder -> builder.acceptFunction(copyAllTileTags()));
-//            }
-//
-//        });
+        addSimpleTable(CoreModule.RESONATING_ORE_STONE_BLOCK.get());
+        addSimpleTable(CoreModule.RESONATING_ORE_NETHER_BLOCK.get());
+        addSimpleTable(CoreModule.RESONATING_ORE_END_BLOCK.get());
+        addSimpleTable(CoreModule.RESONATING_PLATE_BLOCK_BLOCK.get());
+
+        addSimpleTable(RadiationModule.POISONED_DIRT_BLOCK.get());
+        addSimpleTable(RadiationModule.DENSE_GLASS_BLOCK.get());    // @todo 1.16 silk touch!
+        addSimpleTable(RadiationModule.DENSE_OBSIDIAN_BLOCK.get());
+
+        addSimpleTable(MachinesModule.VALVE_BLOCK.get());
+        addSimpleTable(MachinesModule.SMELTER_BLOCK.get());
+        addSimpleTable(MachinesModule.PURIFIER_BLOCK.get());
+//        addSimpleTable(PulserModule.PULSER_BLOCK.get());
+        addSimpleTable(MachinesModule.LENS_BLOCK.get());
+        addSimpleTable(MachinesModule.LASER_BLOCK.get());
+        addSimpleTable(MachinesModule.CRYSTALLIZER_BLOCK.get());
+        addSimpleTable(GeneratorModule.ENERGY_COLLECTOR_BLOCK.get());
+        addSimpleTable(GeneratorModule.GENERATOR_CONTROLLER_BLOCK.get());
+        addSimpleTable(GeneratorModule.GENERATOR_PART_BLOCK.get());
+
+        addStandardTable(CoreModule.RESONATING_CRYSTAL_BLOCK.get());
+        addStandardTable(TankModule.TANK_BLOCK.get());
     }
 
 }

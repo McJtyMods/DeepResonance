@@ -1,26 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
-  "group": "machines",
   "pattern": [
-    "gqg",
-    "fmf",
-    "gCg"
+    "GGG",
+    "FmF",
+    "GCG"
   ],
   "key": {
-    "g": {
-      "tag": "forge:glass"
+    "C": {
+      "item": "minecraft:comparator"
     },
-    "q": {
-      "item": "minecraft:quartz"
-    },
-    "f": {
+    "F": {
       "item": "deepresonance:filter_material"
+    },
+    "G": {
+      "tag": "forge:glass"
     },
     "m": {
       "item": "deepresonance:machine_frame"
-    },
-    "C": {
-      "item": "minecraft:comparator"
     }
   },
   "result": {

@@ -1,5 +1,7 @@
 package mcjty.deepresonance.data;
 
+import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.util.DeepResonanceTags;
 import mcjty.rftoolsbase.RFToolsBase;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
@@ -13,8 +15,7 @@ public class BlockTags extends BlockTagsProvider {
 
     @Override
     protected void addTags() {
-        // @todo 1.16
-//        getBuilder(DeepResonanceTags.RESONANT_ORE).add(CoreModule.RESONATING_ORE_STONE_BLOCK.get(), CoreModule.RESONATING_ORE_NETHER_BLOCK.get(), CoreModule.RESONATING_ORE_END_BLOCK.get());
+        tag(DeepResonanceTags.RESONANT_ORE).add(CoreModule.RESONATING_ORE_STONE_BLOCK.get(), CoreModule.RESONATING_ORE_NETHER_BLOCK.get(), CoreModule.RESONATING_ORE_END_BLOCK.get());
     }
 
     @Override

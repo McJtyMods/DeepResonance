@@ -1,24 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
-  "group": "radiation",
   "pattern": [
-    "fgf",
-    "gog",
-    "fgf"
+    "fGf",
+    "GOG",
+    "fGf"
   ],
   "key": {
     "f": {
       "item": "deepresonance:spent_filter_material"
     },
-    "g": {
+    "G": {
       "tag": "forge:glass"
     },
-    "o": {
-      "tag": "forge:obsidian"
+    "O": {
+      "item": "minecraft:obsidian"
     }
   },
   "result": {
-    "item": "deepresonance:dense_glass",
-    "count": 4
+    "item": "deepresonance:dense_glass"
   }
 }

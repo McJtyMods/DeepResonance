@@ -1,13 +1,12 @@
 {
   "type": "minecraft:crafting_shaped",
-  "group": "core",
   "pattern": [
-    "ppp",
-    "ppp",
-    "ppp"
+    "PPP",
+    "PPP",
+    "PPP"
   ],
   "key": {
-    "p": {
+    "P": {
       "item": "deepresonance:resonating_plate"
     }
   },

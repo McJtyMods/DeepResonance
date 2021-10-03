@@ -2,16 +2,12 @@
   "type": "minecraft:block",
   "pools": [
     {
+      "name": "resonating_plate_block",
       "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
           "name": "deepresonance:resonating_plate_block"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
         }
       ]
     }

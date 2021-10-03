@@ -1,12 +1,18 @@
 package mcjty.deepresonance.util;
 
+import mcjty.deepresonance.DeepResonance;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.ItemTags;
+
 public class DeepResonanceTags {
 
-    // @todo 1.16
-//    public static final Tag<Block> RESONANT_ORE = tagBlock("resonant_ore");
-//
-//    public static final Tag<Item> RESONANT_ORE_ITEM = tagItem("resonant_ore");
-//
+
+    public static final ITag.INamedTag<Block> RESONANT_ORE = BlockTags.bind(DeepResonance.MODID+":resonant_ore");
+    public static final ITag.INamedTag<Item> RESONANT_ORE_ITEM = ItemTags.bind(DeepResonance.MODID+":resonant_ore");
+
 //    private static Tag<Block> tagBlock(String name) {
 //        return new BlockTags.Wrapper(new ResourceLocation(DeepResonance.MODID, name));
 //    }

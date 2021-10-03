@@ -1,13 +1,12 @@
 {
   "type": "minecraft:crafting_shaped",
-  "group": "core",
   "pattern": [
-    "rcr",
+    "gcg",
     "csc",
-    "rcr"
+    "gcg"
   ],
   "key": {
-    "r": {
+    "g": {
       "tag": "forge:gravel"
     },
     "c": {

@@ -1,23 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "group": "machines",
   "pattern": [
-    "ggg",
+    "GXG",
     "eme",
     "ddd"
   ],
   "key": {
-    "g": {
-      "tag": "forge:glass"
+    "d": {
+      "item": "minecraft:diamond"
     },
     "e": {
       "item": "minecraft:emerald"
     },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "X": {
+      "tag": "forge:ingots/gold"
+    },
     "m": {
       "item": "deepresonance:machine_frame"
-    },
-    "d": {
-      "item": "minecraft:diamond"
     }
   },
   "result": {

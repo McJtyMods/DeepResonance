@@ -1,20 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
-  "group": "core",
   "pattern": [
-    "ipi",
-    "pqp",
-    "ipi"
+    "iPi",
+    "PgP",
+    "iPi"
   ],
   "key": {
-    "i": {
-      "tag": "forge:ingots/iron"
+    "g": {
+      "tag": "forge:stone"
     },
-    "p": {
+    "P": {
       "item": "deepresonance:resonating_plate"
     },
-    "q": {
-      "tag": "forge:stone"
+    "i": {
+      "tag": "forge:ingots/iron"
     }
   },
   "result": {

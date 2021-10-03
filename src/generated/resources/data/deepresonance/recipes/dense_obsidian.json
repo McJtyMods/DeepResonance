@@ -1,21 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
-  "group": "radiation",
   "pattern": [
-    "ofo",
-    "fof",
-    "ofo"
+    "OfO",
+    "fOf",
+    "OfO"
   ],
   "key": {
-    "o": {
-      "tag": "forge:obsidian"
-    },
     "f": {
       "item": "deepresonance:spent_filter_material"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
     }
   },
   "result": {
-    "item": "deepresonance:dense_obsidian",
-    "count": 4
+    "item": "deepresonance:dense_obsidian"
   }
 }

@@ -6,26 +6,6 @@
     ]
   },
   "criteria": {
-    "has_coal": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "tag": "minecraft:coals"
-          }
-        ]
-      }
-    },
-    "has_sand": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "tag": "minecraft:sand"
-          }
-        ]
-      }
-    },
     "has_gravel": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
@@ -45,8 +25,6 @@
   },
   "requirements": [
     [
-      "has_coal",
-      "has_sand",
       "has_gravel",
       "has_the_recipe"
     ]

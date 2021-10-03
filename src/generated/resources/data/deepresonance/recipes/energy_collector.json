@@ -1,26 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "group": "generator",
   "pattern": [
-    "pdp",
+    "PdP",
     "qmq",
-    "GGG"
+    "XXX"
   ],
   "key": {
-    "p": {
+    "P": {
       "item": "deepresonance:resonating_plate"
+    },
+    "q": {
+      "item": "minecraft:quartz"
     },
     "d": {
       "item": "minecraft:diamond"
     },
-    "q": {
-      "tag": "forge:gems/quartz"
+    "X": {
+      "tag": "forge:ingots/gold"
     },
     "m": {
       "item": "deepresonance:machine_frame"
-    },
-    "G": {
-      "tag": "forge:ingots/gold"
     }
   },
   "result": {

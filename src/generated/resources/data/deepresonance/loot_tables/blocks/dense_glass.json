@@ -2,26 +2,12 @@
   "type": "minecraft:block",
   "pools": [
     {
+      "name": "dense_glass",
       "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
           "name": "deepresonance:dense_glass"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:match_tool",
-          "predicate": {
-            "enchantments": [
-              {
-                "enchantment": "minecraft:silk_touch",
-                "levels": {
-                  "min": 1
-                }
-              }
-            ]
-          }
         }
       ]
     }

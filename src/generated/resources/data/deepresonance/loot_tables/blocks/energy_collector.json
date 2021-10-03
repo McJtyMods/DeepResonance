@@ -2,16 +2,12 @@
   "type": "minecraft:block",
   "pools": [
     {
+      "name": "energy_collector",
       "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
           "name": "deepresonance:energy_collector"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
         }
       ]
     }

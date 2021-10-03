@@ -2,16 +2,12 @@
   "type": "minecraft:block",
   "pools": [
     {
+      "name": "resonating_ore_end",
       "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
           "name": "deepresonance:resonating_ore_end"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
         }
       ]
     }

@@ -1,14 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
-  "group": "generator",
   "pattern": [
-    "rCr",
+    "RCR",
     "imi",
-    "pip"
+    "PiP"
   ],
   "key": {
-    "r": {
-      "tag": "forge:dusts/redstone"
+    "P": {
+      "item": "deepresonance:resonating_plate"
+    },
+    "R": {
+      "item": "minecraft:redstone_block"
     },
     "C": {
       "item": "minecraft:comparator"
@@ -18,9 +20,6 @@
     },
     "m": {
       "item": "deepresonance:machine_frame"
-    },
-    "p": {
-      "item": "deepresonance:resonating_plate"
     }
   },
   "result": {

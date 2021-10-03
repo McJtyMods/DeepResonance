@@ -24,9 +24,6 @@ public final class DataGenerators {
         }
     }
 
-    // @todo 1.16
-//        registry.register(BlockTagsProvider::new);
-//        registry.register(ItemTagsProvider::new);
 //        registry.register(InfusionBonusProvider::new);
 
 }

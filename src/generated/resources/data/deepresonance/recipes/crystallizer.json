@@ -1,23 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "group": "machines",
   "pattern": [
-    "ggg",
+    "GXG",
     "qmq",
     "iii"
   ],
   "key": {
-    "g": {
-      "tag": "forge:glass"
-    },
     "q": {
       "item": "minecraft:quartz"
     },
-    "m": {
-      "item": "deepresonance:machine_frame"
+    "G": {
+      "tag": "forge:glass"
+    },
+    "X": {
+      "tag": "forge:ingots/gold"
     },
     "i": {
       "tag": "forge:ingots/iron"
+    },
+    "m": {
+      "item": "deepresonance:machine_frame"
     }
   },
   "result": {

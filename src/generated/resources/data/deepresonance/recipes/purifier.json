@@ -1,14 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
-  "group": "machines",
   "pattern": [
-    "fff",
+    "PPP",
     "imi",
-    "fff"
+    "xxx"
   ],
   "key": {
-    "f": {
-      "item": "deepresonance:filter_material"
+    "x": {
+      "item": "minecraft:nether_brick"
+    },
+    "P": {
+      "item": "deepresonance:resonating_plate"
     },
     "i": {
       "tag": "forge:ingots/iron"
