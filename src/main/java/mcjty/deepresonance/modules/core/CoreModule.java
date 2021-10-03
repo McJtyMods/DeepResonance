@@ -3,6 +3,7 @@ package mcjty.deepresonance.modules.core;
 import mcjty.deepresonance.modules.core.block.BlockCrystal;
 import mcjty.deepresonance.modules.core.block.BlockResonatingPlate;
 import mcjty.deepresonance.modules.core.client.ClientSetup;
+import mcjty.deepresonance.modules.core.client.ResonatingCrystalTER;
 import mcjty.deepresonance.modules.core.fluid.FluidLiquidCrystal;
 import mcjty.deepresonance.modules.core.item.ItemLiquidInjector;
 import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
@@ -19,6 +20,7 @@ import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import static mcjty.deepresonance.setup.Registration.TILES;
 
@@ -53,6 +55,7 @@ public class CoreModule implements IModule {
     public static ResonatingPlateBlockConfig resonatingPlateConfig;
 
     public CoreModule() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::onTextureStitch);
         // @todo 1.16
 //        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(IModelManager.class, this::registerModelLoader);
     }
@@ -69,6 +72,7 @@ public class CoreModule implements IModule {
     @Override
     public void initClient(FMLClientSetupEvent event) {
         ClientSetup.initClient();
+        ResonatingCrystalTER.register();
     }
 
     @Override

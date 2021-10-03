@@ -1,6 +1,16 @@
 package mcjty.deepresonance.modules.tank.client;
 
-public class TankRenderer {} /* @todo 1.16 implements IModelAndTextureLoader {
+import mcjty.deepresonance.DeepResonance;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
+
+import javax.annotation.Nonnull;
+import java.util.List;
+
+public class TankRenderer { // @todo 1.16 implements IModelAndTextureLoader {
 
     public static final ResourceLocation TOP_TEXTURE = new ResourceLocation(DeepResonance.MODID, "block/tank_top");
     public static final ResourceLocation BOTTOM_TEXTURE = new ResourceLocation(DeepResonance.MODID, "block/tank_bottom");
@@ -24,11 +34,10 @@ public class TankRenderer {} /* @todo 1.16 implements IModelAndTextureLoader {
 
     @Nonnull
     public BakedQuad getInsideQuad(Direction direction) {
-        return quads[Preconditions.checkNotNull(direction).ordinal()];
+        return quads[direction.ordinal()];
     }
 
     @Nonnull
-    @SuppressWarnings("all")
     public List<BakedQuad> getModelQuads(Direction side) {
         return tankModel.getQuads(null, side, null);
     }
@@ -38,28 +47,27 @@ public class TankRenderer {} /* @todo 1.16 implements IModelAndTextureLoader {
         return model;
     }
 
-    @Override
-    public void registerTextures(IIconRegistrar iconRegistrar) {
-        textures[Direction.DOWN.ordinal()] = iconRegistrar.registerSprite(BOTTOM_TEXTURE);
-        textures[Direction.UP.ordinal()] = iconRegistrar.registerSprite(TOP_TEXTURE);
-        textures[2] = iconRegistrar.registerSprite(SIDE_TEXTURE);
-    }
-
-    @Override
-    public void registerModels(IQuadBakery quadBakery, IModelBakery modelBakery, ITemplateBakery templateBakery) {
-        float offset = 0.05f;
-        for (Direction dir : Direction.values()) {
-            TextureAtlasSprite tex = textures[dir.getAxis() == Direction.Axis.Y ? dir.ordinal() : 2];
-            Vector3f start = new Vector3f(0, 0, 0);
-            Vector3f end = new Vector3f(16, 16, 16);
-            Vector3f offzet = new Vector3f(new Vec3d(dir.getDirectionVec()));
-            offzet.mul(16 - offset);
-            start.sub(offzet);
-            end.sub(offzet);
-            quads[dir.getOpposite().ordinal()] = quadBakery.bakeQuad(start, end, tex, dir);
-        }
-        this.initialized = true;
-    }
+    // @todo 1.16
+//    @Override
+//    public void registerTextures(IIconRegistrar iconRegistrar) {
+//        textures[Direction.DOWN.ordinal()] = iconRegistrar.registerSprite(BOTTOM_TEXTURE);
+//        textures[Direction.UP.ordinal()] = iconRegistrar.registerSprite(TOP_TEXTURE);
+//        textures[2] = iconRegistrar.registerSprite(SIDE_TEXTURE);
+//    }
+//
+//    public void registerModels(IQuadBakery quadBakery, IModelBakery modelBakery, ITemplateBakery templateBakery) {
+//        float offset = 0.05f;
+//        for (Direction dir : Direction.values()) {
+//            TextureAtlasSprite tex = textures[dir.getAxis() == Direction.Axis.Y ? dir.ordinal() : 2];
+//            Vector3f start = new Vector3f(0, 0, 0);
+//            Vector3f end = new Vector3f(16, 16, 16);
+//            Vector3f offzet = new Vector3f(new Vec3d(dir.getDirectionVec()));
+//            offzet.mul(16 - offset);
+//            start.sub(offzet);
+//            end.sub(offzet);
+//            quads[dir.getOpposite().ordinal()] = quadBakery.bakeQuad(start, end, tex, dir);
+//        }
+//        this.initialized = true;
+//    }
 
 }
-*/

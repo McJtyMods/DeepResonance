@@ -1,35 +1,22 @@
 package mcjty.deepresonance.modules.core.tile;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Sets;
-import mcjty.deepresonance.api.crystal.ICrystalModifier;
-import mcjty.deepresonance.api.radiation.IWorldRadiationManager;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.client.ModelLoaderCoreModule;
 import mcjty.deepresonance.modules.core.util.CrystalHelper;
-import mcjty.deepresonance.modules.radiation.RadiationModule;
-import mcjty.deepresonance.modules.radiation.util.RadiationHelper;
 import mcjty.lib.tileentity.GenericTileEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class TileEntityResonatingCrystal extends GenericTileEntity implements ITickableTileEntity {
-
-    private static final Set<Capability<? extends ICrystalModifier>> MODIFIERS = Sets.newHashSet();
-    private static final int RADIATION_COOLDOWN = 22;
 
     // The total maximum RF you can get out of a crystal with the following characteristics:
     //    * S: Strength (0-100%)
@@ -45,51 +32,46 @@ public class TileEntityResonatingCrystal extends GenericTileEntity implements IT
     private float efficiency = 1.0f;    // Default 1%
     private float purity = 1.0f;        // Default 1% purity
 
-    private int radiationCooldown = 0;
-    private Set<ICrystalModifier> modifiers;
-    private LazyOptional<TileEntityResonatingCrystal> reference;
-    private float crystalPowerDrain = -1;    // Calculated value that contains the power/tick that is drained for this crystal.
-    private int powerProvided = -1;         // Calculated value that contains the RF/tick for this crystal.
+    private float powerPerTick = -1;    // Calculated value that contains the power/tick that is drained for this crystal.
+    private int rfPerTick = -1;         // Calculated value that contains the RF/tick for this crystal.
+
+    private boolean glowing = false;
 
     public TileEntityResonatingCrystal() {
         super(CoreModule.TYPE_RESONATING_CRYSTAL.get());
-    }
-
-    public static void registerModifier(Capability<? extends ICrystalModifier> type) {
-        MODIFIERS.add(type);
-    }
-
-    public boolean isGlowing() {
-        return false;   // @todo 1.16
-    }
-
-    public void setGlowing(boolean b) {
-        // @todo 1.16
-    }
-
-    public int getPowerPerTick() {
-        return 0;   // @todo 1.16
-    }
-
-    public int getRfPerTick() {
-        return 0;   // @todo 1.16
-    }
-
-    public int getResistance() {
-        return 0;   // @todo 1.16
     }
 
     public float getStrength() {
         return strength;
     }
 
+    public float getPower() {
+        return power;
+    }
+
+    public float getEfficiency() {
+        return efficiency;
+    }
+
+    public float getPurity() {
+        return purity;
+    }
+
+    public boolean isGlowing() {
+        return glowing;
+    }
+
+
+    // We enqueue crystals for processing later
+    public static Set<TileEntityResonatingCrystal> todoCrystals = new HashSet<>();
+
     public void setStrength(float strength) {
         this.strength = strength;
         markDirtyClient();
     }
 
-    public float getPower() {
-        return power;
+    public boolean isEmpty() {
+        return power < mcjty.deepresonance.util.Constants.CRYSTAL_MIN_POWER;
     }
 
     public void setPower(float power) {
@@ -98,13 +80,55 @@ public class TileEntityResonatingCrystal extends GenericTileEntity implements IT
         setChanged();
         boolean newempty = isEmpty();
         if (oldempty != newempty) {
-            getModifiers().forEach(mod -> mod.onPowerChanged(newempty));
             markDirtyClient();
         }
     }
 
-    public float getEfficiency() {
-        return efficiency;
+    public float getPowerPerTick() {
+        if (powerPerTick < 0) {
+            float totalRF = TileEntityResonatingCrystal.getTotalPower(strength, purity);
+            float numticks = totalRF / TileEntityResonatingCrystal.getRfPerTick(efficiency, purity);
+//            float numticks = totalRF / getRfPerTick();
+            powerPerTick = 100.0f / numticks;
+        }
+        return powerPerTick;
+    }
+
+    public static float getTotalPower(float strength, float purity) {
+        return 1000.0f * CoreModule.crystalConfig.MAX_POWER_STORED.get() * strength / 100.0f * (purity + 30.0f) / 130.0f;
+    }
+
+    public int getRfPerTick() {
+        if (rfPerTick == -1) {
+            rfPerTick = TileEntityResonatingCrystal.getRfPerTick(efficiency, purity);
+        }
+
+        // If we are super generating then we modify the RF here. To see that we're doing this we
+        // can basically check our resistance value
+
+        // resistance 1: factor 20
+        // resistance MAX: factor 1
+
+
+//        if (resistance < SuperGenerationConfiguration.maxResistance) {
+//            float factor = ((SuperGenerationConfiguration.maxResistance - resistance) * 19.0f / SuperGenerationConfiguration.maxResistance) + 1.0f;
+//            System.out.println("rfPerTick = " + rfPerTick + ", factor = " + factor);
+//            return (int) (rfPerTick * factor);
+//        }
+
+        return rfPerTick;
+    }
+
+    public static int getRfPerTick(float efficiency, float purity) {
+        return (int) (CoreModule.crystalConfig.MAX_POWER_TICK.get() * efficiency / 100.1f * (purity + 2.0f) / 102.0f + 1);
+    }
+
+
+    @Override
+    public void tick() {
+        if (!level.isClientSide()) {
+            todoCrystals.add(this);
+        }
     }
 
     public void setEfficiency(float efficiency) {
@@ -112,125 +136,22 @@ public class TileEntityResonatingCrystal extends GenericTileEntity implements IT
         markDirtyClient();
     }
 
-    public float getPurity() {
-        return purity;
-    }
-
     public void setPurity(float purity) {
         this.purity = purity;
         markDirtyClient();
     }
 
-    public boolean isEmpty() {
-        return CrystalHelper.isEmpty(getPower());
-    }
-
-    @Override
-    public void tick() {
-        getModifiers().forEach(ICrystalModifier::tick);
-    }
-
-    public int providePower(float percentage, boolean simulate) {
-        percentage = Math.min(percentage, 1);
-        if (isEmpty()) {
-            return 0;
+    public void setGlowing(boolean glowing) {
+        if (this.glowing == glowing) {
+            return;
         }
-        float power = getPower();
-        if (power < crystalPowerDrain) {
-            if (!simulate) {
-                setPower(0);
-            }
-            return 0;
-        }
-        if (crystalPowerDrain < 0 || powerProvided < 0) {
-            powerProvided = CrystalHelper.getRfPerTick(getEfficiency(), getPurity());
-
-            float totalPower = CrystalHelper.getTotalPower(getStrength(), getPurity());
-            float ticks = totalPower / powerProvided;
-            crystalPowerDrain = 100.0f / ticks;
-        }
-        if (!simulate) {
-            setPower(power - crystalPowerDrain);
-            radiationCooldown--;
-            if (radiationCooldown <= 0) {
-                spreadRadiation();
-                radiationCooldown = RADIATION_COOLDOWN;
-            }
-        }
-        float mod = 1;
-        for (ICrystalModifier modifier : getModifiers()) {
-            mod *= modifier.getPowerModifier(percentage, simulate);
-        }
-        return (int) (powerProvided * Math.min(mod, 100));
-    }
-
-    public void recalculateEnergy() {
-        crystalPowerDrain = powerProvided = -1;
-    }
-
-    private void spreadRadiation() {
-        LazyOptional<IWorldRadiationManager> cap = Preconditions.checkNotNull(getLevel()).getCapability(RadiationModule.CAPABILITY);
-        cap.ifPresent(radiationManager -> {
-            float purity = getPurity();
-            float strength = getStrength();
-            float radius = RadiationHelper.calculateRadiationRadius(strength, getEfficiency(), purity);
-            float radiationStrength = RadiationHelper.calculateRadiationStrength(strength, purity);
-            for (ICrystalModifier modifier : getModifiers()) {
-                radiationStrength *= modifier.getRadiationModifier();
-            }
-            radiationManager.getOrCreateRadiationSource(TileEntityResonatingCrystal.this.getBlockPos()).update(radius, radiationStrength, RADIATION_COOLDOWN);
-        });
-    }
-
-    private Set<ICrystalModifier> getModifiers() {
-        if (modifiers == null) {
-            modifiers = MODIFIERS.stream()
-                    .map(this::getCapability)
-                    .filter(LazyOptional::isPresent)
-                    .map(o -> o.orElseThrow(NullPointerException::new))
-                    .collect(Collectors.toSet());
-        }
-        return modifiers;
-    }
-
-    public LazyOptional<TileEntityResonatingCrystal> getReference() {
-        if (reference == null) {
-            reference = LazyOptional.of(() -> this);
-        }
-        return reference;
-    }
-
-
-    @Override
-    protected void invalidateCaps() {
-        super.invalidateCaps();
-        if (reference != null) {
-            reference.invalidate();
+        this.glowing = glowing;
+        if (level != null) {
+            markDirtyClient();
+        } else {
+            setChanged();
         }
     }
-
-    @Override
-    public boolean setOwner(PlayerEntity player) {
-        return false;
-    }
-
-    @Override
-    public String getOwnerName() {
-        return "";
-    }
-
-    @Override
-    public UUID getOwnerUUID() {
-        return null;
-    }
-
-
-    // @todo 1.16
-//    @Override
-//    public void validate() {
-//        super.validate();
-//        getModifiers().forEach(mod -> mod.setCrystal(this));
-//    }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {

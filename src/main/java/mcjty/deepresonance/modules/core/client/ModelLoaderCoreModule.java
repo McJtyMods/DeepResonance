@@ -1,7 +1,6 @@
 package mcjty.deepresonance.modules.core.client;
 
 import mcjty.deepresonance.DeepResonance;
-import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.ResourceLocation;
@@ -12,8 +11,7 @@ public class ModelLoaderCoreModule {
     public static final ResourceLocation RESONATING_CRYSTAL = new ResourceLocation(DeepResonance.MODID, "resonating_crystal_model");
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final BooleanProperty EMPTY = BooleanProperty.create("empty");
-    public static final BooleanProperty VERY_PURE = BooleanProperty.create("very_pure");
+//    public static final BooleanProperty VERY_PURE = BooleanProperty.create("very_pure");
 
     // @todo 1.16
 //    public static final StateContainer<Block, BlockState> stateContainer = RenderingRegistry.instance().registerBlockStateLocation(RESONATING_CRYSTAL, FACING, EMPTY, VERY_PURE);

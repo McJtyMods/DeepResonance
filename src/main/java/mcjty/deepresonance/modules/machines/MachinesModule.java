@@ -92,13 +92,6 @@ public class MachinesModule implements IModule {
         public RotationType getRotationType() {
             return RotationType.HORIZROTATION;
         }
-
-        @Override
-        protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-            super.createBlockStateDefinition(builder);
-            builder.add();
-        }
-
     });
     public static final RegistryObject<Item> PURIFIER_ITEM = Registration.fromBlock(PURIFIER_BLOCK);
     public static final RegistryObject<TileEntityType<TileEntityPurifier>> TYPE_PURIFIER = TILES.register("purifier", () -> TileEntityType.Builder.of(TileEntityPurifier::new, PURIFIER_BLOCK.get()).build(null));
@@ -127,18 +120,10 @@ public class MachinesModule implements IModule {
     public static final RegistryObject<ContainerType<GenericContainer>> LASER_CONTAINER = CONTAINERS.register("laser", GenericContainer::createContainerType);
 
     public static final RegistryObject<Block> CRYSTALLIZER_BLOCK = Registration.BLOCKS.register("crystallizer", () -> new BaseBlock(new BlockBuilder().tileEntitySupplier(TileEntityCrystallizer::new).infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("crystallizer")))) {
-
         @Override
         public RotationType getRotationType() {
             return RotationType.HORIZROTATION;
         }
-
-        @Override
-        protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-            super.createBlockStateDefinition(builder);
-            builder.add();
-        }
-
     });
     public static final RegistryObject<Item> CRYSTALLIZER_ITEM = Registration.fromBlock(CRYSTALLIZER_BLOCK);
     public static final RegistryObject<TileEntityType<TileEntityCrystallizer>> TYPE_CRYSTALIZER = TILES.register("crystallizer", () -> TileEntityType.Builder.of(TileEntityCrystallizer::new, CRYSTALLIZER_BLOCK.get()).build(null));

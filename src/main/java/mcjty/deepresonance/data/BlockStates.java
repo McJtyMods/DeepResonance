@@ -1,13 +1,29 @@
 package mcjty.deepresonance.data;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.core.block.BlockCrystal;
+import mcjty.deepresonance.modules.generator.GeneratorModule;
+import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.radiation.RadiationModule;
+import mcjty.deepresonance.modules.tank.TankModule;
+import mcjty.deepresonance.modules.tank.client.TankRenderer;
 import mcjty.lib.datagen.BaseBlockStateProvider;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
+import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class BlockStates extends BaseBlockStateProvider {
+
+    private final static ResourceLocation DEFAULT_TOP = new ResourceLocation(DeepResonance.MODID, "block/machine_top");
+    private final static ResourceLocation DEFAULT_SIDE = new ResourceLocation(DeepResonance.MODID, "block/machine_side");
+    private final static ResourceLocation DEFAULT_BOTTOM = new ResourceLocation(DeepResonance.MODID, "block/machine_bottom");
 
     public BlockStates(DataGenerator gen, ExistingFileHelper exFileHelper) {
         super(gen, DeepResonance.MODID, exFileHelper);
@@ -15,91 +31,107 @@ public class BlockStates extends BaseBlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        // @todo 1.16
-//        registerCrystalModel();
-//
-//        simpleBlock(TankModule.TANK_BLOCK, models().cubeBottomTop("tank", TankRenderer.SIDE_TEXTURE, TankRenderer.BOTTOM_TEXTURE, TankRenderer.TOP_TEXTURE));
-//        simpleBlock(CoreModule.RESONATING_ORE_STONE_BLOCK);
-//        simpleBlock(CoreModule.RESONATING_ORE_NETHER_BLOCK);
-//        simpleBlock(CoreModule.RESONATING_ORE_END_BLOCK);
-//        simpleBlock(RadiationModule.POISONED_DIRT_BLOCK);
-//        simpleBlock(RadiationModule.DENSE_GLASS_BLOCK);
-//        simpleBlock(RadiationModule.DENSE_OBSIDIAN_BLOCK);
-//        simpleBlock(CoreModule.RESONATING_PLATE_BLOCK_BLOCK);
-//        simpleSide(MachinesModule.VALVE_BLOCK, new ResourceLocation(DeepResonance.MODID, "block/valve"));
-//        simpleFacingModel(MachinesModule.SMELTER_BLOCK, BlockProperties.ACTIVE);
-//        simpleFront(MachinesModule.PURIFIER_BLOCK);
+        registerCrystalModel();
+        simpleBlock(TankModule.TANK_BLOCK.get(), models().cubeBottomTop("tank", TankRenderer.SIDE_TEXTURE, TankRenderer.BOTTOM_TEXTURE, TankRenderer.TOP_TEXTURE));
+        simpleBlock(CoreModule.RESONATING_ORE_STONE_BLOCK.get());
+        simpleBlock(CoreModule.RESONATING_ORE_NETHER_BLOCK.get());
+        simpleBlock(CoreModule.RESONATING_ORE_END_BLOCK.get());
+        simpleBlock(RadiationModule.POISONED_DIRT_BLOCK.get());
+        simpleBlock(RadiationModule.DENSE_GLASS_BLOCK.get());
+        simpleBlock(RadiationModule.DENSE_OBSIDIAN_BLOCK.get());
+        simpleBlock(CoreModule.RESONATING_PLATE_BLOCK_BLOCK.get());
+        simpleBlock(MachinesModule.VALVE_BLOCK.get(), models().cubeBottomTop(name(MachinesModule.VALVE_BLOCK.get()), new ResourceLocation(DeepResonance.MODID, "block/valve"), DEFAULT_BOTTOM, DEFAULT_TOP));
+        horizontalOrientedBlock(MachinesModule.SMELTER_BLOCK.get(), state -> {
+            if (state.getValue(BlockStateProperties.POWERED)) {
+                return frontBasedModel(name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/smelter_active"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM);
+            } else {
+                return frontBasedModel(name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/smelter"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM);
+            }
+        });
+        horizontalOrientedBlock(MachinesModule.PURIFIER_BLOCK.get(), state -> frontBasedModel(name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/purifier"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
+        simpleBlock(MachinesModule.LENS_BLOCK.get(), models().withExistingParent("lens_mc", new ResourceLocation(DeepResonance.MODID, "lens")).texture("lens_texture", "deepresonance:block/lens"));
 //        simpleFront(PulserModule.PULSER_BLOCK);
-//        simpleBlock(MachinesModule.LENS_BLOCK, models().withExistingParent("lens_mc", new ResourceLocation(DeepResonance.MODID, "lens")).texture("lens_texture", "deepresonance:block/lens"));
-//        simpleFacingModel(MachinesModule.LASER_BLOCK, createLaserModel());
-//        simpleFacingModel(MachinesModule.CRYSTALLIZER_BLOCK, createCrystallizerModel());
-//        simpleBlock(GeneratorModule.ENERGY_COLLECTOR_BLOCK, models().withExistingParent("energy_collector", new ResourceLocation(DeepResonance.MODID, "collector")).texture("collector_texture", "deepresonance:block/energy_collector"));
-//        simpleFacingModel(GeneratorModule.GENERATOR_CONTROLLER_BLOCK, BlockProperties.ON);
-//        simpleSide(GeneratorModule.GENERATOR_PART_BLOCK, state -> {
-//            String extra = "";
-//            if (state.get(BlockProperties.UP)) {
-//                extra += "_up";
-//            }
-//            if (state.get(BlockProperties.DOWN)) {
-//                extra += "_down";
-//            }
-//            if (state.get(BlockProperties.ON)) {
-//                extra += "_on";
-//            }
-//            return new ResourceLocation(DeepResonance.MODID, "block/generator_part_side" + extra);
-//        });
+        horizontalOrientedBlock(MachinesModule.LASER_BLOCK.get(), createLaserModel());
+        horizontalOrientedBlock(MachinesModule.CRYSTALLIZER_BLOCK.get(), createCrystallizerModel());
+        simpleBlock(GeneratorModule.ENERGY_COLLECTOR_BLOCK.get(), models().withExistingParent("energy_collector", new ResourceLocation(DeepResonance.MODID, "collector")).texture("collector_texture", "deepresonance:block/energy_collector"));
+        horizontalOrientedBlock(GeneratorModule.GENERATOR_CONTROLLER_BLOCK.get(), state -> {
+            if (state.getValue(BlockStateProperties.POWERED)) {
+                return frontBasedModel(name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/generator_controller_on"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM);
+            } else {
+                return frontBasedModel(name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/generator_controller"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM);
+            }
+        });
+        variantBlock(GeneratorModule.GENERATOR_PART_BLOCK.get(), state -> {
+            String extra = "";
+            if (state.getValue(BlockStateProperties.UP)) {
+                extra += "_up";
+            }
+            if (state.getValue(BlockStateProperties.DOWN)) {
+                extra += "_down";
+            }
+            if (state.getValue(BlockStateProperties.POWERED)) {
+                extra += "_on";
+            }
+            ResourceLocation id = new ResourceLocation(DeepResonance.MODID, "block/generator_part_side" + extra);
+            return models().cube("generator_part" + extra, DEFAULT_BOTTOM, DEFAULT_TOP, id, id, id, id);
+        });
     }
 
     private void registerCrystalModel() {
-        ModelFile empty = models().withExistingParent("crystal_empty", new ResourceLocation(DeepResonance.MODID, "crystal")).texture("crystal_texture", "deepresonance:block/empty_crystal");
-        ModelFile empty_pure = models().withExistingParent("crystal_empty_pure", new ResourceLocation(DeepResonance.MODID, "crystal_generated")).texture("crystal_texture", "deepresonance:block/empty_crystal");
-        ModelFile full = models().withExistingParent("crystal_full", new ResourceLocation(DeepResonance.MODID, "crystal")).texture("crystal_texture", "deepresonance:block/crystal");
-        ModelFile full_pure = models().withExistingParent("crystal_full_pure", new ResourceLocation(DeepResonance.MODID, "crystal_generated")).texture("crystal_texture", "deepresonance:block/crystal");
+        ResourceLocation crystal = new ResourceLocation(DeepResonance.MODID, "crystal");
+        ResourceLocation crystalGenerated = new ResourceLocation(DeepResonance.MODID, "crystal_generated");
 
-        // @todo 1.16
-//        simpleFacingModel(ModelLoaderCoreModule.stateContainer.getOwner(), state -> {
-//            if (state.get(ModelLoaderCoreModule.EMPTY)) {
-//                if (state.get(ModelLoaderCoreModule.VERY_PURE)) {
-//                    return empty_pure;
-//                } else {
-//                    return empty;
-//                }
-//            } else {
-//                if (state.get(ModelLoaderCoreModule.VERY_PURE)) {
-//                    return full_pure;
-//                } else {
-//                    return full;
-//                }
-//            }
-//        });
+        ModelFile empty = models().withExistingParent("crystal_empty", crystal).texture("crystal_texture", "deepresonance:block/empty_crystal");
+        ModelFile emptyGenerated = models().withExistingParent("crystal_empty_pure", crystalGenerated).texture("crystal_texture", "deepresonance:block/empty_crystal");
+        ModelFile full = models().withExistingParent("crystal_full", crystal).texture("crystal_texture", "deepresonance:block/crystal");
+        ModelFile fullGenerated = models().withExistingParent("crystal_full_pure", crystalGenerated).texture("crystal_texture", "deepresonance:block/crystal");
+
+        getVariantBuilder(CoreModule.RESONATING_CRYSTAL_BLOCK.get()).forAllStates(state -> {
+            Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+            Boolean isEmpty = state.getValue(BlockCrystal.EMPTY);
+            Boolean isGenerated = state.getValue(BlockCrystal.GENERATED);
+            ModelFile model;
+            if (isEmpty && isGenerated) {
+                model = emptyGenerated;
+            } else if (isEmpty) {
+                model = empty;
+            } else if (isGenerated) {
+                model = fullGenerated;
+            } else {
+                model = full;
+            }
+            return ConfiguredModel.builder()
+                    .modelFile(model)
+                    .rotationY((int) ((direction.toYRot() + 180) % 360))
+                    .build();
+        });
     }
 
-    // @todo 1.16
-//    public BlockModelBuilder createCrystallizerModel() {
-//        BlockModelBuilder ret = simpleFront("crystallizer", new ResourceLocation(DeepResonance.MODID, "block/crystallizer"));
-//        ModelBuilder<BlockModelBuilder>.ElementBuilder elem = ret.element();
-//        for (Direction direction : Direction.values()) {
-//            elem = elem.face(direction).cullface(direction).texture("#" + direction.getName()).end();
-//        }
-//        ret = elem.end();
-//        ret = ret.element().from(0, 0, 0).to(16, 7, 16).face(Direction.UP).texture("#" + Direction.UP.getName()).end().end();
-//        elem = ret.element().from(16, 16, 16).to(0, 0, 0);
-//        for (Direction direction : Direction.values()) {
-//            elem = elem.face(direction.getOpposite()).cullface(Direction.NORTH).texture("#" + Direction.UP.getName()).end();
-//        }
-//        return elem.end();
-//    }
-//
-//    public BlockModelBuilder createLaserModel() {
-//        BlockModelBuilder ret = simpleFront("laser", new ResourceLocation(DeepResonance.MODID, "block/laser"), new ResourceLocation(DeepResonance.MODID, "block/laser_back"));
-//        ret.texture("back", new ResourceLocation(DeepResonance.MODID, "block/laser_back_color"));
-//        ModelBuilder<BlockModelBuilder>.ElementBuilder elem = ret.element();
-//        for (Direction direction : Direction.values()) {
-//            elem = elem.face(direction).cullface(direction).texture("#" + direction.getName()).end();
-//        }
-//        ret = elem.end();
-//        return ret.element().from(0, 0, 1).to(16, 16, 16).face(Direction.SOUTH).cullface(Direction.SOUTH).texture("#back").tintindex(1).end().end();
-//    }
+    public BlockModelBuilder createCrystallizerModel() {
+        BlockModelBuilder ret = models().cube("crystallizer", DEFAULT_BOTTOM, DEFAULT_TOP, DEFAULT_SIDE, new ResourceLocation(DeepResonance.MODID, "block/crystallizer"), DEFAULT_SIDE, DEFAULT_SIDE);
+        ModelBuilder<BlockModelBuilder>.ElementBuilder elem = ret.element();
+        for (Direction direction : Direction.values()) {
+            elem = elem.face(direction).cullface(direction).texture("#" + direction.getName()).end();
+        }
+        ret = elem.end();
+        ret = ret.element().from(0, 0, 0).to(16, 7, 16).face(Direction.UP).texture("#" + Direction.UP.getName()).end().end();
+        elem = ret.element().from(16, 16, 16).to(0, 0, 0);
+        for (Direction direction : Direction.values()) {
+            elem = elem.face(direction.getOpposite()).cullface(Direction.NORTH).texture("#" + Direction.UP.getName()).end();
+        }
+        return elem.end();
+    }
+
+    public BlockModelBuilder createLaserModel() {
+        BlockModelBuilder ret = models().cube("laser", DEFAULT_BOTTOM, DEFAULT_TOP, new ResourceLocation(DeepResonance.MODID, "block/laser_back"), new ResourceLocation(DeepResonance.MODID, "block/laser"), new ResourceLocation(DeepResonance.MODID, "block/laser"), new ResourceLocation(DeepResonance.MODID, "block/laser"));
+        ret.texture("back", new ResourceLocation(DeepResonance.MODID, "block/laser_back_color"));
+        ModelBuilder<BlockModelBuilder>.ElementBuilder elem = ret.element();
+        for (Direction direction : Direction.values()) {
+            elem = elem.face(direction).cullface(direction).texture("#" + direction.getName()).end();
+        }
+        ret = elem.end();
+        return ret.element().from(0, 0, 1).to(16, 16, 16).face(Direction.SOUTH).cullface(Direction.SOUTH).texture("#back").tintindex(1).end().end();
+    }
 //
 //    @Override
 //    protected ResourceLocation getDefaultTopLocation() {

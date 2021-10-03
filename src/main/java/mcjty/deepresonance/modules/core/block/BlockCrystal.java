@@ -7,12 +7,15 @@ import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -36,6 +39,9 @@ import java.util.function.Consumer;
 public class BlockCrystal extends BaseBlock {
 
     private static final VoxelShape AABB = VoxelShapes.box(0.1f, 0, 0.1f, 0.9f, 0.8f, 0.9f);
+
+    public static BooleanProperty EMPTY = BooleanProperty.create("empty");
+    public static BooleanProperty GENERATED = BooleanProperty.create("generated");
 
     public BlockCrystal() {
         super(new BlockBuilder()
@@ -123,4 +129,9 @@ public class BlockCrystal extends BaseBlock {
 
     }
 
+    @Override
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(EMPTY, GENERATED);
+    }
 }
