@@ -1,62 +1,62 @@
 {
   "variants": {
-    "empty=false,facing=north,very_pure=false": {
+    "empty=false,facing=north,generated=false": {
       "model": "deepresonance:block/crystal_full"
     },
-    "empty=true,facing=north,very_pure=false": {
+    "empty=true,facing=north,generated=false": {
       "model": "deepresonance:block/crystal_empty"
     },
-    "empty=false,facing=south,very_pure=false": {
+    "empty=false,facing=south,generated=false": {
       "model": "deepresonance:block/crystal_full",
       "y": 180
     },
-    "empty=true,facing=south,very_pure=false": {
+    "empty=true,facing=south,generated=false": {
       "model": "deepresonance:block/crystal_empty",
       "y": 180
     },
-    "empty=false,facing=west,very_pure=false": {
+    "empty=false,facing=west,generated=false": {
       "model": "deepresonance:block/crystal_full",
       "y": 270
     },
-    "empty=true,facing=west,very_pure=false": {
+    "empty=true,facing=west,generated=false": {
       "model": "deepresonance:block/crystal_empty",
       "y": 270
     },
-    "empty=false,facing=east,very_pure=false": {
+    "empty=false,facing=east,generated=false": {
       "model": "deepresonance:block/crystal_full",
       "y": 90
     },
-    "empty=true,facing=east,very_pure=false": {
+    "empty=true,facing=east,generated=false": {
       "model": "deepresonance:block/crystal_empty",
       "y": 90
     },
-    "empty=false,facing=north,very_pure=true": {
+    "empty=false,facing=north,generated=true": {
       "model": "deepresonance:block/crystal_full_pure"
     },
-    "empty=true,facing=north,very_pure=true": {
+    "empty=true,facing=north,generated=true": {
       "model": "deepresonance:block/crystal_empty_pure"
     },
-    "empty=false,facing=south,very_pure=true": {
+    "empty=false,facing=south,generated=true": {
       "model": "deepresonance:block/crystal_full_pure",
       "y": 180
     },
-    "empty=true,facing=south,very_pure=true": {
+    "empty=true,facing=south,generated=true": {
       "model": "deepresonance:block/crystal_empty_pure",
       "y": 180
     },
-    "empty=false,facing=west,very_pure=true": {
+    "empty=false,facing=west,generated=true": {
       "model": "deepresonance:block/crystal_full_pure",
       "y": 270
     },
-    "empty=true,facing=west,very_pure=true": {
+    "empty=true,facing=west,generated=true": {
       "model": "deepresonance:block/crystal_empty_pure",
       "y": 270
     },
-    "empty=false,facing=east,very_pure=true": {
+    "empty=false,facing=east,generated=true": {
       "model": "deepresonance:block/crystal_full_pure",
       "y": 90
     },
-    "empty=true,facing=east,very_pure=true": {
+    "empty=true,facing=east,generated=true": {
       "model": "deepresonance:block/crystal_empty_pure",
       "y": 90
     }

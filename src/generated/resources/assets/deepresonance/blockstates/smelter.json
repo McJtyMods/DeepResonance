@@ -1,33 +1,33 @@
 {
   "variants": {
-    "active=false,facing=north": {
+    "facing=north,powered=false": {
       "model": "deepresonance:block/smelter"
     },
-    "active=true,facing=north": {
-      "model": "deepresonance:block/smelter_active"
-    },
-    "active=false,facing=south": {
+    "facing=south,powered=false": {
       "model": "deepresonance:block/smelter",
       "y": 180
     },
-    "active=true,facing=south": {
-      "model": "deepresonance:block/smelter_active",
-      "y": 180
-    },
-    "active=false,facing=west": {
+    "facing=west,powered=false": {
       "model": "deepresonance:block/smelter",
       "y": 270
     },
-    "active=true,facing=west": {
-      "model": "deepresonance:block/smelter_active",
-      "y": 270
-    },
-    "active=false,facing=east": {
+    "facing=east,powered=false": {
       "model": "deepresonance:block/smelter",
       "y": 90
     },
-    "active=true,facing=east": {
-      "model": "deepresonance:block/smelter_active",
+    "facing=north,powered=true": {
+      "model": "deepresonance:block/smelter"
+    },
+    "facing=south,powered=true": {
+      "model": "deepresonance:block/smelter",
+      "y": 180
+    },
+    "facing=west,powered=true": {
+      "model": "deepresonance:block/smelter",
+      "y": 270
+    },
+    "facing=east,powered=true": {
+      "model": "deepresonance:block/smelter",
       "y": 90
     }
   }

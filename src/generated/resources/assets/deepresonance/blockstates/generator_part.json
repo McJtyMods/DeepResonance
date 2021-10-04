@@ -1,28 +1,28 @@
 {
   "variants": {
-    "down=false,on=false,up=false": {
-      "model": "deepresonance:block/generator_part_side"
+    "down=false,powered=false,up=false": {
+      "model": "deepresonance:block/generator_part"
     },
-    "down=true,on=false,up=false": {
-      "model": "deepresonance:block/generator_part_side_down"
+    "down=true,powered=false,up=false": {
+      "model": "deepresonance:block/generator_part_down"
     },
-    "down=false,on=true,up=false": {
-      "model": "deepresonance:block/generator_part_side_on"
+    "down=false,powered=true,up=false": {
+      "model": "deepresonance:block/generator_part_on"
     },
-    "down=true,on=true,up=false": {
-      "model": "deepresonance:block/generator_part_side_down_on"
+    "down=true,powered=true,up=false": {
+      "model": "deepresonance:block/generator_part_down_on"
     },
-    "down=false,on=false,up=true": {
-      "model": "deepresonance:block/generator_part_side_up"
+    "down=false,powered=false,up=true": {
+      "model": "deepresonance:block/generator_part_up"
     },
-    "down=true,on=false,up=true": {
-      "model": "deepresonance:block/generator_part_side_up_down"
+    "down=true,powered=false,up=true": {
+      "model": "deepresonance:block/generator_part_up_down"
     },
-    "down=false,on=true,up=true": {
-      "model": "deepresonance:block/generator_part_side_up_on"
+    "down=false,powered=true,up=true": {
+      "model": "deepresonance:block/generator_part_up_on"
     },
-    "down=true,on=true,up=true": {
-      "model": "deepresonance:block/generator_part_side_up_down_on"
+    "down=true,powered=true,up=true": {
+      "model": "deepresonance:block/generator_part_up_down_on"
     }
   }
 }

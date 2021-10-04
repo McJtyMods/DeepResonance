@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "deepresonance:block/machine_bottom",
+    "up": "deepresonance:block/machine_top",
+    "north": "deepresonance:block/generator_part_side_down",
+    "south": "deepresonance:block/generator_part_side_down",
+    "east": "deepresonance:block/generator_part_side_down",
+    "west": "deepresonance:block/generator_part_side_down"
+  }
+}

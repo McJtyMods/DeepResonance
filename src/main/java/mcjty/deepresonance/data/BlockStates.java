@@ -41,25 +41,24 @@ public class BlockStates extends BaseBlockStateProvider {
         simpleBlock(RadiationModule.DENSE_OBSIDIAN_BLOCK.get());
         simpleBlock(CoreModule.RESONATING_PLATE_BLOCK_BLOCK.get());
         simpleBlock(MachinesModule.VALVE_BLOCK.get(), models().cubeBottomTop(name(MachinesModule.VALVE_BLOCK.get()), new ResourceLocation(DeepResonance.MODID, "block/valve"), DEFAULT_BOTTOM, DEFAULT_TOP));
-        horizontalOrientedBlock(MachinesModule.SMELTER_BLOCK.get(), state -> {
+        horizontalOrientedBlock(MachinesModule.SMELTER_BLOCK.get(), (state, builder) -> {
             if (state.getValue(BlockStateProperties.POWERED)) {
-                return frontBasedModel(name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/smelter_active"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM);
+                builder.modelFile(frontBasedModel(name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/smelter_active"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
             } else {
-                return frontBasedModel(name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/smelter"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM);
+                builder.modelFile(frontBasedModel(name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/smelter"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
             }
         });
-        horizontalOrientedBlock(MachinesModule.PURIFIER_BLOCK.get(), state -> frontBasedModel(name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/purifier"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
+        horizontalOrientedBlock(MachinesModule.PURIFIER_BLOCK.get(), (state, builder) -> builder.modelFile(frontBasedModel(name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/purifier"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM)));
         simpleBlock(MachinesModule.LENS_BLOCK.get(), models().withExistingParent("lens_mc", new ResourceLocation(DeepResonance.MODID, "lens")).texture("lens_texture", "deepresonance:block/lens"));
 //        simpleFront(PulserModule.PULSER_BLOCK);
         horizontalOrientedBlock(MachinesModule.LASER_BLOCK.get(), createLaserModel());
         horizontalOrientedBlock(MachinesModule.CRYSTALLIZER_BLOCK.get(), createCrystallizerModel());
         simpleBlock(GeneratorModule.ENERGY_COLLECTOR_BLOCK.get(), models().withExistingParent("energy_collector", new ResourceLocation(DeepResonance.MODID, "collector")).texture("collector_texture", "deepresonance:block/energy_collector"));
-        horizontalOrientedBlock(GeneratorModule.GENERATOR_CONTROLLER_BLOCK.get(), state -> {
+        horizontalOrientedBlock(GeneratorModule.GENERATOR_CONTROLLER_BLOCK.get(), (state, builder) -> {
             if (state.getValue(BlockStateProperties.POWERED)) {
-                return frontBasedModel(name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/generator_controller_on"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM);
+                builder.modelFile(frontBasedModel(name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/generator_controller_on"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
             } else {
-                return frontBasedModel(name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/generator_controller"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM);
-            }
+                builder.modelFile(frontBasedModel(name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/generator_controller"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));            }
         });
         variantBlock(GeneratorModule.GENERATOR_PART_BLOCK.get(), state -> {
             String extra = "";

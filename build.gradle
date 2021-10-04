@@ -85,6 +85,10 @@ jar {
     }
 }
 
+jar {
+  duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
 sourceSets.main.resources {
     srcDir 'src/generated/resources'
 }

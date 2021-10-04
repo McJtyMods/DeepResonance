@@ -1,11 +1,12 @@
 {
-  "parent": "block/cube",
+  "parent": "minecraft:block/cube",
   "textures": {
     "down": "deepresonance:block/machine_bottom",
     "up": "deepresonance:block/machine_top",
     "north": "deepresonance:block/smelter",
     "south": "deepresonance:block/machine_side",
     "east": "deepresonance:block/machine_side",
-    "west": "deepresonance:block/machine_side"
+    "west": "deepresonance:block/machine_side",
+    "particle": "deepresonance:block/smelter"
   }
 }
