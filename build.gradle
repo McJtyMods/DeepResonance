@@ -8,7 +8,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.4.0'
     }
 }
@@ -28,10 +28,10 @@ repositories {
     }
     maven { // TOP
         name 'tterrag maven'
-        url "http://maven.tterrag.com/"
+        url "https://maven.tterrag.com/"
     }
     maven { // McJtyLib
-        url "http://maven.k-4u.nl"
+        url "https://maven.k-4u.nl"
     }
 }
 
@@ -94,28 +94,28 @@ dependencies {
 
     compileOnly fg.deobf("mezz.jei:jei-${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${jei_version}")
-    compile fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}") {
+    implementation fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}") {
         transitive = false
     }
 
     if (findProject(':TheOneProbe') != null) {
-        compile project(':TheOneProbe')
+        implementation project(':TheOneProbe')
     } else {
-        compile fg.deobf(project.dependencies.create("mcjty.theoneprobe:TheOneProbe-${top_version}") {
+        implementation fg.deobf(project.dependencies.create("mcjty.theoneprobe:TheOneProbe-${top_version}") {
             transitive = false
         })
     }
     if (findProject(':McJtyLib') != null) {
-        compile project(':McJtyLib')
+        implementation project(':McJtyLib')
     } else {
-        compile fg.deobf (project.dependencies.create("com.github.mcjty:mcjtylib:${mcjtylib_version}") {
+        implementation fg.deobf (project.dependencies.create("com.github.mcjty:mcjtylib:${mcjtylib_version}") {
             transitive = false
         })
     }
     if (findProject(':RFToolsBase') != null) {
-        compile project(':RFToolsBase')
+        implementation project(':RFToolsBase')
     } else {
-        compile fg.deobf (project.dependencies.create("com.github.mcjty:rftoolsbase:${rftoolsbase_version}") {
+        implementation fg.deobf (project.dependencies.create("com.github.mcjty:rftoolsbase:${rftoolsbase_version}") {
             transitive = false
         })
     }
