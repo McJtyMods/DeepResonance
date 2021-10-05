@@ -1,29 +1,23 @@
 package mcjty.deepresonance.modules.generator.data;
 
+import mcjty.lib.multiblock.IMultiblock;
+import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.worlddata.AbstractWorldData;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
 
     private static final String GENERATOR_NETWORK_NAME = "DRGeneratorNetwork";
 
-    private int lastId = 0;
-
-    private final Map<Integer,Network> networks = new HashMap<>();
+    private final MultiblockDriver<Network> driver = new MultiblockDriver<Network>(Network::new, d -> setDirty());
 
     public DRGeneratorNetwork(String name) {
         super(name);
     }
 
     public void clear() {
-        networks.clear();
-        lastId = 0;
+        driver.clear();
     }
 
     public static DRGeneratorNetwork getChannels(World world) {
@@ -31,56 +25,32 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
     }
 
     public Network getOrCreateNetwork(int id) {
-        Network channel = networks.get(id);
-        if (channel == null) {
-            channel = new Network();
-            networks.put(id, channel);
-        }
-        return channel;
+        return driver.getOrCreate(id);
     }
 
     public Network getChannel(int id) {
-        return networks.get(id);
+        return driver.get(id);
     }
 
     public void deleteChannel(int id) {
-        networks.remove(id);
+        driver.delete(id);
     }
 
     public int newChannel() {
-        lastId++;
-        return lastId;
+        return driver.create();
     }
 
     @Override
     public void load(CompoundNBT tagCompound) {
-        networks.clear();
-        ListNBT lst = tagCompound.getList("networks", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0 ; i < lst.size() ; i++) {
-            CompoundNBT tc = lst.getCompound(i);
-            int channel = tc.getInt("channel");
-            Network value = new Network();
-            value.readFromNBT(tc);
-            networks.put(channel, value);
-        }
-        lastId = tagCompound.getInt("lastId");
+        driver.load(tagCompound);
     }
 
     @Override
     public CompoundNBT save(CompoundNBT tagCompound) {
-        ListNBT lst = new ListNBT();
-        for (Map.Entry<Integer, Network> entry : networks.entrySet()) {
-            CompoundNBT tc = new CompoundNBT();
-            tc.putInt("channel", entry.getKey());
-            entry.getValue().writeToNBT(tc);
-            lst.add(tc);
-        }
-        tagCompound.put("networks", lst);
-        tagCompound.putInt("lastId", lastId);
-        return tagCompound;
+        return driver.save(tagCompound);
     }
 
-    public static class Network {
+    public static class Network implements IMultiblock {
         private int generatorBlocks = 0;
         private int collectorBlocks = 0;
         private int energy = 0;
@@ -161,7 +131,18 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
             this.shutdownCounter = shutdownCounter;
         }
 
-        public CompoundNBT writeToNBT(CompoundNBT tagCompound){
+        @Override
+        public void load(CompoundNBT tagCompound) {
+            this.generatorBlocks = tagCompound.getInt("refcount");
+            this.collectorBlocks = tagCompound.getInt("collectors");
+            this.energy = tagCompound.getInt("energy");
+            this.active = tagCompound.getBoolean("active");
+            this.startupCounter = tagCompound.getInt("startup");
+            this.shutdownCounter = tagCompound.getInt("shutdown");
+        }
+
+        @Override
+        public CompoundNBT save(CompoundNBT tagCompound) {
             tagCompound.putInt("refcount", generatorBlocks);
             tagCompound.putInt("collectors", collectorBlocks);
             tagCompound.putInt("energy", energy);
@@ -169,15 +150,6 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
             tagCompound.putInt("startup", startupCounter);
             tagCompound.putInt("shutdown", shutdownCounter);
             return tagCompound;
-        }
-
-        public void readFromNBT(CompoundNBT tagCompound){
-            this.generatorBlocks = tagCompound.getInt("refcount");
-            this.collectorBlocks = tagCompound.getInt("collectors");
-            this.energy = tagCompound.getInt("energy");
-            this.active = tagCompound.getBoolean("active");
-            this.startupCounter = tagCompound.getInt("startup");
-            this.shutdownCounter = tagCompound.getInt("shutdown");
         }
     }
 }

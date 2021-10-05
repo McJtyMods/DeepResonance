@@ -35,9 +35,6 @@ import javax.annotation.Nullable;
 import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.generic;
 
-/**
- * Created by Elec332 on 26-7-2020
- */
 public class TileEntitySmelter extends GenericTileEntity implements ITickableTileEntity {
 
     public static final int SLOT = 0;

@@ -71,7 +71,7 @@ public class TileEntityGeneratorPart extends GenericTileEntity implements ITicka
     }
 
     public void addBlockToNetwork() {
-        Set<Integer> adjacentGeneratorIds = new HashSet<Integer>();
+        Set<Integer> adjacentGeneratorIds = new HashSet<>();
         for (Direction direction : OrientationTools.DIRECTION_VALUES) {
             BlockPos pos = getBlockPos().relative(direction);
             Block block = level.getBlockState(pos).getBlock();
