@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
 import mcjty.lib.multiblock.IMultiblockConnector;
+import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.multiblock.MultiblockSupport;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
@@ -67,151 +68,15 @@ public class TileEntityGeneratorPart extends GenericTileEntity implements ITicka
     }
 
     public void addBlockToNetwork() {
-        DRGeneratorNetwork.Network newMb = new DRGeneratorNetwork.Network(1, 0, 0, false, 0, 0, 0);
+        DRGeneratorNetwork.Network newMb = DRGeneratorNetwork.Network.builder()
+                .generatorBlocks(1)
+                .active(false)
+                .build();
         MultiblockSupport.addBlock(level, getBlockPos(), DRGeneratorNetwork.getChannels(level).getDriver(), newMb);
-//
-//        Set<Integer> adjacentGeneratorIds = new HashSet<>();
-//        for (Direction direction : OrientationTools.DIRECTION_VALUES) {
-//            BlockPos pos = getBlockPos().relative(direction);
-//            Block block = level.getBlockState(pos).getBlock();
-//            if (block == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
-//                TileEntityGeneratorPart generatorTileEntity = (TileEntityGeneratorPart) level.getBlockEntity(pos);
-//                adjacentGeneratorIds.add(generatorTileEntity.getMultiblockId());
-//            }
-//        }
-//
-//        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(level);
-//
-//        if (adjacentGeneratorIds.isEmpty()) {
-//            // New network.
-//            networkId = generatorNetwork.newChannel();
-//            DRGeneratorNetwork.Network network = generatorNetwork.getNetwork(networkId);
-//            network.setGeneratorBlocks(1);
-//        } else if (adjacentGeneratorIds.size() == 1) {
-//            // Only one network adjacent. So we can simply join this new block to that network.
-//            networkId = adjacentGeneratorIds.iterator().next();
-//            DRGeneratorNetwork.Network network = generatorNetwork.getNetwork(networkId);
-//            network.setActive(false);       // Deactivate to make sure it properly restarts
-//            network.incGeneratorBlocks();
-//        } else {
-//            // We need to merge networks. The first network will be the master. First we
-//            // calculate the total amount of energy in all the networks that are merged this way.
-//            int energy = 0;
-//            for (Integer netId : adjacentGeneratorIds) {
-//                DRGeneratorNetwork.Network network = generatorNetwork.getNetwork(netId);
-//                network.setActive(false);       // Deactivate to make sure it properly restarts
-//                energy += network.getEnergy();
-//            }
-//
-//            int id = adjacentGeneratorIds.iterator().next();
-//            Set<BlockPos> done = Sets.newHashSet();
-//            setBlocksToNetwork(getBlockPos(), done, id);
-//
-//            DRGeneratorNetwork.Network network = generatorNetwork.getNetwork(networkId);
-//            network.setEnergy(energy);
-//        }
-//
-//        generatorNetwork.save();
     }
 
-//    private void setBlocksToNetwork(BlockPos c, Set<BlockPos> done, int newId) {
-//        done.add(c);
-//
-//        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(level);
-//        TileEntityGeneratorPart generatorTileEntity = (TileEntityGeneratorPart) level.getBlockEntity(c);
-//        int oldNetworkId = generatorTileEntity.getMultiblockId();
-//        if (oldNetworkId != newId) {
-//            if (oldNetworkId != -1) {
-//                generatorNetwork.getNetwork(oldNetworkId).decGeneratorBlocks();
-//            }
-//            generatorTileEntity.setMultiblockId(newId);
-//            if (newId != -1) {
-//                generatorNetwork.getNetwork(newId).incGeneratorBlocks();
-//            }
-//        }
-//
-//        for (Direction direction : OrientationTools.DIRECTION_VALUES) {
-//            BlockPos newC = c.relative(direction);
-//            if (!done.contains(newC)) {
-//                Block block = level.getBlockState(newC).getBlock();
-//                if (block == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
-//                    setBlocksToNetwork(newC, done, newId);
-//                }
-//            }
-//        }
-//    }
-
     public void removeBlockFromNetwork() {
-
         MultiblockSupport.removeBlock(level, getBlockPos(), DRGeneratorNetwork.getChannels(level).getDriver());
-//
-//        int totalEnergy = 0;
-//        int totalBlocks = 0;
-//        if (networkId != -1) {
-//            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(level);
-//            DRGeneratorNetwork.Network network = generatorNetwork.getNetwork(networkId);
-//            network.setActive(false);       // Deactivate to make sure it properly restarts
-//            network.decGeneratorBlocks();
-//            totalEnergy = network.getEnergy();
-//            totalBlocks = network.getGeneratorBlocks();
-//            setMultiblockId(-1);
-//
-//        }
-//        // Safety:
-//        if (totalBlocks < 1) {
-//            totalBlocks = 1;
-//        }
-//
-//        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(level);
-//
-//        // Clear all networks adjacent to this one.
-//        for (Direction direction : OrientationTools.DIRECTION_VALUES) {
-//            BlockPos newC = getBlockPos().relative(direction);
-//            Block block = level.getBlockState(newC).getBlock();
-//            if (block == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
-//                Set<BlockPos> done = Sets.newHashSet();
-//                done.add(getBlockPos());
-//                setBlocksToNetwork(newC, done, -1);
-//            }
-//        }
-//
-//        // Now assign new ones.
-//        int idToUse = networkId;
-//        for (Direction direction : OrientationTools.DIRECTION_VALUES) {
-//            BlockPos newC = getBlockPos().relative(direction);
-//            Block block = level.getBlockState(newC).getBlock();
-//            if (block == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
-//                TileEntityGeneratorPart generatorTileEntity = (TileEntityGeneratorPart) level.getBlockEntity(newC);
-//                if (generatorTileEntity.getMultiblockId() == -1) {
-//                    if (idToUse == -1) {
-//                        idToUse = generatorNetwork.newChannel();
-//                    }
-//                    Set<BlockPos> done = Sets.newHashSet();
-//                    done.add(getBlockPos());
-//                    setBlocksToNetwork(newC, done, idToUse);
-//                    generatorNetwork.getNetwork(idToUse).setEnergy(-1);      // Marker so we know what energy to set later.
-//
-//                    idToUse = -1;
-//                }
-//            }
-//        }
-//
-//        // Now we need to redistribute the total energy based on the size of the adjacent networks.
-//        int energy = totalEnergy / totalBlocks;
-//        int remainder = totalEnergy % totalBlocks;
-//        for (Direction direction : OrientationTools.DIRECTION_VALUES) {
-//            BlockPos newC = getBlockPos().relative(direction);
-//            Block block = level.getBlockState(newC).getBlock();
-//            if (block == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
-//                TileEntityGeneratorPart generatorTileEntity = (TileEntityGeneratorPart) level.getBlockEntity(newC);
-//                DRGeneratorNetwork.Network network = generatorTileEntity.getNetwork();
-//                if (network.getEnergy() == -1) {
-//                    network.setEnergy(energy * network.getGeneratorBlocks() + remainder);
-//                    remainder = 0;  // Only the first network gets the remainder.
-//                }
-//            }
-//        }
-//        generatorNetwork.save();
     }
 
     // Move this tile entity to another network.
@@ -226,6 +91,10 @@ public class TileEntityGeneratorPart extends GenericTileEntity implements ITicka
     @Override
     public int getMultiblockId() {
         return networkId;
+    }
+
+    private MultiblockDriver<DRGeneratorNetwork.Network> getDriver() {
+        return DRGeneratorNetwork.getChannels(level).getDriver();
     }
 
     public DRGeneratorNetwork.Network getNetwork() {

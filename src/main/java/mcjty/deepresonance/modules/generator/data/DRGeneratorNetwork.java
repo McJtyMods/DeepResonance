@@ -13,7 +13,8 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
     private static final String GENERATOR_NETWORK_NAME = "DRGeneratorNetwork";
 
     private final MultiblockDriver<Network> driver = MultiblockDriver.<Network>builder()
-            .blockSupplier(Network::load)
+            .loader(Network::load)
+            .saver(Network::save)
             .dirtySetter(d -> setDirty())
             .fixer(new GeneratorFixer())
             .holderGetter(
@@ -70,24 +71,22 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
     }
 
     public static class Network implements IMultiblock {
-        private int generatorBlocks;
-        private int collectorBlocks;
-        private int energy;
-        private boolean active;
-        private int startupCounter;
-        private int shutdownCounter;
-        private int lastRfPerTick;
+        private final int generatorBlocks;
+        private final int collectorBlocks;
+        private final int energy;
+        private final boolean active;
+        private final int startupCounter;
+        private final int shutdownCounter;
+        private final int lastRfPerTick;
 
-        // @TODO needs to be final/immutable!
-
-        public Network(int generatorBlocks, int collectorBlocks, int energy, boolean active, int startupCounter, int shutdownCounter, int lastRfPerTick) {
-            this.generatorBlocks = generatorBlocks;
-            this.collectorBlocks = collectorBlocks;
-            this.energy = energy;
-            this.active = active;
-            this.startupCounter = startupCounter;
-            this.shutdownCounter = shutdownCounter;
-            this.lastRfPerTick = lastRfPerTick;
+        private Network(Builder builder) {
+            this.generatorBlocks = builder.generatorBlocks;
+            this.collectorBlocks = builder.collectorBlocks;
+            this.energy = builder.energy;
+            this.active = builder.active;
+            this.startupCounter = builder.startupCounter;
+            this.shutdownCounter = builder.shutdownCounter;
+            this.lastRfPerTick = builder.lastRfPerTick;
         }
 
         public int getGeneratorBlocks() {
@@ -119,24 +118,110 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
         }
 
         public static Network load(CompoundNBT tagCompound) {
-            int generatorBlocks = tagCompound.getInt("refcount");
-            int collectorBlocks = tagCompound.getInt("collectors");
-            int energy = tagCompound.getInt("energy");
-            boolean active = tagCompound.getBoolean("active");
-            int startupCounter = tagCompound.getInt("startup");
-            int shutdownCounter = tagCompound.getInt("shutdown");
-            return new Network(generatorBlocks, collectorBlocks, energy, active, startupCounter, shutdownCounter, 0);
+            return Network.builder()
+                    .generatorBlocks(tagCompound.getInt("refcount"))
+                    .collectorBlocks(tagCompound.getInt("collectors"))
+                    .energy(tagCompound.getInt("energy"))
+                    .active(tagCompound.getBoolean("active"))
+                    .startupCounter(tagCompound.getInt("startup"))
+                    .shutdownCounter(tagCompound.getInt("shutdown"))
+                    .build();
         }
 
-        @Override
-        public CompoundNBT save(CompoundNBT tagCompound) {
-            tagCompound.putInt("refcount", generatorBlocks);
-            tagCompound.putInt("collectors", collectorBlocks);
-            tagCompound.putInt("energy", energy);
-            tagCompound.putBoolean("active", active);
-            tagCompound.putInt("startup", startupCounter);
-            tagCompound.putInt("shutdown", shutdownCounter);
+        public static CompoundNBT save(CompoundNBT tagCompound, Network network) {
+            tagCompound.putInt("refcount", network.generatorBlocks);
+            tagCompound.putInt("collectors", network.collectorBlocks);
+            tagCompound.putInt("energy", network.energy);
+            tagCompound.putBoolean("active", network.active);
+            tagCompound.putInt("startup", network.startupCounter);
+            tagCompound.putInt("shutdown", network.shutdownCounter);
             return tagCompound;
+        }
+
+        public static Builder builder() {
+            return new Builder();
+        }
+
+        public static class Builder {
+            private int generatorBlocks = 0;
+            private int collectorBlocks = 0;
+            private int energy = 0;
+            private boolean active;
+            private int startupCounter;
+            private int shutdownCounter;
+            private int lastRfPerTick;
+
+            public Builder network(Network network) {
+                generatorBlocks = network.generatorBlocks;
+                collectorBlocks = network.collectorBlocks;
+                energy = network.energy;
+                active = network.active;
+                startupCounter = network.startupCounter;
+                shutdownCounter = network.shutdownCounter;
+                lastRfPerTick = network.lastRfPerTick;
+                return this;
+            }
+
+            public Builder merge(Network network) {
+                generatorBlocks += network.generatorBlocks;
+                collectorBlocks += network.collectorBlocks;
+                energy += network.energy;
+                return this;
+            }
+
+            public Builder generatorBlocks(int generatorBlocks) {
+                this.generatorBlocks = generatorBlocks;
+                return this;
+            }
+
+            public Builder addGeneratorBlocks(int a) {
+                this.generatorBlocks += a;
+                return this;
+            }
+
+            public Builder collectorBlocks(int collectorBlocks) {
+                this.collectorBlocks = collectorBlocks;
+                return this;
+            }
+
+            public Builder addCollectorBlocks(int a) {
+                this.collectorBlocks += a;
+                return this;
+            }
+
+            public Builder energy(int energy) {
+                this.energy = energy;
+                return this;
+            }
+
+            public Builder addEnergy(int a) {
+                this.energy += a;
+                return this;
+            }
+
+            public Builder active(boolean active) {
+                this.active = active;
+                return this;
+            }
+
+            public Builder startupCounter(int startupCounter) {
+                this.startupCounter = startupCounter;
+                return this;
+            }
+
+            public Builder shutdownCounter(int shutdownCounter) {
+                this.shutdownCounter = shutdownCounter;
+                return this;
+            }
+
+            public Builder lastRfPerTick(int lastRfPerTick) {
+                this.lastRfPerTick = lastRfPerTick;
+                return this;
+            }
+
+            public Network build() {
+                return new Network(this);
+            }
         }
     }
 }
