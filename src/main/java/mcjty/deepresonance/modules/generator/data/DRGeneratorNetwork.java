@@ -1,16 +1,31 @@
 package mcjty.deepresonance.modules.generator.data;
 
 import mcjty.lib.multiblock.IMultiblock;
+import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.worlddata.AbstractWorldData;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
 
     private static final String GENERATOR_NETWORK_NAME = "DRGeneratorNetwork";
 
-    private final MultiblockDriver<Network> driver = new MultiblockDriver<Network>(Network::new, d -> setDirty());
+    private final MultiblockDriver<Network> driver = MultiblockDriver.<Network>builder()
+            .blockSupplier(Network::load)
+            .dirtySetter(d -> setDirty())
+            .fixer(new GeneratorFixer())
+            .holderGetter(
+                    (world, blockPos) -> {
+                        TileEntity be = world.getBlockEntity(blockPos);
+                        if (be instanceof IMultiblockConnector) {
+                            return (IMultiblockConnector) be;
+                        } else {
+                            return null;
+                        }
+                    })
+            .build();
 
     public DRGeneratorNetwork(String name) {
         super(name);
@@ -20,12 +35,16 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
         driver.clear();
     }
 
+    public MultiblockDriver<Network> getDriver() {
+        return driver;
+    }
+
     public static DRGeneratorNetwork getChannels(World world) {
         return getData(world, () -> new DRGeneratorNetwork(GENERATOR_NETWORK_NAME), GENERATOR_NETWORK_NAME);
     }
 
-    public Network getOrCreateNetwork(int id) {
-        return driver.getOrCreate(id);
+    public Network getNetwork(int id) {
+        return driver.get(id);
     }
 
     public Network getChannel(int id) {
@@ -37,7 +56,7 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
     }
 
     public int newChannel() {
-        return driver.create();
+        return driver.createId();
     }
 
     @Override
@@ -51,94 +70,62 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
     }
 
     public static class Network implements IMultiblock {
-        private int generatorBlocks = 0;
-        private int collectorBlocks = 0;
-        private int energy = 0;
-        private boolean active = false;
-        private int startupCounter = 0;
-        private int shutdownCounter = 0;
-        private int lastRfPerTick = 0;
+        private int generatorBlocks;
+        private int collectorBlocks;
+        private int energy;
+        private boolean active;
+        private int startupCounter;
+        private int shutdownCounter;
+        private int lastRfPerTick;
+
+        // @TODO needs to be final/immutable!
+
+        public Network(int generatorBlocks, int collectorBlocks, int energy, boolean active, int startupCounter, int shutdownCounter, int lastRfPerTick) {
+            this.generatorBlocks = generatorBlocks;
+            this.collectorBlocks = collectorBlocks;
+            this.energy = energy;
+            this.active = active;
+            this.startupCounter = startupCounter;
+            this.shutdownCounter = shutdownCounter;
+            this.lastRfPerTick = lastRfPerTick;
+        }
 
         public int getGeneratorBlocks() {
             return generatorBlocks;
-        }
-
-        public void setGeneratorBlocks(int generatorBlocks) {
-            this.generatorBlocks = generatorBlocks;
-        }
-
-        public void incGeneratorBlocks() {
-            this.generatorBlocks++;
-        }
-
-        public void decGeneratorBlocks() {
-            this.generatorBlocks--;
         }
 
         public int getCollectorBlocks() {
             return collectorBlocks;
         }
 
-        public void setCollectorBlocks(int collectorBlocks) {
-            this.collectorBlocks = collectorBlocks;
-        }
-
-        public void incCollectorBlocks() {
-            collectorBlocks++;
-        }
-
-        public void decCollectorBlocks() {
-            collectorBlocks--;
-        }
-
         public int getEnergy() {
             return energy;
-        }
-
-        public void setEnergy(int energy) {
-            this.energy = energy;
         }
 
         public int getLastRfPerTick() {
             return lastRfPerTick;
         }
 
-        public void setLastRfPerTick(int lastRfPerTick) {
-            this.lastRfPerTick = lastRfPerTick;
-        }
-
         public boolean isActive() {
             return active;
-        }
-
-        public void setActive(boolean active) {
-            this.active = active;
         }
 
         public int getStartupCounter() {
             return startupCounter;
         }
 
-        public void setStartupCounter(int startupCounter) {
-            this.startupCounter = startupCounter;
-        }
-
         public int getShutdownCounter() {
             return shutdownCounter;
         }
 
-        public void setShutdownCounter(int shutdownCounter) {
-            this.shutdownCounter = shutdownCounter;
-        }
-
-        @Override
-        public void load(CompoundNBT tagCompound) {
-            this.generatorBlocks = tagCompound.getInt("refcount");
-            this.collectorBlocks = tagCompound.getInt("collectors");
-            this.energy = tagCompound.getInt("energy");
-            this.active = tagCompound.getBoolean("active");
-            this.startupCounter = tagCompound.getInt("startup");
-            this.shutdownCounter = tagCompound.getInt("shutdown");
+        public static Network load(CompoundNBT tagCompound) {
+            int generatorBlocks = tagCompound.getInt("refcount");
+            int collectorBlocks = tagCompound.getInt("collectors");
+            int energy = tagCompound.getInt("energy");
+            boolean active = tagCompound.getBoolean("active");
+            int startupCounter = tagCompound.getInt("startup");
+            int shutdownCounter = tagCompound.getInt("shutdown");
+            return new Network(generatorBlocks, collectorBlocks, energy, active, startupCounter, shutdownCounter, 0);
         }
 
         @Override

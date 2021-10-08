@@ -100,7 +100,7 @@ public class TileEntityGeneratorController extends GenericTileEntity implements 
             Block b = level.getBlockState(newC).getBlock();
             if (b == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
                 TileEntityGeneratorPart generatorTileEntity = (TileEntityGeneratorPart) level.getBlockEntity(newC);
-                int networkId = generatorTileEntity.getNetworkId();
+                int networkId = generatorTileEntity.getMultiblockId();
                 if (networkId != -1 && !networks.contains(networkId)) {
                     networks.add(networkId);
                     if (active) {
@@ -136,7 +136,7 @@ public class TileEntityGeneratorController extends GenericTileEntity implements 
 
     private boolean handleActivate(int id, BlockPos coordinate) {
         DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(level);
-        DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(id);
+        DRGeneratorNetwork.Network network = generatorNetwork.getNetwork(id);
         if (network.isActive() && network.getShutdownCounter() == 0) {
             return false; // Nothing to do.
         }
@@ -152,8 +152,9 @@ public class TileEntityGeneratorController extends GenericTileEntity implements 
         }
         active = network.isActive();
         shutdown = 0;
-        network.setShutdownCounter(0);
-        network.setStartupCounter(startup);
+        // @todo 1.16
+//        network.setShutdownCounter(0);
+//        network.setStartupCounter(startup);
         markDirtyClient();
         return true;
     }
@@ -161,7 +162,7 @@ public class TileEntityGeneratorController extends GenericTileEntity implements 
     private boolean handleDeactivate(int id, BlockPos coordinate) {
         BlockState state = level.getBlockState(getBlockPos());
         DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(level);
-        DRGeneratorNetwork.Network network = generatorNetwork.getOrCreateNetwork(id);
+        DRGeneratorNetwork.Network network = generatorNetwork.getNetwork(id);
         if ((!network.isActive()) && network.getShutdownCounter() == 0 && network.getStartupCounter() == 0) {
             if (network.getShutdownCounter() != shutdown || network.getStartupCounter() != startup || (network.isActive() != active)) {
                 shutdown = network.getShutdownCounter();
@@ -184,8 +185,9 @@ public class TileEntityGeneratorController extends GenericTileEntity implements 
         }
         startup = 0;
         active = network.isActive();
-        network.setStartupCounter(0);
-        network.setShutdownCounter(shutdown);
+        // @todo 1.16
+//        network.setStartupCounter(0);
+//        network.setShutdownCounter(shutdown);
         markDirtyClient();
 
         return true;

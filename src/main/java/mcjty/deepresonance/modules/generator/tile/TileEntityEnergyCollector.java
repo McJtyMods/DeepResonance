@@ -52,13 +52,15 @@ public class TileEntityEnergyCollector extends GenericTileEntity implements ITic
             TileEntityGeneratorPart generatorTileEntity = (TileEntityGeneratorPart) te;
             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(level);
 
-            if (networkID != generatorTileEntity.getNetworkId()) {
+            if (networkID != generatorTileEntity.getMultiblockId()) {
                 if (networkID != -1) {
-                    generatorNetwork.getOrCreateNetwork(networkID).decCollectorBlocks();
+                    // @todo 1.16
+//                    generatorNetwork.getNetwork(networkID).decCollectorBlocks();
                 }
 
-                networkID = generatorTileEntity.getNetworkId();
-                generatorTileEntity.getNetwork().incCollectorBlocks();
+                networkID = generatorTileEntity.getMultiblockId();
+                // @todo 1.16
+//                generatorTileEntity.getNetwork().incCollectorBlocks();
                 generatorNetwork.save();
             }
 
@@ -67,20 +69,23 @@ public class TileEntityEnergyCollector extends GenericTileEntity implements ITic
             if (network != null) {
                 if (network.isActive()) {
                     int rfPerTick = calculateRF();
-                    network.setLastRfPerTick(rfPerTick);
+                    // @todo 1.16
+//                    network.setLastRfPerTick(rfPerTick);
                     int newEnergy = network.getEnergy() + rfPerTick;
                     int maxEnergy = network.getGeneratorBlocks() * GeneratorModule.generatorConfig.powerStoragePerBlock.get();
                     if (newEnergy > maxEnergy) {
                         newEnergy = maxEnergy;
                     }
                     if (network.getEnergy() != newEnergy) {
-                        network.setEnergy(newEnergy);
+                        // @todo 1.16
+//                        network.setEnergy(newEnergy);
                         generatorNetwork.save();
                     }
 
                     active = true;
                 } else {
-                    network.setLastRfPerTick(0);
+                    // @todo 1.16
+//                    network.setLastRfPerTick(0);
                 }
                 startup = network.getStartupCounter();
             }
