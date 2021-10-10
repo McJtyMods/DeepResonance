@@ -12,12 +12,15 @@ import mcjty.lib.varia.EnergyTools;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
@@ -67,6 +70,36 @@ public class TileEntityGeneratorPart extends GenericTileEntity implements ITicka
         }
     }
 
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        if (!world.isClientSide()) {
+            addBlockToNetwork();
+            DRGeneratorNetwork.Network network = getNetwork();
+            if (network != null) {
+                CompoundNBT tag = stack.getTag();
+                if (tag != null) {
+                    getDriver().modify(getMultiblockId(), holder -> {
+                        holder.getMb().setEnergy(holder.getMb().getEnergy() + tag.getInt("energy"));
+                    });
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onReplaced(World world, BlockPos pos, BlockState state, BlockState newstate) {
+        if (!world.isClientSide()) {
+            if (newstate.getBlock() != GeneratorModule.GENERATOR_PART_BLOCK.get()) {
+                DRGeneratorNetwork.Network network = getNetwork();
+                if (network != null) {
+                    int energy = network.getEnergy() / network.getGeneratorBlocks();
+                    network.setEnergy(network.getEnergy() - energy);
+                }
+                removeBlockFromNetwork();
+            }
+        }
+    }
+
     public void addBlockToNetwork() {
         DRGeneratorNetwork.Network newMb = DRGeneratorNetwork.Network.builder()
                 .generatorBlocks(1)
@@ -109,9 +142,9 @@ public class TileEntityGeneratorPart extends GenericTileEntity implements ITicka
     public void activate(boolean active) {
         DRGeneratorNetwork.Network network = getNetwork();
         if (network != null && network.isActive() != active) {
-            network.setActive(active);
-            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(level);
-            generatorNetwork.save();
+            getDriver().modify(getMultiblockId(), holder -> {
+                holder.getMb().setActive(active);
+            });
             Set<BlockPos> done = Sets.newHashSet();
             activateBlocks(getBlockPos(), done, active);
         }

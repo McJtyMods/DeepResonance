@@ -72,8 +72,8 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
 
     public static class Network implements IMultiblock {
         private final int generatorBlocks;
-        private final int collectorBlocks;
-        private final int energy;
+        private int collectorBlocks;
+        private int energy;
         private boolean active;
         private int startupCounter;
         private int shutdownCounter;
@@ -97,8 +97,16 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
             return collectorBlocks;
         }
 
+        public void setCollectorBlocks(int collectorBlocks) {
+            this.collectorBlocks = collectorBlocks;
+        }
+
         public int getEnergy() {
             return energy;
+        }
+
+        public void setEnergy(int energy) {
+            this.energy = energy;
         }
 
         public int getLastRfPerTick() {
@@ -160,7 +168,7 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
 
         public static class Builder {
             private int generatorBlocks = 0;
-            private int collectorBlocks = 0;
+            private int collectorBlocks = -1;   // Invalid
             private int energy = 0;
             private boolean active;
             private int startupCounter;

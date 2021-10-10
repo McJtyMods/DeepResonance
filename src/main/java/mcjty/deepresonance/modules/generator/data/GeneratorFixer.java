@@ -24,11 +24,10 @@ public class GeneratorFixer implements IMultiblockFixer<DRGeneratorNetwork.Netwo
         if (existingMb == null) {
             throw new RuntimeException("Something awful went wrong!");
         }
-        // @todo check if this merge is correct
         DRGeneratorNetwork.Network merged = DRGeneratorNetwork.Network.builder().network(existingMb)
                 .addGeneratorBlocks(newMb.getGeneratorBlocks())
-                .addCollectorBlocks(newMb.getCollectorBlocks())
                 .addEnergy(newMb.getEnergy())
+                .collectorBlocks(-1)
                 .build();
         driver.createOrUpdate(id, merged);
     }
@@ -37,6 +36,7 @@ public class GeneratorFixer implements IMultiblockFixer<DRGeneratorNetwork.Netwo
     public void merge(MultiblockDriver<DRGeneratorNetwork.Network> driver, World level, Set<DRGeneratorNetwork.Network> mbs, int masterId) {
         DRGeneratorNetwork.Network.Builder builder = DRGeneratorNetwork.Network.builder();
         mbs.forEach(builder::merge);
+        builder.collectorBlocks(-1);
         driver.createOrUpdate(masterId, builder.build());
     }
 
@@ -50,10 +50,9 @@ public class GeneratorFixer implements IMultiblockFixer<DRGeneratorNetwork.Netwo
         int energyToGive = energy + remainder;
         for (Pair<Integer, Set<BlockPos>> pair : todo) {
             DRGeneratorNetwork.Network.Builder builder = DRGeneratorNetwork.Network.builder();
-            int generatorBlocks = (int) pair.getRight().stream().filter(p -> level.getBlockState(p).getBlock() == GeneratorModule.GENERATOR_PART_BLOCK.get()).count();
-            int collectorBlocks = pair.getRight().size() - generatorBlocks;
+            int generatorBlocks = pair.getRight().size();
             DRGeneratorNetwork.Network mb = builder.generatorBlocks(generatorBlocks)
-                    .collectorBlocks(collectorBlocks)
+                    .collectorBlocks(-1)    // Set to -1 to mark invalid
                     .energy(energyToGive)
                     .build();
             driver.createOrUpdate(pair.getKey(), mb);

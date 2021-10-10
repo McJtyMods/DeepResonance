@@ -5,14 +5,19 @@ import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
 import mcjty.deepresonance.modules.radiation.manager.DRRadiationManager;
+import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.Broadcaster;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -54,38 +59,38 @@ public class TileEntityEnergyCollector extends GenericTileEntity implements ITic
 
             if (networkID != generatorTileEntity.getMultiblockId()) {
                 if (networkID != -1) {
-                    // @todo 1.16
-//                    generatorNetwork.getNetwork(networkID).decCollectorBlocks();
+                    getDriver().modify(networkID, holder -> holder.getMb().setCollectorBlocks(-1));
                 }
 
                 networkID = generatorTileEntity.getMultiblockId();
-                // @todo 1.16
-//                generatorTileEntity.getNetwork().incCollectorBlocks();
+                getDriver().modify(networkID, holder -> holder.getMb().setCollectorBlocks(-1));
                 generatorNetwork.save();
             }
 
 
+            int multiblockId = generatorTileEntity.getMultiblockId();
             network = generatorTileEntity.getNetwork();
             if (network != null) {
                 if (network.isActive()) {
-                    int rfPerTick = calculateRF();
-                    // @todo 1.16
-//                    network.setLastRfPerTick(rfPerTick);
-                    int newEnergy = network.getEnergy() + rfPerTick;
-                    int maxEnergy = network.getGeneratorBlocks() * GeneratorModule.generatorConfig.powerStoragePerBlock.get();
-                    if (newEnergy > maxEnergy) {
-                        newEnergy = maxEnergy;
-                    }
-                    if (network.getEnergy() != newEnergy) {
-                        // @todo 1.16
-//                        network.setEnergy(newEnergy);
-                        generatorNetwork.save();
-                    }
+                    getDriver().modify(multiblockId, holder -> {
+                        int rfPerTick = calculateRF();
+                        holder.getMb().setLastRfPerTick(rfPerTick);
+                        int newEnergy = holder.getMb().getEnergy() + rfPerTick;
+                        int maxEnergy = holder.getMb().getGeneratorBlocks() * GeneratorModule.generatorConfig.powerStoragePerBlock.get();
+                        if (newEnergy > maxEnergy) {
+                            newEnergy = maxEnergy;
+                        }
+                        if (holder.getMb().getEnergy() != newEnergy) {
+                            holder.getMb().setEnergy(newEnergy);
+                            generatorNetwork.save();
+                        }
+                    });
 
                     active = true;
                 } else {
-                    // @todo 1.16
-//                    network.setLastRfPerTick(0);
+                    getDriver().modify(multiblockId, holder -> {
+                        holder.getMb().setLastRfPerTick(0);
+                    });
                 }
                 startup = network.getStartupCounter();
             }
@@ -117,6 +122,10 @@ public class TileEntityEnergyCollector extends GenericTileEntity implements ITic
                 resonatingCrystalTileEntity.setGlowing(false);
             }
         }
+    }
+
+    private MultiblockDriver<DRGeneratorNetwork.Network> getDriver() {
+        return DRGeneratorNetwork.getChannels(level).getDriver();
     }
 
     private int calculateRF() {
@@ -193,6 +202,30 @@ public class TileEntityEnergyCollector extends GenericTileEntity implements ITic
         }
 
         return rf;
+    }
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        if (!world.isClientSide()) {
+            TileEntity te = world.getBlockEntity(pos.below());
+            if (te instanceof TileEntityGeneratorPart) {
+                networkID = ((TileEntityGeneratorPart) te).getMultiblockId();
+                getDriver().modify(networkID, holder -> {
+                    holder.getMb().setCollectorBlocks(-1);
+                });
+            }
+        }
+    }
+
+    @Override
+    public void onReplaced(World world, BlockPos pos, BlockState state, BlockState newstate) {
+        TileEntity te = world.getBlockEntity(pos.below());
+        if (te instanceof TileEntityGeneratorPart) {
+            int id = ((TileEntityGeneratorPart) te).getMultiblockId();
+            getDriver().modify(id, holder -> {
+                holder.getMb().setCollectorBlocks(-1);
+            });
+        }
     }
 
     private void findCrystals(DRGeneratorNetwork.Network network) {
