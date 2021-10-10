@@ -12,11 +12,11 @@ import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nonnull;
 
-public class BlockCollector extends BaseBlock {
+public class CollectorBlock extends BaseBlock {
 
     private static final VoxelShape AABB = VoxelShapes.box(0, 0, 0, 1, 5 / 16f, 1);
 
-    public BlockCollector(BlockBuilder builder) {
+    public CollectorBlock(BlockBuilder builder) {
         super(builder);
     }
 

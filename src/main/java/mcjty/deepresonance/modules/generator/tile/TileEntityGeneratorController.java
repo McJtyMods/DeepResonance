@@ -152,9 +152,8 @@ public class TileEntityGeneratorController extends GenericTileEntity implements 
         }
         active = network.isActive();
         shutdown = 0;
-        // @todo 1.16
-//        network.setShutdownCounter(0);
-//        network.setStartupCounter(startup);
+        network.setShutdownCounter(0);
+        network.setStartupCounter(startup);
         markDirtyClient();
         return true;
     }
@@ -185,9 +184,8 @@ public class TileEntityGeneratorController extends GenericTileEntity implements 
         }
         startup = 0;
         active = network.isActive();
-        // @todo 1.16
-//        network.setStartupCounter(0);
-//        network.setShutdownCounter(shutdown);
+        network.setStartupCounter(0);
+        network.setShutdownCounter(shutdown);
         markDirtyClient();
 
         return true;

@@ -109,7 +109,7 @@ public class TileEntityGeneratorPart extends GenericTileEntity implements ITicka
     public void activate(boolean active) {
         DRGeneratorNetwork.Network network = getNetwork();
         if (network != null && network.isActive() != active) {
-//            network.setActive(active);// @todo 1.16
+            network.setActive(active);
             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(level);
             generatorNetwork.save();
             Set<BlockPos> done = Sets.newHashSet();

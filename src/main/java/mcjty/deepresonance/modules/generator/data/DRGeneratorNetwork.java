@@ -74,10 +74,10 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
         private final int generatorBlocks;
         private final int collectorBlocks;
         private final int energy;
-        private final boolean active;
-        private final int startupCounter;
-        private final int shutdownCounter;
-        private final int lastRfPerTick;
+        private boolean active;
+        private int startupCounter;
+        private int shutdownCounter;
+        private int lastRfPerTick;
 
         private Network(Builder builder) {
             this.generatorBlocks = builder.generatorBlocks;
@@ -105,16 +105,32 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
             return lastRfPerTick;
         }
 
+        public void setLastRfPerTick(int lastRfPerTick) {
+            this.lastRfPerTick = lastRfPerTick;
+        }
+
         public boolean isActive() {
             return active;
+        }
+
+        public void setActive(boolean active) {
+            this.active = active;
         }
 
         public int getStartupCounter() {
             return startupCounter;
         }
 
+        public void setStartupCounter(int startupCounter) {
+            this.startupCounter = startupCounter;
+        }
+
         public int getShutdownCounter() {
             return shutdownCounter;
+        }
+
+        public void setShutdownCounter(int shutdownCounter) {
+            this.shutdownCounter = shutdownCounter;
         }
 
         public static Network load(CompoundNBT tagCompound) {

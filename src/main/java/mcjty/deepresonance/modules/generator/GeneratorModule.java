@@ -1,7 +1,8 @@
 package mcjty.deepresonance.modules.generator;
 
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.modules.generator.block.BlockCollector;
+import mcjty.deepresonance.modules.generator.block.CollectorBlock;
+import mcjty.deepresonance.modules.generator.block.GeneratorBlock;
 import mcjty.deepresonance.modules.generator.client.CollectorTESR;
 import mcjty.deepresonance.modules.generator.tile.TileEntityEnergyCollector;
 import mcjty.deepresonance.modules.generator.tile.TileEntityGeneratorController;
@@ -32,7 +33,7 @@ import static mcjty.deepresonance.setup.Registration.TILES;
  */
 public class GeneratorModule implements IModule {
 
-    public static final RegistryObject<Block> ENERGY_COLLECTOR_BLOCK = Registration.BLOCKS.register("energy_collector", () -> new BlockCollector(
+    public static final RegistryObject<Block> ENERGY_COLLECTOR_BLOCK = Registration.BLOCKS.register("energy_collector", () -> new CollectorBlock(
             new BlockBuilder()
                     .tileEntitySupplier(TileEntityEnergyCollector::new)
                     .infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("energy_collector")))));
@@ -58,23 +59,10 @@ public class GeneratorModule implements IModule {
     public static final RegistryObject<Item> GENERATOR_CONTROLLER_ITEM = Registration.fromBlock(GENERATOR_CONTROLLER_BLOCK);
     public static final RegistryObject<TileEntityType<TileEntityGeneratorController>> TYPE_GENERATOR_CONTROLLER = TILES.register("generator_controller", () -> TileEntityType.Builder.of(TileEntityGeneratorController::new, GENERATOR_CONTROLLER_BLOCK.get()).build(null));
 
-    public static final RegistryObject<Block> GENERATOR_PART_BLOCK = Registration.BLOCKS.register("generator_part", () -> new BaseBlock(
+    public static final RegistryObject<Block> GENERATOR_PART_BLOCK = Registration.BLOCKS.register("generator_part", () -> new GeneratorBlock(
             new BlockBuilder()
                     .tileEntitySupplier(TileEntityGeneratorPart::new)
-                    .infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("generator_part")))) {
-
-        @Override
-        public RotationType getRotationType() {
-            return RotationType.NONE;
-        }
-
-        @Override
-        protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-            super.createBlockStateDefinition(builder);
-            builder.add(BlockStateProperties.POWERED, BlockStateProperties.UP, BlockStateProperties.DOWN);
-        }
-
-    });
+                    .infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("generator_part")))));
     public static final RegistryObject<Item> GENERATOR_PART_ITEM = Registration.fromBlock(GENERATOR_PART_BLOCK);
     public static final RegistryObject<TileEntityType<TileEntityGeneratorPart>> TYPE_GENERATOR_PART = TILES.register("generator_part", () -> TileEntityType.Builder.of(TileEntityGeneratorPart::new, GENERATOR_PART_BLOCK.get()).build(null));
 
