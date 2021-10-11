@@ -3,7 +3,7 @@ package mcjty.deepresonance.modules.tank.client;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mcjty.deepresonance.modules.tank.TankModule;
-import mcjty.deepresonance.modules.tank.tile.TileEntityTank;
+import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
@@ -22,7 +22,7 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class TankTESR extends TileEntityRenderer<TileEntityTank> {
+public class TankTESR extends TileEntityRenderer<TankTileEntity> {
 
     private static final EnumSet<Direction> ITEM_DIRECTIONS = EnumSet.range(Direction.UP, Direction.EAST); //All except bottom
 
@@ -35,7 +35,7 @@ public class TankTESR extends TileEntityRenderer<TileEntityTank> {
     }
 
     @Override
-    public void render(@Nonnull TileEntityTank tileTank, float partialTicks, @Nonnull MatrixStack matrixStackIn, @Nonnull IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(@Nonnull TankTileEntity tileTank, float partialTicks, @Nonnull MatrixStack matrixStackIn, @Nonnull IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
         // @todo 1.16
 //        if (!TankRenderer.INSTANCE.hasInitialized()) {
 //            return;
@@ -48,7 +48,7 @@ public class TankTESR extends TileEntityRenderer<TileEntityTank> {
                 return false; //If there is a fluid being rendered, the bottom doesn't need to be checked if the fluid is opaque
             }
             TileEntity tile = tileTank.getLevel().getBlockEntity(pos.relative(dir));
-            return !(tile instanceof TileEntityTank && ((TileEntityTank) tile).getClientRenderFluid() == renderFluid);
+            return !(tile instanceof TankTileEntity && ((TankTileEntity) tile).getClientRenderFluid() == renderFluid);
         }).collect(Collectors.toCollection(() -> EnumSet.noneOf(Direction.class)));
 
         float scale = tileTank.getClientRenderHeight();

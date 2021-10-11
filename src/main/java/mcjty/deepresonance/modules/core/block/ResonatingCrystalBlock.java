@@ -1,7 +1,6 @@
 package mcjty.deepresonance.modules.core.block;
 
 import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
 import mcjty.deepresonance.util.Constants;
 import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.blocks.BaseBlock;
@@ -36,16 +35,16 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class BlockCrystal extends BaseBlock {
+public class ResonatingCrystalBlock extends BaseBlock {
 
     private static final VoxelShape AABB = VoxelShapes.box(0.1f, 0, 0.1f, 0.9f, 0.8f, 0.9f);
 
     public static BooleanProperty EMPTY = BooleanProperty.create("empty");
     public static BooleanProperty GENERATED = BooleanProperty.create("generated");
 
-    public BlockCrystal() {
+    public ResonatingCrystalBlock() {
         super(new BlockBuilder()
-                .tileEntitySupplier(TileEntityResonatingCrystal::new));
+                .tileEntitySupplier(ResonatingCrystalTileEntity::new));
     }
 
     @Nonnull
@@ -63,13 +62,13 @@ public class BlockCrystal extends BaseBlock {
     @Override
     public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
         TileEntity tile = world.getBlockEntity(pos);
-        if (tile instanceof TileEntityResonatingCrystal) {
-            return createStack((TileEntityResonatingCrystal) tile);
+        if (tile instanceof ResonatingCrystalTileEntity) {
+            return createStack((ResonatingCrystalTileEntity) tile);
         }
         return new ItemStack(this);
     }
 
-    public ItemStack createStack(TileEntityResonatingCrystal crystal) {
+    public ItemStack createStack(ResonatingCrystalTileEntity crystal) {
         ItemStack ret = new ItemStack(this);
         ret.addTagElement(CoreModule.TILE_DATA_TAG, crystal.save(new CompoundNBT()));
         return ret;
@@ -77,7 +76,7 @@ public class BlockCrystal extends BaseBlock {
 
     @Override
     public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
-        TileEntityResonatingCrystal crystal = new TileEntityResonatingCrystal();
+        ResonatingCrystalTileEntity crystal = new ResonatingCrystalTileEntity();
         for (int power : new int[]{0, 50}) {
             for (int purity : new int[]{0, 50}) {
                 ItemStack stack = new ItemStack(this);

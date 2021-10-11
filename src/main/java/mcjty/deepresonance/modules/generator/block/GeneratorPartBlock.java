@@ -1,9 +1,11 @@
 package mcjty.deepresonance.modules.generator.block;
 
 import mcjty.deepresonance.modules.generator.GeneratorModule;
+import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
+import mcjty.lib.builder.TooltipBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.StateContainer;
@@ -14,10 +16,12 @@ import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 
-public class GeneratorBlock extends BaseBlock {
+public class GeneratorPartBlock extends BaseBlock {
 
-    public GeneratorBlock(BlockBuilder builder) {
-        super(builder);
+    public GeneratorPartBlock() {
+        super(new BlockBuilder()
+                .tileEntitySupplier(GeneratorPartTileEntity::new)
+                .infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("generator_part"))));
     }
 
     @Override

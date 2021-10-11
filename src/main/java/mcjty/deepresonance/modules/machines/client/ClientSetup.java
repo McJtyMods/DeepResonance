@@ -2,7 +2,7 @@ package mcjty.deepresonance.modules.machines.client;
 
 import mcjty.deepresonance.api.infusion.InfusionBonus;
 import mcjty.deepresonance.modules.machines.MachinesModule;
-import mcjty.deepresonance.modules.machines.tile.TileEntityLaser;
+import mcjty.deepresonance.modules.machines.block.LaserTileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
@@ -18,8 +18,8 @@ public class ClientSetup {
         Minecraft.getInstance().getBlockColors().register((s, world, pos, index) -> {
             if (index == 1) {
                 TileEntity tile = world.getBlockEntity(pos);
-                if (tile instanceof TileEntityLaser) {
-                    InfusionBonus bonus = ((TileEntityLaser) tile).getActiveBonus();
+                if (tile instanceof LaserTileEntity) {
+                    InfusionBonus bonus = ((LaserTileEntity) tile).getActiveBonus();
                     if (!bonus.isEmpty()) {
                         return bonus.getColor();
                     }

@@ -1,7 +1,7 @@
-package mcjty.deepresonance.modules.generator.tile;
+package mcjty.deepresonance.modules.generator.block;
 
 import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
+import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
 import mcjty.deepresonance.modules.radiation.manager.DRRadiationManager;
@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TileEntityEnergyCollector extends GenericTileEntity implements ITickableTileEntity {
+public class EnergyCollectorTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
     // Minimum power before we stop using a crystal.
     public static final float CRYSTAL_MIN_POWER = .00001f;
@@ -36,7 +36,7 @@ public class TileEntityEnergyCollector extends GenericTileEntity implements ITic
     private int radiationUpdateCount = MAXTICKS;
     private int networkID = -1;
 
-    public TileEntityEnergyCollector() {
+    public EnergyCollectorTileEntity() {
         super(GeneratorModule.TYPE_ENERGY_COLLECTOR.get());
     }
 
@@ -53,8 +53,8 @@ public class TileEntityEnergyCollector extends GenericTileEntity implements ITic
         DRGeneratorNetwork.Network network = null;
 
         TileEntity te = level.getBlockEntity(getBlockPos().below());
-        if (te instanceof TileEntityGeneratorPart) {
-            TileEntityGeneratorPart generatorTileEntity = (TileEntityGeneratorPart) te;
+        if (te instanceof GeneratorPartTileEntity) {
+            GeneratorPartTileEntity generatorTileEntity = (GeneratorPartTileEntity) te;
             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(level);
 
             if (networkID != generatorTileEntity.getMultiblockId()) {
@@ -108,7 +108,7 @@ public class TileEntityEnergyCollector extends GenericTileEntity implements ITic
             laserStartup = startup;
             markDirtyClient();
 
-            if (doFind && te instanceof TileEntityGeneratorPart) {
+            if (doFind && te instanceof GeneratorPartTileEntity) {
                 findCrystals(network);
             }
         }
@@ -117,8 +117,8 @@ public class TileEntityEnergyCollector extends GenericTileEntity implements ITic
     public void disableCrystalGlow() {
         for (BlockPos coordinate : crystals) {
             TileEntity te = level.getBlockEntity(new BlockPos(getBlockPos().getX() + coordinate.getX(), getBlockPos().getY() + coordinate.getY(), getBlockPos().getZ() + coordinate.getZ()));
-            if (te instanceof TileEntityResonatingCrystal) {
-                TileEntityResonatingCrystal resonatingCrystalTileEntity = (TileEntityResonatingCrystal) te;
+            if (te instanceof ResonatingCrystalTileEntity) {
+                ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
                 resonatingCrystalTileEntity.setGlowing(false);
             }
         }
@@ -145,8 +145,8 @@ public class TileEntityEnergyCollector extends GenericTileEntity implements ITic
         int rf = 0;
         for (BlockPos coordinate : crystals) {
             TileEntity te = getLevel().getBlockEntity(new BlockPos(getBlockPos().getX() + coordinate.getX(), getBlockPos().getY() + coordinate.getY(), getBlockPos().getZ() + coordinate.getZ()));
-            if (te instanceof TileEntityResonatingCrystal) {
-                TileEntityResonatingCrystal crystal = (TileEntityResonatingCrystal) te;
+            if (te instanceof ResonatingCrystalTileEntity) {
+                ResonatingCrystalTileEntity crystal = (ResonatingCrystalTileEntity) te;
                 if (crystal.getPower() > CRYSTAL_MIN_POWER) {
                     crystal.setGlowing(lasersActive);
                     tokeep.add(coordinate);
@@ -208,8 +208,8 @@ public class TileEntityEnergyCollector extends GenericTileEntity implements ITic
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         if (!world.isClientSide()) {
             TileEntity te = world.getBlockEntity(pos.below());
-            if (te instanceof TileEntityGeneratorPart) {
-                networkID = ((TileEntityGeneratorPart) te).getMultiblockId();
+            if (te instanceof GeneratorPartTileEntity) {
+                networkID = ((GeneratorPartTileEntity) te).getMultiblockId();
                 getDriver().modify(networkID, holder -> {
                     holder.getMb().setCollectorBlocks(-1);
                 });
@@ -220,8 +220,8 @@ public class TileEntityEnergyCollector extends GenericTileEntity implements ITic
     @Override
     public void onReplaced(World world, BlockPos pos, BlockState state, BlockState newstate) {
         TileEntity te = world.getBlockEntity(pos.below());
-        if (te instanceof TileEntityGeneratorPart) {
-            int id = ((TileEntityGeneratorPart) te).getMultiblockId();
+        if (te instanceof GeneratorPartTileEntity) {
+            int id = ((GeneratorPartTileEntity) te).getMultiblockId();
             getDriver().modify(id, holder -> {
                 holder.getMb().setCollectorBlocks(-1);
             });
@@ -288,8 +288,8 @@ public class TileEntityEnergyCollector extends GenericTileEntity implements ITic
         int maxSupportedRF = network.getGeneratorBlocks() * GeneratorModule.generatorConfig.maxPowerInputPerBlock.get();
         for (BlockPos coordinate : crystals) {
             TileEntity te = level.getBlockEntity(new BlockPos(getBlockPos().getX() + coordinate.getX(), getBlockPos().getY() + coordinate.getY(), getBlockPos().getZ() + coordinate.getZ()));
-            if (te instanceof TileEntityResonatingCrystal) {
-                TileEntityResonatingCrystal resonatingCrystalTileEntity = (TileEntityResonatingCrystal) te;
+            if (te instanceof ResonatingCrystalTileEntity) {
+                ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
                 if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
                     maxSupportedRF -= resonatingCrystalTileEntity.getRfPerTick();
                 }
@@ -310,8 +310,8 @@ public class TileEntityEnergyCollector extends GenericTileEntity implements ITic
         int maxSupportedCrystals = network.getGeneratorBlocks() * GeneratorModule.generatorConfig.maxCrystalsPerBlock.get();
 
         TileEntity te = level.getBlockEntity(new BlockPos(x, y, z));
-        if (te instanceof TileEntityResonatingCrystal) {
-            TileEntityResonatingCrystal resonatingCrystalTileEntity = (TileEntityResonatingCrystal) te;
+        if (te instanceof ResonatingCrystalTileEntity) {
+            ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
             if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
                 BlockPos crystalCoordinate = new BlockPos(x - getBlockPos().getX(), y - getBlockPos().getY(), z - getBlockPos().getZ());
                 if (resonatingCrystalTileEntity.isGlowing() && !oldCrystals.contains(crystalCoordinate)) {

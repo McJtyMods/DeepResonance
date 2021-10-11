@@ -1,4 +1,4 @@
-package mcjty.deepresonance.modules.machines.tile;
+package mcjty.deepresonance.modules.machines.block;
 
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
@@ -10,7 +10,7 @@ public class LensBlock extends BaseBlock {
     public LensBlock(AbstractBlock.Properties properties) {
         super(new BlockBuilder()
                 .properties(properties)
-                .tileEntitySupplier(TileEntityLens::new));
+                .tileEntitySupplier(LensTileEntity::new));
     }
 
     @Override

@@ -2,7 +2,7 @@ package mcjty.deepresonance.modules.core.util;
 
 import com.google.common.base.Preconditions;
 import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
+import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.util.Constants;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -68,8 +68,8 @@ public class CrystalHelper {
     public static void spawnCrystal(World world, BlockPos pos, float purity, float strength, float efficiency, float power) {
         world.setBlock(pos, Preconditions.checkNotNull(CoreModule.RESONATING_CRYSTAL_BLOCK.get()).defaultBlockState(), net.minecraftforge.common.util.Constants.BlockFlags.DEFAULT);
         TileEntity te = world.getBlockEntity(pos);
-        if (te instanceof TileEntityResonatingCrystal) {
-            TileEntityResonatingCrystal resonatingCrystalTileEntity = (TileEntityResonatingCrystal) te;
+        if (te instanceof ResonatingCrystalTileEntity) {
+            ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
             resonatingCrystalTileEntity.setPurity(purity);
             resonatingCrystalTileEntity.setStrength(strength);
             resonatingCrystalTileEntity.setEfficiency(efficiency);

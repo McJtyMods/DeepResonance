@@ -3,7 +3,7 @@ package mcjty.deepresonance.modules.core.client;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
+import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.lib.client.RenderHelper;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
-public class ResonatingCrystalTER extends TileEntityRenderer<TileEntityResonatingCrystal> {
+public class ResonatingCrystalTER extends TileEntityRenderer<ResonatingCrystalTileEntity> {
 
     public static final ResourceLocation REDHALO = new ResourceLocation(DeepResonance.MODID, "effects/redhalo");
 
@@ -20,7 +20,7 @@ public class ResonatingCrystalTER extends TileEntityRenderer<TileEntityResonatin
     }
 
     @Override
-    public void render(TileEntityResonatingCrystal tileEntity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
+    public void render(ResonatingCrystalTileEntity tileEntity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
         if (tileEntity.isGlowing()) {
             RenderHelper.renderBillboardQuadBright(matrixStack, buffer, 0.6f, REDHALO);
         }

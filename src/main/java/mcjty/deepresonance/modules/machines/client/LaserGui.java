@@ -1,11 +1,11 @@
-package mcjty.deepresonance.modules.machines.client.gui;
+package mcjty.deepresonance.modules.machines.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.infusion.InfusionBonus;
 import mcjty.deepresonance.api.infusion.InfusionModifier;
 import mcjty.deepresonance.modules.machines.MachinesModule;
-import mcjty.deepresonance.modules.machines.tile.TileEntityLaser;
+import mcjty.deepresonance.modules.machines.block.LaserTileEntity;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
@@ -22,7 +22,7 @@ import net.minecraft.util.ResourceLocation;
 import java.awt.*;
 import java.text.DecimalFormat;
 
-public class LaserGui extends GenericGuiContainer<TileEntityLaser, GenericContainer> {
+public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContainer> {
 
     public static final int LASER_WIDTH = 180;
     public static final int LASER_HEIGHT = 152;
@@ -35,7 +35,7 @@ public class LaserGui extends GenericGuiContainer<TileEntityLaser, GenericContai
 
     private static final ResourceLocation GUI = new ResourceLocation(DeepResonance.MODID, "textures/gui/laser.png");
 
-    public LaserGui(TileEntityLaser tileEntity, GenericContainer container, PlayerInventory inventory) {
+    public LaserGui(LaserTileEntity tileEntity, GenericContainer container, PlayerInventory inventory) {
         super(tileEntity, container, inventory, ManualEntry.EMPTY); // @todo 1.16 manual
 
         imageWidth = LASER_WIDTH;

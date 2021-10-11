@@ -2,7 +2,7 @@ package mcjty.deepresonance.data;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.deepresonance.modules.core.block.BlockCrystal;
+import mcjty.deepresonance.modules.core.block.ResonatingCrystalBlock;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
@@ -87,8 +87,8 @@ public class BlockStates extends BaseBlockStateProvider {
 
         getVariantBuilder(CoreModule.RESONATING_CRYSTAL_BLOCK.get()).forAllStates(state -> {
             Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-            Boolean isEmpty = state.getValue(BlockCrystal.EMPTY);
-            Boolean isGenerated = state.getValue(BlockCrystal.GENERATED);
+            Boolean isEmpty = state.getValue(ResonatingCrystalBlock.EMPTY);
+            Boolean isGenerated = state.getValue(ResonatingCrystalBlock.GENERATED);
             ModelFile model;
             if (isEmpty && isGenerated) {
                 model = emptyGenerated;

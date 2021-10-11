@@ -1,8 +1,8 @@
-package mcjty.deepresonance.modules.machines.client.gui;
+package mcjty.deepresonance.modules.machines.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.modules.machines.tile.TileEntityCrystallizer;
+import mcjty.deepresonance.modules.machines.block.CrystallizerTileEntity;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.ManualEntry;
@@ -16,7 +16,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
 
-public class CrystallizerGui extends GenericGuiContainer<TileEntityCrystallizer, GenericContainer> {
+public class CrystallizerGui extends GenericGuiContainer<CrystallizerTileEntity, GenericContainer> {
 
     public static final int CRYSTALIZER_WIDTH = 180;
     public static final int CRYSTALIZER_HEIGHT = 152;
@@ -26,7 +26,7 @@ public class CrystallizerGui extends GenericGuiContainer<TileEntityCrystallizer,
     private EnergyBar energyBar;
     private Label percentage;
 
-    public CrystallizerGui(TileEntityCrystallizer tileEntity, GenericContainer container, PlayerInventory inventory) {
+    public CrystallizerGui(CrystallizerTileEntity tileEntity, GenericContainer container, PlayerInventory inventory) {
         super(tileEntity, container, inventory, ManualEntry.EMPTY); // @todo 1.16 manual
 
         imageWidth = CRYSTALIZER_WIDTH;

@@ -45,7 +45,6 @@ public class DeepResonance {
         Registration.register();
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(setup::init);
-//        FMLJavaModLoadingContext.get().getModEventBus().addListener(AbstractDataGenerator.toEventListener(new DataGenerators()));
         FMLJavaModLoadingContext.get().getModEventBus().addListener(modules::init);
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {

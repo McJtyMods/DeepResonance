@@ -1,7 +1,7 @@
-package mcjty.deepresonance.modules.machines.client.gui;
+package mcjty.deepresonance.modules.machines.client;
 
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.modules.machines.tile.TileEntityValve;
+import mcjty.deepresonance.modules.machines.block.ValveTileEntity;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
@@ -25,12 +25,12 @@ import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
 
-import static mcjty.deepresonance.modules.machines.tile.TileEntityValve.*;
+import static mcjty.deepresonance.modules.machines.block.ValveTileEntity.*;
 
 /**
  * Created by Elec332 on 25-7-2020
  */
-public class ValveGui extends GenericGuiContainer<TileEntityValve, GenericContainer> {
+public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContainer> {
 
     public static final int VALVE_WIDTH = 180;
     public static final int VALVE_HEIGHT = 152;
@@ -43,7 +43,7 @@ public class ValveGui extends GenericGuiContainer<TileEntityValve, GenericContai
     private TextField minEfficiency;
     private TextField maxAmount;
 
-    public ValveGui(TileEntityValve tileEntity, GenericContainer container, PlayerInventory inventory) {
+    public ValveGui(ValveTileEntity tileEntity, GenericContainer container, PlayerInventory inventory) {
         super(tileEntity, container, inventory, ManualEntry.EMPTY); // @todo 1.16 manual
 
         imageWidth = VALVE_WIDTH;
@@ -190,7 +190,7 @@ public class ValveGui extends GenericGuiContainer<TileEntityValve, GenericContai
         tileEntity.setMinStrength(strength / 100.0f);
         tileEntity.setMinEfficiency(efficiency / 100.0f);
         tileEntity.setMaxMb(maxMb);
-        sendServerCommandTyped(McJtyLib.networkHandler, TileEntityValve.CMD_SETTINGS,
+        sendServerCommandTyped(McJtyLib.networkHandler, ValveTileEntity.CMD_SETTINGS,
                 TypedMap.builder()
                         .put(PARAM_PURITY, purity / 100.0)
                         .put(PARAM_STRENGTH, strength / 100.0)

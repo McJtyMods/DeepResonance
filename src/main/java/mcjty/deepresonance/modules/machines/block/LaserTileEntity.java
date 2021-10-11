@@ -1,4 +1,4 @@
-package mcjty.deepresonance.modules.machines.tile;
+package mcjty.deepresonance.modules.machines.block;
 
 import com.google.common.collect.Lists;
 import mcjty.deepresonance.api.infusion.InfusionBonus;
@@ -7,19 +7,27 @@ import mcjty.deepresonance.api.laser.ILensMirror;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.util.InfusionBonusRegistry;
+import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.blocks.BaseBlock;
+import mcjty.lib.blocks.RotationType;
+import mcjty.lib.builder.BlockBuilder;
+import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.AutomationFilterItemHander;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -40,7 +48,7 @@ import java.util.Collection;
 import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.generic;
 
-public class TileEntityLaser extends GenericTileEntity implements ITickableTileEntity {
+public class LaserTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
     public static final int SLOT_CRYSTAL = 0;
     public static final int SLOT_CATALYST = 1;
@@ -65,14 +73,31 @@ public class TileEntityLaser extends GenericTileEntity implements ITickableTileE
     private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Laser")
-            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.LASER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), TileEntityLaser.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.LASER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), LaserTileEntity.this))
             .itemHandler(() -> items));
 
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, MachinesModule.laserConfig.powerMaximum.get(), 0);
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
 
-    public TileEntityLaser() {
+    public LaserTileEntity() {
         super(MachinesModule.TYPE_LASER.get());
+    }
+
+    public static BaseBlock createBlock() {
+        return new BaseBlock(new BlockBuilder().tileEntitySupplier(LaserTileEntity::new).infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("laser")))) {
+
+            @Override
+            public RotationType getRotationType() {
+                return RotationType.HORIZROTATION;
+            }
+
+            @Override
+            protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+                super.createBlockStateDefinition(builder);
+                builder.add();
+            }
+
+        };
     }
 
     // @todo 1.16
@@ -134,7 +159,7 @@ public class TileEntityLaser extends GenericTileEntity implements ITickableTileE
         if (lens != null) {
             lens.ifPresent(l -> l.infuseFluid(activeBonus.getRclImprovedPerCatalyst(), data -> {
                 float quality = data.getQuality();
-                float efficiency = TileEntityLaser.this.efficiency;
+                float efficiency = LaserTileEntity.this.efficiency;
                 activeBonus.getEfficiencyModifier().applyModifier(data::getEfficiency, data::setEfficiency, quality, efficiency);
                 activeBonus.getPurityModifier().applyModifier(data::getPurity, data::setPurity, quality, efficiency);
                 activeBonus.getStrengthModifier().applyModifier(data::getStrength, data::setStrength, quality, efficiency);

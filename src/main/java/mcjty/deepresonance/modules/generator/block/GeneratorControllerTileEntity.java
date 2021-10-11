@@ -1,4 +1,4 @@
-package mcjty.deepresonance.modules.generator.tile;
+package mcjty.deepresonance.modules.generator.block;
 
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
@@ -20,7 +20,7 @@ import net.minecraftforge.common.util.Constants;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TileEntityGeneratorController extends GenericTileEntity implements ITickableTileEntity {
+public class GeneratorControllerTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
     private int startup = 0;
     private int shutdown = 0;
@@ -28,7 +28,7 @@ public class TileEntityGeneratorController extends GenericTileEntity implements 
     private boolean rsControlled = true;
     private boolean activated = false;
 
-    public TileEntityGeneratorController() {
+    public GeneratorControllerTileEntity() {
         super(GeneratorModule.TYPE_GENERATOR_CONTROLLER.get());
     }
 
@@ -102,7 +102,7 @@ public class TileEntityGeneratorController extends GenericTileEntity implements 
             Block b = level.getBlockState(newC).getBlock();
             // @TODO WHAT IF WE HAVE MULTIPLE SEPARATE NETWORKS ADJACENT TO THE CONTROLLER? DON'T ALLOW!?
             if (b == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
-                TileEntityGeneratorPart generatorTileEntity = (TileEntityGeneratorPart) level.getBlockEntity(newC);
+                GeneratorPartTileEntity generatorTileEntity = (GeneratorPartTileEntity) level.getBlockEntity(newC);
                 int networkId = generatorTileEntity.getMultiblockId();
                 if (networkId != -1 && !networks.contains(networkId)) {
                     networks.add(networkId);
@@ -147,7 +147,7 @@ public class TileEntityGeneratorController extends GenericTileEntity implements 
             Set<BlockPos> positions = MultiblockSupport.findMultiblock(level, p, getDriver());
             int cnt = 0;
             for (BlockPos pos : positions) {
-                if (level.getBlockEntity(pos) instanceof TileEntityEnergyCollector) {
+                if (level.getBlockEntity(pos) instanceof EnergyCollectorTileEntity) {
                     cnt++;
                 }
             }
@@ -172,7 +172,7 @@ public class TileEntityGeneratorController extends GenericTileEntity implements 
         startup--;
         if (startup <= 0) {
             startup = 0;
-            TileEntityGeneratorPart generatorTileEntity = (TileEntityGeneratorPart) level.getBlockEntity(coordinate);
+            GeneratorPartTileEntity generatorTileEntity = (GeneratorPartTileEntity) level.getBlockEntity(coordinate);
             generatorTileEntity.activate(true);
         }
         active = network.isActive();
@@ -200,7 +200,7 @@ public class TileEntityGeneratorController extends GenericTileEntity implements 
         shutdown = network.getShutdownCounter();
         if (network.isActive() || network.getStartupCounter() != 0) {
             shutdown = GeneratorModule.generatorConfig.shutdownTime.get();
-            TileEntityGeneratorPart generatorTileEntity = (TileEntityGeneratorPart) level.getBlockEntity(coordinate);
+            GeneratorPartTileEntity generatorTileEntity = (GeneratorPartTileEntity) level.getBlockEntity(coordinate);
             generatorTileEntity.activate(false);
         }
         shutdown--;

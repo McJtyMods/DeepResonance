@@ -1,13 +1,13 @@
-package mcjty.deepresonance.modules.machines.tile;
+package mcjty.deepresonance.modules.machines.block;
 
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 
-public class TileEntityLens extends GenericTileEntity implements ITickableTileEntity {
+public class LensTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
-    public TileEntityLens() {
+    public LensTileEntity() {
         super(MachinesModule.TYPE_LENS.get());
     }
 

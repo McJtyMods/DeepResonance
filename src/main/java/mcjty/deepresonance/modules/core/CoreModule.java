@@ -1,12 +1,12 @@
 package mcjty.deepresonance.modules.core;
 
-import mcjty.deepresonance.modules.core.block.BlockCrystal;
+import mcjty.deepresonance.modules.core.block.ResonatingCrystalBlock;
 import mcjty.deepresonance.modules.core.block.BlockResonatingPlate;
 import mcjty.deepresonance.modules.core.client.ClientSetup;
 import mcjty.deepresonance.modules.core.client.ResonatingCrystalTER;
 import mcjty.deepresonance.modules.core.fluid.FluidLiquidCrystal;
 import mcjty.deepresonance.modules.core.item.ItemLiquidInjector;
-import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
+import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.core.util.CrystalConfig;
 import mcjty.deepresonance.modules.core.util.ResonatingPlateBlockConfig;
 import mcjty.deepresonance.setup.Registration;
@@ -32,8 +32,8 @@ public class CoreModule implements IModule {
 
     public static final RegistryObject<Fluid> LIQUID_CRYSTAL = Registration.FLUIDS.register("liquid_crystal", FluidLiquidCrystal::new);
 
-    public static final RegistryObject<BlockCrystal> RESONATING_CRYSTAL_BLOCK = Registration.BLOCKS.register("resonating_crystal", BlockCrystal::new);
-    public static final RegistryObject<TileEntityType<TileEntityResonatingCrystal>> TYPE_RESONATING_CRYSTAL = TILES.register("resonating_crystal", () -> TileEntityType.Builder.of(TileEntityResonatingCrystal::new, RESONATING_CRYSTAL_BLOCK.get()).build(null));
+    public static final RegistryObject<ResonatingCrystalBlock> RESONATING_CRYSTAL_BLOCK = Registration.BLOCKS.register("resonating_crystal", ResonatingCrystalBlock::new);
+    public static final RegistryObject<TileEntityType<ResonatingCrystalTileEntity>> TYPE_RESONATING_CRYSTAL = TILES.register("resonating_crystal", () -> TileEntityType.Builder.of(ResonatingCrystalTileEntity::new, RESONATING_CRYSTAL_BLOCK.get()).build(null));
 
     public static final RegistryObject<Block> RESONATING_ORE_STONE_BLOCK = Registration.BLOCKS.register("resonating_ore_stone", () -> new Block(ORE_PROPERTIES));
     public static final RegistryObject<Block> RESONATING_ORE_NETHER_BLOCK = Registration.BLOCKS.register("resonating_ore_nether", () -> new Block(ORE_PROPERTIES));

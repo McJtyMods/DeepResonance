@@ -1,21 +1,29 @@
-package mcjty.deepresonance.modules.machines.tile;
+package mcjty.deepresonance.modules.machines.block;
 
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.tank.util.DualTankHook;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
+import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.DefaultValue;
 import mcjty.lib.bindings.IValue;
+import mcjty.lib.blocks.BaseBlock;
+import mcjty.lib.blocks.RotationType;
+import mcjty.lib.builder.BlockBuilder;
+import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Lazy;
@@ -26,7 +34,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 /**
  * Created by Elec332 on 25-7-2020
  */
-public class TileEntityValve extends GenericTileEntity implements ITickableTileEntity {
+public class ValveTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
     public static final String CMD_SETTINGS = "valve.settings";
 
@@ -38,7 +46,7 @@ public class TileEntityValve extends GenericTileEntity implements ITickableTileE
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(0));
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Laser")
-            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.VALVE_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), TileEntityValve.this)));
+            .containerSupplier((windowId, player) -> new GenericContainer(MachinesModule.VALVE_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), ValveTileEntity.this)));
 
     private final DualTankHook tankHook = new DualTankHook(this, Direction.UP, Direction.DOWN);
 
@@ -49,8 +57,27 @@ public class TileEntityValve extends GenericTileEntity implements ITickableTileE
     private float minEfficiency = 1.0f;
     private int maxMb = 0;
 
-    public TileEntityValve() {
+    public ValveTileEntity() {
         super(MachinesModule.TYPE_VALVE.get());
+    }
+
+    public static BaseBlock createBlock() {
+        return new BaseBlock(
+                new BlockBuilder()
+                        .tileEntitySupplier(ValveTileEntity::new)
+                        .infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("valve")))) {
+
+            @Override
+            public RotationType getRotationType() {
+                return RotationType.NONE;
+            }
+
+            @Override
+            protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+                super.createBlockStateDefinition(builder);
+                builder.add();
+            }
+        };
     }
 
     @Override

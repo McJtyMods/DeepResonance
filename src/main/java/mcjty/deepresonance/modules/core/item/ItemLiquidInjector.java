@@ -1,6 +1,6 @@
 package mcjty.deepresonance.modules.core.item;
 
-import mcjty.deepresonance.modules.tank.tile.TileEntityTank;
+import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.deepresonance.util.TranslationHelper;
 import net.minecraft.client.util.ITooltipFlag;
@@ -38,7 +38,7 @@ public class ItemLiquidInjector extends Item {
         World world = context.getLevel();
         if (!world.isClientSide) {
             TileEntity tile = world.getBlockEntity(context.getClickedPos());
-            if (tile instanceof TileEntityTank) {
+            if (tile instanceof TankTileEntity) {
                 LazyOptional<IFluidHandler> fluidHanderCap = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
                 fluidHanderCap.ifPresent(fluidHander -> fluidHander.fill(DeepResonanceFluidHelper.makeLiquidCrystalStack(100, 1.0f, 0.1f, 0.1f, 0.1f), IFluidHandler.FluidAction.EXECUTE));
             } else if (context.getPlayer() != null) {

@@ -3,7 +3,7 @@ package mcjty.deepresonance.modules.generator.client;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
-import mcjty.deepresonance.modules.generator.tile.TileEntityEnergyCollector;
+import mcjty.deepresonance.modules.generator.block.EnergyCollectorTileEntity;
 import mcjty.lib.client.RenderHelper;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -13,7 +13,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import javax.annotation.Nonnull;
 
-public class CollectorTESR extends TileEntityRenderer<TileEntityEnergyCollector> {
+public class CollectorTESR extends TileEntityRenderer<EnergyCollectorTileEntity> {
 
     private static final RenderType CRYSTAL_HALO, COLLECTOR_HALO;
     private static final double SIZE = 0.6;
@@ -27,7 +27,7 @@ public class CollectorTESR extends TileEntityRenderer<TileEntityEnergyCollector>
     }
 
     @Override
-    public void render(@Nonnull TileEntityEnergyCollector tileEntity, float partialTicks, @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer buffer_, int combinedLightIn, int combinedOverlayIn) {
+    public void render(@Nonnull EnergyCollectorTileEntity tileEntity, float partialTicks, @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer buffer_, int combinedLightIn, int combinedOverlayIn) {
         // @todo 1.16
 //        if (tileEntity.getStartupTimer() != 0 || tileEntity.getCrystals().isEmpty()) {
 //            return;

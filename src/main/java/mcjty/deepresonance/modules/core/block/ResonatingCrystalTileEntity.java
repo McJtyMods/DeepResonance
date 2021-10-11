@@ -1,4 +1,4 @@
-package mcjty.deepresonance.modules.core.tile;
+package mcjty.deepresonance.modules.core.block;
 
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.client.ModelLoaderCoreModule;
@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TileEntityResonatingCrystal extends GenericTileEntity implements ITickableTileEntity {
+public class ResonatingCrystalTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
     // The total maximum RF you can get out of a crystal with the following characteristics:
     //    * S: Strength (0-100%)
@@ -37,7 +37,7 @@ public class TileEntityResonatingCrystal extends GenericTileEntity implements IT
 
     private boolean glowing = false;
 
-    public TileEntityResonatingCrystal() {
+    public ResonatingCrystalTileEntity() {
         super(CoreModule.TYPE_RESONATING_CRYSTAL.get());
     }
 
@@ -63,7 +63,7 @@ public class TileEntityResonatingCrystal extends GenericTileEntity implements IT
 
 
     // We enqueue crystals for processing later
-    public static Set<TileEntityResonatingCrystal> todoCrystals = new HashSet<>();
+    public static Set<ResonatingCrystalTileEntity> todoCrystals = new HashSet<>();
 
     public void setStrength(float strength) {
         this.strength = strength;
@@ -86,8 +86,8 @@ public class TileEntityResonatingCrystal extends GenericTileEntity implements IT
 
     public float getPowerPerTick() {
         if (powerPerTick < 0) {
-            float totalRF = TileEntityResonatingCrystal.getTotalPower(strength, purity);
-            float numticks = totalRF / TileEntityResonatingCrystal.getRfPerTick(efficiency, purity);
+            float totalRF = ResonatingCrystalTileEntity.getTotalPower(strength, purity);
+            float numticks = totalRF / ResonatingCrystalTileEntity.getRfPerTick(efficiency, purity);
 //            float numticks = totalRF / getRfPerTick();
             powerPerTick = 100.0f / numticks;
         }
@@ -100,7 +100,7 @@ public class TileEntityResonatingCrystal extends GenericTileEntity implements IT
 
     public int getRfPerTick() {
         if (rfPerTick == -1) {
-            rfPerTick = TileEntityResonatingCrystal.getRfPerTick(efficiency, purity);
+            rfPerTick = ResonatingCrystalTileEntity.getRfPerTick(efficiency, purity);
         }
 
         // If we are super generating then we modify the RF here. To see that we're doing this we

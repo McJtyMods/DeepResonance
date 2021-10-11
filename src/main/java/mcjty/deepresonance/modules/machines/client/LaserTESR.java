@@ -3,7 +3,7 @@ package mcjty.deepresonance.modules.machines.client;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mcjty.deepresonance.modules.machines.MachinesModule;
-import mcjty.deepresonance.modules.machines.tile.TileEntityLaser;
+import mcjty.deepresonance.modules.machines.block.LaserTileEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.BakedQuad;
@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 /**
  * Created by Elec332 on 29-7-2020
  */
-public class LaserTESR extends TileEntityRenderer<TileEntityLaser> {
+public class LaserTESR extends TileEntityRenderer<LaserTileEntity> {
 
     private static final float BEAM_WIDTH = 3.8f;
     private static BakedQuad quad;
@@ -35,7 +35,7 @@ public class LaserTESR extends TileEntityRenderer<TileEntityLaser> {
     }
 
     @Override
-    public void render(@Nonnull TileEntityLaser tileEntityIn, float partialTicks, @Nonnull MatrixStack matrixStackIn, @Nonnull IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(@Nonnull LaserTileEntity tileEntityIn, float partialTicks, @Nonnull MatrixStack matrixStackIn, @Nonnull IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
         BlockPos prev = BlockPos.ZERO;
         if (tileEntityIn.getActiveBonus().isEmpty()) {
             return;

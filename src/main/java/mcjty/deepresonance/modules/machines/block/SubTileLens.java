@@ -1,4 +1,4 @@
-package mcjty.deepresonance.modules.machines.tile;
+package mcjty.deepresonance.modules.machines.block;
 
 public class SubTileLens {} /* @todo 1.16 extends SubTileLogicBase {
 

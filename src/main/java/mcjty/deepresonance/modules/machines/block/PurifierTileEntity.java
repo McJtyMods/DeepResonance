@@ -1,12 +1,17 @@
-package mcjty.deepresonance.modules.machines.tile;
+package mcjty.deepresonance.modules.machines.block;
 
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.tank.util.DualTankHook;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
+import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.blocks.BaseBlock;
+import mcjty.lib.blocks.RotationType;
+import mcjty.lib.builder.BlockBuilder;
+import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.AutomationFilterItemHander;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
@@ -30,7 +35,7 @@ import javax.annotation.Nullable;
 import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.generic;
 
-public class TileEntityPurifier extends GenericTileEntity implements ITickableTileEntity {
+public class PurifierTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
     public static final int SLOT = 0;
 
@@ -44,17 +49,29 @@ public class TileEntityPurifier extends GenericTileEntity implements ITickableTi
     private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Purifier")
-            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.PURIFIER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), TileEntityPurifier.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.PURIFIER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), PurifierTileEntity.this))
             .itemHandler(() -> items));
 
 
     private int timeToGo = 0;
     private ILiquidCrystalData processing = null;
 
-    public TileEntityPurifier() {
+    public PurifierTileEntity() {
         super(MachinesModule.TYPE_PURIFIER.get());
     }
 
+    public static BaseBlock createBlock() {
+        return new BaseBlock(
+                new BlockBuilder()
+                        .tileEntitySupplier(PurifierTileEntity::new)
+                        .infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("purifier")))) {
+
+            @Override
+            public RotationType getRotationType() {
+                return RotationType.HORIZROTATION;
+            }
+        };
+    }
 
     @Override
     public void tick() {

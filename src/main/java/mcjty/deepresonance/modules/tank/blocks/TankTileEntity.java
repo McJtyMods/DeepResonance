@@ -1,4 +1,4 @@
-package mcjty.deepresonance.modules.tank.tile;
+package mcjty.deepresonance.modules.tank.blocks;
 
 import com.google.common.base.Preconditions;
 import mcjty.deepresonance.modules.tank.TankModule;
@@ -21,7 +21,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TileEntityTank extends GenericTileEntity {
+public class TankTileEntity extends GenericTileEntity {
 
     private TankGrid grid;
     private CompoundNBT gridData;
@@ -30,7 +30,7 @@ public class TileEntityTank extends GenericTileEntity {
     private Fluid clientRenderFluid;
     private float renderHeight; //Value from 0.0f to 1.0f
 
-    public TileEntityTank() {
+    public TankTileEntity() {
         super(TankModule.TYPE_TANK.get());
         gridData = new CompoundNBT();
     }

@@ -1,6 +1,6 @@
 package mcjty.deepresonance.modules.machines.item;
 
-import mcjty.deepresonance.modules.machines.tile.LensBlock;
+import mcjty.deepresonance.modules.machines.block.LensBlock;
 import net.minecraft.item.BlockItem;
 
 public class ItemLens extends BlockItem {

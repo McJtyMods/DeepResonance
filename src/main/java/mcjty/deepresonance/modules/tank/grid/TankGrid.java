@@ -2,7 +2,7 @@ package mcjty.deepresonance.modules.tank.grid;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
-import mcjty.deepresonance.modules.tank.tile.TileEntityTank;
+import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.lib.varia.WorldTools;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
@@ -172,11 +172,11 @@ public class TankGrid implements ICapabilityProvider, IFluidHandler {
         return ret;
     }
 
-    public void setDataToTile(TileEntityTank tile) {
+    public void setDataToTile(TankTileEntity tile) {
         setDataToTile(tile, getFluidShare(tile));
     }
 
-    private void setDataToTile(TileEntityTank tile, FluidStack share) {
+    private void setDataToTile(TankTileEntity tile, FluidStack share) {
         CompoundNBT tagCompound = new CompoundNBT();
         if (share != null) {
             CompoundNBT fluidTag = new CompoundNBT();
@@ -189,7 +189,7 @@ public class TankGrid implements ICapabilityProvider, IFluidHandler {
         }
     }
 
-    private FluidStack getFluidShare(TileEntityTank tile) {
+    private FluidStack getFluidShare(TankTileEntity tile) {
         // @todo 1.16
 //        return tank.getShare(tanks_.size(), tanks_.iterator().next().getPosition().equals(DimensionCoordinate.fromTileEntity(tile)));
         return null;
@@ -202,7 +202,7 @@ public class TankGrid implements ICapabilityProvider, IFluidHandler {
         }
     }
 
-    private void markDirty(TileEntityTank tank) {
+    private void markDirty(TankTileEntity tank) {
         if (tank != null && WorldTools.isLoaded(Preconditions.checkNotNull(tank.getLevel()), tank.getBlockPos())) {
             tank.setChanged();
         }

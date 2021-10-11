@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
-import mcjty.deepresonance.modules.machines.tile.TileEntityCrystallizer;
+import mcjty.deepresonance.modules.machines.block.CrystallizerTileEntity;
 import mcjty.lib.client.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 /**
  * Created by Elec332 on 15-8-2020
  */
-public class CrystallizerTESR extends TileEntityRenderer<TileEntityCrystallizer> {
+public class CrystallizerTESR extends TileEntityRenderer<CrystallizerTileEntity> {
 
     private static IBakedModel crystal;
     private static ItemStack stack;
@@ -41,7 +41,7 @@ public class CrystallizerTESR extends TileEntityRenderer<TileEntityCrystallizer>
     }
 
     @Override
-    public void render(@Nonnull TileEntityCrystallizer tile, float partialTicks, @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
+    public void render(@Nonnull CrystallizerTileEntity tile, float partialTicks, @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
         int progress = tile.getProgress();
         if (tile.hasCrystal()) {
             progress = 100;

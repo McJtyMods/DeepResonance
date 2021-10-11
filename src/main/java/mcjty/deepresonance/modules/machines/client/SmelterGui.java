@@ -1,8 +1,8 @@
-package mcjty.deepresonance.modules.machines.client.gui;
+package mcjty.deepresonance.modules.machines.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.modules.machines.tile.TileEntitySmelter;
+import mcjty.deepresonance.modules.machines.block.SmelterTileEntity;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.ManualEntry;
@@ -20,7 +20,7 @@ import java.awt.*;
 /**
  * Created by Elec332 on 27-7-2020
  */
-public class SmelterGui extends GenericGuiContainer<TileEntitySmelter, GenericContainer> {
+public class SmelterGui extends GenericGuiContainer<SmelterTileEntity, GenericContainer> {
 
     public static final int SMELTER_WIDTH = 180;
     public static final int SMELTER_HEIGHT = 152;
@@ -32,7 +32,7 @@ public class SmelterGui extends GenericGuiContainer<TileEntitySmelter, GenericCo
     private static final ResourceLocation iconLocation = new ResourceLocation(DeepResonance.MODID, "textures/gui/smelter.png");
     private static final ResourceLocation iconBurning = new ResourceLocation(DeepResonance.MODID, "textures/gui/burning.png");
 
-    public SmelterGui(TileEntitySmelter tile, GenericContainer container, PlayerInventory inventory) {
+    public SmelterGui(SmelterTileEntity tile, GenericContainer container, PlayerInventory inventory) {
         super(tile, container, inventory, ManualEntry.EMPTY);   // @todo 1.16 manual
 
         imageWidth = SMELTER_WIDTH;

@@ -1,10 +1,10 @@
 package mcjty.deepresonance.modules.tank;
 
 import com.google.common.base.Preconditions;
-import mcjty.deepresonance.modules.tank.blocks.BlockTank;
+import mcjty.deepresonance.modules.tank.blocks.TankBlock;
 import mcjty.deepresonance.modules.tank.client.ClientSetup;
 import mcjty.deepresonance.modules.tank.client.TankTESR;
-import mcjty.deepresonance.modules.tank.tile.TileEntityTank;
+import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.deepresonance.setup.Registration;
 import mcjty.lib.modules.IModule;
 import net.minecraft.block.Block;
@@ -23,9 +23,9 @@ import static mcjty.deepresonance.setup.Registration.TILES;
  */
 public class TankModule implements IModule {
 
-    public static final RegistryObject<Block> TANK_BLOCK = Registration.BLOCKS.register("tank", BlockTank::new);
+    public static final RegistryObject<Block> TANK_BLOCK = Registration.BLOCKS.register("tank", TankBlock::new);
     public static final RegistryObject<Item> TANK_ITEM = Registration.ITEMS.register("tank", () -> new BlockItem(Preconditions.checkNotNull(TANK_BLOCK.get()), Registration.createStandardProperties()));
-    public static final RegistryObject<TileEntityType<TileEntityTank>> TYPE_TANK = TILES.register("tank", () -> TileEntityType.Builder.of(TileEntityTank::new, TANK_BLOCK.get()).build(null));
+    public static final RegistryObject<TileEntityType<TankTileEntity>> TYPE_TANK = TILES.register("tank", () -> TileEntityType.Builder.of(TankTileEntity::new, TANK_BLOCK.get()).build(null));
 
     public static ForgeConfigSpec.BooleanValue quickRender;
 

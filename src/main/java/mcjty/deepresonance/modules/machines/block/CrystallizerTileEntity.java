@@ -1,12 +1,17 @@
-package mcjty.deepresonance.modules.machines.tile;
+package mcjty.deepresonance.modules.machines.block;
 
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.deepresonance.modules.core.tile.TileEntityResonatingCrystal;
+import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
+import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.blocks.BaseBlock;
+import mcjty.lib.blocks.RotationType;
+import mcjty.lib.builder.BlockBuilder;
+import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.AutomationFilterItemHander;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
@@ -38,7 +43,7 @@ import javax.annotation.Nullable;
 import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.generic;
 
-public class TileEntityCrystallizer extends GenericTileEntity implements ITickableTileEntity {
+public class CrystallizerTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
     public static final int SLOT = 0;
 
@@ -50,7 +55,7 @@ public class TileEntityCrystallizer extends GenericTileEntity implements ITickab
     private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Crystalizer")
-            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.CRYSTALIZER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), TileEntityCrystallizer.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.CRYSTALIZER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), CrystallizerTileEntity.this))
             .itemHandler(() -> items));
 
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, MachinesModule.crystallizerConfig.powerMaximum.get(), 0);
@@ -61,8 +66,19 @@ public class TileEntityCrystallizer extends GenericTileEntity implements ITickab
     private LazyOptional<IFluidHandler> rclTank;
     private int tankCooldown = 0;
 
-    public TileEntityCrystallizer() {
+    public CrystallizerTileEntity() {
         super(MachinesModule.TYPE_CRYSTALIZER.get());
+    }
+
+    public static BaseBlock createBlock() {
+        return new BaseBlock(new BlockBuilder()
+                .tileEntitySupplier(CrystallizerTileEntity::new)
+                .infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("crystallizer")))) {
+            @Override
+            public RotationType getRotationType() {
+                return RotationType.HORIZROTATION;
+            }
+        };
     }
 
     @Override
@@ -93,7 +109,7 @@ public class TileEntityCrystallizer extends GenericTileEntity implements ITickab
             }
         }
         if (crystalData != null && crystalData.getAmount() >= rclPerCrystal) {
-            TileEntityResonatingCrystal crystal = new TileEntityResonatingCrystal();
+            ResonatingCrystalTileEntity crystal = new ResonatingCrystalTileEntity();
             crystal.setEfficiency(crystalData.getEfficiency());
             crystal.setPurity(crystalData.getPurity());
             crystal.setStrength(crystalData.getStrength());

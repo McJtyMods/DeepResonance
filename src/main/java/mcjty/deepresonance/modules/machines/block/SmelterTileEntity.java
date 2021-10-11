@@ -1,10 +1,15 @@
-package mcjty.deepresonance.modules.machines.tile;
+package mcjty.deepresonance.modules.machines.block;
 
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.tank.util.DualTankHook;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
+import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.blocks.BaseBlock;
+import mcjty.lib.blocks.RotationType;
+import mcjty.lib.builder.BlockBuilder;
+import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.AutomationFilterItemHander;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
@@ -12,11 +17,13 @@ import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.Tools;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
@@ -35,7 +42,7 @@ import javax.annotation.Nullable;
 import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.generic;
 
-public class TileEntitySmelter extends GenericTileEntity implements ITickableTileEntity {
+public class SmelterTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
     public static final int SLOT = 0;
 
@@ -51,7 +58,7 @@ public class TileEntitySmelter extends GenericTileEntity implements ITickableTil
     private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Purifier")
-            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.SMELTER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), TileEntitySmelter.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.SMELTER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), SmelterTileEntity.this))
             .itemHandler(() -> items)
             .shortListener(Tools.holder(() -> processTime, v -> processTime = v))
             .shortListener(Tools.holder(() -> processTimeLeft, v -> processTimeLeft = v)));
@@ -62,8 +69,28 @@ public class TileEntitySmelter extends GenericTileEntity implements ITickableTil
     private float finalQuality = 1.0f;  // Calculated quality based on the amount of lava in the lava tank
     private float finalPurity = 0.1f;   // Calculated quality based on the amount of lava in the lava tank
 
-    public TileEntitySmelter() {
+    public SmelterTileEntity() {
         super(MachinesModule.TYPE_SMELTER.get());
+    }
+
+    public static BaseBlock createBlock() {
+        return new BaseBlock(
+                new BlockBuilder()
+                        .tileEntitySupplier(SmelterTileEntity::new)
+                        .infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("smelter")))) {
+
+            @Override
+            public RotationType getRotationType() {
+                return RotationType.HORIZROTATION;
+            }
+
+            @Override
+            protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+                super.createBlockStateDefinition(builder);
+                builder.add(BlockStateProperties.POWERED);
+            }
+
+        };
     }
 
     @Override

@@ -1,4 +1,4 @@
-package mcjty.deepresonance.modules.generator.tile;
+package mcjty.deepresonance.modules.generator.block;
 
 import com.google.common.collect.Sets;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
@@ -30,14 +30,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Set;
 
-public class TileEntityGeneratorPart extends GenericTileEntity implements ITickableTileEntity, IMultiblockConnector {
+public class GeneratorPartTileEntity extends GenericTileEntity implements ITickableTileEntity, IMultiblockConnector {
 
     private int networkId = -1;
 
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, GeneratorModule.generatorConfig.powerStoragePerBlock.get(), 0);
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
 
-    public TileEntityGeneratorPart() {
+    public GeneratorPartTileEntity() {
         super(GeneratorModule.TYPE_GENERATOR_PART.get());
     }
 
