@@ -6,8 +6,8 @@ import mcjty.deepresonance.modules.machines.block.*;
 import mcjty.deepresonance.modules.machines.client.ClientSetup;
 import mcjty.deepresonance.modules.machines.client.CrystallizerTESR;
 import mcjty.deepresonance.modules.machines.client.LaserTESR;
+import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
 import mcjty.deepresonance.modules.machines.item.ItemLens;
-import mcjty.deepresonance.modules.machines.util.InfusionBonusRegistry;
 import mcjty.deepresonance.modules.machines.util.config.*;
 import mcjty.deepresonance.setup.Registration;
 import mcjty.lib.container.GenericContainer;
@@ -66,12 +66,6 @@ public class MachinesModule implements IModule {
     @CapabilityInject(ILensMirror.class)
     public static Capability<ILensMirror> LENS_MIRROR_CAPABILITY;
 
-    public static CrystallizerConfig crystallizerConfig;
-    public static LaserConfig laserConfig;
-    public static PurifierConfig purifierConfig;
-    public static SmelterConfig smelterConfig;
-    public static ValveConfig valveConfig;
-
     public MachinesModule() {
         // @todo 1.16
 //        RegistryHelper.registerEmptyCapability(ILens.class);
@@ -89,6 +83,7 @@ public class MachinesModule implements IModule {
 //        CrystallizerTESR.setModel(Preconditions.checkNotNull(event.getModel(location)));
 //    }
 
+
     @Override
     public void initClient(FMLClientSetupEvent event) {
         ClientSetup.initClient();
@@ -103,18 +98,15 @@ public class MachinesModule implements IModule {
 
     @Override
     public void init(FMLCommonSetupEvent event) {
-
+        InfusionBonusRegistry.createDefaultInfusionBonusMap();
     }
 
     @Override
     public void initConfig() {
-        // @todo 1.16
-//        Config.configuration.configureSubConfig("machines", "Machines module settings", config -> {
-//            crystallizerConfig = config.registerConfig(CrystallizerConfig::new, "crystallizer", "Crystallizer settings");
-//            laserConfig = config.registerConfig(LaserConfig::new, "laser", "Laser settings");
-//            purifierConfig = config.registerConfig(PurifierConfig::new, "purifier", "Purifier settings");
-//            smelterConfig = config.registerConfig(SmelterConfig::new, "smelter", "Smelter settings");
-//            valveConfig = config.registerConfig(ValveConfig::new, "valve", "Valve settings");
-//        });
+        CrystallizerConfig.init();
+        LaserConfig.init();
+        PurifierConfig.init();
+        SmelterConfig.init();
+        ValveConfig.init();
     }
 }

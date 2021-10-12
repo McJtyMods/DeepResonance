@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.worldgen.world;
 
-import com.google.common.base.Preconditions;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 
@@ -10,7 +9,7 @@ public class ResonantCrystalFeatureConfig implements IFeatureConfig {
     public final float strength, power, efficiency, purity;
 
     public ResonantCrystalFeatureConfig(String name, float strength, float power, float efficiency, float purity) {
-        this.name = Preconditions.checkNotNull(name);
+        this.name = name;
         this.strength = strength;
         this.power = power;
         this.efficiency = efficiency;

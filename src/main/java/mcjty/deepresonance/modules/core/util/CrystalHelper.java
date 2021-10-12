@@ -21,11 +21,11 @@ public class CrystalHelper {
     }
 
     public static int getRfPerTick(float efficiency, float purity) {
-        return (int) (CoreModule.crystalConfig.MAX_POWER_TICK.get() * efficiency / 100.1f * (purity + 2.0f) / 102.0f + 1);
+        return (int) (CrystalConfig.MAX_POWER_TICK.get() * efficiency / 100.1f * (purity + 2.0f) / 102.0f + 1);
     }
 
     public static float getTotalPower(float strength, float purity) {
-        return 1000.0f * CoreModule.crystalConfig.MAX_POWER_STORED.get() * strength / 100.0f * (purity + 30.0f) / 130.0f;
+        return 1000.0f * CrystalConfig.MAX_POWER_STORED.get() * strength / 100.0f * (purity + 30.0f) / 130.0f;
     }
 
     // Special == 0, normal
@@ -66,7 +66,7 @@ public class CrystalHelper {
     }
 
     public static void spawnCrystal(World world, BlockPos pos, float purity, float strength, float efficiency, float power) {
-        world.setBlock(pos, Preconditions.checkNotNull(CoreModule.RESONATING_CRYSTAL_BLOCK.get()).defaultBlockState(), net.minecraftforge.common.util.Constants.BlockFlags.DEFAULT);
+        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_BLOCK.get().defaultBlockState(), net.minecraftforge.common.util.Constants.BlockFlags.DEFAULT);
         TileEntity te = world.getBlockEntity(pos);
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;

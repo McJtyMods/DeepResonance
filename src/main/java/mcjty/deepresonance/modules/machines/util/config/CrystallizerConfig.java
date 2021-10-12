@@ -1,30 +1,26 @@
 package mcjty.deepresonance.modules.machines.util.config;
 
+import mcjty.deepresonance.setup.Config;
 import net.minecraftforge.common.ForgeConfigSpec;
 
-import javax.annotation.Nonnull;
-
-/**
- * Created by Elec332 on 27-7-2020
- */
 public class CrystallizerConfig {
 
-    public final ForgeConfigSpec.IntValue powerPerTickIn;
-    public final ForgeConfigSpec.IntValue powerMaximum;
-    public final ForgeConfigSpec.IntValue powerPerTick;
-    public final ForgeConfigSpec.IntValue rclPerCrystal;
-    public final ForgeConfigSpec.IntValue rclPerTick;
+    public static ForgeConfigSpec.IntValue POWER_PER_TICK_IN;
+    public static ForgeConfigSpec.IntValue POWER_MAXIMUM;
+    public static ForgeConfigSpec.IntValue POWER_PER_TICK;
+    public static ForgeConfigSpec.IntValue RCL_PER_CRYSTAL;
+    public static ForgeConfigSpec.IntValue RCL_PER_TICK;
 
-    public CrystallizerConfig(@Nonnull ForgeConfigSpec.Builder builder) {
-        this.powerPerTickIn = builder.comment("How much power/t this machine can input from a generator/capacitor")
+    public static void init() {
+        POWER_PER_TICK_IN = Config.SERVER_BUILDER.comment("How much power/t this machine can input from a generator/capacitor")
                 .defineInRange("powerPerTickIn", 200, 0, 1000);
-        this.powerPerTick = builder.comment("How much power this machine consumes per tick while crystalizing")
+        POWER_PER_TICK = Config.SERVER_BUILDER.comment("How much power this machine consumes per tick while crystalizing")
                 .defineInRange("powerPerTick", 20, 0, 1000);
-        this.powerMaximum = builder.comment("Maximum power that can be stored in this machine")
+        POWER_MAXIMUM = Config.SERVER_BUILDER.comment("Maximum power that can be stored in this machine")
                 .defineInRange("powerMaximum", 10000, 0, 100000);
-        this.rclPerCrystal = builder.comment("The amount of RCL that is needed for one crystal")
+        RCL_PER_CRYSTAL = Config.SERVER_BUILDER.comment("The amount of RCL that is needed for one crystal")
                 .defineInRange("rclPerCrystal", 6000, 100, 80000);
-        this.rclPerTick = builder.comment("The amount of RCL/t that is consumed during crystalizing")
+        RCL_PER_TICK = Config.SERVER_BUILDER.comment("The amount of RCL/t that is consumed during crystalizing")
                 .defineInRange("rclPerTick", 1, 1, 100000);
     }
 

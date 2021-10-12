@@ -8,9 +8,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 
-/**
- * Created by Elec332 on 13-7-2020
- */
 public class RadiationEventHandler {
 
     public static void register() {

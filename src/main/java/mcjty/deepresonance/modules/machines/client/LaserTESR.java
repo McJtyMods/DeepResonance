@@ -18,9 +18,6 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import javax.annotation.Nonnull;
 
-/**
- * Created by Elec332 on 29-7-2020
- */
 public class LaserTESR extends TileEntityRenderer<LaserTileEntity> {
 
     private static final float BEAM_WIDTH = 3.8f;

@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import mcjty.deepresonance.api.radiation.IWorldRadiationManager;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
+import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.modules.radiation.util.RadiationHelper;
 import mcjty.lib.varia.WorldTools;
 import net.minecraft.block.Block;
@@ -95,7 +96,7 @@ class RadiationManager implements IWorldRadiationManager, INBTSerializable<Compo
                 RadiationSource radiationSource = source.getValue();
                 float strength = radiationSource.getStrength();
 
-                strength -= RadiationModule.config.strengthDecreaseTick.get() * MAXTICKS;
+                strength -= RadiationConfiguration.STRENGTH_DECREASE_TICK.get() * MAXTICKS;
                 if (strength <= 0) {
                     toRemove.add(coordinate);
                 } else {
@@ -105,7 +106,7 @@ class RadiationManager implements IWorldRadiationManager, INBTSerializable<Compo
                         handleRadiationEffects(world, coordinate, radiationSource);
                     }
 
-                    if (strength > RadiationModule.config.radiationDestructionEventLevel.get() && world.getRandom().nextFloat() < RadiationModule.config.radiationDestructionEventChance.get()) {
+                    if (strength > RadiationConfiguration.RADIATION_DESTRUCTION_EVENT_LEVEL.get() && world.getRandom().nextFloat() < RadiationConfiguration.RADIATION_DESTRUCTION_EVENT_CHANCE.get()) {
                         handleDestructionEvent(world, coordinate, radiationSource);
                     }
                 }
@@ -152,19 +153,19 @@ class RadiationManager implements IWorldRadiationManager, INBTSerializable<Compo
         float removeLeafChance;
         float setOnFireChance;
 
-        if (strength > RadiationModule.config.radiationDestructionEventLevel.get() / 2) {
+        if (strength > RadiationConfiguration.RADIATION_DESTRUCTION_EVENT_LEVEL.get() / 2) {
             // Worst destruction event
             damage = 30;
             poisonBlockChance = 0.9f;
             removeLeafChance = 9.0f;
             setOnFireChance = 0.03f;
-        } else if (strength > RadiationModule.config.radiationDestructionEventLevel.get() / 3) {
+        } else if (strength > RadiationConfiguration.RADIATION_DESTRUCTION_EVENT_LEVEL.get() / 3) {
             // Moderate
             damage = 5;
             poisonBlockChance = 0.6f;
             removeLeafChance = 4.0f;
             setOnFireChance = 0.002f;
-        } else if (strength > RadiationModule.config.radiationDestructionEventLevel.get() / 4) {
+        } else if (strength > RadiationConfiguration.RADIATION_DESTRUCTION_EVENT_LEVEL.get() / 4) {
             // Minor
             damage = 1;
             poisonBlockChance = 0.3f;
@@ -235,32 +236,32 @@ class RadiationManager implements IWorldRadiationManager, INBTSerializable<Compo
 
                 Map<Effect, Integer> effects = Maps.newHashMap();
 
-                if (strength > RadiationModule.config.radiationEffectLevel5.get()) {
+                if (strength > RadiationConfiguration.RADIATION_EFFECT_LEVEL_5.get()) {
                     effects.put(Effects.HUNGER, 2);
                     effects.put(Effects.MOVEMENT_SLOWDOWN, 2);
                     effects.put(Effects.WEAKNESS, 3);
                     effects.put(Effects.POISON, 3);
                     effects.put(Effects.WITHER, 2);
-                } else if (strength > RadiationModule.config.radiationEffectLevel4.get()) {
+                } else if (strength > RadiationConfiguration.RADIATION_EFFECT_LEVEL_4.get()) {
                     effects.put(Effects.HUNGER, 2);
                     effects.put(Effects.MOVEMENT_SLOWDOWN, 2);
                     effects.put(Effects.WEAKNESS, 3);
                     effects.put(Effects.POISON, 2);
-                } else if (strength > RadiationModule.config.radiationEffectLevel3.get()) {
+                } else if (strength > RadiationConfiguration.RADIATION_EFFECT_LEVEL_3.get()) {
                     effects.put(Effects.HUNGER, 2);
                     effects.put(Effects.MOVEMENT_SLOWDOWN, 2);
                     effects.put(Effects.WEAKNESS, 2);
                     effects.put(Effects.POISON, 1);
-                } else if (strength > RadiationModule.config.radiationEffectLevel2.get()) {
+                } else if (strength > RadiationConfiguration.RADIATION_EFFECT_LEVEL_2.get()) {
                     effects.put(Effects.HUNGER, 2);
                     effects.put(Effects.MOVEMENT_SLOWDOWN, 2);
                     effects.put(Effects.WEAKNESS, 1);
-                } else if (strength > RadiationModule.config.radiationEffectLevel1.get()) {
+                } else if (strength > RadiationConfiguration.RADIATION_EFFECT_LEVEL_1.get()) {
                     effects.put(Effects.HUNGER, 2);
                     effects.put(Effects.MOVEMENT_SLOWDOWN, 1);
-                } else if (strength > RadiationModule.config.radiationEffectLevel0.get()) {
+                } else if (strength > RadiationConfiguration.RADIATION_EFFECT_LEVEL_0.get()) {
                     effects.put(Effects.HUNGER, 1);
-                } else if (strength > RadiationModule.config.radiationEffectLevelNone.get()) {
+                } else if (strength > RadiationConfiguration.RADIATION_EFFECT_LEVEL_NONE.get()) {
                     effects.put(Effects.HUNGER, 0);
                 }
                 effects.forEach((effect, amplifier) -> entityLivingBase.addEffect(new EffectInstance(effect, EFFECTS_MAX * (MAXTICKS + 1), amplifier, true, true)));

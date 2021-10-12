@@ -2,6 +2,7 @@ package mcjty.deepresonance.modules.generator.block;
 
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
+import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.multiblock.MultiblockSupport;
 import mcjty.lib.tileentity.GenericTileEntity;
@@ -167,7 +168,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
         }
         startup = network.getStartupCounter();
         if (startup == 0) {
-            startup = GeneratorModule.generatorConfig.startupTime.get();
+            startup = GeneratorConfig.STARTUP_TIME.get();
         }
         startup--;
         if (startup <= 0) {
@@ -199,7 +200,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
 
         shutdown = network.getShutdownCounter();
         if (network.isActive() || network.getStartupCounter() != 0) {
-            shutdown = GeneratorModule.generatorConfig.shutdownTime.get();
+            shutdown = GeneratorConfig.SHUTDOWN_TIME.get();
             GeneratorPartTileEntity generatorTileEntity = (GeneratorPartTileEntity) level.getBlockEntity(coordinate);
             generatorTileEntity.activate(false);
         }

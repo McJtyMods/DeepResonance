@@ -2,18 +2,23 @@ package mcjty.deepresonance.modules.core.block;
 
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.client.ModelLoaderCoreModule;
+import mcjty.deepresonance.modules.core.util.CrystalConfig;
 import mcjty.deepresonance.modules.core.util.CrystalHelper;
 import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 public class ResonatingCrystalTileEntity extends GenericTileEntity implements ITickableTileEntity {
@@ -95,7 +100,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
     }
 
     public static float getTotalPower(float strength, float purity) {
-        return 1000.0f * CoreModule.crystalConfig.MAX_POWER_STORED.get() * strength / 100.0f * (purity + 30.0f) / 130.0f;
+        return 1000.0f * CrystalConfig.MAX_POWER_STORED.get() * strength / 100.0f * (purity + 30.0f) / 130.0f;
     }
 
     public int getRfPerTick() {
@@ -120,7 +125,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
     }
 
     public static int getRfPerTick(float efficiency, float purity) {
-        return (int) (CoreModule.crystalConfig.MAX_POWER_TICK.get() * efficiency / 100.1f * (purity + 2.0f) / 102.0f + 1);
+        return (int) (CrystalConfig.MAX_POWER_TICK.get() * efficiency / 100.1f * (purity + 2.0f) / 102.0f + 1);
     }
 
 
@@ -234,5 +239,53 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
         tileData.setData(ModelLoaderCoreModule.PURITY, getPurity());
         return tileData;
     }
+
+
+    // Special == 0, normal
+    // Special == 1, average random
+    // Special == 2, best random
+    // Special == 3, best non-overcharged
+    // Special == 4, almost depleted
+    public static void spawnRandomCrystal(World world, Random random, BlockPos pos, int special) {
+        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_BLOCK.get().defaultBlockState(), Constants.BlockFlags.DEFAULT);
+        TileEntity te = world.getBlockEntity(pos);
+        if (te instanceof ResonatingCrystalTileEntity) {
+            ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
+            if (special >= 5) {
+                resonatingCrystalTileEntity.setStrength(1);
+                resonatingCrystalTileEntity.setPower(.05f);
+                resonatingCrystalTileEntity.setEfficiency(1);
+                resonatingCrystalTileEntity.setPurity(100);
+            } else if (special >= 3) {
+                resonatingCrystalTileEntity.setStrength(100);
+                resonatingCrystalTileEntity.setPower(100);
+                resonatingCrystalTileEntity.setEfficiency(100);
+                resonatingCrystalTileEntity.setPurity(special == 4 ? 1 : 100);
+            } else {
+                resonatingCrystalTileEntity.setStrength(getRandomSpecial(random, special) * 3.0f + 0.01f);
+                resonatingCrystalTileEntity.setPower(getRandomSpecial(random, special) * 60.0f + 0.2f);
+                resonatingCrystalTileEntity.setEfficiency(getRandomSpecial(random, special) * 3.0f + 0.1f);
+                resonatingCrystalTileEntity.setPurity(getRandomSpecial(random, special) * 10.0f + 5.0f);
+            }
+        }
+    }
+
+    public static void spawnRandomCrystal(World world, Random random, BlockPos pos, float str, float pow, float eff, float pur) {
+        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_BLOCK.get().defaultBlockState(), Constants.BlockFlags.DEFAULT);
+        TileEntity te = world.getBlockEntity(pos);
+        if (te instanceof ResonatingCrystalTileEntity) {
+            ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
+            resonatingCrystalTileEntity.setStrength(Math.min(100.0f, random.nextFloat() * str * 3.0f + 0.01f));
+            resonatingCrystalTileEntity.setPower(Math.min(100.0f, random.nextFloat() * pow * 60.0f + 0.2f));
+            resonatingCrystalTileEntity.setEfficiency(Math.min(100.0f, random.nextFloat() * eff * 3.0f + 0.1f));
+            resonatingCrystalTileEntity.setPurity(Math.min(100.0f, random.nextFloat() * pur * 10.0f + 5.0f));
+        }
+    }
+
+    private static float getRandomSpecial(Random random, int special) {
+        return special == 0 ? random.nextFloat() :
+                special == 1 ? .5f : 1.0f;
+    }
+
 
 }

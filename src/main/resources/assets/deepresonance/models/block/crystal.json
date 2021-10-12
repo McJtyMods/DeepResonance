@@ -1,8 +1,6 @@
 {
+  "parent": "block/cube",
   "loader": "forge:obj",
   "model": "deepresonance:models/block/crystal.obj",
-  "flip-v": true,
-  "textures": {
-    "particle": "#crystal_texture"
-  }
+  "flip-v": true
 }

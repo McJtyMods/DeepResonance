@@ -1,8 +1,10 @@
 package mcjty.deepresonance.modules.machines.block;
 
 import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.machines.util.config.SmelterConfig;
 import mcjty.deepresonance.modules.tank.util.DualTankHook;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
+import mcjty.deepresonance.util.DeepResonanceTags;
 import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
@@ -63,7 +65,7 @@ public class SmelterTileEntity extends GenericTileEntity implements ITickableTil
             .shortListener(Tools.holder(() -> processTime, v -> processTime = v))
             .shortListener(Tools.holder(() -> processTimeLeft, v -> processTimeLeft = v)));
 
-    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, MachinesModule.smelterConfig.powerMaximum.get(), MachinesModule.smelterConfig.powerPerTickIn.get());
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, SmelterConfig.POWER_MAXIMUM.get(), SmelterConfig.POWER_PER_TICK_IN.get());
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
 
     private float finalQuality = 1.0f;  // Calculated quality based on the amount of lava in the lava tank
@@ -101,7 +103,7 @@ public class SmelterTileEntity extends GenericTileEntity implements ITickableTil
         if (processTimeLeft > 0) {
             if (canWork()) {
                 processTimeLeft--;
-                energyStorage.consumeEnergy(MachinesModule.smelterConfig.powerPerOreTick.get());
+                energyStorage.consumeEnergy(SmelterConfig.POWER_PER_ORE_TICK.get());
                 if (processTimeLeft == 0) {
                     // Done!
                     finishSmelting();
@@ -131,18 +133,16 @@ public class SmelterTileEntity extends GenericTileEntity implements ITickableTil
         if (tankHook.getTank1().getFluidInTank(0).getAmount() < tankHook.getTank1().getTankCapacity(0) * 0.25) {
             return false;
         }
-        int fill = MachinesModule.smelterConfig.rclPerOre.get();
+        int fill = SmelterConfig.RCL_PER_ORE.get();
         if (tankHook.getTank2().fill(DeepResonanceFluidHelper.makeLiquidCrystalStack(fill), IFluidHandler.FluidAction.SIMULATE) != fill) {
             return false;
         }
-        return energyStorage.getEnergyStored() >= MachinesModule.smelterConfig.powerPerOreTick.get();
+        return energyStorage.getEnergyStored() >= SmelterConfig.POWER_PER_ORE_TICK.get();
     }
 
 
     private boolean inputSlotValid() {
-        return true;
-        // @todo 1.16
-//        return !items.getStackInSlot(SLOT).isEmpty() && DeepResonanceTags.RESONANT_ORE_ITEM.contains(items.getStackInSlot(SLOT).getItem());
+        return !items.getStackInSlot(SLOT).isEmpty() && DeepResonanceTags.RESONANT_ORE_ITEM.contains(items.getStackInSlot(SLOT).getItem());
     }
 
     private void startSmelting() {
@@ -171,16 +171,16 @@ public class SmelterTileEntity extends GenericTileEntity implements ITickableTil
             finalPurity = 0.1f;
         }
 
-        lavaTank.drain(new FluidStack(Fluids.LAVA, MachinesModule.smelterConfig.lavaCost.get()), IFluidHandler.FluidAction.EXECUTE);
+        lavaTank.drain(new FluidStack(Fluids.LAVA, SmelterConfig.LAVA_COST.get()), IFluidHandler.FluidAction.EXECUTE);
 
-        int processTimeConfig = MachinesModule.smelterConfig.processTime.get();
+        int processTimeConfig = SmelterConfig.PROCESS_TIME.get();
         processTimeLeft = processTimeConfig + (int) ((percentage - 0.5f) * processTimeConfig);
         processTime = processTimeLeft;
     }
 
     private void finishSmelting() {
         if (finalQuality > 0.0f) {
-            FluidStack stack = DeepResonanceFluidHelper.makeLiquidCrystalStack(MachinesModule.smelterConfig.rclPerOre.get(), finalQuality, finalPurity, 0.1f, 0.1f);
+            FluidStack stack = DeepResonanceFluidHelper.makeLiquidCrystalStack(SmelterConfig.RCL_PER_ORE.get(), finalQuality, finalPurity, 0.1f, 0.1f);
             tankHook.getTank2().fill(stack, IFluidHandler.FluidAction.EXECUTE);
         }
     }

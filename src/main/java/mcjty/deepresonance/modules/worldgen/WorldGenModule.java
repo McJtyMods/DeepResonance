@@ -9,7 +9,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 public class WorldGenModule implements IModule {
 
     private final DeepResonanceWorldGenRegistry worldGenRegistry;
-    public static WorldGenConfiguration config;
 
     public WorldGenModule() {
         this.worldGenRegistry = new DeepResonanceWorldGenRegistry();
@@ -36,7 +35,6 @@ public class WorldGenModule implements IModule {
 
     @Override
     public void initConfig() {
-        // @todo 1.16
-//        config = Config.configuration.registerConfig(WorldGenConfiguration::new, "worldgen", "WorldGen module settings");
+        WorldGenConfiguration.init();
     }
 }

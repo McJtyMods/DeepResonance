@@ -2,9 +2,6 @@ package mcjty.deepresonance.api.fluid;
 
 import net.minecraftforge.fluids.FluidStack;
 
-/**
- * Created by Elec332 on 7-1-2020
- */
 public interface ILiquidCrystalData {
 
     void merge(ILiquidCrystalData otherStack);

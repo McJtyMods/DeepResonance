@@ -6,8 +6,11 @@ import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
@@ -44,6 +47,12 @@ public class ResonatingCrystalBlock extends BaseBlock {
 
     public ResonatingCrystalBlock() {
         super(new BlockBuilder()
+                .properties(AbstractBlock.Properties
+                        .of(Material.METAL)
+                        .strength(2.0f)
+                        .sound(SoundType.METAL)
+                        .noOcclusion()
+                )
                 .tileEntitySupplier(ResonatingCrystalTileEntity::new));
     }
 

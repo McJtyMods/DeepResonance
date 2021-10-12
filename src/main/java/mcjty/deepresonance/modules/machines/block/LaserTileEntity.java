@@ -6,7 +6,8 @@ import mcjty.deepresonance.api.laser.ILens;
 import mcjty.deepresonance.api.laser.ILensMirror;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
-import mcjty.deepresonance.modules.machines.util.InfusionBonusRegistry;
+import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
+import mcjty.deepresonance.modules.machines.util.config.LaserConfig;
 import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
@@ -76,7 +77,7 @@ public class LaserTileEntity extends GenericTileEntity implements ITickableTileE
             .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.LASER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), LaserTileEntity.this))
             .itemHandler(() -> items));
 
-    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, MachinesModule.laserConfig.powerMaximum.get(), 0);
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, LaserConfig.POWER_MAXIMUM.get(), 0);
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
 
     public LaserTileEntity() {
@@ -184,9 +185,9 @@ public class LaserTileEntity extends GenericTileEntity implements ITickableTileE
         if (!stack.isEmpty()) {
             CompoundNBT tagCompound = stack.getOrCreateTag().getCompound(CoreModule.TILE_DATA_TAG);
             float strength = tagCompound.contains("strength") ? tagCompound.getFloat("strength") / 100.0f : 0;
-            int toAdd = (int) (MachinesModule.laserConfig.minCrystalLiquidPerCrystal.get() + strength * (MachinesModule.laserConfig.maxCrystalLiquidPerCrystal.get() - MachinesModule.laserConfig.minCrystalLiquidPerCrystal.get()));
+            int toAdd = (int) (LaserConfig.MIN_CRYSTAL_LIQUID_PER_CRYSTAL.get() + strength * (LaserConfig.MAX_CRYSTAL_LIQUID_PER_CRYSTAL.get() - LaserConfig.MIN_CRYSTAL_LIQUID_PER_CRYSTAL.get()));
             float amt = crystalLiquid + toAdd;
-            if (amt > MachinesModule.laserConfig.crystalLiquidMaximum.get()) {
+            if (amt > LaserConfig.CRYSTAL_LIQUID_MAXIMUM.get()) {
                 return;
             }
             stack.shrink(1);

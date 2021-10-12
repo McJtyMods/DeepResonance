@@ -1,6 +1,6 @@
 package mcjty.deepresonance.modules.core.block;
 
-import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.core.util.ResonatingPlateBlockConfig;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -18,7 +18,7 @@ public class BlockResonatingPlate extends Block {
 
     @Override
     public boolean isRandomlyTicking(BlockState state) {
-        return CoreModule.resonatingPlateConfig.RADIATION_STRENGTH.get() > 0;
+        return ResonatingPlateBlockConfig.RADIATION_STRENGTH.get() > 0;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class BlockResonatingPlate extends Block {
         }
         if (worldIn.getDirectSignalTo(pos) > 0) {
             worldIn.getCapability(RadiationModule.CAPABILITY).ifPresent(radiationManager ->
-                    radiationManager.getOrCreateRadiationSource(pos).update(CoreModule.resonatingPlateConfig.RADIATION_RADIUS.get(), CoreModule.resonatingPlateConfig.RADIATION_STRENGTH.get(), CoreModule.resonatingPlateConfig.RADIATION_TICKS.get()));
+                    radiationManager.getOrCreateRadiationSource(pos).update(ResonatingPlateBlockConfig.RADIATION_RADIUS.get(), ResonatingPlateBlockConfig.RADIATION_STRENGTH.get(), ResonatingPlateBlockConfig.RADIATION_TICKS.get()));
         }
     }
 

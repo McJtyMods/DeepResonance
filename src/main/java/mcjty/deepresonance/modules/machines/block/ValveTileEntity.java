@@ -2,6 +2,7 @@ package mcjty.deepresonance.modules.machines.block;
 
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.machines.util.config.ValveConfig;
 import mcjty.deepresonance.modules.tank.util.DualTankHook;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.deepresonance.util.TranslationHelper;
@@ -31,9 +32,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-/**
- * Created by Elec332 on 25-7-2020
- */
 public class ValveTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
     public static final String CMD_SETTINGS = "valve.settings";
@@ -109,7 +107,7 @@ public class ValveTileEntity extends GenericTileEntity implements ITickableTileE
         if (progress > 0) {
             return;
         }
-        progress = MachinesModule.valveConfig.ticksPerOperation.get();
+        progress = ValveConfig.TICKS_PER_OPERATION.get();
 
         if (!tankHook.checkTanks()) {
             return;
@@ -118,7 +116,7 @@ public class ValveTileEntity extends GenericTileEntity implements ITickableTileE
         IFluidHandler top = tankHook.getTank1();
         IFluidHandler bottom = tankHook.getTank2();
 
-        int rcl = MachinesModule.valveConfig.rclPerOperation.get();
+        int rcl = ValveConfig.RCL_PER_OPERATION.get();
         FluidStack fluidStack = top.drain(rcl, IFluidHandler.FluidAction.SIMULATE);
         if (fluidStack.isEmpty()) {
             return;

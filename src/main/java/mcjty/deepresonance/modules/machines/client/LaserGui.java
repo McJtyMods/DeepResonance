@@ -4,8 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.infusion.InfusionBonus;
 import mcjty.deepresonance.api.infusion.InfusionModifier;
-import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.LaserTileEntity;
+import mcjty.deepresonance.modules.machines.util.config.LaserConfig;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
@@ -55,7 +55,7 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
 
         crystalBar = new EnergyBar()
                 .vertical()
-                .maxValue(MachinesModule.laserConfig.crystalLiquidMaximum.get())
+                .maxValue(LaserConfig.CRYSTAL_LIQUID_MAXIMUM.get())
                 .hint(new PositionalLayout.PositionalHint(153, 7, 19, 38))
                 .showText(false)
                 .setEnergyOnColor(0xff0066ff)

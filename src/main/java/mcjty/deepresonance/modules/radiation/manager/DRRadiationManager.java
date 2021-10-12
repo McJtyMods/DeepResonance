@@ -1,7 +1,7 @@
 package mcjty.deepresonance.modules.radiation.manager;
 
 import com.google.common.collect.Maps;
-import mcjty.deepresonance.modules.radiation.RadiationModule;
+import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.modules.radiation.util.RadiationShieldRegistry;
 import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.GlobalCoordinate;
@@ -37,14 +37,14 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
         if (p < 0.01f) {
             p = 0.01f;
         }
-        double str = RadiationModule.config.minRadiationStrength.get() + strength * (1.0f - p) / 100.0f
-                * (RadiationModule.config.maxRadiationStrength.get() - RadiationModule.config.minRadiationStrength.get());
+        double str = RadiationConfiguration.MIN_RADIATION_STRENGTH.get() + strength * (1.0f - p) / 100.0f
+                * (RadiationConfiguration.MAX_RADIATION_STRENGTH.get() - RadiationConfiguration.MIN_RADIATION_STRENGTH.get());
         return (float) str;
     }
 
     public static float calculateRadiationRadius(float strength, float efficiency, float purity) {
-        double radius = RadiationModule.config.minRadiationRadius.get() + (strength + efficiency) / 200.0f
-                * (RadiationModule.config.maxRadiationRadius.get() - RadiationModule.config.minRadiationRadius.get());
+        double radius = RadiationConfiguration.MIN_RADIATION_RADIUS.get() + (strength + efficiency) / 200.0f
+                * (RadiationConfiguration.MAX_RADIATION_RADIUS.get() - RadiationConfiguration.MIN_RADIATION_RADIUS.get());
         radius += radius * (100.0f - purity) * .002f;
         return (float) radius;
     }
@@ -165,7 +165,7 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
         public void update(float radius, float maxStrenght, int ticks) {
             this.maxStrength = maxStrenght;
             this.radius = radius;
-            double toadd = maxStrenght * RadiationModule.config.strengthGrowthFactor.get() * ticks;
+            double toadd = maxStrenght * RadiationConfiguration.STRENGTH_GROWTH_FACTOR.get() * ticks;
             if ((strength + toadd) > maxStrenght) {
                 toadd = maxStrenght - strength;
                 if (toadd < 0) {

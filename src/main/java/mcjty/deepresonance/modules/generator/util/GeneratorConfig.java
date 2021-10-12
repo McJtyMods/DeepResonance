@@ -1,42 +1,38 @@
 package mcjty.deepresonance.modules.generator.util;
 
+import mcjty.deepresonance.setup.Config;
 import net.minecraftforge.common.ForgeConfigSpec;
 
-import javax.annotation.Nonnull;
-
-/**
- * Created by Elec332 on 30-7-2020
- */
 public class GeneratorConfig {
 
-    public final ForgeConfigSpec.IntValue startupTime;
-    public final ForgeConfigSpec.IntValue shutdownTime;
+    public static ForgeConfigSpec.IntValue STARTUP_TIME;
+    public static ForgeConfigSpec.IntValue SHUTDOWN_TIME;
 
-    public final ForgeConfigSpec.DoubleValue baseGeneratorVolume;
-    public final ForgeConfigSpec.DoubleValue loopVolumeFactor;
+    public static ForgeConfigSpec.DoubleValue BASE_GENERATOR_VOLUME;
+    public static ForgeConfigSpec.DoubleValue LOOP_VOLUME_FACTOR;
 
-    public final ForgeConfigSpec.IntValue powerStoragePerBlock;
-    public final ForgeConfigSpec.IntValue powerPerTickOut;
+    public static ForgeConfigSpec.IntValue POWER_STORAGE_PER_BLOCK;
+    public static ForgeConfigSpec.IntValue POWER_PER_TICKOUT;
 
-    public final ForgeConfigSpec.IntValue maxCrystalsPerBlock;
-    public final ForgeConfigSpec.IntValue maxPowerInputPerBlock;
+    public static ForgeConfigSpec.IntValue MAX_CRYSTALS_PER_BLOCK;
+    public static ForgeConfigSpec.IntValue MAX_POWER_INPUT_PER_BLOCK;
 
-    public GeneratorConfig(@Nonnull ForgeConfigSpec.Builder builder) {
-        this.startupTime = builder.comment("")
+    public static void init() {
+        STARTUP_TIME = Config.SERVER_BUILDER.comment("")
                 .defineInRange("startupTime", 70, 20, 2000);
-        this.shutdownTime = builder.comment("")
+        SHUTDOWN_TIME = Config.SERVER_BUILDER.comment("")
                 .defineInRange("shutdownTime", 70, 20, 2000);
-        this.baseGeneratorVolume = builder.comment("")
+        BASE_GENERATOR_VOLUME = Config.SERVER_BUILDER.comment("")
                 .defineInRange("baseGeneratorVolume", 1.0, 0, 1);
-        this.loopVolumeFactor = builder.comment("")
+        LOOP_VOLUME_FACTOR = Config.SERVER_BUILDER.comment("")
                 .defineInRange("loopVolumeFactor", 1.0, 0, 1);
-        this.powerStoragePerBlock = builder.comment("")
+        POWER_STORAGE_PER_BLOCK = Config.SERVER_BUILDER.comment("")
                 .defineInRange("powerStoragePerBlock", 50000, 1000, 100000);
-        this.powerPerTickOut = builder.comment("")
+        POWER_PER_TICKOUT = Config.SERVER_BUILDER.comment("")
                 .defineInRange("powerPerTickOut", 20000, 10, 100000);
-        this.maxCrystalsPerBlock = builder.comment("")
+        MAX_CRYSTALS_PER_BLOCK = Config.SERVER_BUILDER.comment("")
                 .defineInRange("maxCrystalsPerBlock", 2, 1, 8);
-        this.maxPowerInputPerBlock = builder.comment("")
+        MAX_POWER_INPUT_PER_BLOCK = Config.SERVER_BUILDER.comment("")
                 .defineInRange("maxPowerInputPerBlock", 10000, 100, 50000);
     }
 

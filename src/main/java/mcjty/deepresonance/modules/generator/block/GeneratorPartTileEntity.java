@@ -3,6 +3,7 @@ package mcjty.deepresonance.modules.generator.block;
 import com.google.common.collect.Sets;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
+import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.multiblock.MultiblockSupport;
@@ -34,7 +35,7 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
 
     private int networkId = -1;
 
-    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, GeneratorModule.generatorConfig.powerStoragePerBlock.get(), 0);
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, GeneratorConfig.POWER_STORAGE_PER_BLOCK.get(), 0);
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
 
     public GeneratorPartTileEntity() {
@@ -60,7 +61,7 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
             TileEntity te = level.getBlockEntity(pos);
             Direction opposite = facing.getOpposite();
             if (EnergyTools.isEnergyTE(te, opposite)) {
-                int rfToGive = Math.min(GeneratorModule.generatorConfig.powerPerTickOut.get(), energyStored);   // @todo 1.16 is this the right config?
+                int rfToGive = Math.min(GeneratorConfig.POWER_PER_TICKOUT.get(), energyStored);   // @todo 1.16 is this the right config?
                 int received = (int) EnergyTools.receiveEnergy(te, opposite, rfToGive);
                 energyStored -= energyStorage.extractEnergy(received, false);
                 if (energyStored <= 0) {

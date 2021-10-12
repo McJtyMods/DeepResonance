@@ -19,9 +19,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.util.function.Consumer;
 
-/**
- * Created by Elec332 on 28-7-2020
- */
 public class DefaultLens implements ILens {
 
     private static final VoxelShape SHAPE = VoxelShapes.box(2.1f / 16, 0, 2.1f / 16, 13.9f / 16, 1.7f / 16, 13.9f / 16);

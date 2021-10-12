@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.tank.grid;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.lib.varia.WorldTools;
@@ -184,7 +183,7 @@ public class TankGrid implements ICapabilityProvider, IFluidHandler {
             tagCompound.put("fluid", fluidTag);
         }
         tile.setGridData(tagCompound);
-        if (WorldTools.isLoaded(Preconditions.checkNotNull(tile.getLevel()), tile.getBlockPos())) {
+        if (WorldTools.isLoaded(tile.getLevel(), tile.getBlockPos())) {
             tile.setChanged();
         }
     }
@@ -203,7 +202,7 @@ public class TankGrid implements ICapabilityProvider, IFluidHandler {
     }
 
     private void markDirty(TankTileEntity tank) {
-        if (tank != null && WorldTools.isLoaded(Preconditions.checkNotNull(tank.getLevel()), tank.getBlockPos())) {
+        if (tank != null && WorldTools.isLoaded(tank.getLevel(), tank.getBlockPos())) {
             tank.setChanged();
         }
     }

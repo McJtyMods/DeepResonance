@@ -1,12 +1,12 @@
 package mcjty.deepresonance.modules.core;
 
-import mcjty.deepresonance.modules.core.block.ResonatingCrystalBlock;
 import mcjty.deepresonance.modules.core.block.BlockResonatingPlate;
+import mcjty.deepresonance.modules.core.block.ResonatingCrystalBlock;
+import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.core.client.ClientSetup;
 import mcjty.deepresonance.modules.core.client.ResonatingCrystalTER;
 import mcjty.deepresonance.modules.core.fluid.FluidLiquidCrystal;
 import mcjty.deepresonance.modules.core.item.ItemLiquidInjector;
-import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.core.util.CrystalConfig;
 import mcjty.deepresonance.modules.core.util.ResonatingPlateBlockConfig;
 import mcjty.deepresonance.setup.Registration;
@@ -51,9 +51,6 @@ public class CoreModule implements IModule {
     public static final RegistryObject<Item> RESONATING_ORE_END_ITEM = Registration.fromBlock(RESONATING_ORE_END_BLOCK);
     public static final RegistryObject<Item> RESONATING_PLATE_BLOCK_ITEM = Registration.fromBlock(RESONATING_PLATE_BLOCK_BLOCK);
 
-    public static CrystalConfig crystalConfig;
-    public static ResonatingPlateBlockConfig resonatingPlateConfig;
-
     public CoreModule() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::onTextureStitch);
         // @todo 1.16
@@ -77,10 +74,7 @@ public class CoreModule implements IModule {
 
     @Override
     public void initConfig() {
-        // @todo 1.16
-//        Config.configuration.configureSubConfig("core", "Core module settings", config -> {
-//            crystalConfig = config.registerConfig(CrystalConfig::new, "resonating_crystal", "Resonating Crystal settings");
-//            resonatingPlateConfig = config.registerConfig(ResonatingPlateBlockConfig::new, "resonating_plate_block", "Resonating Plate Block settings");
-//        });
+        CrystalConfig.init();
+        ResonatingPlateBlockConfig.init();
     }
 }

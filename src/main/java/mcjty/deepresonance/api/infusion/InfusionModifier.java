@@ -4,9 +4,6 @@ import java.io.Serializable;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
-/**
- * Created by Elec332 on 28-7-2020
- */
 public final class InfusionModifier implements Serializable {
 
     public static final InfusionModifier NONE = new InfusionModifier(0.0f, 0.0f);

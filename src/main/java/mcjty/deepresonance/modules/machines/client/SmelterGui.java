@@ -17,9 +17,6 @@ import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
 
-/**
- * Created by Elec332 on 27-7-2020
- */
 public class SmelterGui extends GenericGuiContainer<SmelterTileEntity, GenericContainer> {
 
     public static final int SMELTER_WIDTH = 180;

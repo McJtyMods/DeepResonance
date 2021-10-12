@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.tank.grid;
 
-import com.google.common.base.Preconditions;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import net.minecraft.fluid.Fluid;
@@ -20,7 +19,7 @@ public class InternalGridTank implements IFluidTank {
 
     public InternalGridTank(int maxAmount) {
         this.maxAmount = maxAmount;
-        this.tank = Preconditions.checkNotNull(DeepResonanceFluidHelper.readCrystalDataFromNBT(new CompoundNBT(), 0));
+        this.tank = DeepResonanceFluidHelper.readCrystalDataFromNBT(new CompoundNBT(), 0);
         this.extraTank = new FluidTank(maxAmount);
     }
 
@@ -43,7 +42,7 @@ public class InternalGridTank implements IFluidTank {
                 ret = toAdd.getAmount();
             }
             if (action.execute()) {
-                tank.merge(Preconditions.checkNotNull(DeepResonanceFluidHelper.readCrystalDataFromStack(toAdd)));
+                tank.merge(DeepResonanceFluidHelper.readCrystalDataFromStack(toAdd));
             }
             return ret;
         } else {

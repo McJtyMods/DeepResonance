@@ -4,6 +4,7 @@ import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.machines.util.config.CrystallizerConfig;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.api.container.CapabilityContainerProvider;
@@ -58,7 +59,7 @@ public class CrystallizerTileEntity extends GenericTileEntity implements ITickab
             .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.CRYSTALIZER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), CrystallizerTileEntity.this))
             .itemHandler(() -> items));
 
-    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, MachinesModule.crystallizerConfig.powerMaximum.get(), 0);
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, CrystallizerConfig.POWER_MAXIMUM.get(), 0);
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
 
     private int progress = 0;
@@ -91,9 +92,9 @@ public class CrystallizerTileEntity extends GenericTileEntity implements ITickab
             return;
         }
 
-        energyStorage.consumeEnergy(MachinesModule.crystallizerConfig.powerPerTick.get());
+        energyStorage.consumeEnergy(CrystallizerConfig.POWER_PER_TICK.get());
         int rclPerCrystal = getRclPerCrystal();
-        int drain = MachinesModule.crystallizerConfig.rclPerTick.get();
+        int drain = CrystallizerConfig.RCL_PER_TICK.get();
         if (crystalData != null) {
             drain = Math.min(drain, rclPerCrystal - crystalData.getAmount());
         }
@@ -145,7 +146,7 @@ public class CrystallizerTileEntity extends GenericTileEntity implements ITickab
             return false;
         }
 
-        if (energyStorage.getEnergyStored() < MachinesModule.crystallizerConfig.powerPerTick.get()) {
+        if (energyStorage.getEnergyStored() < CrystallizerConfig.POWER_PER_TICK.get()) {
             return false;
         }
 
@@ -153,7 +154,7 @@ public class CrystallizerTileEntity extends GenericTileEntity implements ITickab
             return false;
         }
 
-        FluidStack fluidStack = rclTank.orElseThrow(NullPointerException::new).drain(MachinesModule.crystallizerConfig.rclPerTick.get(), IFluidHandler.FluidAction.SIMULATE);
+        FluidStack fluidStack = rclTank.orElseThrow(NullPointerException::new).drain(CrystallizerConfig.RCL_PER_TICK.get(), IFluidHandler.FluidAction.SIMULATE);
         if (fluidStack.isEmpty() || fluidStack.getAmount() < 1) {
             return false;
         }
@@ -208,7 +209,7 @@ public class CrystallizerTileEntity extends GenericTileEntity implements ITickab
     }
 
     private static int getRclPerCrystal() {
-        return MachinesModule.crystallizerConfig.rclPerCrystal.get();
+        return CrystallizerConfig.RCL_PER_CRYSTAL.get();
     }
 
     @Override

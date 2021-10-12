@@ -28,9 +28,9 @@ public final class InfusionBonus implements Serializable {
         this.powerPerTick = powerPerTick;
         this.crystalLiquidCostPerCatalyst = crystalLiquidPerCatalyst;
         this.rclImprovedPerCatalyst = rclPerCatalyst;
-        this.purityModifier = Preconditions.checkNotNull(purityModifier);
-        this.strengthModifier = Preconditions.checkNotNull(strengthModifier);
-        this.efficiencyModifier = Preconditions.checkNotNull(efficiencyModifier);
+        this.purityModifier = purityModifier;
+        this.strengthModifier = strengthModifier;
+        this.efficiencyModifier = efficiencyModifier;
     }
 
     public int getColor() {

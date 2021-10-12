@@ -41,8 +41,6 @@ public class RadiationModule implements IModule {
     public static Capability<IWorldRadiationManager> CAPABILITY;
     public static ResourceLocation CAPABILITY_NAME = new ResourceLocation(DeepResonance.MODID, "radiation");
 
-    public static RadiationConfiguration config;
-
     public RadiationModule() {
         // @todo 1.16
 //        RegistryHelper.registerEmptyCapability(IWorldRadiationManager.class);
@@ -60,7 +58,6 @@ public class RadiationModule implements IModule {
 
     @Override
     public void initConfig() {
-        // @todo 1.16
-//        config = Config.configuration.registerConfig(RadiationConfiguration::new, "radiation", "Radiation settings");
+        RadiationConfiguration.init();
     }
 }

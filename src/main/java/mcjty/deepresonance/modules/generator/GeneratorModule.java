@@ -6,17 +6,9 @@ import mcjty.deepresonance.modules.generator.client.CollectorTESR;
 import mcjty.deepresonance.modules.generator.util.CollectorConfig;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.deepresonance.setup.Registration;
-import mcjty.deepresonance.util.TranslationHelper;
-import mcjty.lib.blocks.BaseBlock;
-import mcjty.lib.blocks.RotationType;
-import mcjty.lib.builder.BlockBuilder;
-import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.modules.IModule;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -41,9 +33,6 @@ public class GeneratorModule implements IModule {
     public static final RegistryObject<Item> GENERATOR_PART_ITEM = Registration.fromBlock(GENERATOR_PART_BLOCK);
     public static final RegistryObject<TileEntityType<GeneratorPartTileEntity>> TYPE_GENERATOR_PART = TILES.register("generator_part", () -> TileEntityType.Builder.of(GeneratorPartTileEntity::new, GENERATOR_PART_BLOCK.get()).build(null));
 
-    public static CollectorConfig collectorConfig;
-    public static GeneratorConfig generatorConfig;
-
     @Override
     public void init(FMLCommonSetupEvent event) {
         DeepResonance.logger.info("Registering generator grid handler");
@@ -58,10 +47,7 @@ public class GeneratorModule implements IModule {
 
     @Override
     public void initConfig() {
-        // @todo 1.16
-//        Config.configuration.configureSubConfig("generator", "Generator module settings", config -> {
-//            collectorConfig = config.registerConfig(CollectorConfig::new, "collector", "Collector settings");
-//            generatorConfig = config.registerConfig(GeneratorConfig::new, "generator_settings", "Generator settings");
-//        });
+        CollectorConfig.init();
+        GeneratorConfig.init();
     }
 }

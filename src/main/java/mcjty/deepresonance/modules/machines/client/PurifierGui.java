@@ -13,9 +13,6 @@ import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
 
-/**
- * Created by Elec332 on 27-7-2020
- */
 public class PurifierGui extends GenericGuiContainer<PurifierTileEntity, GenericContainer> {
 
     public static final int PURIFIER_WIDTH = 180;

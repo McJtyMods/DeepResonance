@@ -27,9 +27,6 @@ import java.awt.*;
 
 import static mcjty.deepresonance.modules.machines.block.ValveTileEntity.*;
 
-/**
- * Created by Elec332 on 25-7-2020
- */
 public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContainer> {
 
     public static final int VALVE_WIDTH = 180;

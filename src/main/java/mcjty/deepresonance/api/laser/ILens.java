@@ -11,9 +11,6 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.function.Consumer;
 
-/**
- * Created by Elec332 on 28-7-2020
- */
 public interface ILens extends INBTSerializable<CompoundNBT> {
 
     default void checkNeighbors(IWorld world, BlockPos pos, Direction side) {

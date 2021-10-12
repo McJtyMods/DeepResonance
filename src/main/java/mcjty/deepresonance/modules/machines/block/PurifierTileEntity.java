@@ -3,6 +3,7 @@ package mcjty.deepresonance.modules.machines.block;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.machines.util.config.PurifierConfig;
 import mcjty.deepresonance.modules.tank.util.DualTankHook;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.deepresonance.util.TranslationHelper;
@@ -12,11 +13,9 @@ import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.builder.TooltipBuilder;
-import mcjty.lib.container.AutomationFilterItemHander;
-import mcjty.lib.container.ContainerFactory;
-import mcjty.lib.container.GenericContainer;
-import mcjty.lib.container.NoDirectionItemHander;
+import mcjty.lib.container.*;
 import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.varia.OrientationTools;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -52,6 +51,8 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
             .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.PURIFIER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), PurifierTileEntity.this))
             .itemHandler(() -> items));
 
+    // Cache for the inventory used to put the spent filter material in.
+    private InventoryLocator inventoryLocator = new InventoryLocator();
 
     private int timeToGo = 0;
     private ILiquidCrystalData processing = null;
@@ -96,8 +97,8 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
                 timeToGo = 20; //Wait 1 second before re-trying
                 return;
             }
-            processing = DeepResonanceFluidHelper.readCrystalDataFromStack(tankHook.getTank1().drain(MachinesModule.purifierConfig.rclPerPurify.get(), IFluidHandler.FluidAction.EXECUTE));
-            timeToGo = MachinesModule.purifierConfig.ticksPerPurify.get();
+            processing = DeepResonanceFluidHelper.readCrystalDataFromStack(tankHook.getTank1().drain(PurifierConfig.RCL_PER_PURIFY.get(), IFluidHandler.FluidAction.EXECUTE));
+            timeToGo = PurifierConfig.TICKS_PER_PURIFY.get();
         }
         setChanged();
     }
@@ -120,13 +121,9 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
     }
 
     private void consumeFilter() {
-        ItemStack stack = new ItemStack(CoreModule.SPENT_FILTER_ITEM.get());
-        if (true) { //TODO: Auto-eject upgrade
-            // @todo 1.16
-//            ejector.eject(getLevel(), getPos(), Direction.Plane.HORIZONTAL, stack);
-            stack = ItemStack.EMPTY;
-        }
-        items.setStackInSlot(SLOT, stack);
+        items.decrStackSize(SLOT, 1);
+        ItemStack spentMaterial = new ItemStack(CoreModule.SPENT_FILTER_ITEM.get(), 1);
+        inventoryLocator.ejectStack(level, worldPosition, spentMaterial, worldPosition, OrientationTools.HORIZONTAL_DIRECTION_VALUES);
     }
 
     private int doPurify(@Nonnull ILiquidCrystalData fluidData) {
@@ -138,9 +135,9 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
             return -1; //Wait
         }
         float purity = fluidData.getPurity();
-        float maxPurityToAdd = MachinesModule.purifierConfig.addedPurity.get() / 100.0f;
+        float maxPurityToAdd = PurifierConfig.ADDED_PURITY.get() / 100.0f;
         float addedPurity = maxPurityToAdd;
-        float maxPurity = (MachinesModule.purifierConfig.maxPurity.get() + .1f) / 100.0f;
+        float maxPurity = (PurifierConfig.MAX_PURITY.get() + .1f) / 100.0f;
         maxPurity *= fluidData.getQuality();
         if (purity + addedPurity > maxPurity) {
             addedPurity = maxPurity - purity;
@@ -156,7 +153,6 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
         return (int) ((maxPurityToAdd - addedPurity) * 40 / maxPurityToAdd + 1);
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted") //Shaddap
     private boolean hasFilter() {
         return items.getStackInSlot(SLOT).getItem() == CoreModule.FILTER_MATERIAL_ITEM.get();
     }

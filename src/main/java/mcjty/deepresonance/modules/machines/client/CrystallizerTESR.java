@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.machines.client;
 
-import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
@@ -19,9 +18,6 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import javax.annotation.Nonnull;
 
-/**
- * Created by Elec332 on 15-8-2020
- */
 public class CrystallizerTESR extends TileEntityRenderer<CrystallizerTileEntity> {
 
     private static IBakedModel crystal;
@@ -49,7 +45,7 @@ public class CrystallizerTESR extends TileEntityRenderer<CrystallizerTileEntity>
         if (progress > 0) {
             matrixStack.pushPose();
             float scale = 0.15f + 0.35f * (progress / 100.0f);
-            float f = (float) Math.floorMod(Preconditions.checkNotNull(tile.getLevel()).getGameTime(), 120);
+            float f = Math.floorMod(tile.getLevel().getGameTime(), 120);
             matrixStack.translate(0.5, 0.52 + (0.002 * progress), 0.5);
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(f * 3));
             matrixStack.scale(scale, scale, scale);

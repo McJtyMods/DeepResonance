@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.tank.blocks;
 
-import com.google.common.base.Preconditions;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.tank.grid.TankGrid;
 import mcjty.lib.tileentity.GenericTileEntity;
@@ -92,7 +91,7 @@ public class TankTileEntity extends GenericTileEntity {
         super.writeClientDataToNBT(tagCompound);
         tagCompound.putFloat("renderC", renderHeight);
         if (clientRenderFluid != null) {
-            tagCompound.putString("fluidC", Preconditions.checkNotNull(clientRenderFluid.getRegistryName()).toString());
+            tagCompound.putString("fluidC", clientRenderFluid.getRegistryName().toString());
         }
     }
 
@@ -111,7 +110,7 @@ public class TankTileEntity extends GenericTileEntity {
     public ActionResultType onBlockActivated(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
         if (FluidUtil.getFluidHandler(player.getItemInHand(hand)).isPresent()) {
             if (!level.isClientSide) {
-                FluidUtil.interactWithFluidHandler(player, hand, Preconditions.checkNotNull(getLevel()), result.getBlockPos(), result.getDirection());
+                FluidUtil.interactWithFluidHandler(player, hand, getLevel(), result.getBlockPos(), result.getDirection());
             }
             return ActionResultType.SUCCESS;
         }

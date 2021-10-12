@@ -4,6 +4,8 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
+import mcjty.deepresonance.modules.generator.util.CollectorConfig;
+import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.deepresonance.modules.radiation.manager.DRRadiationManager;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.tileentity.GenericTileEntity;
@@ -76,7 +78,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
                         int rfPerTick = calculateRF();
                         holder.getMb().setLastRfPerTick(rfPerTick);
                         int newEnergy = holder.getMb().getEnergy() + rfPerTick;
-                        int maxEnergy = holder.getMb().getGeneratorBlocks() * GeneratorModule.generatorConfig.powerStoragePerBlock.get();
+                        int maxEnergy = holder.getMb().getGeneratorBlocks() * GeneratorConfig.POWER_STORAGE_PER_BLOCK.get();
                         if (newEnergy > maxEnergy) {
                             newEnergy = maxEnergy;
                         }
@@ -103,7 +105,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
 
         if (active != lasersActive || startup != laserStartup) {
             // Only when active changes and the lasert started recently do we check for new crystals.
-            boolean doFind = lasersActive != active || (laserStartup > (GeneratorModule.generatorConfig.startupTime.get() - 5));
+            boolean doFind = lasersActive != active || (laserStartup > (GeneratorConfig.STARTUP_TIME.get() - 5));
             lasersActive = active;
             laserStartup = startup;
             markDirtyClient();
@@ -231,7 +233,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
     private void findCrystals(DRGeneratorNetwork.Network network) {
         Set<BlockPos> newCrystals = new HashSet<>();
 
-        int maxSupportedRF = network.getGeneratorBlocks() * GeneratorModule.generatorConfig.maxPowerInputPerBlock.get();
+        int maxSupportedRF = network.getGeneratorBlocks() * GeneratorConfig.MAX_POWER_INPUT_PER_BLOCK.get();
 
         boolean tooManyCrystals = false;
         boolean tooMuchPower = false;
@@ -240,9 +242,9 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         int xCoord = getBlockPos().getX();
         int yCoord = getBlockPos().getY();
         int zCoord = getBlockPos().getZ();
-        for (int y = yCoord - GeneratorModule.collectorConfig.maxVerticalCrystalDistance.get() ; y <= yCoord + GeneratorModule.collectorConfig.maxVerticalCrystalDistance.get() ; y++) {
+        for (int y = yCoord - CollectorConfig.MAX_VERTICAL_CRYSTAL_DISTANCE.get(); y <= yCoord + CollectorConfig.MAX_VERTICAL_CRYSTAL_DISTANCE.get() ; y++) {
             if (y >= 0 && y < getLevel().getHeight()) {
-                int maxhordist = GeneratorModule.collectorConfig.maxHorizontalCrystalDistance.get();
+                int maxhordist = CollectorConfig.MAX_HORIZONTAL_CRYSTAL_DISTANCE.get();
                 for (int x = xCoord - maxhordist; x <= xCoord + maxhordist; x++) {
                     for (int z = zCoord - maxhordist; z <= zCoord + maxhordist; z++) {
                         if (getLevel().getBlockState(new BlockPos(x, y, z)).getBlock() == CoreModule.RESONATING_CRYSTAL_BLOCK.get()) {
@@ -285,7 +287,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
             return;
         }
 
-        int maxSupportedRF = network.getGeneratorBlocks() * GeneratorModule.generatorConfig.maxPowerInputPerBlock.get();
+        int maxSupportedRF = network.getGeneratorBlocks() * GeneratorConfig.MAX_POWER_INPUT_PER_BLOCK.get();
         for (BlockPos coordinate : crystals) {
             TileEntity te = level.getBlockEntity(new BlockPos(getBlockPos().getX() + coordinate.getX(), getBlockPos().getY() + coordinate.getY(), getBlockPos().getZ() + coordinate.getZ()));
             if (te instanceof ResonatingCrystalTileEntity) {
@@ -307,7 +309,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
 
     // Returns remaining RF that is supported if crystal could be added. Otherwise one of the errors above.
     private int addCrystal(int x, int y, int z, DRGeneratorNetwork.Network network, Set<BlockPos> newCrystals, Set<BlockPos> oldCrystals, int maxSupportedRF) {
-        int maxSupportedCrystals = network.getGeneratorBlocks() * GeneratorModule.generatorConfig.maxCrystalsPerBlock.get();
+        int maxSupportedCrystals = network.getGeneratorBlocks() * GeneratorConfig.MAX_CRYSTALS_PER_BLOCK.get();
 
         TileEntity te = level.getBlockEntity(new BlockPos(x, y, z));
         if (te instanceof ResonatingCrystalTileEntity) {

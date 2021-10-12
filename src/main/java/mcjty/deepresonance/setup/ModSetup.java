@@ -1,15 +1,15 @@
 package mcjty.deepresonance.setup;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.commands.ModCommands;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.lib.setup.DefaultModSetup;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Created by Elec332 on 6-1-2020
- */
 public class ModSetup extends DefaultModSetup {
 
     public ModSetup() {
@@ -19,6 +19,7 @@ public class ModSetup extends DefaultModSetup {
     @Override
     public void init(FMLCommonSetupEvent e) {
         super.init(e);
+        MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
         DeepResonanceMessages.registerMessages("deepresonance");
     }
 
@@ -29,6 +30,10 @@ public class ModSetup extends DefaultModSetup {
     @Override
     public Logger getLogger() {
         return DeepResonance.logger; //A nicer logger
+    }
+
+    public void registerCommands(RegisterCommandsEvent event) {
+        ModCommands.register(event.getDispatcher());
     }
 
 }

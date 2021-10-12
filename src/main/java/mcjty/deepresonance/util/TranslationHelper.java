@@ -1,6 +1,5 @@
 package mcjty.deepresonance.util;
 
-import com.google.common.base.Preconditions;
 import mcjty.deepresonance.DeepResonance;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -21,7 +20,7 @@ public class TranslationHelper {
     }
 
     public static String getTooltipKey(IForgeRegistryEntry<?> object) {
-        return getTooltipKey(Preconditions.checkNotNull(object.getRegistryName()).getPath());
+        return getTooltipKey(object.getRegistryName().getPath());
     }
 
     public static String getTooltipKey(String name) {

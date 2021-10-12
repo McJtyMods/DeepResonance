@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.tank.util;
 
-import com.google.common.base.Preconditions;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -12,15 +11,12 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.lang.ref.WeakReference;
 
-/**
- * Created by Elec332 on 26-7-2020
- */
 public class DualTankHook {
 
     public DualTankHook(TileEntity tile, Direction dir1, Direction dir2) {
-        this.tile = new WeakReference<>(Preconditions.checkNotNull(tile));
-        this.dir1 = Preconditions.checkNotNull(dir1);
-        this.dir2 = Preconditions.checkNotNull(dir2);
+        this.tile = new WeakReference<>(tile);
+        this.dir1 = dir1;
+        this.dir2 = dir2;
         this.allowDuplicates = false;
         this.timeout = this.timeCounter = 0;
     }
@@ -81,7 +77,7 @@ public class DualTankHook {
         if (tile_ == null) {
             throw new IllegalStateException();
         }
-        World world = Preconditions.checkNotNull(tile_.getLevel());
+        World world = tile_.getLevel();
         BlockPos pos = tile_.getBlockPos();
         boolean check = false;
         if (!tank1Present()) {
