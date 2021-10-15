@@ -10,7 +10,6 @@ import mcjty.deepresonance.modules.radiation.manager.DRRadiationManager;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.Broadcaster;
-import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -19,6 +18,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 
 import java.util.HashSet;
@@ -202,7 +202,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
 
         if (doRadiation && radiationRadius > 0.1f) {
             DRRadiationManager radiationManager = DRRadiationManager.getManager(getLevel());
-            GlobalCoordinate thisCoordinate = new GlobalCoordinate(getBlockPos(), level);
+            GlobalPos thisCoordinate = GlobalPos.of(level.dimension(), getBlockPos());
             if (radiationManager.getRadiationSource(thisCoordinate) == null) {
                 Logging.log("Created radiation source with radius " + radiationRadius + " and strength " + radiationStrength);
             }
