@@ -20,7 +20,6 @@ import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import static mcjty.deepresonance.setup.Registration.TILES;
 
@@ -52,7 +51,6 @@ public class CoreModule implements IModule {
     public static final RegistryObject<Item> RESONATING_PLATE_BLOCK_ITEM = Registration.fromBlock(RESONATING_PLATE_BLOCK_BLOCK);
 
     public CoreModule() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::onTextureStitch);
         // @todo 1.16
 //        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(IModelManager.class, this::registerModelLoader);
     }

@@ -126,6 +126,14 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         }
     }
 
+    public int getLaserStartup() {
+        return laserStartup;
+    }
+
+    public boolean areLasersActive() {
+        return lasersActive;
+    }
+
     private MultiblockDriver<DRGeneratorNetwork.Network> getDriver() {
         return DRGeneratorNetwork.getChannels(level).getDriver();
     }

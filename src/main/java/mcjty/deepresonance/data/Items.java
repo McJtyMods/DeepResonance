@@ -45,7 +45,8 @@ class Items extends BaseItemModelProvider {
         parentedBlock(MachinesModule.CRYSTALLIZER_BLOCK.get());
         parentedBlock(GeneratorModule.ENERGY_COLLECTOR_BLOCK.get());
         parentedBlock(GeneratorModule.GENERATOR_CONTROLLER_BLOCK.get());
-        parentedItem(GeneratorModule.GENERATOR_PART_ITEM.get(), "block/generator_part_side");
+//        parentedItem(GeneratorModule.GENERATOR_PART_ITEM.get(), "block/generator_part_side");
+        parentedBlock(GeneratorModule.GENERATOR_PART_BLOCK.get());
     }
 
 }
