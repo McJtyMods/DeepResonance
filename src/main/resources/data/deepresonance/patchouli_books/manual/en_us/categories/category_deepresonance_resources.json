@@ -1,0 +1,7 @@
+{
+  "name": "Resources",
+  "description": "Ores and Materials",
+  "parent": "deepresonance:category_deepresonance",
+  "icon": "deepresonance:spent_filter_material",
+  "sortnum": 20
+}

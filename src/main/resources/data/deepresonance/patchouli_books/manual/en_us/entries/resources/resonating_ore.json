@@ -1,0 +1,12 @@
+{
+  "name": "Resonating Ore",
+  "icon": "deepresonance:resonating_ore_stone",
+  "category": "deepresonance:category_deepresonance_resources",
+  "sortnum": 10,
+  "pages": [
+    {
+      "type": "text",
+      "text": "Resonating Ore drops Resonating Crystals."
+    }
+  ]
+}
