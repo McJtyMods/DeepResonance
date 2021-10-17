@@ -3,7 +3,7 @@ package mcjty.deepresonance.modules.radiation.manager;
 import com.google.common.collect.Maps;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.modules.radiation.util.RadiationShieldRegistry;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import mcjty.lib.worlddata.AbstractWorldData;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
@@ -84,7 +84,7 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
         ListNBT lst = tagCompound.getList("radiation", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < lst.size(); i++) {
             CompoundNBT tc = lst.getCompound(i);
-            RegistryKey<World> type = WorldTools.getId(tc.getString("dim"));
+            RegistryKey<World> type = LevelTools.getId(tc.getString("dim"));
             GlobalPos coordinate = GlobalPos.of(type, new BlockPos(tc.getInt("sourceX"), tc.getInt("sourceY"), tc.getInt("sourceZ")));
             RadiationSource value = new RadiationSource();
             value.readFromNBT(tc);

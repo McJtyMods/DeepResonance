@@ -19,7 +19,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -123,7 +123,7 @@ public class CrystallizerTileEntity extends GenericTileEntity implements ITickab
         if (progress != newProgress) {
             CompoundNBT packet = new CompoundNBT();
             packet.putInt("progress", newProgress);
-            WorldTools.getAllPlayersWatchingBlock(level, worldPosition).forEach(player -> {
+            LevelTools.getAllPlayersWatchingBlock(level, worldPosition).forEach(player -> {
                 player.connection.send(new SUpdateTileEntityPacket(worldPosition, 3, packet));
             });
             progress = newProgress;

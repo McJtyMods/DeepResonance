@@ -6,7 +6,7 @@ import mcjty.deepresonance.api.radiation.IWorldRadiationManager;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.modules.radiation.util.RadiationHelper;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
@@ -91,7 +91,7 @@ class RadiationManager implements IWorldRadiationManager, INBTSerializable<Compo
 
         for (Map.Entry<BlockPos, RadiationSource> source : sources.entrySet()) {
             BlockPos coordinate = source.getKey();
-            if (WorldTools.isLoaded(world, coordinate)) {
+            if (LevelTools.isLoaded(world, coordinate)) {
                 // The world is loaded and the chunk containing the radiation source is also loaded.
                 RadiationSource radiationSource = source.getValue();
                 float strength = radiationSource.getStrength();
