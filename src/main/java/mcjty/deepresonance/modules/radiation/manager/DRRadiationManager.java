@@ -3,14 +3,14 @@ package mcjty.deepresonance.modules.radiation.manager;
 import com.google.common.collect.Maps;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.modules.radiation.util.RadiationShieldRegistry;
-import mcjty.lib.varia.DimensionId;
-import mcjty.lib.varia.GlobalCoordinate;
+import mcjty.lib.varia.LevelTools;
 import mcjty.lib.worlddata.AbstractWorldData;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -20,7 +20,7 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
 
     private static final String RADIATION_MANAGER_NAME = "DRRadiationManager";
 
-    private final Map<GlobalCoordinate, RadiationSource> sources = Maps.newHashMap();
+    private final Map<GlobalPos, RadiationSource> sources = Maps.newHashMap();
 
     public DRRadiationManager(String name) {
         super(name);
@@ -57,7 +57,7 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
         return getData(world, () -> new DRRadiationManager(RADIATION_MANAGER_NAME), RADIATION_MANAGER_NAME);
     }
 
-    public RadiationSource getOrCreateRadiationSource(GlobalCoordinate coordinate) {
+    public RadiationSource getOrCreateRadiationSource(GlobalPos coordinate) {
         RadiationSource source = sources.get(coordinate);
         if (source == null) {
             source = new RadiationSource();
@@ -66,15 +66,15 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
         return source;
     }
 
-    public RadiationSource getRadiationSource(GlobalCoordinate coordinate) {
+    public RadiationSource getRadiationSource(GlobalPos coordinate) {
         return sources.get(coordinate);
     }
 
-    public Map<GlobalCoordinate, RadiationSource> getRadiationSources() {
+    public Map<GlobalPos, RadiationSource> getRadiationSources() {
         return sources;
     }
 
-    public void deleteRadiationSource(GlobalCoordinate coordinate) {
+    public void deleteRadiationSource(GlobalPos coordinate) {
         sources.remove(coordinate);
     }
 
@@ -84,9 +84,8 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
         ListNBT lst = tagCompound.getList("radiation", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < lst.size(); i++) {
             CompoundNBT tc = lst.getCompound(i);
-            ResourceLocation id = new ResourceLocation(tc.getString("dim"));
-            DimensionId type = DimensionId.fromResourceLocation(id);
-            GlobalCoordinate coordinate = new GlobalCoordinate(new BlockPos(tc.getInt("sourceX"), tc.getInt("sourceY"), tc.getInt("sourceZ")), type);
+            RegistryKey<World> type = LevelTools.getId(tc.getString("dim"));
+            GlobalPos coordinate = GlobalPos.of(type, new BlockPos(tc.getInt("sourceX"), tc.getInt("sourceY"), tc.getInt("sourceZ")));
             RadiationSource value = new RadiationSource();
             value.readFromNBT(tc);
             sources.put(coordinate, value);
@@ -96,12 +95,12 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
     @Override
     public CompoundNBT save(CompoundNBT tagCompound) {
         ListNBT lst = new ListNBT();
-        for (Map.Entry<GlobalCoordinate, RadiationSource> entry : sources.entrySet()) {
+        for (Map.Entry<GlobalPos, RadiationSource> entry : sources.entrySet()) {
             CompoundNBT tc = new CompoundNBT();
-            tc.putString("dim", entry.getKey().getDimension().getRegistryName().toString());
-            tc.putInt("sourceX", entry.getKey().getCoordinate().getX());
-            tc.putInt("sourceY", entry.getKey().getCoordinate().getY());
-            tc.putInt("sourceZ", entry.getKey().getCoordinate().getZ());
+            tc.putString("dim", entry.getKey().dimension().location().toString());
+            tc.putInt("sourceX", entry.getKey().pos().getX());
+            tc.putInt("sourceY", entry.getKey().pos().getY());
+            tc.putInt("sourceZ", entry.getKey().pos().getZ());
             entry.getValue().writeToNBT(tc);
             lst.add(tc);
         }

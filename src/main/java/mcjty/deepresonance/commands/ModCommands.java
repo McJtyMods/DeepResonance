@@ -5,7 +5,6 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.core.util.CrystalHelper;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -20,18 +19,18 @@ public class ModCommands {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         LiteralCommandNode<CommandSource> commands = dispatcher.register(
                 Commands.literal(DeepResonance.MODID)
-                        .then(registerSetChapter(dispatcher))
+                        .then(registerCreateCrystal(dispatcher))
 //                        .then(registerReset(dispatcher))
 //                        .then(registerList(dispatcher))
 //                        .then(registerListKnown(dispatcher))
 //                        .then(registerAdd(dispatcher))
         );
 
-        dispatcher.register(Commands.literal("tales").redirect(commands));
+        dispatcher.register(Commands.literal("dr").redirect(commands));
     }
 
-    public static ArgumentBuilder<CommandSource, ?> registerSetChapter(CommandDispatcher<CommandSource> dispatcher) {
-        return Commands.literal("setchapter")
+    public static ArgumentBuilder<CommandSource, ?> registerCreateCrystal(CommandDispatcher<CommandSource> dispatcher) {
+        return Commands.literal("create")
                 .requires(cs -> cs.hasPermission(2))
                 .then(Commands.argument("special", IntegerArgumentType.integer())
                         .executes(context -> {
