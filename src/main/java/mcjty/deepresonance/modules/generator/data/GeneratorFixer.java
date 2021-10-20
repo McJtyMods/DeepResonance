@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.generator.data;
 
-import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.lib.multiblock.IMultiblockFixer;
 import mcjty.lib.multiblock.MultiblockDriver;
 import net.minecraft.util.math.BlockPos;

@@ -1,5 +1,6 @@
 package mcjty.deepresonance.modules.generator.block;
 
+import mcjty.deepresonance.compat.DeepResonanceTOPDriver;
 import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
@@ -15,6 +16,7 @@ public class GeneratorControllerBlock extends BaseBlock {
     public GeneratorControllerBlock() {
         super(new BlockBuilder()
                 .tileEntitySupplier(GeneratorControllerTileEntity::new)
+                .topDriver(DeepResonanceTOPDriver.DRIVER)
                 .infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("generator_controller"))));
     }
 
