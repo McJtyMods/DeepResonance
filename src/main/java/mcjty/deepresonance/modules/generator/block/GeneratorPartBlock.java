@@ -66,7 +66,7 @@ public class GeneratorPartBlock extends BaseBlock {
             }
             BlockState stateDown = world.getBlockState(pos.below());
             if (stateDown.getBlock() == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
-                world.sendBlockUpdated(pos.above(), stateDown, stateDown, Constants.BlockFlags.DEFAULT);
+                world.sendBlockUpdated(pos.below(), stateDown, stateDown, Constants.BlockFlags.DEFAULT);
             }
         }
     }

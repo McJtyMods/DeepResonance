@@ -3,6 +3,7 @@ package mcjty.deepresonance.modules.generator.block;
 import com.google.common.collect.Sets;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
+import mcjty.deepresonance.modules.generator.data.GeneratorNetwork;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
@@ -75,7 +76,7 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         if (!world.isClientSide()) {
             addBlockToNetwork();
-            DRGeneratorNetwork.Network network = getNetwork();
+            GeneratorNetwork network = getNetwork();
             if (network != null) {
                 CompoundNBT tag = stack.getTag();
                 if (tag != null) {
@@ -91,7 +92,7 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
     public void onReplaced(World world, BlockPos pos, BlockState state, BlockState newstate) {
         if (!world.isClientSide()) {
             if (newstate.getBlock() != GeneratorModule.GENERATOR_PART_BLOCK.get()) {
-                DRGeneratorNetwork.Network network = getNetwork();
+                GeneratorNetwork network = getNetwork();
                 if (network != null) {
                     int energy = network.getEnergy() / network.getGeneratorBlocks();
                     network.setEnergy(network.getEnergy() - energy);
@@ -102,7 +103,7 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
     }
 
     public void addBlockToNetwork() {
-        DRGeneratorNetwork.Network newMb = DRGeneratorNetwork.Network.builder()
+        GeneratorNetwork newMb = GeneratorNetwork.builder()
                 .generatorBlocks(1)
                 .active(false)
                 .build();
@@ -127,21 +128,21 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
         return networkId;
     }
 
-    private MultiblockDriver<DRGeneratorNetwork.Network> getDriver() {
+    private MultiblockDriver<GeneratorNetwork> getDriver() {
         return DRGeneratorNetwork.getChannels(level).getDriver();
     }
 
-    public DRGeneratorNetwork.Network getNetwork() {
+    public GeneratorNetwork getNetwork() {
         if (networkId == -1) {
             return null;
         }
         DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(level);
-        return generatorNetwork.getNetwork(networkId);
+        return generatorNetwork.getOrCreateNetwork(networkId);
     }
 
 
     public void activate(boolean active) {
-        DRGeneratorNetwork.Network network = getNetwork();
+        GeneratorNetwork network = getNetwork();
         if (network != null && network.isActive() != active) {
             getDriver().modify(getMultiblockId(), holder -> {
                 holder.getMb().setActive(active);

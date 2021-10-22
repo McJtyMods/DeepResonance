@@ -190,47 +190,6 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
         return super.save(tagCompound);
     }
 
-    // @todo 1.16
-//    @Override
-//    public void addInformation(@Nonnull IInformation information, @Nonnull IInfoDataAccessorBlock hitData) {
-//        DecimalFormat decimalFormat = new DecimalFormat("#.#");
-//        decimalFormat.setRoundingMode(RoundingMode.DOWN);
-//        CompoundNBT tag = hitData.getData();
-//        float power = tag.getFloat("power");
-//        BlockCrystal.addBasicInformation(information::addInformation, tag, power, information.getProviderType() == InfoMod.WAILA);
-//        getModifiers().forEach(mod -> {
-//            if (mod instanceof IInfoProvider) {
-//                ((IInfoProvider) mod).addInformation(information, hitData);
-//            }
-//        });
-//        if (information.isDebugMode() == Boolean.TRUE) { //Debug, no translation
-//            information.addInformation("Power: " + decimalFormat.format(power) + "%");
-//        } else if (information.getProviderType() == InfoMod.TOP) {
-//            information.addInformation(new StringTextComponent("Power: " + decimalFormat.format(power) + "%").applyTextStyle(TextFormatting.YELLOW));
-//            IProbeInfo probeInfo = (IProbeInfo) information.getInformationComponent();
-//            probeInfo.progress((int) power, 100, probeInfo.defaultProgressStyle()
-//                    .suffix("%")
-//                    .width(40)
-//                    .height(10)
-//                    .showText(false)
-//                    .filledColor(0xffff0000)
-//                    .alternateFilledColor(0xff990000));
-//        }
-//    }
-//
-//    @Override
-//    public void gatherInformation(@Nonnull CompoundNBT tag, @Nonnull ServerPlayerEntity player, @Nonnull IInfoDataAccessorBlock hitData) {
-//        tag.putFloat("strength", getStrength());
-//        tag.putFloat("efficiency", getEfficiency());
-//        tag.putFloat("purity", getPurity());
-//        tag.putFloat("power", getPower());
-//        getModifiers().forEach(mod -> {
-//            if (mod instanceof IInfoProvider) {
-//                ((IInfoProvider) mod).gatherInformation(tag, player, hitData);
-//            }
-//        });
-//    }
-
     @Nonnull
     @Override
     public IModelData getModelData() {

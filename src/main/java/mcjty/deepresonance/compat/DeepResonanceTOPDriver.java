@@ -1,8 +1,11 @@
 package mcjty.deepresonance.compat;
 
+import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.block.GeneratorControllerTileEntity;
 import mcjty.deepresonance.modules.generator.block.GeneratorPartTileEntity;
+import mcjty.deepresonance.modules.generator.data.GeneratorNetwork;
 import mcjty.lib.compat.theoneprobe.McJtyLibTOPDriver;
 import mcjty.lib.compat.theoneprobe.TOPDriver;
 import mcjty.lib.varia.Tools;
@@ -13,8 +16,11 @@ import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +38,8 @@ public class DeepResonanceTOPDriver implements TOPDriver {
                 drivers.put(id, new GeneratorPartDriver());
             } else if (blockState.getBlock() == GeneratorModule.GENERATOR_CONTROLLER_BLOCK.get()) {
                 drivers.put(id, new GeneratorControllerDriver());
+            } else if (blockState.getBlock() == CoreModule.RESONATING_CRYSTAL_BLOCK.get()) {
+                drivers.put(id, new CrystalDriver());
             } else {
                 drivers.put(id, new DefaultDriver());
             }
@@ -56,6 +64,10 @@ public class DeepResonanceTOPDriver implements TOPDriver {
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (GeneratorPartTileEntity te) -> {
                 int id = te.getMultiblockId();
                 probeInfo.text(CompoundText.createLabelInfo("Id ", id));
+                GeneratorNetwork network = te.getNetwork();
+                probeInfo.text(CompoundText.createLabelInfo("Collectors ", network.getCollectorBlocks()));
+                probeInfo.text(CompoundText.createLabelInfo("Generators ", network.getGeneratorBlocks()));
+                probeInfo.text(CompoundText.createLabelInfo("Energy ", network.getEnergy()));
             }, "Bad tile entity!");
         }
     }
@@ -70,4 +82,36 @@ public class DeepResonanceTOPDriver implements TOPDriver {
             }, "Bad tile entity!");
         }
     }
+
+    private static class CrystalDriver implements TOPDriver {
+        @Override
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+            McJtyLibTOPDriver.DRIVER.addStandardProbeInfo(mode, probeInfo, player, world, blockState, data);
+            Tools.safeConsume(world.getBlockEntity(data.getPos()), (ResonatingCrystalTileEntity crystal) -> {
+                DecimalFormat fmt = new DecimalFormat("#.#");
+                fmt.setRoundingMode(RoundingMode.DOWN);
+                probeInfo.text(CompoundText.createLabelInfo("Strength/Efficiency/Purity ", fmt.format(crystal.getStrength()) + "% "
+                        + fmt.format(crystal.getEfficiency()) + "% "
+                        + fmt.format(crystal.getPurity()) + "%"));
+                int rfPerTick = crystal.getRfPerTick();
+                if (mode == ProbeMode.DEBUG) {
+                    probeInfo.text(CompoundText.createLabelInfo("RF/t ", rfPerTick + " RF/t"));
+                    probeInfo.text(CompoundText.createLabelInfo("Power ", fmt.format(crystal.getPower()) + "%"));
+//                    probeInfo.text(TextStyleClass.INFO + "Instability: " + fmt.format(crystal.getInstability()));
+//                    probeInfo.text(TextStyleClass.INFO + "Resistance: " + crystal.getResistance());
+//                    probeInfo.text(TextStyleClass.INFO + "Cooldown: " + crystal.getCooldown());
+                } else {
+                    probeInfo.horizontal().text(TextFormatting.YELLOW + "Power: " + fmt.format(crystal.getPower()) + "% (" + rfPerTick + " RF/t)")
+                            .progress((int) crystal.getPower(), 100, probeInfo.defaultProgressStyle()
+                                    .suffix("%")
+                                    .width(40)
+                                    .height(10)
+                                    .showText(false)
+                                    .filledColor(0xffff0000)
+                                    .alternateFilledColor(0xff990000));
+                }
+            }, "Bad tile entity!");
+        }
+    }
+
 }

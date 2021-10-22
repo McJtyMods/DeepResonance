@@ -4,6 +4,7 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
+import mcjty.deepresonance.modules.generator.data.GeneratorNetwork;
 import mcjty.deepresonance.modules.generator.util.CollectorConfig;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.deepresonance.modules.radiation.manager.DRRadiationManager;
@@ -52,7 +53,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
     private void checkStateServer() {
         boolean active = false;
         int startup = 0;
-        DRGeneratorNetwork.Network network = null;
+        GeneratorNetwork network = null;
 
         TileEntity te = level.getBlockEntity(getBlockPos().below());
         if (te instanceof GeneratorPartTileEntity) {
@@ -134,7 +135,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         return lasersActive;
     }
 
-    private MultiblockDriver<DRGeneratorNetwork.Network> getDriver() {
+    private MultiblockDriver<GeneratorNetwork> getDriver() {
         return DRGeneratorNetwork.getChannels(level).getDriver();
     }
 
@@ -238,7 +239,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         }
     }
 
-    private void findCrystals(DRGeneratorNetwork.Network network) {
+    private void findCrystals(GeneratorNetwork network) {
         Set<BlockPos> newCrystals = new HashSet<>();
 
         int maxSupportedRF = network.getGeneratorBlocks() * GeneratorConfig.MAX_POWER_INPUT_PER_BLOCK.get();
@@ -290,7 +291,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         }
 
         DRGeneratorNetwork channels = DRGeneratorNetwork.getChannels(level);
-        DRGeneratorNetwork.Network network = channels.getChannel(networkID);
+        GeneratorNetwork network = channels.getChannel(networkID);
         if (network == null) {
             return;
         }
@@ -316,7 +317,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
     private static int ERROR_TOOMUCHPOWER = -2;
 
     // Returns remaining RF that is supported if crystal could be added. Otherwise one of the errors above.
-    private int addCrystal(int x, int y, int z, DRGeneratorNetwork.Network network, Set<BlockPos> newCrystals, Set<BlockPos> oldCrystals, int maxSupportedRF) {
+    private int addCrystal(int x, int y, int z, GeneratorNetwork network, Set<BlockPos> newCrystals, Set<BlockPos> oldCrystals, int maxSupportedRF) {
         int maxSupportedCrystals = network.getGeneratorBlocks() * GeneratorConfig.MAX_CRYSTALS_PER_BLOCK.get();
 
         TileEntity te = level.getBlockEntity(new BlockPos(x, y, z));

@@ -1,5 +1,6 @@
 package mcjty.deepresonance.modules.core.block;
 
+import mcjty.deepresonance.compat.DeepResonanceTOPDriver;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.util.Constants;
 import mcjty.deepresonance.util.TranslationHelper;
@@ -42,11 +43,12 @@ public class ResonatingCrystalBlock extends BaseBlock {
 
     private static final VoxelShape AABB = VoxelShapes.box(0.1f, 0, 0.1f, 0.9f, 0.8f, 0.9f);
 
-    public static BooleanProperty EMPTY = BooleanProperty.create("empty");
-    public static BooleanProperty GENERATED = BooleanProperty.create("generated");
+    public static final BooleanProperty EMPTY = BooleanProperty.create("empty");
+    public static final BooleanProperty GENERATED = BooleanProperty.create("generated");
 
     public ResonatingCrystalBlock() {
         super(new BlockBuilder()
+                .topDriver(DeepResonanceTOPDriver.DRIVER)
                 .properties(AbstractBlock.Properties
                         .of(Material.METAL)
                         .strength(2.0f)
