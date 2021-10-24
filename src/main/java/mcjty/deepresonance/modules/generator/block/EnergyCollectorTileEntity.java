@@ -4,7 +4,7 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
-import mcjty.deepresonance.modules.generator.data.GeneratorNetwork;
+import mcjty.deepresonance.modules.generator.data.GeneratorBlob;
 import mcjty.deepresonance.modules.generator.util.CollectorConfig;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.deepresonance.modules.radiation.manager.DRRadiationManager;
@@ -37,7 +37,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
     private boolean lasersActive = false;
     private int laserStartup = 0;        // A mirror (for the client) of the network startup counter.
     private int radiationUpdateCount = MAXTICKS;
-    private int networkID = -1;
+    private int blobId = -1;
 
     public EnergyCollectorTileEntity() {
         super(GeneratorModule.TYPE_ENERGY_COLLECTOR.get());
@@ -53,26 +53,26 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
     private void checkStateServer() {
         boolean active = false;
         int startup = 0;
-        GeneratorNetwork network = null;
+        GeneratorBlob network = null;
 
         TileEntity te = level.getBlockEntity(getBlockPos().below());
         if (te instanceof GeneratorPartTileEntity) {
             GeneratorPartTileEntity generatorTileEntity = (GeneratorPartTileEntity) te;
-            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(level);
+            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getGeneratorNetwork(level);
 
-            if (networkID != generatorTileEntity.getMultiblockId()) {
-                if (networkID != -1) {
-                    getDriver().modify(networkID, holder -> holder.getMb().setCollectorBlocks(-1));
+            if (blobId != generatorTileEntity.getMultiblockId()) {
+                if (blobId != -1) {
+                    getDriver().modify(blobId, holder -> holder.getMb().setCollectorBlocks(-1));
                 }
 
-                networkID = generatorTileEntity.getMultiblockId();
-                getDriver().modify(networkID, holder -> holder.getMb().setCollectorBlocks(-1));
+                blobId = generatorTileEntity.getMultiblockId();
+                getDriver().modify(blobId, holder -> holder.getMb().setCollectorBlocks(-1));
                 generatorNetwork.save();
             }
 
 
             int multiblockId = generatorTileEntity.getMultiblockId();
-            network = generatorTileEntity.getNetwork();
+            network = generatorTileEntity.getBlob();
             if (network != null) {
                 if (network.isActive()) {
                     getDriver().modify(multiblockId, holder -> {
@@ -98,8 +98,8 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
                 startup = network.getStartupCounter();
             }
         } else {
-            if (networkID != -1) {
-                networkID = -1;
+            if (blobId != -1) {
+                blobId = -1;
                 setChanged();
             }
         }
@@ -135,8 +135,8 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         return lasersActive;
     }
 
-    private MultiblockDriver<GeneratorNetwork> getDriver() {
-        return DRGeneratorNetwork.getChannels(level).getDriver();
+    private MultiblockDriver<GeneratorBlob> getDriver() {
+        return DRGeneratorNetwork.getGeneratorNetwork(level).getDriver();
     }
 
     private int calculateRF() {
@@ -220,8 +220,8 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         if (!world.isClientSide()) {
             TileEntity te = world.getBlockEntity(pos.below());
             if (te instanceof GeneratorPartTileEntity) {
-                networkID = ((GeneratorPartTileEntity) te).getMultiblockId();
-                getDriver().modify(networkID, holder -> {
+                blobId = ((GeneratorPartTileEntity) te).getMultiblockId();
+                getDriver().modify(blobId, holder -> {
                     holder.getMb().setCollectorBlocks(-1);
                 });
             }
@@ -239,7 +239,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         }
     }
 
-    private void findCrystals(GeneratorNetwork network) {
+    private void findCrystals(GeneratorBlob network) {
         Set<BlockPos> newCrystals = new HashSet<>();
 
         int maxSupportedRF = network.getGeneratorBlocks() * GeneratorConfig.MAX_POWER_INPUT_PER_BLOCK.get();
@@ -286,17 +286,17 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
     }
 
     public void addCrystal(int x, int y, int z) {
-        if (networkID == -1) {
+        if (blobId == -1) {
             return;
         }
 
-        DRGeneratorNetwork channels = DRGeneratorNetwork.getChannels(level);
-        GeneratorNetwork network = channels.getChannel(networkID);
-        if (network == null) {
+        DRGeneratorNetwork channels = DRGeneratorNetwork.getGeneratorNetwork(level);
+        GeneratorBlob blob = channels.getBlob(blobId);
+        if (blob == null) {
             return;
         }
 
-        int maxSupportedRF = network.getGeneratorBlocks() * GeneratorConfig.MAX_POWER_INPUT_PER_BLOCK.get();
+        int maxSupportedRF = blob.getGeneratorBlocks() * GeneratorConfig.MAX_POWER_INPUT_PER_BLOCK.get();
         for (BlockPos coordinate : crystals) {
             TileEntity te = level.getBlockEntity(new BlockPos(getBlockPos().getX() + coordinate.getX(), getBlockPos().getY() + coordinate.getY(), getBlockPos().getZ() + coordinate.getZ()));
             if (te instanceof ResonatingCrystalTileEntity) {
@@ -307,7 +307,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
             }
         }
 
-        if (addCrystal(x, y, z, network, crystals, crystals, maxSupportedRF) >= 0) {
+        if (addCrystal(x, y, z, blob, crystals, crystals, maxSupportedRF) >= 0) {
             // Success.
             markDirtyClient();
         }
@@ -317,7 +317,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
     private static int ERROR_TOOMUCHPOWER = -2;
 
     // Returns remaining RF that is supported if crystal could be added. Otherwise one of the errors above.
-    private int addCrystal(int x, int y, int z, GeneratorNetwork network, Set<BlockPos> newCrystals, Set<BlockPos> oldCrystals, int maxSupportedRF) {
+    private int addCrystal(int x, int y, int z, GeneratorBlob network, Set<BlockPos> newCrystals, Set<BlockPos> oldCrystals, int maxSupportedRF) {
         int maxSupportedCrystals = network.getGeneratorBlocks() * GeneratorConfig.MAX_CRYSTALS_PER_BLOCK.get();
 
         TileEntity te = level.getBlockEntity(new BlockPos(x, y, z));
@@ -368,7 +368,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         tagCompound.putByteArray("crystalsZ", crystalZ);
         tagCompound.putBoolean("lasersActive", lasersActive);
         tagCompound.putInt("laserStartup", laserStartup);
-        tagCompound.putInt("networkId", networkID);
+        tagCompound.putInt("networkId", blobId);
         return super.save(tagCompound);
     }
 
@@ -385,9 +385,9 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         lasersActive = tagCompound.getBoolean("lasersActive");
         laserStartup = tagCompound.getInt("laserStartup");
         if (tagCompound.contains("networkId")) {
-            networkID = tagCompound.getInt("networkId");
+            blobId = tagCompound.getInt("networkId");
         } else {
-            networkID = -1;
+            blobId = -1;
         }
     }
 

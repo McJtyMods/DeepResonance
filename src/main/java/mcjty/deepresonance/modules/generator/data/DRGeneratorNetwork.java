@@ -11,9 +11,9 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
 
     private static final String GENERATOR_NETWORK_NAME = "DRGeneratorNetwork";
 
-    private final MultiblockDriver<GeneratorNetwork> driver = MultiblockDriver.<GeneratorNetwork>builder()
-            .loader(GeneratorNetwork::load)
-            .saver(GeneratorNetwork::save)
+    private final MultiblockDriver<GeneratorBlob> driver = MultiblockDriver.<GeneratorBlob>builder()
+            .loader(GeneratorBlob::load)
+            .saver(GeneratorBlob::save)
             .dirtySetter(d -> setDirty())
             .fixer(new GeneratorFixer())
             .holderGetter(
@@ -35,22 +35,22 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
         driver.clear();
     }
 
-    public MultiblockDriver<GeneratorNetwork> getDriver() {
+    public MultiblockDriver<GeneratorBlob> getDriver() {
         return driver;
     }
 
-    public static DRGeneratorNetwork getChannels(World world) {
+    public static DRGeneratorNetwork getGeneratorNetwork(World world) {
         return getData(world, () -> new DRGeneratorNetwork(GENERATOR_NETWORK_NAME), GENERATOR_NETWORK_NAME);
     }
 
-    public GeneratorNetwork getNetwork(int id) {
+    public GeneratorBlob getBlob(int id) {
         return driver.get(id);
     }
 
-    public GeneratorNetwork getOrCreateNetwork(int id) {
-        GeneratorNetwork network = getNetwork(id);
+    public GeneratorBlob getOrCreateBlob(int id) {
+        GeneratorBlob network = getBlob(id);
         if (network == null) {
-            network = GeneratorNetwork.builder()
+            network = GeneratorBlob.builder()
                     .generatorBlocks(0)
                     .active(false)
                     .build();
@@ -59,15 +59,11 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
         return network;
     }
 
-    public GeneratorNetwork getChannel(int id) {
-        return driver.get(id);
-    }
-
-    public void deleteChannel(int id) {
+    public void deleteBlob(int id) {
         driver.delete(id);
     }
 
-    public int newChannel() {
+    public int newBlob() {
         return driver.createId();
     }
 

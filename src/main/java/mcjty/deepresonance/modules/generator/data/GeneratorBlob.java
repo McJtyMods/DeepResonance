@@ -3,7 +3,7 @@ package mcjty.deepresonance.modules.generator.data;
 import mcjty.lib.multiblock.IMultiblock;
 import net.minecraft.nbt.CompoundNBT;
 
-public class GeneratorNetwork implements IMultiblock {
+public class GeneratorBlob implements IMultiblock {
     private final int generatorBlocks;
     private int collectorBlocks;
     private int energy;
@@ -12,7 +12,7 @@ public class GeneratorNetwork implements IMultiblock {
     private int shutdownCounter;
     private int lastRfPerTick;
 
-    private GeneratorNetwork(Builder builder) {
+    private GeneratorBlob(Builder builder) {
         this.generatorBlocks = builder.generatorBlocks;
         this.collectorBlocks = builder.collectorBlocks;
         this.energy = builder.energy;
@@ -74,8 +74,8 @@ public class GeneratorNetwork implements IMultiblock {
         this.shutdownCounter = shutdownCounter;
     }
 
-    public static GeneratorNetwork load(CompoundNBT tagCompound) {
-        return GeneratorNetwork.builder()
+    public static GeneratorBlob load(CompoundNBT tagCompound) {
+        return GeneratorBlob.builder()
                 .generatorBlocks(tagCompound.getInt("refcount"))
                 .collectorBlocks(tagCompound.getInt("collectors"))
                 .energy(tagCompound.getInt("energy"))
@@ -85,7 +85,7 @@ public class GeneratorNetwork implements IMultiblock {
                 .build();
     }
 
-    public static CompoundNBT save(CompoundNBT tagCompound, GeneratorNetwork network) {
+    public static CompoundNBT save(CompoundNBT tagCompound, GeneratorBlob network) {
         tagCompound.putInt("refcount", network.generatorBlocks);
         tagCompound.putInt("collectors", network.collectorBlocks);
         tagCompound.putInt("energy", network.energy);
@@ -108,7 +108,7 @@ public class GeneratorNetwork implements IMultiblock {
         private int shutdownCounter;
         private int lastRfPerTick;
 
-        public Builder network(GeneratorNetwork network) {
+        public Builder network(GeneratorBlob network) {
             generatorBlocks = network.generatorBlocks;
             collectorBlocks = network.collectorBlocks;
             energy = network.energy;
@@ -119,7 +119,7 @@ public class GeneratorNetwork implements IMultiblock {
             return this;
         }
 
-        public Builder merge(GeneratorNetwork network) {
+        public Builder merge(GeneratorBlob network) {
             generatorBlocks += network.generatorBlocks;
             collectorBlocks += network.collectorBlocks;
             energy += network.energy;
@@ -176,8 +176,8 @@ public class GeneratorNetwork implements IMultiblock {
             return this;
         }
 
-        public GeneratorNetwork build() {
-            return new GeneratorNetwork(this);
+        public GeneratorBlob build() {
+            return new GeneratorBlob(this);
         }
     }
 }

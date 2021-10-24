@@ -3,7 +3,7 @@ package mcjty.deepresonance.modules.generator.block;
 import com.google.common.collect.Sets;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
-import mcjty.deepresonance.modules.generator.data.GeneratorNetwork;
+import mcjty.deepresonance.modules.generator.data.GeneratorBlob;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
@@ -34,7 +34,7 @@ import java.util.Set;
 
 public class GeneratorPartTileEntity extends GenericTileEntity implements ITickableTileEntity, IMultiblockConnector {
 
-    private int networkId = -1;
+    private int blobId = -1;
 
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, GeneratorConfig.POWER_STORAGE_PER_BLOCK.get(), 0);
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
@@ -76,7 +76,7 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         if (!world.isClientSide()) {
             addBlockToNetwork();
-            GeneratorNetwork network = getNetwork();
+            GeneratorBlob network = getBlob();
             if (network != null) {
                 CompoundNBT tag = stack.getTag();
                 if (tag != null) {
@@ -92,7 +92,7 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
     public void onReplaced(World world, BlockPos pos, BlockState state, BlockState newstate) {
         if (!world.isClientSide()) {
             if (newstate.getBlock() != GeneratorModule.GENERATOR_PART_BLOCK.get()) {
-                GeneratorNetwork network = getNetwork();
+                GeneratorBlob network = getBlob();
                 if (network != null) {
                     int energy = network.getEnergy() / network.getGeneratorBlocks();
                     network.setEnergy(network.getEnergy() - energy);
@@ -103,46 +103,46 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
     }
 
     public void addBlockToNetwork() {
-        GeneratorNetwork newMb = GeneratorNetwork.builder()
+        GeneratorBlob newMb = GeneratorBlob.builder()
                 .generatorBlocks(1)
                 .active(false)
                 .build();
-        MultiblockSupport.addBlock(level, getBlockPos(), DRGeneratorNetwork.getChannels(level).getDriver(), newMb);
+        MultiblockSupport.addBlock(level, getBlockPos(), DRGeneratorNetwork.getGeneratorNetwork(level).getDriver(), newMb);
     }
 
     public void removeBlockFromNetwork() {
-        MultiblockSupport.removeBlock(level, getBlockPos(), DRGeneratorNetwork.getChannels(level).getDriver());
+        MultiblockSupport.removeBlock(level, getBlockPos(), DRGeneratorNetwork.getGeneratorNetwork(level).getDriver());
     }
 
     // Move this tile entity to another network.
     @Override
     public void setMultiblockId(int newId) {
-        if (networkId != newId) {
-            networkId = newId;
+        if (blobId != newId) {
+            blobId = newId;
             markDirtyClient();
         }
     }
 
     @Override
     public int getMultiblockId() {
-        return networkId;
+        return blobId;
     }
 
-    private MultiblockDriver<GeneratorNetwork> getDriver() {
-        return DRGeneratorNetwork.getChannels(level).getDriver();
+    private MultiblockDriver<GeneratorBlob> getDriver() {
+        return DRGeneratorNetwork.getGeneratorNetwork(level).getDriver();
     }
 
-    public GeneratorNetwork getNetwork() {
-        if (networkId == -1) {
+    public GeneratorBlob getBlob() {
+        if (blobId == -1) {
             return null;
         }
-        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(level);
-        return generatorNetwork.getOrCreateNetwork(networkId);
+        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getGeneratorNetwork(level);
+        return generatorNetwork.getOrCreateBlob(blobId);
     }
 
 
     public void activate(boolean active) {
-        GeneratorNetwork network = getNetwork();
+        GeneratorBlob network = getBlob();
         if (network != null && network.isActive() != active) {
             getDriver().modify(getMultiblockId(), holder -> {
                 holder.getMb().setActive(active);
@@ -173,14 +173,14 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
 
     @Override
     public CompoundNBT save(CompoundNBT tagCompound) {
-        tagCompound.putInt("networkId", networkId);
+        tagCompound.putInt("networkId", blobId);
         return super.save(tagCompound);
     }
 
     @Override
     public void read(CompoundNBT tagCompound) {
         super.read(tagCompound);
-        networkId = tagCompound.getInt("networkId");
+        blobId = tagCompound.getInt("networkId");
     }
 
     // @todo 1.16

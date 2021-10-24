@@ -2,7 +2,7 @@ package mcjty.deepresonance.modules.generator.block;
 
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
-import mcjty.deepresonance.modules.generator.data.GeneratorNetwork;
+import mcjty.deepresonance.modules.generator.data.GeneratorBlob;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.multiblock.MultiblockSupport;
@@ -110,7 +110,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
                     networks.add(networkId);
                     if (active) {
                         // Only activate with sufficient energy collectors.
-                        int countCollectors = getCollectorBlocks(generatorTileEntity.getMultiblockId(), generatorTileEntity.getNetwork(), newC);
+                        int countCollectors = getCollectorBlocks(generatorTileEntity.getMultiblockId(), generatorTileEntity.getBlob(), newC);
                         if (countCollectors == 1) {
                             if (handleActivate(networkId, newC)) {
                                 dirty = true;
@@ -134,17 +134,17 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
             }
         }
         if (dirty) {
-            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(level);
+            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getGeneratorNetwork(level);
             generatorNetwork.save();
         }
     }
 
-    private MultiblockDriver<GeneratorNetwork> getDriver() {
-        return DRGeneratorNetwork.getChannels(level).getDriver();
+    private MultiblockDriver<GeneratorBlob> getDriver() {
+        return DRGeneratorNetwork.getGeneratorNetwork(level).getDriver();
     }
 
 
-    private int getCollectorBlocks(int id, GeneratorNetwork network, BlockPos p) {
+    private int getCollectorBlocks(int id, GeneratorBlob network, BlockPos p) {
         if (network.getCollectorBlocks() <= 0) {
             Set<BlockPos> positions = MultiblockSupport.findMultiblock(level, p, getDriver());
             int cnt = 0;
@@ -162,8 +162,8 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
     }
 
     private boolean handleActivate(int id, BlockPos coordinate) {
-        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(level);
-        GeneratorNetwork network = generatorNetwork.getOrCreateNetwork(id);
+        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getGeneratorNetwork(level);
+        GeneratorBlob network = generatorNetwork.getOrCreateBlob(id);
         if (network.isActive() && network.getShutdownCounter() == 0) {
             return false; // Nothing to do.
         }
@@ -187,8 +187,8 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
 
     private boolean handleDeactivate(int id, BlockPos coordinate) {
         BlockState state = level.getBlockState(getBlockPos());
-        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getChannels(level);
-        GeneratorNetwork network = generatorNetwork.getOrCreateNetwork(id);
+        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getGeneratorNetwork(level);
+        GeneratorBlob network = generatorNetwork.getOrCreateBlob(id);
         if ((!network.isActive()) && network.getShutdownCounter() == 0 && network.getStartupCounter() == 0) {
             if (network.getShutdownCounter() != shutdown || network.getStartupCounter() != startup || (network.isActive() != active)) {
                 shutdown = network.getShutdownCounter();

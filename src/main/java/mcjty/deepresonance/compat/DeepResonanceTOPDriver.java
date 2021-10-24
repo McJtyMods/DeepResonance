@@ -5,7 +5,7 @@ import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.block.GeneratorControllerTileEntity;
 import mcjty.deepresonance.modules.generator.block.GeneratorPartTileEntity;
-import mcjty.deepresonance.modules.generator.data.GeneratorNetwork;
+import mcjty.deepresonance.modules.generator.data.GeneratorBlob;
 import mcjty.lib.compat.theoneprobe.McJtyLibTOPDriver;
 import mcjty.lib.compat.theoneprobe.TOPDriver;
 import mcjty.lib.varia.Tools;
@@ -64,7 +64,7 @@ public class DeepResonanceTOPDriver implements TOPDriver {
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (GeneratorPartTileEntity te) -> {
                 int id = te.getMultiblockId();
                 probeInfo.text(CompoundText.createLabelInfo("Id ", id));
-                GeneratorNetwork network = te.getNetwork();
+                GeneratorBlob network = te.getBlob();
                 probeInfo.text(CompoundText.createLabelInfo("Collectors ", network.getCollectorBlocks()));
                 probeInfo.text(CompoundText.createLabelInfo("Generators ", network.getGeneratorBlocks()));
                 probeInfo.text(CompoundText.createLabelInfo("Energy ", network.getEnergy()));
