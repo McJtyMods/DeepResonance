@@ -21,6 +21,7 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -121,6 +122,11 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
             blobId = newId;
             markDirtyClient();
         }
+    }
+
+    @Override
+    public ResourceLocation getId() {
+        return DRGeneratorNetwork.GENERATOR_NETWORK_ID;
     }
 
     @Override

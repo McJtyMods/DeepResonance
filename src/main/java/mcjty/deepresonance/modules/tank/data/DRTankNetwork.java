@@ -1,4 +1,4 @@
-package mcjty.deepresonance.modules.generator.data;
+package mcjty.deepresonance.modules.tank.data;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.lib.multiblock.IMultiblockConnector;
@@ -9,20 +9,20 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
+public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
 
-    private static final String GENERATOR_NETWORK_NAME = "DRGeneratorNetwork";
-    public static final ResourceLocation GENERATOR_NETWORK_ID = new ResourceLocation(DeepResonance.MODID, "generator");
+    private static final String TANK_NETWORK_NAME = "DRTankNetwork";
+    public static final ResourceLocation TANK_NETWORK_ID = new ResourceLocation(DeepResonance.MODID, "tank");
 
-    private final MultiblockDriver<GeneratorBlob> driver = MultiblockDriver.<GeneratorBlob>builder()
-            .loader(GeneratorBlob::load)
-            .saver(GeneratorBlob::save)
+    private final MultiblockDriver<TankBlob> driver = MultiblockDriver.<TankBlob>builder()
+            .loader(TankBlob::load)
+            .saver(TankBlob::save)
             .dirtySetter(d -> setDirty())
-            .fixer(new GeneratorFixer())
+            .fixer(new TankFixer())
             .holderGetter(
                     (world, blockPos) -> {
                         TileEntity be = world.getBlockEntity(blockPos);
-                        if (be instanceof IMultiblockConnector && ((IMultiblockConnector) be).getId().equals(GENERATOR_NETWORK_ID)) {
+                        if (be instanceof IMultiblockConnector && ((IMultiblockConnector) be).getId().equals(TANK_NETWORK_ID)) {
                             return (IMultiblockConnector) be;
                         } else {
                             return null;
@@ -30,7 +30,7 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
                     })
             .build();
 
-    public DRGeneratorNetwork(String name) {
+    public DRTankNetwork(String name) {
         super(name);
     }
 
@@ -38,24 +38,23 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
         driver.clear();
     }
 
-    public MultiblockDriver<GeneratorBlob> getDriver() {
+    public MultiblockDriver<TankBlob> getDriver() {
         return driver;
     }
 
-    public static DRGeneratorNetwork getGeneratorNetwork(World world) {
-        return getData(world, () -> new DRGeneratorNetwork(GENERATOR_NETWORK_NAME), GENERATOR_NETWORK_NAME);
+    public static DRTankNetwork getGeneratorNetwork(World world) {
+        return getData(world, () -> new DRTankNetwork(TANK_NETWORK_NAME), TANK_NETWORK_NAME);
     }
 
-    public GeneratorBlob getBlob(int id) {
+    public TankBlob getBlob(int id) {
         return driver.get(id);
     }
 
-    public GeneratorBlob getOrCreateBlob(int id) {
-        GeneratorBlob network = getBlob(id);
+    public TankBlob getOrCreateBlob(int id) {
+        TankBlob network = getBlob(id);
         if (network == null) {
-            network = GeneratorBlob.builder()
+            network = TankBlob.builder()
                     .generatorBlocks(0)
-                    .active(false)
                     .build();
             driver.createOrUpdate(id, network);
         }

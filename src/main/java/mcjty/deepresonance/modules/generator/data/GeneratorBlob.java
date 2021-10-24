@@ -108,21 +108,21 @@ public class GeneratorBlob implements IMultiblock {
         private int shutdownCounter;
         private int lastRfPerTick;
 
-        public Builder network(GeneratorBlob network) {
-            generatorBlocks = network.generatorBlocks;
-            collectorBlocks = network.collectorBlocks;
-            energy = network.energy;
-            active = network.active;
-            startupCounter = network.startupCounter;
-            shutdownCounter = network.shutdownCounter;
-            lastRfPerTick = network.lastRfPerTick;
+        public Builder network(GeneratorBlob blob) {
+            generatorBlocks = blob.generatorBlocks;
+            collectorBlocks = blob.collectorBlocks;
+            energy = blob.energy;
+            active = blob.active;
+            startupCounter = blob.startupCounter;
+            shutdownCounter = blob.shutdownCounter;
+            lastRfPerTick = blob.lastRfPerTick;
             return this;
         }
 
-        public Builder merge(GeneratorBlob network) {
-            generatorBlocks += network.generatorBlocks;
-            collectorBlocks += network.collectorBlocks;
-            energy += network.energy;
+        public Builder merge(GeneratorBlob blob) {
+            generatorBlocks += blob.generatorBlocks;
+            collectorBlocks += blob.collectorBlocks;
+            energy += blob.energy;
             return this;
         }
 
