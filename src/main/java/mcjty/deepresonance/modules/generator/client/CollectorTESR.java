@@ -5,7 +5,9 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.block.EnergyCollectorTileEntity;
 import mcjty.deepresonance.setup.ClientSetup;
+import mcjty.lib.client.CustomRenderTypes;
 import mcjty.lib.client.RenderHelper;
+import mcjty.lib.client.RenderSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -36,13 +38,24 @@ public class CollectorTESR extends TileEntityRenderer<EnergyCollectorTileEntity>
 
     @Override
     public void render(@Nonnull EnergyCollectorTileEntity tileEntity, float partialTicks, @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
-        if (tileEntity.getCrystals().isEmpty() || (!tileEntity.areLasersActive() || tileEntity.getLaserStartup() <= 0)) {
+        if (tileEntity.getCrystals().isEmpty() || (!tileEntity.areLasersActive() && tileEntity.getLaserStartup() <= 0)) {
             return;
         }
 
         matrixStack.pushPose();
-        matrixStack.translate(.5f, .85f, .5f);
-        RenderHelper.renderBillboardQuadBright(matrixStack, buffer, 1.0f, ClientSetup.HALO);// + random.nextFloat() * .05f);
+        matrixStack.translate(0f, .25f, .0f);
+        // @todo 1.16 optimize render settings in a final!
+        RenderSettings settings = RenderSettings.builder()
+                .color(255, 0, 0)
+                .renderType(CustomRenderTypes.TRANSLUCENT_LIGHTNING_NOLIGHTMAPS)
+                .width(.1f)
+                .alpha(128)
+                .build();
+        RenderSettings settingsLaser = RenderSettings.builder()
+                .width(.1f)
+                .alpha(128)
+                .build();
+        RenderHelper.renderBillboardQuadBright(matrixStack, buffer, 1.0f, ClientSetup.HALO, settings);// + random.nextFloat() * .05f);
         matrixStack.popPose();
 
 
@@ -50,19 +63,20 @@ public class CollectorTESR extends TileEntityRenderer<EnergyCollectorTileEntity>
         for (BlockPos destination : tileEntity.getCrystals()) {
             TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(ClientSetup.LASERBEAM);
 
-            IVertexBuilder builder = buffer.getBuffer(RenderType.translucent());
+            IVertexBuilder builder = buffer.getBuffer(CustomRenderTypes.TRANSLUCENT_ADD_NOLIGHTMAPS);
 
             int tex = tileEntity.getBlockPos().getX();
             int tey = tileEntity.getBlockPos().getY();
             int tez = tileEntity.getBlockPos().getZ();
             Vector3d projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().add(-tex, -tey, -tez);
 
+            // Crystal coordinates are relative!
             RenderHelper.Vector start = new RenderHelper.Vector(.5f, .5f, .5f);
-            RenderHelper.Vector end = new RenderHelper.Vector(destination.getX() - tex + .5f, destination.getY() - tey + .5f, destination.getZ() - tez + .5f);
+            RenderHelper.Vector end = new RenderHelper.Vector(destination.getX() + .5f, destination.getY() + .5f, destination.getZ() + .5f);
             RenderHelper.Vector player = new RenderHelper.Vector((float)projectedView.x, (float)projectedView.y, (float)projectedView.z);
 
             Matrix4f matrix = matrixStack.last().pose();
-            RenderHelper.drawBeam(matrix, builder, sprite, start, end, player, .1f);
+            RenderHelper.drawBeam(matrix, builder, sprite, start, end, player, settingsLaser);
         }
         matrixStack.popPose();
 
