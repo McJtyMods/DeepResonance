@@ -10,6 +10,12 @@ public class ClientSetup {
     public static final ResourceLocation REDHALO = new ResourceLocation(DeepResonance.MODID, "effects/redhalo");
     public static final ResourceLocation HALO = new ResourceLocation(DeepResonance.MODID, "effects/halo");
     public static final ResourceLocation LASERBEAM = new ResourceLocation(DeepResonance.MODID, "effects/laserbeam");
+    public static final ResourceLocation LASERBEAMS[] = new ResourceLocation[]{
+            new ResourceLocation(DeepResonance.MODID, "effects/laserbeam1"),
+            new ResourceLocation(DeepResonance.MODID, "effects/laserbeam2"),
+            new ResourceLocation(DeepResonance.MODID, "effects/laserbeam3"),
+            new ResourceLocation(DeepResonance.MODID, "effects/laserbeam4")
+    };
 
     public static void initClient() {
     }
@@ -21,6 +27,10 @@ public class ClientSetup {
         event.addSprite(REDHALO);
         event.addSprite(HALO);
         event.addSprite(LASERBEAM);
+        event.addSprite(LASERBEAMS[0]);
+        event.addSprite(LASERBEAMS[1]);
+        event.addSprite(LASERBEAMS[2]);
+        event.addSprite(LASERBEAMS[3]);
     }
 
 }
