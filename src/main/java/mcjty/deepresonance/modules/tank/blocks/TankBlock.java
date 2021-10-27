@@ -1,6 +1,7 @@
 package mcjty.deepresonance.modules.tank.blocks;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.compat.DeepResonanceTOPDriver;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.blocks.BaseBlock;
@@ -24,6 +25,7 @@ public class TankBlock extends BaseBlock {
     public TankBlock() {
         super(new BlockBuilder()
                 .properties(Properties.of(Material.METAL).noOcclusion().strength(2.0F).sound(SoundType.METAL))
+                .topDriver(DeepResonanceTOPDriver.DRIVER)
                 .tileEntitySupplier(TankTileEntity::new)
                 .info(TooltipBuilder.key(DeepResonance.SHIFT_MESSAGE))
                 .infoShift(TooltipBuilder.key(TranslationHelper.getExtendedTooltipKey("tank")), TooltipBuilder.parameter("", itemStack -> {

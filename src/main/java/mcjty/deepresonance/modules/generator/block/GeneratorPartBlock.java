@@ -1,7 +1,6 @@
 package mcjty.deepresonance.modules.generator.block;
 
 import mcjty.deepresonance.compat.DeepResonanceTOPDriver;
-import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
@@ -16,9 +15,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class GeneratorPartBlock extends BaseBlock {
@@ -54,21 +51,6 @@ public class GeneratorPartBlock extends BaseBlock {
             return state.setValue(BlockStateProperties.DOWN, facingState.getBlock() == this);
         }
         return state;
-    }
-
-    @Override
-    public void onRemove(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newstate, boolean isMoving) {
-        super.onRemove(state, world, pos, newstate, isMoving);
-        if (!world.isClientSide()) {
-            BlockState stateUp = world.getBlockState(pos.above());
-            if (stateUp.getBlock() == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
-                world.sendBlockUpdated(pos.above(), stateUp, stateUp, Constants.BlockFlags.DEFAULT);
-            }
-            BlockState stateDown = world.getBlockState(pos.below());
-            if (stateDown.getBlock() == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
-                world.sendBlockUpdated(pos.below(), stateDown, stateDown, Constants.BlockFlags.DEFAULT);
-            }
-        }
     }
 
     @Override

@@ -100,19 +100,27 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
                 }
                 removeBlockFromNetwork();
             }
+
+            BlockState stateUp = world.getBlockState(pos.above());
+            if (stateUp.getBlock() == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
+                world.sendBlockUpdated(pos.above(), stateUp, stateUp, Constants.BlockFlags.DEFAULT);
+            }
+            BlockState stateDown = world.getBlockState(pos.below());
+            if (stateDown.getBlock() == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
+                world.sendBlockUpdated(pos.below(), stateDown, stateDown, Constants.BlockFlags.DEFAULT);
+            }
         }
     }
 
     public void addBlockToNetwork() {
-        GeneratorBlob newMb = GeneratorBlob.builder()
-                .generatorBlocks(1)
-                .active(false)
-                .build();
-        MultiblockSupport.addBlock(level, getBlockPos(), DRGeneratorNetwork.getGeneratorNetwork(level).getDriver(), newMb);
+        GeneratorBlob newMb = new GeneratorBlob()
+                .setGeneratorBlocks(1)
+                .setActive(false);
+        MultiblockSupport.addBlock(level, getBlockPos(), DRGeneratorNetwork.getNetwork(level).getDriver(), newMb);
     }
 
     public void removeBlockFromNetwork() {
-        MultiblockSupport.removeBlock(level, getBlockPos(), DRGeneratorNetwork.getGeneratorNetwork(level).getDriver());
+        MultiblockSupport.removeBlock(level, getBlockPos(), DRGeneratorNetwork.getNetwork(level).getDriver());
     }
 
     // Move this tile entity to another network.
@@ -135,14 +143,14 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
     }
 
     private MultiblockDriver<GeneratorBlob> getDriver() {
-        return DRGeneratorNetwork.getGeneratorNetwork(level).getDriver();
+        return DRGeneratorNetwork.getNetwork(level).getDriver();
     }
 
     public GeneratorBlob getBlob() {
         if (blobId == -1) {
             return null;
         }
-        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getGeneratorNetwork(level);
+        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getNetwork(level);
         return generatorNetwork.getOrCreateBlob(blobId);
     }
 

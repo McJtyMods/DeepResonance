@@ -23,20 +23,19 @@ public class GeneratorFixer implements IMultiblockFixer<GeneratorBlob> {
         if (existingMb == null) {
             throw new RuntimeException("Something awful went wrong!");
         }
-        GeneratorBlob merged = GeneratorBlob.builder().network(existingMb)
+        GeneratorBlob merged = new GeneratorBlob(existingMb)
                 .addGeneratorBlocks(newMb.getGeneratorBlocks())
                 .addEnergy(newMb.getEnergy())
-                .collectorBlocks(-1)
-                .build();
+                .setCollectorBlocks(-1);
         driver.createOrUpdate(id, merged);
     }
 
     @Override
     public void merge(MultiblockDriver<GeneratorBlob> driver, World level, Set<GeneratorBlob> mbs, int masterId) {
-        GeneratorBlob.Builder builder = GeneratorBlob.builder();
-        mbs.forEach(builder::merge);
-        builder.collectorBlocks(-1);
-        driver.createOrUpdate(masterId, builder.build());
+        GeneratorBlob blob = new GeneratorBlob();
+        mbs.forEach(blob::merge);
+        blob.setCollectorBlocks(-1);
+        driver.createOrUpdate(masterId, blob);
     }
 
     @Override
@@ -48,12 +47,11 @@ public class GeneratorFixer implements IMultiblockFixer<GeneratorBlob> {
 
         int energyToGive = energy + remainder;
         for (Pair<Integer, Set<BlockPos>> pair : todo) {
-            GeneratorBlob.Builder builder = GeneratorBlob.builder();
+            GeneratorBlob builder = new GeneratorBlob();
             int generatorBlocks = pair.getRight().size();
-            GeneratorBlob mb = builder.generatorBlocks(generatorBlocks)
-                    .collectorBlocks(-1)    // Set to -1 to mark invalid
-                    .energy(energyToGive)
-                    .build();
+            GeneratorBlob mb = builder.setGeneratorBlocks(generatorBlocks)
+                    .setCollectorBlocks(-1)    // Set to -1 to mark invalid
+                    .setEnergy(energyToGive);
             driver.createOrUpdate(pair.getKey(), mb);
             energyToGive = energy;
         }

@@ -134,13 +134,13 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
             }
         }
         if (dirty) {
-            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getGeneratorNetwork(level);
+            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getNetwork(level);
             generatorNetwork.save();
         }
     }
 
     private MultiblockDriver<GeneratorBlob> getDriver() {
-        return DRGeneratorNetwork.getGeneratorNetwork(level).getDriver();
+        return DRGeneratorNetwork.getNetwork(level).getDriver();
     }
 
 
@@ -162,7 +162,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
     }
 
     private boolean handleActivate(int id, BlockPos coordinate) {
-        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getGeneratorNetwork(level);
+        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getNetwork(level);
         GeneratorBlob network = generatorNetwork.getOrCreateBlob(id);
         if (network.isActive() && network.getShutdownCounter() == 0) {
             return false; // Nothing to do.
@@ -187,7 +187,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
 
     private boolean handleDeactivate(int id, BlockPos coordinate) {
         BlockState state = level.getBlockState(getBlockPos());
-        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getGeneratorNetwork(level);
+        DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getNetwork(level);
         GeneratorBlob network = generatorNetwork.getOrCreateBlob(id);
         if ((!network.isActive()) && network.getShutdownCounter() == 0 && network.getStartupCounter() == 0) {
             if (network.getShutdownCounter() != shutdown || network.getStartupCounter() != startup || (network.isActive() != active)) {

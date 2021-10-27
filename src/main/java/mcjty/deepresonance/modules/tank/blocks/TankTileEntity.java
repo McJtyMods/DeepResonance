@@ -1,18 +1,29 @@
 package mcjty.deepresonance.modules.tank.blocks;
 
+import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.tank.TankModule;
+import mcjty.deepresonance.modules.tank.data.DRTankNetwork;
+import mcjty.deepresonance.modules.tank.data.TankBlob;
 import mcjty.deepresonance.modules.tank.grid.TankGrid;
+import mcjty.lib.multiblock.IMultiblockConnector;
+import mcjty.lib.multiblock.MultiblockDriver;
+import mcjty.lib.multiblock.MultiblockSupport;
 import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -20,7 +31,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TankTileEntity extends GenericTileEntity {
+public class TankTileEntity extends GenericTileEntity implements IMultiblockConnector {
+
+    private int blobId = -1;
 
     private TankGrid grid;
     private CompoundNBT gridData;
@@ -170,5 +183,84 @@ public class TankTileEntity extends GenericTileEntity {
 //            }
 //        }
 //    }
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        if (!world.isClientSide()) {
+            addBlockToNetwork();
+            TankBlob network = getBlob();
+            if (network != null) {
+                CompoundNBT tag = stack.getTag();
+                if (tag != null) {
+                    getDriver().modify(getMultiblockId(), holder -> {
+//                        holder.getMb().setEnergy(holder.getMb().getEnergy() + tag.getInt("energy"));
+                    });
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onReplaced(World world, BlockPos pos, BlockState state, BlockState newstate) {
+        if (!world.isClientSide()) {
+            if (newstate.getBlock() != GeneratorModule.GENERATOR_PART_BLOCK.get()) {
+                TankBlob network = getBlob();
+                if (network != null) {
+//                    int energy = network.getEnergy() / network.getGeneratorBlocks();
+//                    network.setEnergy(network.getEnergy() - energy);
+                }
+                removeBlockFromNetwork();
+            }
+
+            BlockState stateUp = world.getBlockState(pos.above());
+            if (stateUp.getBlock() == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
+                world.sendBlockUpdated(pos.above(), stateUp, stateUp, Constants.BlockFlags.DEFAULT);
+            }
+            BlockState stateDown = world.getBlockState(pos.below());
+            if (stateDown.getBlock() == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
+                world.sendBlockUpdated(pos.below(), stateDown, stateDown, Constants.BlockFlags.DEFAULT);
+            }
+        }
+    }
+
+    public void addBlockToNetwork() {
+        TankBlob newMb = new TankBlob()
+                .setGeneratorBlocks(1);
+        MultiblockSupport.addBlock(level, getBlockPos(), DRTankNetwork.getNetwork(level).getDriver(), newMb);
+    }
+
+    public void removeBlockFromNetwork() {
+        MultiblockSupport.removeBlock(level, getBlockPos(), DRTankNetwork.getNetwork(level).getDriver());
+    }
+
+    @Override
+    public ResourceLocation getId() {
+        return DRTankNetwork.TANK_NETWORK_ID;
+    }
+
+    @Override
+    public int getMultiblockId() {
+        return blobId;
+    }
+
+    @Override
+    public void setMultiblockId(int newId) {
+        if (blobId != newId) {
+            blobId = newId;
+            markDirtyClient();
+        }
+    }
+
+    public TankBlob getBlob() {
+        if (blobId == -1) {
+            return null;
+        }
+        DRTankNetwork network = DRTankNetwork.getNetwork(level);
+        return network.getOrCreateBlob(blobId);
+    }
+
+    private MultiblockDriver<TankBlob> getDriver() {
+        return DRTankNetwork.getNetwork(level).getDriver();
+    }
 
 }

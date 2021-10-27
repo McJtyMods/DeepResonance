@@ -58,7 +58,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         TileEntity te = level.getBlockEntity(getBlockPos().below());
         if (te instanceof GeneratorPartTileEntity) {
             GeneratorPartTileEntity generatorTileEntity = (GeneratorPartTileEntity) te;
-            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getGeneratorNetwork(level);
+            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getNetwork(level);
 
             if (blobId != generatorTileEntity.getMultiblockId()) {
                 if (blobId != -1) {
@@ -136,7 +136,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
     }
 
     private MultiblockDriver<GeneratorBlob> getDriver() {
-        return DRGeneratorNetwork.getGeneratorNetwork(level).getDriver();
+        return DRGeneratorNetwork.getNetwork(level).getDriver();
     }
 
     private int calculateRF() {
@@ -290,7 +290,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
             return;
         }
 
-        DRGeneratorNetwork channels = DRGeneratorNetwork.getGeneratorNetwork(level);
+        DRGeneratorNetwork channels = DRGeneratorNetwork.getNetwork(level);
         GeneratorBlob blob = channels.getBlob(blobId);
         if (blob == null) {
             return;

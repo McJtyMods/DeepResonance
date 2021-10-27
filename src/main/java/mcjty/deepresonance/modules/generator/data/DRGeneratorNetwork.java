@@ -42,7 +42,7 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
         return driver;
     }
 
-    public static DRGeneratorNetwork getGeneratorNetwork(World world) {
+    public static DRGeneratorNetwork getNetwork(World world) {
         return getData(world, () -> new DRGeneratorNetwork(GENERATOR_NETWORK_NAME), GENERATOR_NETWORK_NAME);
     }
 
@@ -53,10 +53,9 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
     public GeneratorBlob getOrCreateBlob(int id) {
         GeneratorBlob network = getBlob(id);
         if (network == null) {
-            network = GeneratorBlob.builder()
-                    .generatorBlocks(0)
-                    .active(false)
-                    .build();
+            network = new GeneratorBlob()
+                    .setGeneratorBlocks(0)
+                    .setActive(false);
             driver.createOrUpdate(id, network);
         }
         return network;

@@ -42,7 +42,7 @@ public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
         return driver;
     }
 
-    public static DRTankNetwork getGeneratorNetwork(World world) {
+    public static DRTankNetwork getNetwork(World world) {
         return getData(world, () -> new DRTankNetwork(TANK_NETWORK_NAME), TANK_NETWORK_NAME);
     }
 
@@ -53,9 +53,8 @@ public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
     public TankBlob getOrCreateBlob(int id) {
         TankBlob network = getBlob(id);
         if (network == null) {
-            network = TankBlob.builder()
-                    .generatorBlocks(0)
-                    .build();
+            network = new TankBlob()
+                    .setGeneratorBlocks(0);
             driver.createOrUpdate(id, network);
         }
         return network;

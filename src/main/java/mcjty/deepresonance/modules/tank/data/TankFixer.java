@@ -23,22 +23,21 @@ public class TankFixer implements IMultiblockFixer<TankBlob> {
         if (existingMb == null) {
             throw new RuntimeException("Something awful went wrong!");
         }
-        TankBlob merged = TankBlob.builder().network(existingMb)
-                .addGeneratorBlocks(newMb.getGeneratorBlocks())
+        TankBlob merged = new TankBlob(existingMb)
+                .setGeneratorBlocks(newMb.getGeneratorBlocks());
 //                .addEnergy(newMb.getEnergy())
 //                .collectorBlocks(-1)
                 // @todo 1.16 MERGE
-                .build();
         driver.createOrUpdate(id, merged);
     }
 
     @Override
     public void merge(MultiblockDriver<TankBlob> driver, World level, Set<TankBlob> mbs, int masterId) {
-        TankBlob.Builder builder = TankBlob.builder();
+        TankBlob blob = new TankBlob();
         // @todo 1.16
 //        mbs.forEach(builder::merge);
 //        builder.collectorBlocks(-1);
-        driver.createOrUpdate(masterId, builder.build());
+        driver.createOrUpdate(masterId, blob);
     }
 
     @Override

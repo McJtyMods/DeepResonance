@@ -6,6 +6,8 @@ import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.block.GeneratorControllerTileEntity;
 import mcjty.deepresonance.modules.generator.block.GeneratorPartTileEntity;
 import mcjty.deepresonance.modules.generator.data.GeneratorBlob;
+import mcjty.deepresonance.modules.tank.TankModule;
+import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.lib.compat.theoneprobe.McJtyLibTOPDriver;
 import mcjty.lib.compat.theoneprobe.TOPDriver;
 import mcjty.lib.varia.Tools;
@@ -40,6 +42,8 @@ public class DeepResonanceTOPDriver implements TOPDriver {
                 drivers.put(id, new GeneratorControllerDriver());
             } else if (blockState.getBlock() == CoreModule.RESONATING_CRYSTAL_BLOCK.get()) {
                 drivers.put(id, new CrystalDriver());
+            } else if (blockState.getBlock() == TankModule.TANK_BLOCK.get()) {
+                drivers.put(id, new TankDriver());
             } else {
                 drivers.put(id, new DefaultDriver());
             }
@@ -110,6 +114,15 @@ public class DeepResonanceTOPDriver implements TOPDriver {
                                     .filledColor(0xffff0000)
                                     .alternateFilledColor(0xff990000));
                 }
+            }, "Bad tile entity!");
+        }
+    }
+
+    private static class TankDriver implements TOPDriver {
+        @Override
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+            McJtyLibTOPDriver.DRIVER.addStandardProbeInfo(mode, probeInfo, player, world, blockState, data);
+            Tools.safeConsume(world.getBlockEntity(data.getPos()), (TankTileEntity crystal) -> {
             }, "Bad tile entity!");
         }
     }
