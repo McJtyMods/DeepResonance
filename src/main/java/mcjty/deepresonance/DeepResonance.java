@@ -22,6 +22,9 @@ import org.apache.logging.log4j.Logger;
 @Mod(DeepResonance.MODID)
 public class DeepResonance {
 
+    // @todo 1.16 ChunkWatchEvent!
+    // @todo 1.16 PacketDistributor.TRACKING_CHUNK
+
     public static final String MODID = "deepresonance";
     public static final String MODNAME = "DeepResonance";
 
