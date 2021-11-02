@@ -28,7 +28,7 @@ public class DeepResonanceFluidHelper {
         return LiquidCrystalData.makeLiquidCrystalStack(amount, quality, purity, strength, efficiency);
     }
 
-    public static ILiquidCrystalData readCrystalDataFromStack(FluidStack stack) {
+    public static LiquidCrystalData readCrystalDataFromStack(FluidStack stack) {
         return LiquidCrystalData.fromStack(stack);
     }
 

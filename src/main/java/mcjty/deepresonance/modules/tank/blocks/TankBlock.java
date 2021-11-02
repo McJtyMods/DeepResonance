@@ -24,7 +24,7 @@ public class TankBlock extends BaseBlock {
 
     public TankBlock() {
         super(new BlockBuilder()
-                .properties(Properties.of(Material.METAL).noOcclusion().strength(2.0F).sound(SoundType.METAL))
+                .properties(Properties.of(Material.METAL).noOcclusion().strength(2.0F).sound(SoundType.GLASS))
                 .topDriver(DeepResonanceTOPDriver.DRIVER)
                 .tileEntitySupplier(TankTileEntity::new)
                 .info(TooltipBuilder.key(DeepResonance.SHIFT_MESSAGE))

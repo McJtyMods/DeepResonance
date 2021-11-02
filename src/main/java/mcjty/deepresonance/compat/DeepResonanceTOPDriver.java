@@ -8,6 +8,7 @@ import mcjty.deepresonance.modules.generator.block.GeneratorPartTileEntity;
 import mcjty.deepresonance.modules.generator.data.GeneratorBlob;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
+import mcjty.deepresonance.modules.tank.data.TankBlob;
 import mcjty.lib.compat.theoneprobe.McJtyLibTOPDriver;
 import mcjty.lib.compat.theoneprobe.TOPDriver;
 import mcjty.lib.varia.Tools;
@@ -20,6 +21,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -122,7 +124,24 @@ public class DeepResonanceTOPDriver implements TOPDriver {
         @Override
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
             McJtyLibTOPDriver.DRIVER.addStandardProbeInfo(mode, probeInfo, player, world, blockState, data);
-            Tools.safeConsume(world.getBlockEntity(data.getPos()), (TankTileEntity crystal) -> {
+            Tools.safeConsume(world.getBlockEntity(data.getPos()), (TankTileEntity tank) -> {
+                TankBlob blob = tank.getBlob();
+                if (blob != null) {
+                    blob.getData().ifPresent(d -> {
+                        FluidStack stack = d.getStack();
+                        if (!stack.isEmpty()) {
+                            probeInfo.tankSimple(blob.getCapacity(), stack);
+                            if (stack.getFluid() == CoreModule.LIQUID_CRYSTAL.get()) {
+                                DecimalFormat decimalFormat = new DecimalFormat("#.#");
+                                decimalFormat.setRoundingMode(RoundingMode.DOWN);
+                                probeInfo.text(CompoundText.createLabelInfo("Efficiency ", decimalFormat.format(d.getEfficiency() * 100) + "%"));
+                                probeInfo.text(CompoundText.createLabelInfo("Purity ", decimalFormat.format(d.getPurity() * 100) + "%"));
+                                probeInfo.text(CompoundText.createLabelInfo("Quality ", decimalFormat.format(d.getQuality() * 100) + "%"));
+                                probeInfo.text(CompoundText.createLabelInfo("Strength ", decimalFormat.format(d.getStrength() * 100) + "%"));
+                            }
+                        }
+                    });
+                }
             }, "Bad tile entity!");
         }
     }

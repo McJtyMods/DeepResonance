@@ -6,7 +6,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Set;
 
@@ -17,47 +16,28 @@ public class TankFixer implements IMultiblockFixer<TankBlob> {
     }
 
     @Override
-    public void blockAdded(MultiblockDriver<TankBlob> driver, World level, BlockPos pos,
-                           int id, @Nonnull TankBlob newMb) {
-        TankBlob existingMb = driver.get(id);
-        if (existingMb == null) {
-            throw new RuntimeException("Something awful went wrong!");
-        }
-        TankBlob merged = new TankBlob(existingMb)
-                .setGeneratorBlocks(newMb.getGeneratorBlocks());
-//                .addEnergy(newMb.getEnergy())
-//                .collectorBlocks(-1)
-                // @todo 1.16 MERGE
-        driver.createOrUpdate(id, merged);
-    }
-
-    @Override
-    public void merge(MultiblockDriver<TankBlob> driver, World level, Set<TankBlob> mbs, int masterId) {
-        TankBlob blob = new TankBlob();
-        // @todo 1.16
-//        mbs.forEach(builder::merge);
-//        builder.collectorBlocks(-1);
-        driver.createOrUpdate(masterId, blob);
+    public void merge(MultiblockDriver<TankBlob> driver, World level, TankBlob mbMain, TankBlob mbOther) {
+        mbMain.merge(mbOther);
     }
 
     @Override
     public void distribute(MultiblockDriver<TankBlob> driver, World level, TankBlob original, List<Pair<Integer, Set<BlockPos>>> todo) {
-        // @todo 1.16
-//        int totalEnergy = original.getEnergy();
-//        int totalBlocks = original.getGeneratorBlocks();
-//        int energy = totalEnergy / totalBlocks;
-//        int remainder = totalEnergy % totalBlocks;
-//
-//        int energyToGive = energy + remainder;
-//        for (Pair<Integer, Set<BlockPos>> pair : todo) {
-//            TankBlob.Builder builder = TankBlob.builder();
-//            int generatorBlocks = pair.getRight().size();
-//            TankBlob mb = builder.generatorBlocks(generatorBlocks)
-//                    .collectorBlocks(-1)    // Set to -1 to mark invalid
-//                    .energy(energyToGive)
-//                    .build();
-//            driver.createOrUpdate(pair.getKey(), mb);
-//            energyToGive = energy;
-//        }
+        original.getData().ifPresent(data -> {
+            int totalAmount = data.getAmount();
+            int totalBlocks = original.getTankBlocks();
+
+            int amountPerBlock = totalAmount / totalBlocks;
+            int remainder = totalAmount % totalBlocks;
+
+            for (Pair<Integer, Set<BlockPos>> pair : todo) {
+                TankBlob builder = new TankBlob();
+                int generatorBlocks = pair.getRight().size();
+                data.setAmount(remainder + amountPerBlock * generatorBlocks);
+                TankBlob mb = builder.setTankBlocks(generatorBlocks)
+                        .copyData(data);
+                driver.createOrUpdate(pair.getKey(), mb);
+                remainder = 0;
+            }
+        });
     }
 }

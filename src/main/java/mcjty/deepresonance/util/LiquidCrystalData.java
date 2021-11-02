@@ -5,7 +5,12 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
-class LiquidCrystalData implements ILiquidCrystalData {
+import javax.annotation.Nonnull;
+
+/**
+ * Support non RCL fluids as well. In that case the stats are not used
+ */
+public class LiquidCrystalData implements ILiquidCrystalData {
 
     private final FluidStack referenceStack;
     private float quality;
@@ -17,7 +22,15 @@ class LiquidCrystalData implements ILiquidCrystalData {
         this.referenceStack = referenceStack;
     }
 
-    static LiquidCrystalData fromNBT(CompoundNBT tag, int amount) {
+    public LiquidCrystalData(LiquidCrystalData other) {
+        this.referenceStack = other.referenceStack;
+        this.quality = other.quality;
+        this.purity = other.purity;
+        this.strength = other.strength;
+        this.efficiency = other.efficiency;
+    }
+
+    public static LiquidCrystalData fromNBT(CompoundNBT tag, int amount) {
         return fromStack(new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), amount, tag));
     }
 
@@ -31,14 +44,13 @@ class LiquidCrystalData implements ILiquidCrystalData {
         return data.toFluidStack();
     }
 
-    static LiquidCrystalData fromStack(FluidStack stack) {
-        if (!DeepResonanceFluidHelper.isValidLiquidCrystalStack(stack)) {
-            return null;
-        }
+    @Nonnull
+    public static LiquidCrystalData fromStack(FluidStack stack) {
+        // We also support non-RCL liquids
+//        if (!DeepResonanceFluidHelper.isValidLiquidCrystalStack(stack)) {
+//            return null;
+//        }
         CompoundNBT fluidTag = stack.getOrCreateTag();
-        if (fluidTag == null) {
-            return null;
-        }
         LiquidCrystalData ret = new LiquidCrystalData(stack);
         ret.quality = fluidTag.getFloat("quality");
         ret.purity = fluidTag.getFloat("purity");
@@ -54,16 +66,16 @@ class LiquidCrystalData implements ILiquidCrystalData {
         if (!isValid(otherTag)) {
             return;
         }
-        this.quality = calculate(otherTag, getQuality(), otherTag.getQuality());
-        this.purity = calculate(otherTag, getPurity(), otherTag.getPurity());
-        this.strength = calculate(otherTag, getStrength(), otherTag.getStrength());
-        this.efficiency = calculate(otherTag, getEfficiency(), otherTag.getEfficiency());
+        this.quality = mix(otherTag, getQuality(), otherTag.getQuality());
+        this.purity = mix(otherTag, getPurity(), otherTag.getPurity());
+        this.strength = mix(otherTag, getStrength(), otherTag.getStrength());
+        this.efficiency = mix(otherTag, getEfficiency(), otherTag.getEfficiency());
 
         referenceStack.setAmount(referenceStack.getAmount() + otherTag.getAmount());
         save();
     }
 
-    private float calculate(ILiquidCrystalData other, float myValue, float otherValue) {
+    private float mix(ILiquidCrystalData other, float myValue, float otherValue) {
         float f = (other.getAmount() / ((float) getAmount() + other.getAmount()));
         return (1 - f) * myValue + f * otherValue;
     }
@@ -90,6 +102,10 @@ class LiquidCrystalData implements ILiquidCrystalData {
             return false;
         }
         return true;
+    }
+
+    public FluidStack getStack() {
+        return referenceStack;
     }
 
     @Override

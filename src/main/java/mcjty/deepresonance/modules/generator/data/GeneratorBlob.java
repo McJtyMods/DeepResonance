@@ -27,7 +27,7 @@ public class GeneratorBlob implements IMultiblock {
 
     public void merge(GeneratorBlob blob) {
         generatorBlocks += blob.generatorBlocks;
-        collectorBlocks += blob.collectorBlocks;
+        collectorBlocks = -1;
         energy += blob.energy;
     }
 

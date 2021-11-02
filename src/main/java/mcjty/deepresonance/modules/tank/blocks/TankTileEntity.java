@@ -2,9 +2,9 @@ package mcjty.deepresonance.modules.tank.blocks;
 
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.tank.TankModule;
+import mcjty.deepresonance.modules.tank.data.DRTankHandler;
 import mcjty.deepresonance.modules.tank.data.DRTankNetwork;
 import mcjty.deepresonance.modules.tank.data.TankBlob;
-import mcjty.deepresonance.modules.tank.grid.TankGrid;
 import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.multiblock.MultiblockSupport;
@@ -26,6 +26,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -35,16 +37,15 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
 
     private int blobId = -1;
 
-    private TankGrid grid;
-    private CompoundNBT gridData;
-
     // Client only
     private Fluid clientRenderFluid;
     private float renderHeight; //Value from 0.0f to 1.0f
 
+    private final LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(this::createFluidHandler);
+
+
     public TankTileEntity() {
         super(TankModule.TYPE_TANK.get());
-        gridData = new CompoundNBT();
     }
 
     public void setClientData(float newHeight, Fluid render) {
@@ -72,30 +73,19 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         return clientRenderFluid;
     }
 
-    public CompoundNBT getGridData() {
-        return gridData;
-    }
-
-    public void setGridData(CompoundNBT gridData) {
-        this.gridData = gridData;
-    }
-
-    public void setGrid(TankGrid grid) {
-        this.grid = grid;
-    }
-
     @Override
     public CompoundNBT save(CompoundNBT tagCompound) {
-        if (grid != null) {
-            grid.setDataToTile(this);
-        }
-        tagCompound.put("grid_data", gridData);
+        tagCompound.putInt("blobid", blobId);
         return super.save(tagCompound);
     }
 
     @Override
     public void read(CompoundNBT tagCompound) {
-        this.gridData = tagCompound.getCompound("grid_data");
+        if (tagCompound.contains("blobid")) {
+            blobId = tagCompound.getInt("blobid");
+        } else {
+            blobId = -1;
+        }
         super.read(tagCompound);
     }
 
@@ -128,16 +118,6 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
             return ActionResultType.SUCCESS;
         }
         return super.onBlockActivated(state, player, hand, result);
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (grid != null) {
-            return grid.getCapability(cap, side);
-        } else { //Early checks or client
-            return super.getCapability(cap, side);
-        }
     }
 
 // @todo 1.16
@@ -224,8 +204,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     public void addBlockToNetwork() {
-        TankBlob newMb = new TankBlob()
-                .setGeneratorBlocks(1);
+        TankBlob newMb = new TankBlob().setTankBlocks(1);
         MultiblockSupport.addBlock(level, getBlockPos(), DRTankNetwork.getNetwork(level).getDriver(), newMb);
     }
 
@@ -263,4 +242,23 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         return DRTankNetwork.getNetwork(level).getDriver();
     }
 
+    @Nonnull
+    private IFluidHandler createFluidHandler() {
+        return new DRTankHandler(level, () -> blobId) {
+            @Override
+            public void onUpdate() {
+                setChanged();
+                DRTankNetwork.getNetwork(level).save();
+            }
+        };
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
+        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            return fluidHandler.cast();
+        }
+        return super.getCapability(cap, facing);
+    }
 }

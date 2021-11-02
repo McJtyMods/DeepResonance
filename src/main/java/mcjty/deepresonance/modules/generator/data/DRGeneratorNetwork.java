@@ -18,6 +18,7 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
             .loader(GeneratorBlob::load)
             .saver(GeneratorBlob::save)
             .dirtySetter(d -> setDirty())
+            .mergeChecker((b1, b2) -> true)
             .fixer(new GeneratorFixer())
             .holderGetter(
                     (world, blockPos) -> {

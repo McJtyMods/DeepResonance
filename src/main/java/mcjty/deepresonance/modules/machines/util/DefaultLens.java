@@ -4,6 +4,7 @@ import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.api.laser.ILens;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
+import mcjty.deepresonance.util.LiquidCrystalData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -63,7 +64,7 @@ public class DefaultLens implements ILens {
                 FluidStack fluid = tank.drain(amount, IFluidHandler.FluidAction.SIMULATE);
                 if (DeepResonanceFluidHelper.isValidLiquidCrystalStack(fluid)) {
                     fluid = tank.drain(amount, IFluidHandler.FluidAction.EXECUTE);
-                    ILiquidCrystalData data = DeepResonanceFluidHelper.readCrystalDataFromStack(fluid);
+                    LiquidCrystalData data = DeepResonanceFluidHelper.readCrystalDataFromStack(fluid);
                     if (data != null) {
                         modifier.accept(data);
                         if (data.getAmount() > 0) {

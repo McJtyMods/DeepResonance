@@ -1,11 +1,11 @@
 package mcjty.deepresonance.modules.machines.block;
 
-import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.util.config.CrystallizerConfig;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
+import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
@@ -63,7 +63,7 @@ public class CrystallizerTileEntity extends GenericTileEntity implements ITickab
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
 
     private int progress = 0;
-    private ILiquidCrystalData crystalData;
+    private LiquidCrystalData crystalData;
     private LazyOptional<IFluidHandler> rclTank;
     private int tankCooldown = 0;
 
@@ -100,7 +100,7 @@ public class CrystallizerTileEntity extends GenericTileEntity implements ITickab
         }
         if (drain > 0) { //Config can change between ticks
             FluidStack stack = rclTank.orElseThrow(NullPointerException::new).drain(drain, IFluidHandler.FluidAction.EXECUTE);
-            ILiquidCrystalData data = DeepResonanceFluidHelper.readCrystalDataFromStack(stack);
+            LiquidCrystalData data = DeepResonanceFluidHelper.readCrystalDataFromStack(stack);
             if (data != null) {
                 if (crystalData == null) {
                     crystalData = data;

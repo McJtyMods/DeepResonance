@@ -1,13 +1,18 @@
 package mcjty.deepresonance.modules.tank.data;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.worlddata.AbstractWorldData;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
+import java.util.Optional;
 
 public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
 
@@ -18,17 +23,31 @@ public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
             .loader(TankBlob::load)
             .saver(TankBlob::save)
             .dirtySetter(d -> setDirty())
+            .mergeChecker((b1, b2) -> isCompatible(b1.getData(), b2.getData()))
             .fixer(new TankFixer())
             .holderGetter(
                     (world, blockPos) -> {
                         TileEntity be = world.getBlockEntity(blockPos);
-                        if (be instanceof IMultiblockConnector && ((IMultiblockConnector) be).getId().equals(TANK_NETWORK_ID)) {
-                            return (IMultiblockConnector) be;
-                        } else {
-                            return null;
+                        if (be instanceof IMultiblockConnector) {
+                            IMultiblockConnector connector = (IMultiblockConnector) be;
+                            if (TANK_NETWORK_ID.equals(connector.getId())) {
+                                return connector;
+                            }
                         }
+                        return null;
                     })
             .build();
+
+
+    public static boolean isCompatible(@Nonnull Optional<LiquidCrystalData> data1, @Nonnull Optional<LiquidCrystalData> data2) {
+        // If one liquid is empty then it is compatible
+        if (!data1.isPresent() || !data2.isPresent() || data1.get().getStack().isEmpty() || data2.get().getStack().isEmpty()) {
+            return true;
+        }
+        Fluid fluid1 = data1.get().getStack().getFluid();
+        Fluid fluid2 = data2.get().getStack().getFluid();
+        return fluid1 == fluid2;
+    }
 
     public DRTankNetwork(String name) {
         super(name);
@@ -54,7 +73,7 @@ public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
         TankBlob network = getBlob(id);
         if (network == null) {
             network = new TankBlob()
-                    .setGeneratorBlocks(0);
+                    .setTankBlocks(0);
             driver.createOrUpdate(id, network);
         }
         return network;
