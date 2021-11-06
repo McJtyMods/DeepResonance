@@ -2,9 +2,11 @@ package mcjty.deepresonance.modules.tank.blocks;
 
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.tank.TankModule;
+import mcjty.deepresonance.modules.tank.data.ClientTankData;
 import mcjty.deepresonance.modules.tank.data.DRTankHandler;
 import mcjty.deepresonance.modules.tank.data.DRTankNetwork;
 import mcjty.deepresonance.modules.tank.data.TankBlob;
+import mcjty.lib.McJtyLib;
 import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.multiblock.MultiblockSupport;
@@ -21,6 +23,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
@@ -43,9 +46,43 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
 
     private final LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(this::createFluidHandler);
 
-
     public TankTileEntity() {
         super(TankModule.TYPE_TANK.get());
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        if (level != null && !level.isClientSide()) {
+            McJtyLib.SYNCER.unregisterWatchHandler(TankModule.TANK_SYNC_ID, GlobalPos.of(level.dimension(), worldPosition));
+        }
+    }
+
+    @Override
+    public void clearRemoved() {
+        super.clearRemoved();
+        if (level != null && !level.isClientSide()) {
+            registerWatchHandler();
+        }
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (level != null && !level.isClientSide()) {
+            registerWatchHandler();
+        }
+    }
+
+    private void registerWatchHandler() {
+        McJtyLib.SYNCER.registerWatchHandler(TankModule.TANK_SYNC_ID, GlobalPos.of(level.dimension(), worldPosition),
+                this::publishToClients);
+    }
+
+    private void publishToClients() {
+        getBlob().getData().ifPresent(data -> {
+            McJtyLib.SYNCER.publish(level, worldPosition, new ClientTankData(data));
+        });
     }
 
     public void setClientData(float newHeight, Fluid render) {

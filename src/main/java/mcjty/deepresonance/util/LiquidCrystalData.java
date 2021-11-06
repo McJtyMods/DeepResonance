@@ -3,6 +3,7 @@ package mcjty.deepresonance.util;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.core.CoreModule;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
@@ -28,6 +29,14 @@ public class LiquidCrystalData implements ILiquidCrystalData {
         this.purity = other.purity;
         this.strength = other.strength;
         this.efficiency = other.efficiency;
+    }
+
+    public LiquidCrystalData(PacketBuffer buf) {
+        this.referenceStack = buf.readFluidStack();
+        quality = buf.readFloat();
+        purity = buf.readFloat();
+        strength = buf.readFloat();
+        efficiency = buf.readFloat();
     }
 
     public static LiquidCrystalData fromNBT(CompoundNBT tag, int amount) {
@@ -90,6 +99,14 @@ public class LiquidCrystalData implements ILiquidCrystalData {
         tagCompound.putFloat("purity", purity);
         tagCompound.putFloat("strength", strength);
         tagCompound.putFloat("efficiency", efficiency);
+    }
+
+    public void toBytes(PacketBuffer buf) {
+        buf.writeFluidStack(referenceStack);
+        buf.writeFloat(quality);
+        buf.writeFloat(purity);
+        buf.writeFloat(strength);
+        buf.writeFloat(efficiency);
     }
 
     private void checkNullity() {
