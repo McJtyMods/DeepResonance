@@ -2,10 +2,11 @@ package mcjty.deepresonance.modules.tank.blocks;
 
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.tank.TankModule;
-import mcjty.deepresonance.modules.tank.data.ClientTankData;
+import mcjty.deepresonance.modules.tank.client.ClientTankData;
 import mcjty.deepresonance.modules.tank.data.DRTankHandler;
 import mcjty.deepresonance.modules.tank.data.DRTankNetwork;
 import mcjty.deepresonance.modules.tank.data.TankBlob;
+import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
@@ -17,6 +18,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -28,6 +32,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -50,40 +55,42 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         super(TankModule.TYPE_TANK.get());
     }
 
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-        if (level != null && !level.isClientSide()) {
-            McJtyLib.SYNCER.unregisterWatchHandler(TankModule.TANK_SYNC_ID, GlobalPos.of(level.dimension(), worldPosition));
-        }
-    }
 
-    @Override
-    public void clearRemoved() {
-        super.clearRemoved();
-        if (level != null && !level.isClientSide()) {
-            registerWatchHandler();
-        }
-    }
+    //    @Override
+//    public void setRemoved() {
+//        super.setRemoved();
+//        if (level != null && !level.isClientSide()) {
+//            McJtyLib.SYNCER.unregisterWatchHandler(TankModule.TANK_SYNC_ID, GlobalPos.of(level.dimension(), worldPosition));
+//        }
+//    }
+//
+//    @Override
+//    public void clearRemoved() {
+//        super.clearRemoved();
+//        if (level != null && !level.isClientSide()) {
+//            registerWatchHandler();
+//        }
+//    }
+//
+//    @Override
+//    public void onLoad() {
+//        super.onLoad();
+//        if (level != null && !level.isClientSide()) {
+//            registerWatchHandler();
+//        }
+//    }
 
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        if (level != null && !level.isClientSide()) {
-            registerWatchHandler();
-        }
-    }
-
-    private void registerWatchHandler() {
-        McJtyLib.SYNCER.registerWatchHandler(TankModule.TANK_SYNC_ID, GlobalPos.of(level.dimension(), worldPosition),
-                this::publishToClients);
-    }
-
-    private void publishToClients() {
-        getBlob().getData().ifPresent(data -> {
-            McJtyLib.SYNCER.publish(level, worldPosition, new ClientTankData(data));
-        });
-    }
+//    private void registerWatchHandler() {
+//        McJtyLib.SYNCER.registerWatchHandler(TankModule.TANK_SYNC_ID, GlobalPos.of(level.dimension(), worldPosition),
+//                this::publishToClients);
+//    }
+//
+//    private void publishToClients() {
+//        getBlob().getData().ifPresent(data -> {
+//            int amount = 8; // @todo calculate!
+//            McJtyLib.SYNCER.publish(level, worldPosition, new ClientTankData(GlobalPos.of(level.dimension(), worldPosition), data.getStack(), amount));
+//        });
+//    }
 
     public void setClientData(float newHeight, Fluid render) {
         boolean dirty = false;
@@ -128,7 +135,6 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
 
     @Override
     public void writeClientDataToNBT(CompoundNBT tagCompound) {
-        super.writeClientDataToNBT(tagCompound);
         tagCompound.putFloat("renderC", renderHeight);
         if (clientRenderFluid != null) {
             tagCompound.putString("fluidC", clientRenderFluid.getRegistryName().toString());
@@ -249,6 +255,35 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         MultiblockSupport.removeBlock(level, getBlockPos(), DRTankNetwork.getNetwork(level).getDriver());
     }
 
+    private void updateHeightsForClient() {
+        int id = getMultiblockId();
+        if (id != -1) {
+            TankBlob blob = getBlob();
+            FluidStack fluidStack = blob.getData().map(LiquidCrystalData::getStack).orElse(FluidStack.EMPTY);
+            int amount = fluidStack.getAmount();
+            int capacityPerTank = blob.getCapacityPerTank();
+            DRTankNetwork.foreach(level, id, blockPos -> {
+                TileEntity be = level.getBlockEntity(blockPos);
+                if (be instanceof TankTileEntity) {
+                    int countBelow = blob.getBlocksBelowY(blockPos.getY());
+                    int countAtY = blob.getBlocksAtY(blockPos.getY());
+                    float height;
+                    if (amount <= countBelow * capacityPerTank) {
+                        // The fluid doesn't come to this height
+                        height = 0;
+                    } else if (amount > (countBelow + countAtY) * capacityPerTank) {
+                        // The fluid comes above this height
+                        height = 1.0f;
+                    } else {
+                        xxx
+                    }
+
+                    ((TankTileEntity) be).setClientData();
+                }
+            }, worldPosition);
+        }
+    }
+
     @Override
     public ResourceLocation getId() {
         return DRTankNetwork.TANK_NETWORK_ID;
@@ -284,6 +319,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         return new DRTankHandler(level, () -> blobId) {
             @Override
             public void onUpdate() {
+                updateHeightsForClient();
                 setChanged();
                 DRTankNetwork.getNetwork(level).save();
             }

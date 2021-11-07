@@ -4,15 +4,21 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
+import mcjty.lib.varia.OrientationTools;
 import mcjty.lib.worlddata.AbstractWorldData;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
 
 public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
 
@@ -38,6 +44,24 @@ public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
                     })
             .build();
 
+    public static void foreach(World level, int blobId, Consumer<BlockPos> consumer, BlockPos current) {
+        MultiblockDriver<TankBlob> driver = getNetwork(level).getDriver();
+        foreach(level, blobId, consumer, driver, current, new HashSet<>());
+    }
+
+    private static void foreach(World level, int blobId, Consumer<BlockPos> consumer, MultiblockDriver<TankBlob> driver, BlockPos current, Set<BlockPos> done) {
+        if (done.contains(current)) {
+            return;
+        }
+        IMultiblockConnector connector = driver.getHolderGetter().apply(level, current);
+        if (connector != null && connector.getId() == TANK_NETWORK_ID && connector.getMultiblockId() == blobId) {
+            done.add(current);
+            consumer.accept(current);
+            for (Direction direction : OrientationTools.DIRECTION_VALUES) {
+                foreach(level, blobId, consumer, driver, current.relative(direction), done);
+            }
+        }
+    }
 
     public static boolean isCompatible(@Nonnull Optional<LiquidCrystalData> data1, @Nonnull Optional<LiquidCrystalData> data2) {
         // If one liquid is empty then it is compatible

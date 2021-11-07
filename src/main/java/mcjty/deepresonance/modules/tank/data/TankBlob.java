@@ -4,16 +4,20 @@ import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.multiblock.IMultiblock;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
+import java.util.*;
 
 public class TankBlob implements IMultiblock {
     private LiquidCrystalData data;
     private int tankBlocks;
+    private int minY;               // Minimum Y for this tank blob
+    private int[] blocksPerLevel;   // Amount of blocks per Y level
 
     public TankBlob() {
     }
@@ -21,6 +25,32 @@ public class TankBlob implements IMultiblock {
     public TankBlob(TankBlob other) {
         this.data = other.data;
         this.tankBlocks = other.tankBlocks;
+        this.minY = other.minY;
+        this.blocksPerLevel = other.blocksPerLevel;
+    }
+
+    public int getMinY() {
+        return minY;
+    }
+
+    public int getBlocksAtY(int y) {
+        if (y >= minY && y < minY + blocksPerLevel.length) {
+            return blocksPerLevel[y-minY];
+        } else {
+            return 0;
+        }
+    }
+
+    public int getBlocksBelowY(int y) {
+        int total = 0;
+        for (int i = minY ; i < y ; i++) {
+            total += getBlocksAtY(i);
+        }
+        return total;
+    }
+
+    public int getCapacityPerTank() {
+        return 10 * 1000;   // @todo 1.16 configurable
     }
 
     public int getCapacity() {
@@ -30,6 +60,29 @@ public class TankBlob implements IMultiblock {
     public void merge(TankBlob other) {
         other.getData().ifPresent(d -> this.data.merge(d));
         this.tankBlocks += other.getTankBlocks();
+        int minY = Math.min(this.minY, other.minY);
+        int maxY = Math.max(this.minY + this.blocksPerLevel.length, other.minY + other.blocksPerLevel.length);
+        int[] mergedBlocksPerLevel = new int[maxY-minY+1];
+        for (int y = minY ; y <= maxY ; y++) {
+            int ithis = y-this.minY;
+            int iother = y-other.minY;
+            mergedBlocksPerLevel[y-minY] = (ithis >= 0 && ithis < this.blocksPerLevel.length) ? this.blocksPerLevel[ithis] : 0;
+            mergedBlocksPerLevel[y-minY] += (iother >= 0 && iother < other.blocksPerLevel.length) ? other.blocksPerLevel[iother] : 0;
+        }
+        this.minY = minY;
+        this.blocksPerLevel = mergedBlocksPerLevel;
+    }
+
+    /**
+     * Fix the y statistics of this blob
+     */
+    public void updateDistribution(Set<BlockPos> blocks) {
+        int minY = blocks.stream().map(Vector3i::getY).min(Integer::compareTo).orElse(0);
+        int maxY = blocks.stream().map(Vector3i::getY).max(Integer::compareTo).orElse(0);
+        this.blocksPerLevel = new int[maxY-minY+ 1];
+        Arrays.fill(this.blocksPerLevel, 0);
+        blocks.forEach(b -> this.blocksPerLevel[b.getY()-minY]++);
+        this.minY = minY;
     }
 
     // Return the amount of liquid filled

@@ -35,6 +35,7 @@ public class TankFixer implements IMultiblockFixer<TankBlob> {
                 data.setAmount(remainder + amountPerBlock * generatorBlocks);
                 TankBlob mb = builder.setTankBlocks(generatorBlocks)
                         .copyData(data);
+                mb.updateDistribution(pair.getRight());
                 driver.createOrUpdate(pair.getKey(), mb);
                 remainder = 0;
             }

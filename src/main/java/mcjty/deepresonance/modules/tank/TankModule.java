@@ -5,7 +5,7 @@ import mcjty.deepresonance.modules.tank.blocks.TankBlock;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.deepresonance.modules.tank.client.ClientSetup;
 import mcjty.deepresonance.modules.tank.client.TankTESR;
-import mcjty.deepresonance.modules.tank.data.ClientTankData;
+import mcjty.deepresonance.modules.tank.client.ClientTankData;
 import mcjty.deepresonance.setup.Registration;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.modules.IModule;
