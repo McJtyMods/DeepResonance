@@ -275,10 +275,11 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
                         // The fluid comes above this height
                         height = 1.0f;
                     } else {
-                        xxx
+                        height = amount - (countBelow * capacityPerTank);
+                        height /= (float) (countAtY * capacityPerTank);
                     }
 
-                    ((TankTileEntity) be).setClientData();
+                    ((TankTileEntity) be).setClientData(height, fluidStack.getFluid());
                 }
             }, worldPosition);
         }
