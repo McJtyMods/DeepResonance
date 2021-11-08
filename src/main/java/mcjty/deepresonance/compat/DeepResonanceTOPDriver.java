@@ -128,7 +128,7 @@ public class DeepResonanceTOPDriver implements TOPDriver {
                 TankBlob blob = tank.getBlob();
                 if (blob != null) {
                     blob.getData().ifPresent(d -> {
-                        FluidStack stack = d.getStack();
+                        FluidStack stack = d.toFluidStack();
                         if (!stack.isEmpty()) {
                             probeInfo.tankSimple(blob.getCapacity(), stack);
                             if (stack.getFluid() == CoreModule.LIQUID_CRYSTAL.get()) {
@@ -141,6 +141,11 @@ public class DeepResonanceTOPDriver implements TOPDriver {
                             }
                         }
                     });
+                    if (mode == ProbeMode.DEBUG) {
+                        probeInfo.text(CompoundText.createLabelInfo("Id ", tank.getMultiblockId()));
+                        probeInfo.text(CompoundText.createLabelInfo("Client Height ", tank.getClientRenderHeight()));
+                        probeInfo.text(CompoundText.createLabelInfo("MinY ", blob.getMinY()));
+                    }
                 }
             }, "Bad tile entity!");
         }

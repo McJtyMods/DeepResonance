@@ -32,8 +32,8 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
         sources.clear();
     }
 
-    public static float calculateRadiationStrength(float strength, float purity) {
-        float p = (float) Math.log10(purity / 100.0f) + 1.0f;
+    public static float calculateRadiationStrength(double strength, double purity) {
+        float p = (float) Math.log10(purity / 100.0) + 1.0f;
         if (p < 0.01f) {
             p = 0.01f;
         }
@@ -42,7 +42,7 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
         return (float) str;
     }
 
-    public static float calculateRadiationRadius(float strength, float efficiency, float purity) {
+    public static float calculateRadiationRadius(double strength, double efficiency, double purity) {
         double radius = RadiationConfiguration.MIN_RADIATION_RADIUS.get() + (strength + efficiency) / 200.0f
                 * (RadiationConfiguration.MAX_RADIATION_RADIUS.get() - RadiationConfiguration.MIN_RADIATION_RADIUS.get());
         radius += radius * (100.0f - purity) * .002f;

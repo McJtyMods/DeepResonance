@@ -16,10 +16,6 @@ public class DeepResonanceFluidHelper {
         return fluid == CoreModule.LIQUID_CRYSTAL.get();
     }
 
-    public static ILiquidCrystalData readCrystalDataFromNBT(CompoundNBT tag, int amount) {
-        return LiquidCrystalData.fromNBT(tag, amount);
-    }
-
     public static FluidStack makeLiquidCrystalStack(int amount) {
         return LiquidCrystalData.makeLiquidCrystalStack(amount, 0, 0, 0, 0);
     }

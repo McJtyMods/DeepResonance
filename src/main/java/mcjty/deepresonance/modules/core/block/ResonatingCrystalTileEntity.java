@@ -32,10 +32,10 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
     // The RF/tick you can get out of a crystal with the above characteristics is:
     //    * RFTick = FullRFTick * (E/100.1) * ((P+2)/102) + 1           (the divide by 100.1 is to make sure we don't go above 20000)
 
-    private float strength = 1.0f;
-    private float power = 1.0f;         // Default 1% power
-    private float efficiency = 1.0f;    // Default 1%
-    private float purity = 1.0f;        // Default 1% purity
+    private double strength = 1.0;
+    private double power = 1.0;         // Default 1% power
+    private double efficiency = 1.0;    // Default 1%
+    private double purity = 1.0;        // Default 1% purity
 
     private float powerPerTick = -1;    // Calculated value that contains the power/tick that is drained for this crystal.
     private int rfPerTick = -1;         // Calculated value that contains the RF/tick for this crystal.
@@ -46,19 +46,19 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
         super(CoreModule.TYPE_RESONATING_CRYSTAL.get());
     }
 
-    public float getStrength() {
+    public double getStrength() {
         return strength;
     }
 
-    public float getPower() {
+    public double getPower() {
         return power;
     }
 
-    public float getEfficiency() {
+    public double getEfficiency() {
         return efficiency;
     }
 
-    public float getPurity() {
+    public double getPurity() {
         return purity;
     }
 
@@ -70,7 +70,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
     // We enqueue crystals for processing later
     public static Set<ResonatingCrystalTileEntity> todoCrystals = new HashSet<>();
 
-    public void setStrength(float strength) {
+    public void setStrength(double strength) {
         this.strength = strength;
         markDirtyClient();
     }
@@ -79,7 +79,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
         return power < mcjty.deepresonance.util.Constants.CRYSTAL_MIN_POWER;
     }
 
-    public void setPower(float power) {
+    public void setPower(double power) {
         boolean oldempty = isEmpty();
         this.power = power;
         setChanged();
@@ -91,16 +91,16 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
 
     public float getPowerPerTick() {
         if (powerPerTick < 0) {
-            float totalRF = ResonatingCrystalTileEntity.getTotalPower(strength, purity);
-            float numticks = totalRF / ResonatingCrystalTileEntity.getRfPerTick(efficiency, purity);
+            double totalRF = ResonatingCrystalTileEntity.getTotalPower(strength, purity);
+            double numticks = totalRF / ResonatingCrystalTileEntity.getRfPerTick(efficiency, purity);
 //            float numticks = totalRF / getRfPerTick();
-            powerPerTick = 100.0f / numticks;
+            powerPerTick = (float)(100.0 / numticks);
         }
         return powerPerTick;
     }
 
-    public static float getTotalPower(float strength, float purity) {
-        return 1000.0f * CrystalConfig.MAX_POWER_STORED.get() * strength / 100.0f * (purity + 30.0f) / 130.0f;
+    public static double getTotalPower(double strength, double purity) {
+        return 1000.0 * CrystalConfig.MAX_POWER_STORED.get() * strength / 100.0 * (purity + 30.0) / 130.0;
     }
 
     public int getRfPerTick() {
@@ -124,8 +124,8 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
         return rfPerTick;
     }
 
-    public static int getRfPerTick(float efficiency, float purity) {
-        return (int) (CrystalConfig.MAX_POWER_TICK.get() * efficiency / 100.1f * (purity + 2.0f) / 102.0f + 1);
+    public static int getRfPerTick(double efficiency, double purity) {
+        return (int) (CrystalConfig.MAX_POWER_TICK.get() * efficiency / 100.1 * (purity + 2.0) / 102.0 + 1);
     }
 
 
@@ -136,12 +136,12 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
         }
     }
 
-    public void setEfficiency(float efficiency) {
+    public void setEfficiency(double efficiency) {
         this.efficiency = efficiency;
         markDirtyClient();
     }
 
-    public void setPurity(float purity) {
+    public void setPurity(double purity) {
         this.purity = purity;
         markDirtyClient();
     }
@@ -174,19 +174,19 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
     public void read(CompoundNBT tagCompound) {
         super.read(tagCompound);
 
-        strength = tagCompound.getFloat("strength");
-        power = tagCompound.getFloat("power");
-        efficiency = tagCompound.getFloat("efficiency");
-        purity = tagCompound.getFloat("purity");
+        strength = tagCompound.getDouble("strength");
+        power = tagCompound.getDouble("power");
+        efficiency = tagCompound.getDouble("efficiency");
+        purity = tagCompound.getDouble("purity");
     }
 
 
     @Override
     public CompoundNBT save(CompoundNBT tagCompound) {
-        tagCompound.putFloat("strength", strength);
-        tagCompound.putFloat("power", power);
-        tagCompound.putFloat("efficiency", efficiency);
-        tagCompound.putFloat("purity", purity);
+        tagCompound.putDouble("strength", strength);
+        tagCompound.putDouble("power", power);
+        tagCompound.putDouble("efficiency", efficiency);
+        tagCompound.putDouble("purity", purity);
         return super.save(tagCompound);
     }
 

@@ -14,155 +14,104 @@ import javax.annotation.Nonnull;
 public class LiquidCrystalData implements ILiquidCrystalData {
 
     private final FluidStack referenceStack;
-    private float quality;
-    private float purity;
-    private float strength;
-    private float efficiency;
 
     private LiquidCrystalData(FluidStack referenceStack) {
         this.referenceStack = referenceStack;
     }
 
-    public LiquidCrystalData(LiquidCrystalData other) {
-        this.referenceStack = other.referenceStack;
-        this.quality = other.quality;
-        this.purity = other.purity;
-        this.strength = other.strength;
-        this.efficiency = other.efficiency;
-    }
-
     public LiquidCrystalData(PacketBuffer buf) {
         this.referenceStack = buf.readFluidStack();
-        quality = buf.readFloat();
-        purity = buf.readFloat();
-        strength = buf.readFloat();
-        efficiency = buf.readFloat();
-    }
-
-    public static LiquidCrystalData fromNBT(CompoundNBT tag, int amount) {
-        return fromStack(new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), amount, tag));
     }
 
     static FluidStack makeLiquidCrystalStack(int amount, float quality, float purity, float strength, float efficiency) {
         LiquidCrystalData data = new LiquidCrystalData(new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), amount));
         data.setAmount(amount);
-        data.setQuality(quality);
-        data.setPurity(purity);
-        data.setStrength(strength);
-        data.setEfficiency(efficiency);
+        data.setStats(quality, purity, strength, efficiency);
         return data.toFluidStack();
     }
 
     @Nonnull
     public static LiquidCrystalData fromStack(FluidStack stack) {
-        // We also support non-RCL liquids
-//        if (!DeepResonanceFluidHelper.isValidLiquidCrystalStack(stack)) {
-//            return null;
-//        }
-        CompoundNBT fluidTag = stack.getOrCreateTag();
-        LiquidCrystalData ret = new LiquidCrystalData(stack);
-        ret.quality = fluidTag.getFloat("quality");
-        ret.purity = fluidTag.getFloat("purity");
-        ret.strength = fluidTag.getFloat("strength");
-        ret.efficiency = fluidTag.getFloat("efficiency");
-
-        return ret;
+        return new LiquidCrystalData(stack);
     }
 
     @Override
     public void merge(ILiquidCrystalData otherTag) {
-        checkNullity();
-        if (!isValid(otherTag)) {
-            return;
+        if (referenceStack.getFluid() != otherTag.toFluidStack().getFluid()) {
+            return; // Can't merge
         }
-        this.quality = mix(otherTag, getQuality(), otherTag.getQuality());
-        this.purity = mix(otherTag, getPurity(), otherTag.getPurity());
-        this.strength = mix(otherTag, getStrength(), otherTag.getStrength());
-        this.efficiency = mix(otherTag, getEfficiency(), otherTag.getEfficiency());
+        if (referenceStack.getFluid() == CoreModule.LIQUID_CRYSTAL.get() && otherTag.toFluidStack().getFluid() == CoreModule.LIQUID_CRYSTAL.get()) {
+            double quality = mix(otherTag, getQuality(), otherTag.getQuality());
+            double purity = mix(otherTag, getPurity(), otherTag.getPurity());
+            double strength = mix(otherTag, getStrength(), otherTag.getStrength());
+            double efficiency = mix(otherTag, getEfficiency(), otherTag.getEfficiency());
 
-        referenceStack.setAmount(referenceStack.getAmount() + otherTag.getAmount());
-        save();
+            referenceStack.setAmount(referenceStack.getAmount() + otherTag.getAmount());
+            setStats(quality, purity, strength, efficiency);
+        } else {
+            referenceStack.setAmount(referenceStack.getAmount() + otherTag.getAmount());
+        }
     }
 
-    private float mix(ILiquidCrystalData other, float myValue, float otherValue) {
-        float f = (other.getAmount() / ((float) getAmount() + other.getAmount()));
+    private void setStats(double quality, double purity, double strength, double efficiency) {
+        CompoundNBT tag = referenceStack.getOrCreateTag();
+        tag.putDouble("quality", quality);
+        tag.putDouble("purity", purity);
+        tag.putDouble("strength", strength);
+        tag.putDouble("efficiency", efficiency);
+    }
+
+    private double mix(ILiquidCrystalData other, double myValue, double otherValue) {
+        double f = (other.getAmount() / ((float) getAmount() + other.getAmount()));
         return (1 - f) * myValue + f * otherValue;
-    }
-
-    private void save() {
-        writeDataToNBT(referenceStack.getTag());
-    }
-
-    private void writeDataToNBT(CompoundNBT tagCompound) {
-        checkNullity();
-        tagCompound.putFloat("quality", quality);
-        tagCompound.putFloat("purity", purity);
-        tagCompound.putFloat("strength", strength);
-        tagCompound.putFloat("efficiency", efficiency);
     }
 
     public void toBytes(PacketBuffer buf) {
         buf.writeFluidStack(referenceStack);
-        buf.writeFloat(quality);
-        buf.writeFloat(purity);
-        buf.writeFloat(strength);
-        buf.writeFloat(efficiency);
-    }
-
-    private void checkNullity() {
-        isValid(this);
-    }
-
-    private boolean isValid(ILiquidCrystalData data) {
-        if (data.getAmount() <= 0) {
-            data.setPurity(0);
-            return false;
-        }
-        return true;
-    }
-
-    public FluidStack getStack() {
-        return referenceStack;
     }
 
     @Override
-    public float getQuality() {
-        return quality;
+    public double getQuality() {
+        CompoundNBT tag = referenceStack.getTag();
+        return tag == null ? 0 : tag.getDouble("quality");
     }
 
     @Override
     public void setQuality(double quality) {
-        this.quality = (float) quality;
+        referenceStack.getOrCreateTag().putDouble("quality", quality);
     }
 
     @Override
-    public float getPurity() {
-        return purity;
+    public double getPurity() {
+        CompoundNBT tag = referenceStack.getTag();
+        return tag == null ? 0 : tag.getDouble("purity");
     }
 
     @Override
     public void setPurity(double purity) {
-        this.purity = (float) purity;
+        referenceStack.getOrCreateTag().putDouble("purity", purity);
     }
 
     @Override
-    public float getStrength() {
-        return strength;
+    public double getStrength() {
+        CompoundNBT tag = referenceStack.getTag();
+        return tag == null ? 0 : tag.getDouble("strength");
     }
 
     @Override
     public void setStrength(double strength) {
-        this.strength = (float) strength;
+        referenceStack.getOrCreateTag().putDouble("strength", strength);
     }
 
     @Override
-    public float getEfficiency() {
-        return efficiency;
+    public double getEfficiency() {
+        CompoundNBT tag = referenceStack.getTag();
+        return tag == null ? 0 : tag.getDouble("efficiency");
     }
 
     @Override
     public void setEfficiency(double efficiency) {
-        this.efficiency = (float) efficiency;
+        referenceStack.getOrCreateTag().putDouble("efficiency", efficiency);
     }
 
     @Override
@@ -177,14 +126,12 @@ public class LiquidCrystalData implements ILiquidCrystalData {
 
     @Override
     public FluidStack toFluidStack() {
-        FluidStack stack = new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), referenceStack.getAmount());
-        writeDataToNBT(stack.getOrCreateTag());
-        return stack;
+        return referenceStack;
     }
 
     @Override
     public String toString() {
-        return "Amount: " + referenceStack.getAmount() + " ,Quality: " + quality + " ,Purity: " + purity + " ,Strength: " + strength + " ,Efficiency: " + efficiency;
+        return "Amount: " + referenceStack.getAmount() + " ,Quality: " + getQuality() + " ,Purity: " + getPurity() + " ,Strength: " + getStrength() + " ,Efficiency: " + getEfficiency();
     }
 
 }

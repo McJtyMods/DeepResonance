@@ -24,13 +24,13 @@ public final class InfusionModifier implements Serializable {
         return bonus;
     }
 
-    public void applyModifier(DoubleSupplier getter, DoubleConsumer setter, float quality, float efficiency) {
+    public void applyModifier(DoubleSupplier getter, DoubleConsumer setter, double quality, double efficiency) {
         if (bonus == 0) {
             return;
         }
         double value = getter.getAsDouble();
         double toAdd = (bonus / 100.0f) * efficiency;
-        float cap = (maxOrMin / 100.0f) * quality;
+        double cap = (maxOrMin / 100.0f) * quality;
         if (bonus > 0) {
             if (value + toAdd > cap) {
                 toAdd = cap - value;

@@ -134,14 +134,14 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
         if (outputTank.fill(fluidData.toFluidStack(), IFluidHandler.FluidAction.SIMULATE) != fluidData.getAmount()) {
             return -1; //Wait
         }
-        float purity = fluidData.getPurity();
-        float maxPurityToAdd = PurifierConfig.ADDED_PURITY.get() / 100.0f;
-        float addedPurity = maxPurityToAdd;
-        float maxPurity = (PurifierConfig.MAX_PURITY.get() + .1f) / 100.0f;
+        double purity = fluidData.getPurity();
+        double maxPurityToAdd = PurifierConfig.ADDED_PURITY.get() / 100.0;
+        double addedPurity = maxPurityToAdd;
+        double maxPurity = (PurifierConfig.MAX_PURITY.get() + .1) / 100.0;
         maxPurity *= fluidData.getQuality();
         if (purity + addedPurity > maxPurity) {
             addedPurity = maxPurity - purity;
-            if (addedPurity < 0.0001f) {
+            if (addedPurity < 0.0001) {
                 outputTank.fill(fluidData.toFluidStack(), IFluidHandler.FluidAction.EXECUTE);
                 return 100000;
             }

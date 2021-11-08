@@ -16,8 +16,8 @@ public class ModelLoaderCoreModule {
     // @todo 1.16
 //    public static final StateContainer<Block, BlockState> stateContainer = RenderingRegistry.instance().registerBlockStateLocation(RESONATING_CRYSTAL, FACING, EMPTY, VERY_PURE);
 
-    public static final ModelProperty<Float> POWER = new ModelProperty<>();
-    public static final ModelProperty<Float> PURITY = new ModelProperty<>();
+    public static final ModelProperty<Double> POWER = new ModelProperty<>();
+    public static final ModelProperty<Double> PURITY = new ModelProperty<>();
 
     // @todo 1.16
 //    @Nonnull

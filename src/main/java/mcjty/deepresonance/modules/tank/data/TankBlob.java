@@ -34,6 +34,9 @@ public class TankBlob implements IMultiblock {
     }
 
     public int getBlocksAtY(int y) {
+        if (blocksPerLevel == null) {
+            return 0;
+        }
         if (y >= minY && y < minY + blocksPerLevel.length) {
             return blocksPerLevel[y-minY];
         } else {
@@ -60,17 +63,22 @@ public class TankBlob implements IMultiblock {
     public void merge(TankBlob other) {
         other.getData().ifPresent(d -> this.data.merge(d));
         this.tankBlocks += other.getTankBlocks();
-        int minY = Math.min(this.minY, other.minY);
-        int maxY = Math.max(this.minY + this.blocksPerLevel.length, other.minY + other.blocksPerLevel.length);
-        int[] mergedBlocksPerLevel = new int[maxY-minY+1];
-        for (int y = minY ; y <= maxY ; y++) {
-            int ithis = y-this.minY;
-            int iother = y-other.minY;
-            mergedBlocksPerLevel[y-minY] = (ithis >= 0 && ithis < this.blocksPerLevel.length) ? this.blocksPerLevel[ithis] : 0;
-            mergedBlocksPerLevel[y-minY] += (iother >= 0 && iother < other.blocksPerLevel.length) ? other.blocksPerLevel[iother] : 0;
+        if (this.blocksPerLevel == null) {
+            this.minY = other.minY;
+            this.blocksPerLevel = other.blocksPerLevel;
+        } else if (other.blocksPerLevel != null) {
+            int minY = Math.min(this.minY, other.minY);
+            int maxY = Math.max(this.minY + this.blocksPerLevel.length, other.minY + other.blocksPerLevel.length);
+            int[] mergedBlocksPerLevel = new int[maxY - minY + 1];
+            for (int y = minY; y <= maxY; y++) {
+                int ithis = y - this.minY;
+                int iother = y - other.minY;
+                mergedBlocksPerLevel[y - minY] = (ithis >= 0 && ithis < this.blocksPerLevel.length) ? this.blocksPerLevel[ithis] : 0;
+                mergedBlocksPerLevel[y - minY] += (iother >= 0 && iother < other.blocksPerLevel.length) ? other.blocksPerLevel[iother] : 0;
+            }
+            this.minY = minY;
+            this.blocksPerLevel = mergedBlocksPerLevel;
         }
-        this.minY = minY;
-        this.blocksPerLevel = mergedBlocksPerLevel;
     }
 
     /**
@@ -90,12 +98,12 @@ public class TankBlob implements IMultiblock {
         // @todo 1.16 does not check max capacity yet!
         if (stack.isEmpty()) {
             return 0;
-        } else if (data == null || data.getStack().isEmpty()) {
+        } else if (data == null || data.toFluidStack().isEmpty()) {
             if (action.execute()) {
                 data = LiquidCrystalData.fromStack(stack);
             }
             return stack.getAmount();
-        } else if (data.getStack().getFluid() == stack.getFluid()) {
+        } else if (data.toFluidStack().getFluid() == stack.getFluid()) {
             // @todo 1.16 implement mixing!
             if (action.execute()) {
                 data.setAmount(data.getAmount() + stack.getAmount());
@@ -109,21 +117,21 @@ public class TankBlob implements IMultiblock {
     // Return the fluid that was drained
     @Nonnull
     public FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action) {
-        if (resource.isEmpty() || data == null || data.getStack().isEmpty()) {
+        if (resource.isEmpty() || data == null || data.toFluidStack().isEmpty()) {
             return FluidStack.EMPTY;
-        } else if (resource.getFluid() != data.getStack().getFluid()) {
+        } else if (resource.getFluid() != data.toFluidStack().getFluid()) {
             return FluidStack.EMPTY;
         } else if (resource.getAmount() >= data.getAmount()) {
-            FluidStack result = data.getStack();
+            FluidStack result = data.toFluidStack();
             if (action.execute()) {
                 data = null;
             }
             return result;
         } else {
-            FluidStack result = data.getStack().copy();
+            FluidStack result = data.toFluidStack().copy();
             result.setAmount(resource.getAmount());
             if (action.execute()) {
-                data.getStack().setAmount(data.getStack().getAmount() - result.getAmount());
+                data.toFluidStack().setAmount(data.toFluidStack().getAmount() - result.getAmount());
             }
             return result;
         }
@@ -132,19 +140,19 @@ public class TankBlob implements IMultiblock {
     // Return the fluid that was drained
     @Nonnull
     public FluidStack drain(int amount, IFluidHandler.FluidAction action) {
-        if (amount <= 0 || data == null || data.getStack().isEmpty()) {
+        if (amount <= 0 || data == null || data.toFluidStack().isEmpty()) {
             return FluidStack.EMPTY;
         } else if (amount >= data.getAmount()) {
-            FluidStack result = data.getStack();
+            FluidStack result = data.toFluidStack();
             if (action.execute()) {
                 data = null;
             }
             return result;
         } else {
-            FluidStack result = data.getStack().copy();
+            FluidStack result = data.toFluidStack().copy();
             result.setAmount(amount);
             if (action.execute()) {
-                data.getStack().setAmount(data.getStack().getAmount() - amount);
+                data.toFluidStack().setAmount(data.toFluidStack().getAmount() - amount);
             }
             return result;
         }
@@ -156,7 +164,7 @@ public class TankBlob implements IMultiblock {
     }
 
     public TankBlob copyData(LiquidCrystalData data) {
-        this.data = new LiquidCrystalData(data);
+        this.data = LiquidCrystalData.fromStack(data.toFluidStack());
         return this;
     }
 
@@ -177,6 +185,8 @@ public class TankBlob implements IMultiblock {
         TankBlob blob = new TankBlob();
         blob.data = LiquidCrystalData.fromStack(FluidStack.loadFluidStackFromNBT(tagCompound.getCompound("fluid")));
         blob.setTankBlocks(tagCompound.getInt("refcount"));
+        blob.minY = tagCompound.getInt("miny");
+        blob.blocksPerLevel = tagCompound.getIntArray("blocksperlevel");
         return blob;
     }
 
@@ -185,6 +195,8 @@ public class TankBlob implements IMultiblock {
             tagCompound.put("fluid", network.data.toFluidStack().writeToNBT(new CompoundNBT()));
         }
         tagCompound.putInt("refcount", network.tankBlocks);
+        tagCompound.putInt("miny", network.minY);
+        tagCompound.putIntArray("blocksperlevel", network.blocksPerLevel);
         return tagCompound;
     }
 }

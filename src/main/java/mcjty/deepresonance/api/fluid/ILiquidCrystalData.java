@@ -6,19 +6,19 @@ public interface ILiquidCrystalData {
 
     void merge(ILiquidCrystalData otherStack);
 
-    float getQuality();
+    double getQuality();
 
     void setQuality(double quality);
 
-    float getPurity();
+    double getPurity();
 
     void setPurity(double purity);
 
-    float getStrength();
+    double getStrength();
 
     void setStrength(double strength);
 
-    float getEfficiency();
+    double getEfficiency();
 
     void setEfficiency(double efficiency);
 

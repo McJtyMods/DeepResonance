@@ -37,12 +37,17 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
     @Nonnull
     @Override
     public FluidStack getFluidInTank(int tank) {
-        return getData().map(LiquidCrystalData::getStack).orElse(FluidStack.EMPTY);
+        return getData().map(LiquidCrystalData::toFluidStack).orElse(FluidStack.EMPTY);
     }
 
     @Override
     public int getTankCapacity(int tank) {
-        return getFluidInTank(tank).getAmount();
+        TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
+        if (blob != null) {
+            return blob.getCapacity();
+        } else {
+            return 0;
+        }
     }
 
     @Override
@@ -97,7 +102,7 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
     @Nonnull
     @Override
     public FluidStack getFluid() {
-        return getData().map(LiquidCrystalData::getStack).orElse(FluidStack.EMPTY);
+        return getData().map(LiquidCrystalData::toFluidStack).orElse(FluidStack.EMPTY);
     }
 
     @Override

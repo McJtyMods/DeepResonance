@@ -159,7 +159,7 @@ public class LaserTileEntity extends GenericTileEntity implements ITickableTileE
     private void processBonus() {
         if (lens != null) {
             lens.ifPresent(l -> l.infuseFluid(activeBonus.getRclImprovedPerCatalyst(), data -> {
-                float quality = data.getQuality();
+                double quality = data.getQuality();
                 float efficiency = LaserTileEntity.this.efficiency;
                 activeBonus.getEfficiencyModifier().applyModifier(data::getEfficiency, data::setEfficiency, quality, efficiency);
                 activeBonus.getPurityModifier().applyModifier(data::getPurity, data::setPurity, quality, efficiency);

@@ -162,7 +162,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
                     crystal.setGlowing(lasersActive);
                     tokeep.add(coordinate);
 
-                    float power = crystal.getPower();
+                    double power = crystal.getPower();
                     if (power < crystal.getPowerPerTick()) {
                         // We are empty.
                         crystal.setPower(0);
@@ -174,7 +174,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
                         rf += rfPerTick;
 
                         if (doRadiation) {
-                            float purity = crystal.getPurity();
+                            double purity = crystal.getPurity();
                             float radius = DRRadiationManager.calculateRadiationRadius(crystal.getStrength(), crystal.getEfficiency(), purity);
                             if (radius > radiationRadius) {
                                 radiationRadius = radius;

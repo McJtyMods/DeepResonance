@@ -40,6 +40,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 
 public class TankTileEntity extends GenericTileEntity implements IMultiblockConnector {
 
@@ -248,6 +249,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
 
     public void addBlockToNetwork() {
         TankBlob newMb = new TankBlob().setTankBlocks(1);
+        newMb.updateDistribution(Collections.singleton(worldPosition));
         MultiblockSupport.addBlock(level, getBlockPos(), DRTankNetwork.getNetwork(level).getDriver(), newMb);
     }
 
@@ -259,7 +261,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         int id = getMultiblockId();
         if (id != -1) {
             TankBlob blob = getBlob();
-            FluidStack fluidStack = blob.getData().map(LiquidCrystalData::getStack).orElse(FluidStack.EMPTY);
+            FluidStack fluidStack = blob.getData().map(LiquidCrystalData::toFluidStack).orElse(FluidStack.EMPTY);
             int amount = fluidStack.getAmount();
             int capacityPerTank = blob.getCapacityPerTank();
             DRTankNetwork.foreach(level, id, blockPos -> {

@@ -16,16 +16,16 @@ public class CrystalHelper {
         return power < Constants.CRYSTAL_MIN_POWER;
     }
 
-    public static boolean isVeryPure(float purity) {
+    public static boolean isVeryPure(double purity) {
         return purity > Constants.PURE_MODEL_THRESHOLD;
     }
 
-    public static int getRfPerTick(float efficiency, float purity) {
-        return (int) (CrystalConfig.MAX_POWER_TICK.get() * efficiency / 100.1f * (purity + 2.0f) / 102.0f + 1);
+    public static int getRfPerTick(double efficiency, double purity) {
+        return (int) (CrystalConfig.MAX_POWER_TICK.get() * efficiency / 100.1 * (purity + 2.0) / 102.0 + 1);
     }
 
-    public static float getTotalPower(float strength, float purity) {
-        return 1000.0f * CrystalConfig.MAX_POWER_STORED.get() * strength / 100.0f * (purity + 30.0f) / 130.0f;
+    public static double getTotalPower(double strength, double purity) {
+        return 1000.0 * CrystalConfig.MAX_POWER_STORED.get() * strength / 100.0 * (purity + 30.0) / 130.0;
     }
 
     // Special == 0, normal
