@@ -116,6 +116,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     @Override
     public CompoundNBT save(CompoundNBT tagCompound) {
         tagCompound.putInt("blobid", blobId);
+        writeClientDataToNBT(tagCompound);
         return super.save(tagCompound);
     }
 
@@ -126,6 +127,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         } else {
             blobId = -1;
         }
+        readClientDataFromNBT(tagCompound);
         super.read(tagCompound);
     }
 
@@ -139,7 +141,6 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
 
     @Override
     public void readClientDataFromNBT(CompoundNBT tagCompound) {
-        super.readClientDataFromNBT(tagCompound);
         renderHeight = tagCompound.getFloat("renderC");
         if (tagCompound.contains("fluidC")) {
             clientRenderFluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(tagCompound.getString("fluidC")));
@@ -246,6 +247,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         TankBlob newMb = new TankBlob().setTankBlocks(1);
         newMb.updateDistribution(Collections.singleton(worldPosition));
         MultiblockSupport.addBlock(level, getBlockPos(), DRTankNetwork.getNetwork(level).getDriver(), newMb);
+        updateHeightsForClient();
     }
 
     public void removeBlockFromNetwork() {

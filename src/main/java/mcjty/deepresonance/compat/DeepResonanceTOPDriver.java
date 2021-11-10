@@ -145,6 +145,7 @@ public class DeepResonanceTOPDriver implements TOPDriver {
                         probeInfo.text(CompoundText.createLabelInfo("Id ", tank.getMultiblockId()));
                         probeInfo.text(CompoundText.createLabelInfo("Client Height ", tank.getClientRenderHeight()));
                         probeInfo.text(CompoundText.createLabelInfo("MinY ", blob.getMinY()));
+                        probeInfo.text(CompoundText.createLabelInfo("#Blocks ", blob.getTankBlocks()));
                     }
                 }
             }, "Bad tile entity!");

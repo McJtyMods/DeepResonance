@@ -60,7 +60,7 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
         TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
         if (blob != null) {
             int filled = blob.fill(resource, action);
-            if (filled > 0) {
+            if (filled > 0 && action.execute()) {
                 onUpdate();
             }
             return filled;
@@ -75,7 +75,7 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
         TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
         if (blob != null) {
             FluidStack drained = blob.drain(resource, action);
-            if (!drained.isEmpty()) {
+            if (!drained.isEmpty() && action.execute()) {
                 onUpdate();
             }
             return drained;
@@ -90,7 +90,7 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
         TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
         if (blob != null) {
             FluidStack drained = blob.drain(maxDrain, action);
-            if (!drained.isEmpty()) {
+            if (!drained.isEmpty() && action.execute()) {
                 onUpdate();
             }
             return drained;

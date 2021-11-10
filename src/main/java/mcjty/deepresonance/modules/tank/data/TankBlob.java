@@ -61,7 +61,11 @@ public class TankBlob implements IMultiblock {
     }
 
     public void merge(TankBlob other) {
-        other.getData().ifPresent(d -> this.data.merge(d));
+        if (this.data != null) {
+            other.getData().ifPresent(d -> this.data.merge(d));
+        } else {
+            this.data = other.getData().map(d -> d).orElse(null);
+        }
         this.tankBlocks += other.getTankBlocks();
         if (this.blocksPerLevel == null) {
             this.minY = other.minY;
@@ -146,7 +150,7 @@ public class TankBlob implements IMultiblock {
         if (amount <= 0 || data == null || data.getFluidStack().isEmpty()) {
             return FluidStack.EMPTY;
         } else if (amount >= data.getAmount()) {
-            FluidStack result = data.getFluidStack();
+            FluidStack result = data.getFluidStack().copy();
             if (action.execute()) {
                 data = null;
             }
@@ -189,7 +193,11 @@ public class TankBlob implements IMultiblock {
         blob.data = LiquidCrystalData.fromStack(FluidStack.loadFluidStackFromNBT(tagCompound.getCompound("fluid")));
         blob.setTankBlocks(tagCompound.getInt("refcount"));
         blob.minY = tagCompound.getInt("miny");
-        blob.blocksPerLevel = tagCompound.getIntArray("blocksperlevel");
+        if (tagCompound.contains("blocksperlevel")) {
+            blob.blocksPerLevel = tagCompound.getIntArray("blocksperlevel");
+        } else {
+            blob.blocksPerLevel = null;
+        }
         return blob;
     }
 
@@ -199,7 +207,9 @@ public class TankBlob implements IMultiblock {
         }
         tagCompound.putInt("refcount", network.tankBlocks);
         tagCompound.putInt("miny", network.minY);
-        tagCompound.putIntArray("blocksperlevel", network.blocksPerLevel);
+        if (network.blocksPerLevel != null) {
+            tagCompound.putIntArray("blocksperlevel", network.blocksPerLevel);
+        }
         return tagCompound;
     }
 }

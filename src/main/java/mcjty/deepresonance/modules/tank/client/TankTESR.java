@@ -112,6 +112,9 @@ public class TankTESR extends TileEntityRenderer<TankTileEntity> {
         float v2 = fluid.getV1();
         float edge = 2.9f / 16f;
 
+        int b1 = brightness >> 16 & 65535;
+        int b2 = brightness & 65535;
+
 //        vertexBuilder.setColorRGBA_I(color, 255);
 //        vertexBuilder.setBrightness(brightness);
 //        vertexBuilder.setMatrix(matrixStack.getLast().getMatrix());
@@ -120,51 +123,48 @@ public class TankTESR extends TileEntityRenderer<TankTileEntity> {
         float b = (color & 0xFF) / 255.0F;
         float a = (color >> 24 & 0xFF) / 255.0F;
 
-        VertexBufferConsumer consumer = new VertexBufferConsumer(vertexBuilder);
         Matrix4f matrix = matrixStack.last().pose();
 
         if (scale > 0.0f) {
             //TOP
-            RenderHelper.putVertex(matrix, consumer, UP, 0, scale + offset, 0, u1, v1, fluid, r, g, b, a);
-            RenderHelper.putVertex(matrix, consumer, UP, 0, scale + offset, 1, u1, v2, fluid, r, g, b, a);
-            RenderHelper.putVertex(matrix, consumer, UP, 1, scale + offset, 1, u2, v2, fluid, r, g, b, a);
-            RenderHelper.putVertex(matrix, consumer, UP, 1, scale + offset, 0, u2, v1, fluid, r, g, b, a);
+            RenderHelper.vt(vertexBuilder, matrix, 0, scale + offset, 0, u1, v1, b1, b2, r, g, b, a);
+            RenderHelper.vt(vertexBuilder, matrix, 0, scale + offset, 1, u1, v2, b1, b2, r, g, b, a);
+            RenderHelper.vt(vertexBuilder, matrix, 1, scale + offset, 1, u2, v2, b1, b2, r, g, b, a);
+            RenderHelper.vt(vertexBuilder, matrix, 1, scale + offset, 0, u2, v1, b1, b2, r, g, b, a);
 
             if (scale > edge) {
-
                 if (scale > 1 - edge) {
                     scale = 1 - edge;
                 }
 
                 v2 -= (fluid.getV1() - fluid.getV0()) * (1 - scale);
 
-
                 if (dirs.contains(Direction.NORTH)) {
-                    RenderHelper.putVertex(matrix, consumer, NORTH, 1 - edge, scale, -offset, u1, v1, fluid, r, g, b, a);
-                    RenderHelper.putVertex(matrix, consumer, NORTH, 1 - edge, edge, -offset, u1, v2, fluid, r, g, b, a);
-                    RenderHelper.putVertex(matrix, consumer, NORTH, edge, edge, -offset, u2, v2, fluid, r, g, b, a);
-                    RenderHelper.putVertex(matrix, consumer, NORTH, edge, scale, -offset, u2, v1, fluid, r, g, b, a);
+                    RenderHelper.vt(vertexBuilder, matrix, 1 - edge, scale, -offset, u1, v1, b1, b2, r, g, b, a);
+                    RenderHelper.vt(vertexBuilder, matrix, 1 - edge, edge, -offset, u1, v2, b1, b2, r, g, b, a);
+                    RenderHelper.vt(vertexBuilder, matrix, edge, edge, -offset, u2, v2, b1, b2, r, g, b, a);
+                    RenderHelper.vt(vertexBuilder, matrix, edge, scale, -offset, u2, v1, b1, b2, r, g, b, a);
                 }
 
                 if (dirs.contains(Direction.WEST)) {
-                    RenderHelper.putVertex(matrix, consumer, WEST, -offset, edge, 1 - edge, u1, v2, fluid, r, g, b, a);
-                    RenderHelper.putVertex(matrix, consumer, WEST, -offset, scale, 1 - edge, u1, v1, fluid, r, g, b, a);
-                    RenderHelper.putVertex(matrix, consumer, WEST, -offset, scale, edge, u2, v1, fluid, r, g, b, a);
-                    RenderHelper.putVertex(matrix, consumer, WEST, -offset, edge, edge, u2, v2, fluid, r, g, b, a);
+                    RenderHelper.vt(vertexBuilder, matrix, -offset, edge, 1 - edge, u1, v2, b1, b2, r, g, b, a);
+                    RenderHelper.vt(vertexBuilder, matrix, -offset, scale, 1 - edge, u1, v1, b1, b2, r, g, b, a);
+                    RenderHelper.vt(vertexBuilder, matrix, -offset, scale, edge, u2, v1, b1, b2, r, g, b, a);
+                    RenderHelper.vt(vertexBuilder, matrix, -offset, edge, edge, u2, v2, b1, b2, r, g, b, a);
                 }
 
                 if (dirs.contains(Direction.SOUTH)) {
-                    RenderHelper.putVertex(matrix, consumer, SOUTH, 1 - edge, edge, 1 + offset, u1, v2, fluid, r, g, b, a);
-                    RenderHelper.putVertex(matrix, consumer, SOUTH, 1 - edge, scale, 1 + offset, u1, v1, fluid, r, g, b, a);
-                    RenderHelper.putVertex(matrix, consumer, SOUTH, edge, scale, 1 + offset, u2, v1, fluid, r, g, b, a);
-                    RenderHelper.putVertex(matrix, consumer, SOUTH, edge, edge, 1 + offset, u2, v2, fluid, r, g, b, a);
+                    RenderHelper.vt(vertexBuilder, matrix, 1 - edge, edge, 1 + offset, u1, v2, b1, b2, r, g, b, a);
+                    RenderHelper.vt(vertexBuilder, matrix, 1 - edge, scale, 1 + offset, u1, v1, b1, b2, r, g, b, a);
+                    RenderHelper.vt(vertexBuilder, matrix, edge, scale, 1 + offset, u2, v1, b1, b2, r, g, b, a);
+                    RenderHelper.vt(vertexBuilder, matrix, edge, edge, 1 + offset, u2, v2, b1, b2, r, g, b, a);
                 }
 
                 if (dirs.contains(Direction.EAST)) {
-                    RenderHelper.putVertex(matrix, consumer, EAST, 1 + offset, scale, 1 - edge, u1, v1, fluid, r, g, b, a);
-                    RenderHelper.putVertex(matrix, consumer, EAST, 1 + offset, edge, 1 - edge, u1, v2, fluid, r, g, b, a);
-                    RenderHelper.putVertex(matrix, consumer, EAST, 1 + offset, edge, edge, u2, v2, fluid, r, g, b, a);
-                    RenderHelper.putVertex(matrix, consumer, EAST, 1 + offset, scale, edge, u2, v1, fluid, r, g, b, a);
+                    RenderHelper.vt(vertexBuilder, matrix, 1 + offset, scale, 1 - edge, u1, v1, b1, b2, r, g, b, a);
+                    RenderHelper.vt(vertexBuilder, matrix, 1 + offset, edge, 1 - edge, u1, v2, b1, b2, r, g, b, a);
+                    RenderHelper.vt(vertexBuilder, matrix, 1 + offset, edge, edge, u2, v2, b1, b2, r, g, b, a);
+                    RenderHelper.vt(vertexBuilder, matrix, 1 + offset, scale, edge, u2, v1, b1, b2, r, g, b, a);
                 }
             }
         }
