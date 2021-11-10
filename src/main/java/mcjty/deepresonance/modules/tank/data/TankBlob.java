@@ -2,16 +2,16 @@ package mcjty.deepresonance.modules.tank.data;
 
 import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.multiblock.IMultiblock;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.Set;
 
 public class TankBlob implements IMultiblock {
     private LiquidCrystalData data;
@@ -95,20 +95,23 @@ public class TankBlob implements IMultiblock {
 
     // Return the amount of liquid filled
     public int fill(FluidStack stack, IFluidHandler.FluidAction action) {
-        // @todo 1.16 does not check max capacity yet!
         if (stack.isEmpty()) {
             return 0;
-        } else if (data == null || data.toFluidStack().isEmpty()) {
+        } else if (data == null || data.getFluidStack().isEmpty()) {
+            int amountToTransfer = Math.min(stack.getAmount(), getCapacity());
             if (action.execute()) {
                 data = LiquidCrystalData.fromStack(stack);
+                data.setAmount(amountToTransfer);
             }
-            return stack.getAmount();
-        } else if (data.toFluidStack().getFluid() == stack.getFluid()) {
-            // @todo 1.16 implement mixing!
+            return amountToTransfer;
+        } else if (data.getFluidStack().getFluid() == stack.getFluid()) {
+            int amountToTransfer = Math.min(stack.getAmount(), getCapacity() - data.getFluidStack().getAmount());
             if (action.execute()) {
-                data.setAmount(data.getAmount() + stack.getAmount());
+                stack = stack.copy();
+                stack.setAmount(amountToTransfer);
+                data.merge(stack);
             }
-            return stack.getAmount();
+            return amountToTransfer;
         } else {
             return 0;
         }
@@ -117,21 +120,21 @@ public class TankBlob implements IMultiblock {
     // Return the fluid that was drained
     @Nonnull
     public FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action) {
-        if (resource.isEmpty() || data == null || data.toFluidStack().isEmpty()) {
+        if (resource.isEmpty() || data == null || data.getFluidStack().isEmpty()) {
             return FluidStack.EMPTY;
-        } else if (resource.getFluid() != data.toFluidStack().getFluid()) {
+        } else if (resource.getFluid() != data.getFluidStack().getFluid()) {
             return FluidStack.EMPTY;
         } else if (resource.getAmount() >= data.getAmount()) {
-            FluidStack result = data.toFluidStack();
+            FluidStack result = data.getFluidStack();
             if (action.execute()) {
                 data = null;
             }
             return result;
         } else {
-            FluidStack result = data.toFluidStack().copy();
+            FluidStack result = data.getFluidStack().copy();
             result.setAmount(resource.getAmount());
             if (action.execute()) {
-                data.toFluidStack().setAmount(data.toFluidStack().getAmount() - result.getAmount());
+                data.getFluidStack().setAmount(data.getFluidStack().getAmount() - result.getAmount());
             }
             return result;
         }
@@ -140,19 +143,19 @@ public class TankBlob implements IMultiblock {
     // Return the fluid that was drained
     @Nonnull
     public FluidStack drain(int amount, IFluidHandler.FluidAction action) {
-        if (amount <= 0 || data == null || data.toFluidStack().isEmpty()) {
+        if (amount <= 0 || data == null || data.getFluidStack().isEmpty()) {
             return FluidStack.EMPTY;
         } else if (amount >= data.getAmount()) {
-            FluidStack result = data.toFluidStack();
+            FluidStack result = data.getFluidStack();
             if (action.execute()) {
                 data = null;
             }
             return result;
         } else {
-            FluidStack result = data.toFluidStack().copy();
+            FluidStack result = data.getFluidStack().copy();
             result.setAmount(amount);
             if (action.execute()) {
-                data.toFluidStack().setAmount(data.toFluidStack().getAmount() - amount);
+                data.getFluidStack().setAmount(data.getFluidStack().getAmount() - amount);
             }
             return result;
         }
@@ -164,7 +167,7 @@ public class TankBlob implements IMultiblock {
     }
 
     public TankBlob copyData(LiquidCrystalData data) {
-        this.data = LiquidCrystalData.fromStack(data.toFluidStack());
+        this.data = LiquidCrystalData.fromStack(data.getFluidStack());
         return this;
     }
 
@@ -192,7 +195,7 @@ public class TankBlob implements IMultiblock {
 
     public static CompoundNBT save(CompoundNBT tagCompound, TankBlob network) {
         if (network.data != null) {
-            tagCompound.put("fluid", network.data.toFluidStack().writeToNBT(new CompoundNBT()));
+            tagCompound.put("fluid", network.data.getFluidStack().writeToNBT(new CompoundNBT()));
         }
         tagCompound.putInt("refcount", network.tankBlocks);
         tagCompound.putInt("miny", network.minY);

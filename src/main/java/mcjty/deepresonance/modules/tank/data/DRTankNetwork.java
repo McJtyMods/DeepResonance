@@ -65,11 +65,11 @@ public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
 
     public static boolean isCompatible(@Nonnull Optional<LiquidCrystalData> data1, @Nonnull Optional<LiquidCrystalData> data2) {
         // If one liquid is empty then it is compatible
-        if (!data1.isPresent() || !data2.isPresent() || data1.get().toFluidStack().isEmpty() || data2.get().toFluidStack().isEmpty()) {
+        if (!data1.isPresent() || !data2.isPresent() || data1.get().getFluidStack().isEmpty() || data2.get().getFluidStack().isEmpty()) {
             return true;
         }
-        Fluid fluid1 = data1.get().toFluidStack().getFluid();
-        Fluid fluid2 = data2.get().toFluidStack().getFluid();
+        Fluid fluid1 = data1.get().getFluidStack().getFluid();
+        Fluid fluid2 = data2.get().getFluidStack().getFluid();
         return fluid1 == fluid2;
     }
 

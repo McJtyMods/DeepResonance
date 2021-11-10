@@ -37,7 +37,7 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
     @Nonnull
     @Override
     public FluidStack getFluidInTank(int tank) {
-        return getData().map(LiquidCrystalData::toFluidStack).orElse(FluidStack.EMPTY);
+        return getData().map(LiquidCrystalData::getFluidStack).orElse(FluidStack.EMPTY);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
     @Nonnull
     @Override
     public FluidStack getFluid() {
-        return getData().map(LiquidCrystalData::toFluidStack).orElse(FluidStack.EMPTY);
+        return getData().map(LiquidCrystalData::getFluidStack).orElse(FluidStack.EMPTY);
     }
 
     @Override

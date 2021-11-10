@@ -5,9 +5,7 @@ import mcjty.deepresonance.modules.tank.blocks.TankBlock;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.deepresonance.modules.tank.client.ClientSetup;
 import mcjty.deepresonance.modules.tank.client.TankTESR;
-import mcjty.deepresonance.modules.tank.client.ClientTankData;
 import mcjty.deepresonance.setup.Registration;
-import mcjty.lib.McJtyLib;
 import mcjty.lib.modules.IModule;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
@@ -45,14 +43,14 @@ public class TankModule implements IModule {
 
     @Override
     public void init(FMLCommonSetupEvent event) {
-        McJtyLib.SYNCER.registerPositionalDataFactory(TANK_SYNC_ID, ClientTankData::fromBytes);
+//        McJtyLib.SYNCER.registerPositionalDataFactory(TANK_SYNC_ID, ClientTankData::fromBytes);
     }
 
     @Override
     public void initClient(FMLClientSetupEvent event) {
         ClientSetup.initClient();
         TankTESR.register();
-        McJtyLib.SYNCER.registerClientHandler(TANK_SYNC_ID, ClientTankData::handleClientData);
+//        McJtyLib.SYNCER.registerClientHandler(TANK_SYNC_ID, ClientTankData::handleClientData);
     }
 
     @Override

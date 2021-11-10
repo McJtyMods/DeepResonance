@@ -128,7 +128,7 @@ public class DeepResonanceTOPDriver implements TOPDriver {
                 TankBlob blob = tank.getBlob();
                 if (blob != null) {
                     blob.getData().ifPresent(d -> {
-                        FluidStack stack = d.toFluidStack();
+                        FluidStack stack = d.getFluidStack();
                         if (!stack.isEmpty()) {
                             probeInfo.tankSimple(blob.getCapacity(), stack);
                             if (stack.getFluid() == CoreModule.LIQUID_CRYSTAL.get()) {

@@ -6,6 +6,8 @@ public interface ILiquidCrystalData {
 
     void merge(ILiquidCrystalData otherStack);
 
+    void merge(FluidStack otherFluid);
+
     double getQuality();
 
     void setQuality(double quality);
@@ -26,12 +28,5 @@ public interface ILiquidCrystalData {
 
     void setAmount(int i);
 
-    FluidStack toFluidStack();
-
-    default FluidStack toFluidStack(int amount) {
-        FluidStack ret = toFluidStack();
-        ret.setAmount(amount);
-        return ret;
-    }
-
+    FluidStack getFluidStack();
 }

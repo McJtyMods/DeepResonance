@@ -2,12 +2,10 @@ package mcjty.deepresonance.modules.tank.blocks;
 
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.tank.TankModule;
-import mcjty.deepresonance.modules.tank.client.ClientTankData;
 import mcjty.deepresonance.modules.tank.data.DRTankHandler;
 import mcjty.deepresonance.modules.tank.data.DRTankNetwork;
 import mcjty.deepresonance.modules.tank.data.TankBlob;
 import mcjty.deepresonance.util.LiquidCrystalData;
-import mcjty.lib.McJtyLib;
 import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.multiblock.MultiblockSupport;
@@ -18,8 +16,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -27,7 +23,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
@@ -261,7 +256,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         int id = getMultiblockId();
         if (id != -1) {
             TankBlob blob = getBlob();
-            FluidStack fluidStack = blob.getData().map(LiquidCrystalData::toFluidStack).orElse(FluidStack.EMPTY);
+            FluidStack fluidStack = blob.getData().map(LiquidCrystalData::getFluidStack).orElse(FluidStack.EMPTY);
             int amount = fluidStack.getAmount();
             int capacityPerTank = blob.getCapacityPerTank();
             DRTankNetwork.foreach(level, id, blockPos -> {

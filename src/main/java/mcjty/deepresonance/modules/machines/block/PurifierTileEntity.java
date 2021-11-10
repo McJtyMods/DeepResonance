@@ -131,7 +131,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
             return -1; //Wait
         }
         IFluidHandler outputTank = tankHook.getTank2();
-        if (outputTank.fill(fluidData.toFluidStack(), IFluidHandler.FluidAction.SIMULATE) != fluidData.getAmount()) {
+        if (outputTank.fill(fluidData.getFluidStack(), IFluidHandler.FluidAction.SIMULATE) != fluidData.getAmount()) {
             return -1; //Wait
         }
         double purity = fluidData.getPurity();
@@ -142,14 +142,14 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
         if (purity + addedPurity > maxPurity) {
             addedPurity = maxPurity - purity;
             if (addedPurity < 0.0001) {
-                outputTank.fill(fluidData.toFluidStack(), IFluidHandler.FluidAction.EXECUTE);
+                outputTank.fill(fluidData.getFluidStack(), IFluidHandler.FluidAction.EXECUTE);
                 return 100000;
             }
         }
 
         purity += addedPurity;
         fluidData.setPurity(purity);
-        outputTank.fill(fluidData.toFluidStack(), IFluidHandler.FluidAction.EXECUTE);
+        outputTank.fill(fluidData.getFluidStack(), IFluidHandler.FluidAction.EXECUTE);
         return (int) ((maxPurityToAdd - addedPurity) * 40 / maxPurityToAdd + 1);
     }
 
@@ -162,7 +162,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
         tagCompound.putInt("timeToGo", timeToGo);
         if (processing != null) {
             CompoundNBT tag = new CompoundNBT();
-            processing.toFluidStack().writeToNBT(tag);
+            processing.getFluidStack().writeToNBT(tag);
             tagCompound.put("processing", tag);
         }
 

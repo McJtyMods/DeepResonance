@@ -192,7 +192,7 @@ public class CrystallizerTileEntity extends GenericTileEntity implements ITickab
     public CompoundNBT save(CompoundNBT tagCompound) {
         if (crystalData != null) {
             CompoundNBT tag = new CompoundNBT();
-            crystalData.toFluidStack().writeToNBT(tag);
+            crystalData.getFluidStack().writeToNBT(tag);
             tagCompound.put("crystalData", tag);
         }
         return super.save(tagCompound);

@@ -68,7 +68,7 @@ public class DefaultLens implements ILens {
                     if (data != null) {
                         modifier.accept(data);
                         if (data.getAmount() > 0) {
-                            tank.fill(data.toFluidStack(), IFluidHandler.FluidAction.EXECUTE);
+                            tank.fill(data.getFluidStack(), IFluidHandler.FluidAction.EXECUTE);
                         }
                     } else {
                         tank.fill(fluid, IFluidHandler.FluidAction.EXECUTE);
