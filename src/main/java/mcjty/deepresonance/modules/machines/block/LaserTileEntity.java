@@ -242,7 +242,6 @@ public class LaserTileEntity extends GenericTileEntity implements ITickableTileE
 
     @Override
     public void writeClientDataToNBT(CompoundNBT tagCompound) {
-        super.writeClientDataToNBT(tagCompound);
         ListNBT list = new ListNBT();
         for (BlockPos pos : laserBeam) {
             list.add(NBTUtil.writeBlockPos(pos));
