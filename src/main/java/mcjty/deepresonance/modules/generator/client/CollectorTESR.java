@@ -15,10 +15,10 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import javax.annotation.Nonnull;
@@ -73,16 +73,16 @@ public class CollectorTESR extends TileEntityRenderer<EnergyCollectorTileEntity>
             Vector3d projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().add(-tex, -tey, -tez);
 
             // Crystal coordinates are relative!
-            RenderHelper.Vector start = new RenderHelper.Vector(.5f, .8f, .5f);
-            RenderHelper.Vector end = new RenderHelper.Vector(destination.getX() + .5f, destination.getY() + .5f, destination.getZ() + .5f);
-            RenderHelper.Vector player = new RenderHelper.Vector((float)projectedView.x, (float)projectedView.y, (float)projectedView.z);
+            Vector3f start = new Vector3f(.5f, .8f, .5f);
+            Vector3f end = new Vector3f(destination.getX() + .5f, destination.getY() + .5f, destination.getZ() + .5f);
+            Vector3f player = new Vector3f((float)projectedView.x, (float)projectedView.y, (float)projectedView.z);
 
             Matrix4f matrix = matrixStack.last().pose();
 
             if (startupFactor > .8f) {
                 // Do nothing
             } else if (startupFactor > .001f) {
-                RenderHelper.Vector middle = new RenderHelper.Vector(jitter(startupFactor, start.x, end.x), jitter(startupFactor, start.y, end.y), jitter(startupFactor, start.z, end.z));
+                Vector3f middle = new Vector3f(jitter(startupFactor, start.x(), end.x()), jitter(startupFactor, start.y(), end.y()), jitter(startupFactor, start.z(), end.z()));
                 RenderHelper.drawBeam(matrix, builder, sprite, start, middle, player, settingsLaser);
                 RenderHelper.drawBeam(matrix, builder, sprite, middle, end, player, settingsLaser);
             } else {
