@@ -11,10 +11,20 @@ public class WorldGenConfiguration {
     public static ForgeConfigSpec.BooleanValue RETROGEN;
     public static ForgeConfigSpec.BooleanValue VERBOSE;
 
-    public static ForgeConfigSpec.IntValue VEIN_SIZE;
-    public static ForgeConfigSpec.IntValue SPAWN_CHANCES;
-    public static ForgeConfigSpec.IntValue MINY;
-    public static ForgeConfigSpec.IntValue MAXY;
+    public static ForgeConfigSpec.IntValue OVERWORLD_VEIN_SIZE;
+    public static ForgeConfigSpec.IntValue OVERWORLD_SPAWN_CHANCES;
+    public static ForgeConfigSpec.IntValue OVERWORLD_MINY;
+    public static ForgeConfigSpec.IntValue OVERWORLD_MAXY;
+
+    public static ForgeConfigSpec.IntValue NETHER_VEIN_SIZE;
+    public static ForgeConfigSpec.IntValue NETHER_SPAWN_CHANCES;
+    public static ForgeConfigSpec.IntValue NETHER_MINY;
+    public static ForgeConfigSpec.IntValue NETHER_MAXY;
+
+    public static ForgeConfigSpec.IntValue END_VEIN_SIZE;
+    public static ForgeConfigSpec.IntValue END_SPAWN_CHANCES;
+    public static ForgeConfigSpec.IntValue END_MINY;
+    public static ForgeConfigSpec.IntValue END_MAXY;
 
     public static ForgeConfigSpec.BooleanValue NETHER_ORE;
     public static ForgeConfigSpec.BooleanValue END_ORE;
@@ -42,14 +52,38 @@ public class WorldGenConfiguration {
         ORE_BLACKLIST = Config.COMMON_BUILDER.comment("Biome blacklist, resonant ore will not spawn in biomes listed here")
                 .defineList("otherBiomeBlacklist", Lists.newArrayList("minecraft:the_void"), s -> s instanceof String);
 
-        VEIN_SIZE = Config.COMMON_BUILDER.comment("Size of resonant ore veins")
+        Config.COMMON_BUILDER.push("overworld");
+        OVERWORLD_VEIN_SIZE = Config.COMMON_BUILDER.comment("Size of resonant ore veins")
                 .defineInRange("minOreVeinSize", 3, 1, 8);
-        SPAWN_CHANCES = Config.COMMON_BUILDER.comment("Chances for the ore to spawn in a chunk")
+        OVERWORLD_SPAWN_CHANCES = Config.COMMON_BUILDER.comment("Chances for the ore to spawn in a chunk")
                 .defineInRange("chancesToSpawn", 5, 1, 16);
-        MINY = Config.COMMON_BUILDER.comment("Minimum y-level where resonant ore will spawn")
+        OVERWORLD_MINY = Config.COMMON_BUILDER.comment("Minimum y-level where resonant ore will spawn")
                 .defineInRange("minY", 2, 1, 256);
-        MAXY = Config.COMMON_BUILDER.comment("Maximum y-level where resonant ore will spawn")
+        OVERWORLD_MAXY = Config.COMMON_BUILDER.comment("Maximum y-level where resonant ore will spawn")
                 .defineInRange("maxY", 32, 1, 256);
+        Config.COMMON_BUILDER.pop();
+
+        Config.COMMON_BUILDER.push("nether");
+        NETHER_VEIN_SIZE = Config.COMMON_BUILDER.comment("Size of resonant ore veins")
+                .defineInRange("minOreVeinSize", 3, 1, 8);
+        NETHER_SPAWN_CHANCES = Config.COMMON_BUILDER.comment("Chances for the ore to spawn in a chunk")
+                .defineInRange("chancesToSpawn", 5, 1, 16);
+        NETHER_MINY = Config.COMMON_BUILDER.comment("Minimum y-level where resonant ore will spawn")
+                .defineInRange("minY", 2, 1, 256);
+        NETHER_MAXY = Config.COMMON_BUILDER.comment("Maximum y-level where resonant ore will spawn")
+                .defineInRange("maxY", 32, 1, 256);
+        Config.COMMON_BUILDER.pop();
+
+        Config.COMMON_BUILDER.push("end");
+        END_VEIN_SIZE = Config.COMMON_BUILDER.comment("Size of resonant ore veins")
+                .defineInRange("minOreVeinSize", 3, 1, 8);
+        END_SPAWN_CHANCES = Config.COMMON_BUILDER.comment("Chances for the ore to spawn in a chunk")
+                .defineInRange("chancesToSpawn", 5, 1, 16);
+        END_MINY = Config.COMMON_BUILDER.comment("Minimum y-level where resonant ore will spawn")
+                .defineInRange("minY", 2, 1, 256);
+        END_MAXY = Config.COMMON_BUILDER.comment("Maximum y-level where resonant ore will spawn")
+                .defineInRange("maxY", 32, 1, 256);
+        Config.COMMON_BUILDER.pop();
 
         NETHER_CRYSTALS = Config.COMMON_BUILDER.comment("Enable this if you want resonating crystals in nether biomes")
                 .define("generateCrystalsNether", true);
