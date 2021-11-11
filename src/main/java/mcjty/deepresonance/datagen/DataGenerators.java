@@ -1,4 +1,4 @@
-package mcjty.deepresonance.data;
+package mcjty.deepresonance.datagen;
 
 import mcjty.deepresonance.DeepResonance;
 import net.minecraft.data.DataGenerator;
@@ -15,8 +15,9 @@ public final class DataGenerators {
         if (event.includeServer()) {
             generator.addProvider(new Recipes(generator));
             generator.addProvider(new LootTables(generator));
-            generator.addProvider(new ItemTags(generator, event.getExistingFileHelper()));
-            generator.addProvider(new BlockTags(generator, event.getExistingFileHelper()));
+            BlockTags blockTags = new BlockTags(generator, event.getExistingFileHelper());
+            generator.addProvider(blockTags);
+            generator.addProvider(new ItemTags(generator, blockTags, event.getExistingFileHelper()));
         }
         if (event.includeClient()) {
             generator.addProvider(new BlockStates(generator, event.getExistingFileHelper()));

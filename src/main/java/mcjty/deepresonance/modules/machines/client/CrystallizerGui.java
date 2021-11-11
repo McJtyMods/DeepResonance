@@ -2,6 +2,7 @@ package mcjty.deepresonance.modules.machines.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.CrystallizerTileEntity;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
@@ -64,4 +65,7 @@ public class CrystallizerGui extends GenericGuiContainer<CrystallizerTileEntity,
         super.renderBg(matrixStack, partialTicks, x, y);
     }
 
+    public static void register() {
+        register(MachinesModule.CRYSTALIZER_CONTAINER.get(), CrystallizerGui::new);
+    }
 }

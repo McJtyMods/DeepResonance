@@ -1,4 +1,4 @@
-package mcjty.deepresonance.data;
+package mcjty.deepresonance.datagen;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;

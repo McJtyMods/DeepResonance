@@ -1,6 +1,7 @@
 package mcjty.deepresonance.modules.machines.client;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.ValveTileEntity;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.base.StyleConfig;
@@ -196,4 +197,7 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
                         .build());
     }
 
+    public static void register() {
+        register(MachinesModule.VALVE_CONTAINER.get(), ValveGui::new);
+    }
 }

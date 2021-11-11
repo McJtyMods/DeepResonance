@@ -2,9 +2,11 @@ package mcjty.deepresonance.modules.tank.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.lib.client.RenderHelper;
+import mcjty.lib.client.RenderSettings;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -18,10 +20,10 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import javax.annotation.Nonnull;
@@ -33,6 +35,10 @@ import java.util.stream.Collectors;
 public class TankTESR extends TileEntityRenderer<TankTileEntity> {
 
     private static final Set<Direction> ITEM_DIRECTIONS = EnumSet.range(Direction.UP, Direction.EAST); //All except bottom
+
+    public static final ResourceLocation TANK_BOTTOM = new ResourceLocation(DeepResonance.MODID, "block/tank_bottom");
+    public static final ResourceLocation TANK_TOP = new ResourceLocation(DeepResonance.MODID, "block/tank_top");
+    public static final ResourceLocation TANK_SIDE = new ResourceLocation(DeepResonance.MODID, "block/tank_side");
 
     public TankTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
@@ -81,7 +87,7 @@ public class TankTESR extends TileEntityRenderer<TankTileEntity> {
     private static void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, Fluid renderFluid, Set<Direction> dirs, int brightness, float scale, int color) {
         matrixStackIn.pushPose();
 
-//        renderModel(matrixStackIn, bufferIn.getBuffer(RenderType.translucent()), dirs, brightness);
+        renderModel(matrixStackIn, bufferIn.getBuffer(RenderType.translucent()), dirs, brightness);
 
         if (renderFluid != null) {
             for (RenderType renderType : RenderType.chunkBufferLayers()) {
@@ -95,9 +101,19 @@ public class TankTESR extends TileEntityRenderer<TankTileEntity> {
     }
 
     private static void renderModel(MatrixStack matrixStack, IVertexBuilder vertexBuilder, Set<Direction> dirs, int brightness) {
-        for (Direction dir : dirs) {
-            // @todo 1.16
-//            vertexBuilder.addVertexData(matrixStack.last(), TankRenderer.INSTANCE.getInsideQuad(dir), 1, 1, 1, brightness, OverlayTexture.NO_OVERLAY, true);
+        Matrix4f matrix = matrixStack.last().pose();
+
+        if (dirs.contains(Direction.UP)) {
+            TextureAtlasSprite tank_top = Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(TANK_TOP);
+            RenderHelper.drawQuad(matrix, vertexBuilder, tank_top, Direction.UP, true, 0.1f, RenderSettings.builder().brightness(brightness).build());
+        }
+        if (dirs.contains(Direction.DOWN)) {
+            TextureAtlasSprite tank_bottom = Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(TANK_BOTTOM);
+            RenderHelper.drawQuad(matrix, vertexBuilder, tank_bottom, Direction.DOWN, true, 0.1f, RenderSettings.builder().brightness(brightness).build());
+        }
+        TextureAtlasSprite tank_side = Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(TANK_SIDE);
+        for (Direction dir : OrientationTools.HORIZONTAL_DIRECTION_VALUES) {
+            RenderHelper.drawQuad(matrix, vertexBuilder, tank_side, dir, true, 0.1f, RenderSettings.builder().brightness(brightness).build());
         }
     }
 

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.infusion.InfusionBonus;
 import mcjty.deepresonance.api.infusion.InfusionModifier;
+import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.LaserTileEntity;
 import mcjty.deepresonance.modules.machines.util.config.LaserConfig;
 import mcjty.lib.base.StyleConfig;
@@ -119,4 +120,7 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
         return new DecimalFormat("##.#").format(f);
     }
 
+    public static void register() {
+        register(MachinesModule.LASER_CONTAINER.get(), LaserGui::new);
+    }
 }

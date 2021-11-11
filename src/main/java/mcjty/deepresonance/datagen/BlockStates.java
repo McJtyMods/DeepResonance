@@ -1,4 +1,4 @@
-package mcjty.deepresonance.data;
+package mcjty.deepresonance.datagen;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
@@ -7,7 +7,7 @@ import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
-import mcjty.deepresonance.modules.tank.client.TankRenderer;
+import mcjty.deepresonance.modules.tank.client.TankTESR;
 import mcjty.lib.datagen.BaseBlockStateProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -32,7 +32,7 @@ public class BlockStates extends BaseBlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         registerCrystalModel();
-        simpleBlock(TankModule.TANK_BLOCK.get(), models().cubeBottomTop("tank", TankRenderer.SIDE_TEXTURE, TankRenderer.BOTTOM_TEXTURE, TankRenderer.TOP_TEXTURE));
+        simpleBlock(TankModule.TANK_BLOCK.get(), models().cubeBottomTop("tank", TankTESR.TANK_SIDE, TankTESR.TANK_BOTTOM, TankTESR.TANK_TOP));
         simpleBlock(CoreModule.RESONATING_ORE_STONE_BLOCK.get());
         simpleBlock(CoreModule.RESONATING_ORE_NETHER_BLOCK.get());
         simpleBlock(CoreModule.RESONATING_ORE_END_BLOCK.get());
@@ -43,7 +43,7 @@ public class BlockStates extends BaseBlockStateProvider {
         simpleBlock(MachinesModule.VALVE_BLOCK.get(), models().cubeBottomTop(name(MachinesModule.VALVE_BLOCK.get()), new ResourceLocation(DeepResonance.MODID, "block/valve"), DEFAULT_BOTTOM, DEFAULT_TOP));
         horizontalOrientedBlock(MachinesModule.SMELTER_BLOCK.get(), (state, builder) -> {
             if (state.getValue(BlockStateProperties.POWERED)) {
-                builder.modelFile(frontBasedModel(name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/smelter_active"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
+                builder.modelFile(frontBasedModel(name(state.getBlock())+"_active", new ResourceLocation(DeepResonance.MODID, "block/smelter_active"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
             } else {
                 builder.modelFile(frontBasedModel(name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/smelter"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
             }

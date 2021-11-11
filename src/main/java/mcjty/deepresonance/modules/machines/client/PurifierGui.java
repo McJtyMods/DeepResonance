@@ -1,6 +1,7 @@
 package mcjty.deepresonance.modules.machines.client;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.PurifierTileEntity;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
@@ -39,4 +40,7 @@ public class PurifierGui extends GenericGuiContainer<PurifierTileEntity, Generic
         window = new Window(this, toplevel);
     }
 
+    public static void register() {
+        register(MachinesModule.PURIFIER_CONTAINER.get(), PurifierGui::new);
+    }
 }

@@ -16,18 +16,18 @@
       "y": 90
     },
     "facing=north,powered=true": {
-      "model": "deepresonance:block/smelter"
+      "model": "deepresonance:block/smelter_active"
     },
     "facing=south,powered=true": {
-      "model": "deepresonance:block/smelter",
+      "model": "deepresonance:block/smelter_active",
       "y": 180
     },
     "facing=west,powered=true": {
-      "model": "deepresonance:block/smelter",
+      "model": "deepresonance:block/smelter_active",
       "y": 270
     },
     "facing=east,powered=true": {
-      "model": "deepresonance:block/smelter",
+      "model": "deepresonance:block/smelter_active",
       "y": 90
     }
   }

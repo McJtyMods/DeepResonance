@@ -2,6 +2,7 @@ package mcjty.deepresonance.modules.machines.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.SmelterTileEntity;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
@@ -77,4 +78,7 @@ public class SmelterGui extends GenericGuiContainer<SmelterTileEntity, GenericCo
         super.renderBg(matrixStack, partialTicks, x, y);
     }
 
+    public static void register() {
+        register(MachinesModule.SMELTER_CONTAINER.get(), SmelterGui::new);
+    }
 }

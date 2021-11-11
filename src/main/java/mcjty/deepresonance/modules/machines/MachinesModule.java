@@ -3,9 +3,7 @@ package mcjty.deepresonance.modules.machines;
 import mcjty.deepresonance.api.laser.ILens;
 import mcjty.deepresonance.api.laser.ILensMirror;
 import mcjty.deepresonance.modules.machines.block.*;
-import mcjty.deepresonance.modules.machines.client.ClientSetup;
-import mcjty.deepresonance.modules.machines.client.CrystallizerTESR;
-import mcjty.deepresonance.modules.machines.client.LaserTESR;
+import mcjty.deepresonance.modules.machines.client.*;
 import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
 import mcjty.deepresonance.modules.machines.item.ItemLens;
 import mcjty.deepresonance.modules.machines.util.config.*;
@@ -93,6 +91,11 @@ public class MachinesModule implements IModule {
 
         event.enqueueWork(() -> {
             ClientSetup.setupBlockColors();
+            SmelterGui.register();
+            PurifierGui.register();
+            LaserGui.register();
+            ValveGui.register();
+            CrystallizerGui.register();
         });
     }
 
