@@ -41,7 +41,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
     private final DualTankHook tankHook = new DualTankHook(this, Direction.UP, Direction.DOWN).allowDuplicates().setTimeout(10);
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
-            .slot(generic().out(), CONTAINER_CONTAINER, SLOT, 64, 24)
+            .slot(generic().in().out(), CONTAINER_CONTAINER, SLOT, 64, 24)
             .playerSlots(10, 70));
 
     private final NoDirectionItemHander items = createItemHandler();
@@ -186,11 +186,6 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 return stack.getItem() == CoreModule.FILTER_MATERIAL_ITEM.get();
-            }
-
-            @Override
-            public int getSlotLimit(int slot) {
-                return 1;
             }
         };
     }

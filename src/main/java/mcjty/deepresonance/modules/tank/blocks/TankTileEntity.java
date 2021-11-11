@@ -52,42 +52,6 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
 
-    //    @Override
-//    public void setRemoved() {
-//        super.setRemoved();
-//        if (level != null && !level.isClientSide()) {
-//            McJtyLib.SYNCER.unregisterWatchHandler(TankModule.TANK_SYNC_ID, GlobalPos.of(level.dimension(), worldPosition));
-//        }
-//    }
-//
-//    @Override
-//    public void clearRemoved() {
-//        super.clearRemoved();
-//        if (level != null && !level.isClientSide()) {
-//            registerWatchHandler();
-//        }
-//    }
-//
-//    @Override
-//    public void onLoad() {
-//        super.onLoad();
-//        if (level != null && !level.isClientSide()) {
-//            registerWatchHandler();
-//        }
-//    }
-
-//    private void registerWatchHandler() {
-//        McJtyLib.SYNCER.registerWatchHandler(TankModule.TANK_SYNC_ID, GlobalPos.of(level.dimension(), worldPosition),
-//                this::publishToClients);
-//    }
-//
-//    private void publishToClients() {
-//        getBlob().getData().ifPresent(data -> {
-//            int amount = 8; // @todo calculate!
-//            McJtyLib.SYNCER.publish(level, worldPosition, new ClientTankData(GlobalPos.of(level.dimension(), worldPosition), data.getStack(), amount));
-//        });
-//    }
-
     public void setClientData(float newHeight, Fluid render) {
         boolean dirty = false;
         if (newHeight >= 0 && renderHeight != newHeight) {
