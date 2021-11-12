@@ -18,7 +18,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
-import mcjty.lib.varia.Tools;
+import mcjty.lib.varia.Sync;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluids;
@@ -62,8 +62,8 @@ public class SmelterTileEntity extends GenericTileEntity implements ITickableTil
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Smelter")
             .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.SMELTER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), SmelterTileEntity.this))
             .itemHandler(() -> items)
-            .shortListener(Tools.holder(() -> processTime, v -> processTime = v))
-            .shortListener(Tools.holder(() -> processTimeLeft, v -> processTimeLeft = v)));
+            .shortListener(Sync.integer(() -> processTime, v -> processTime = v))
+            .shortListener(Sync.integer(() -> processTimeLeft, v -> processTimeLeft = v)));
 
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SmelterConfig.POWER_MAXIMUM.get(), SmelterConfig.POWER_PER_TICK_IN.get());
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
