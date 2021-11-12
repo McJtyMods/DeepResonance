@@ -63,7 +63,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
             dirty = true;
         }
         if (dirty) {
-            this.markDirtyClient();
+            markDirtyClient();
         }
     }
 
@@ -262,7 +262,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     public void setMultiblockId(int newId) {
         if (blobId != newId) {
             blobId = newId;
-            markDirtyClient();
+            setChanged();
         }
     }
 

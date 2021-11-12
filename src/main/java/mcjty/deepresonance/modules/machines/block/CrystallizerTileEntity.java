@@ -117,7 +117,7 @@ public class CrystallizerTileEntity extends GenericTileEntity implements ITickab
             crystal.setPower(100);
             crystalData = null;
             items.setStackInSlot(SLOT, CoreModule.RESONATING_CRYSTAL_BLOCK.get().createStack(crystal));
-            markDirtyClient();
+            setChanged();
         }
         int newProgress = crystalData == null ? 0 : (int) ((crystalData.getAmount() / (float) getRclPerCrystal()) * 100);
         if (progress != newProgress) {

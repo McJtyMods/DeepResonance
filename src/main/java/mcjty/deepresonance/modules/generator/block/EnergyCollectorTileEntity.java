@@ -109,7 +109,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
             boolean doFind = lasersActive != active || (laserStartup > (GeneratorConfig.STARTUP_TIME.get() - 5));
             lasersActive = active;
             laserStartup = startup;
-            markDirtyClient();
+            setChanged();
 
             if (doFind && te instanceof GeneratorPartTileEntity) {
                 findCrystals(network);
@@ -198,7 +198,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         }
         if (dirty) {
             crystals = tokeep;
-            markDirtyClient();
+            setChanged();
         }
 
         if (doRadiation && radiationRadius > 0.1f) {
@@ -270,7 +270,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         }
         if (!newCrystals.equals(crystals)) {
             crystals = newCrystals;
-            markDirtyClient();
+            setChanged();
         }
 
         if (lasersActive && (tooManyCrystals || tooMuchPower)) {
@@ -309,7 +309,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
 
         if (addCrystal(x, y, z, blob, crystals, crystals, maxSupportedRF) >= 0) {
             // Success.
-            markDirtyClient();
+            setChanged();
         }
     }
 

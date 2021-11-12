@@ -128,7 +128,7 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
     public void setMultiblockId(int newId) {
         if (blobId != newId) {
             blobId = newId;
-            markDirtyClient();
+            setChanged();
         }
     }
 

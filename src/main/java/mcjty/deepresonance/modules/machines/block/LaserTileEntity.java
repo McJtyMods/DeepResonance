@@ -177,7 +177,7 @@ public class LaserTileEntity extends GenericTileEntity implements ITickableTileE
             activeBonus = bonus;
         }
         progressCounter = activeBonus.getDuration();
-        markDirtyClient();
+        setChanged();
     }
 
     private void checkCrystal() {
@@ -216,7 +216,7 @@ public class LaserTileEntity extends GenericTileEntity implements ITickableTileE
                 if (lens.isPresent()) {
                     this.lens = lens;
                     this.laserBeam.addAll(laser);
-                    markDirtyClient();
+                    setChanged();
                     return;
                 }
                 LazyOptional<ILensMirror> mirror = tile.getCapability(MachinesModule.LENS_MIRROR_CAPABILITY, facing);

@@ -181,7 +181,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
         shutdown = 0;
         network.setShutdownCounter(0);
         network.setStartupCounter(startup);
-        markDirtyClient();
+        setChanged();
         return true;
     }
 
@@ -194,7 +194,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
                 shutdown = network.getShutdownCounter();
                 startup = network.getStartupCounter();
                 active = network.isActive();
-                markDirtyClient();
+                setChanged();
             }
             return false;   // Nothing to do.
         }
@@ -213,7 +213,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
         active = network.isActive();
         network.setStartupCounter(0);
         network.setShutdownCounter(shutdown);
-        markDirtyClient();
+        setChanged();
 
         return true;
     }
@@ -225,7 +225,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
         super.setPowerInput(powered);
         // @todo 1.16 check, do we need this?
         if (changed) {
-            markDirtyClient();
+            setChanged();
         }
     }
 

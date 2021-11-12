@@ -72,7 +72,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
 
     public void setStrength(double strength) {
         this.strength = strength;
-        markDirtyClient();
+        setChanged();
     }
 
     public boolean isEmpty() {
@@ -85,7 +85,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
         setChanged();
         boolean newempty = isEmpty();
         if (oldempty != newempty) {
-            markDirtyClient();
+            setChanged();
         }
     }
 
@@ -138,12 +138,12 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
 
     public void setEfficiency(double efficiency) {
         this.efficiency = efficiency;
-        markDirtyClient();
+        setChanged();
     }
 
     public void setPurity(double purity) {
         this.purity = purity;
-        markDirtyClient();
+        setChanged();
     }
 
     public void setGlowing(boolean glowing) {
@@ -152,7 +152,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
         }
         this.glowing = glowing;
         if (level != null) {
-            markDirtyClient();
+            setChanged();
         } else {
             setChanged();
         }
