@@ -10,6 +10,7 @@ import mcjty.lib.client.RenderSettings;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -23,7 +24,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import javax.annotation.Nonnull;
@@ -48,13 +48,6 @@ public class TankTESR extends TileEntityRenderer<TankTileEntity> {
         ClientRegistry.bindTileEntityRenderer(TankModule.TYPE_TANK.get(), TankTESR::new);
     }
 
-    private static final Vector3d UP = new Vector3d(0, 1, 0);
-    private static final Vector3d DOWN = new Vector3d(0, -1, 0);
-    private static final Vector3d NORTH = new Vector3d(0, 0, -1);
-    private static final Vector3d SOUTH = new Vector3d(0, 0, 1);
-    private static final Vector3d WEST = new Vector3d(-1, 0, 0);
-    private static final Vector3d EAST = new Vector3d(1, 0, 0);
-
     @Override
     public void render(@Nonnull TankTileEntity tileTank, float partialTicks, @Nonnull MatrixStack matrixStackIn, @Nonnull IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
         BlockPos pos = tileTank.getBlockPos();
@@ -72,27 +65,30 @@ public class TankTESR extends TileEntityRenderer<TankTileEntity> {
         float scale = tileTank.getClientRenderHeight();
         if (fluidToRender != null) {
             int color = fluidToRender.getAttributes().getColor(tileTank.getLevel(), tileTank.getBlockPos());
-            render(matrixStackIn, bufferIn, fluidToRender, dirs, combinedLightIn, scale, color);
+            int luminosity = fluidToRender.getAttributes().getLuminosity();
+            int block = LightTexture.block(combinedLightIn);
+            int packed = LightTexture.pack(Math.max(luminosity, block), 0);
+            render(matrixStackIn, bufferIn, fluidToRender, dirs, combinedLightIn, packed, scale, color);
         }
     }
 
-    public static void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, Fluid renderFluid, float height, int brightness) {
-        int color = 0;
-        if (renderFluid != null) {
-            color = renderFluid.getAttributes().getColor();
-        }
-        render(matrixStackIn, bufferIn, renderFluid, ITEM_DIRECTIONS, brightness, height, color);
-    }
+//    public static void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, Fluid renderFluid, float height, int brightness) {
+//        int color = 0;
+//        if (renderFluid != null) {
+//            color = renderFluid.getAttributes().getColor();
+//        }
+//        render(matrixStackIn, bufferIn, renderFluid, ITEM_DIRECTIONS, brightness, height, color);
+//    }
 
-    private static void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, Fluid renderFluid, Set<Direction> dirs, int brightness, float scale, int color) {
+    private static void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, Fluid renderFluid, Set<Direction> dirs, int combinedLightIn, int liquidBrightness, float scale, int color) {
         matrixStackIn.pushPose();
 
-        renderModel(matrixStackIn, bufferIn.getBuffer(RenderType.translucent()), dirs, brightness);
+        renderModel(matrixStackIn, bufferIn.getBuffer(RenderType.translucent()), dirs, combinedLightIn);
 
         if (renderFluid != null) {
             for (RenderType renderType : RenderType.chunkBufferLayers()) {
                 if (RenderTypeLookup.canRenderInLayer(renderFluid.defaultFluidState(), renderType)) {
-                    renderFluid(scale, color, bufferIn.getBuffer(renderType), renderFluid, dirs, brightness, matrixStackIn);
+                    renderFluid(scale, color, bufferIn.getBuffer(renderType), renderFluid, dirs, liquidBrightness, matrixStackIn);
                 }
             }
         }
