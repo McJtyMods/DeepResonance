@@ -1,6 +1,7 @@
 package mcjty.deepresonance.compat;
 
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.core.block.ResonatingCrystalBlock;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.block.GeneratorControllerTileEntity;
@@ -106,6 +107,9 @@ public class DeepResonanceTOPDriver implements TOPDriver {
 //                    probeInfo.text(TextStyleClass.INFO + "Instability: " + fmt.format(crystal.getInstability()));
 //                    probeInfo.text(TextStyleClass.INFO + "Resistance: " + crystal.getResistance());
 //                    probeInfo.text(TextStyleClass.INFO + "Cooldown: " + crystal.getCooldown());
+                    BlockState state = world.getBlockState(data.getPos());
+                    probeInfo.text(CompoundText.createLabelInfo("Generated ", state.getValue(ResonatingCrystalBlock.GENERATED)));
+                    probeInfo.text(CompoundText.createLabelInfo("Empty ", state.getValue(ResonatingCrystalBlock.EMPTY)));
                 } else {
                     probeInfo.horizontal().text(TextFormatting.YELLOW + "Power: " + fmt.format(crystal.getPower()) + "% (" + rfPerTick + " RF/t)")
                             .progress((int) crystal.getPower(), 100, probeInfo.defaultProgressStyle()

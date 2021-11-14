@@ -3,6 +3,7 @@ package mcjty.deepresonance.modules.worldgen.world;
 import com.mojang.serialization.Codec;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.core.block.ResonatingCrystalBlock;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.worldgen.WorldGenModule;
 import mcjty.deepresonance.modules.worldgen.util.WorldGenConfiguration;
@@ -75,7 +76,7 @@ public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig
                 pos = new BlockPos(pos.getX(), 60, pos.getZ());
             } else {
                 int y = world.getHeight(Heightmap.Type.OCEAN_FLOOR_WG, pos.getX(), pos.getZ());
-                pos = new BlockPos(pos.getX(), y-1, pos.getZ());
+                pos = new BlockPos(pos.getX(), y - 1, pos.getZ());
             }
             BlockPos.Mutable poz = pos.mutable();
             while (poz.getY() > 1 && !world.getBlockState(poz).isAir(world, poz)) {
@@ -99,7 +100,10 @@ public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig
     }
 
     public static void spawnRandomCrystal(ISeedReader world, Random random, BlockPos pos, float str, float pow, float eff, float pur) {
-        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_BLOCK.get().defaultBlockState(), Constants.BlockFlags.DEFAULT);
+        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_BLOCK.get().defaultBlockState()
+                        .setValue(ResonatingCrystalBlock.GENERATED, true)
+                        .setValue(ResonatingCrystalBlock.EMPTY, false),
+                Constants.BlockFlags.DEFAULT);
         TileEntity te = world.getBlockEntity(pos);
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity tile = (ResonatingCrystalTileEntity) te;
