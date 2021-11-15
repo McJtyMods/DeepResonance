@@ -12,7 +12,6 @@ import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.builder.TooltipBuilder;
-import mcjty.lib.container.AutomationFilterItemHander;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
@@ -48,9 +47,8 @@ public class CrystallizerTileEntity extends GenericTileEntity implements ITickab
             .slot(generic().out(), CONTAINER_CONTAINER, SLOT, 64, 24)
             .playerSlots(10, 70));
 
+    @Cap(type = CapType.ITEMS_AUTOMATION)
     private final NoDirectionItemHander items = createItemHandler();
-    @Cap(type = CapType.ITEMS)
-    private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Crystalizer")
