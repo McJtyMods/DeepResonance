@@ -8,6 +8,8 @@ import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.multiblock.MultiblockSupport;
+import mcjty.lib.tileentity.Cap;
+import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.EnergyTools;
@@ -24,13 +26,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Set;
 
 public class GeneratorPartTileEntity extends GenericTileEntity implements ITickableTileEntity, IMultiblockConnector {
@@ -38,6 +36,7 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
     private int blobId = -1;
 
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, GeneratorConfig.POWER_STORAGE_PER_BLOCK.get(), 0);
+    @Cap(type = CapType.ENERGY)
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
 
     public GeneratorPartTileEntity() {
@@ -234,13 +233,4 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
 //            surroundings.put(side, cap);
 //        }
 //    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
-        if (cap == CapabilityEnergy.ENERGY) {
-            return energyHandler.cast();
-        }
-        return super.getCapability(cap, facing);
-    }
 }
