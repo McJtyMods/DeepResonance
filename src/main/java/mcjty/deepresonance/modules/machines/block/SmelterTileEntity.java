@@ -16,9 +16,9 @@ import mcjty.lib.container.AutomationFilterItemHander;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
+import mcjty.lib.sync.GuiSync;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
-import mcjty.lib.varia.Sync;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluids;
@@ -49,8 +49,12 @@ public class SmelterTileEntity extends GenericTileEntity implements ITickableTil
     public static final int SLOT = 0;
 
     private final DualTankHook tankHook = new DualTankHook(this, Direction.DOWN, Direction.UP);
-    private int processTimeLeft = 0;
-    private int processTime = 0;
+
+    @GuiSync
+    private short processTimeLeft = 0;
+
+    @GuiSync
+    private short processTime = 0;
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
             .slot(generic().in().out(), CONTAINER_CONTAINER, SLOT, 64, 24)
@@ -59,14 +63,14 @@ public class SmelterTileEntity extends GenericTileEntity implements ITickableTil
     private final NoDirectionItemHander items = createItemHandler();
     private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
-    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Smelter")
-            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.SMELTER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), SmelterTileEntity.this))
-            .itemHandler(() -> items)
-            .shortListener(Sync.integer(() -> processTime, v -> processTime = v))
-            .shortListener(Sync.integer(() -> processTimeLeft, v -> processTimeLeft = v)));
-
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SmelterConfig.POWER_MAXIMUM.get(), SmelterConfig.POWER_PER_TICK_IN.get());
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
+
+    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Smelter")
+            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.SMELTER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), SmelterTileEntity.this))
+            .energyHandler(() -> energyStorage)
+            .itemHandler(() -> items)
+            .setupSync(this));
 
     private float finalQuality = 1.0f;  // Calculated quality based on the amount of lava in the lava tank
     private float finalPurity = 0.1f;   // Calculated quality based on the amount of lava in the lava tank
@@ -174,7 +178,7 @@ public class SmelterTileEntity extends GenericTileEntity implements ITickableTil
         lavaTank.drain(new FluidStack(Fluids.LAVA, SmelterConfig.LAVA_COST.get()), IFluidHandler.FluidAction.EXECUTE);
 
         int processTimeConfig = SmelterConfig.PROCESS_TIME.get();
-        processTimeLeft = processTimeConfig + (int) ((percentage - 0.5f) * processTimeConfig);
+        processTimeLeft = (short) (processTimeConfig + (int) ((percentage - 0.5f) * processTimeConfig));
         processTime = processTimeLeft;
     }
 
@@ -199,8 +203,8 @@ public class SmelterTileEntity extends GenericTileEntity implements ITickableTil
     public void read(CompoundNBT tagCompound) {
         super.read(tagCompound);
 
-        processTime = tagCompound.getInt("processTime");
-        processTimeLeft = tagCompound.getInt("processTimeLeft");
+        processTime = (short) tagCompound.getInt("processTime");
+        processTimeLeft = (short) tagCompound.getInt("processTimeLeft");
         finalQuality = tagCompound.getFloat("finalQuality");
         finalPurity = tagCompound.getFloat("finalPurity");
     }

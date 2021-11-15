@@ -85,7 +85,9 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
         setChanged();
         boolean newempty = isEmpty();
         if (oldempty != newempty) {
-            level.setBlock(worldPosition, getBlockState().setValue(ResonatingCrystalBlock.EMPTY, newempty), Constants.BlockFlags.DEFAULT_AND_RERENDER);
+            if (level != null) {
+                level.setBlock(worldPosition, getBlockState().setValue(ResonatingCrystalBlock.EMPTY, newempty), Constants.BlockFlags.DEFAULT_AND_RERENDER);
+            }
             setChanged();
         }
     }

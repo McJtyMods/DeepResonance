@@ -10,6 +10,7 @@ import mcjty.deepresonance.setup.ClientSetup;
 import mcjty.deepresonance.setup.Config;
 import mcjty.deepresonance.setup.ModSetup;
 import mcjty.deepresonance.setup.Registration;
+import mcjty.deepresonance.util.DeepResonanceTags;
 import mcjty.lib.modules.Modules;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -43,6 +44,8 @@ public class DeepResonance {
         instance = this;
         logger = LogManager.getLogger(MODNAME);
         setup = new ModSetup();
+
+        DeepResonanceTags.init();
 
         setupModules();
 
