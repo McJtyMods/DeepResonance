@@ -76,9 +76,8 @@ public class LaserTileEntity extends GenericTileEntity implements ITickableTileE
             .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.LASER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), LaserTileEntity.this))
             .itemHandler(() -> items));
 
-    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, LaserConfig.POWER_MAXIMUM.get(), LaserConfig.POWER_PER_TICK_IN.get());
     @Cap(type = CapType.ENERGY)
-    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, LaserConfig.POWER_MAXIMUM.get(), LaserConfig.POWER_PER_TICK_IN.get());
 
     public LaserTileEntity() {
         super(MachinesModule.TYPE_LASER.get());

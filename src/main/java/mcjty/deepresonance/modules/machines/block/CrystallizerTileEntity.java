@@ -57,9 +57,8 @@ public class CrystallizerTileEntity extends GenericTileEntity implements ITickab
             .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.CRYSTALIZER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), CrystallizerTileEntity.this))
             .itemHandler(() -> items));
 
-    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, CrystallizerConfig.POWER_MAXIMUM.get(), 0);
     @Cap(type = CapType.ENERGY)
-    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, CrystallizerConfig.POWER_MAXIMUM.get(), 0);
 
     private int progress = 0;
     private LiquidCrystalData crystalData;
