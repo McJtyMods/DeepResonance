@@ -9,6 +9,8 @@ import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.DefaultValue;
 import mcjty.lib.bindings.IValue;
+import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
@@ -20,10 +22,8 @@ import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
-import mcjty.lib.typed.TypedMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.StateContainer;
@@ -35,13 +35,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class ValveTileEntity extends GenericTileEntity implements ITickableTileEntity {
-
-    public static final String CMD_SETTINGS = "valve.settings";
-
-    public static final Key<Double> PARAM_PURITY = new Key<>("purity", Type.DOUBLE);
-    public static final Key<Double> PARAM_STRENGTH = new Key<>("strength", Type.DOUBLE);
-    public static final Key<Double> PARAM_EFFICIENCY = new Key<>("efficiency", Type.DOUBLE);
-    public static final Key<Integer> PARAM_MAXMB = new Key<>("max_mb", Type.INTEGER);
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(0));
 
@@ -215,23 +208,16 @@ public class ValveTileEntity extends GenericTileEntity implements ITickableTileE
         maxMb = tagCompound.getInt("maxMb");
     }
 
-    @Override
-    public boolean execute(PlayerEntity playerMP, String command, TypedMap params) {
-        boolean rc = super.execute(playerMP, command, params);
-        if (rc) {
-            return true;
-        }
-        if (CMD_SETTINGS.equals(command)) {
-            double purity = params.get(PARAM_PURITY);
-            double strength = params.get(PARAM_STRENGTH);
-            double efficiency = params.get(PARAM_EFFICIENCY);
-            int maxMb = params.get(PARAM_MAXMB);
-            setMinPurity((float) purity);
-            setMinStrength((float) strength);
-            setMinEfficiency((float) efficiency);
-            setMaxMb(maxMb);
-            return true;
-        }
-        return false;
-    }
+    public static final Key<Double> PARAM_PURITY = new Key<>("purity", Type.DOUBLE);
+    public static final Key<Double> PARAM_STRENGTH = new Key<>("strength", Type.DOUBLE);
+    public static final Key<Double> PARAM_EFFICIENCY = new Key<>("efficiency", Type.DOUBLE);
+    public static final Key<Integer> PARAM_MAXMB = new Key<>("max_mb", Type.INTEGER);
+    @ServerCommand
+    public static final Command<?> CMD_SETTINGS = Command.<ValveTileEntity>create("valve.settings",
+            (te, player, params) -> {
+                te.setMinPurity((float) (double) params.get(PARAM_PURITY));
+                te.setMinStrength((float) (double) params.get(PARAM_STRENGTH));
+                te.setMinEfficiency((float) (double) params.get(PARAM_EFFICIENCY));
+                te.setMaxMb(params.get(PARAM_MAXMB));
+            });
 }
