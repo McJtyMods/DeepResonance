@@ -29,13 +29,13 @@ public class DeepResonance {
     public static final String MODID = "deepresonance";
     public static final String MODNAME = "DeepResonance";
 
-    public static String SHIFT_MESSAGE = "message.deepresonance.shiftmessage";
+    public static final String SHIFT_MESSAGE = "message.deepresonance.shiftmessage";
 
     public static DeepResonance instance;
     public static ModSetup setup;
     public static Logger logger;
 
-    private Modules modules = new Modules();
+    private final Modules modules = new Modules();
 
     public DeepResonance() {
         if (instance != null) {

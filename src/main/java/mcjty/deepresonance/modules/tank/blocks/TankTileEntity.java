@@ -76,8 +76,9 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         return clientRenderFluid;
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putInt("blobid", blobId);
         writeClientDataToNBT(tagCompound);
         return super.save(tagCompound);
@@ -238,7 +239,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
                         height = 1.0f;
                     } else {
                         height = amount - (countBelow * capacityPerTank);
-                        height /= (float) (countAtY * capacityPerTank);
+                        height /= (countAtY * capacityPerTank);
                     }
 
                     ((TankTileEntity) be).setClientData(height, fluidStack.getFluid());

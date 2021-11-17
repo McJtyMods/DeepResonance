@@ -39,9 +39,9 @@ public class LaserTESR extends TileEntityRenderer<LaserTileEntity> {
         }
         int color = tileEntityIn.getActiveBonus().getColor();
         for (BlockPos pos : tileEntityIn.getLaserBeam()) {
-            pos = pos.subtract(tileEntityIn.getBlockPos());
-            drawBeamPart(prev, pos, color, tileEntityIn.getLevel(), matrixStackIn, bufferIn.getBuffer(RenderType.translucent()));
-            prev = pos;
+            BlockPos p = pos.subtract(tileEntityIn.getBlockPos());
+            drawBeamPart(prev, p, color, tileEntityIn.getLevel(), matrixStackIn, bufferIn.getBuffer(RenderType.translucent()));
+            prev = p;
         }
     }
 
@@ -64,7 +64,7 @@ public class LaserTESR extends TileEntityRenderer<LaserTileEntity> {
         int g = color >> 8 & 255;
         int b = color & 255;
 
-        float f = (float) Math.floorMod(world.getGameTime(), 40L);
+        float f = Math.floorMod(world.getGameTime(), 40L);
         matrix.mulPose(Vector3f.ZN.rotationDegrees(f * 2.25f));
 
         for (int i = 0; i < 4; i++) {

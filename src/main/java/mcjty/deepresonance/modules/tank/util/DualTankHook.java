@@ -22,9 +22,11 @@ public class DualTankHook {
     }
 
     private final WeakReference<TileEntity> tile;
-    private final Direction dir1, dir2;
+    private final Direction dir1;
+    private final Direction dir2;
     private boolean allowDuplicates;
-    private int timeout, timeCounter;
+    private int timeout;
+    private int timeCounter;
     private LazyOptional<IFluidHandler> tank1;
     private LazyOptional<IFluidHandler> tank2;
 

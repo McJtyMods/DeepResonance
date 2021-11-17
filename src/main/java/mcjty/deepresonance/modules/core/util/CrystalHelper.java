@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.core.util;
 
-import com.google.common.base.Preconditions;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.util.Constants;
@@ -78,7 +77,13 @@ public class CrystalHelper {
     }
 
     private static float getRandomSpecial(Random random, int special) {
-        return special == 0 ? random.nextFloat() : special == 1 ? .5f : 1.0f;
+        if (special == 0) {
+            return random.nextFloat();
+        } else if (special == 1) {
+            return .5f;
+        } else {
+            return 1.0f;
+        }
     }
 
 }

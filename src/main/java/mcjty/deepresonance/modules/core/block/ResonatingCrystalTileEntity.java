@@ -184,8 +184,9 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
     }
 
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putDouble("strength", strength);
         tagCompound.putDouble("power", power);
         tagCompound.putDouble("efficiency", efficiency);
@@ -245,8 +246,13 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
     }
 
     private static float getRandomSpecial(Random random, int special) {
-        return special == 0 ? random.nextFloat() :
-                special == 1 ? .5f : 1.0f;
+        if (special == 0) {
+            return random.nextFloat();
+        } else if (special == 1) {
+            return .5f;
+        } else {
+            return 1.0f;
+        }
     }
 
 

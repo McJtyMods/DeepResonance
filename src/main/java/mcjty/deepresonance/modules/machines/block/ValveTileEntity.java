@@ -32,6 +32,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import javax.annotation.Nonnull;
+
 public class ValveTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(0));
@@ -65,7 +67,7 @@ public class ValveTileEntity extends GenericTileEntity implements ITickableTileE
             }
 
             @Override
-            protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+            protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
                 super.createBlockStateDefinition(builder);
                 builder.add();
             }
@@ -175,8 +177,9 @@ public class ValveTileEntity extends GenericTileEntity implements ITickableTileE
         setChanged();
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putInt("progress", progress);
 
         tagCompound.putFloat("minPurity", minPurity);

@@ -9,6 +9,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
 
     private static final String GENERATOR_NETWORK_NAME = "DRGeneratorNetwork";
@@ -71,12 +73,13 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(@Nonnull CompoundNBT tagCompound) {
         driver.load(tagCompound);
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         return driver.save(tagCompound);
     }
 

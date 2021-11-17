@@ -7,6 +7,8 @@ import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
+import javax.annotation.Nonnull;
+
 public class BlockTags extends BlockTagsProvider {
 
     public BlockTags(DataGenerator generator, ExistingFileHelper helper) {
@@ -19,6 +21,7 @@ public class BlockTags extends BlockTagsProvider {
     }
 
     @Override
+    @Nonnull
     public String getName() {
         return "DeepResonance Tags";
     }

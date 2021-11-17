@@ -16,6 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class GeneratorPartBlock extends BaseBlock {
@@ -42,8 +43,10 @@ public class GeneratorPartBlock extends BaseBlock {
                 .setValue(BlockStateProperties.DOWN, world.getBlockState(pos.below()).getBlock() == this);
     }
 
+    @SuppressWarnings("deprecation")
+    @Nonnull
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos) {
+    public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockPos facingPos) {
         if (facing == Direction.UP) {
             return state.setValue(BlockStateProperties.UP, facingState.getBlock() == this);
         }
@@ -54,7 +57,7 @@ public class GeneratorPartBlock extends BaseBlock {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(BlockStateProperties.POWERED, BlockStateProperties.UP, BlockStateProperties.DOWN);
     }

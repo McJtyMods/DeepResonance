@@ -10,6 +10,8 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
+import javax.annotation.Nonnull;
+
 public class ResonatingCrystalTER extends TileEntityRenderer<ResonatingCrystalTileEntity> {
 
     public ResonatingCrystalTER(TileEntityRendererDispatcher dispatcher) {
@@ -17,7 +19,7 @@ public class ResonatingCrystalTER extends TileEntityRenderer<ResonatingCrystalTi
     }
 
     @Override
-    public void render(ResonatingCrystalTileEntity tileEntity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
+    public void render(ResonatingCrystalTileEntity tileEntity, float partialTicks, @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
         if (tileEntity.isGlowing()) {
             RenderHelper.renderBillboardQuadBright(matrixStack, buffer, 0.6f, ClientSetup.REDHALO);
         }

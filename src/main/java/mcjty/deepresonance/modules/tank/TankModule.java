@@ -28,7 +28,7 @@ public class TankModule implements IModule {
     // @todo 1.16 remove me!
     public static ForgeConfigSpec.BooleanValue quickRender;
 
-    public final static ResourceLocation TANK_SYNC_ID = new ResourceLocation(DeepResonance.MODID, "tanksync");
+    public static final ResourceLocation TANK_SYNC_ID = new ResourceLocation(DeepResonance.MODID, "tanksync");
 
     public TankModule() {
         // @todo 1.16

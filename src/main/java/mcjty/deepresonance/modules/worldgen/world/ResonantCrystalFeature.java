@@ -19,7 +19,6 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraft.world.gen.placement.TopSolidRangeConfig;
 import net.minecraftforge.common.util.Constants;
@@ -62,7 +61,7 @@ public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig
     }
 
     @Override
-    public boolean place(ISeedReader reader, ChunkGenerator generator, Random rand, BlockPos pos, ResonantCrystalFeatureConfig config) {
+    public boolean place(@Nonnull ISeedReader reader, @Nonnull ChunkGenerator generator, Random rand, @Nonnull BlockPos pos, @Nonnull ResonantCrystalFeatureConfig config) {
         if (rand.nextDouble() < WorldGenConfiguration.CRYSTAL_SPAWN_CHANCE.get()) {
             return trySpawnCrystal(reader, generator, new ChunkPos(pos), rand, config);
         }

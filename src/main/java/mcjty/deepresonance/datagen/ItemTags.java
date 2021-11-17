@@ -8,6 +8,8 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.ItemTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
+import javax.annotation.Nonnull;
+
 public class ItemTags extends ItemTagsProvider {
 
     public ItemTags(DataGenerator generator, BlockTagsProvider blockTagsProvider, ExistingFileHelper helper) {
@@ -19,6 +21,7 @@ public class ItemTags extends ItemTagsProvider {
         tag(DeepResonanceTags.RESONANT_ORE_ITEM).add(CoreModule.RESONATING_ORE_STONE_ITEM.get(), CoreModule.RESONATING_ORE_NETHER_ITEM.get(), CoreModule.RESONATING_ORE_END_ITEM.get());
     }
 
+    @Nonnull
     @Override
     public String getName() {
         return "DeepResonance Tags";

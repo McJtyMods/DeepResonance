@@ -6,6 +6,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.LazyValue;
 import net.minecraft.util.SoundEvent;
 
+import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
 public class ResonatingMaterial implements IArmorMaterial {
@@ -31,34 +32,45 @@ public class ResonatingMaterial implements IArmorMaterial {
         this.repairIngredient = new LazyValue<>(repairIngredient);
     }
 
+    @Override
     public int getDurabilityForSlot(EquipmentSlotType type) {
         return HEALTH_PER_SLOT[type.getIndex()] * this.durabilityMultiplier;
     }
 
+    @Override
     public int getDefenseForSlot(EquipmentSlotType type) {
         return this.slotProtections[type.getIndex()];
     }
 
+    @Override
     public int getEnchantmentValue() {
         return this.enchantmentValue;
     }
 
+    @Nonnull
+    @Override
     public SoundEvent getEquipSound() {
         return this.sound;
     }
 
+    @Nonnull
+    @Override
     public Ingredient getRepairIngredient() {
         return this.repairIngredient.get();
     }
 
+    @Nonnull
+    @Override
     public String getName() {
         return this.name;
     }
 
+    @Override
     public float getToughness() {
         return this.toughness;
     }
 
+    @Override
     public float getKnockbackResistance() {
         return this.knockbackResistance;
     }

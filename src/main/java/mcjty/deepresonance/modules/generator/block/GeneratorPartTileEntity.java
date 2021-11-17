@@ -28,6 +28,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nonnull;
 import java.util.Set;
 
 public class GeneratorPartTileEntity extends GenericTileEntity implements ITickableTileEntity, IMultiblockConnector {
@@ -78,9 +79,7 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
             if (network != null) {
                 CompoundNBT tag = stack.getTag();
                 if (tag != null) {
-                    getDriver().modify(getMultiblockId(), holder -> {
-                        holder.getMb().setEnergy(holder.getMb().getEnergy() + tag.getInt("energy"));
-                    });
+                    getDriver().modify(getMultiblockId(), holder -> holder.getMb().setEnergy(holder.getMb().getEnergy() + tag.getInt("energy")));
                 }
             }
         }
@@ -155,9 +154,7 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
     public void activate(boolean active) {
         GeneratorBlob network = getBlob();
         if (network != null && network.isActive() != active) {
-            getDriver().modify(getMultiblockId(), holder -> {
-                holder.getMb().setActive(active);
-            });
+            getDriver().modify(getMultiblockId(), holder -> holder.getMb().setActive(active));
             Set<BlockPos> done = Sets.newHashSet();
             activateBlocks(getBlockPos(), done, active);
         }
@@ -182,8 +179,9 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
         }
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putInt("networkId", blobId);
         return super.save(tagCompound);
     }

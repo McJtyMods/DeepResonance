@@ -86,7 +86,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
     }
 
     @Override
-    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         ResonatingCrystalTileEntity crystal = new ResonatingCrystalTileEntity();
         for (int power : new int[]{0, 50}) {
             for (int purity : new int[]{0, 50}) {
@@ -100,7 +100,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag advanced) {
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable IBlockReader world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag advanced) {
         CompoundNBT tagCompound = stack.getTag();
         if (tagCompound != null) {
             tagCompound = tagCompound.getCompound(CoreModule.TILE_DATA_TAG);
@@ -140,7 +140,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(EMPTY, GENERATED);
     }

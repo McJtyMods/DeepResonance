@@ -65,13 +65,9 @@ public class DefaultLens implements ILens {
                 if (DeepResonanceFluidHelper.isValidLiquidCrystalStack(fluid)) {
                     fluid = tank.drain(amount, IFluidHandler.FluidAction.EXECUTE);
                     LiquidCrystalData data = DeepResonanceFluidHelper.readCrystalDataFromStack(fluid);
-                    if (data != null) {
-                        modifier.accept(data);
-                        if (data.getAmount() > 0) {
-                            tank.fill(data.getFluidStack(), IFluidHandler.FluidAction.EXECUTE);
-                        }
-                    } else {
-                        tank.fill(fluid, IFluidHandler.FluidAction.EXECUTE);
+                    modifier.accept(data);
+                    if (data.getAmount() > 0) {
+                        tank.fill(data.getFluidStack(), IFluidHandler.FluidAction.EXECUTE);
                     }
                 }
             });

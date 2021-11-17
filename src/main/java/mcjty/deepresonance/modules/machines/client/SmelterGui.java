@@ -16,6 +16,7 @@ import mcjty.lib.gui.widgets.Panel;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import java.awt.*;
 
 public class SmelterGui extends GenericGuiContainer<SmelterTileEntity, GenericContainer> {
@@ -62,7 +63,7 @@ public class SmelterGui extends GenericGuiContainer<SmelterTileEntity, GenericCo
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
+    protected void renderBg(@Nonnull MatrixStack matrixStack, float partialTicks, int x, int y) {
         int progress = tileEntity.getProgress();
         if (0 < progress && progress < 100) {
             int p = ((progress / 3) % 9) + 1;

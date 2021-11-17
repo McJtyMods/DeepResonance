@@ -19,6 +19,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -154,9 +155,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
                 }
             }
             int finalCnt = cnt;
-            getDriver().modify(id, holder -> {
-                holder.getMb().setCollectorBlocks(finalCnt);
-            });
+            getDriver().modify(id, holder -> holder.getMb().setCollectorBlocks(finalCnt));
         }
         return network.getCollectorBlocks();
     }
@@ -238,8 +237,9 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
         return true;
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putInt("startup", startup);
         tagCompound.putInt("shutdown", shutdown);
         tagCompound.putBoolean("active", active);

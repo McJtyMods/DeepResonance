@@ -5,6 +5,8 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 
+import javax.annotation.Nonnull;
+
 public class LensTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
     public LensTileEntity() {
@@ -15,8 +17,9 @@ public class LensTileEntity extends GenericTileEntity implements ITickableTileEn
     public void tick() {
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         return super.save(tagCompound);
     }
 

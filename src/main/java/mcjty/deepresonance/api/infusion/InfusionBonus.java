@@ -1,6 +1,5 @@
 package mcjty.deepresonance.api.infusion;
 
-import com.google.common.base.Preconditions;
 import net.minecraft.item.DyeColor;
 
 import java.io.Serializable;
@@ -9,7 +8,11 @@ public final class InfusionBonus implements Serializable {
 
     public static final InfusionBonus EMPTY = new InfusionBonus(0, 30, 0, 0, 0, InfusionModifier.NONE, InfusionModifier.NONE, InfusionModifier.NONE);
 
-    private final int color, duration, powerPerTick, crystalLiquidCostPerCatalyst, rclImprovedPerCatalyst;
+    private final int color;
+    private final int duration;
+    private final int powerPerTick;
+    private final int crystalLiquidCostPerCatalyst;
+    private final int rclImprovedPerCatalyst;
     private final InfusionModifier purityModifier;
     private final InfusionModifier strengthModifier;
     private final InfusionModifier efficiencyModifier;

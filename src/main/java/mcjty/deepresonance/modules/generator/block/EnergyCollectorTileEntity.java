@@ -22,6 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +31,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
     // Minimum power before we stop using a crystal.
     public static final float CRYSTAL_MIN_POWER = .00001f;
 
-    public static int MAXTICKS = 20;        // Update radiation every second.
+    public static final int MAXTICKS = 20;        // Update radiation every second.
 
     // Relative coordinates of active crystals.
     private Set<BlockPos> crystals = new HashSet<>();
@@ -91,9 +92,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
 
                     active = true;
                 } else {
-                    getDriver().modify(multiblockId, holder -> {
-                        holder.getMb().setLastRfPerTick(0);
-                    });
+                    getDriver().modify(multiblockId, holder -> holder.getMb().setLastRfPerTick(0));
                 }
                 startup = network.getStartupCounter();
             }
@@ -221,9 +220,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
             TileEntity te = world.getBlockEntity(pos.below());
             if (te instanceof GeneratorPartTileEntity) {
                 blobId = ((GeneratorPartTileEntity) te).getMultiblockId();
-                getDriver().modify(blobId, holder -> {
-                    holder.getMb().setCollectorBlocks(-1);
-                });
+                getDriver().modify(blobId, holder -> holder.getMb().setCollectorBlocks(-1));
             }
         }
     }
@@ -233,9 +230,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         TileEntity te = world.getBlockEntity(pos.below());
         if (te instanceof GeneratorPartTileEntity) {
             int id = ((GeneratorPartTileEntity) te).getMultiblockId();
-            getDriver().modify(id, holder -> {
-                holder.getMb().setCollectorBlocks(-1);
-            });
+            getDriver().modify(id, holder -> holder.getMb().setCollectorBlocks(-1));
         }
     }
 
@@ -350,8 +345,9 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
     }
 
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         byte[] crystalX = new byte[crystals.size()];
         byte[] crystalY = new byte[crystals.size()];
         byte[] crystalZ = new byte[crystals.size()];

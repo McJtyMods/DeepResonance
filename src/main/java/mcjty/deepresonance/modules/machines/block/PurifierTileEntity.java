@@ -159,8 +159,9 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
         return items.getStackInSlot(SLOT).getItem() == CoreModule.FILTER_MATERIAL_ITEM.get();
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putInt("timeToGo", timeToGo);
         if (processing != null) {
             CompoundNBT tag = new CompoundNBT();

@@ -20,6 +20,7 @@ import mcjty.lib.gui.widgets.Panel;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import java.awt.*;
 import java.text.DecimalFormat;
 
@@ -91,7 +92,7 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
+    protected void renderBg(@Nonnull MatrixStack matrixStack, float partialTicks, int x, int y) {
         InfusionBonus bonus = tileEntity.getActiveBonus();
         if (bonus.isEmpty()) {
             purifyBonus.text("No active catalyst");

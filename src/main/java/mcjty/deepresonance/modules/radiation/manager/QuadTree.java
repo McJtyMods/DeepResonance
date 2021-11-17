@@ -199,7 +199,9 @@ class QuadTree {
 
     private static class Ray {
 
-        private final Vector3d start, dir, invDir;
+        private final Vector3d start;
+        private final Vector3d dir;
+        private final Vector3d invDir;
         private final double length;
 
         public Ray(Vector3d start, Vector3d end) {

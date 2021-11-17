@@ -88,7 +88,7 @@ public class SmelterTileEntity extends GenericTileEntity implements ITickableTil
             }
 
             @Override
-            protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+            protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
                 super.createBlockStateDefinition(builder);
                 builder.add(BlockStateProperties.POWERED);
             }
@@ -186,8 +186,9 @@ public class SmelterTileEntity extends GenericTileEntity implements ITickableTil
         }
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putInt("processTime", processTime);
         tagCompound.putInt("processTimeLeft", processTimeLeft);
         tagCompound.putFloat("finalQuality", finalQuality);

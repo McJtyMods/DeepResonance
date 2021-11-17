@@ -14,7 +14,10 @@ public class ResonantCrystalFeatureConfig implements IFeatureConfig {
                     Codec.FLOAT.fieldOf("purity").forGetter(ResonantCrystalFeatureConfig::getPurity)
             ).apply(instance, ResonantCrystalFeatureConfig::new));
 
-    public final float strength, power, efficiency, purity;
+    public final float strength;
+    public final float power;
+    public final float efficiency;
+    public final float purity;
 
     public ResonantCrystalFeatureConfig(float strength, float power, float efficiency, float purity) {
         this.strength = strength;

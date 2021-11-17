@@ -90,7 +90,7 @@ public class LaserTileEntity extends GenericTileEntity implements ITickableTileE
             }
 
             @Override
-            protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+            protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
                 super.createBlockStateDefinition(builder);
                 builder.add();
             }
@@ -246,8 +246,9 @@ public class LaserTileEntity extends GenericTileEntity implements ITickableTileE
         tagCompound.put("laserBeam", list);
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putInt("progress", progressCounter);
         tagCompound.putFloat("liquid", crystalLiquid);
         tagCompound.putFloat("efficiency", efficiency);

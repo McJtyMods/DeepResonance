@@ -17,7 +17,7 @@ public class BlockResonatingPlate extends Block {
     }
 
     @Override
-    public boolean isRandomlyTicking(BlockState state) {
+    public boolean isRandomlyTicking(@Nonnull BlockState state) {
         return ResonatingPlateBlockConfig.RADIATION_STRENGTH.get() > 0;
     }
 

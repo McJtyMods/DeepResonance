@@ -15,6 +15,7 @@ import mcjty.lib.gui.widgets.Panel;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import java.awt.*;
 
 public class CrystallizerGui extends GenericGuiContainer<CrystallizerTileEntity, GenericContainer> {
@@ -59,7 +60,7 @@ public class CrystallizerGui extends GenericGuiContainer<CrystallizerTileEntity,
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
+    protected void renderBg(@Nonnull MatrixStack matrixStack, float partialTicks, int x, int y) {
         percentage.text(tileEntity.getProgress() + "%");
         energyBar.value(tileEntity.getCurrentPower());
         super.renderBg(matrixStack, partialTicks, x, y);

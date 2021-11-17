@@ -14,6 +14,7 @@ import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
@@ -92,8 +93,9 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
         }
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         ListNBT lst = new ListNBT();
         for (Map.Entry<GlobalPos, RadiationSource> entry : sources.entrySet()) {
             CompoundNBT tc = new CompoundNBT();

@@ -97,12 +97,10 @@ public class CrystallizerTileEntity extends GenericTileEntity implements ITickab
         if (drain > 0) { //Config can change between ticks
             FluidStack stack = rclTank.orElseThrow(NullPointerException::new).drain(drain, IFluidHandler.FluidAction.EXECUTE);
             LiquidCrystalData data = DeepResonanceFluidHelper.readCrystalDataFromStack(stack);
-            if (data != null) {
-                if (crystalData == null) {
-                    crystalData = data;
-                } else {
-                    crystalData.merge(data);
-                }
+            if (crystalData == null) {
+                crystalData = data;
+            } else {
+                crystalData.merge(data);
             }
         }
         if (crystalData != null && crystalData.getAmount() >= rclPerCrystal) {
@@ -184,8 +182,9 @@ public class CrystallizerTileEntity extends GenericTileEntity implements ITickab
         super.onDataPacket(net, packet);
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         if (crystalData != null) {
             CompoundNBT tag = new CompoundNBT();
             crystalData.getFluidStack().writeToNBT(tag);

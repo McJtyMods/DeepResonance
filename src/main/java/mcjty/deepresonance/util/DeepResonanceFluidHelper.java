@@ -1,9 +1,7 @@
 package mcjty.deepresonance.util;
 
-import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.core.CoreModule;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
 public class DeepResonanceFluidHelper {

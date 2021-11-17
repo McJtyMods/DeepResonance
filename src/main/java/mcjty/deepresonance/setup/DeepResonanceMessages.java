@@ -1,7 +1,6 @@
 package mcjty.deepresonance.setup;
 
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.modules.tank.network.PacketSyncLiquidDataToClient;
 import mcjty.lib.network.PacketHandler;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -25,8 +24,6 @@ public class DeepResonanceMessages {
                 .simpleChannel();
 
         INSTANCE = net;
-
-        net.registerMessage(id(), PacketSyncLiquidDataToClient.class, PacketSyncLiquidDataToClient::toBytes, PacketSyncLiquidDataToClient::new, PacketSyncLiquidDataToClient::handle);
 
         PacketHandler.registerStandardMessages(id(), net);
     }

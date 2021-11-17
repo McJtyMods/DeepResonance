@@ -21,9 +21,9 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class BlockStates extends BaseBlockStateProvider {
 
-    private final static ResourceLocation DEFAULT_TOP = new ResourceLocation(DeepResonance.MODID, "block/machine_top");
-    private final static ResourceLocation DEFAULT_SIDE = new ResourceLocation(DeepResonance.MODID, "block/machine_side");
-    private final static ResourceLocation DEFAULT_BOTTOM = new ResourceLocation(DeepResonance.MODID, "block/machine_bottom");
+    private static final ResourceLocation DEFAULT_TOP = new ResourceLocation(DeepResonance.MODID, "block/machine_top");
+    private static final ResourceLocation DEFAULT_SIDE = new ResourceLocation(DeepResonance.MODID, "block/machine_side");
+    private static final ResourceLocation DEFAULT_BOTTOM = new ResourceLocation(DeepResonance.MODID, "block/machine_bottom");
 
     public BlockStates(DataGenerator gen, ExistingFileHelper exFileHelper) {
         super(gen, DeepResonance.MODID, exFileHelper);

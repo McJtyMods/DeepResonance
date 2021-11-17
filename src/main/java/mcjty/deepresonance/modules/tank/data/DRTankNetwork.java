@@ -112,12 +112,13 @@ public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(@Nonnull CompoundNBT tagCompound) {
         driver.load(tagCompound);
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         return driver.save(tagCompound);
     }
 
