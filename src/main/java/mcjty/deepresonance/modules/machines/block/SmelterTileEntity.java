@@ -53,7 +53,7 @@ public class SmelterTileEntity extends GenericTileEntity implements ITickableTil
     private short processTime = 0;
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
-            .slot(generic().in().out(), CONTAINER_CONTAINER, SLOT, 64, 24)
+            .slot(generic().in().out(), SLOT, 64, 24)
             .playerSlots(10, 70));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)

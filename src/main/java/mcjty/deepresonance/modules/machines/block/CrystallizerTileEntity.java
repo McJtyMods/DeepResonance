@@ -44,7 +44,7 @@ public class CrystallizerTileEntity extends GenericTileEntity implements ITickab
     public static final int SLOT = 0;
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
-            .slot(generic().out(), CONTAINER_CONTAINER, SLOT, 64, 24)
+            .slot(generic().out(), SLOT, 64, 24)
             .playerSlots(10, 70));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)

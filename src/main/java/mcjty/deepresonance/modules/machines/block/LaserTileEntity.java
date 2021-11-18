@@ -61,9 +61,9 @@ public class LaserTileEntity extends GenericTileEntity implements ITickableTileE
     private LazyOptional<ILens> lens;
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(3)
-            .slot(generic().in().out(), CONTAINER_CONTAINER, SLOT_CRYSTAL, 154, 48)
-            .slot(generic().in().out(), CONTAINER_CONTAINER, SLOT_CATALYST, 21, 8)
-            .slot(generic().out(), CONTAINER_CONTAINER, SLOT_ACTIVE_CATALYST, 21, 48)
+            .slot(generic().in().out(), SLOT_CRYSTAL, 154, 48)
+            .slot(generic().in().out(), SLOT_CATALYST, 21, 8)
+            .slot(generic().out(), SLOT_ACTIVE_CATALYST, 21, 48)
             .playerSlots(10, 70));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
