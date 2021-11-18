@@ -14,7 +14,7 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
-import mcjty.lib.sync.GuiSync;
+import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -46,10 +46,10 @@ public class SmelterTileEntity extends GenericTileEntity implements ITickableTil
 
     private final DualTankHook tankHook = new DualTankHook(this, Direction.DOWN, Direction.UP);
 
-    @GuiSync
+    @SyncToGui
     private short processTimeLeft = 0;
 
-    @GuiSync
+    @SyncToGui
     private short processTime = 0;
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
