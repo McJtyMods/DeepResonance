@@ -226,24 +226,21 @@ public class LaserTileEntity extends GenericTileEntity implements ITickableTileE
     }
 
     @Override
-    public void readClientDataFromNBT(CompoundNBT tagCompound) {
-        super.readClientDataFromNBT(tagCompound);
-        laserBeam.clear();
-        ListNBT list = tagCompound.getList("laserBeam", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < list.size(); i++) {
-            laserBeam.add(NBTUtil.readBlockPos(list.getCompound(i)));
-        }
-        // @todo 1.16
-//        ElecCore.tickHandler.registerCall(() -> WorldHelper.markBlockForRenderUpdate(getLevel(), getPos()), getLevel());
-    }
-
-    @Override
     public void writeClientDataToNBT(CompoundNBT tagCompound) {
         ListNBT list = new ListNBT();
         for (BlockPos pos : laserBeam) {
             list.add(NBTUtil.writeBlockPos(pos));
         }
         tagCompound.put("laserBeam", list);
+    }
+
+    @Override
+    public void readClientDataFromNBT(CompoundNBT tagCompound) {
+        laserBeam.clear();
+        ListNBT list = tagCompound.getList("laserBeam", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < list.size(); i++) {
+            laserBeam.add(NBTUtil.readBlockPos(list.getCompound(i)));
+        }
     }
 
     @Nonnull
