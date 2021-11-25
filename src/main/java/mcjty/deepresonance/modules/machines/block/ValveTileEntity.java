@@ -34,13 +34,16 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
 
+import static mcjty.lib.api.container.DefaultContainerProvider.container;
+
 public class ValveTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(0));
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Laser")
-            .containerSupplier(windowId -> new GenericContainer(MachinesModule.VALVE_CONTAINER, windowId, CONTAINER_FACTORY, this)));
+            .containerSupplier(container(MachinesModule.VALVE_CONTAINER, CONTAINER_FACTORY,this))
+            .setupSync(this));
 
     private final DualTankHook tankHook = new DualTankHook(this, Direction.UP, Direction.DOWN);
 

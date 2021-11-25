@@ -37,6 +37,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
 
+import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.container.SlotDefinition.generic;
 
 public class SmelterTileEntity extends GenericTileEntity implements ITickableTileEntity {
@@ -63,7 +64,7 @@ public class SmelterTileEntity extends GenericTileEntity implements ITickableTil
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Smelter")
-            .containerSupplier(windowId -> new GenericContainer(MachinesModule.SMELTER_CONTAINER, windowId, CONTAINER_FACTORY, this))
+            .containerSupplier(container(MachinesModule.SMELTER_CONTAINER, CONTAINER_FACTORY,this))
             .energyHandler(() -> energyStorage)
             .itemHandler(() -> items)
             .setupSync(this));

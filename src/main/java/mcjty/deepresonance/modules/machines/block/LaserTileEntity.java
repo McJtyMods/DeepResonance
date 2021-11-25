@@ -42,6 +42,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
+import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.container.SlotDefinition.generic;
 
 public class LaserTileEntity extends GenericTileEntity implements ITickableTileEntity {
@@ -70,8 +71,9 @@ public class LaserTileEntity extends GenericTileEntity implements ITickableTileE
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Laser")
-            .containerSupplier(windowId -> new GenericContainer(MachinesModule.LASER_CONTAINER, windowId, CONTAINER_FACTORY, this))
-            .itemHandler(() -> items));
+            .containerSupplier(container(MachinesModule.LASER_CONTAINER, CONTAINER_FACTORY,this))
+            .itemHandler(() -> items)
+            .setupSync(this));
 
     @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, LaserConfig.POWER_MAXIMUM.get(), LaserConfig.POWER_PER_TICK_IN.get());
