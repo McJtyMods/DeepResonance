@@ -7,6 +7,7 @@ import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.deepresonance.util.DeepResonanceTags;
 import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
@@ -14,7 +15,6 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
-import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -37,7 +37,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
 
-import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.generic;
 
 public class SmelterTileEntity extends GenericTileEntity implements ITickableTileEntity {
@@ -46,11 +45,11 @@ public class SmelterTileEntity extends GenericTileEntity implements ITickableTil
 
     private final DualTankHook tankHook = new DualTankHook(this, Direction.DOWN, Direction.UP);
 
-    @SyncToGui
-    private short processTimeLeft = 0;
+    @GuiValue
+    private int processTimeLeft = 0;
 
-    @SyncToGui
-    private short processTime = 0;
+    @GuiValue
+    private int processTime = 0;
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
             .slot(generic().in().out(), SLOT, 64, 24)
