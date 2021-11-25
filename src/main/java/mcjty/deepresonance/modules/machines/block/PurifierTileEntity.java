@@ -32,7 +32,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
 
-import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.generic;
 
 public class PurifierTileEntity extends GenericTileEntity implements ITickableTileEntity {
@@ -50,7 +49,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Purifier")
-            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.PURIFIER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), PurifierTileEntity.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.PURIFIER_CONTAINER, windowId, CONTAINER_FACTORY, this))
             .itemHandler(() -> items));
 
     // Cache for the inventory used to put the spent filter material in.

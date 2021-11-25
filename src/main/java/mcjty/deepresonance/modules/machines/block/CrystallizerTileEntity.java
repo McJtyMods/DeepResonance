@@ -36,7 +36,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
 
-import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.generic;
 
 public class CrystallizerTileEntity extends GenericTileEntity implements ITickableTileEntity {
@@ -52,7 +51,7 @@ public class CrystallizerTileEntity extends GenericTileEntity implements ITickab
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Crystalizer")
-            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.CRYSTALIZER_CONTAINER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), CrystallizerTileEntity.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.CRYSTALIZER_CONTAINER, windowId, CONTAINER_FACTORY,this))
             .itemHandler(() -> items));
 
     @Cap(type = CapType.ENERGY)
