@@ -34,6 +34,7 @@ import javax.annotation.Nonnull;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.container.SlotDefinition.generic;
+import static mcjty.lib.container.SlotDefinition.specific;
 
 public class PurifierTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
@@ -42,7 +43,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
     private final DualTankHook tankHook = new DualTankHook(this, Direction.UP, Direction.DOWN).allowDuplicates().setTimeout(10);
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
-            .slot(generic().in().out(), SLOT, 64, 24)
+            .slot(specific(CoreModule.FILTER_MATERIAL_ITEM.get()).in().out(), SLOT, 64, 24)
             .playerSlots(10, 70));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
