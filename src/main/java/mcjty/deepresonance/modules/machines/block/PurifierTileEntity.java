@@ -14,8 +14,8 @@ import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.container.InventoryLocator;
 import mcjty.lib.container.GenericItemHandler;
+import mcjty.lib.container.InventoryLocator;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericTileEntity;
@@ -46,7 +46,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
             .playerSlots(10, 70));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final GenericItemHandler items = createItemHandler();
+    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY, (slot, stack) -> stack.getItem() == CoreModule.FILTER_MATERIAL_ITEM.get());
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Purifier")
@@ -185,12 +185,4 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
         super.read(tagCompound);
     }
 
-    private GenericItemHandler createItemHandler() {
-        return new GenericItemHandler(this, CONTAINER_FACTORY.get()) {
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return stack.getItem() == CoreModule.FILTER_MATERIAL_ITEM.get();
-            }
-        };
-    }
 }

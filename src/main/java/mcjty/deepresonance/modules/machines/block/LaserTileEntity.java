@@ -67,11 +67,20 @@ public class LaserTileEntity extends GenericTileEntity implements ITickableTileE
             .playerSlots(10, 70));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final GenericItemHandler items = createItemHandler();
+    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY,
+            (slot, stack) -> {
+                if (slot == SLOT_CRYSTAL) {
+                    return stack.getItem() == CoreModule.RESONATING_CRYSTAL_ITEM.get();
+                }
+                if (slot == SLOT_CATALYST) {
+                    return stack.getItem() != CoreModule.RESONATING_CRYSTAL_ITEM.get();
+                }
+                return false;
+            }, (slot, stack) -> slot != SLOT_ACTIVE_CATALYST, (integer, stack) -> true);
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Laser")
-            .containerSupplier(container(MachinesModule.LASER_CONTAINER, CONTAINER_FACTORY,this))
+            .containerSupplier(container(MachinesModule.LASER_CONTAINER, CONTAINER_FACTORY, this))
             .itemHandler(() -> items)
             .setupSync(this));
 
@@ -291,23 +300,4 @@ public class LaserTileEntity extends GenericTileEntity implements ITickableTileE
         return laserBeam;
     }
 
-    private GenericItemHandler createItemHandler() {
-        return new GenericItemHandler(this, CONTAINER_FACTORY.get()) {
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if (slot == SLOT_CRYSTAL) {
-                    return stack.getItem() == CoreModule.RESONATING_CRYSTAL_ITEM.get();
-                }
-                if (slot == SLOT_CATALYST) {
-                    return stack.getItem() != CoreModule.RESONATING_CRYSTAL_ITEM.get();
-                }
-                return false;
-            }
-
-            @Override
-            public boolean isItemInsertable(int slot, @Nonnull ItemStack stack) {
-                return slot != SLOT_ACTIVE_CATALYST;
-            }
-        };
-    }
 }
