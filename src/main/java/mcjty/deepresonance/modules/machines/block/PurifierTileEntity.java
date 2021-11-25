@@ -49,7 +49,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Purifier")
-            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.PURIFIER_CONTAINER, windowId, CONTAINER_FACTORY, this))
+            .containerSupplier(windowId -> new GenericContainer(MachinesModule.PURIFIER_CONTAINER, windowId, CONTAINER_FACTORY, this))
             .itemHandler(() -> items));
 
     // Cache for the inventory used to put the spent filter material in.

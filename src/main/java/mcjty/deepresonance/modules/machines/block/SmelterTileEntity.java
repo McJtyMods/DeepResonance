@@ -63,7 +63,7 @@ public class SmelterTileEntity extends GenericTileEntity implements ITickableTil
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Smelter")
-            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.SMELTER_CONTAINER, windowId, CONTAINER_FACTORY, this))
+            .containerSupplier(windowId -> new GenericContainer(MachinesModule.SMELTER_CONTAINER, windowId, CONTAINER_FACTORY, this))
             .energyHandler(() -> energyStorage)
             .itemHandler(() -> items)
             .setupSync(this));

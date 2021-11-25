@@ -70,7 +70,7 @@ public class LaserTileEntity extends GenericTileEntity implements ITickableTileE
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Laser")
-            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.LASER_CONTAINER, windowId, CONTAINER_FACTORY, this))
+            .containerSupplier(windowId -> new GenericContainer(MachinesModule.LASER_CONTAINER, windowId, CONTAINER_FACTORY, this))
             .itemHandler(() -> items));
 
     @Cap(type = CapType.ENERGY)

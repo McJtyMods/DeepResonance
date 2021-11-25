@@ -51,7 +51,7 @@ public class CrystallizerTileEntity extends GenericTileEntity implements ITickab
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Crystalizer")
-            .containerSupplier((windowId,player) -> new GenericContainer(MachinesModule.CRYSTALIZER_CONTAINER, windowId, CONTAINER_FACTORY,this))
+            .containerSupplier(windowId -> new GenericContainer(MachinesModule.CRYSTALIZER_CONTAINER, windowId, CONTAINER_FACTORY,this))
             .itemHandler(() -> items));
 
     @Cap(type = CapType.ENERGY)

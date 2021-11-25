@@ -40,7 +40,7 @@ public class ValveTileEntity extends GenericTileEntity implements ITickableTileE
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Laser")
-            .containerSupplier((windowId, player) -> new GenericContainer(MachinesModule.VALVE_CONTAINER, windowId, CONTAINER_FACTORY, this)));
+            .containerSupplier(windowId -> new GenericContainer(MachinesModule.VALVE_CONTAINER, windowId, CONTAINER_FACTORY, this)));
 
     private final DualTankHook tankHook = new DualTankHook(this, Direction.UP, Direction.DOWN);
 
