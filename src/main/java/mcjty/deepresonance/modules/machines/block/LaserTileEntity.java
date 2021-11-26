@@ -43,6 +43,8 @@ import javax.annotation.Nonnull;
 import java.util.Collection;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
+import static mcjty.lib.container.GenericItemHandler.notslot;
+import static mcjty.lib.container.GenericItemHandler.yes;
 import static mcjty.lib.container.SlotDefinition.generic;
 
 public class LaserTileEntity extends GenericTileEntity implements ITickableTileEntity {
@@ -67,8 +69,8 @@ public class LaserTileEntity extends GenericTileEntity implements ITickableTileE
             .playerSlots(10, 70));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY,
-            (slot, stack) -> {
+    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
+            .itemValid((slot, stack) -> {
                 if (slot == SLOT_CRYSTAL) {
                     return stack.getItem() == CoreModule.RESONATING_CRYSTAL_ITEM.get();
                 }
@@ -76,7 +78,10 @@ public class LaserTileEntity extends GenericTileEntity implements ITickableTileE
                     return stack.getItem() != CoreModule.RESONATING_CRYSTAL_ITEM.get();
                 }
                 return false;
-            }, (slot, stack) -> slot != SLOT_ACTIVE_CATALYST, (integer, stack) -> true);
+            })
+            .insertable(notslot(SLOT_ACTIVE_CATALYST))
+            .extractable(yes())
+            .build();
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Laser")

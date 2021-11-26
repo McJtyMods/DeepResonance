@@ -33,6 +33,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import javax.annotation.Nonnull;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
+import static mcjty.lib.container.GenericItemHandler.match;
 import static mcjty.lib.container.SlotDefinition.specific;
 
 public class PurifierTileEntity extends GenericTileEntity implements ITickableTileEntity {
@@ -46,7 +47,9 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
             .playerSlots(10, 70));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY, (slot, stack) -> stack.getItem() == CoreModule.FILTER_MATERIAL_ITEM.get());
+    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
+            .itemValid(match(CoreModule.FILTER_MATERIAL_ITEM))
+            .build();
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Purifier")

@@ -57,10 +57,9 @@ public class SmelterTileEntity extends GenericTileEntity implements ITickableTil
             .playerSlots(10, 70));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY,
-            (slot, stack) -> {
-                return true; // @todo 1.16 DeepResonanceTags.RESONANT_ORE_ITEM.contains(stack.getItem());
-            });
+    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
+            .itemValid((integer, itemStack) -> true) // @todo 1.16 DeepResonanceTags.RESONANT_ORE_ITEM.contains(stack.getItem());
+            .build();
 
     @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SmelterConfig.POWER_MAXIMUM.get(), SmelterConfig.POWER_PER_TICK_IN.get());
