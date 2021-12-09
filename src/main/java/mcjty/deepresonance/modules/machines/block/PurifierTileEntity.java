@@ -18,12 +18,11 @@ import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.container.InventoryLocator;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
-import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
@@ -36,7 +35,7 @@ import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.container.GenericItemHandler.match;
 import static mcjty.lib.container.SlotDefinition.specific;
 
-public class PurifierTileEntity extends GenericTileEntity implements ITickableTileEntity {
+public class PurifierTileEntity extends TickingTileEntity {
 
     public static final int SLOT = 0;
 
@@ -81,10 +80,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
     }
 
     @Override
-    public void tick() {
-        if (level.isClientSide()) {
-            return;
-        }
+    public void tickServer() {
         if (!tankHook.checkTanks()) {
             maybeOutput();
             return;

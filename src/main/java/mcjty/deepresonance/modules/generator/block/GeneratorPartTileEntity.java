@@ -11,7 +11,7 @@ import mcjty.lib.multiblock.MultiblockSupport;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
-import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.EnergyTools;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.block.Block;
@@ -20,7 +20,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -31,7 +30,7 @@ import net.minecraftforge.common.util.Constants;
 import javax.annotation.Nonnull;
 import java.util.Set;
 
-public class GeneratorPartTileEntity extends GenericTileEntity implements ITickableTileEntity, IMultiblockConnector {
+public class GeneratorPartTileEntity extends TickingTileEntity implements IMultiblockConnector {
 
     private int blobId = -1;
 
@@ -43,15 +42,8 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
     }
 
     @Override
-    public void tick() {
-        if (!level.isClientSide()) {
-            checkStateServer();
-        }
-    }
-
-    private void checkStateServer() {
+    public void tickServer() {
         int energyStored = energyStorage.getEnergyStored();
-
         if (energyStored <= 0) {
             return;
         }

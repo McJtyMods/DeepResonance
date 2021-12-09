@@ -4,11 +4,10 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.client.ModelLoaderCoreModule;
 import mcjty.deepresonance.modules.core.util.CrystalConfig;
 import mcjty.deepresonance.modules.core.util.CrystalHelper;
-import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.TickingTileEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -21,7 +20,7 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-public class ResonatingCrystalTileEntity extends GenericTileEntity implements ITickableTileEntity {
+public class ResonatingCrystalTileEntity extends TickingTileEntity {
 
     // The total maximum RF you can get out of a crystal with the following characteristics:
     //    * S: Strength (0-100%)
@@ -133,10 +132,8 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
 
 
     @Override
-    public void tick() {
-        if (!level.isClientSide()) {
-            todoCrystals.add(this);
-        }
+    protected void tickServer() {
+        todoCrystals.add(this);
     }
 
     public void setEfficiency(double efficiency) {

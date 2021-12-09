@@ -15,10 +15,7 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
-import mcjty.lib.tileentity.Cap;
-import mcjty.lib.tileentity.CapType;
-import mcjty.lib.tileentity.GenericEnergyStorage;
-import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.*;
 import mcjty.lib.varia.LevelTools;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
@@ -40,7 +37,7 @@ import static mcjty.lib.container.GenericItemHandler.no;
 import static mcjty.lib.container.GenericItemHandler.yes;
 import static mcjty.lib.container.SlotDefinition.generic;
 
-public class CrystallizerTileEntity extends GenericTileEntity implements ITickableTileEntity {
+public class CrystallizerTileEntity extends TickingTileEntity {
 
     public static final int SLOT = 0;
 
@@ -85,11 +82,7 @@ public class CrystallizerTileEntity extends GenericTileEntity implements ITickab
     }
 
     @Override
-    public void tick() {
-        if (level.isClientSide()) {
-            return;
-        }
-
+    public void tickServer() {
         if (!canCrystallize()) {
             return;
         }

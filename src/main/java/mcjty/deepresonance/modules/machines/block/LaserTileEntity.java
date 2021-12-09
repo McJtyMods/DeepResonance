@@ -17,10 +17,7 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
-import mcjty.lib.tileentity.Cap;
-import mcjty.lib.tileentity.CapType;
-import mcjty.lib.tileentity.GenericEnergyStorage;
-import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.container.INamedContainerProvider;
@@ -47,7 +44,7 @@ import static mcjty.lib.container.GenericItemHandler.notslot;
 import static mcjty.lib.container.GenericItemHandler.yes;
 import static mcjty.lib.container.SlotDefinition.generic;
 
-public class LaserTileEntity extends GenericTileEntity implements ITickableTileEntity {
+public class LaserTileEntity extends TickingTileEntity {
 
     public static final int SLOT_CRYSTAL = 0;
     public static final int SLOT_CATALYST = 1;
@@ -123,11 +120,7 @@ public class LaserTileEntity extends GenericTileEntity implements ITickableTileE
 //    }
 
     @Override
-    public void tick() {
-        if (level.isClientSide()) {
-            return;
-        }
-
+    public void tickServer() {
         crystalCountdown--;
         if (crystalCountdown <= 0) {
             checkCrystal();

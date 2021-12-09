@@ -17,7 +17,7 @@ import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
-import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import net.minecraft.block.Block;
@@ -25,7 +25,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
@@ -36,7 +35,7 @@ import javax.annotation.Nonnull;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 
-public class ValveTileEntity extends GenericTileEntity implements ITickableTileEntity {
+public class ValveTileEntity extends TickingTileEntity {
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(0));
 
@@ -83,13 +82,7 @@ public class ValveTileEntity extends GenericTileEntity implements ITickableTileE
     }
 
     @Override
-    public void tick() {
-        if (level != null && !level.isClientSide()) {
-            tickServer();
-        }
-    }
-
-    private void tickServer() {
+    public void tickServer() {
         if (!isMachineEnabled()) {
             return;
         }

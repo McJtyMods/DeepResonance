@@ -9,14 +9,13 @@ import mcjty.deepresonance.modules.generator.util.CollectorConfig;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.deepresonance.modules.radiation.manager.DRRadiationManager;
 import mcjty.lib.multiblock.MultiblockDriver;
-import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.Broadcaster;
 import mcjty.lib.varia.Logging;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
@@ -26,7 +25,7 @@ import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 
-public class EnergyCollectorTileEntity extends GenericTileEntity implements ITickableTileEntity {
+public class EnergyCollectorTileEntity extends TickingTileEntity {
 
     // Minimum power before we stop using a crystal.
     public static final float CRYSTAL_MIN_POWER = .00001f;
@@ -45,13 +44,7 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
     }
 
     @Override
-    public void tick() {
-        if (!level.isClientSide()) {
-            checkStateServer();
-        }
-    }
-
-    private void checkStateServer() {
+    public void tickServer() {
         boolean active = false;
         int startup = 0;
         GeneratorBlob network = null;

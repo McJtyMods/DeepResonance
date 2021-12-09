@@ -6,7 +6,7 @@ import mcjty.deepresonance.modules.generator.data.GeneratorBlob;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.multiblock.MultiblockSupport;
-import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.Broadcaster;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.block.Block;
@@ -14,7 +14,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
@@ -23,7 +22,7 @@ import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 
-public class GeneratorControllerTileEntity extends GenericTileEntity implements ITickableTileEntity {
+public class GeneratorControllerTileEntity extends TickingTileEntity {
 
     private int startup = 0;
     private int shutdown = 0;
@@ -58,44 +57,8 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
     }
 
     @Override
-    public void tick() {
-        if (!level.isClientSide()) {
-            checkStateServer();
-        } else {
-            checkStateClient();
-        }
-    }
-
-    protected void checkStateClient() {
-        // @todo 1.16
-//        if (GeneratorConfiguration.baseGeneratorVolume < 0.01f) {
-//            // No sounds.
-//            return;
-//        }
-//        if (startup != 0) {
-//            if (!GeneratorSoundController.isStartupPlaying(level, pos)) {
-//                GeneratorSoundController.playStartup(level, pos);
-//            }
-//        } else if (shutdown != 0) {
-//            if (!GeneratorSoundController.isShutdownPlaying(level, pos)) {
-//                GeneratorSoundController.playShutdown(level, pos);
-//            }
-//        } else if (active) {
-//            if (!GeneratorSoundController.isLoopPlaying(level, pos)) {
-//                GeneratorSoundController.playLoop(level, pos);
-//            }
-//        } else {
-//            stopSounds();
-//        }
-    }
-
-    private void stopSounds() {
-        // @todo 1.16
-//        GeneratorSoundController.stopSound(level, getBlockPos());
-    }
-
-    protected void checkStateServer() {
-        boolean active = (rsControlled && powerLevel > 0) || (!rsControlled && activated);
+    protected void tickServer() {
+        boolean active1 = (rsControlled && powerLevel > 0) || (!rsControlled && activated);
 
         // @todo optimize this?
         boolean dirty = false;
@@ -109,7 +72,7 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
                 int networkId = generatorTileEntity.getMultiblockId();
                 if (networkId != -1 && !networks.contains(networkId)) {
                     networks.add(networkId);
-                    if (active) {
+                    if (active1) {
                         // Only activate with sufficient energy collectors.
                         int countCollectors = getCollectorBlocks(generatorTileEntity.getMultiblockId(), generatorTileEntity.getBlob(), newC);
                         if (countCollectors == 1) {
@@ -138,6 +101,35 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getNetwork(level);
             generatorNetwork.save();
         }
+    }
+
+    @Override
+    protected void tickClient() {
+        // @todo 1.16
+//        if (GeneratorConfiguration.baseGeneratorVolume < 0.01f) {
+//            // No sounds.
+//            return;
+//        }
+//        if (startup != 0) {
+//            if (!GeneratorSoundController.isStartupPlaying(level, pos)) {
+//                GeneratorSoundController.playStartup(level, pos);
+//            }
+//        } else if (shutdown != 0) {
+//            if (!GeneratorSoundController.isShutdownPlaying(level, pos)) {
+//                GeneratorSoundController.playShutdown(level, pos);
+//            }
+//        } else if (active) {
+//            if (!GeneratorSoundController.isLoopPlaying(level, pos)) {
+//                GeneratorSoundController.playLoop(level, pos);
+//            }
+//        } else {
+//            stopSounds();
+//        }
+    }
+
+    private void stopSounds() {
+        // @todo 1.16
+//        GeneratorSoundController.stopSound(level, getBlockPos());
     }
 
     private MultiblockDriver<GeneratorBlob> getDriver() {

@@ -18,7 +18,7 @@ import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
-import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.TickingTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluids;
@@ -27,7 +27,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.Lazy;
@@ -40,7 +39,7 @@ import javax.annotation.Nonnull;
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.container.SlotDefinition.generic;
 
-public class SmelterTileEntity extends GenericTileEntity implements ITickableTileEntity {
+public class SmelterTileEntity extends TickingTileEntity {
 
     public static final int SLOT = 0;
 
@@ -99,10 +98,7 @@ public class SmelterTileEntity extends GenericTileEntity implements ITickableTil
     }
 
     @Override
-    public void tick() {
-        if (level.isClientSide()) {
-            return;
-        }
+    public void tickServer() {
         if (processTimeLeft > 0) {
             if (canWork()) {
                 processTimeLeft--;
