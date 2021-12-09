@@ -163,9 +163,8 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
         return items.getStackInSlot(SLOT).getItem() == CoreModule.FILTER_MATERIAL_ITEM.get();
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putInt("timeToGo", timeToGo);
         if (processing != null) {
             CompoundNBT tag = new CompoundNBT();
@@ -173,11 +172,11 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
             tagCompound.put("processing", tag);
         }
 
-        return super.save(tagCompound);
+        super.saveAdditional(tagCompound);
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
+    public void load(CompoundNBT tagCompound) {
         timeToGo = tagCompound.getInt("timeToGo");
         if (tagCompound.contains("processing")) {
             processing = DeepResonanceFluidHelper.readCrystalDataFromStack(FluidStack.loadFluidStackFromNBT(tagCompound.getCompound("processing")));
@@ -185,7 +184,7 @@ public class PurifierTileEntity extends GenericTileEntity implements ITickableTi
             processing = null;
         }
 
-        super.read(tagCompound);
+        super.load(tagCompound);
     }
 
 }

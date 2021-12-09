@@ -345,9 +345,8 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
     }
 
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         byte[] crystalX = new byte[crystals.size()];
         byte[] crystalY = new byte[crystals.size()];
         byte[] crystalZ = new byte[crystals.size()];
@@ -365,12 +364,12 @@ public class EnergyCollectorTileEntity extends GenericTileEntity implements ITic
         tagCompound.putBoolean("lasersActive", lasersActive);
         tagCompound.putInt("laserStartup", laserStartup);
         tagCompound.putInt("networkId", blobId);
-        return super.save(tagCompound);
+        super.saveAdditional(tagCompound);
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
         byte[] crystalX = tagCompound.getByteArray("crystalsX");
         byte[] crystalY = tagCompound.getByteArray("crystalsY");
         byte[] crystalZ = tagCompound.getByteArray("crystalsZ");

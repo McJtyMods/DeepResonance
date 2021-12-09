@@ -174,8 +174,8 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
 
         strength = tagCompound.getDouble("strength");
         power = tagCompound.getDouble("power");
@@ -184,14 +184,13 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity implements IT
     }
 
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putDouble("strength", strength);
         tagCompound.putDouble("power", power);
         tagCompound.putDouble("efficiency", efficiency);
         tagCompound.putDouble("purity", purity);
-        return super.save(tagCompound);
+        super.saveAdditional(tagCompound);
     }
 
     @Nonnull

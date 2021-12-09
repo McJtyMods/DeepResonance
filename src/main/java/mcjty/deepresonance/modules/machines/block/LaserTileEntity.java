@@ -258,23 +258,22 @@ public class LaserTileEntity extends GenericTileEntity implements ITickableTileE
         }
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putInt("progress", progressCounter);
         tagCompound.putFloat("liquid", crystalLiquid);
         tagCompound.putFloat("efficiency", efficiency);
         tagCompound.putString("bonus", InfusionBonusRegistry.toString(activeBonus));
-        return super.save(tagCompound);
+        super.saveAdditional(tagCompound);
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
+    public void load(CompoundNBT tagCompound) {
         progressCounter = tagCompound.getInt("progress");
         crystalLiquid = tagCompound.getFloat("liquid");
         efficiency = tagCompound.getFloat("efficiency");
         activeBonus = InfusionBonusRegistry.fromString(tagCompound.getString("bonus"));
-        super.read(tagCompound);
+        super.load(tagCompound);
     }
 
     public int getMaxPower() {

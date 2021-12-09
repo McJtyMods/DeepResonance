@@ -76,23 +76,22 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         return clientRenderFluid;
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putInt("blobid", blobId);
         writeClientDataToNBT(tagCompound);
-        return super.save(tagCompound);
+        super.saveAdditional(tagCompound);
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
+    public void load(CompoundNBT tagCompound) {
         if (tagCompound.contains("blobid")) {
             blobId = tagCompound.getInt("blobid");
         } else {
             blobId = -1;
         }
         readClientDataFromNBT(tagCompound);
-        super.read(tagCompound);
+        super.load(tagCompound);
     }
 
     @Override

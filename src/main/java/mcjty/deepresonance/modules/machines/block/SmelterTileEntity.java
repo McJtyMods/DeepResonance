@@ -188,20 +188,19 @@ public class SmelterTileEntity extends GenericTileEntity implements ITickableTil
         }
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putInt("processTime", processTime);
         tagCompound.putInt("processTimeLeft", processTimeLeft);
         tagCompound.putFloat("finalQuality", finalQuality);
         tagCompound.putFloat("finalPurity", finalPurity);
 
-        return super.save(tagCompound);
+        super.saveAdditional(tagCompound);
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
 
         processTime = (short) tagCompound.getInt("processTime");
         processTimeLeft = (short) tagCompound.getInt("processTimeLeft");

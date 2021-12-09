@@ -180,9 +180,8 @@ public class ValveTileEntity extends GenericTileEntity implements ITickableTileE
         setChanged();
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putInt("progress", progress);
 
         tagCompound.putFloat("minPurity", minPurity);
@@ -190,12 +189,12 @@ public class ValveTileEntity extends GenericTileEntity implements ITickableTileE
         tagCompound.putFloat("minEfficiency", minEfficiency);
         tagCompound.putInt("maxMb", maxMb);
 
-        return super.save(tagCompound);
+        super.saveAdditional(tagCompound);
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
 
         progress = tagCompound.getInt("progress");
 

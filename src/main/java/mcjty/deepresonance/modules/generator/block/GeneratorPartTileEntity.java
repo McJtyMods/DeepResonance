@@ -179,16 +179,15 @@ public class GeneratorPartTileEntity extends GenericTileEntity implements ITicka
         }
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putInt("networkId", blobId);
-        return super.save(tagCompound);
+        super.saveAdditional(tagCompound);
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
         blobId = tagCompound.getInt("networkId");
     }
 

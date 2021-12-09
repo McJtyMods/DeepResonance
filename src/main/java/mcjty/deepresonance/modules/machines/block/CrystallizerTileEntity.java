@@ -188,25 +188,24 @@ public class CrystallizerTileEntity extends GenericTileEntity implements ITickab
         super.onDataPacket(net, packet);
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         if (crystalData != null) {
             CompoundNBT tag = new CompoundNBT();
             crystalData.getFluidStack().writeToNBT(tag);
             tagCompound.put("crystalData", tag);
         }
-        return super.save(tagCompound);
+        super.saveAdditional(tagCompound);
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
+    public void load(CompoundNBT tagCompound) {
         if (tagCompound.contains("crystalData")) {
             crystalData = DeepResonanceFluidHelper.readCrystalDataFromStack(FluidStack.loadFluidStackFromNBT(tagCompound.getCompound("crystalData")));
         } else {
             crystalData = null;
         }
-        super.read(tagCompound);
+        super.load(tagCompound);
     }
 
     private static int getRclPerCrystal() {

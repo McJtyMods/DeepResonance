@@ -17,14 +17,13 @@ public class LensTileEntity extends GenericTileEntity implements ITickableTileEn
     public void tick() {
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
-        return super.save(tagCompound);
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+        super.saveAdditional(tagCompound);
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
     }
 }

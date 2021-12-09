@@ -237,21 +237,20 @@ public class GeneratorControllerTileEntity extends GenericTileEntity implements 
         return true;
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putInt("startup", startup);
         tagCompound.putInt("shutdown", shutdown);
         tagCompound.putBoolean("active", active);
-        return super.save(tagCompound);
+        super.saveAdditional(tagCompound);
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
+    public void load(CompoundNBT tagCompound) {
         startup = tagCompound.getInt("startup");
         shutdown = tagCompound.getInt("shutdown");
         active = tagCompound.getBoolean("active");
-        super.read(tagCompound);
+        super.load(tagCompound);
     }
 
 }
