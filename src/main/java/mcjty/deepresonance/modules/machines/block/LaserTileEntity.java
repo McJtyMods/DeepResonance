@@ -234,7 +234,7 @@ public class LaserTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void writeClientDataToNBT(CompoundNBT tagCompound) {
+    public void saveClientDataToNBT(CompoundNBT tagCompound) {
         ListNBT list = new ListNBT();
         for (BlockPos pos : laserBeam) {
             list.add(NBTUtil.writeBlockPos(pos));
@@ -243,7 +243,7 @@ public class LaserTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void readClientDataFromNBT(CompoundNBT tagCompound) {
+    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
         laserBeam.clear();
         ListNBT list = tagCompound.getList("laserBeam", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < list.size(); i++) {

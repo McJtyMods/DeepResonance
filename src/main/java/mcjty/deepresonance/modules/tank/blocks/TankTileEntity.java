@@ -79,7 +79,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     @Override
     public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putInt("blobid", blobId);
-        writeClientDataToNBT(tagCompound);
+        saveClientDataToNBT(tagCompound);
         super.saveAdditional(tagCompound);
     }
 
@@ -90,12 +90,12 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         } else {
             blobId = -1;
         }
-        readClientDataFromNBT(tagCompound);
+        loadClientDataFromNBT(tagCompound);
         super.load(tagCompound);
     }
 
     @Override
-    public void writeClientDataToNBT(CompoundNBT tagCompound) {
+    public void saveClientDataToNBT(CompoundNBT tagCompound) {
         tagCompound.putFloat("renderC", renderHeight);
         if (clientRenderFluid != null) {
             tagCompound.putString("fluidC", clientRenderFluid.getRegistryName().toString());
@@ -103,7 +103,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     @Override
-    public void readClientDataFromNBT(CompoundNBT tagCompound) {
+    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
         renderHeight = tagCompound.getFloat("renderC");
         if (tagCompound.contains("fluidC")) {
             clientRenderFluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(tagCompound.getString("fluidC")));
