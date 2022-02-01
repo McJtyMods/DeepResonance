@@ -1,6 +1,6 @@
 package mcjty.deepresonance.modules.generator.block;
 
-import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.core.block.ResonatingCrystalBlock;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
@@ -244,7 +244,7 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
                 int maxhordist = CollectorConfig.MAX_HORIZONTAL_CRYSTAL_DISTANCE.get();
                 for (int x = xCoord - maxhordist; x <= xCoord + maxhordist; x++) {
                     for (int z = zCoord - maxhordist; z <= zCoord + maxhordist; z++) {
-                        if (getLevel().getBlockState(new BlockPos(x, y, z)).getBlock() == CoreModule.RESONATING_CRYSTAL_BLOCK.get()) {
+                        if (getLevel().getBlockState(new BlockPos(x, y, z)).getBlock() instanceof ResonatingCrystalBlock) {
                             maxSupportedRF = addCrystal(x, y, z, network, newCrystals, crystals, maxSupportedRF);
                             if (maxSupportedRF == ERROR_TOOMANYCRYSTALS) {
                                 tooManyCrystals = true;

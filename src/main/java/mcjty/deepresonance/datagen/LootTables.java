@@ -36,7 +36,10 @@ public class LootTables extends BaseLootTableProvider {
         addSimpleTable(GeneratorModule.GENERATOR_CONTROLLER_BLOCK.get());
         addSimpleTable(GeneratorModule.GENERATOR_PART_BLOCK.get());
 
-        addStandardTable(CoreModule.RESONATING_CRYSTAL_BLOCK.get());
+        addStandardTable(CoreModule.RESONATING_CRYSTAL_GENERATED.get());
+        addStandardTable(CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY.get());
+        addStandardTable(CoreModule.RESONATING_CRYSTAL_NATURAL.get());
+        addStandardTable(CoreModule.RESONATING_CRYSTAL_NATURAL_EMPTY.get());
         addStandardTable(TankModule.TANK_BLOCK.get());
     }
 

@@ -43,7 +43,7 @@ public class DeepResonanceTOPDriver implements TOPDriver {
                 drivers.put(id, new GeneratorPartDriver());
             } else if (blockState.getBlock() == GeneratorModule.GENERATOR_CONTROLLER_BLOCK.get()) {
                 drivers.put(id, new GeneratorControllerDriver());
-            } else if (blockState.getBlock() == CoreModule.RESONATING_CRYSTAL_BLOCK.get()) {
+            } else if (blockState.getBlock() instanceof ResonatingCrystalBlock) {
                 drivers.put(id, new CrystalDriver());
             } else if (blockState.getBlock() == TankModule.TANK_BLOCK.get()) {
                 drivers.put(id, new TankDriver());
@@ -108,8 +108,11 @@ public class DeepResonanceTOPDriver implements TOPDriver {
 //                    probeInfo.text(TextStyleClass.INFO + "Resistance: " + crystal.getResistance());
 //                    probeInfo.text(TextStyleClass.INFO + "Cooldown: " + crystal.getCooldown());
                     BlockState state = world.getBlockState(data.getPos());
-                    probeInfo.text(CompoundText.createLabelInfo("Generated ", state.getValue(ResonatingCrystalBlock.GENERATED)));
-                    probeInfo.text(CompoundText.createLabelInfo("Empty ", state.getValue(ResonatingCrystalBlock.EMPTY)));
+                    if (state.getBlock() instanceof ResonatingCrystalBlock) {
+                        ResonatingCrystalBlock crystalBlock = (ResonatingCrystalBlock) state.getBlock();
+                        probeInfo.text(CompoundText.createLabelInfo("Generated ", crystalBlock.isGenerated()));
+                        probeInfo.text(CompoundText.createLabelInfo("Empty ", crystalBlock.isEmpty()));
+                    }
                 } else {
                     probeInfo.horizontal().text(TextFormatting.YELLOW + "Power: " + fmt.format(crystal.getPower()) + "% (" + rfPerTick + " RF/t)")
                             .progress((int) crystal.getPower(), 100, probeInfo.defaultProgressStyle()

@@ -3,7 +3,6 @@ package mcjty.deepresonance.modules.worldgen.world;
 import com.mojang.serialization.Codec;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.deepresonance.modules.core.block.ResonatingCrystalBlock;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.worldgen.WorldGenModule;
 import mcjty.deepresonance.modules.worldgen.util.WorldGenConfiguration;
@@ -19,8 +18,8 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.FeatureSpreadConfig;
 import net.minecraft.world.gen.placement.Placement;
-import net.minecraft.world.gen.placement.TopSolidRangeConfig;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
@@ -47,13 +46,13 @@ public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig
         // @todo 1.16 configure correctly!
         CRYSTAL_CONFIGURED_OVERWORLD = WorldGenModule.CRYSTAL_FEATURE.get()
                 .configured(new ResonantCrystalFeatureConfig(1.0f, 1.0f, 1.0f, 1.0f))
-                .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(1, 0, 1)));
+                .decorated(Placement.COUNT.configured(new FeatureSpreadConfig(1)));
         CRYSTAL_CONFIGURED_NETHER = WorldGenModule.CRYSTAL_FEATURE.get()
                 .configured(new ResonantCrystalFeatureConfig(1.0f, 1.0f, 1.0f, 1.0f))
-                .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(1, 0, 1)));
+                .decorated(Placement.COUNT.configured(new FeatureSpreadConfig(1)));
         CRYSTAL_CONFIGURED_END = WorldGenModule.CRYSTAL_FEATURE.get()
                 .configured(new ResonantCrystalFeatureConfig(1.0f, 1.0f, 1.0f, 1.0f))
-                .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(1, 0, 1)));
+                .decorated(Placement.COUNT.configured(new FeatureSpreadConfig(1)));
 
         Registry.register(registry, OVERWORLD_CONFIGURED_CRYSTAL_ID, CRYSTAL_CONFIGURED_OVERWORLD);
         Registry.register(registry, NETHER_CONFIGURED_CRYSTAL_ID, CRYSTAL_CONFIGURED_NETHER);
@@ -99,9 +98,7 @@ public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig
     }
 
     public static void spawnRandomCrystal(ISeedReader world, Random random, BlockPos pos, float str, float pow, float eff, float pur) {
-        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_BLOCK.get().defaultBlockState()
-                        .setValue(ResonatingCrystalBlock.GENERATED, true)
-                        .setValue(ResonatingCrystalBlock.EMPTY, false),
+        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_NATURAL.get().defaultBlockState(),
                 Constants.BlockFlags.DEFAULT);
         TileEntity te = world.getBlockEntity(pos);
         if (te instanceof ResonatingCrystalTileEntity) {

@@ -29,7 +29,7 @@ public class CrystallizerTESR extends TileEntityRenderer<CrystallizerTileEntity>
 
     public static void setModel(IBakedModel model) {
         crystal = model;
-        stack = new ItemStack(CoreModule.RESONATING_CRYSTAL_ITEM.get());
+        stack = new ItemStack(CoreModule.RESONATING_CRYSTAL_GENERATED.get());
     }
 
     public static void register() {

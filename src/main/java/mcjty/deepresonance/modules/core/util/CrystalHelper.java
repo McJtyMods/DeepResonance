@@ -65,7 +65,7 @@ public class CrystalHelper {
     }
 
     public static void spawnCrystal(World world, BlockPos pos, float purity, float strength, float efficiency, float power) {
-        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_BLOCK.get().defaultBlockState(), net.minecraftforge.common.util.Constants.BlockFlags.DEFAULT);
+        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_GENERATED.get().defaultBlockState(), net.minecraftforge.common.util.Constants.BlockFlags.DEFAULT);
         TileEntity te = world.getBlockEntity(pos);
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;

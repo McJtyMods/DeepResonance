@@ -80,27 +80,36 @@ public class BlockStates extends BaseBlockStateProvider {
         ResourceLocation crystal = new ResourceLocation(DeepResonance.MODID, "crystal");
         ResourceLocation crystalGenerated = new ResourceLocation(DeepResonance.MODID, "crystal_generated");
 
-        ModelFile empty = models().withExistingParent("crystal_empty", crystal).texture("crystal_texture", "deepresonance:block/empty_crystal");
+        ModelFile emptyNatural = models().withExistingParent("crystal_empty", crystal).texture("crystal_texture", "deepresonance:block/empty_crystal");
         ModelFile emptyGenerated = models().withExistingParent("crystal_empty_pure", crystalGenerated).texture("crystal_texture", "deepresonance:block/empty_crystal");
-        ModelFile full = models().withExistingParent("crystal_full", crystal).texture("crystal_texture", "deepresonance:block/crystal");
+        ModelFile fullNatural = models().withExistingParent("crystal_full", crystal).texture("crystal_texture", "deepresonance:block/crystal");
         ModelFile fullGenerated = models().withExistingParent("crystal_full_pure", crystalGenerated).texture("crystal_texture", "deepresonance:block/crystal");
 
-        getVariantBuilder(CoreModule.RESONATING_CRYSTAL_BLOCK.get()).forAllStates(state -> {
+        getVariantBuilder(CoreModule.RESONATING_CRYSTAL_GENERATED.get()).forAllStates(state -> {
             Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-            Boolean isEmpty = state.getValue(ResonatingCrystalBlock.EMPTY);
-            Boolean isGenerated = state.getValue(ResonatingCrystalBlock.GENERATED);
-            ModelFile model;
-            if (isEmpty && isGenerated) {
-                model = emptyGenerated;
-            } else if (isEmpty) {
-                model = empty;
-            } else if (isGenerated) {
-                model = fullGenerated;
-            } else {
-                model = full;
-            }
             return ConfiguredModel.builder()
-                    .modelFile(model)
+                    .modelFile(fullGenerated)
+                    .rotationY((int) ((direction.toYRot() + 180) % 360))
+                    .build();
+        });
+        getVariantBuilder(CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY.get()).forAllStates(state -> {
+            Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+            return ConfiguredModel.builder()
+                    .modelFile(emptyGenerated)
+                    .rotationY((int) ((direction.toYRot() + 180) % 360))
+                    .build();
+        });
+        getVariantBuilder(CoreModule.RESONATING_CRYSTAL_NATURAL.get()).forAllStates(state -> {
+            Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+            return ConfiguredModel.builder()
+                    .modelFile(fullNatural)
+                    .rotationY((int) ((direction.toYRot() + 180) % 360))
+                    .build();
+        });
+        getVariantBuilder(CoreModule.RESONATING_CRYSTAL_NATURAL_EMPTY.get()).forAllStates(state -> {
+            Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+            return ConfiguredModel.builder()
+                    .modelFile(emptyNatural)
                     .rotationY((int) ((direction.toYRot() + 180) % 360))
                     .build();
         });

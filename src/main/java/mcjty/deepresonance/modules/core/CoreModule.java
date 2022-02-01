@@ -31,8 +31,18 @@ public class CoreModule implements IModule {
 
     public static final RegistryObject<Fluid> LIQUID_CRYSTAL = Registration.FLUIDS.register("liquid_crystal", FluidLiquidCrystal::new);
 
-    public static final RegistryObject<ResonatingCrystalBlock> RESONATING_CRYSTAL_BLOCK = Registration.BLOCKS.register("resonating_crystal", ResonatingCrystalBlock::new);
-    public static final RegistryObject<TileEntityType<ResonatingCrystalTileEntity>> TYPE_RESONATING_CRYSTAL = TILES.register("resonating_crystal", () -> TileEntityType.Builder.of(ResonatingCrystalTileEntity::new, RESONATING_CRYSTAL_BLOCK.get()).build(null));
+    public static final RegistryObject<ResonatingCrystalBlock> RESONATING_CRYSTAL_NATURAL = Registration.BLOCKS.register("resonating_crystal_natural", () -> new ResonatingCrystalBlock(false, false));
+    public static final RegistryObject<ResonatingCrystalBlock> RESONATING_CRYSTAL_NATURAL_EMPTY = Registration.BLOCKS.register("resonating_crystal_natural_empty", () -> new ResonatingCrystalBlock(false, true));
+    public static final RegistryObject<ResonatingCrystalBlock> RESONATING_CRYSTAL_GENERATED = Registration.BLOCKS.register("resonating_crystal_generated", () -> new ResonatingCrystalBlock(true, false));
+    public static final RegistryObject<ResonatingCrystalBlock> RESONATING_CRYSTAL_GENERATED_EMPTY = Registration.BLOCKS.register("resonating_crystal_generated_empty", () -> new ResonatingCrystalBlock(true, true));
+    public static final RegistryObject<Item> RESONATING_CRYSTAL_NATURAL_ITEM = Registration.fromBlock(RESONATING_CRYSTAL_NATURAL);
+    public static final RegistryObject<Item> RESONATING_CRYSTAL_NATURAL_EMPTY_ITEM = Registration.fromBlock(RESONATING_CRYSTAL_NATURAL_EMPTY);
+    public static final RegistryObject<Item> RESONATING_CRYSTAL_GENERATED_ITEM = Registration.fromBlock(RESONATING_CRYSTAL_GENERATED);
+    public static final RegistryObject<Item> RESONATING_CRYSTAL_GENERATED_EMPTY_ITEM = Registration.fromBlock(RESONATING_CRYSTAL_GENERATED_EMPTY);
+    public static final RegistryObject<TileEntityType<ResonatingCrystalTileEntity>> TYPE_RESONATING_CRYSTAL = TILES.register("resonating_crystal", () -> TileEntityType.Builder.of(ResonatingCrystalTileEntity::new,
+            RESONATING_CRYSTAL_GENERATED.get(), RESONATING_CRYSTAL_GENERATED_EMPTY.get(),
+            RESONATING_CRYSTAL_NATURAL.get(), RESONATING_CRYSTAL_NATURAL_EMPTY.get())
+            .build(null));
 
     public static final RegistryObject<Block> RESONATING_ORE_STONE_BLOCK = Registration.BLOCKS.register("resonating_ore_stone", () -> new Block(ORE_PROPERTIES));
     public static final RegistryObject<Block> RESONATING_ORE_NETHER_BLOCK = Registration.BLOCKS.register("resonating_ore_nether", () -> new Block(ORE_PROPERTIES));
@@ -44,7 +54,6 @@ public class CoreModule implements IModule {
     public static final RegistryObject<Item> SPENT_FILTER_ITEM = Registration.ITEMS.register("spent_filter_material", () -> new Item(Registration.createStandardProperties()));
     public static final RegistryObject<Item> LIQUID_INJECTOR_ITEM = Registration.ITEMS.register("liquid_injector", () -> new ItemLiquidInjector(Registration.createStandardProperties()));
     public static final RegistryObject<Item> MACHINE_FRAME_ITEM = Registration.ITEMS.register("machine_frame", () -> new Item(Registration.createStandardProperties()));
-    public static final RegistryObject<Item> RESONATING_CRYSTAL_ITEM = Registration.fromBlock(RESONATING_CRYSTAL_BLOCK);
     public static final RegistryObject<Item> RESONATING_ORE_STONE_ITEM = Registration.fromBlock(RESONATING_ORE_STONE_BLOCK);
     public static final RegistryObject<Item> RESONATING_ORE_NETHER_ITEM = Registration.fromBlock(RESONATING_ORE_NETHER_BLOCK);
     public static final RegistryObject<Item> RESONATING_ORE_END_ITEM = Registration.fromBlock(RESONATING_ORE_END_BLOCK);

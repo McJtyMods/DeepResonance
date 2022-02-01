@@ -29,6 +29,11 @@ class Items extends BaseItemModelProvider {
         cubeAll(name(CoreModule.MACHINE_FRAME_ITEM.get()), modLoc("block/machine_side"));
 
 //        parentedItem(TankModule.TANK_ITEM.get(), BUILTIN_ENTITY); // @todo 1.16
+        parentedBlock(CoreModule.RESONATING_CRYSTAL_NATURAL.get());
+        parentedBlock(CoreModule.RESONATING_CRYSTAL_NATURAL_EMPTY.get());
+        parentedBlock(CoreModule.RESONATING_CRYSTAL_GENERATED.get());
+        parentedBlock(CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY.get());
+
         parentedBlock(CoreModule.RESONATING_ORE_STONE_BLOCK.get());
         parentedBlock(CoreModule.RESONATING_ORE_NETHER_BLOCK.get());
         parentedBlock(CoreModule.RESONATING_ORE_END_BLOCK.get());

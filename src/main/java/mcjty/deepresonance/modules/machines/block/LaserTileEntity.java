@@ -17,17 +17,20 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
-import mcjty.lib.tileentity.*;
+import mcjty.lib.tileentity.Cap;
+import mcjty.lib.tileentity.CapType;
+import mcjty.lib.tileentity.GenericEnergyStorage;
+import mcjty.lib.tileentity.TickingTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -69,10 +72,10 @@ public class LaserTileEntity extends TickingTileEntity {
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
             .itemValid((slot, stack) -> {
                 if (slot == SLOT_CRYSTAL) {
-                    return stack.getItem() == CoreModule.RESONATING_CRYSTAL_ITEM.get();
+                    return isCrystalItem(stack.getItem());
                 }
                 if (slot == SLOT_CATALYST) {
-                    return stack.getItem() != CoreModule.RESONATING_CRYSTAL_ITEM.get();
+                    return !isCrystalItem(stack.getItem());
                 }
                 return false;
             })
@@ -118,6 +121,13 @@ public class LaserTileEntity extends TickingTileEntity {
 //        }
 //        itemHandler.clear();
 //    }
+
+    private static boolean isCrystalItem(Item item) {
+        return item == CoreModule.RESONATING_CRYSTAL_GENERATED_ITEM.get() ||
+                item == CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY_ITEM.get() ||
+                item == CoreModule.RESONATING_CRYSTAL_NATURAL_ITEM.get() ||
+                item == CoreModule.RESONATING_CRYSTAL_NATURAL_EMPTY_ITEM.get();
+    }
 
     @Override
     public void tickServer() {

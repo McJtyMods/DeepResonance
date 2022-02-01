@@ -47,7 +47,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
-            .itemValid((integer, stack) -> stack.getItem() == CoreModule.RESONATING_CRYSTAL_ITEM.get())
+            .itemValid((integer, stack) -> stack.getItem() == CoreModule.RESONATING_CRYSTAL_GENERATED_ITEM.get())
             .insertable(no())
             .extractable(yes())
             .build();
@@ -109,7 +109,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
             crystal.setStrength(crystalData.getStrength());
             crystal.setPower(100);
             crystalData = null;
-            items.setStackInSlot(SLOT, CoreModule.RESONATING_CRYSTAL_BLOCK.get().createStack(crystal));
+            items.setStackInSlot(SLOT, CoreModule.RESONATING_CRYSTAL_GENERATED.get().createStack(crystal));
             setChanged();
         }
         int newProgress = crystalData == null ? 0 : (int) ((crystalData.getAmount() / (float) getRclPerCrystal()) * 100);

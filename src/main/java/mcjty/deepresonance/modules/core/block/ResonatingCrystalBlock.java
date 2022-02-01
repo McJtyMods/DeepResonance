@@ -8,7 +8,6 @@ import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -17,8 +16,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -43,10 +40,10 @@ public class ResonatingCrystalBlock extends BaseBlock {
 
     private static final VoxelShape AABB = VoxelShapes.box(0.1f, 0, 0.1f, 0.9f, 0.8f, 0.9f);
 
-    public static final BooleanProperty EMPTY = BooleanProperty.create("empty");
-    public static final BooleanProperty GENERATED = BooleanProperty.create("generated");
+    private final boolean generated;
+    private final boolean empty;
 
-    public ResonatingCrystalBlock() {
+    public ResonatingCrystalBlock(boolean generated, boolean empty) {
         super(new BlockBuilder()
                 .topDriver(DeepResonanceTOPDriver.DRIVER)
                 .properties(AbstractBlock.Properties
@@ -56,6 +53,24 @@ public class ResonatingCrystalBlock extends BaseBlock {
                         .noOcclusion()
                 )
                 .tileEntitySupplier(ResonatingCrystalTileEntity::new));
+        this.generated = generated;
+        this.empty = empty;
+    }
+
+    public ResonatingCrystalBlock getEmpty() {
+        if (generated) {
+            return CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY.get();
+        } else {
+            return CoreModule.RESONATING_CRYSTAL_NATURAL_EMPTY.get();
+        }
+    }
+
+    public boolean isGenerated() {
+        return generated;
+    }
+
+    public boolean isEmpty() {
+        return empty;
     }
 
     @Nonnull
@@ -137,11 +152,5 @@ public class ResonatingCrystalBlock extends BaseBlock {
             tooltip.accept(new StringTextComponent("Power left: " + decimalFormat.format(power) + "%").withStyle(TextFormatting.YELLOW));
         }
 
-    }
-
-    @Override
-    protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder);
-        builder.add(EMPTY, GENERATED);
     }
 }
