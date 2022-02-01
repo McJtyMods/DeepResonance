@@ -2,7 +2,7 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "resonating_crystal",
+      "name": "resonating_crystal_generated",
       "rolls": 1,
       "entries": [
         {
@@ -43,7 +43,7 @@
               ]
             }
           ],
-          "name": "deepresonance:resonating_crystal"
+          "name": "deepresonance:resonating_crystal_generated"
         }
       ]
     }

@@ -85,7 +85,10 @@ public class ResonatingCrystalTileEntity extends TickingTileEntity {
         boolean newempty = isEmpty();
         if (oldempty != newempty) {
             if (level != null) {
-                level.setBlock(worldPosition, getBlockState().setValue(ResonatingCrystalBlock.EMPTY, newempty), Constants.BlockFlags.DEFAULT_AND_RERENDER);
+                if (getBlockState().getBlock() instanceof ResonatingCrystalBlock) {
+                    ResonatingCrystalBlock crystalBlock = (ResonatingCrystalBlock) getBlockState().getBlock();
+                    level.setBlock(worldPosition, crystalBlock.getEmpty().defaultBlockState(), Constants.BlockFlags.DEFAULT_AND_RERENDER);
+                }
             }
             setChanged();
         }
@@ -206,7 +209,7 @@ public class ResonatingCrystalTileEntity extends TickingTileEntity {
     // Special == 3, best non-overcharged
     // Special == 4, almost depleted
     public static void spawnRandomCrystal(World world, Random random, BlockPos pos, int special) {
-        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_BLOCK.get().defaultBlockState(), Constants.BlockFlags.DEFAULT);
+        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_GENERATED.get().defaultBlockState(), Constants.BlockFlags.DEFAULT);
         TileEntity te = world.getBlockEntity(pos);
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
@@ -230,7 +233,7 @@ public class ResonatingCrystalTileEntity extends TickingTileEntity {
     }
 
     public static void spawnRandomCrystal(World world, Random random, BlockPos pos, float str, float pow, float eff, float pur) {
-        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_BLOCK.get().defaultBlockState(), Constants.BlockFlags.DEFAULT);
+        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_GENERATED.get().defaultBlockState(), Constants.BlockFlags.DEFAULT);
         TileEntity te = world.getBlockEntity(pos);
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
