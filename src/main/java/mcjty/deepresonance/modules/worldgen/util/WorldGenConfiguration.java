@@ -93,9 +93,9 @@ public class WorldGenConfiguration {
                 .defineList("otherBiomeBlacklist", Lists.newArrayList("minecraft:the_void"), s -> s instanceof String);
 
         CRYSTAL_SPAWN_CHANCE = Config.COMMON_BUILDER.comment("The chance that a crystal will spawn in a chunk. (0 = never, 1 = every chunk")
-                .defineInRange("crystalSpawnChance", 0.15, 0, 1);
+                .defineInRange("crystalSpawnChance", 0.3, 0, 1);
         CRYSTAL_SPAWN_TRIES = Config.COMMON_BUILDER.comment("The number of times that the worldgen will try to spawn a crystal in a chunk before it fails.")
-                .defineInRange("crystalSpawnTries", 10, 1, 32);
+                .defineInRange("crystalSpawnTries", 20, 1, 32);
     }
 
 }

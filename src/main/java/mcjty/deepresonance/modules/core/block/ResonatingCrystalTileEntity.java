@@ -174,24 +174,27 @@ public class ResonatingCrystalTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
-        super.load(tagCompound);
-
-        strength = tagCompound.getDouble("strength");
-        power = tagCompound.getDouble("power");
-        efficiency = tagCompound.getDouble("efficiency");
-        purity = tagCompound.getDouble("purity");
+    protected void loadInfo(CompoundNBT tagCompound) {
+        super.loadInfo(tagCompound);
+        if (tagCompound.contains("Info")) {
+            CompoundNBT info = tagCompound.getCompound("Info");
+            strength = info.getDouble("strength");
+            power = info.getDouble("power");
+            efficiency = info.getDouble("efficiency");
+            purity = info.getDouble("purity");
+        }
     }
-
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
-        tagCompound.putDouble("strength", strength);
-        tagCompound.putDouble("power", power);
-        tagCompound.putDouble("efficiency", efficiency);
-        tagCompound.putDouble("purity", purity);
-        super.saveAdditional(tagCompound);
+    protected void saveInfo(CompoundNBT tagCompound) {
+        super.saveInfo(tagCompound);
+        CompoundNBT info = getOrCreateInfo(tagCompound);
+        info.putDouble("strength", strength);
+        info.putDouble("power", power);
+        info.putDouble("efficiency", efficiency);
+        info.putDouble("purity", purity);
     }
+
 
     @Nonnull
     @Override

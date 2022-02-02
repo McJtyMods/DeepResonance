@@ -6,6 +6,7 @@ import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.lib.datagen.BaseItemModelProvider;
+import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -29,10 +30,10 @@ class Items extends BaseItemModelProvider {
         cubeAll(name(CoreModule.MACHINE_FRAME_ITEM.get()), modLoc("block/machine_side"));
 
 //        parentedItem(TankModule.TANK_ITEM.get(), BUILTIN_ENTITY); // @todo 1.16
-        parentedBlock(CoreModule.RESONATING_CRYSTAL_NATURAL.get());
-        parentedBlock(CoreModule.RESONATING_CRYSTAL_NATURAL_EMPTY.get());
-        parentedBlock(CoreModule.RESONATING_CRYSTAL_GENERATED.get());
-        parentedBlock(CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY.get());
+        parentedBlock(CoreModule.RESONATING_CRYSTAL_NATURAL.get(), "block/crystal_full");
+        parentedBlock(CoreModule.RESONATING_CRYSTAL_NATURAL_EMPTY.get(), "block/crystal_empty");
+        parentedBlock(CoreModule.RESONATING_CRYSTAL_GENERATED.get(), "block/crystal_full_pure");
+        parentedBlock(CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY.get(), "block/crystal_empty_pure");
 
         parentedBlock(CoreModule.RESONATING_ORE_STONE_BLOCK.get());
         parentedBlock(CoreModule.RESONATING_ORE_NETHER_BLOCK.get());

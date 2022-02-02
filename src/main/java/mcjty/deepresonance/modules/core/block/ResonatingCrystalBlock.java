@@ -118,7 +118,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
     public void appendHoverText(@Nonnull ItemStack stack, @Nullable IBlockReader world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag advanced) {
         CompoundNBT tagCompound = stack.getTag();
         if (tagCompound != null) {
-            tagCompound = tagCompound.getCompound(CoreModule.TILE_DATA_TAG);
+            tagCompound = tagCompound.getCompound(CoreModule.TILE_DATA_TAG).getCompound("Info");
         }
 
         super.appendHoverText(stack, world, tooltip, advanced);
