@@ -141,9 +141,9 @@ public class DeepResonanceTOPDriver implements TOPDriver {
                             if (stack.getFluid() == CoreModule.LIQUID_CRYSTAL.get()) {
                                 DecimalFormat decimalFormat = new DecimalFormat("#.#");
                                 decimalFormat.setRoundingMode(RoundingMode.DOWN);
+                                probeInfo.text(CompoundText.createLabelInfo("Quality ", decimalFormat.format(d.getQuality() * 100) + "%"));
                                 probeInfo.text(CompoundText.createLabelInfo("Efficiency ", decimalFormat.format(d.getEfficiency() * 100) + "%"));
                                 probeInfo.text(CompoundText.createLabelInfo("Purity ", decimalFormat.format(d.getPurity() * 100) + "%"));
-                                probeInfo.text(CompoundText.createLabelInfo("Quality ", decimalFormat.format(d.getQuality() * 100) + "%"));
                                 probeInfo.text(CompoundText.createLabelInfo("Strength ", decimalFormat.format(d.getStrength() * 100) + "%"));
                             }
                         }

@@ -116,7 +116,7 @@ public class BlockStates extends BaseBlockStateProvider {
     }
 
     public BlockModelBuilder createCrystallizerModel() {
-        BlockModelBuilder ret = models().cube("crystallizer", DEFAULT_BOTTOM, DEFAULT_TOP, DEFAULT_SIDE, new ResourceLocation(DeepResonance.MODID, "block/crystallizer"), DEFAULT_SIDE, DEFAULT_SIDE);
+        BlockModelBuilder ret = models().cube("crystallizer", DEFAULT_BOTTOM, DEFAULT_TOP, new ResourceLocation(DeepResonance.MODID, "block/crystallizer"), DEFAULT_SIDE, DEFAULT_SIDE, DEFAULT_SIDE);
         ModelBuilder<BlockModelBuilder>.ElementBuilder elem = ret.element();
         for (Direction direction : Direction.values()) {
             elem = elem.face(direction).cullface(direction).texture("#" + direction.getName()).end();

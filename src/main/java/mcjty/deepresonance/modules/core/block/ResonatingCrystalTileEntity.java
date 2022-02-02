@@ -154,11 +154,7 @@ public class ResonatingCrystalTileEntity extends TickingTileEntity {
             return;
         }
         this.glowing = glowing;
-        if (level != null) {
-            setChanged();
-        } else {
-            setChanged();
-        }
+        markDirtyClient();
     }
 
     @Override

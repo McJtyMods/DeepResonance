@@ -279,7 +279,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
 
     @Nonnull
     private IFluidHandler createFluidHandler() {
-        return new DRTankHandler(level, () -> blobId) {
+        return new DRTankHandler(level, this::getMultiblockId) {
             @Override
             public void onUpdate() {
                 updateHeightsForClient();

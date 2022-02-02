@@ -52,14 +52,15 @@ public class CrystallizerTileEntity extends TickingTileEntity {
             .extractable(yes())
             .build();
 
+    @Cap(type = CapType.ENERGY)
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, CrystallizerConfig.POWER_MAXIMUM.get(), CrystallizerConfig.POWER_PER_TICK_IN.get());
+
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Crystalizer")
             .containerSupplier(container(MachinesModule.CRYSTALIZER_CONTAINER, CONTAINER_FACTORY,this))
             .itemHandler(() -> items)
+            .energyHandler(() -> energyStorage)
             .setupSync(this));
-
-    @Cap(type = CapType.ENERGY)
-    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, CrystallizerConfig.POWER_MAXIMUM.get(), 0);
 
     private int progress = 0;
     private LiquidCrystalData crystalData;
@@ -104,10 +105,10 @@ public class CrystallizerTileEntity extends TickingTileEntity {
         }
         if (crystalData != null && crystalData.getAmount() >= rclPerCrystal) {
             ResonatingCrystalTileEntity crystal = new ResonatingCrystalTileEntity();
-            crystal.setEfficiency(crystalData.getEfficiency());
-            crystal.setPurity(crystalData.getPurity());
-            crystal.setStrength(crystalData.getStrength());
-            crystal.setPower(100);
+            crystal.setEfficiency(crystalData.getEfficiency() * 100f);
+            crystal.setPurity(crystalData.getPurity() * 100f);
+            crystal.setStrength(crystalData.getStrength() * 100f);
+            crystal.setPower(100f);
             crystalData = null;
             items.setStackInSlot(SLOT, CoreModule.RESONATING_CRYSTAL_GENERATED.get().createStack(crystal));
             setChanged();

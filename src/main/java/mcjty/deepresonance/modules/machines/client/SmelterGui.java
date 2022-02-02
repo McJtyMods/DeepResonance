@@ -74,7 +74,7 @@ public class SmelterGui extends GenericGuiContainer<SmelterTileEntity, GenericCo
             burningImage.image(iconBurning, 0, 0);
         }
         percentage.text(progress + "%");
-        energyBar.value(tileEntity.getCurrentPower());
+        updateEnergyBar(energyBar);
 
         super.renderBg(matrixStack, partialTicks, x, y);
     }

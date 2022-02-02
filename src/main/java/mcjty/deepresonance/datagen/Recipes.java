@@ -5,11 +5,14 @@ import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
+import mcjty.deepresonance.util.DeepResonanceTags;
 import mcjty.lib.datagen.BaseRecipeProvider;
+import net.minecraft.data.CookingRecipeBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
 
@@ -35,6 +38,11 @@ public class Recipes extends BaseRecipeProvider {
 //        recipeBuilder.key('g', Tags.Items.GLASS);
 //        recipeBuilder.key('p', CoreModule.RESONATING_PLATE_ITEM.get());
 //        recipeBuilder.key('o', Tags.Items.OBSIDIAN);
+
+        // @todo cannot easily do this with datagen since it doesn't support "count": 8
+//        CookingRecipeBuilder.smelting(Ingredient.of(DeepResonanceTags.RESONANT_ORE_ITEM), CoreModule.RESONATING_PLATE_ITEM.get(), 0.4f, 200)
+//                .unlockedBy("has_ore", has(DeepResonanceTags.RESONANT_ORE_ITEM))
+//                .save(consumer);
 
         build(consumer, ShapedRecipeBuilder.shaped(CoreModule.FILTER_MATERIAL_ITEM.get(), 8)
                         .define('g', Tags.Items.GRAVEL)

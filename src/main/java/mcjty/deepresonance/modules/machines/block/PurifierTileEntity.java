@@ -133,7 +133,8 @@ public class PurifierTileEntity extends TickingTileEntity {
             return -1; //Wait
         }
         IFluidHandler outputTank = tankHook.getTank2();
-        if (outputTank.fill(fluidData.getFluidStack(), IFluidHandler.FluidAction.SIMULATE) != fluidData.getAmount()) {
+        int tryAmount = outputTank.fill(fluidData.getFluidStack(), IFluidHandler.FluidAction.SIMULATE);
+        if (tryAmount != fluidData.getAmount()) {
             return -1; //Wait
         }
         double purity = fluidData.getPurity();
@@ -145,6 +146,7 @@ public class PurifierTileEntity extends TickingTileEntity {
             addedPurity = maxPurity - purity;
             if (addedPurity < 0.0001) {
                 outputTank.fill(fluidData.getFluidStack(), IFluidHandler.FluidAction.EXECUTE);
+                processing = null;
                 return 100000;
             }
         }
@@ -152,6 +154,7 @@ public class PurifierTileEntity extends TickingTileEntity {
         purity += addedPurity;
         fluidData.setPurity(purity);
         outputTank.fill(fluidData.getFluidStack(), IFluidHandler.FluidAction.EXECUTE);
+        processing = null;
         return (int) ((maxPurityToAdd - addedPurity) * 40 / maxPurityToAdd + 1);
     }
 

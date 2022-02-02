@@ -62,7 +62,7 @@ public class CrystallizerGui extends GenericGuiContainer<CrystallizerTileEntity,
     @Override
     protected void renderBg(@Nonnull MatrixStack matrixStack, float partialTicks, int x, int y) {
         percentage.text(tileEntity.getProgress() + "%");
-        energyBar.value(tileEntity.getCurrentPower());
+        updateEnergyBar(energyBar);
         super.renderBg(matrixStack, partialTicks, x, y);
     }
 

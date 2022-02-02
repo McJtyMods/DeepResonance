@@ -5,6 +5,7 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
+import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.lib.datagen.BaseItemModelProvider;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
@@ -29,7 +30,7 @@ class Items extends BaseItemModelProvider {
 
         cubeAll(name(CoreModule.MACHINE_FRAME_ITEM.get()), modLoc("block/machine_side"));
 
-//        parentedItem(TankModule.TANK_ITEM.get(), BUILTIN_ENTITY); // @todo 1.16
+        parentedItem(TankModule.TANK_ITEM.get(), "block/tank");
         parentedBlock(CoreModule.RESONATING_CRYSTAL_NATURAL.get(), "block/crystal_full");
         parentedBlock(CoreModule.RESONATING_CRYSTAL_NATURAL_EMPTY.get(), "block/crystal_empty");
         parentedBlock(CoreModule.RESONATING_CRYSTAL_GENERATED.get(), "block/crystal_full_pure");

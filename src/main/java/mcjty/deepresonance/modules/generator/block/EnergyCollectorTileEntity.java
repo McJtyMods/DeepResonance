@@ -101,7 +101,7 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
             boolean doFind = lasersActive != active || (laserStartup > (GeneratorConfig.STARTUP_TIME.get() - 5));
             lasersActive = active;
             laserStartup = startup;
-            setChanged();
+            markDirtyClient();
 
             if (doFind && te instanceof GeneratorPartTileEntity) {
                 findCrystals(network);
