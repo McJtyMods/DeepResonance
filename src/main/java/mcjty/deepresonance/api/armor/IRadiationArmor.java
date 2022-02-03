@@ -9,4 +9,7 @@ public interface IRadiationArmor {
         return 1;
     }
 
+    default boolean isActive(ItemStack armorItemStack) {
+        return true;
+    }
 }

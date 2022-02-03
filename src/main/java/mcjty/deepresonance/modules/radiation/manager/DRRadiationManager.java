@@ -150,7 +150,7 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
                         for (int z = (int) (centerZ-radius); z < centerZ+radius ; z++) {
                             pos.set(x, y, z);
                             BlockState block = world.getBlockState(pos);
-                            float blocker = RadiationShieldRegistry.getBlocker(block);
+                            float blocker = (float) RadiationShieldRegistry.getBlocker(block);
                             if (blocker < 0.99f) {
                                 radiationTree.addBlocker(pos, blocker);
                             }

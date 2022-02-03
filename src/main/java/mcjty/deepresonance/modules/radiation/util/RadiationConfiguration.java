@@ -27,11 +27,15 @@ public class RadiationConfiguration {
 
     public static ForgeConfigSpec.DoubleValue MAX_RADIATION_METER;
 
-    public static ForgeConfigSpec.IntValue RADIATION_OVERLAY_COLOR;// = 0xffff0000;
-    public static ForgeConfigSpec.IntValue RADIATION_OVERLAY_COLOR_NORADIATION;// = 0xff00ff00;
-    public static ForgeConfigSpec.IntValue RADIATION_OVERLAY_X;// = 10;
-    public static ForgeConfigSpec.IntValue RADIATION_OVERLAY_Y;// = 10;
+    public static ForgeConfigSpec.IntValue RADIATION_OVERLAY_COLOR;
+    public static ForgeConfigSpec.IntValue RADIATION_OVERLAY_COLOR_NORADIATION;
+    public static ForgeConfigSpec.IntValue RADIATION_OVERLAY_X;
+    public static ForgeConfigSpec.IntValue RADIATION_OVERLAY_Y;
 
+    public static ForgeConfigSpec.DoubleValue RADIATION_SHIELD_OBSIDIAN_FACTOR;
+    public static ForgeConfigSpec.DoubleValue RADIATION_SHIELD_DENSE_OBSIDIAN_FACTOR;
+    public static ForgeConfigSpec.DoubleValue RADIATION_SHIELD_DENSE_GLASS_FACTOR;
+    public static ForgeConfigSpec.DoubleValue RADIATION_SHIELD_LEAD_FACTOR;
 
     public static void init() {
         MIN_RADIATION_RADIUS = Config.SERVER_BUILDER.comment("The minimum radiation radius")
@@ -70,6 +74,16 @@ public class RadiationConfiguration {
                 .defineInRange("radiationEffectLevel5", 1000000.0, 50000.0, 5000000.0);
 
         MAX_RADIATION_METER = Config.SERVER_BUILDER.comment("The maximum that a radiation meter can measure").defineInRange("maxRadiationMeter", 200000f, 0, Double.MAX_VALUE);
+
+        RADIATION_SHIELD_OBSIDIAN_FACTOR = Config.SERVER_BUILDER.comment("How much obsidian blocks radiation (0.0 is total block, 1.0 is not block at all)")
+                .defineInRange("radiationShieldObsidianFactor", 0.2f, 0.0f, Float.MAX_VALUE);
+        RADIATION_SHIELD_DENSE_OBSIDIAN_FACTOR = Config.SERVER_BUILDER.comment("How much dense obsidian blocks radiation (0.0 is total block, 1.0 is not block at all)")
+                .defineInRange("radiationShieldDenseObsidianFactor", 0.05f, 0.0f, Float.MAX_VALUE);
+        RADIATION_SHIELD_DENSE_GLASS_FACTOR = Config.SERVER_BUILDER.comment("How much dense glass blocks radiation (0.0 is total block, 1.0 is not block at all)")
+                .defineInRange("radiationShieldDenseGlassFactor", 0.1f, 0.0f, Float.MAX_VALUE);
+        RADIATION_SHIELD_LEAD_FACTOR = Config.SERVER_BUILDER.comment("How much dense lead blocks radiation (0.0 is total block, 1.0 is not block at all)")
+                .defineInRange("radiationShieldLeadFactor", 0.1f, 0.0f, Float.MAX_VALUE);
+
 
         RADIATION_OVERLAY_COLOR = Config.CLIENT_BUILDER.comment("The color for the radiation overlay text in case the radiation monitor is in the players hand")
                 .defineInRange("radiationOverlayColor", 0xffff0000, Integer.MIN_VALUE, Integer.MAX_VALUE);

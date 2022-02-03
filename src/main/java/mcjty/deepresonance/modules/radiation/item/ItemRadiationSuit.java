@@ -2,7 +2,9 @@ package mcjty.deepresonance.modules.radiation.item;
 
 import mcjty.deepresonance.api.armor.IRadiationArmor;
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.setup.Registration;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.IArmorMaterial;
@@ -25,4 +27,19 @@ public class ItemRadiationSuit extends ArmorItem implements IRadiationArmor {
         return 0.9f;
     }
 
+    public static float getRadiationProtection(LivingEntity entity){
+        for (EquipmentSlotType slot : EquipmentSlotType.values()) {
+            if (slot.getType() == EquipmentSlotType.Group.ARMOR) {
+                ItemStack stack = entity.getItemBySlot(slot);
+                if (!stack.isEmpty()) {
+                    if (stack.getItem() instanceof IRadiationArmor && ((IRadiationArmor) stack.getItem()).isActive(stack)) {
+                        return ((IRadiationArmor) stack.getItem()).protection()[countSuitPieces(entity)];
+                    } else if (stack.hasTagCompound() && stack.getTagCompound().hasKey("AntiRadiationArmor")) {
+                        return RadiationConfiguration.suitProtection[countSuitPieces(entity)];
+                    }
+                }
+            }
+        }
+        return 0;
+    }
 }

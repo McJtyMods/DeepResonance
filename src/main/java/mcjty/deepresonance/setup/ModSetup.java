@@ -1,6 +1,7 @@
 package mcjty.deepresonance.setup;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.ForgeEventHandlers;
 import mcjty.deepresonance.commands.ModCommands;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.lib.setup.DefaultModSetup;
@@ -19,6 +20,7 @@ public class ModSetup extends DefaultModSetup {
     @Override
     public void init(FMLCommonSetupEvent e) {
         super.init(e);
+        MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
         MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
         DeepResonanceMessages.registerMessages("deepresonance");
     }
