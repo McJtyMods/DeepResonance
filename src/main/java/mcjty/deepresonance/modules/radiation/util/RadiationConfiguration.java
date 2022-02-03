@@ -25,6 +25,14 @@ public class RadiationConfiguration {
     public static ForgeConfigSpec.DoubleValue RADIATION_EFFECT_LEVEL_4;
     public static ForgeConfigSpec.DoubleValue RADIATION_EFFECT_LEVEL_5;
 
+    public static ForgeConfigSpec.DoubleValue MAX_RADIATION_METER;
+
+    public static ForgeConfigSpec.IntValue RADIATION_OVERLAY_COLOR;// = 0xffff0000;
+    public static ForgeConfigSpec.IntValue RADIATION_OVERLAY_COLOR_NORADIATION;// = 0xff00ff00;
+    public static ForgeConfigSpec.IntValue RADIATION_OVERLAY_X;// = 10;
+    public static ForgeConfigSpec.IntValue RADIATION_OVERLAY_Y;// = 10;
+
+
     public static void init() {
         MIN_RADIATION_RADIUS = Config.SERVER_BUILDER.comment("The minimum radiation radius")
                 .defineInRange("minRadiationRadius", 7.0, 3.0, 16.0);
@@ -60,6 +68,17 @@ public class RadiationConfiguration {
                 .defineInRange("radiationEffectLevel4", 500000.0, 25000.0, 2500000.0);
         RADIATION_EFFECT_LEVEL_5 = Config.SERVER_BUILDER.comment("Radiation strength level 5")
                 .defineInRange("radiationEffectLevel5", 1000000.0, 50000.0, 5000000.0);
+
+        MAX_RADIATION_METER = Config.SERVER_BUILDER.comment("The maximum that a radiation meter can measure").defineInRange("maxRadiationMeter", 200000f, 0, Double.MAX_VALUE);
+
+        RADIATION_OVERLAY_COLOR = Config.CLIENT_BUILDER.comment("The color for the radiation overlay text in case the radiation monitor is in the players hand")
+                .defineInRange("radiationOverlayColor", 0xffff0000, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        RADIATION_OVERLAY_COLOR_NORADIATION = Config.CLIENT_BUILDER.comment("The color for the radiation overlay text in case the radiation monitor is in the players hand (in case there is no radiation)")
+                .defineInRange("radiationOverlayColorNoRadiation", 0xff00ff00, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        RADIATION_OVERLAY_X = Config.CLIENT_BUILDER.comment("The X coordinate (with 0 being left) for the radiation overlay text. Use -1 to disable")
+                .defineInRange("radiationOverlayX", 10, -1, Integer.MAX_VALUE);
+        RADIATION_OVERLAY_Y = Config.CLIENT_BUILDER.comment("The Y coordinate (with 0 being top) for the radiation overlay text. Use -1 to disable")
+                .defineInRange("radiationOverlayY", 10, -1, Integer.MAX_VALUE);
     }
 
 }

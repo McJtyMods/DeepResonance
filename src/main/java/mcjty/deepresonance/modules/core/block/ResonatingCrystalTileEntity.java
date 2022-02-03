@@ -5,6 +5,7 @@ import mcjty.deepresonance.modules.core.client.ModelLoaderCoreModule;
 import mcjty.deepresonance.modules.core.util.CrystalConfig;
 import mcjty.deepresonance.modules.core.util.CrystalHelper;
 import mcjty.lib.tileentity.TickingTileEntity;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
@@ -191,6 +192,27 @@ public class ResonatingCrystalTileEntity extends TickingTileEntity {
         info.putDouble("purity", purity);
     }
 
+    @Override
+    public void load(@Nonnull CompoundNBT tagCompound) {
+        super.load(tagCompound);
+        glowing = tagCompound.getBoolean("glowing");
+    }
+
+    @Override
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+        super.saveAdditional(tagCompound);
+        tagCompound.putBoolean("glowing", glowing);
+    }
+
+    @Override
+    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
+        glowing = tagCompound.getBoolean("glowing");
+    }
+
+    @Override
+    public void saveClientDataToNBT(CompoundNBT tagCompound) {
+        tagCompound.putBoolean("glowing", glowing);
+    }
 
     @Nonnull
     @Override

@@ -129,7 +129,9 @@ public class LiquidCrystalData implements ILiquidCrystalData {
 
     @Override
     public void setAmount(int i) {
-        referenceStack.setAmount(i);
+        if (!referenceStack.isEmpty()) {
+            referenceStack.setAmount(i);
+        }
     }
 
     @Override

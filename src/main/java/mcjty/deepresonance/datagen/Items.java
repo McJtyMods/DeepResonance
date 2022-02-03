@@ -9,7 +9,11 @@ import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.lib.datagen.BaseItemModelProvider;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
+
+import static mcjty.deepresonance.modules.radiation.item.RadiationMonitorItem.RADIATION_PROPERTY;
 
 class Items extends BaseItemModelProvider {
 
@@ -52,8 +56,28 @@ class Items extends BaseItemModelProvider {
         parentedBlock(MachinesModule.CRYSTALLIZER_BLOCK.get());
         parentedBlock(GeneratorModule.ENERGY_COLLECTOR_BLOCK.get());
         parentedBlock(GeneratorModule.GENERATOR_CONTROLLER_BLOCK.get());
-//        parentedItem(GeneratorModule.GENERATOR_PART_ITEM.get(), "block/generator_part_side");
         parentedBlock(GeneratorModule.GENERATOR_PART_BLOCK.get());
+
+        getBuilder(RadiationModule.RADIATION_MONITOR.get().getRegistryName().getPath())
+                .parent(getExistingFile(mcLoc("item/handheld")))
+                .texture("layer0", "item/monitor/radiationmonitoritem")
+                .override().predicate(RADIATION_PROPERTY, 0).model(createMonitorModel(0)).end()
+                .override().predicate(RADIATION_PROPERTY, 1).model(createMonitorModel(1)).end()
+                .override().predicate(RADIATION_PROPERTY, 2).model(createMonitorModel(2)).end()
+                .override().predicate(RADIATION_PROPERTY, 3).model(createMonitorModel(3)).end()
+                .override().predicate(RADIATION_PROPERTY, 4).model(createMonitorModel(4)).end()
+                .override().predicate(RADIATION_PROPERTY, 5).model(createMonitorModel(5)).end()
+                .override().predicate(RADIATION_PROPERTY, 6).model(createMonitorModel(6)).end()
+                .override().predicate(RADIATION_PROPERTY, 7).model(createMonitorModel(7)).end()
+                .override().predicate(RADIATION_PROPERTY, 8).model(createMonitorModel(8)).end()
+                .override().predicate(RADIATION_PROPERTY, 9).model(createMonitorModel(9)).end()
+        ;
     }
+
+    private ItemModelBuilder createMonitorModel(int suffix) {
+        return getBuilder("radiationmonitoritem" + suffix).parent(getExistingFile(mcLoc("item/handheld")))
+                .texture("layer0", "item/monitor/radiationmonitoritem" + suffix);
+    }
+
 
 }

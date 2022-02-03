@@ -1,0 +1,68 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "deepresonance:item/monitor/radiationmonitoritem"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "deepresonance:radiation": 0.0
+      },
+      "model": "deepresonance:item/radiationmonitoritem0"
+    },
+    {
+      "predicate": {
+        "deepresonance:radiation": 1.0
+      },
+      "model": "deepresonance:item/radiationmonitoritem1"
+    },
+    {
+      "predicate": {
+        "deepresonance:radiation": 2.0
+      },
+      "model": "deepresonance:item/radiationmonitoritem2"
+    },
+    {
+      "predicate": {
+        "deepresonance:radiation": 3.0
+      },
+      "model": "deepresonance:item/radiationmonitoritem3"
+    },
+    {
+      "predicate": {
+        "deepresonance:radiation": 4.0
+      },
+      "model": "deepresonance:item/radiationmonitoritem4"
+    },
+    {
+      "predicate": {
+        "deepresonance:radiation": 5.0
+      },
+      "model": "deepresonance:item/radiationmonitoritem5"
+    },
+    {
+      "predicate": {
+        "deepresonance:radiation": 6.0
+      },
+      "model": "deepresonance:item/radiationmonitoritem6"
+    },
+    {
+      "predicate": {
+        "deepresonance:radiation": 7.0
+      },
+      "model": "deepresonance:item/radiationmonitoritem7"
+    },
+    {
+      "predicate": {
+        "deepresonance:radiation": 8.0
+      },
+      "model": "deepresonance:item/radiationmonitoritem8"
+    },
+    {
+      "predicate": {
+        "deepresonance:radiation": 9.0
+      },
+      "model": "deepresonance:item/radiationmonitoritem9"
+    }
+  ]
+}

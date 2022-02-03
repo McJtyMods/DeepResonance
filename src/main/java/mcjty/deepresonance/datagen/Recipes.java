@@ -59,6 +59,12 @@ public class Recipes extends BaseRecipeProvider {
 //        build(consumer, ShapelessRecipeBuilder.shapeless(CoreModule.RESONATING_PLATE_ITEM.get(), 9)
 //                .requires(CoreModule.RESONATING_PLATE_BLOCK_ITEM.get()));
 
+        build(consumer, ShapedRecipeBuilder.shaped(RadiationModule.RADIATION_MONITOR.get())
+                        .define('x', Items.CLOCK)
+                        .unlockedBy("", has(CoreModule.RESONATING_PLATE_ITEM.get())),
+                    "qCq", "ror", "qxq"
+        );
+
         build(consumer, ShapedRecipeBuilder.shaped(TankModule.TANK_ITEM.get())
                         .unlockedBy("has_resonant_plate", has(CoreModule.RESONATING_PLATE_ITEM.get())),
                 "iPi", "GGG", "iOi");

@@ -1,6 +1,8 @@
 package mcjty.deepresonance.setup;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.modules.radiation.network.PacketGetRadiationLevel;
+import mcjty.deepresonance.modules.radiation.network.PacketReturnRadiation;
 import mcjty.lib.network.PacketHandler;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -24,6 +26,9 @@ public class DeepResonanceMessages {
                 .simpleChannel();
 
         INSTANCE = net;
+
+        net.registerMessage(id(), PacketGetRadiationLevel.class, PacketGetRadiationLevel::toBytes, PacketGetRadiationLevel::new, PacketGetRadiationLevel::handle);
+        net.registerMessage(id(), PacketReturnRadiation.class, PacketReturnRadiation::toBytes, PacketReturnRadiation::new, PacketReturnRadiation::handle);
 
         PacketHandler.registerStandardMessages(id(), net);
     }

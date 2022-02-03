@@ -7,7 +7,7 @@ import net.minecraft.util.math.vector.Vector3d;
 /**
  * Created by McJty
  */
-class QuadTree {
+public class QuadTree {
 
     private SimpleAABB box;
     private QuadTree child1;

@@ -340,6 +340,37 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
 
     @Override
     public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+        saveClientDataToNBT(tagCompound);
+        tagCompound.putInt("networkId", blobId);
+        super.saveAdditional(tagCompound);
+    }
+
+    @Override
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
+        loadClientDataFromNBT(tagCompound);
+        if (tagCompound.contains("networkId")) {
+            blobId = tagCompound.getInt("networkId");
+        } else {
+            blobId = -1;
+        }
+    }
+
+    @Override
+    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
+        lasersActive = tagCompound.getBoolean("lasersActive");
+        laserStartup = tagCompound.getInt("laserStartup");
+        byte[] crystalX = tagCompound.getByteArray("crystalsX");
+        byte[] crystalY = tagCompound.getByteArray("crystalsY");
+        byte[] crystalZ = tagCompound.getByteArray("crystalsZ");
+        crystals.clear();
+        for (int i = 0 ; i < crystalX.length ; i++) {
+            crystals.add(new BlockPos(crystalX[i], crystalY[i], crystalZ[i]));
+        }
+    }
+
+    @Override
+    public void saveClientDataToNBT(CompoundNBT tagCompound) {
         byte[] crystalX = new byte[crystals.size()];
         byte[] crystalY = new byte[crystals.size()];
         byte[] crystalZ = new byte[crystals.size()];
@@ -356,27 +387,6 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
         tagCompound.putByteArray("crystalsZ", crystalZ);
         tagCompound.putBoolean("lasersActive", lasersActive);
         tagCompound.putInt("laserStartup", laserStartup);
-        tagCompound.putInt("networkId", blobId);
-        super.saveAdditional(tagCompound);
-    }
-
-    @Override
-    public void load(CompoundNBT tagCompound) {
-        super.load(tagCompound);
-        byte[] crystalX = tagCompound.getByteArray("crystalsX");
-        byte[] crystalY = tagCompound.getByteArray("crystalsY");
-        byte[] crystalZ = tagCompound.getByteArray("crystalsZ");
-        crystals.clear();
-        for (int i = 0 ; i < crystalX.length ; i++) {
-            crystals.add(new BlockPos(crystalX[i], crystalY[i], crystalZ[i]));
-        }
-        lasersActive = tagCompound.getBoolean("lasersActive");
-        laserStartup = tagCompound.getInt("laserStartup");
-        if (tagCompound.contains("networkId")) {
-            blobId = tagCompound.getInt("networkId");
-        } else {
-            blobId = -1;
-        }
     }
 
     public Set<BlockPos> getCrystals() {

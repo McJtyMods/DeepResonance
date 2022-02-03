@@ -40,9 +40,9 @@ public class CrystallizerTESR extends TileEntityRenderer<CrystallizerTileEntity>
         }
         if (progress > 0) {
             matrixStack.pushPose();
-            float scale = 0.75f + 0.35f * (progress / 100.0f);
+            float scale = 0.75f + 0.45f * (progress / 100.0f);
             float f = Math.floorMod(tile.getLevel().getGameTime(), 120);
-            matrixStack.translate(0.5, 0.32 + (0.001 * progress), 0.5);
+            matrixStack.translate(0.5, 0.35 + (0.00 * progress), 0.5);
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(f * 3));
             matrixStack.scale(scale, scale, scale);
             ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();

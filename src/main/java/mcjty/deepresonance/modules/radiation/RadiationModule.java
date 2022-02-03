@@ -2,7 +2,9 @@ package mcjty.deepresonance.modules.radiation;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.radiation.IWorldRadiationManager;
+import mcjty.deepresonance.modules.radiation.client.RadiationOverlayRenderer;
 import mcjty.deepresonance.modules.radiation.item.ItemRadiationSuit;
+import mcjty.deepresonance.modules.radiation.item.RadiationMonitorItem;
 import mcjty.deepresonance.modules.radiation.manager.RadiationEventHandler;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.setup.Registration;
@@ -15,6 +17,7 @@ import net.minecraft.block.material.MaterialColor;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -31,6 +34,7 @@ public class RadiationModule implements IModule {
     public static final RegistryObject<Item> POISONED_DIRT_ITEM = Registration.fromBlock(POISONED_DIRT_BLOCK);
     public static final RegistryObject<Item> DENSE_GLASS_ITEM = Registration.fromBlock(DENSE_GLASS_BLOCK);
     public static final RegistryObject<Item> DENSE_OBSIDIAN_ITEM = Registration.fromBlock(DENSE_OBSIDIAN_BLOCK);
+    public static final RegistryObject<RadiationMonitorItem> RADIATION_MONITOR = Registration.ITEMS.register("radiation_monitor", () -> new RadiationMonitorItem(Registration.createStandardProperties().stacksTo(1)));
 
     public static final RegistryObject<Item> RADIATION_SUIT_HELMET = Registration.ITEMS.register("radiation_suit_helmet", () -> new ItemRadiationSuit(EquipmentSlotType.HEAD));
     public static final RegistryObject<Item> RADIATION_SUIT_CHESTPLATE = Registration.ITEMS.register("radiation_suit_chestplate", () -> new ItemRadiationSuit(EquipmentSlotType.CHEST));
@@ -53,7 +57,10 @@ public class RadiationModule implements IModule {
 
     @Override
     public void initClient(FMLClientSetupEvent event) {
-
+        event.enqueueWork(() -> {
+            RadiationMonitorItem.initOverrides(RADIATION_MONITOR.get());
+        });
+        MinecraftForge.EVENT_BUS.addListener(RadiationOverlayRenderer::onRender);
     }
 
     @Override

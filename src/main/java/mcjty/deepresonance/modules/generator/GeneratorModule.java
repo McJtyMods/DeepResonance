@@ -35,9 +35,6 @@ public class GeneratorModule implements IModule {
 
     @Override
     public void init(FMLCommonSetupEvent event) {
-        DeepResonance.logger.info("Registering generator grid handler");
-        // @todo 1.16
-//        ElecCoreRegistrar.GRIDHANDLERS.register(new DynamicMultiblockGridHandler<>(t -> t instanceof AbstractTileEntityGeneratorComponent, t -> new SimpleDynamicMultiblockTileLink<>((AbstractTileEntityGeneratorComponent) t, AbstractTileEntityGeneratorComponent::setGrid), GeneratorGrid::new));
     }
 
     @Override

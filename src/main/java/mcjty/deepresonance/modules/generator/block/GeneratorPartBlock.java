@@ -40,7 +40,8 @@ public class GeneratorPartBlock extends BaseBlock {
         World world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         return state.setValue(BlockStateProperties.UP, world.getBlockState(pos.above()).getBlock() == this)
-                .setValue(BlockStateProperties.DOWN, world.getBlockState(pos.below()).getBlock() == this);
+                .setValue(BlockStateProperties.DOWN, world.getBlockState(pos.below()).getBlock() == this)
+                .setValue(BlockStateProperties.POWERED, false);
     }
 
     @SuppressWarnings("deprecation")
