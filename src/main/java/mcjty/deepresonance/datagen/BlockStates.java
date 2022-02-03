@@ -2,7 +2,6 @@ package mcjty.deepresonance.datagen;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.deepresonance.modules.core.block.ResonatingCrystalBlock;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
@@ -49,7 +48,9 @@ public class BlockStates extends BaseBlockStateProvider {
             }
         });
         horizontalOrientedBlock(MachinesModule.PURIFIER_BLOCK.get(), (state, builder) -> builder.modelFile(frontBasedModel(name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/purifier"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM)));
-        simpleBlock(MachinesModule.LENS_BLOCK.get(), models().withExistingParent("lens_mc", new ResourceLocation(DeepResonance.MODID, "lens")).texture("lens_texture", "deepresonance:block/lens"));
+        horizontalOrientedBlock(MachinesModule.LENS_BLOCK.get(), models()
+                .withExistingParent("lens_mc", new ResourceLocation(DeepResonance.MODID, "lens"))
+                .texture("lens_texture", "deepresonance:block/lens"));
 //        simpleFront(PulserModule.PULSER_BLOCK);
         horizontalOrientedBlock(MachinesModule.LASER_BLOCK.get(), createLaserModel());
         horizontalOrientedBlock(MachinesModule.CRYSTALLIZER_BLOCK.get(), createCrystallizerModel());
@@ -131,14 +132,9 @@ public class BlockStates extends BaseBlockStateProvider {
     }
 
     public BlockModelBuilder createLaserModel() {
-        BlockModelBuilder ret = models().cube("laser", DEFAULT_BOTTOM, DEFAULT_TOP, new ResourceLocation(DeepResonance.MODID, "block/laser_back"), new ResourceLocation(DeepResonance.MODID, "block/laser"), new ResourceLocation(DeepResonance.MODID, "block/laser"), new ResourceLocation(DeepResonance.MODID, "block/laser"));
-        ret.texture("back", new ResourceLocation(DeepResonance.MODID, "block/laser_back_color"));
-        ModelBuilder<BlockModelBuilder>.ElementBuilder elem = ret.element();
-        for (Direction direction : Direction.values()) {
-            elem = elem.face(direction).cullface(direction).texture("#" + direction.getName()).end();
-        }
-        ret = elem.end();
-        return ret.element().from(0, 0, 1).to(16, 16, 16).face(Direction.SOUTH).cullface(Direction.SOUTH).texture("#back").tintindex(1).end().end();
+        ResourceLocation laserTxt = new ResourceLocation(DeepResonance.MODID, "block/laser");
+        ResourceLocation laserBackTxt = new ResourceLocation(DeepResonance.MODID, "block/laser_back");
+        return models().cube("laser", DEFAULT_BOTTOM, DEFAULT_TOP, laserTxt, laserBackTxt, laserBackTxt, laserBackTxt);
     }
 //
 //    @Override

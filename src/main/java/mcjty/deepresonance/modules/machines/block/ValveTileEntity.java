@@ -7,8 +7,8 @@ import mcjty.deepresonance.modules.tank.util.DualTankHook;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.api.container.DefaultContainerProvider;
-import mcjty.lib.blockcommands.Command;
-import mcjty.lib.blockcommands.ServerCommand;
+import mcjty.lib.bindings.GuiValue;
+import mcjty.lib.bindings.Value;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
@@ -18,7 +18,6 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.TickingTileEntity;
-import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -48,9 +47,20 @@ public class ValveTileEntity extends TickingTileEntity {
 
     private int progress = 0;
 
+    @GuiValue
+    public static final Value<?, Float> VALUE_MINPURITY = Value.create("minPurity", Type.FLOAT, ValveTileEntity::getMinPurity, ValveTileEntity::setMinPurity);
     private float minPurity = 1.0f;
+
+    @GuiValue
+    public static final Value<?, Float> VALUE_STRENGTH = Value.create("minStrength", Type.FLOAT, ValveTileEntity::getMinStrength, ValveTileEntity::setMinStrength);
     private float minStrength = 1.0f;
+
+    @GuiValue
+    public static final Value<?, Float> VALUE_EFFICIENCY = Value.create("minEfficiency", Type.FLOAT, ValveTileEntity::getMinEfficiency, ValveTileEntity::setMinEfficiency);
     private float minEfficiency = 1.0f;
+
+    @GuiValue
+    public static final Value<?, Integer> VALUE_MAXMB = Value.create("maxMb", Type.INTEGER, ValveTileEntity::getMaxMb, ValveTileEntity::setMaxMb);
     private int maxMb = 0;
 
     public ValveTileEntity() {
@@ -196,17 +206,4 @@ public class ValveTileEntity extends TickingTileEntity {
         minEfficiency = tagCompound.getFloat("minEfficiency");
         maxMb = tagCompound.getInt("maxMb");
     }
-
-    public static final Key<Double> PARAM_PURITY = new Key<>("purity", Type.DOUBLE);
-    public static final Key<Double> PARAM_STRENGTH = new Key<>("strength", Type.DOUBLE);
-    public static final Key<Double> PARAM_EFFICIENCY = new Key<>("efficiency", Type.DOUBLE);
-    public static final Key<Integer> PARAM_MAXMB = new Key<>("max_mb", Type.INTEGER);
-    @ServerCommand
-    public static final Command<?> CMD_SETTINGS = Command.<ValveTileEntity>create("valve.settings",
-            (te, player, params) -> {
-                te.setMinPurity((float) (double) params.get(PARAM_PURITY));
-                te.setMinStrength((float) (double) params.get(PARAM_STRENGTH));
-                te.setMinEfficiency((float) (double) params.get(PARAM_EFFICIENCY));
-                te.setMaxMb(params.get(PARAM_MAXMB));
-            });
 }

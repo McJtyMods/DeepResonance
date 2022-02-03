@@ -2,3 +2,6 @@
 - Tank item model
 - Break particles!
 - Radiation monitor?
+- Render laser/glow in separate phase (game overlay renderer? Generic system in McJtyLib for this)
+- Fix TOP view for DR luquid
+- Fix translations

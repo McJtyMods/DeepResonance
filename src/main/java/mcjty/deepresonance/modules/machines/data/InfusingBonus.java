@@ -6,11 +6,17 @@ public class InfusingBonus {
     private final Modifier strengthModifier;
     private final Modifier efficiencyModifier;
 
+    public static final InfusingBonus EMPTY = new InfusingBonus(0, Modifier.NONE, Modifier.NONE, Modifier.NONE);
+
     public InfusingBonus(int color, Modifier purityModifier, Modifier strengthModifier, Modifier efficiencyModifier) {
         this.color = color;
         this.efficiencyModifier = efficiencyModifier;
         this.purityModifier = purityModifier;
         this.strengthModifier = strengthModifier;
+    }
+
+    public boolean isEmpty() {
+        return Math.abs(purityModifier.bonus) < 0.001f && Math.abs(strengthModifier.bonus) < 0.001f && Math.abs(efficiencyModifier.bonus) < 0.001f;
     }
 
     public int getColor() {
@@ -46,6 +52,10 @@ public class InfusingBonus {
 
         public float getBonus() {
             return bonus;
+        }
+
+        public float modify(double value, double quality, double factor) {
+            return modify((float) value, (float) quality, (float) factor);
         }
 
         public float modify(float value, float quality, float factor) {

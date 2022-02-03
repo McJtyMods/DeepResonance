@@ -103,8 +103,8 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
             setBonusText(bonus.getStrengthModifier(), "S", strengthBonus);
             setBonusText(bonus.getEfficiencyModifier(), "E", efficiencyBonus);
         }
-        energyBar.value(tileEntity.getCurrentPower());
         crystalBar.value((int) tileEntity.getCrystalLiquid());
+        updateEnergyBar(energyBar);
 
         super.renderBg(matrixStack, partialTicks, x, y);
     }

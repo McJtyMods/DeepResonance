@@ -6,10 +6,16 @@ import mcjty.deepresonance.api.laser.ILens;
 import mcjty.deepresonance.api.laser.ILensMirror;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.machines.data.InfusingBonus;
 import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
 import mcjty.deepresonance.modules.machines.util.config.LaserConfig;
+import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
+import mcjty.deepresonance.modules.tank.data.TankBlob;
+import mcjty.deepresonance.util.DeepResonanceFluidHelper;
+import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
@@ -21,6 +27,8 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.TickingTileEntity;
+import mcjty.lib.varia.LevelTools;
+import mcjty.lib.varia.OrientationTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.container.INamedContainerProvider;
@@ -38,10 +46,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
+import static mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry.COLOR_RED;
+import static mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry.COLOR_YELLOW;
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.container.GenericItemHandler.notslot;
 import static mcjty.lib.container.GenericItemHandler.yes;
@@ -57,9 +70,17 @@ public class LaserTileEntity extends TickingTileEntity {
     private int crystalCountdown = 0;
     private int lensCountdown = 0;
     private int progressCounter = 0;
+
+    // Transient
+    private int tickCounter = 10;
+
+    @GuiValue
     private float crystalLiquid = 0;
+
+    private int color = 0;          // 0 means not active, > 0 means a color laser
+
     private float efficiency = 0;
-    private InfusionBonus activeBonus = InfusionBonus.EMPTY;
+    private InfusingBonus activeBonus = InfusingBonus.EMPTY;
     private LazyOptional<ILens> lens;
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(3)
@@ -83,14 +104,15 @@ public class LaserTileEntity extends TickingTileEntity {
             .extractable(yes())
             .build();
 
+    @Cap(type = CapType.ENERGY)
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, LaserConfig.POWER_MAXIMUM.get(), LaserConfig.POWER_PER_TICK_IN.get());
+
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Laser")
             .containerSupplier(container(MachinesModule.LASER_CONTAINER, CONTAINER_FACTORY, this))
             .itemHandler(() -> items)
+            .energyHandler(() -> energyStorage)
             .setupSync(this));
-
-    @Cap(type = CapType.ENERGY)
-    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, LaserConfig.POWER_MAXIMUM.get(), LaserConfig.POWER_PER_TICK_IN.get());
 
     public LaserTileEntity() {
         super(MachinesModule.TYPE_LASER.get());
@@ -130,69 +152,147 @@ public class LaserTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void tickServer() {
-        crystalCountdown--;
-        if (crystalCountdown <= 0) {
-            checkCrystal();
-            crystalCountdown = 20;
+    protected void tickServer() {
+        tickCounter--;
+        if (tickCounter > 0) {
+            return;
+        }
+        tickCounter = 10;
+
+        checkCrystal();
+
+        if (powerLevel == 0) {
+            changeColor(0);
+            return;
         }
 
-        lensCountdown--;
-        if (lensCountdown <= 0) {
-            checkLens();
-            lensCountdown = 53; //Almost always separate
+        ItemStack stack = items.getStackInSlot(SLOT_CATALYST);
+        InfusingBonus bonus = getInfusingBonus(stack);
+        if (bonus == null) {
+            changeColor(0);
+            return;
         }
 
-        boolean dirty = false;
-        int powerRequired = activeBonus.getPowerPerTick();
-        if (powerRequired > 0) {
-            int storedEnergy = energyStorage.getEnergyStored();
-            int powerDraw = Math.min(storedEnergy, powerRequired);
-            float eff = powerDraw / (float) powerRequired;
-            energyStorage.consumeEnergy(powerDraw);
-            this.efficiency += eff / activeBonus.getDuration();
-            dirty = true;
+        if (getCurrentPower() < LaserConfig.RFUSE_PER_CATALYST.get()) {
+            changeColor(0);
+            return;
         }
-        float cpt = activeBonus.getCrystalLiquidCostPerTick();
-        if (cpt > 0.0001) {
-            if (crystalLiquid > cpt) {
-                crystalLiquid -= cpt;
-                dirty = true;
-            } else {
-                crystalLiquid = 0;
-                processBonus();
-            }
+
+        if (crystalLiquid < LaserConfig.RCL_PER_CATALYST.get()) {
+            changeColor(0);
+            return;
         }
+
+        BlockPos tankCoordinate = findLens();
+        if (tankCoordinate != null) {
+            changeColor(bonus.getColor());
+        } else {
+            changeColor(0);
+            return;
+        }
+
         progressCounter--;
-        if (progressCounter <= 0) {
-            processBonus();
-        } else if (dirty) { //Above also marks dirty, no need to do this twice
-            markDirtyQuick();
+        setChanged();
+        if (progressCounter > 0) {
+            return;
+        }
+        progressCounter = LaserConfig.TICKS10_PER_CATALYST.get();
+
+        infuseLiquid(tankCoordinate, bonus);
+    }
+
+    public static InfusingBonus getInfusingBonus(ItemStack item) {
+        if (item.isEmpty()) {
+            return null;
+        }
+        return InfusionBonusRegistry.getInfusionBonus(item);
+    }
+
+
+    private boolean validRCLTank(TankTileEntity tank) {
+        return tank.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).map(handler -> {
+            return DeepResonanceFluidHelper.isLiquidCrystal(handler.getFluidInTank(0).getFluid());
+        }).orElse(false);
+    }
+
+    private BlockPos findLens() {
+        if (!LevelTools.isLoaded(level, worldPosition)) {
+            return null;
+        }
+        BlockState state = level.getBlockState(worldPosition);
+        Direction direction = OrientationTools.getOrientationHoriz(state);
+        BlockPos shouldBeAir = worldPosition.relative(direction);
+        if (!level.getBlockState(shouldBeAir).isAir()) {
+            return null;
+        }
+        BlockPos shouldBeLens = shouldBeAir.relative(direction);
+        Block lensBlock = level.getBlockState(shouldBeLens).getBlock();
+        if (!(lensBlock instanceof LensBlock)) {
+            return null;
+        }
+        Direction lensDirection = OrientationTools.getOrientationHoriz(level.getBlockState(shouldBeLens));
+        if (lensDirection != direction) {
+            return null;
+        }
+
+        return shouldBeLens.relative(direction);
+    }
+
+
+    private void infuseLiquid(BlockPos tankCoordinate, InfusingBonus bonus) {
+        // We consume stuff even if the tank does not have enough liquid. Player has to be careful
+        items.decrStackSize(SLOT_CATALYST, 1);
+        energyStorage.consumeEnergy(LaserConfig.RFUSE_PER_CATALYST.get());
+        crystalLiquid -= LaserConfig.RCL_PER_CATALYST.get();
+
+        TileEntity te = level.getBlockEntity(tankCoordinate);
+        if (te instanceof TankTileEntity) {
+            TankTileEntity tileTank = (TankTileEntity) te;
+            if (validRCLTank(tileTank)) {
+                tileTank.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).ifPresent(handler -> {
+                    FluidStack stack = handler.drain(1000 * TankBlob.TANK_BUCKETS, IFluidHandler.FluidAction.SIMULATE);
+                    if (!stack.isEmpty()) {
+                        stack = handler.drain(1000 * TankBlob.TANK_BUCKETS, IFluidHandler.FluidAction.EXECUTE);
+                        LiquidCrystalData fluidData = LiquidCrystalData.fromStack(stack);
+                        float factor = (float) LaserConfig.RCL_PER_CATALYST.get() / stack.getAmount();
+                        float purity = bonus.getPurityModifier().modify(fluidData.getPurity(), fluidData.getQuality(), factor);
+                        float strength = bonus.getStrengthModifier().modify(fluidData.getStrength(), fluidData.getQuality(), factor);
+                        float efficiency = bonus.getEfficiencyModifier().modify(fluidData.getEfficiency(), fluidData.getQuality(), factor);
+                        fluidData.setPurity(purity);
+                        fluidData.setStrength(strength);
+                        fluidData.setEfficiency(efficiency);
+                        FluidStack newStack = fluidData.getFluidStack();
+                        if (Math.abs(purity) < 0.01) {
+                            newStack.setAmount(newStack.getAmount()-200);
+                            if (newStack.getAmount() < 0) {
+                                newStack.setAmount(0);
+                            }
+                        }
+                        if (newStack.getAmount() > 0) {
+                            handler.fill(newStack, IFluidHandler.FluidAction.EXECUTE);
+                        }
+                    }
+                });
+            }
         }
     }
 
-    private void processBonus() {
-        if (lens != null) {
-            lens.ifPresent(l -> l.infuseFluid(activeBonus.getRclImprovedPerCatalyst(), data -> {
-                double quality = data.getQuality();
-                float efficiency = LaserTileEntity.this.efficiency;
-                activeBonus.getEfficiencyModifier().applyModifier(data::getEfficiency, data::setEfficiency, quality, efficiency);
-                activeBonus.getPurityModifier().applyModifier(data::getPurity, data::setPurity, quality, efficiency);
-                activeBonus.getStrengthModifier().applyModifier(data::getStrength, data::setStrength, quality, efficiency);
-            }));
-        }
-        activeBonus = InfusionBonus.EMPTY;
-        efficiency = 0;
-        if (energyStorage.getEnergyStored() > 1000 && crystalLiquid > 0 && lens != null && lens.isPresent()) {
-            ItemStack stack = items.extractItem(SLOT_CATALYST, 1, true);
-            InfusionBonus bonus = MachinesModule.INFUSION_BONUSES.getInfusionBonus(stack);
-            if (!bonus.isEmpty()) {
-                bonus = MachinesModule.INFUSION_BONUSES.getInfusionBonus(items.extractItem(SLOT_CATALYST, 1, false));
+    private void changeColor(int newcolor) {
+        if (newcolor != color) {
+            color = newcolor;
+            int mcolor = color;
+            if (color == COLOR_YELLOW) {
+                mcolor = COLOR_RED;
+            } else if (color == 0) {
+                mcolor = 0;    // Off
             }
-            activeBonus = bonus;
+            level.setBlock(worldPosition, level.getBlockState(worldPosition).setValue(LaserBlock.COLOR, mcolor), 3);
+            markDirty();
         }
-        progressCounter = activeBonus.getDuration();
-        setChanged();
+    }
+
+    public int getColor() {
+        return color;
     }
 
     private void checkCrystal() {
@@ -250,6 +350,7 @@ public class LaserTileEntity extends TickingTileEntity {
             list.add(NBTUtil.writeBlockPos(pos));
         }
         tagCompound.put("laserBeam", list);
+        tagCompound.putString("bonus", InfusionBonusRegistry.toString(activeBonus));
     }
 
     @Override
@@ -259,6 +360,7 @@ public class LaserTileEntity extends TickingTileEntity {
         for (int i = 0; i < list.size(); i++) {
             laserBeam.add(NBTUtil.readBlockPos(list.getCompound(i)));
         }
+        activeBonus = InfusionBonusRegistry.fromString(tagCompound.getString("bonus"));
     }
 
     @Override

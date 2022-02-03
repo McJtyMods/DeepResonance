@@ -11,8 +11,6 @@ import mcjty.deepresonance.setup.Registration;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.modules.IModule;
 import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
@@ -42,7 +40,7 @@ public class MachinesModule implements IModule {
     public static final RegistryObject<TileEntityType<PurifierTileEntity>> TYPE_PURIFIER = TILES.register("purifier", () -> TileEntityType.Builder.of(PurifierTileEntity::new, PURIFIER_BLOCK.get()).build(null));
     public static final RegistryObject<ContainerType<GenericContainer>> PURIFIER_CONTAINER = CONTAINERS.register("purifier", GenericContainer::createContainerType);
 
-    public static final RegistryObject<LensBlock> LENS_BLOCK = Registration.BLOCKS.register("lens", () -> new LensBlock(Block.Properties.of(Material.METAL).strength(2.0F).sound(SoundType.METAL)));
+    public static final RegistryObject<LensBlock> LENS_BLOCK = Registration.BLOCKS.register("lens", LensBlock::new);
     public static final RegistryObject<Item> LENS_ITEM = Registration.ITEMS.register("lens", () -> new ItemLens(LENS_BLOCK.get(), Registration.createStandardProperties()));
     public static final RegistryObject<TileEntityType<LensTileEntity>> TYPE_LENS = TILES.register("lens", () -> TileEntityType.Builder.of(LensTileEntity::new, LENS_BLOCK.get()).build(null));
 
@@ -90,7 +88,7 @@ public class MachinesModule implements IModule {
         LaserTESR.register();
 
         event.enqueueWork(() -> {
-            ClientSetup.setupBlockColors();
+//            ClientSetup.setupBlockColors();
             SmelterGui.register();
             PurifierGui.register();
             LaserGui.register();

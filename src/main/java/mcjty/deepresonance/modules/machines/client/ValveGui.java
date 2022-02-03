@@ -3,6 +3,7 @@ package mcjty.deepresonance.modules.machines.client;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.ValveTileEntity;
+import mcjty.deepresonance.setup.DeepResonanceMessages;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
@@ -19,7 +20,6 @@ import mcjty.lib.gui.widgets.Panel;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.gui.widgets.*;
 import mcjty.lib.tileentity.GenericTileEntity;
-import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.RedstoneMode;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -184,17 +184,11 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
         } catch (NumberFormatException e) {
             //
         }
-        tileEntity.setMinPurity(purity / 100.0f);
-        tileEntity.setMinStrength(strength / 100.0f);
-        tileEntity.setMinEfficiency(efficiency / 100.0f);
-        tileEntity.setMaxMb(maxMb);
-        sendServerCommandTyped(McJtyLib.networkHandler, ValveTileEntity.CMD_SETTINGS,
-                TypedMap.builder()
-                        .put(PARAM_PURITY, purity / 100.0)
-                        .put(PARAM_STRENGTH, strength / 100.0)
-                        .put(PARAM_EFFICIENCY, efficiency / 100.0)
-                        .put(PARAM_MAXMB, maxMb)
-                        .build());
+
+        setValue(DeepResonanceMessages.INSTANCE, VALUE_MINPURITY, purity / 100.0f);
+        setValue(DeepResonanceMessages.INSTANCE, VALUE_STRENGTH, strength / 100.0f);
+        setValue(DeepResonanceMessages.INSTANCE, VALUE_EFFICIENCY, efficiency / 100.0f);
+        setValue(DeepResonanceMessages.INSTANCE, VALUE_MAXMB, maxMb);
     }
 
     public static void register() {

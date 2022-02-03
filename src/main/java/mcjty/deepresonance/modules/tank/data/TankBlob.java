@@ -14,6 +14,8 @@ import java.util.Optional;
 import java.util.Set;
 
 public class TankBlob implements IMultiblock {
+    public static final int TANK_BUCKETS = 10;
+
     private LiquidCrystalData data;
     private int tankBlocks;
     private int minY;               // Minimum Y for this tank blob
@@ -53,7 +55,7 @@ public class TankBlob implements IMultiblock {
     }
 
     public int getCapacityPerTank() {
-        return 10 * 1000;   // @todo 1.16 configurable
+        return TANK_BUCKETS * 1000;   // @todo 1.16 configurable
     }
 
     public int getCapacity() {

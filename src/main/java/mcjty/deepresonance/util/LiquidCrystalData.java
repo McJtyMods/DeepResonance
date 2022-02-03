@@ -23,7 +23,7 @@ public class LiquidCrystalData implements ILiquidCrystalData {
         this.referenceStack = buf.readFluidStack();
     }
 
-    static FluidStack makeLiquidCrystalStack(int amount, float quality, float purity, float strength, float efficiency) {
+    public static FluidStack makeLiquidCrystalStack(int amount, float quality, float purity, float strength, float efficiency) {
         LiquidCrystalData data = new LiquidCrystalData(new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), amount));
         data.setAmount(amount);
         data.setStats(quality, purity, strength, efficiency);

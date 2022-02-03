@@ -5,12 +5,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import mcjty.deepresonance.api.infusion.InfusionBonus;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -18,10 +20,9 @@ import java.util.Map;
 
 public class InfusionBonusRegistry {
 
-    private final Map<Ingredient, InfusionBonus> bonuses;
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
-    public static Map<ResourceLocation, InfusingBonus> infusingBonusMap = null;
+    private static Map<ResourceLocation, InfusingBonus> infusingBonusMap = null;
 
     public static final int COLOR_BLUE = 1;
     public static final int COLOR_RED = 2;
@@ -29,11 +30,11 @@ public class InfusionBonusRegistry {
     public static final int COLOR_YELLOW = 4;       // This is rendered as off in meta
 
     public InfusionBonusRegistry() {
-        this.bonuses = Maps.newHashMap();
+        createDefaultInfusionBonusMap();
     }
 
     public static void createDefaultInfusionBonusMap() {
-        infusingBonusMap = new HashMap<ResourceLocation, InfusingBonus>();
+        infusingBonusMap = new HashMap<>();
         infusingBonusMap.put(Items.DIAMOND.getRegistryName(), new InfusingBonus(
                 COLOR_BLUE,
                 new InfusingBonus.Modifier(5.0f, 100.0f),
@@ -132,20 +133,14 @@ public class InfusionBonusRegistry {
     }
 
 
-    //    @Override
-    protected void read(@Nonnull Map<ResourceLocation, JsonObject> objects, @Nonnull IResourceManager resourceManager, @Nonnull IProfiler profiler) {
-        bonuses.clear();
-        objects.forEach((rl, obj) -> bonuses.put(Ingredient.fromJson(obj.get("ingredient")), GSON.fromJson(obj.get("bonus"), InfusionBonus.class)));
-    }
-
-    public InfusionBonus getInfusionBonus(ItemStack stack) {
-        return bonuses
+    public static InfusingBonus getInfusionBonus(ItemStack stack) {
+        return infusingBonusMap
                 .entrySet()
                 .stream()
-                .filter(e -> e.getKey().test(stack))
+                .filter(e -> e.getKey().equals(stack.getItem().getRegistryName()))
                 .map(Map.Entry::getValue)
                 .findFirst()
-                .orElse(InfusionBonus.EMPTY);
+                .orElse(InfusingBonus.EMPTY);
     }
 
     public static String toString(InfusionBonus bonus) {

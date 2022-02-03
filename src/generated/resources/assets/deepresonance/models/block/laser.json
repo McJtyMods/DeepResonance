@@ -3,69 +3,9 @@
   "textures": {
     "down": "deepresonance:block/machine_bottom",
     "up": "deepresonance:block/machine_top",
-    "north": "deepresonance:block/laser_back",
-    "south": "deepresonance:block/laser",
-    "east": "deepresonance:block/laser",
-    "west": "deepresonance:block/laser",
-    "back": "deepresonance:block/laser_back_color"
-  },
-  "elements": [
-    {
-      "from": [
-        0,
-        0,
-        0
-      ],
-      "to": [
-        16,
-        16,
-        16
-      ],
-      "faces": {
-        "down": {
-          "texture": "#down",
-          "cullface": "down"
-        },
-        "up": {
-          "texture": "#up",
-          "cullface": "up"
-        },
-        "north": {
-          "texture": "#north",
-          "cullface": "north"
-        },
-        "south": {
-          "texture": "#south",
-          "cullface": "south"
-        },
-        "west": {
-          "texture": "#west",
-          "cullface": "west"
-        },
-        "east": {
-          "texture": "#east",
-          "cullface": "east"
-        }
-      }
-    },
-    {
-      "from": [
-        0,
-        0,
-        1
-      ],
-      "to": [
-        16,
-        16,
-        16
-      ],
-      "faces": {
-        "south": {
-          "texture": "#back",
-          "cullface": "south",
-          "tintindex": 1
-        }
-      }
-    }
-  ]
+    "north": "deepresonance:block/laser",
+    "south": "deepresonance:block/laser_back",
+    "east": "deepresonance:block/laser_back",
+    "west": "deepresonance:block/laser_back"
+  }
 }

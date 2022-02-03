@@ -1,7 +1,19 @@
 {
   "variants": {
-    "": {
+    "facing=north": {
       "model": "deepresonance:block/lens_mc"
+    },
+    "facing=south": {
+      "model": "deepresonance:block/lens_mc",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "deepresonance:block/lens_mc",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "deepresonance:block/lens_mc",
+      "y": 90
     }
   }
 }
