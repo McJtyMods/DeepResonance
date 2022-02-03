@@ -4,16 +4,24 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.LaserTileEntity;
+import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
+import mcjty.deepresonance.setup.ClientSetup;
+import mcjty.lib.client.CustomRenderTypes;
+import mcjty.lib.client.RenderHelper;
+import mcjty.lib.client.RenderSettings;
+import mcjty.lib.varia.OrientationTools;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import javax.annotation.Nonnull;
@@ -32,48 +40,44 @@ public class LaserTESR extends TileEntityRenderer<LaserTileEntity> {
     }
 
     @Override
-    public void render(@Nonnull LaserTileEntity tileEntityIn, float partialTicks, @Nonnull MatrixStack matrixStackIn, @Nonnull IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
-        BlockPos prev = BlockPos.ZERO;
-        if (tileEntityIn.getActiveBonus().isEmpty()) {
-            return;
+    public void render(@Nonnull LaserTileEntity tileEntity, float partialTicks, @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
+        int color = tileEntity.getBlockState().getValue(LaserTileEntity.COLOR);
+        if (color != 0) {
+            BlockPos pos = tileEntity.getBlockPos();
+            Direction direction = OrientationTools.getOrientationHoriz(Minecraft.getInstance().level.getBlockState(pos));
+            float destX = 0.5f + direction.getStepX()*2.5f;
+            float destY = 0.5f;
+            float destZ = 0.5f + direction.getStepZ()*2.5f;
+
+            ResourceLocation laser = null;
+            switch (color) {
+                case InfusionBonusRegistry.COLOR_BLUE: laser = ClientSetup.BLUELASER; break;
+                case InfusionBonusRegistry.COLOR_RED: laser = ClientSetup.REDLASER; break;
+                case InfusionBonusRegistry.COLOR_GREEN: laser = ClientSetup.GREENLASER; break;
+                case InfusionBonusRegistry.COLOR_YELLOW: laser = ClientSetup.YELLOWLASER; break;
+            }
+
+            int tex = tileEntity.getBlockPos().getX();
+            int tey = tileEntity.getBlockPos().getY();
+            int tez = tileEntity.getBlockPos().getZ();
+            Vector3d projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().add(-tex, -tey, -tez);
+
+            // Crystal coordinates are relative!
+            Vector3f start = new Vector3f(.5f, .5f, .5f);
+            Vector3f end = new Vector3f(destX, destY, destZ);
+            Vector3f player = new Vector3f((float)projectedView.x, (float)projectedView.y, (float)projectedView.z);
+
+            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(laser);
+
+            matrixStack.pushPose();
+            IVertexBuilder builder = buffer.getBuffer(CustomRenderTypes.TRANSLUCENT_ADD_NOLIGHTMAPS);
+            RenderSettings settingsLaser = RenderSettings.builder()
+                    .width(.25f)
+                    .alpha(128)
+                    .build();
+            RenderHelper.drawBeam(matrixStack.last().pose(), builder, sprite, start, end, player, settingsLaser);
+            matrixStack.popPose();
         }
-        int color = tileEntityIn.getActiveBonus().getColor();
-        for (BlockPos pos : tileEntityIn.getLaserBeam()) {
-            BlockPos p = pos.subtract(tileEntityIn.getBlockPos());
-            drawBeamPart(prev, p, color, tileEntityIn.getLevel(), matrixStackIn, bufferIn.getBuffer(RenderType.translucent()));
-            prev = p;
-        }
-    }
-
-    private void drawBeamPart(BlockPos from, BlockPos to, int color, World world, @Nonnull MatrixStack matrix, IVertexBuilder buffer) {
-        matrix.pushPose();
-        BlockPos diff = from.subtract(to);
-
-        matrix.translate(from.getX() + 0.5, from.getY() + 0.5, from.getZ() + 0.5);
-        Direction dir = Direction.fromNormal(diff.getX(), diff.getY(), diff.getZ());
-        if (dir == null) {
-            return;
-        }
-
-        matrix.mulPose(dir.getRotation());
-        matrix.mulPose(Vector3f.XN.rotationDegrees(90));
-
-        matrix.translate(0, 0, -0.5);
-
-        int r = color >> 16 & 255;
-        int g = color >> 8 & 255;
-        int b = color & 255;
-
-        float f = Math.floorMod(world.getGameTime(), 40L);
-        matrix.mulPose(Vector3f.ZN.rotationDegrees(f * 2.25f));
-
-        for (int i = 0; i < 4; i++) {
-            matrix.pushPose();
-            matrix.mulPose(Vector3f.ZN.rotationDegrees(i * 90));
-            buffer.addVertexData(matrix.last(), quad, r, g, b, 15728880, OverlayTexture.NO_OVERLAY, true);
-            matrix.popPose();
-        }
-        matrix.popPose();
     }
 
     // @todo 1.16

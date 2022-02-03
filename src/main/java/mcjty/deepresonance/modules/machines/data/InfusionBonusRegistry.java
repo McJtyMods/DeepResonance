@@ -1,26 +1,13 @@
 package mcjty.deepresonance.modules.machines.data;
 
-import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import mcjty.deepresonance.api.infusion.InfusionBonus;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistries;
 
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
 public class InfusionBonusRegistry {
-
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     private static Map<ResourceLocation, InfusingBonus> infusingBonusMap = null;
 
@@ -142,13 +129,4 @@ public class InfusionBonusRegistry {
                 .findFirst()
                 .orElse(InfusingBonus.EMPTY);
     }
-
-    public static String toString(InfusionBonus bonus) {
-        return GSON.toJson(bonus);
-    }
-
-    public static InfusionBonus fromString(String s) {
-        return GSON.fromJson(s, InfusionBonus.class);
-    }
-
 }

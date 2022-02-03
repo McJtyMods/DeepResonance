@@ -17,15 +17,15 @@ public class LaserConfig {
 
     public static void init() {
         POWER_PER_TICK_IN = Config.SERVER_BUILDER.comment("How much power/t this machine can input from a generator/capacitor")
-                .defineInRange("powerPerTickIn", 2000, 0, 10000);
+                .defineInRange("powerPerTickIn", 2000, 0, Integer.MAX_VALUE);
         POWER_MAXIMUM = Config.SERVER_BUILDER.comment("Maximum power that can be stored in this machine")
-                .defineInRange("powerMaximum", 10000, 0, 100000);
+                .defineInRange("powerMaximum", 100000, 0, Integer.MAX_VALUE);
         CRYSTAL_LIQUID_MAXIMUM = Config.SERVER_BUILDER.comment("The maximum amount of liquified crystal this machine can hold (this is not RCL!)")
-                .defineInRange("crystalLiquidMaximum", 8000, 100, 10000);
+                .defineInRange("crystalLiquidMaximum", 20000, 100, Integer.MAX_VALUE);
         MIN_CRYSTAL_LIQUID_PER_CRYSTAL = Config.SERVER_BUILDER.comment("The minimum amount of liquified crystal one crystal will yield (this is not RCL!). This value is for a 0% strength crystal")
-                .defineInRange("minCrystalLiquidPerCrystal", 2000, 1, 4000);
+                .defineInRange("minCrystalLiquidPerCrystal", 2000, 1, Integer.MAX_VALUE);
         MAX_CRYSTAL_LIQUID_PER_CRYSTAL = Config.SERVER_BUILDER.comment("The maximum amount of liquified crystal one crystal will yield (this is not RCL!). This value is for a 100% strength crystal")
-                .defineInRange("maxCrystalLiquidPerCrystal", 8000, 1, 10000);
+                .defineInRange("maxCrystalLiquidPerCrystal", 10000, 1, Integer.MAX_VALUE);
 
         RFUSE_PER_CATALYST = Config.SERVER_BUILDER.comment("How much RF this machine consumes for infusing one catalyst item")
                 .defineInRange("rfUsePerCatalyst", 4000, 0, Integer.MAX_VALUE);

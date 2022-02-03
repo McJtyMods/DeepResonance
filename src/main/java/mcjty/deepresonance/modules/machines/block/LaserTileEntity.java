@@ -1,9 +1,5 @@
 package mcjty.deepresonance.modules.machines.block;
 
-import com.google.common.collect.Lists;
-import mcjty.deepresonance.api.infusion.InfusionBonus;
-import mcjty.deepresonance.api.laser.ILens;
-import mcjty.deepresonance.api.laser.ILensMirror;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.data.InfusingBonus;
@@ -35,10 +31,8 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.NBTUtil;
+import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -51,7 +45,6 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
 
 import static mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry.COLOR_RED;
 import static mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry.COLOR_YELLOW;
@@ -62,26 +55,20 @@ import static mcjty.lib.container.SlotDefinition.generic;
 
 public class LaserTileEntity extends TickingTileEntity {
 
+    public static IntegerProperty COLOR = IntegerProperty.create("color", 0, 3);
+
     public static final int SLOT_CRYSTAL = 0;
     public static final int SLOT_CATALYST = 1;
     private static final int SLOT_ACTIVE_CATALYST = 2;
 
-    private final Collection<BlockPos> laserBeam = Lists.newArrayList();
-    private int crystalCountdown = 0;
-    private int lensCountdown = 0;
-    private int progressCounter = 0;
-
     // Transient
     private int tickCounter = 10;
+    private int progressCounter = 0;
 
     @GuiValue
     private float crystalLiquid = 0;
 
     private int color = 0;          // 0 means not active, > 0 means a color laser
-
-    private float efficiency = 0;
-    private InfusingBonus activeBonus = InfusingBonus.EMPTY;
-    private LazyOptional<ILens> lens;
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(3)
             .slot(generic().in().out(), SLOT_CRYSTAL, 154, 48)
@@ -129,7 +116,7 @@ public class LaserTileEntity extends TickingTileEntity {
             @Override
             protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
                 super.createBlockStateDefinition(builder);
-                builder.add();
+                builder.add(COLOR);
             }
 
         };
@@ -286,8 +273,8 @@ public class LaserTileEntity extends TickingTileEntity {
             } else if (color == 0) {
                 mcolor = 0;    // Off
             }
-            level.setBlock(worldPosition, level.getBlockState(worldPosition).setValue(LaserBlock.COLOR, mcolor), 3);
-            markDirty();
+            level.setBlock(worldPosition, level.getBlockState(worldPosition).setValue(COLOR, mcolor), Constants.BlockFlags.DEFAULT);
+            setChanged();
         }
     }
 
@@ -311,74 +298,29 @@ public class LaserTileEntity extends TickingTileEntity {
         }
     }
 
-    private void checkLens() {
-        if (lens != null && lens.isPresent()) {
-            return;
-        } else if (lens != null) {
-            lens = null;
-            laserBeam.clear();
-        }
-        Direction facing = level.getBlockState(getBlockPos()).getValue(BlockStateProperties.HORIZONTAL_FACING);
-        BlockPos pos = getBlockPos();
-        Collection<BlockPos> laser = Lists.newArrayList();
-        int c = 1;
-        while (c < 8) {
-            pos = pos.relative(facing);
-            laser.add(pos);
-            TileEntity tile = level.getBlockEntity(pos);
-            if (tile != null) {
-                LazyOptional<ILens> lens = tile.getCapability(MachinesModule.LENS_CAPABILITY, facing);
-                if (lens.isPresent()) {
-                    this.lens = lens;
-                    this.laserBeam.addAll(laser);
-                    setChanged();
-                    return;
-                }
-                LazyOptional<ILensMirror> mirror = tile.getCapability(MachinesModule.LENS_MIRROR_CAPABILITY, facing);
-                if (mirror.isPresent()) {
-                    facing = mirror.orElseThrow(NullPointerException::new).bounceLaser(facing);
-                }
-            }
-            c++;
-        }
-    }
-
-    @Override
-    public void saveClientDataToNBT(CompoundNBT tagCompound) {
-        ListNBT list = new ListNBT();
-        for (BlockPos pos : laserBeam) {
-            list.add(NBTUtil.writeBlockPos(pos));
-        }
-        tagCompound.put("laserBeam", list);
-        tagCompound.putString("bonus", InfusionBonusRegistry.toString(activeBonus));
-    }
-
-    @Override
-    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
-        laserBeam.clear();
-        ListNBT list = tagCompound.getList("laserBeam", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < list.size(); i++) {
-            laserBeam.add(NBTUtil.readBlockPos(list.getCompound(i)));
-        }
-        activeBonus = InfusionBonusRegistry.fromString(tagCompound.getString("bonus"));
-    }
-
     @Override
     public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putInt("progress", progressCounter);
-        tagCompound.putFloat("liquid", crystalLiquid);
-        tagCompound.putFloat("efficiency", efficiency);
-        tagCompound.putString("bonus", InfusionBonusRegistry.toString(activeBonus));
         super.saveAdditional(tagCompound);
+    }
+
+    @Override
+    protected void saveInfo(CompoundNBT tagCompound) {
+        super.saveInfo(tagCompound);
+        getOrCreateInfo(tagCompound).putFloat("liquid", crystalLiquid);
     }
 
     @Override
     public void load(CompoundNBT tagCompound) {
         progressCounter = tagCompound.getInt("progress");
-        crystalLiquid = tagCompound.getFloat("liquid");
-        efficiency = tagCompound.getFloat("efficiency");
-        activeBonus = InfusionBonusRegistry.fromString(tagCompound.getString("bonus"));
         super.load(tagCompound);
+    }
+
+    @Override
+    protected void loadInfo(CompoundNBT tagCompound) {
+        super.loadInfo(tagCompound);
+        CompoundNBT info = tagCompound.getCompound("Info");
+        crystalLiquid = info.getFloat("liquid");
     }
 
     public int getMaxPower() {
@@ -398,15 +340,4 @@ public class LaserTileEntity extends TickingTileEntity {
     public float getCrystalLiquid() {
         return crystalLiquid;
     }
-
-    // Client side
-    public InfusionBonus getActiveBonus() {
-        return activeBonus;
-    }
-
-    // Client
-    public Collection<BlockPos> getLaserBeam() {
-        return laserBeam;
-    }
-
 }

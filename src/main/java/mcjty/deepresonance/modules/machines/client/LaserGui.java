@@ -2,10 +2,9 @@ package mcjty.deepresonance.modules.machines.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.api.infusion.InfusionBonus;
-import mcjty.deepresonance.api.infusion.InfusionModifier;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.LaserTileEntity;
+import mcjty.deepresonance.modules.machines.data.InfusingBonus;
 import mcjty.deepresonance.modules.machines.util.config.LaserConfig;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
@@ -18,6 +17,7 @@ import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -93,15 +93,22 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
 
     @Override
     protected void renderBg(@Nonnull MatrixStack matrixStack, float partialTicks, int x, int y) {
-        InfusionBonus bonus = tileEntity.getActiveBonus();
-        if (bonus.isEmpty()) {
-            purifyBonus.text("No active catalyst");
+        Slot slot = this.menu.getSlot(LaserTileEntity.SLOT_CATALYST);
+        if (slot.hasItem()) {
+            InfusingBonus bonus = LaserTileEntity.getInfusingBonus(slot.getItem());
+            if (bonus != null) {
+                setBonusText(bonus.getPurityModifier(), "P", purifyBonus);
+                setBonusText(bonus.getStrengthModifier(), "S", strengthBonus);
+                setBonusText(bonus.getEfficiencyModifier(), "E", efficiencyBonus);
+            } else {
+                purifyBonus.text("Not a catalyst!");
+                strengthBonus.text("");
+                efficiencyBonus.text("");
+            }
+        } else {
+            purifyBonus.text("Catalyst missing!");
             strengthBonus.text("");
             efficiencyBonus.text("");
-        } else {
-            setBonusText(bonus.getPurityModifier(), "P", purifyBonus);
-            setBonusText(bonus.getStrengthModifier(), "S", strengthBonus);
-            setBonusText(bonus.getEfficiencyModifier(), "E", efficiencyBonus);
         }
         crystalBar.value((int) tileEntity.getCrystalLiquid());
         updateEnergyBar(energyBar);
@@ -109,7 +116,7 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
         super.renderBg(matrixStack, partialTicks, x, y);
     }
 
-    private void setBonusText(InfusionModifier modifier, String prefix, Label label) {
+    private void setBonusText(InfusingBonus.Modifier modifier, String prefix, Label label) {
         if (Math.abs(modifier.getBonus()) > 0.01f) {
             label.text(prefix + ": " + formatted(modifier.getBonus()) + "% (cap " + formatted(modifier.getMaxOrMin()) + ")");
         } else {
