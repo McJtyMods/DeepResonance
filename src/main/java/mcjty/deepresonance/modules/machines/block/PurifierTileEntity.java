@@ -6,7 +6,6 @@ import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.util.config.PurifierConfig;
 import mcjty.deepresonance.modules.tank.util.DualTankHook;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
-import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
@@ -70,7 +69,8 @@ public class PurifierTileEntity extends TickingTileEntity {
         return new BaseBlock(
                 new BlockBuilder()
                         .tileEntitySupplier(PurifierTileEntity::new)
-                        .infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("purifier")))) {
+                        .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))
+                        .infoShift(TooltipBuilder.header())) {
 
             @Override
             public RotationType getRotationType() {

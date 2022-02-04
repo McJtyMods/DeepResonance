@@ -8,7 +8,6 @@ import mcjty.deepresonance.modules.machines.util.config.LaserConfig;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.deepresonance.util.LiquidCrystalData;
-import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.blocks.BaseBlock;
@@ -105,7 +104,10 @@ public class LaserTileEntity extends TickingTileEntity {
     }
 
     public static BaseBlock createBlock() {
-        return new BaseBlock(new BlockBuilder().tileEntitySupplier(LaserTileEntity::new).infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("laser")))) {
+        return new BaseBlock(new BlockBuilder()
+                .tileEntitySupplier(LaserTileEntity::new)
+                .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))
+                .infoShift(TooltipBuilder.header())) {
 
             @Override
             public RotationType getRotationType() {

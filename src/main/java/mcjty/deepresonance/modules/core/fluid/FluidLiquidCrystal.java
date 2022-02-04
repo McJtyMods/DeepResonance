@@ -1,7 +1,6 @@
 package mcjty.deepresonance.modules.core.fluid;
 
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.util.TranslationHelper;
 import net.minecraft.fluid.EmptyFluid;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -16,7 +15,7 @@ public class FluidLiquidCrystal extends EmptyFluid {
     @Override
     protected FluidAttributes createAttributes() {
         return FluidAttributes.builder(texture, texture)
-                .translationKey(TranslationHelper.getFluidKey("liquid_crystal"))
+                .translationKey("fluid.deepresonance.liquid_crystal")
                 .build(this);
     }
 

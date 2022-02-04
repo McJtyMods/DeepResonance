@@ -3,7 +3,6 @@ package mcjty.deepresonance.modules.core.block;
 import mcjty.deepresonance.compat.DeepResonanceTOPDriver;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.util.Constants;
-import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
@@ -128,9 +127,9 @@ public class ResonatingCrystalBlock extends BaseBlock {
             power = tagCompound.getFloat("power");
         }
         if (power > Constants.CRYSTAL_MIN_POWER) {
-            tooltip.add(new TranslationTextComponent(TranslationHelper.getTooltipKey("crystal_power")));
+            tooltip.add(new TranslationTextComponent("message.deepresonance.crystal_power"));
         } else {
-            tooltip.add(new TranslationTextComponent(TranslationHelper.getTooltipKey("crystal_empty")));
+            tooltip.add(new TranslationTextComponent("message.deepresonance.crystal_empty"));
         }
         if (tagCompound != null) {
             addBasicInformation(tooltip::add, tagCompound, power, true);
@@ -140,7 +139,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
     public static void addBasicInformation(Consumer<ITextComponent> tooltip, CompoundNBT tag, float power, boolean showPower) {
         DecimalFormat decimalFormat = new DecimalFormat("#.#");
         decimalFormat.setRoundingMode(RoundingMode.DOWN);
-        tooltip.accept(new TranslationTextComponent(TranslationHelper.getTooltipKey("crystal_sep"))
+        tooltip.accept(new TranslationTextComponent("message.deepresonance.crystal_sep")
                 .withStyle(TextFormatting.GREEN)
                 .append(": "
                         + decimalFormat.format(tag.getFloat("strength")) + "% "

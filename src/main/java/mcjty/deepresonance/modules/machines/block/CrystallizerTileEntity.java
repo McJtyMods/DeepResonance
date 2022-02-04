@@ -6,7 +6,6 @@ import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.util.config.CrystallizerConfig;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.deepresonance.util.LiquidCrystalData;
-import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
@@ -76,7 +75,8 @@ public class CrystallizerTileEntity extends TickingTileEntity {
     public static BaseBlock createBlock() {
         return new BaseBlock(new BlockBuilder()
                 .tileEntitySupplier(CrystallizerTileEntity::new)
-                .infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("crystallizer")))) {
+                .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))
+                .infoShift(TooltipBuilder.header())) {
             @Override
             public RotationType getRotationType() {
                 return RotationType.HORIZROTATION;

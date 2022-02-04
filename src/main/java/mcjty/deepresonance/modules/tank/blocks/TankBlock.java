@@ -3,7 +3,6 @@ package mcjty.deepresonance.modules.tank.blocks;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.compat.DeepResonanceTOPDriver;
 import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
@@ -20,6 +19,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.fluids.FluidStack;
 
+import static mcjty.lib.builder.TooltipBuilder.*;
+
 public class TankBlock extends BaseBlock {
 
     public TankBlock() {
@@ -27,8 +28,8 @@ public class TankBlock extends BaseBlock {
                 .properties(Properties.of(Material.METAL).noOcclusion().strength(2.0F).sound(SoundType.GLASS))
                 .topDriver(DeepResonanceTOPDriver.DRIVER)
                 .tileEntitySupplier(TankTileEntity::new)
-                .info(TooltipBuilder.key(DeepResonance.SHIFT_MESSAGE))
-                .infoShift(TooltipBuilder.key(TranslationHelper.getExtendedTooltipKey("tank")), TooltipBuilder.parameter("", itemStack -> {
+                .info(key(DeepResonance.SHIFT_MESSAGE))
+                .infoShift(header(), parameter("liquid", itemStack -> {
                     FluidStack stack = readFromTileNbt(itemStack.getOrCreateTagElement(CoreModule.TILE_DATA_TAG));
                     if (!stack.isEmpty()) {
                         // @todo 1.16
@@ -41,7 +42,7 @@ public class TankBlock extends BaseBlock {
 
     @Override
     public RotationType getRotationType() {
-        return RotationType.NONE; //No rotations 4 u
+        return RotationType.NONE;
     }
 
     @Override

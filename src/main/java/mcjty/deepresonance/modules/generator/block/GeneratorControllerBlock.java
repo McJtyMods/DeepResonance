@@ -1,7 +1,6 @@
 package mcjty.deepresonance.modules.generator.block;
 
 import mcjty.deepresonance.compat.DeepResonanceTOPDriver;
-import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
@@ -19,7 +18,8 @@ public class GeneratorControllerBlock extends BaseBlock {
         super(new BlockBuilder()
                 .tileEntitySupplier(GeneratorControllerTileEntity::new)
                 .topDriver(DeepResonanceTOPDriver.DRIVER)
-                .infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("generator_controller"))));
+                .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))
+                .infoShift(TooltipBuilder.header()));
     }
 
     @Override

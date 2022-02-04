@@ -25,6 +25,4 @@ public final class DataGenerators {
         }
     }
 
-//        registry.register(InfusionBonusProvider::new);
-
 }

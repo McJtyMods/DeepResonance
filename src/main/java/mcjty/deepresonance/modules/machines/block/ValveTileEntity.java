@@ -5,7 +5,6 @@ import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.util.config.ValveConfig;
 import mcjty.deepresonance.modules.tank.util.DualTankHook;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
-import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.bindings.Value;
@@ -71,7 +70,8 @@ public class ValveTileEntity extends TickingTileEntity {
         return new BaseBlock(
                 new BlockBuilder()
                         .tileEntitySupplier(ValveTileEntity::new)
-                        .infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("valve")))) {
+                        .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))
+                        .infoShift(TooltipBuilder.header())) {
 
             @Override
             public RotationType getRotationType() {

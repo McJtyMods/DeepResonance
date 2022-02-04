@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.generator.block;
 
-import mcjty.deepresonance.util.TranslationHelper;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
@@ -21,7 +20,8 @@ public class EnergyCollectorBlock extends BaseBlock {
     public EnergyCollectorBlock() {
         super(new BlockBuilder()
                 .tileEntitySupplier(EnergyCollectorTileEntity::new)
-                .infoShift(TooltipBuilder.key(TranslationHelper.getTooltipKey("energy_collector"))));
+                .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))
+                .infoShift(TooltipBuilder.header()));
     }
 
     @Nonnull
