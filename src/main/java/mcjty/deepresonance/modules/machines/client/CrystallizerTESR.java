@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 
 public class CrystallizerTESR extends TileEntityRenderer<CrystallizerTileEntity> {
 
-    private static ItemStack stack = new ItemStack(CoreModule.RESONATING_CRYSTAL_GENERATED.get());
+    private static final ItemStack stack = new ItemStack(CoreModule.RESONATING_CRYSTAL_GENERATED.get());
 
     public CrystallizerTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);

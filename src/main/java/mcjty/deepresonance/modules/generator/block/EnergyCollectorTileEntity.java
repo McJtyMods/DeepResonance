@@ -301,8 +301,8 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
         }
     }
 
-    private static int ERROR_TOOMANYCRYSTALS = -1;
-    private static int ERROR_TOOMUCHPOWER = -2;
+    private static final int ERROR_TOOMANYCRYSTALS = -1;
+    private static final int ERROR_TOOMUCHPOWER = -2;
 
     // Returns remaining RF that is supported if crystal could be added. Otherwise one of the errors above.
     private int addCrystal(int x, int y, int z, GeneratorBlob network, Set<BlockPos> newCrystals, Set<BlockPos> oldCrystals, int maxSupportedRF) {

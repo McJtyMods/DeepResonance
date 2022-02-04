@@ -27,8 +27,6 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
     private int startup = 0;
     private int shutdown = 0;
     private boolean active = false;
-    private boolean rsControlled = true;
-    private boolean activated = false;
 
     public GeneratorControllerTileEntity() {
         super(GeneratorModule.TYPE_GENERATOR_CONTROLLER.get());
@@ -58,7 +56,7 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
 
     @Override
     protected void tickServer() {
-        boolean active1 = (rsControlled && powerLevel > 0) || (!rsControlled && activated);
+        boolean active1 = powerLevel > 0;
 
         // @todo optimize this?
         boolean dirty = false;

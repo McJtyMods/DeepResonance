@@ -87,7 +87,7 @@ public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig
                 pos = poz.above();
                 if (world.getBlockState(pos).isAir(world, poz)) {
                     if (WorldGenConfiguration.VERBOSE.get()) {
-                        DeepResonance.logger.info("Spawned crystal at: " + pos);
+                        DeepResonance.setup.getLogger().info("Spawned crystal at: " + pos);
                     }
                     spawnRandomCrystal(world, random, pos, config.strength, config.power, config.efficiency, config.purity);
                     return true;

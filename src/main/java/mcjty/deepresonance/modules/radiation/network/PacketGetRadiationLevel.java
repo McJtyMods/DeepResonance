@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 
 public class PacketGetRadiationLevel {
 
-    private GlobalPos coordinate;
+    private final GlobalPos coordinate;
 
     public PacketGetRadiationLevel(PacketBuffer buf) {
         RegistryKey<World> id = LevelTools.getId(buf.readResourceLocation());

@@ -176,7 +176,6 @@ curseforge {
             displayName = "${modname} - ${version}"
         }
         relations {
-            optionalLibrary 'redstone-flux'
             optionalLibrary 'the-one-probe'
             requiredDependency 'mcjtylib'
             requiredDependency 'rftools-base'

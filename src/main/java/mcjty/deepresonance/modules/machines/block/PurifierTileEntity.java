@@ -57,7 +57,7 @@ public class PurifierTileEntity extends TickingTileEntity {
             .setupSync(this));
 
     // Cache for the inventory used to put the spent filter material in.
-    private InventoryLocator inventoryLocator = new InventoryLocator();
+    private final InventoryLocator inventoryLocator = new InventoryLocator();
 
     private int timeToGo = 0;
     private ILiquidCrystalData processing = null;

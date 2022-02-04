@@ -38,6 +38,7 @@ public class WorldGenConfiguration {
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> CRYSTAL_BLACKLIST;
 
     public static void init() {
+
         RETROGEN = Config.COMMON_BUILDER.comment("Enable this if you want to get retrogen (generation of ores/crystals) for already existing chunks")
                 .define("retrogen", true);
         VERBOSE = Config.COMMON_BUILDER.comment("Enable this if you want to see in the log where crystals are spawned")

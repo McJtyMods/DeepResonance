@@ -26,9 +26,6 @@ import java.util.function.Predicate;
 
 public class DeepResonanceOreGenerator {
 
-    private static final Predicate<BlockState> IS_NETHERACK = state -> state.getBlock() == Blocks.NETHERRACK;
-    private static final Predicate<BlockState> IS_ENDSTONE = state -> state.getBlock() == Blocks.END_STONE;
-
     public static ConfiguredFeature OVERWORLD_RESONATING_ORE;
     public static ConfiguredFeature NETHER_RESONATING_ORE;
     public static ConfiguredFeature END_RESONATING_ORE;

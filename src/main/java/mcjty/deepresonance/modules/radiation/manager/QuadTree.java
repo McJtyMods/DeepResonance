@@ -9,7 +9,7 @@ import net.minecraft.util.math.vector.Vector3d;
  */
 public class QuadTree {
 
-    private SimpleAABB box;
+    private final SimpleAABB box;
     private QuadTree child1;
     private QuadTree child2;
     private float blocker = 1.0f;      // 0.0 is blocked, 1.0 is transparent

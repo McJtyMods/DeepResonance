@@ -5,6 +5,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.function.Supplier;
 
+// @todo remove me
 public class TranslationHelper {
 
     public static final String TOOLTIP_PREFIX = "tooltip";

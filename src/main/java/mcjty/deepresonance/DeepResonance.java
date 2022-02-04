@@ -17,14 +17,9 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @Mod(DeepResonance.MODID)
 public class DeepResonance {
-
-    // @todo 1.16 ChunkWatchEvent!
-    // @todo 1.16 PacketDistributor.TRACKING_CHUNK
 
     public static final String MODID = "deepresonance";
     public static final String MODNAME = "DeepResonance";
@@ -33,16 +28,11 @@ public class DeepResonance {
 
     public static DeepResonance instance;
     public static ModSetup setup;
-    public static Logger logger;
 
     private final Modules modules = new Modules();
 
     public DeepResonance() {
-        if (instance != null) {
-            throw new RuntimeException();
-        }
         instance = this;
-        logger = LogManager.getLogger(MODNAME);
         setup = new ModSetup();
 
         DeepResonanceTags.init();
@@ -70,9 +60,4 @@ public class DeepResonance {
         modules.register(new TankModule());
         modules.register(new WorldGenModule());
     }
-
-//    @Override
-//    public void afterConstruction() {
-//        Config.afterRegister();
-//    }
 }

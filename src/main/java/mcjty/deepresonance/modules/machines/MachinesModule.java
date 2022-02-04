@@ -1,7 +1,5 @@
 package mcjty.deepresonance.modules.machines;
 
-import mcjty.deepresonance.api.laser.ILens;
-import mcjty.deepresonance.api.laser.ILensMirror;
 import mcjty.deepresonance.modules.machines.block.*;
 import mcjty.deepresonance.modules.machines.client.*;
 import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
@@ -14,8 +12,6 @@ import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -54,31 +50,8 @@ public class MachinesModule implements IModule {
     public static final RegistryObject<TileEntityType<CrystallizerTileEntity>> TYPE_CRYSTALIZER = TILES.register("crystallizer", () -> TileEntityType.Builder.of(CrystallizerTileEntity::new, CRYSTALLIZER_BLOCK.get()).build(null));
     public static final RegistryObject<ContainerType<GenericContainer>> CRYSTALIZER_CONTAINER = CONTAINERS.register("crystallizer", GenericContainer::createContainerType);
 
-    public static final InfusionBonusRegistry INFUSION_BONUSES = new InfusionBonusRegistry();
-
-    @CapabilityInject(ILens.class)
-    public static Capability<ILens> LENS_CAPABILITY;
-
-    @CapabilityInject(ILensMirror.class)
-    public static Capability<ILensMirror> LENS_MIRROR_CAPABILITY;
-
     public MachinesModule() {
-        // @todo 1.16
-//        RegistryHelper.registerEmptyCapability(ILens.class);
-//        RegistryHelper.registerEmptyCapability(ILensMirror.class);
-//        SubTileRegistry.INSTANCE.registerSubTile(SubTileLens.class, new ResourceLocation(DeepResonance.MODID, "lens"));
-//        SubTileRegistry.INSTANCE.registerSubTile(SubTileLensMirror.class, new ResourceLocation(DeepResonance.MODID, "lens_mirror"));
-//        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadModels);
     }
-
-    // @todo 1.16
-//    private void loadModels(ModelLoadEvent event) {
-//        ModelResourceLocation location = new ModelResourceLocation(new ResourceLocation(DeepResonance.MODID, "lens"), "");
-//        event.registerModel(location, LensModelCache.INSTANCE.setModel(event.getModel(location)));
-//        location = new ModelResourceLocation(new ResourceLocation(DeepResonance.MODID, "resonating_crystal_model"), "empty=false,facing=north,very_pure=true");
-//        CrystallizerTESR.setModel(Preconditions.checkNotNull(event.getModel(location)));
-//    }
-
 
     @Override
     public void initClient(FMLClientSetupEvent event) {
@@ -88,7 +61,6 @@ public class MachinesModule implements IModule {
         LaserTESR.register();
 
         event.enqueueWork(() -> {
-//            ClientSetup.setupBlockColors();
             SmelterGui.register();
             PurifierGui.register();
             LaserGui.register();

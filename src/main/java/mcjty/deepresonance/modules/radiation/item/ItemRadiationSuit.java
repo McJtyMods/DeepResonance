@@ -22,11 +22,6 @@ public class ItemRadiationSuit extends ArmorItem implements IRadiationArmor {
         super(ARMOR_TYPE, slot, Registration.createStandardProperties());
     }
 
-    @Override
-    public float getEffectiveness(ItemStack armorStack, EquipmentSlotType slot, float radiationStrength) {
-        return 0.9f;
-    }
-
     public static float getRadiationProtection(LivingEntity entity){
         for (EquipmentSlotType slot : EquipmentSlotType.values()) {
             if (slot.getType() == EquipmentSlotType.Group.ARMOR) {

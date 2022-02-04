@@ -50,9 +50,12 @@ public class TankTESR extends TileEntityRenderer<TankTileEntity> {
 
     @Override
     public void render(@Nonnull TankTileEntity tileTank, float partialTicks, @Nonnull MatrixStack matrixStackIn, @Nonnull IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+        renderInternal(tileTank, matrixStackIn, bufferIn, combinedLightIn);
+    }
+
+    public static void renderInternal(TankTileEntity tileTank, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn) {
         BlockPos pos = tileTank.getBlockPos();
         final Fluid fluidToRender = tileTank.getClientRenderFluid();
-
 
         Set<Direction> dirs = Arrays.stream(OrientationTools.DIRECTION_VALUES).filter(dir -> {
             if (dir == Direction.DOWN && tileTank.getClientRenderHeight() > 0.0001 && !(fluidToRender == null || fluidToRender == Fluids.EMPTY) && RenderTypeLookup.canRenderInLayer(fluidToRender.defaultFluidState(), RenderType.solid())) {

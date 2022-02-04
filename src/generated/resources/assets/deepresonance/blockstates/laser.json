@@ -1,17 +1,62 @@
 {
   "variants": {
-    "facing=north": {
+    "color=0,facing=north": {
       "model": "deepresonance:block/laser"
     },
-    "facing=south": {
+    "color=1,facing=north": {
+      "model": "deepresonance:block/laser"
+    },
+    "color=2,facing=north": {
+      "model": "deepresonance:block/laser"
+    },
+    "color=3,facing=north": {
+      "model": "deepresonance:block/laser"
+    },
+    "color=0,facing=south": {
       "model": "deepresonance:block/laser",
       "y": 180
     },
-    "facing=west": {
+    "color=1,facing=south": {
+      "model": "deepresonance:block/laser",
+      "y": 180
+    },
+    "color=2,facing=south": {
+      "model": "deepresonance:block/laser",
+      "y": 180
+    },
+    "color=3,facing=south": {
+      "model": "deepresonance:block/laser",
+      "y": 180
+    },
+    "color=0,facing=west": {
       "model": "deepresonance:block/laser",
       "y": 270
     },
-    "facing=east": {
+    "color=1,facing=west": {
+      "model": "deepresonance:block/laser",
+      "y": 270
+    },
+    "color=2,facing=west": {
+      "model": "deepresonance:block/laser",
+      "y": 270
+    },
+    "color=3,facing=west": {
+      "model": "deepresonance:block/laser",
+      "y": 270
+    },
+    "color=0,facing=east": {
+      "model": "deepresonance:block/laser",
+      "y": 90
+    },
+    "color=1,facing=east": {
+      "model": "deepresonance:block/laser",
+      "y": 90
+    },
+    "color=2,facing=east": {
+      "model": "deepresonance:block/laser",
+      "y": 90
+    },
+    "color=3,facing=east": {
       "model": "deepresonance:block/laser",
       "y": 90
     }

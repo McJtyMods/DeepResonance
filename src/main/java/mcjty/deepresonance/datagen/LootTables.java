@@ -25,17 +25,17 @@ public class LootTables extends BaseLootTableProvider {
         addSimpleTable(RadiationModule.DENSE_GLASS_BLOCK.get());    // @todo 1.16 silk touch!
         addSimpleTable(RadiationModule.DENSE_OBSIDIAN_BLOCK.get());
 
-        addSimpleTable(MachinesModule.VALVE_BLOCK.get());
-        addSimpleTable(MachinesModule.SMELTER_BLOCK.get());
-        addSimpleTable(MachinesModule.PURIFIER_BLOCK.get());
 //        addSimpleTable(PulserModule.PULSER_BLOCK.get());
         addSimpleTable(MachinesModule.LENS_BLOCK.get());
-        addSimpleTable(MachinesModule.LASER_BLOCK.get());
         addSimpleTable(MachinesModule.CRYSTALLIZER_BLOCK.get());
         addSimpleTable(GeneratorModule.ENERGY_COLLECTOR_BLOCK.get());
         addSimpleTable(GeneratorModule.GENERATOR_CONTROLLER_BLOCK.get());
-        addSimpleTable(GeneratorModule.GENERATOR_PART_BLOCK.get());
 
+        addStandardTable(MachinesModule.SMELTER_BLOCK.get());
+        addStandardTable(MachinesModule.PURIFIER_BLOCK.get());
+        addStandardTable(GeneratorModule.GENERATOR_PART_BLOCK.get());
+        addStandardTable(MachinesModule.VALVE_BLOCK.get());
+        addStandardTable(MachinesModule.LASER_BLOCK.get());
         addStandardTable(CoreModule.RESONATING_CRYSTAL_GENERATED.get());
         addStandardTable(CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY.get());
         addStandardTable(CoreModule.RESONATING_CRYSTAL_NATURAL.get());

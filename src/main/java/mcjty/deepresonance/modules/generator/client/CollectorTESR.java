@@ -26,8 +26,7 @@ import java.util.Random;
 
 public class CollectorTESR extends TileEntityRenderer<EnergyCollectorTileEntity> {
 
-    private static final double SIZE = 0.6;
-    private Random random = new Random();
+    private final Random random = new Random();
 
     public CollectorTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);

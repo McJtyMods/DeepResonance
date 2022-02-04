@@ -6,7 +6,6 @@ import mcjty.deepresonance.modules.machines.data.InfusingBonus;
 import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
 import mcjty.deepresonance.modules.machines.util.config.LaserConfig;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
-import mcjty.deepresonance.modules.tank.data.TankBlob;
 import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.deepresonance.util.TranslationHelper;
@@ -237,9 +236,9 @@ public class LaserTileEntity extends TickingTileEntity {
             TankTileEntity tileTank = (TankTileEntity) te;
             if (validRCLTank(tileTank)) {
                 tileTank.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).ifPresent(handler -> {
-                    FluidStack stack = handler.drain(1000 * TankBlob.TANK_BUCKETS, IFluidHandler.FluidAction.SIMULATE);
+                    FluidStack stack = handler.drain(1000 * mcjty.deepresonance.util.Constants.TANK_BUCKETS, IFluidHandler.FluidAction.SIMULATE);
                     if (!stack.isEmpty()) {
-                        stack = handler.drain(1000 * TankBlob.TANK_BUCKETS, IFluidHandler.FluidAction.EXECUTE);
+                        stack = handler.drain(1000 * mcjty.deepresonance.util.Constants.TANK_BUCKETS, IFluidHandler.FluidAction.EXECUTE);
                         LiquidCrystalData fluidData = LiquidCrystalData.fromStack(stack);
                         float factor = (float) LaserConfig.RCL_PER_CATALYST.get() / stack.getAmount();
                         float purity = bonus.getPurityModifier().modify(fluidData.getPurity(), fluidData.getQuality(), factor);

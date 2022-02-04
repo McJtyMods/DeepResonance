@@ -3,6 +3,9 @@
 - Break particles!
 - Radiation monitor?
 - Render laser/glow in separate phase (game overlay renderer? Generic system in McJtyLib for this)
-- Fix TOP view for DR luquid
+- Fix TOP view for DR liquid
 - Fix translations
 - Test if radiation actually works?
+- Check power of generator. It doesn't show in TOP
+- Cleanup of old code
+- Implement tank item renderer fully

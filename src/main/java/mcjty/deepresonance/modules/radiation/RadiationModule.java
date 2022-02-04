@@ -1,11 +1,8 @@
 package mcjty.deepresonance.modules.radiation;
 
-import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.api.radiation.IWorldRadiationManager;
 import mcjty.deepresonance.modules.radiation.client.RadiationOverlayRenderer;
 import mcjty.deepresonance.modules.radiation.item.ItemRadiationSuit;
 import mcjty.deepresonance.modules.radiation.item.RadiationMonitorItem;
-import mcjty.deepresonance.modules.radiation.manager.RadiationEventHandler;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.setup.Registration;
 import mcjty.lib.modules.IModule;
@@ -16,11 +13,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -41,18 +35,11 @@ public class RadiationModule implements IModule {
     public static final RegistryObject<Item> RADIATION_SUIT_LEGGINGS = Registration.ITEMS.register("radiation_suit_leggings", () -> new ItemRadiationSuit(EquipmentSlotType.LEGS));
     public static final RegistryObject<Item> RADIATION_SUIT_BOOTS = Registration.ITEMS.register("radiation_suit_boots", () -> new ItemRadiationSuit(EquipmentSlotType.FEET));
 
-    @CapabilityInject(IWorldRadiationManager.class)
-    public static Capability<IWorldRadiationManager> CAPABILITY;
-    public static ResourceLocation CAPABILITY_NAME = new ResourceLocation(DeepResonance.MODID, "radiation");
-
     public RadiationModule() {
-        // @todo 1.16
-//        RegistryHelper.registerEmptyCapability(IWorldRadiationManager.class);
     }
 
     @Override
     public void init(FMLCommonSetupEvent event) {
-        RadiationEventHandler.register();
     }
 
     @Override

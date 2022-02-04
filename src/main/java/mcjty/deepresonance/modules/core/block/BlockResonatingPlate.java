@@ -1,10 +1,11 @@
 package mcjty.deepresonance.modules.core.block;
 
 import mcjty.deepresonance.modules.core.util.ResonatingPlateBlockConfig;
-import mcjty.deepresonance.modules.radiation.RadiationModule;
+import mcjty.deepresonance.modules.radiation.manager.DRRadiationManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nonnull;
@@ -28,8 +29,7 @@ public class BlockResonatingPlate extends Block {
             return;
         }
         if (worldIn.getDirectSignalTo(pos) > 0) {
-            worldIn.getCapability(RadiationModule.CAPABILITY).ifPresent(radiationManager ->
-                    radiationManager.getOrCreateRadiationSource(pos).update(ResonatingPlateBlockConfig.RADIATION_RADIUS.get(), ResonatingPlateBlockConfig.RADIATION_STRENGTH.get(), ResonatingPlateBlockConfig.RADIATION_TICKS.get()));
+            DRRadiationManager.getManager(worldIn).getOrCreateRadiationSource(GlobalPos.of(worldIn.dimension(), pos)).update(ResonatingPlateBlockConfig.RADIATION_RADIUS.get(), ResonatingPlateBlockConfig.RADIATION_STRENGTH.get(), ResonatingPlateBlockConfig.RADIATION_TICKS.get());
         }
     }
 

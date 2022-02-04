@@ -29,7 +29,7 @@ public class RadiationTickEvent {
 
     public static final int MAXTICKS = 10;
     private int counter = MAXTICKS;
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
     private static final int EFFECTS_MAX = 18;
     private int counterEffects = EFFECTS_MAX;
@@ -126,7 +126,7 @@ public class RadiationTickEvent {
         if (dirty) {
             for (GlobalPos coordinate : toRemove) {
                 radiationManager.deleteRadiationSource(coordinate);
-                Logging.logDebug("Removed radiation source at: " + coordinate.pos().toString() + " (" + coordinate.dimension() + ")");
+                Logging.logDebug("Removed radiation source at: " + coordinate.pos() + " (" + coordinate.dimension() + ")");
             }
 
             radiationManager.save();

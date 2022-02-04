@@ -1,5 +1,6 @@
 package mcjty.deepresonance.modules.tank.data;
 
+import mcjty.deepresonance.util.Constants;
 import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.multiblock.IMultiblock;
 import net.minecraft.nbt.CompoundNBT;
@@ -14,7 +15,6 @@ import java.util.Optional;
 import java.util.Set;
 
 public class TankBlob implements IMultiblock {
-    public static final int TANK_BUCKETS = 10;
 
     private LiquidCrystalData data;
     private int tankBlocks;
@@ -55,7 +55,7 @@ public class TankBlob implements IMultiblock {
     }
 
     public int getCapacityPerTank() {
-        return TANK_BUCKETS * 1000;   // @todo 1.16 configurable
+        return Constants.TANK_BUCKETS * 1000;   // @todo 1.16 configurable
     }
 
     public int getCapacity() {
@@ -66,7 +66,7 @@ public class TankBlob implements IMultiblock {
         if (this.data != null) {
             other.getData().ifPresent(d -> this.data.merge(d));
         } else {
-            this.data = other.getData().map(d -> d).orElse(null);
+            this.data = other.getData().orElse(null);
         }
         this.tankBlocks += other.getTankBlocks();
         if (this.blocksPerLevel == null) {

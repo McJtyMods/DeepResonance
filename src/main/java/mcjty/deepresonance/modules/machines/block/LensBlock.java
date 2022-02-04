@@ -20,10 +20,10 @@ import javax.annotation.Nullable;
 
 public class LensBlock extends BaseBlock {
 
-    private static VoxelShape SHAPE_SOUTH = VoxelShapes.box(.2, .2, .9, .8, .8, 1);
-    private static VoxelShape SHAPE_NORTH = VoxelShapes.box(.2, .2, 0, .8, .8, .1);
-    private static VoxelShape SHAPE_EAST = VoxelShapes.box(.9, .2, .2, 1, .8, .8);
-    private static VoxelShape SHAPE_WEST = VoxelShapes.box(0, .2, .2, .1, .8, .8);
+    private static final VoxelShape SHAPE_SOUTH = VoxelShapes.box(.2, .2, .9, .8, .8, 1);
+    private static final VoxelShape SHAPE_NORTH = VoxelShapes.box(.2, .2, 0, .8, .8, .1);
+    private static final VoxelShape SHAPE_EAST = VoxelShapes.box(.9, .2, .2, 1, .8, .8);
+    private static final VoxelShape SHAPE_WEST = VoxelShapes.box(0, .2, .2, .1, .8, .8);
 
     public LensBlock() {
         super(new BlockBuilder()

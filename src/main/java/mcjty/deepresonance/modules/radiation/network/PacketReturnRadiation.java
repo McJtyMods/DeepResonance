@@ -7,7 +7,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class PacketReturnRadiation {
-    private float strength;
+    private final float strength;
 
     public PacketReturnRadiation(PacketBuffer buf) {
         strength = buf.readFloat();
