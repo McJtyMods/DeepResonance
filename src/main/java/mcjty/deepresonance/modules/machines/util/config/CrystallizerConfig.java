@@ -12,6 +12,7 @@ public class CrystallizerConfig {
     public static ForgeConfigSpec.IntValue RCL_PER_TICK;
 
     public static void init() {
+        Config.SERVER_BUILDER.push("crystallizer");
         POWER_PER_TICK_IN = Config.SERVER_BUILDER.comment("How much power/t this machine can input from a generator/capacitor")
                 .defineInRange("powerPerTickIn", 200, 0, 1000);
         POWER_PER_TICK = Config.SERVER_BUILDER.comment("How much power this machine consumes per tick while crystalizing")
@@ -22,6 +23,7 @@ public class CrystallizerConfig {
                 .defineInRange("rclPerCrystal", 6000, 100, 80000);
         RCL_PER_TICK = Config.SERVER_BUILDER.comment("The amount of RCL/t that is consumed during crystalizing")
                 .defineInRange("rclPerTick", 1, 1, 100000);
+        Config.SERVER_BUILDER.pop();
     }
 
 }

@@ -37,7 +37,11 @@ public class RadiationConfiguration {
     public static ForgeConfigSpec.DoubleValue RADIATION_SHIELD_DENSE_GLASS_FACTOR;
     public static ForgeConfigSpec.DoubleValue RADIATION_SHIELD_LEAD_FACTOR;
 
+    public static ForgeConfigSpec.DoubleValue SUIT_PROTECTION[] = new ForgeConfigSpec.DoubleValue[4];
+
     public static void init() {
+        Config.SERVER_BUILDER.push("radiation");
+
         MIN_RADIATION_RADIUS = Config.SERVER_BUILDER.comment("The minimum radiation radius")
                 .defineInRange("minRadiationRadius", 7.0, 3.0, 16.0);
         MAX_RADIATION_RADIUS = Config.SERVER_BUILDER.comment("The maximum radiation radius for a 100/100/100 crystal")
@@ -93,6 +97,14 @@ public class RadiationConfiguration {
                 .defineInRange("radiationOverlayX", 10, -1, Integer.MAX_VALUE);
         RADIATION_OVERLAY_Y = Config.CLIENT_BUILDER.comment("The Y coordinate (with 0 being top) for the radiation overlay text. Use -1 to disable")
                 .defineInRange("radiationOverlayY", 10, -1, Integer.MAX_VALUE);
+
+        float[] def = new float[]{ .25f, .50f, .75f, .95f };
+        for (int i = 0 ; i < SUIT_PROTECTION.length ; i++) {
+            SUIT_PROTECTION[i] = Config.SERVER_BUILDER.comment("How much protection you get from radiation with " + (i+1) + " radiation suit piece equipped")
+                    .defineInRange("suitProtection" + (i+1), def[i], 0.0f, Float.MAX_VALUE);
+        }
+
+        Config.SERVER_BUILDER.pop();
     }
 
 }

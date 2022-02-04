@@ -4,6 +4,7 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.ForgeEventHandlers;
 import mcjty.deepresonance.commands.ModCommands;
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.radiation.manager.RadiationTickEvent;
 import mcjty.lib.setup.DefaultModSetup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -21,6 +22,7 @@ public class ModSetup extends DefaultModSetup {
     public void init(FMLCommonSetupEvent e) {
         super.init(e);
         MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
+        MinecraftForge.EVENT_BUS.register(new RadiationTickEvent());
         MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
         DeepResonanceMessages.registerMessages("deepresonance");
     }

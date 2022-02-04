@@ -32,14 +32,34 @@ public class ItemRadiationSuit extends ArmorItem implements IRadiationArmor {
             if (slot.getType() == EquipmentSlotType.Group.ARMOR) {
                 ItemStack stack = entity.getItemBySlot(slot);
                 if (!stack.isEmpty()) {
-                    if (stack.getItem() instanceof IRadiationArmor && ((IRadiationArmor) stack.getItem()).isActive(stack)) {
-                        return ((IRadiationArmor) stack.getItem()).protection()[countSuitPieces(entity)];
-                    } else if (stack.hasTagCompound() && stack.getTagCompound().hasKey("AntiRadiationArmor")) {
-                        return RadiationConfiguration.suitProtection[countSuitPieces(entity)];
+                    int count = countSuitPieces(entity);
+                    if (count <= 0) {
+                        return 0.0f;
+                    } else if (stack.getItem() instanceof IRadiationArmor && ((IRadiationArmor) stack.getItem()).isActive(stack)) {
+                        return ((IRadiationArmor) stack.getItem()).protection(count);
+                    } else if (stack.hasTag() && stack.getTag().contains("AntiRadiationArmor")) {
+                        return (float) (double) RadiationConfiguration.SUIT_PROTECTION[count].get();
                     }
                 }
             }
         }
         return 0;
     }
+
+    public static int countSuitPieces(LivingEntity entity){
+        int cnt = 0;
+        for (EquipmentSlotType slot : EquipmentSlotType.values()) {
+            if (slot.getType() == EquipmentSlotType.Group.ARMOR) {
+                ItemStack stack = entity.getItemBySlot(slot);
+                if (!stack.isEmpty() && (stack.getItem() instanceof IRadiationArmor) && ((IRadiationArmor)stack.getItem()).isActive(stack)) {
+                    cnt++;
+                } else if (stack.hasTag() && stack.getTag().contains("AntiRadiationArmor")) {
+                    cnt++;
+                }
+            }
+        }
+
+        return cnt;
+    }
+
 }

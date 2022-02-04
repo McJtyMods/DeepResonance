@@ -16,6 +16,7 @@ public class LaserConfig {
     public static ForgeConfigSpec.IntValue RCL_PER_CATALYST;
 
     public static void init() {
+        Config.SERVER_BUILDER.push("laser");
         POWER_PER_TICK_IN = Config.SERVER_BUILDER.comment("How much power/t this machine can input from a generator/capacitor")
                 .defineInRange("powerPerTickIn", 2000, 0, Integer.MAX_VALUE);
         POWER_MAXIMUM = Config.SERVER_BUILDER.comment("Maximum power that can be stored in this machine")
@@ -33,6 +34,7 @@ public class LaserConfig {
                 .defineInRange("ticks10PerCatalyst", 4, 0, 100000);
         RCL_PER_CATALYST = Config.SERVER_BUILDER.comment("The amount of crystal liquid we consume per catalyst item")
                 .defineInRange("crystalLiquidPerCatalyst", 25, 1, Integer.MAX_VALUE);
+        Config.SERVER_BUILDER.pop();
     }
 
 }

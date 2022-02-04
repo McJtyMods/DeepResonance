@@ -14,6 +14,7 @@ public class SmelterConfig {
 
 
     public static void init() {
+        Config.SERVER_BUILDER.push("smelter");
         POWER_PER_TICK_IN = Config.SERVER_BUILDER.comment("How much power/t this machine can input from a generator/capacitor")
                 .defineInRange("powerPerTickIn", 200, 0, 1000);
         POWER_PER_ORE_TICK = Config.SERVER_BUILDER.comment("How much power/t this machine consumes during smelting ores")
@@ -26,6 +27,7 @@ public class SmelterConfig {
                 .defineInRange("lavaCost", 200, 100, 10000);
         RCL_PER_ORE = Config.SERVER_BUILDER.comment("The amount of RCL to produce with one ore")
                 .defineInRange("rclPerOre", 200, 50, 1000);
+        Config.SERVER_BUILDER.pop();
     }
 
 }

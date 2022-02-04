@@ -1,7 +1,6 @@
 package mcjty.deepresonance.modules.radiation.manager;
 
 import com.google.common.collect.Sets;
-import mcjty.deepresonance.items.armor.ItemRadiationSuit;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.radiation.item.ItemRadiationSuit;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
@@ -9,12 +8,9 @@ import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.Logging;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -277,37 +273,37 @@ public class RadiationTickEvent {
                 QuadTree radiationTree = radiationSource.getRadiationTree(world, cx, cy, cz);
                 float strength = (float) (baseStrength * (radius-distance) / radius);
                 strength = strength * (1.0f-protection);
-                strength = strength * (float) radiationTree.factor2(cx, cy, cz, (int) entityLivingBase.posX, (int) entityLivingBase.posY+1, (int) entityLivingBase.posZ);
+                strength = strength * (float) radiationTree.factor2(cx, cy, cz, (int) entityLivingBase.position().x, (int) entityLivingBase.position().y+1, (int) entityLivingBase.position().z);
                 getPotions();
 
-                if (strength < RadiationConfiguration.radiationEffectLevelNone) {
-                } else if (strength < RadiationConfiguration.radiationEffectLevel0) {
-                    entityLivingBase.addPotionEffect(new PotionEffect(hunger, EFFECTS_MAX * MAXTICKS, 0, true, true));
-                } else if (strength < RadiationConfiguration.radiationEffectLevel1) {
-                    entityLivingBase.addPotionEffect(new PotionEffect(hunger, EFFECTS_MAX * MAXTICKS, 1, true, true));
-                } else if (strength < RadiationConfiguration.radiationEffectLevel2) {
-                    entityLivingBase.addPotionEffect(new PotionEffect(hunger, EFFECTS_MAX * MAXTICKS, 2, true, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(moveSlowdown, EFFECTS_MAX * MAXTICKS, 1, true, true));
-                } else if (strength < RadiationConfiguration.radiationEffectLevel3) {
-                    entityLivingBase.addPotionEffect(new PotionEffect(hunger, EFFECTS_MAX * MAXTICKS, 2, true, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(moveSlowdown, EFFECTS_MAX * MAXTICKS, 2, true, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(weakness, EFFECTS_MAX * MAXTICKS, 1, true, true));
-                } else if (strength < RadiationConfiguration.radiationEffectLevel4) {
-                    entityLivingBase.addPotionEffect(new PotionEffect(hunger, EFFECTS_MAX * MAXTICKS, 2, true, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(moveSlowdown, EFFECTS_MAX * MAXTICKS, 2, true, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(weakness, EFFECTS_MAX * MAXTICKS, 2, true, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(poison, EFFECTS_MAX * MAXTICKS, 1, true, true));
-                } else if (strength < RadiationConfiguration.radiationEffectLevel5) {
-                    entityLivingBase.addPotionEffect(new PotionEffect(hunger, EFFECTS_MAX * MAXTICKS, 2, true, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(moveSlowdown, EFFECTS_MAX * MAXTICKS, 2, true, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(weakness, EFFECTS_MAX * MAXTICKS, 3, true, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(poison, EFFECTS_MAX * MAXTICKS, 2, true, true));
+                if (strength < RadiationConfiguration.RADIATION_EFFECT_LEVEL_0.get()) {
+                } else if (strength < RadiationConfiguration.RADIATION_EFFECT_LEVEL_0.get()) {
+                    entityLivingBase.addEffect(new EffectInstance(hunger, EFFECTS_MAX * MAXTICKS, 0, true, true));
+                } else if (strength < RadiationConfiguration.RADIATION_EFFECT_LEVEL_1.get()) {
+                    entityLivingBase.addEffect(new EffectInstance(hunger, EFFECTS_MAX * MAXTICKS, 1, true, true));
+                } else if (strength < RadiationConfiguration.RADIATION_EFFECT_LEVEL_2.get()) {
+                    entityLivingBase.addEffect(new EffectInstance(hunger, EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addEffect(new EffectInstance(moveSlowdown, EFFECTS_MAX * MAXTICKS, 1, true, true));
+                } else if (strength < RadiationConfiguration.RADIATION_EFFECT_LEVEL_3.get()) {
+                    entityLivingBase.addEffect(new EffectInstance(hunger, EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addEffect(new EffectInstance(moveSlowdown, EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addEffect(new EffectInstance(weakness, EFFECTS_MAX * MAXTICKS, 1, true, true));
+                } else if (strength < RadiationConfiguration.RADIATION_EFFECT_LEVEL_4.get()) {
+                    entityLivingBase.addEffect(new EffectInstance(hunger, EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addEffect(new EffectInstance(moveSlowdown, EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addEffect(new EffectInstance(weakness, EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addEffect(new EffectInstance(poison, EFFECTS_MAX * MAXTICKS, 1, true, true));
+                } else if (strength < RadiationConfiguration.RADIATION_EFFECT_LEVEL_5.get()) {
+                    entityLivingBase.addEffect(new EffectInstance(hunger, EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addEffect(new EffectInstance(moveSlowdown, EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addEffect(new EffectInstance(weakness, EFFECTS_MAX * MAXTICKS, 3, true, true));
+                    entityLivingBase.addEffect(new EffectInstance(poison, EFFECTS_MAX * MAXTICKS, 2, true, true));
                 } else {
-                    entityLivingBase.addPotionEffect(new PotionEffect(hunger, EFFECTS_MAX * MAXTICKS, 2, true, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(moveSlowdown, EFFECTS_MAX * MAXTICKS, 2, true, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(weakness, EFFECTS_MAX * MAXTICKS, 3, true, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(poison, EFFECTS_MAX * MAXTICKS, 3, true, true));
-                    entityLivingBase.addPotionEffect(new PotionEffect(wither, EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addEffect(new EffectInstance(hunger, EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addEffect(new EffectInstance(moveSlowdown, EFFECTS_MAX * MAXTICKS, 2, true, true));
+                    entityLivingBase.addEffect(new EffectInstance(weakness, EFFECTS_MAX * MAXTICKS, 3, true, true));
+                    entityLivingBase.addEffect(new EffectInstance(poison, EFFECTS_MAX * MAXTICKS, 3, true, true));
+                    entityLivingBase.addEffect(new EffectInstance(wither, EFFECTS_MAX * MAXTICKS, 2, true, true));
                 }
             }
         }
