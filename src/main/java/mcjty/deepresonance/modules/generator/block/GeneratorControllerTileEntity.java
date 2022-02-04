@@ -29,6 +29,15 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
     private int shutdown = 0;
     private boolean active = false;
 
+    // Client-only for sound
+    enum PlayingSound {
+        NONE,
+        STARTUP,
+        ACTIVE,
+        SHUTDOWN
+    }
+    private PlayingSound clientSound = PlayingSound.NONE;
+
     public GeneratorControllerTileEntity() {
         super(GeneratorModule.TYPE_GENERATOR_CONTROLLER.get());
     }
@@ -100,6 +109,12 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getNetwork(level);
             generatorNetwork.save();
         }
+
+        PlayingSound newsound = getPlayingSound();
+        if (newsound != clientSound) {
+            clientSound = newsound;
+            markDirtyClient();
+        }
     }
 
     @Override
@@ -108,20 +123,37 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
             // No sounds.
             return;
         }
+        switch (clientSound) {
+            case NONE:
+                stopSounds();
+                break;
+            case STARTUP:
+                if (!GeneratorSoundController.isStartupPlaying(level, worldPosition)) {
+                    GeneratorSoundController.playStartup(level, worldPosition);
+                }
+                break;
+            case ACTIVE:
+                if (!GeneratorSoundController.isLoopPlaying(level, worldPosition)) {
+                    GeneratorSoundController.playLoop(level, worldPosition);
+                }
+                break;
+            case SHUTDOWN:
+                if (!GeneratorSoundController.isShutdownPlaying(level, worldPosition)) {
+                    GeneratorSoundController.playShutdown(level, worldPosition);
+                }
+                break;
+        }
+    }
+
+    private PlayingSound getPlayingSound() {
         if (startup != 0) {
-            if (!GeneratorSoundController.isStartupPlaying(level, worldPosition)) {
-                GeneratorSoundController.playStartup(level, worldPosition);
-            }
+            return PlayingSound.STARTUP;
         } else if (shutdown != 0) {
-            if (!GeneratorSoundController.isShutdownPlaying(level, worldPosition)) {
-                GeneratorSoundController.playShutdown(level, worldPosition);
-            }
+            return PlayingSound.SHUTDOWN;
         } else if (active) {
-            if (!GeneratorSoundController.isLoopPlaying(level, worldPosition)) {
-                GeneratorSoundController.playLoop(level, worldPosition);
-            }
+            return PlayingSound.ACTIVE;
         } else {
-            stopSounds();
+            return PlayingSound.NONE;
         }
     }
 
@@ -174,7 +206,6 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
     }
 
     private boolean handleDeactivate(int id, BlockPos coordinate) {
-        BlockState state = level.getBlockState(getBlockPos());
         DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getNetwork(level);
         GeneratorBlob network = generatorNetwork.getOrCreateBlob(id);
         if ((!network.isActive()) && network.getShutdownCounter() == 0 && network.getStartupCounter() == 0) {
@@ -231,6 +262,7 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
         tagCompound.putInt("startup", startup);
         tagCompound.putInt("shutdown", shutdown);
         tagCompound.putBoolean("active", active);
+        tagCompound.putInt("playingSound", clientSound.ordinal());
         super.saveAdditional(tagCompound);
     }
 
@@ -239,7 +271,17 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
         startup = tagCompound.getInt("startup");
         shutdown = tagCompound.getInt("shutdown");
         active = tagCompound.getBoolean("active");
+        clientSound = PlayingSound.values()[tagCompound.getInt("playingSound")];
         super.load(tagCompound);
     }
 
+    @Override
+    public void saveClientDataToNBT(CompoundNBT tagCompound) {
+        tagCompound.putInt("playingSound", clientSound.ordinal());
+    }
+
+    @Override
+    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
+        clientSound = PlayingSound.values()[tagCompound.getInt("playingSound")];
+    }
 }

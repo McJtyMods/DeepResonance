@@ -17,7 +17,7 @@ public final class GeneratorSoundController {
     private static final Map<GlobalPos, GeneratorSound> sounds = Maps.newHashMap();
 
     public static void stopSound(World worldObj, BlockPos pos) {
-        GlobalPos g = fromPosition(worldObj, pos);
+        GlobalPos g = GlobalPos.of(worldObj.dimension(), pos);
         if (sounds.containsKey(g)) {
             TickableSound movingSound = sounds.get(g);
             Minecraft.getInstance().getSoundManager().stop(movingSound);
@@ -64,11 +64,7 @@ public final class GeneratorSoundController {
     }
 
     private static GeneratorSound getSoundAt(World world, BlockPos pos){
-        return sounds.get(fromPosition(world, pos));
-    }
-
-    private static GlobalPos fromPosition(World world, BlockPos pos){
-        return GlobalPos.of(world.dimension(), pos);
+        return sounds.get(GlobalPos.of(world.dimension(), pos));
     }
 
 }

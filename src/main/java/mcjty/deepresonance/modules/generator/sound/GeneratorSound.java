@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 
 public class GeneratorSound extends TickableSound {
 
-    public GeneratorSound(SoundEvent event, World world, BlockPos pos){
+    public GeneratorSound(SoundEvent event, World world, BlockPos pos) {
         super(event, SoundCategory.BLOCKS);
         this.world = world;
         this.pos = pos;
@@ -23,6 +23,7 @@ public class GeneratorSound extends TickableSound {
         this.delay = 0;
         this.loop = event == GeneratorModule.LOOP_SOUND.get();
         this.sound = event;
+        this.relative = false;
     }
 
     private final World world;
