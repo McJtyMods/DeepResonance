@@ -4,7 +4,7 @@ import mcjty.deepresonance.modules.core.block.BlockResonatingPlate;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalBlock;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.core.client.ClientSetup;
-import mcjty.deepresonance.modules.core.client.ResonatingCrystalTER;
+import mcjty.deepresonance.modules.core.client.ResonatingCrystalRenderer;
 import mcjty.deepresonance.modules.core.fluid.FluidLiquidCrystal;
 import mcjty.deepresonance.modules.core.item.ItemLiquidInjector;
 import mcjty.deepresonance.modules.core.util.CrystalConfig;
@@ -76,7 +76,7 @@ public class CoreModule implements IModule {
     @Override
     public void initClient(FMLClientSetupEvent event) {
         ClientSetup.initClient();
-        ResonatingCrystalTER.register();
+        ResonatingCrystalRenderer.register();
     }
 
     @Override

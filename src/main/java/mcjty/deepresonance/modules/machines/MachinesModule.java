@@ -57,8 +57,8 @@ public class MachinesModule implements IModule {
     public void initClient(FMLClientSetupEvent event) {
         ClientSetup.initClient();
 
-        CrystallizerTESR.register();
-        LaserTESR.register();
+        CrystallizerRenderer.register();
+        LaserRenderer.register();
 
         event.enqueueWork(() -> {
             SmelterGui.register();

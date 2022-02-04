@@ -7,6 +7,7 @@ import mcjty.deepresonance.modules.machines.block.LaserTileEntity;
 import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
 import mcjty.deepresonance.setup.ClientSetup;
 import mcjty.lib.client.CustomRenderTypes;
+import mcjty.lib.client.DelayedRenderer;
 import mcjty.lib.client.RenderHelper;
 import mcjty.lib.client.RenderSettings;
 import mcjty.lib.varia.OrientationTools;
@@ -26,21 +27,24 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import javax.annotation.Nonnull;
 
-public class LaserTESR extends TileEntityRenderer<LaserTileEntity> {
+public class LaserRenderer extends TileEntityRenderer<LaserTileEntity> {
 
-    private static final float BEAM_WIDTH = 3.8f;
-    private static BakedQuad quad;
-
-    public LaserTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+    public LaserRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     public static void register() {
-        ClientRegistry.bindTileEntityRenderer(MachinesModule.TYPE_LASER.get(), LaserTESR::new);
+        ClientRegistry.bindTileEntityRenderer(MachinesModule.TYPE_LASER.get(), LaserRenderer::new);
     }
 
     @Override
     public void render(@Nonnull LaserTileEntity tileEntity, float partialTicks, @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
+        DelayedRenderer.addRender(tileEntity.getBlockPos(), (stack, buf) -> {
+            renderInternal(tileEntity, stack, buf);
+        });
+    }
+
+    private void renderInternal(LaserTileEntity tileEntity, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
         int color = tileEntity.getBlockState().getValue(LaserTileEntity.COLOR);
         if (color != 0) {
             BlockPos pos = tileEntity.getBlockPos();

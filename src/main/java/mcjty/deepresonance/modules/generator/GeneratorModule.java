@@ -3,7 +3,7 @@ package mcjty.deepresonance.modules.generator;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.generator.block.*;
 import mcjty.deepresonance.modules.generator.client.ClientSetup;
-import mcjty.deepresonance.modules.generator.client.CollectorTESR;
+import mcjty.deepresonance.modules.generator.client.CollectorRenderer;
 import mcjty.deepresonance.modules.generator.util.CollectorConfig;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.deepresonance.setup.Registration;
@@ -47,7 +47,7 @@ public class GeneratorModule implements IModule {
     @Override
     public void initClient(FMLClientSetupEvent event) {
         ClientSetup.initClient();
-        CollectorTESR.register();
+        CollectorRenderer.register();
     }
 
     @Override

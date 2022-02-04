@@ -7,6 +7,7 @@ import mcjty.deepresonance.modules.generator.block.EnergyCollectorTileEntity;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.deepresonance.setup.ClientSetup;
 import mcjty.lib.client.CustomRenderTypes;
+import mcjty.lib.client.DelayedRenderer;
 import mcjty.lib.client.RenderHelper;
 import mcjty.lib.client.RenderSettings;
 import net.minecraft.client.Minecraft;
@@ -23,17 +24,29 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
+import java.util.Set;
 
-public class CollectorTESR extends TileEntityRenderer<EnergyCollectorTileEntity> {
+public class CollectorRenderer extends TileEntityRenderer<EnergyCollectorTileEntity> {
+
+    private static final RenderSettings SETTINGS = RenderSettings.builder()
+            .color(255, 0, 0)
+            .renderType(CustomRenderTypes.TRANSLUCENT_LIGHTNING_NOLIGHTMAPS)
+            .width(.1f)
+            .alpha(200)
+            .build();
+    private static final RenderSettings SETTINGS_LASER = RenderSettings.builder()
+            .width(.1f)
+            .alpha(128)
+            .build();
 
     private final Random random = new Random();
 
-    public CollectorTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+    public CollectorRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     public static void register() {
-        ClientRegistry.bindTileEntityRenderer(GeneratorModule.TYPE_ENERGY_COLLECTOR.get(), CollectorTESR::new);
+        ClientRegistry.bindTileEntityRenderer(GeneratorModule.TYPE_ENERGY_COLLECTOR.get(), CollectorRenderer::new);
     }
 
     @Override
@@ -42,33 +55,27 @@ public class CollectorTESR extends TileEntityRenderer<EnergyCollectorTileEntity>
             return;
         }
 
-        matrixStack.pushPose();
+        DelayedRenderer.addRender(tileEntity.getBlockPos(), (stack, buf) -> {
+            renderInternal(tileEntity.getBlockPos(), tileEntity.getLaserStartup(), tileEntity.getCrystals(), stack, buf);
+        });
+    }
+
+    private void renderInternal(BlockPos pos, int laserStartup, Set<BlockPos> crystals, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
         matrixStack.translate(0f, .25f, .0f);
-        // @todo 1.16 optimize render settings in a final!
-        RenderSettings settings = RenderSettings.builder()
-                .color(255, 0, 0)
-                .renderType(CustomRenderTypes.TRANSLUCENT_LIGHTNING_NOLIGHTMAPS)
-                .width(.1f)
-                .alpha(200)
-                .build();
-        RenderSettings settingsLaser = RenderSettings.builder()
-                .width(.1f)
-                .alpha(128)
-                .build();
-        RenderHelper.renderBillboardQuadBright(matrixStack, buffer, 1.0f, ClientSetup.HALO, settings);// + random.nextFloat() * .05f);
-        matrixStack.popPose();
 
-        float startupFactor = tileEntity.getLaserStartup() / (float) GeneratorConfig.STARTUP_TIME.get();
+        RenderHelper.renderBillboardQuadBright(matrixStack, buffer, 1.0f, ClientSetup.HALO, SETTINGS);// + random.nextFloat() * .05f);
 
-        matrixStack.pushPose();
-        for (BlockPos destination : tileEntity.getCrystals()) {
+        float startupFactor = laserStartup / (float) GeneratorConfig.STARTUP_TIME.get();
+
+        matrixStack.translate(0, -.25f, 0f);
+        for (BlockPos destination : crystals) {
             TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(ClientSetup.LASERBEAMS[random.nextInt(4)]);
 
             IVertexBuilder builder = buffer.getBuffer(CustomRenderTypes.TRANSLUCENT_ADD_NOLIGHTMAPS);
 
-            int tex = tileEntity.getBlockPos().getX();
-            int tey = tileEntity.getBlockPos().getY();
-            int tez = tileEntity.getBlockPos().getZ();
+            int tex = pos.getX();
+            int tey = pos.getY();
+            int tez = pos.getZ();
             Vector3d projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().add(-tex, -tey, -tez);
 
             // Crystal coordinates are relative!
@@ -82,30 +89,12 @@ public class CollectorTESR extends TileEntityRenderer<EnergyCollectorTileEntity>
                 // Do nothing
             } else if (startupFactor > .001f) {
                 Vector3f middle = new Vector3f(jitter(startupFactor, start.x(), end.x()), jitter(startupFactor, start.y(), end.y()), jitter(startupFactor, start.z(), end.z()));
-                RenderHelper.drawBeam(matrix, builder, sprite, start, middle, player, settingsLaser);
-                RenderHelper.drawBeam(matrix, builder, sprite, middle, end, player, settingsLaser);
+                RenderHelper.drawBeam(matrix, builder, sprite, start, middle, player, SETTINGS_LASER);
+                RenderHelper.drawBeam(matrix, builder, sprite, middle, end, player, SETTINGS_LASER);
             } else {
-                RenderHelper.drawBeam(matrix, builder, sprite, start, end, player, settingsLaser);
+                RenderHelper.drawBeam(matrix, builder, sprite, start, end, player, SETTINGS_LASER);
             }
         }
-        matrixStack.popPose();
-
-
-//        buffer = buffer_.getBuffer(CRYSTAL_HALO);
-//        tessellator = RenderHelper.forWorldRenderer(buffer);
-//        for (BlockPos pos : tileEntity.getCrystals()) {
-//            matrixStack.pushPose();
-//            tessellator.setTransformation(matrixStack);
-//            matrixStack.translate(pos.getX(), pos.getY(), pos.getZ());
-//            RenderHelper.facingPlayer(matrixStack);
-//            tessellator.addVertexWithUV(-SIZE, -SIZE, 0, 0, 0);
-//            tessellator.addVertexWithUV(-SIZE, SIZE, 0, 0, 1);
-//            tessellator.addVertexWithUV(SIZE, SIZE, 0, 1, 1);
-//            tessellator.addVertexWithUV(SIZE, -SIZE, 0, 1, 0);
-//
-//            //todo: beam
-//            matrixStack.pop();
-//        }
     }
 
     private float jitter(float startupFactor, float a1, float a2) {

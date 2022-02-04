@@ -19,16 +19,16 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import javax.annotation.Nonnull;
 
-public class CrystallizerTESR extends TileEntityRenderer<CrystallizerTileEntity> {
+public class CrystallizerRenderer extends TileEntityRenderer<CrystallizerTileEntity> {
 
     private static final ItemStack stack = new ItemStack(CoreModule.RESONATING_CRYSTAL_GENERATED.get());
 
-    public CrystallizerTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+    public CrystallizerRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     public static void register() {
-        ClientRegistry.bindTileEntityRenderer(MachinesModule.TYPE_CRYSTALIZER.get(), CrystallizerTESR::new);
+        ClientRegistry.bindTileEntityRenderer(MachinesModule.TYPE_CRYSTALIZER.get(), CrystallizerRenderer::new);
     }
 
     @Override
