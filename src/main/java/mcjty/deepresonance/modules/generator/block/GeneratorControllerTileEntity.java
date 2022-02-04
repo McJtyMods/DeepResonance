@@ -3,6 +3,7 @@ package mcjty.deepresonance.modules.generator.block;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
 import mcjty.deepresonance.modules.generator.data.GeneratorBlob;
+import mcjty.deepresonance.modules.generator.sound.GeneratorSoundController;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.multiblock.MultiblockSupport;
@@ -103,31 +104,29 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
 
     @Override
     protected void tickClient() {
-        // @todo 1.16
-//        if (GeneratorConfiguration.baseGeneratorVolume < 0.01f) {
-//            // No sounds.
-//            return;
-//        }
-//        if (startup != 0) {
-//            if (!GeneratorSoundController.isStartupPlaying(level, pos)) {
-//                GeneratorSoundController.playStartup(level, pos);
-//            }
-//        } else if (shutdown != 0) {
-//            if (!GeneratorSoundController.isShutdownPlaying(level, pos)) {
-//                GeneratorSoundController.playShutdown(level, pos);
-//            }
-//        } else if (active) {
-//            if (!GeneratorSoundController.isLoopPlaying(level, pos)) {
-//                GeneratorSoundController.playLoop(level, pos);
-//            }
-//        } else {
-//            stopSounds();
-//        }
+        if (GeneratorConfig.BASE_GENERATOR_VOLUME.get() < 0.01f) {
+            // No sounds.
+            return;
+        }
+        if (startup != 0) {
+            if (!GeneratorSoundController.isStartupPlaying(level, worldPosition)) {
+                GeneratorSoundController.playStartup(level, worldPosition);
+            }
+        } else if (shutdown != 0) {
+            if (!GeneratorSoundController.isShutdownPlaying(level, worldPosition)) {
+                GeneratorSoundController.playShutdown(level, worldPosition);
+            }
+        } else if (active) {
+            if (!GeneratorSoundController.isLoopPlaying(level, worldPosition)) {
+                GeneratorSoundController.playLoop(level, worldPosition);
+            }
+        } else {
+            stopSounds();
+        }
     }
 
     private void stopSounds() {
-        // @todo 1.16
-//        GeneratorSoundController.stopSound(level, getBlockPos());
+        GeneratorSoundController.stopSound(level, getBlockPos());
     }
 
     private MultiblockDriver<GeneratorBlob> getDriver() {

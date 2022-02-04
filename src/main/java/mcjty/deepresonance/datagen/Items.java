@@ -7,9 +7,7 @@ import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.lib.datagen.BaseItemModelProvider;
-import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 

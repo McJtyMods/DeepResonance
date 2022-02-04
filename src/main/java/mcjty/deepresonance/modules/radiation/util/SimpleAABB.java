@@ -9,12 +9,12 @@ import net.minecraft.util.math.BlockPos;
  */
 public class SimpleAABB {
 
-    public int minX;
-    public int minY;
-    public int minZ;
-    public int maxX;
-    public int maxY;
-    public int maxZ;
+    public final int minX;
+    public final int minY;
+    public final int minZ;
+    public final int maxX;
+    public final int maxY;
+    public final int maxZ;
 
     public static SimpleAABB getBoundingBox(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
         return new SimpleAABB(minX, minY, minZ, maxX, maxY, maxZ);

@@ -1,0 +1,5 @@
+{
+    "engine_start" : {"category": "block", "sounds": ["deepresonance:engine_start"]},
+    "engine_loop" : {"category": "block", "sounds": ["deepresonance:engine_loop"]},
+    "engine_shutdown" : {"category": "block", "sounds": ["deepresonance:engine_shutdown"]}
+}

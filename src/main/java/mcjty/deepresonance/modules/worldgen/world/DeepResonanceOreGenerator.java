@@ -6,8 +6,6 @@ import mcjty.deepresonance.modules.worldgen.util.WorldGenConfiguration;
 import mcjty.rftoolsbase.setup.Registration;
 import mcjty.rftoolsbase.worldgen.CountPlacementConfig;
 import mcjty.rftoolsbase.worldgen.DimensionCompositeFeature;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
@@ -21,8 +19,6 @@ import net.minecraft.world.gen.feature.template.RuleTest;
 import net.minecraft.world.gen.feature.template.TagMatchRuleTest;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
-
-import java.util.function.Predicate;
 
 public class DeepResonanceOreGenerator {
 

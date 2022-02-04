@@ -5,14 +5,11 @@ import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
-import mcjty.deepresonance.util.DeepResonanceTags;
 import mcjty.lib.datagen.BaseRecipeProvider;
-import net.minecraft.data.CookingRecipeBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
 

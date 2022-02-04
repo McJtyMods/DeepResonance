@@ -54,7 +54,7 @@ import static mcjty.lib.container.SlotDefinition.generic;
 
 public class LaserTileEntity extends TickingTileEntity {
 
-    public static IntegerProperty COLOR = IntegerProperty.create("color", 0, 3);
+    public static final IntegerProperty COLOR = IntegerProperty.create("color", 0, 3);
 
     public static final int SLOT_CRYSTAL = 0;
     public static final int SLOT_CATALYST = 1;
@@ -196,9 +196,9 @@ public class LaserTileEntity extends TickingTileEntity {
 
 
     private boolean validRCLTank(TankTileEntity tank) {
-        return tank.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).map(handler -> {
-            return DeepResonanceFluidHelper.isLiquidCrystal(handler.getFluidInTank(0).getFluid());
-        }).orElse(false);
+        return tank.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+                .map(handler -> DeepResonanceFluidHelper.isLiquidCrystal(handler.getFluidInTank(0).getFluid()))
+                .orElse(false);
     }
 
     private BlockPos findLens() {

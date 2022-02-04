@@ -37,7 +37,7 @@ public class RadiationConfiguration {
     public static ForgeConfigSpec.DoubleValue RADIATION_SHIELD_DENSE_GLASS_FACTOR;
     public static ForgeConfigSpec.DoubleValue RADIATION_SHIELD_LEAD_FACTOR;
 
-    public static ForgeConfigSpec.DoubleValue[] SUIT_PROTECTION = new ForgeConfigSpec.DoubleValue[4];
+    public static final ForgeConfigSpec.DoubleValue[] SUIT_PROTECTION = new ForgeConfigSpec.DoubleValue[4];
 
     public static void init() {
         Config.SERVER_BUILDER.push("radiation");

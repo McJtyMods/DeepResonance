@@ -9,3 +9,5 @@
 - Check power of generator. It doesn't show in TOP
 - Cleanup of old code
 - Implement tank item renderer fully
+- Sounds!
+- Check breaking/placing tanks/generator blocks

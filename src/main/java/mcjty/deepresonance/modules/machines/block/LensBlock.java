@@ -35,9 +35,6 @@ public class LensBlock extends BaseBlock {
     public VoxelShape getShape(BlockState state, IBlockReader level, BlockPos pos, ISelectionContext context) {
         Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
         switch (facing) {
-            case DOWN:
-            case UP:
-                return SHAPE_WEST;
             case NORTH:
                 return SHAPE_NORTH;
             case SOUTH:

@@ -15,13 +15,15 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
-import mcjty.lib.tileentity.*;
+import mcjty.lib.tileentity.Cap;
+import mcjty.lib.tileentity.CapType;
+import mcjty.lib.tileentity.GenericEnergyStorage;
+import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.LevelTools;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.util.Lazy;
@@ -117,9 +119,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
         if (progress != newProgress) {
             CompoundNBT packet = new CompoundNBT();
             packet.putInt("progress", newProgress);
-            LevelTools.getAllPlayersWatchingBlock(level, worldPosition).forEach(player -> {
-                player.connection.send(new SUpdateTileEntityPacket(worldPosition, 3, packet));
-            });
+            LevelTools.getAllPlayersWatchingBlock(level, worldPosition).forEach(player -> player.connection.send(new SUpdateTileEntityPacket(worldPosition, 3, packet)));
             progress = newProgress;
         }
     }
