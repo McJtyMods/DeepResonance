@@ -24,7 +24,10 @@ public class TankFixer implements IMultiblockFixer<TankBlob> {
     public void distribute(MultiblockDriver<TankBlob> driver, World level, TankBlob original, List<Pair<Integer, Set<BlockPos>>> todo) {
         original.getData().ifPresent(data -> {
             int totalAmount = data.getAmount();
-            int totalBlocks = original.getTankBlocks();
+            int totalBlocks = 0;
+            for (Pair<Integer, Set<BlockPos>> pair : todo) {
+                totalBlocks += pair.getRight().size();
+            }
 
             int amountPerBlock = totalAmount / totalBlocks;
             int remainder = totalAmount % totalBlocks;

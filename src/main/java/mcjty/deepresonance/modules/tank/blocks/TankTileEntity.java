@@ -170,12 +170,11 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
             if (newstate.getBlock() != GeneratorModule.GENERATOR_PART_BLOCK.get()) {
                 TankBlob network = getBlob();
                 if (network != null) {
-//                    int energy = network.getEnergy() / network.getGeneratorBlocks();
-//                    network.setEnergy(network.getEnergy() - energy);
                     network.getData().ifPresent(data -> {
                         preservedFluid = data.getFluidStack().copy();
                         int amount = data.getAmount() / network.getTankBlocks();
                         preservedFluid.setAmount(amount);
+                        data.setAmount(data.getAmount()-amount);
                         setChanged();
                     });
                 }

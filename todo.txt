@@ -1,5 +1,3 @@
 - Break particles!
-- Test if radiation actually works?
 - Cleanup of old code
 - Implement tank item renderer fully
-- Check breaking/placing tanks/generator blocks
