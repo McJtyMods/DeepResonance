@@ -3,10 +3,13 @@ package mcjty.deepresonance.modules.generator.sound;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.TickableSound;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class GeneratorSound extends TickableSound {
@@ -40,10 +43,20 @@ public class GeneratorSound extends TickableSound {
             stop();
             return;
         }
-        volume = (float) (GeneratorConfig.BASE_GENERATOR_VOLUME.get() * (loop ? scaleDown : 1));
-        if (loop && scaleDown > GeneratorConfig.LOOP_VOLUME_FACTOR.get()) {
-            scaleDown -= 0.01f;
+
+        ClientPlayerEntity player = Minecraft.getInstance().player;
+        double distance = Math.sqrt(this.pos.distSqr(player.getX(), player.getY(), player.getZ(), true));
+        if (distance > 20) {
+            volume = 0;
+        } else {
+            volume = (float) (GeneratorConfig.BASE_GENERATOR_VOLUME.get() * (20-distance)/20.0);
         }
+
+//        volume = (float) (GeneratorConfig.BASE_GENERATOR_VOLUME.get() * (loop ? scaleDown : 1));
+//        if (loop && scaleDown > GeneratorConfig.LOOP_VOLUME_FACTOR.get()) {
+//            scaleDown -= 0.01f;
+//        }
+
     }
 
     protected boolean isSoundType(SoundEvent event){

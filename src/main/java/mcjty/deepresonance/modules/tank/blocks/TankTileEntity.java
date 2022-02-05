@@ -21,7 +21,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -50,24 +49,6 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     public TankTileEntity() {
         super(TankModule.TYPE_TANK.get());
     }
-
-    public enum Mode implements IStringSerializable {
-        SETTING_NONE("none"),
-        SETTING_ACCEPT("accept"),   // Blue
-        SETTING_PROVIDE("provide"); // Yellow
-
-        private final String name;
-
-        Mode(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String getSerializedName() {
-            return name;
-        }
-    }
-
 
     public void setClientData(float newHeight, Fluid render) {
         boolean dirty = false;
@@ -140,50 +121,6 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         }
         return super.onBlockActivated(state, player, hand, result);
     }
-
-// @todo 1.16
-//    @Override
-//    public void addInformation(@Nonnull IInformation information, @Nonnull IInfoDataAccessorBlock hitData) {
-//        CompoundNBT tag = hitData.getData();
-//        if (tag.contains("capacity")) {
-//            if (tag.contains("fluid")) {
-//                Fluid fluid = RegistryHelper.getFluidRegistry().getValue(new ResourceLocation(tag.getString("fluid")));
-//                if (fluid != null) {
-//                    information.addInformation(StatCollector.translateToLocal(fluid.getAttributes().getTranslationKey()));
-//                    if (tag.contains("efficiency")) {
-//                        DecimalFormat decimalFormat = new DecimalFormat("#.#");
-//                        decimalFormat.setRoundingMode(RoundingMode.DOWN);
-//                        information.addInformation("");
-//                        information.addInformation("Efficiency: " + decimalFormat.format(tag.getFloat("efficiency") * 100) + "%");
-//                        information.addInformation("Purity: " + decimalFormat.format(tag.getFloat("purity") * 100) + "%");
-//                        information.addInformation("Quality: " + decimalFormat.format(tag.getFloat("quality") * 100) + "%");
-//                        information.addInformation("Strength: " + decimalFormat.format(tag.getFloat("strength") * 100) + "%");
-//                    }
-//                }
-//            }
-//            information.addInformation(tag.getInt("amt") + "/" + tag.getInt("capacity") + "mB");
-//        }
-//    }
-
-    // @todo 1.16
-//    @Override
-//    public void gatherInformation(@Nonnull CompoundNBT tag, @Nonnull ServerPlayerEntity player, @Nonnull IInfoDataAccessorBlock hitData) {
-//        if (grid != null) {
-//            tag.putInt("capacity", grid.getTankCapacity(0));
-//            tag.putInt("amt", grid.getFluidAmount());
-//            Fluid fluid = grid.getStoredFluid();
-//            if (fluid != null) {
-//                tag.putString("fluid", Preconditions.checkNotNull(fluid.getRegistryName()).toString());
-//                ILiquidCrystalData data = DeepResonanceFluidHelper.readCrystalDataFromStack(grid.getFluidInTank(0));
-//                if (data != null) {
-//                    tag.putFloat("efficiency", data.getEfficiency());
-//                    tag.putFloat("purity", data.getPurity());
-//                    tag.putFloat("quality", data.getQuality());
-//                    tag.putFloat("strength", data.getStrength());
-//                }
-//            }
-//        }
-//    }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {

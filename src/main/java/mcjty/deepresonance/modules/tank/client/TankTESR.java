@@ -34,17 +34,9 @@ import java.util.stream.Collectors;
 
 public class TankTESR extends TileEntityRenderer<TankTileEntity> {
 
-    private static final Set<Direction> ITEM_DIRECTIONS = EnumSet.range(Direction.UP, Direction.EAST); //All except bottom
-
     public static final ResourceLocation TANK_BOTTOM = new ResourceLocation(DeepResonance.MODID, "block/tank_bottom");
-    public static final ResourceLocation TANK_BOTTOM_ACCEPT = new ResourceLocation(DeepResonance.MODID, "block/tank_bottomaccept");
-    public static final ResourceLocation TANK_BOTTOM_PROVIDE = new ResourceLocation(DeepResonance.MODID, "block/tank_bottomprovide");
     public static final ResourceLocation TANK_TOP = new ResourceLocation(DeepResonance.MODID, "block/tank_top");
-    public static final ResourceLocation TANK_TOP_ACCEPT = new ResourceLocation(DeepResonance.MODID, "block/tank_topaccept");
-    public static final ResourceLocation TANK_TOP_PROVIDE = new ResourceLocation(DeepResonance.MODID, "block/tank_topprovide");
     public static final ResourceLocation TANK_SIDE = new ResourceLocation(DeepResonance.MODID, "block/tank_side");
-    public static final ResourceLocation TANK_SIDE_ACCEPT = new ResourceLocation(DeepResonance.MODID, "block/tank_sideaccept");
-    public static final ResourceLocation TANK_SIDE_PROVIDE = new ResourceLocation(DeepResonance.MODID, "block/tank_sideprovide");
 
     public TankTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);

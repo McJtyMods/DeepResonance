@@ -4,13 +4,13 @@ import com.google.common.collect.Sets;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
 import mcjty.deepresonance.modules.generator.data.GeneratorBlob;
+import mcjty.deepresonance.modules.generator.data.NetworkEnergyStorage;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.multiblock.MultiblockSupport;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
-import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.EnergyTools;
 import mcjty.lib.varia.OrientationTools;
@@ -35,7 +35,8 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
     private int blobId = -1;
 
     @Cap(type = CapType.ENERGY)
-    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, GeneratorConfig.POWER_STORAGE_PER_BLOCK.get(), 0);
+    private final NetworkEnergyStorage energyStorage = new NetworkEnergyStorage(this);
+
 
     public GeneratorPartTileEntity() {
         super(GeneratorModule.TYPE_GENERATOR_PART.get());
@@ -48,6 +49,7 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
             return;
         }
 
+        boolean dirty = false;
         for (Direction facing : OrientationTools.DIRECTION_VALUES) {
             BlockPos pos = getBlockPos().relative(facing);
             TileEntity te = level.getBlockEntity(pos);
@@ -55,11 +57,18 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
             if (EnergyTools.isEnergyTE(te, opposite)) {
                 int rfToGive = Math.min(GeneratorConfig.POWER_PER_TICKOUT.get(), energyStored);   // @todo 1.16 is this the right config?
                 int received = (int) EnergyTools.receiveEnergy(te, opposite, rfToGive);
-                energyStored -= energyStorage.extractEnergy(received, false);
+                if (received > 0) {
+                    dirty = true;
+                    energyStored -= energyStorage.consumeEnergy(received);
+                }
                 if (energyStored <= 0) {
                     break;
                 }
             }
+        }
+        if (dirty) {
+            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getNetwork(level);
+            generatorNetwork.setDirty();
         }
     }
 

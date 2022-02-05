@@ -1,5 +1,6 @@
 package mcjty.deepresonance.modules.radiation;
 
+import mcjty.deepresonance.modules.radiation.client.ClientSetup;
 import mcjty.deepresonance.modules.radiation.client.RadiationOverlayRenderer;
 import mcjty.deepresonance.modules.radiation.item.ItemRadiationSuit;
 import mcjty.deepresonance.modules.radiation.item.RadiationMonitorItem;
@@ -22,7 +23,13 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 public class RadiationModule implements IModule {
 
     public static final RegistryObject<Block> POISONED_DIRT_BLOCK = Registration.BLOCKS.register("poisoned_dirt", () -> new Block(Block.Properties.of(Material.DIRT, MaterialColor.DIRT).strength(0.5f).sound(SoundType.GRASS)));
-    public static final RegistryObject<Block> DENSE_GLASS_BLOCK = Registration.BLOCKS.register("dense_glass", () -> new GlassBlock(Block.Properties.of(Material.GLASS).strength(3.0f, 500.0f).sound(SoundType.GLASS).noCollission().harvestTool(ToolType.PICKAXE).harvestLevel(2)));
+    public static final RegistryObject<Block> DENSE_GLASS_BLOCK = Registration.BLOCKS.register("dense_glass",
+            () -> new GlassBlock(Block.Properties.of(Material.GLASS)
+                    .strength(3.0f, 500.0f)
+                    .noOcclusion()
+                    .sound(SoundType.GLASS)
+                    .harvestTool(ToolType.PICKAXE)
+                    .harvestLevel(2)));
     public static final RegistryObject<Block> DENSE_OBSIDIAN_BLOCK = Registration.BLOCKS.register("dense_obsidian", () -> new Block(Block.Properties.of(Material.STONE, MaterialColor.COLOR_BLACK).strength(50.0f, 2000.0f).sound(SoundType.STONE).harvestTool(ToolType.PICKAXE).harvestLevel(3)));
 
     public static final RegistryObject<Item> POISONED_DIRT_ITEM = Registration.fromBlock(POISONED_DIRT_BLOCK);
@@ -47,6 +54,7 @@ public class RadiationModule implements IModule {
         event.enqueueWork(() -> {
             RadiationMonitorItem.initOverrides(RADIATION_MONITOR.get());
         });
+        ClientSetup.initClient();
         MinecraftForge.EVENT_BUS.addListener(RadiationOverlayRenderer::onRender);
     }
 
