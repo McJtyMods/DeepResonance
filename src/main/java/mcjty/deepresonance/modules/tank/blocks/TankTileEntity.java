@@ -43,6 +43,9 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     private Fluid clientRenderFluid;
     private float renderHeight; //Value from 0.0f to 1.0f
 
+    // Only used when the tank is broken and needs to be put back later
+    private FluidStack preservedFluid = FluidStack.EMPTY;
+
     @Cap(type = CapType.FLUIDS)
     private final LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(this::createFluidHandler);
 
@@ -83,6 +86,14 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     @Override
+    protected void saveInfo(CompoundNBT tagCompound) {
+        super.saveInfo(tagCompound);
+        CompoundNBT tag = new CompoundNBT();
+        preservedFluid.writeToNBT(tag);
+        getOrCreateInfo(tagCompound).put("preserved", tag);
+    }
+
+    @Override
     public void load(CompoundNBT tagCompound) {
         if (tagCompound.contains("blobid")) {
             blobId = tagCompound.getInt("blobid");
@@ -91,6 +102,17 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         }
         loadClientDataFromNBT(tagCompound);
         super.load(tagCompound);
+    }
+
+    @Override
+    protected void loadInfo(CompoundNBT tagCompound) {
+        super.loadInfo(tagCompound);
+        CompoundNBT info = tagCompound.getCompound("Info");
+        if (info.contains("preserved")) {
+            preservedFluid = FluidStack.loadFluidStackFromNBT(info.getCompound("preserved"));
+        } else {
+            preservedFluid = FluidStack.EMPTY;
+        }
     }
 
     @Override
@@ -131,7 +153,11 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
                 CompoundNBT tag = stack.getTag();
                 if (tag != null) {
                     getDriver().modify(getMultiblockId(), holder -> {
-//                        holder.getMb().setEnergy(holder.getMb().getEnergy() + tag.getInt("energy"));
+                        CompoundNBT infoTag = tag.getCompound("BlockEntityTag").getCompound("Info");
+                        if (infoTag.contains("preserved")) {
+                            FluidStack fluidStack = FluidStack.loadFluidStackFromNBT(infoTag.getCompound("preserved"));
+                            holder.getMb().fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
+                        }
                     });
                 }
             }
@@ -146,6 +172,12 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
                 if (network != null) {
 //                    int energy = network.getEnergy() / network.getGeneratorBlocks();
 //                    network.setEnergy(network.getEnergy() - energy);
+                    network.getData().ifPresent(data -> {
+                        preservedFluid = data.getFluidStack().copy();
+                        int amount = data.getAmount() / network.getTankBlocks();
+                        preservedFluid.setAmount(amount);
+                        setChanged();
+                    });
                 }
                 removeBlockFromNetwork();
             }
