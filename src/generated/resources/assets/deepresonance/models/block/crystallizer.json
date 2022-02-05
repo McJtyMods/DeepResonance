@@ -6,7 +6,8 @@
     "north": "deepresonance:block/crystallizer",
     "south": "deepresonance:block/machine_side",
     "east": "deepresonance:block/machine_side",
-    "west": "deepresonance:block/machine_side"
+    "west": "deepresonance:block/machine_side",
+    "particle": "deepresonance:block/crystallizer"
   },
   "elements": [
     {

@@ -6,6 +6,7 @@
     "north": "deepresonance:block/generator_part_side_up",
     "south": "deepresonance:block/generator_part_side_up",
     "east": "deepresonance:block/generator_part_side_up",
-    "west": "deepresonance:block/generator_part_side_up"
+    "west": "deepresonance:block/generator_part_side_up",
+    "particle": "deepresonance:block/generator_part_side_up"
   }
 }

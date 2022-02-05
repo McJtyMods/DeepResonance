@@ -1,6 +1,7 @@
 {
   "parent": "deepresonance:block/lens",
   "textures": {
-    "lens_texture": "deepresonance:block/lens"
+    "lens_texture": "deepresonance:block/lens",
+    "particle": "deepresonance:block/lens"
   }
 }

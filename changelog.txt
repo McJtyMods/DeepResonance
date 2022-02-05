@@ -1,8 +1,5 @@
-Upcoming:
-- Various cleanups and fixes
-
 2.0.0-beta:
-- Port to 1.15
+- Port to 1.16
 
 1.8.0:
 - Depends on McJtyLib 3.5.0!

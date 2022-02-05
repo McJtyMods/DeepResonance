@@ -6,6 +6,7 @@
     "north": "deepresonance:block/laser",
     "south": "deepresonance:block/laser_back",
     "east": "deepresonance:block/laser_back",
-    "west": "deepresonance:block/laser_back"
+    "west": "deepresonance:block/laser_back",
+    "particle": "deepresonance:block/laser"
   }
 }
