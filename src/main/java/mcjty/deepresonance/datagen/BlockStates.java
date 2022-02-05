@@ -31,7 +31,8 @@ public class BlockStates extends BaseBlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         registerCrystalModel();
-        simpleBlock(TankModule.TANK_BLOCK.get(), models().cubeBottomTop("tank", TankTESR.TANK_SIDE, TankTESR.TANK_BOTTOM, TankTESR.TANK_TOP));
+        registerTankModel();
+        registerGeneratorPart();
         simpleBlock(CoreModule.RESONATING_ORE_STONE_BLOCK.get());
         simpleBlock(CoreModule.RESONATING_ORE_NETHER_BLOCK.get());
         simpleBlock(CoreModule.RESONATING_ORE_END_BLOCK.get());
@@ -61,6 +62,9 @@ public class BlockStates extends BaseBlockStateProvider {
             } else {
                 builder.modelFile(frontBasedModel(name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/generator_controller"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));            }
         });
+    }
+
+    private void registerGeneratorPart() {
         variantBlock(GeneratorModule.GENERATOR_PART_BLOCK.get(), state -> {
             String extra = "";
             if (state.getValue(BlockStateProperties.UP)) {
@@ -75,6 +79,10 @@ public class BlockStates extends BaseBlockStateProvider {
             ResourceLocation id = new ResourceLocation(DeepResonance.MODID, "block/generator_part_side" + extra);
             return models().cube("generator_part" + extra, DEFAULT_BOTTOM, DEFAULT_TOP, id, id, id, id);
         });
+    }
+
+    private void registerTankModel() {
+        simpleBlock(TankModule.TANK_BLOCK.get(), models().cubeBottomTop("tank", TankTESR.TANK_SIDE, TankTESR.TANK_BOTTOM, TankTESR.TANK_TOP));
     }
 
     private void registerCrystalModel() {

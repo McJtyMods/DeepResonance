@@ -21,6 +21,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -48,6 +49,23 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
 
     public TankTileEntity() {
         super(TankModule.TYPE_TANK.get());
+    }
+
+    public enum Mode implements IStringSerializable {
+        SETTING_NONE("none"),
+        SETTING_ACCEPT("accept"),   // Blue
+        SETTING_PROVIDE("provide"); // Yellow
+
+        private final String name;
+
+        Mode(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String getSerializedName() {
+            return name;
+        }
     }
 
 
