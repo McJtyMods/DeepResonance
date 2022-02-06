@@ -37,14 +37,14 @@ public class DeepResonanceOreGenerator {
 
         OreConfiguration netherConfig = new OreConfiguration(OreFeatures.NETHER_ORE_REPLACEABLES, CoreModule.RESONATING_ORE_NETHER_BLOCK.get().defaultBlockState(),
                 WorldGenConfiguration.NETHER_VEIN_SIZE.get());
-        OVERWORLD_RESONATING_ORE = registerPlacedFeature("resonating_nether", Feature.ORE.configured(netherConfig),
+        NETHER_RESONATING_ORE = registerPlacedFeature("resonating_nether", Feature.ORE.configured(netherConfig),
                 CountPlacement.of(WorldGenConfiguration.NETHER_SPAWN_CHANCES.get()),
                 InSquarePlacement.spread(),
                 HeightRangePlacement.uniform(VerticalAnchor.absolute(WorldGenConfiguration.NETHER_MINY.get()), VerticalAnchor.absolute(WorldGenConfiguration.NETHER_MAXY.get())));
 
         OreConfiguration endConfig = new OreConfiguration(ENDSTONE_TEST, CoreModule.RESONATING_ORE_END_BLOCK.get().defaultBlockState(),
                 WorldGenConfiguration.END_VEIN_SIZE.get());
-        OVERWORLD_RESONATING_ORE = registerPlacedFeature("resonating_end", Feature.ORE.configured(endConfig),
+        END_RESONATING_ORE = registerPlacedFeature("resonating_end", Feature.ORE.configured(endConfig),
                 CountPlacement.of(WorldGenConfiguration.END_SPAWN_CHANCES.get()),
                 InSquarePlacement.spread(),
                 HeightRangePlacement.uniform(VerticalAnchor.absolute(WorldGenConfiguration.END_MINY.get()), VerticalAnchor.absolute(WorldGenConfiguration.END_MAXY.get())));
@@ -57,13 +57,13 @@ public class DeepResonanceOreGenerator {
 
     public static void onBiomeLoadingEvent(BiomeLoadingEvent event) {
         if (event.getCategory() == Biome.BiomeCategory.NETHER) {
-            event.getGeneration().getFeatures(GenerationStep.Decoration.RAW_GENERATION).add(() -> ResonantCrystalFeature.CRYSTAL_CONFIGURED_NETHER);
+            event.getGeneration().addFeature(GenerationStep.Decoration.RAW_GENERATION, ResonantCrystalFeature.CRYSTAL_CONFIGURED_NETHER);
             event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, NETHER_RESONATING_ORE);
         } else if (event.getCategory() == Biome.BiomeCategory.THEEND) {
-            event.getGeneration().getFeatures(GenerationStep.Decoration.RAW_GENERATION).add(() -> ResonantCrystalFeature.CRYSTAL_CONFIGURED_END);
+            event.getGeneration().addFeature(GenerationStep.Decoration.RAW_GENERATION, ResonantCrystalFeature.CRYSTAL_CONFIGURED_END);
             event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, END_RESONATING_ORE);
         } else {
-            event.getGeneration().getFeatures(GenerationStep.Decoration.RAW_GENERATION).add(() -> ResonantCrystalFeature.CRYSTAL_CONFIGURED_OVERWORLD);
+            event.getGeneration().addFeature(GenerationStep.Decoration.RAW_GENERATION, ResonantCrystalFeature.CRYSTAL_CONFIGURED_OVERWORLD);
             event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, OVERWORLD_RESONATING_ORE);
         }
     }

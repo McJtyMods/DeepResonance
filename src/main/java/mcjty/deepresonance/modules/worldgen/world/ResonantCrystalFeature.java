@@ -8,7 +8,6 @@ import mcjty.deepresonance.modules.worldgen.WorldGenModule;
 import mcjty.deepresonance.modules.worldgen.util.WorldGenConfiguration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceLocation;
@@ -42,8 +41,6 @@ public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig
     }
 
     public static void registerConfiguredFeatures() {
-        Registry<ConfiguredFeature<?, ?>> registry = BuiltinRegistries.CONFIGURED_FEATURE;
-
         // @todo 1.16 configure correctly!
         CRYSTAL_CONFIGURED_OVERWORLD = registerPlacedFeature("configured_crystal_overworld", WorldGenModule.CRYSTAL_FEATURE.get()
                         .configured(new ResonantCrystalFeatureConfig(1.0f, 1.0f, 1.0f, 1.0f)),
@@ -79,15 +76,15 @@ public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig
                 pos = new BlockPos(pos.getX(), y - 1, pos.getZ());
             }
             BlockPos.MutableBlockPos poz = pos.mutable();
-            while (poz.getY() > 1 && !world.getBlockState(poz).isAir()) {
+            while (poz.getY() > world.getMinBuildHeight() && !world.getBlockState(poz).isAir()) {
                 poz.move(Direction.DOWN);
             }
-            while (poz.getY() > 1 && world.getBlockState(poz).isAir()) {
+            while (poz.getY() > world.getMinBuildHeight() && world.getBlockState(poz).isAir()) {
                 poz.move(Direction.DOWN);
             }
             if (world.getBlockState(poz).isCollisionShapeFullBlock(world, poz)) {
                 pos = poz.above();
-                if (world.getBlockState(poz).isAir()) {
+                if (world.getBlockState(pos).isAir()) {
                     if (WorldGenConfiguration.VERBOSE.get()) {
                         DeepResonance.setup.getLogger().info("Spawned crystal at: " + pos);
                     }
