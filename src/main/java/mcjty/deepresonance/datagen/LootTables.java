@@ -27,10 +27,10 @@ public class LootTables extends BaseLootTableProvider {
 
 //        addSimpleTable(PulserModule.PULSER_BLOCK.get());
         addSimpleTable(MachinesModule.LENS_BLOCK.get());
-        addSimpleTable(MachinesModule.CRYSTALLIZER_BLOCK.get());
         addSimpleTable(GeneratorModule.ENERGY_COLLECTOR_BLOCK.get());
         addSimpleTable(GeneratorModule.GENERATOR_CONTROLLER_BLOCK.get());
 
+        addStandardTable(MachinesModule.CRYSTALLIZER_BLOCK.get());
         addStandardTable(MachinesModule.SMELTER_BLOCK.get());
         addStandardTable(MachinesModule.PURIFIER_BLOCK.get());
         addStandardTable(GeneratorModule.GENERATOR_PART_BLOCK.get());
