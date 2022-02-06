@@ -14,11 +14,11 @@ import mcjty.lib.compat.theoneprobe.McJtyLibTOPDriver;
 import mcjty.lib.compat.theoneprobe.TOPDriver;
 import mcjty.lib.varia.Tools;
 import mcjty.theoneprobe.api.*;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.math.RoundingMode;
@@ -33,7 +33,7 @@ public class DeepResonanceTOPDriver implements TOPDriver {
     private final Map<ResourceLocation, TOPDriver> drivers = new HashMap<>();
 
     @Override
-    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
         ResourceLocation id = blockState.getBlock().getRegistryName();
         if (!drivers.containsKey(id)) {
             if (blockState.getBlock() == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
@@ -56,14 +56,14 @@ public class DeepResonanceTOPDriver implements TOPDriver {
 
     private static class DefaultDriver implements TOPDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             McJtyLibTOPDriver.DRIVER.addStandardProbeInfo(mode, probeInfo, player, world, blockState, data);
         }
     }
 
     private static class GeneratorPartDriver implements TOPDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             McJtyLibTOPDriver.DRIVER.addStandardProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (GeneratorPartTileEntity te) -> {
                 int id = te.getMultiblockId();
@@ -78,7 +78,7 @@ public class DeepResonanceTOPDriver implements TOPDriver {
 
     private static class GeneratorControllerDriver implements TOPDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             McJtyLibTOPDriver.DRIVER.addStandardProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (GeneratorControllerTileEntity te) -> {
                 int level = te.getPowerLevel();
@@ -89,7 +89,7 @@ public class DeepResonanceTOPDriver implements TOPDriver {
 
     private static class CrystalDriver implements TOPDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             McJtyLibTOPDriver.DRIVER.addStandardProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (ResonatingCrystalTileEntity crystal) -> {
                 DecimalFormat fmt = new DecimalFormat("#.#");
@@ -111,7 +111,7 @@ public class DeepResonanceTOPDriver implements TOPDriver {
                         probeInfo.text(CompoundText.createLabelInfo("Empty ", crystalBlock.isEmpty()));
                     }
                 } else {
-                    probeInfo.horizontal().text(TextFormatting.YELLOW + "Power: " + fmt.format(crystal.getPower()) + "% (" + rfPerTick + " RF/t)")
+                    probeInfo.horizontal().text(ChatFormatting.YELLOW + "Power: " + fmt.format(crystal.getPower()) + "% (" + rfPerTick + " RF/t)")
                             .progress((int) crystal.getPower(), 100, probeInfo.defaultProgressStyle()
                                     .suffix("%")
                                     .width(40)
@@ -126,7 +126,7 @@ public class DeepResonanceTOPDriver implements TOPDriver {
 
     private static class TankDriver implements TOPDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             McJtyLibTOPDriver.DRIVER.addStandardProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (TankTileEntity tank) -> {
                 TankBlob blob = tank.getBlob();

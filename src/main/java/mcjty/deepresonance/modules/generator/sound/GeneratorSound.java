@@ -2,26 +2,25 @@ package mcjty.deepresonance.modules.generator.sound;
 
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.TickableSound;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
-public class GeneratorSound extends TickableSound {
+public class GeneratorSound extends AbstractTickableSoundInstance {
 
-    public GeneratorSound(SoundEvent event, World world, BlockPos pos) {
-        super(event, SoundCategory.BLOCKS);
+    public GeneratorSound(SoundEvent event, Level world, BlockPos pos) {
+        super(event, SoundSource.BLOCKS);
         this.world = world;
         this.pos = pos;
         this.x = pos.getX();
         this.y = pos.getY();
         this.z = pos.getZ();
-        this.attenuation = AttenuationType.LINEAR;
+        this.attenuation = Attenuation.LINEAR;
         this.looping = true;
         this.delay = 0;
         this.loop = event == GeneratorModule.LOOP_SOUND.get();
@@ -29,7 +28,7 @@ public class GeneratorSound extends TickableSound {
         this.relative = false;
     }
 
-    private final World world;
+    private final Level world;
     private final BlockPos pos;
     private final boolean loop;
     private final SoundEvent sound;
@@ -44,7 +43,7 @@ public class GeneratorSound extends TickableSound {
             return;
         }
 
-        ClientPlayerEntity player = Minecraft.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
         double distance = Math.sqrt(this.pos.distSqr(player.getX(), player.getY(), player.getZ(), true));
         if (distance > 20) {
             volume = 0;

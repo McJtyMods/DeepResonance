@@ -2,14 +2,16 @@ package mcjty.deepresonance.modules.machines.block;
 
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.lib.tileentity.TickingTileEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 
 public class LensTileEntity extends TickingTileEntity {
 
-    public LensTileEntity() {
-        super(MachinesModule.TYPE_LENS.get());
+    public LensTileEntity(BlockPos pos, BlockState state) {
+        super(MachinesModule.TYPE_LENS.get(), pos, state);
     }
 
     @Override
@@ -17,12 +19,12 @@ public class LensTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         super.saveAdditional(tagCompound);
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
     }
 }

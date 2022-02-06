@@ -5,7 +5,7 @@ import mcjty.deepresonance.commands.ModCommands;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.radiation.manager.RadiationTickEvent;
 import mcjty.lib.setup.DefaultModSetup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;

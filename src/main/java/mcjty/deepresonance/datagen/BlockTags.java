@@ -3,7 +3,7 @@ package mcjty.deepresonance.datagen;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.util.DeepResonanceTags;
 import mcjty.rftoolsbase.RFToolsBase;
-import net.minecraft.data.BlockTagsProvider;
+import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 

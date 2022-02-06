@@ -1,19 +1,19 @@
 package mcjty.deepresonance.modules.radiation.network;
 
 import mcjty.deepresonance.modules.radiation.item.RadiationMonitorItem;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
 public class PacketReturnRadiation {
     private final float strength;
 
-    public PacketReturnRadiation(PacketBuffer buf) {
+    public PacketReturnRadiation(FriendlyByteBuf buf) {
         strength = buf.readFloat();
     }
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeFloat(strength);
     }
 

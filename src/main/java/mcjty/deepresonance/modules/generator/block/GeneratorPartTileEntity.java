@@ -15,18 +15,17 @@ import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.EnergyTools;
 import mcjty.lib.varia.NBTTools;
 import mcjty.lib.varia.OrientationTools;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import javax.annotation.Nonnull;
 import java.util.Set;
@@ -41,8 +40,8 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
     // This is used when the block is broken so the remaining energy can be stored in the drop
     private int preservedEnergy;
 
-    public GeneratorPartTileEntity() {
-        super(GeneratorModule.TYPE_GENERATOR_PART.get());
+    public GeneratorPartTileEntity(BlockPos pos, BlockState state) {
+        super(GeneratorModule.TYPE_GENERATOR_PART.get(), pos, state);
     }
 
     @Override
@@ -55,7 +54,7 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
         boolean dirty = false;
         for (Direction facing : OrientationTools.DIRECTION_VALUES) {
             BlockPos pos = getBlockPos().relative(facing);
-            TileEntity te = level.getBlockEntity(pos);
+            BlockEntity te = level.getBlockEntity(pos);
             Direction opposite = facing.getOpposite();
             if (EnergyTools.isEnergyTE(te, opposite)) {
                 int rfToGive = Math.min(GeneratorConfig.POWER_PER_TICKOUT.get(), energyStored);   // @todo 1.16 is this the right config?
@@ -76,14 +75,14 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    public void onBlockPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         if (!world.isClientSide()) {
             addBlockToNetwork();
             GeneratorBlob network = getBlob();
             if (network != null) {
-                CompoundNBT tag = stack.getTag();
+                CompoundTag tag = stack.getTag();
                 if (tag != null) {
-                    int energy = NBTTools.getInfoNBT(stack, CompoundNBT::getInt, "preserved", 0);
+                    int energy = NBTTools.getInfoNBT(stack, CompoundTag::getInt, "preserved", 0);
                     getDriver().modify(getMultiblockId(), holder -> holder.getMb().setEnergy(holder.getMb().getEnergy() + energy));
                 }
             }
@@ -91,7 +90,7 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
     }
 
     @Override
-    protected void loadInfo(CompoundNBT tagCompound) {
+    protected void loadInfo(CompoundTag tagCompound) {
         super.loadInfo(tagCompound);
         if (tagCompound.contains("Info")) {
             preservedEnergy = tagCompound.getCompound("Info").getInt("preserved");
@@ -99,13 +98,13 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
     }
 
     @Override
-    protected void saveInfo(CompoundNBT tagCompound) {
+    protected void saveInfo(CompoundTag tagCompound) {
         super.saveInfo(tagCompound);
         getOrCreateInfo(tagCompound).putInt("preserved", preservedEnergy);
     }
 
     @Override
-    public void onReplaced(World world, BlockPos pos, BlockState state, BlockState newstate) {
+    public void onReplaced(Level world, BlockPos pos, BlockState state, BlockState newstate) {
         if (!world.isClientSide()) {
             if (newstate.getBlock() != GeneratorModule.GENERATOR_PART_BLOCK.get()) {
                 GeneratorBlob network = getBlob();
@@ -122,11 +121,11 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
 
             BlockState stateUp = world.getBlockState(pos.above());
             if (stateUp.getBlock() == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
-                world.sendBlockUpdated(pos.above(), stateUp, stateUp, Constants.BlockFlags.DEFAULT);
+                world.sendBlockUpdated(pos.above(), stateUp, stateUp, Block.UPDATE_ALL);
             }
             BlockState stateDown = world.getBlockState(pos.below());
             if (stateDown.getBlock() == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
-                world.sendBlockUpdated(pos.below(), stateDown, stateDown, Constants.BlockFlags.DEFAULT);
+                world.sendBlockUpdated(pos.below(), stateDown, stateDown, Block.UPDATE_ALL);
             }
         }
     }
@@ -188,7 +187,7 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
 
         BlockState state = level.getBlockState(c);
         if (state.getValue(BlockStateProperties.POWERED) != active) {
-            level.setBlock(c, state.setValue(BlockStateProperties.POWERED, active), Constants.BlockFlags.DEFAULT);
+            level.setBlock(c, state.setValue(BlockStateProperties.POWERED, active), Block.UPDATE_ALL);
         }
 
         for (Direction direction : OrientationTools.DIRECTION_VALUES) {
@@ -203,13 +202,13 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         tagCompound.putInt("networkId", blobId);
         super.saveAdditional(tagCompound);
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
         blobId = tagCompound.getInt("networkId");
     }

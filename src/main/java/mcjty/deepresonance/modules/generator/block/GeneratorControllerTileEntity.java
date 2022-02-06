@@ -10,14 +10,13 @@ import mcjty.lib.multiblock.MultiblockSupport;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.Broadcaster;
 import mcjty.lib.varia.OrientationTools;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
@@ -38,12 +37,12 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
     }
     private PlayingSound clientSound = PlayingSound.NONE;
 
-    public GeneratorControllerTileEntity() {
-        super(GeneratorModule.TYPE_GENERATOR_CONTROLLER.get());
+    public GeneratorControllerTileEntity(BlockPos pos, BlockState state) {
+        super(GeneratorModule.TYPE_GENERATOR_CONTROLLER.get(), pos, state);
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
         boolean working = isPowered();
         super.onDataPacket(net, packet);
 
@@ -51,7 +50,7 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
             // If needed send a render update.
             if (isPowered() != working) {
                 BlockState state = getBlockState();
-                level.sendBlockUpdated(worldPosition, state, state, Constants.BlockFlags.DEFAULT);
+                level.sendBlockUpdated(worldPosition, state, state, Block.UPDATE_ALL);
             }
         }
     }
@@ -261,7 +260,7 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         tagCompound.putInt("startup", startup);
         tagCompound.putInt("shutdown", shutdown);
         tagCompound.putBoolean("active", active);
@@ -270,7 +269,7 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         startup = tagCompound.getInt("startup");
         shutdown = tagCompound.getInt("shutdown");
         active = tagCompound.getBoolean("active");
@@ -279,12 +278,12 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundNBT tagCompound) {
+    public void saveClientDataToNBT(CompoundTag tagCompound) {
         tagCompound.putInt("playingSound", clientSound.ordinal());
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
+    public void loadClientDataFromNBT(CompoundTag tagCompound) {
         clientSound = PlayingSound.values()[tagCompound.getInt("playingSound")];
     }
 }

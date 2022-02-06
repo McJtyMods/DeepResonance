@@ -1,6 +1,6 @@
 package mcjty.deepresonance.modules.machines.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.LaserTileEntity;
@@ -16,9 +16,9 @@ import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -37,7 +37,7 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
 
     private static final ResourceLocation GUI = new ResourceLocation(DeepResonance.MODID, "textures/gui/laser.png");
 
-    public LaserGui(LaserTileEntity tileEntity, GenericContainer container, PlayerInventory inventory) {
+    public LaserGui(LaserTileEntity tileEntity, GenericContainer container, Inventory inventory) {
         super(tileEntity, container, inventory, ManualEntry.EMPTY); // @todo 1.16 manual
 
         imageWidth = LASER_WIDTH;
@@ -92,7 +92,7 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
     }
 
     @Override
-    protected void renderBg(@Nonnull MatrixStack matrixStack, float partialTicks, int x, int y) {
+    protected void renderBg(@Nonnull PoseStack matrixStack, float partialTicks, int x, int y) {
         Slot slot = this.menu.getSlot(LaserTileEntity.SLOT_CATALYST);
         if (slot.hasItem()) {
             InfusingBonus bonus = LaserTileEntity.getInfusingBonus(slot.getItem());

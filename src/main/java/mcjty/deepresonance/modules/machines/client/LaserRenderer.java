@@ -1,7 +1,8 @@
 package mcjty.deepresonance.modules.machines.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.LaserTileEntity;
 import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
@@ -12,39 +13,36 @@ import mcjty.lib.client.RenderHelper;
 import mcjty.lib.client.RenderSettings;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
 
-public class LaserRenderer extends TileEntityRenderer<LaserTileEntity> {
+public class LaserRenderer implements BlockEntityRenderer<LaserTileEntity> {
 
-    public LaserRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public LaserRenderer(BlockEntityRendererProvider.Context context) {
     }
 
     public static void register() {
-        ClientRegistry.bindTileEntityRenderer(MachinesModule.TYPE_LASER.get(), LaserRenderer::new);
+        BlockEntityRenderers.register(MachinesModule.TYPE_LASER.get(), LaserRenderer::new);
     }
 
     @Override
-    public void render(@Nonnull LaserTileEntity tileEntity, float partialTicks, @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
+    public void render(@Nonnull LaserTileEntity tileEntity, float partialTicks, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
         DelayedRenderer.addRender(tileEntity.getBlockPos(), (stack, buf) -> {
             renderInternal(tileEntity, stack, buf);
         });
     }
 
-    private void renderInternal(LaserTileEntity tileEntity, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
+    private void renderInternal(LaserTileEntity tileEntity, PoseStack matrixStack, MultiBufferSource buffer) {
         int color = tileEntity.getBlockState().getValue(LaserTileEntity.COLOR);
         if (color != 0) {
             BlockPos pos = tileEntity.getBlockPos();
@@ -64,17 +62,17 @@ public class LaserRenderer extends TileEntityRenderer<LaserTileEntity> {
             int tex = tileEntity.getBlockPos().getX();
             int tey = tileEntity.getBlockPos().getY();
             int tez = tileEntity.getBlockPos().getZ();
-            Vector3d projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().add(-tex, -tey, -tez);
+            Vec3 projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().add(-tex, -tey, -tez);
 
             // Crystal coordinates are relative!
             Vector3f start = new Vector3f(.5f, .5f, .5f);
             Vector3f end = new Vector3f(destX, destY, destZ);
             Vector3f player = new Vector3f((float)projectedView.x, (float)projectedView.y, (float)projectedView.z);
 
-            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(laser);
+            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(laser);
 
             matrixStack.pushPose();
-            IVertexBuilder builder = buffer.getBuffer(CustomRenderTypes.TRANSLUCENT_ADD_NOLIGHTMAPS);
+            VertexConsumer builder = buffer.getBuffer(CustomRenderTypes.TRANSLUCENT_ADD_NOLIGHTMAPS);
             RenderSettings settingsLaser = RenderSettings.builder()
                     .width(.25f)
                     .alpha(128)

@@ -1,7 +1,7 @@
 package mcjty.deepresonance.api.armor;
 
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public interface IRadiationArmor {
 

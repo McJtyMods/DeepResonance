@@ -1,8 +1,8 @@
 package mcjty.deepresonance.setup;
 
 import mcjty.deepresonance.DeepResonance;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
 public class ClientSetup {
@@ -27,7 +27,7 @@ public class ClientSetup {
     }
 
     public static void onTextureStitch(TextureStitchEvent.Pre event) {
-        if (!event.getMap().location().equals(AtlasTexture.LOCATION_BLOCKS)) {
+        if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
             return;
         }
         event.addSprite(REDHALO);

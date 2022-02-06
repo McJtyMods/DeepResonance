@@ -2,9 +2,9 @@ package mcjty.deepresonance.modules.worldgen.world;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
-public class ResonantCrystalFeatureConfig implements IFeatureConfig {
+public class ResonantCrystalFeatureConfig implements FeatureConfiguration {
 
     public static final Codec<ResonantCrystalFeatureConfig> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(

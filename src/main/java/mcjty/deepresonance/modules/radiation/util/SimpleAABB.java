@@ -1,6 +1,6 @@
 package mcjty.deepresonance.modules.radiation.util;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 /**
  * Created by McJty

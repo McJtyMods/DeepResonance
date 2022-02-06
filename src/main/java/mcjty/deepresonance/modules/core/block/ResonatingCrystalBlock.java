@@ -6,27 +6,27 @@ import mcjty.deepresonance.util.Constants;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,7 +37,7 @@ import java.util.function.Consumer;
 
 public class ResonatingCrystalBlock extends BaseBlock {
 
-    private static final VoxelShape AABB = VoxelShapes.box(0.1f, 0, 0.1f, 0.9f, 0.8f, 0.9f);
+    private static final VoxelShape AABB = Shapes.box(0.1f, 0, 0.1f, 0.9f, 0.8f, 0.9f);
 
     private final boolean generated;
     private final boolean empty;
@@ -45,7 +45,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
     public ResonatingCrystalBlock(boolean generated, boolean empty) {
         super(new BlockBuilder()
                 .topDriver(DeepResonanceTOPDriver.DRIVER)
-                .properties(AbstractBlock.Properties
+                .properties(BlockBehaviour.Properties
                         .of(Material.METAL)
                         .strength(2.0f)
                         .sound(SoundType.METAL)
@@ -75,7 +75,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
     @Nonnull
     @Override
     @SuppressWarnings("deprecation")
-    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos, @Nonnull ISelectionContext context) {
+    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter worldIn, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
         return AABB;
     }
 
@@ -85,8 +85,8 @@ public class ResonatingCrystalBlock extends BaseBlock {
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
-        TileEntity tile = world.getBlockEntity(pos);
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+        BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof ResonatingCrystalTileEntity) {
             return createStack((ResonatingCrystalTileEntity) tile);
         }
@@ -95,27 +95,27 @@ public class ResonatingCrystalBlock extends BaseBlock {
 
     public ItemStack createStack(ResonatingCrystalTileEntity crystal) {
         ItemStack ret = new ItemStack(this);
-        ret.addTagElement(CoreModule.TILE_DATA_TAG, crystal.save(new CompoundNBT()));
+        ret.addTagElement(CoreModule.TILE_DATA_TAG, crystal.saveWithoutMetadata());
         return ret;
     }
 
     @Override
-    public void fillItemCategory(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
-        ResonatingCrystalTileEntity crystal = new ResonatingCrystalTileEntity();
+    public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
+        ResonatingCrystalTileEntity crystal = new ResonatingCrystalTileEntity(BlockPos.ZERO, CoreModule.RESONATING_CRYSTAL_GENERATED.get().defaultBlockState());
         for (int power : new int[]{0, 50}) {
             for (int purity : new int[]{0, 50}) {
                 ItemStack stack = new ItemStack(this);
                 crystal.setPurity(purity);
                 crystal.setPower(power);
-                stack.addTagElement(CoreModule.TILE_DATA_TAG, crystal.save(new CompoundNBT()));
+                stack.addTagElement(CoreModule.TILE_DATA_TAG, crystal.saveWithoutMetadata());
                 items.add(stack);
             }
         }
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nullable IBlockReader world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag advanced) {
-        CompoundNBT tagCompound = stack.getTag();
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable BlockGetter world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag advanced) {
+        CompoundTag tagCompound = stack.getTag();
         if (tagCompound != null) {
             tagCompound = tagCompound.getCompound(CoreModule.TILE_DATA_TAG).getCompound("Info");
         }
@@ -127,20 +127,20 @@ public class ResonatingCrystalBlock extends BaseBlock {
             power = tagCompound.getFloat("power");
         }
         if (power > Constants.CRYSTAL_MIN_POWER) {
-            tooltip.add(new TranslationTextComponent("message.deepresonance.crystal_power"));
+            tooltip.add(new TranslatableComponent("message.deepresonance.crystal_power"));
         } else {
-            tooltip.add(new TranslationTextComponent("message.deepresonance.crystal_empty"));
+            tooltip.add(new TranslatableComponent("message.deepresonance.crystal_empty"));
         }
         if (tagCompound != null) {
             addBasicInformation(tooltip::add, tagCompound, power, true);
         }
     }
 
-    public static void addBasicInformation(Consumer<ITextComponent> tooltip, CompoundNBT tag, float power, boolean showPower) {
+    public static void addBasicInformation(Consumer<Component> tooltip, CompoundTag tag, float power, boolean showPower) {
         DecimalFormat decimalFormat = new DecimalFormat("#.#");
         decimalFormat.setRoundingMode(RoundingMode.DOWN);
-        tooltip.accept(new TranslationTextComponent("message.deepresonance.crystal_sep")
-                .withStyle(TextFormatting.GREEN)
+        tooltip.accept(new TranslatableComponent("message.deepresonance.crystal_sep")
+                .withStyle(ChatFormatting.GREEN)
                 .append(": "
                         + decimalFormat.format(tag.getFloat("strength")) + "% "
                         + decimalFormat.format(tag.getFloat("efficiency")) + "% "
@@ -148,7 +148,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
                 )
         );
         if (showPower) {
-            tooltip.accept(new StringTextComponent("Power left: " + decimalFormat.format(power) + "%").withStyle(TextFormatting.YELLOW));
+            tooltip.accept(new TextComponent("Power left: " + decimalFormat.format(power) + "%").withStyle(ChatFormatting.YELLOW));
         }
 
     }

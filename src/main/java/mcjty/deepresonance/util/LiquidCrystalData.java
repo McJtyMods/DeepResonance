@@ -2,8 +2,8 @@ package mcjty.deepresonance.util;
 
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.core.CoreModule;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
@@ -19,7 +19,7 @@ public class LiquidCrystalData implements ILiquidCrystalData {
         this.referenceStack = referenceStack.copy();
     }
 
-    public LiquidCrystalData(PacketBuffer buf) {
+    public LiquidCrystalData(FriendlyByteBuf buf) {
         this.referenceStack = buf.readFluidStack();
     }
 
@@ -60,7 +60,7 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     }
 
     private void setStats(double quality, double purity, double strength, double efficiency) {
-        CompoundNBT tag = referenceStack.getOrCreateTag();
+        CompoundTag tag = referenceStack.getOrCreateTag();
         tag.putDouble("quality", quality);
         tag.putDouble("purity", purity);
         tag.putDouble("strength", strength);
@@ -74,13 +74,13 @@ public class LiquidCrystalData implements ILiquidCrystalData {
         return (1 - f) * thisValue + f * otherValue;
     }
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeFluidStack(referenceStack);
     }
 
     @Override
     public double getQuality() {
-        CompoundNBT tag = referenceStack.getTag();
+        CompoundTag tag = referenceStack.getTag();
         return tag == null ? 0 : tag.getDouble("quality");
     }
 
@@ -91,7 +91,7 @@ public class LiquidCrystalData implements ILiquidCrystalData {
 
     @Override
     public double getPurity() {
-        CompoundNBT tag = referenceStack.getTag();
+        CompoundTag tag = referenceStack.getTag();
         return tag == null ? 0 : tag.getDouble("purity");
     }
 
@@ -102,7 +102,7 @@ public class LiquidCrystalData implements ILiquidCrystalData {
 
     @Override
     public double getStrength() {
-        CompoundNBT tag = referenceStack.getTag();
+        CompoundTag tag = referenceStack.getTag();
         return tag == null ? 0 : tag.getDouble("strength");
     }
 
@@ -113,7 +113,7 @@ public class LiquidCrystalData implements ILiquidCrystalData {
 
     @Override
     public double getEfficiency() {
-        CompoundNBT tag = referenceStack.getTag();
+        CompoundTag tag = referenceStack.getTag();
         return tag == null ? 0 : tag.getDouble("efficiency");
     }
 

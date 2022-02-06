@@ -3,9 +3,9 @@ package mcjty.deepresonance.modules.tank.data;
 import mcjty.deepresonance.util.Constants;
 import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.multiblock.IMultiblock;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -91,8 +91,8 @@ public class TankBlob implements IMultiblock {
      * Fix the y statistics of this blob
      */
     public void updateDistribution(Set<BlockPos> blocks) {
-        int minY = blocks.stream().map(Vector3i::getY).min(Integer::compareTo).orElse(0);
-        int maxY = blocks.stream().map(Vector3i::getY).max(Integer::compareTo).orElse(0);
+        int minY = blocks.stream().map(Vec3i::getY).min(Integer::compareTo).orElse(0);
+        int maxY = blocks.stream().map(Vec3i::getY).max(Integer::compareTo).orElse(0);
         this.blocksPerLevel = new int[maxY-minY+ 1];
         Arrays.fill(this.blocksPerLevel, 0);
         blocks.forEach(b -> this.blocksPerLevel[b.getY()-minY]++);
@@ -190,7 +190,7 @@ public class TankBlob implements IMultiblock {
         return tankBlocks;
     }
 
-    public static TankBlob load(CompoundNBT tagCompound) {
+    public static TankBlob load(CompoundTag tagCompound) {
         TankBlob blob = new TankBlob();
         blob.data = LiquidCrystalData.fromStack(FluidStack.loadFluidStackFromNBT(tagCompound.getCompound("fluid")));
         blob.setTankBlocks(tagCompound.getInt("refcount"));
@@ -203,9 +203,9 @@ public class TankBlob implements IMultiblock {
         return blob;
     }
 
-    public static CompoundNBT save(CompoundNBT tagCompound, TankBlob network) {
+    public static CompoundTag save(CompoundTag tagCompound, TankBlob network) {
         if (network.data != null) {
-            tagCompound.put("fluid", network.data.getFluidStack().writeToNBT(new CompoundNBT()));
+            tagCompound.put("fluid", network.data.getFluidStack().writeToNBT(new CompoundTag()));
         }
         tagCompound.putInt("refcount", network.tankBlocks);
         tagCompound.putInt("miny", network.minY);

@@ -1,26 +1,25 @@
 package mcjty.deepresonance.modules.core.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.setup.ClientSetup;
 import mcjty.lib.client.DelayedRenderer;
 import mcjty.lib.client.RenderHelper;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 
 import javax.annotation.Nonnull;
 
-public class ResonatingCrystalRenderer extends TileEntityRenderer<ResonatingCrystalTileEntity> {
+public class ResonatingCrystalRenderer implements BlockEntityRenderer<ResonatingCrystalTileEntity> {
 
-    public ResonatingCrystalRenderer(TileEntityRendererDispatcher dispatcher) {
-        super(dispatcher);
+    public ResonatingCrystalRenderer(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
-    public void render(ResonatingCrystalTileEntity tileEntity, float partialTicks, @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
+    public void render(ResonatingCrystalTileEntity tileEntity, float partialTicks, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
         if (tileEntity.isGlowing()) {
             DelayedRenderer.addRender(tileEntity.getBlockPos(), (stack, buf) -> {
                     RenderHelper.renderBillboardQuadBright(stack, buf, 0.6f, ClientSetup.REDHALO);
@@ -29,6 +28,6 @@ public class ResonatingCrystalRenderer extends TileEntityRenderer<ResonatingCrys
     }
 
     public static void register() {
-        ClientRegistry.bindTileEntityRenderer(CoreModule.TYPE_RESONATING_CRYSTAL.get(), ResonatingCrystalRenderer::new);
+        BlockEntityRenderers.register(CoreModule.TYPE_RESONATING_CRYSTAL.get(), ResonatingCrystalRenderer::new);
     }
 }

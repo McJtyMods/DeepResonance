@@ -7,22 +7,24 @@ import mcjty.deepresonance.modules.radiation.network.PacketGetRadiationLevel;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.setup.DeepResonanceMessages;
 import mcjty.lib.varia.SafeClientTools;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemModelsProperties;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
+
+import net.minecraft.world.item.Item.Properties;
 
 public class RadiationMonitorItem extends Item {
 
@@ -36,7 +38,7 @@ public class RadiationMonitorItem extends Item {
     }
 
     public static void initOverrides(RadiationMonitorItem item) {
-        ItemModelsProperties.register(item, RADIATION_PROPERTY, (stack, world, livingEntity) -> {
+        ItemProperties.register(item, RADIATION_PROPERTY, (stack, world, livingEntity, seed) -> {
             fetchRadiation(livingEntity);
             int level = (int) ((10 * radiationStrength) / RadiationConfiguration.MAX_RADIATION_METER.get());
             if (level < 0) {
@@ -48,8 +50,8 @@ public class RadiationMonitorItem extends Item {
         });
     }
 
-    public static float calculateRadiationStrength(World world, GlobalPos player) {
-        RegistryKey<World> id = player.dimension();
+    public static float calculateRadiationStrength(Level world, GlobalPos player) {
+        ResourceKey<Level> id = player.dimension();
         DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
         float maxStrength = -1.0f;
         for (Map.Entry<GlobalPos, DRRadiationManager.RadiationSource> source : radiationManager.getRadiationSources().entrySet()) {
@@ -81,7 +83,7 @@ public class RadiationMonitorItem extends Item {
             return;
         }
         if (System.currentTimeMillis() - lastTime > 250) {
-            RegistryKey<World> id = player.level.dimension();
+            ResourceKey<Level> id = player.level.dimension();
             lastTime = System.currentTimeMillis();
             GlobalPos c = GlobalPos.of(id, player.blockPosition());
             DeepResonanceMessages.INSTANCE.sendToServer(new PacketGetRadiationLevel(c));
@@ -90,12 +92,12 @@ public class RadiationMonitorItem extends Item {
 
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> list, ITooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> list, TooltipFlag flag) {
         fetchRadiation(SafeClientTools.getClientPlayer());
         if (radiationStrength <= 0.0f) {
-            list.add(new StringTextComponent("No radiation detected").withStyle(TextFormatting.GREEN));
+            list.add(new TextComponent("No radiation detected").withStyle(ChatFormatting.GREEN));
         } else {
-            list.add(new StringTextComponent("Radiation: " + new Float(radiationStrength).intValue() + "!").withStyle(TextFormatting.RED));
+            list.add(new TextComponent("Radiation: " + (int)radiationStrength + "!").withStyle(ChatFormatting.RED));
         }
     }
 

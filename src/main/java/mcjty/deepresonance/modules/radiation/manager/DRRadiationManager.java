@@ -5,14 +5,14 @@ import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.modules.radiation.util.RadiationShieldRegistry;
 import mcjty.lib.varia.LevelTools;
 import mcjty.lib.worlddata.AbstractWorldData;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -23,11 +23,20 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
 
     private final Map<GlobalPos, RadiationSource> sources = Maps.newHashMap();
 
-    public DRRadiationManager(String name) {
-        super(name);
+    public DRRadiationManager() {
     }
 
-
+    public DRRadiationManager(CompoundTag tag) {
+        ListTag lst = tag.getList("radiation", Tag.TAG_COMPOUND);
+        for (int i = 0; i < lst.size(); i++) {
+            CompoundTag tc = lst.getCompound(i);
+            ResourceKey<Level> type = LevelTools.getId(tc.getString("dim"));
+            GlobalPos coordinate = GlobalPos.of(type, new BlockPos(tc.getInt("sourceX"), tc.getInt("sourceY"), tc.getInt("sourceZ")));
+            RadiationSource value = new RadiationSource();
+            value.readFromNBT(tc);
+            sources.put(coordinate, value);
+        }
+    }
 
     public void clear() {
         sources.clear();
@@ -54,8 +63,8 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
         sources.clear();
     }
 
-    public static DRRadiationManager getManager(World world) {
-        return getData(world, () -> new DRRadiationManager(RADIATION_MANAGER_NAME), RADIATION_MANAGER_NAME);
+    public static DRRadiationManager getManager(Level world) {
+        return getData(world, DRRadiationManager::new, DRRadiationManager::new, RADIATION_MANAGER_NAME);
     }
 
     public RadiationSource getOrCreateRadiationSource(GlobalPos coordinate) {
@@ -79,26 +88,12 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
         sources.remove(coordinate);
     }
 
-    @Override
-    public void load(CompoundNBT tagCompound) {
-        sources.clear();
-        ListNBT lst = tagCompound.getList("radiation", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < lst.size(); i++) {
-            CompoundNBT tc = lst.getCompound(i);
-            RegistryKey<World> type = LevelTools.getId(tc.getString("dim"));
-            GlobalPos coordinate = GlobalPos.of(type, new BlockPos(tc.getInt("sourceX"), tc.getInt("sourceY"), tc.getInt("sourceZ")));
-            RadiationSource value = new RadiationSource();
-            value.readFromNBT(tc);
-            sources.put(coordinate, value);
-        }
-    }
-
     @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
-        ListNBT lst = new ListNBT();
+    public CompoundTag save(@Nonnull CompoundTag tagCompound) {
+        ListTag lst = new ListTag();
         for (Map.Entry<GlobalPos, RadiationSource> entry : sources.entrySet()) {
-            CompoundNBT tc = new CompoundNBT();
+            CompoundTag tc = new CompoundTag();
             tc.putString("dim", entry.getKey().dimension().location().toString());
             tc.putInt("sourceX", entry.getKey().pos().getX());
             tc.putInt("sourceY", entry.getKey().pos().getY());
@@ -141,10 +136,10 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
             this.strength = strength;
         }
 
-        public QuadTree getRadiationTree(World world, int centerX, int centerY, int centerZ) {
+        public QuadTree getRadiationTree(Level world, int centerX, int centerY, int centerZ) {
             if (radiationTree == null) {
                 radiationTree = new QuadTree((int) (centerX-radius - 1), (int) (centerY-radius - 1), (int) (centerZ-radius-1), (int) (centerX+radius + 1), (int) (centerY+radius + 1), (int) (centerZ+radius + 1));
-                BlockPos.Mutable pos = new BlockPos.Mutable();
+                BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
                 for (int x = (int) (centerX-radius); x < centerX+radius ; x++) {
                     for (int y = (int) (centerY-radius); y < centerY+radius ; y++) {
                         for (int z = (int) (centerZ-radius); z < centerZ+radius ; z++) {
@@ -176,13 +171,13 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
             strength += toadd;
         }
 
-        public void writeToNBT(CompoundNBT tagCompound) {
+        public void writeToNBT(CompoundTag tagCompound) {
             tagCompound.putFloat("radius", radius);
             tagCompound.putFloat("maxStrength", maxStrength);
             tagCompound.putFloat("strength", strength);
         }
 
-        public void readFromNBT(CompoundNBT tagCompound) {
+        public void readFromNBT(CompoundTag tagCompound) {
             this.radius = tagCompound.getFloat("radius");
             this.maxStrength = tagCompound.getFloat("maxStrength");
             this.strength = tagCompound.getFloat("strength");

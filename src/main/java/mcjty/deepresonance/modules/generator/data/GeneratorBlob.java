@@ -1,7 +1,7 @@
 package mcjty.deepresonance.modules.generator.data;
 
 import mcjty.lib.multiblock.IMultiblock;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 public class GeneratorBlob implements IMultiblock {
     private int generatorBlocks = 0;
@@ -104,7 +104,7 @@ public class GeneratorBlob implements IMultiblock {
         return this;
     }
 
-    public static GeneratorBlob load(CompoundNBT tagCompound) {
+    public static GeneratorBlob load(CompoundTag tagCompound) {
         return new GeneratorBlob()
                 .setGeneratorBlocks(tagCompound.getInt("refcount"))
                 .setCollectorBlocks(tagCompound.getInt("collectors"))
@@ -114,7 +114,7 @@ public class GeneratorBlob implements IMultiblock {
                 .setShutdownCounter(tagCompound.getInt("shutdown"));
     }
 
-    public static CompoundNBT save(CompoundNBT tagCompound, GeneratorBlob network) {
+    public static CompoundTag save(CompoundTag tagCompound, GeneratorBlob network) {
         tagCompound.putInt("refcount", network.generatorBlocks);
         tagCompound.putInt("collectors", network.collectorBlocks);
         tagCompound.putInt("energy", network.energy);

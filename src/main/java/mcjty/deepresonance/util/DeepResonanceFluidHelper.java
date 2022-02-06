@@ -1,7 +1,7 @@
 package mcjty.deepresonance.util;
 
 import mcjty.deepresonance.modules.core.CoreModule;
-import net.minecraft.fluid.Fluid;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 public class DeepResonanceFluidHelper {

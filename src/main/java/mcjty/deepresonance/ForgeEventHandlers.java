@@ -4,9 +4,9 @@ import mcjty.deepresonance.modules.radiation.manager.DRRadiationManager;
 import mcjty.deepresonance.modules.radiation.manager.QuadTree;
 import mcjty.deepresonance.modules.radiation.util.RadiationShieldRegistry;
 import mcjty.lib.varia.Logging;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -21,7 +21,7 @@ public class ForgeEventHandlers {
             return;
         }
 
-        World world = event.getPlayer().level;
+        Level world = event.getPlayer().level;
         DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
         Map<GlobalPos, DRRadiationManager.RadiationSource> radiationSources = radiationManager.getRadiationSources();
         if (radiationSources.isEmpty()) {
@@ -52,7 +52,7 @@ public class ForgeEventHandlers {
             return;
         }
 
-        World world = event.getEntity().level;
+        Level world = event.getEntity().level;
         if (world.isClientSide()) {
             // Can normally not happen but in rare situations the PlaceEvent can get called client-side
             return;

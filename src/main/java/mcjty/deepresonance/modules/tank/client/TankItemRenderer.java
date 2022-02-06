@@ -1,17 +1,21 @@
 package mcjty.deepresonance.modules.tank.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
-import net.minecraft.item.ItemStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.world.item.ItemStack;
 
-import java.util.concurrent.Callable;
+public class TankItemRenderer extends BlockEntityWithoutLevelRenderer {
 
-public class TankItemRenderer extends ItemStackTileEntityRenderer {
+    public TankItemRenderer(BlockEntityRenderDispatcher pBlockEntityRenderDispatcher, EntityModelSet pEntityModelSet) {
+        super(pBlockEntityRenderDispatcher, pEntityModelSet);
+    }
 
     @Override
-    public void renderByItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack matrixStack, IRenderTypeBuffer buffer, int lightIn, int overlayIn) {
+    public void renderByItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack matrixStack, MultiBufferSource buffer, int lightIn, int overlayIn) {
         super.renderByItem(stack, transformType, matrixStack, buffer, lightIn, overlayIn);
 //        matrixStack.pushPose();
 //        CompoundNBT compoundnbt = stack.getTagElement("BlockEntityTag");
@@ -27,8 +31,8 @@ public class TankItemRenderer extends ItemStackTileEntityRenderer {
 //        matrixStack.popPose();
     }
 
-    public static Callable<ItemStackTileEntityRenderer> getRenderer() {
-        return TankItemRenderer::new;
-    }
+//    public static Callable<BlockEntityWithoutLevelRenderer> getRenderer() {
+//        return TankItemRenderer::new;
+//    }
 
 }

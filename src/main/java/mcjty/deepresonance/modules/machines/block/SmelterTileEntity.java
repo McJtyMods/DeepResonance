@@ -18,16 +18,16 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.TickingTileEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -63,7 +63,7 @@ public class SmelterTileEntity extends TickingTileEntity {
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SmelterConfig.POWER_MAXIMUM.get(), SmelterConfig.POWER_PER_TICK_IN.get());
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Smelter")
+    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Smelter")
             .containerSupplier(container(MachinesModule.SMELTER_CONTAINER, CONTAINER_FACTORY, this))
             .energyHandler(() -> energyStorage)
             .itemHandler(() -> items)
@@ -72,8 +72,8 @@ public class SmelterTileEntity extends TickingTileEntity {
     private float finalQuality = 1.0f;  // Calculated quality based on the amount of lava in the lava tank
     private float finalPurity = 0.1f;   // Calculated quality based on the amount of lava in the lava tank
 
-    public SmelterTileEntity() {
-        super(MachinesModule.TYPE_SMELTER.get());
+    public SmelterTileEntity(BlockPos pos, BlockState state) {
+        super(MachinesModule.TYPE_SMELTER.get(), pos, state);
     }
 
     public static BaseBlock createBlock() {
@@ -89,7 +89,7 @@ public class SmelterTileEntity extends TickingTileEntity {
             }
 
             @Override
-            protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
+            protected void createBlockStateDefinition(@Nonnull StateDefinition.Builder<Block, BlockState> builder) {
                 super.createBlockStateDefinition(builder);
                 builder.add(BlockStateProperties.POWERED);
             }
@@ -120,7 +120,7 @@ public class SmelterTileEntity extends TickingTileEntity {
             }
             if (newworking != oldworking) {
                 state = state.setValue(BlockStateProperties.POWERED, newworking);
-                level.setBlock(getBlockPos(), state, Constants.BlockFlags.DEFAULT_AND_RERENDER);
+                level.setBlock(getBlockPos(), state, Block.UPDATE_ALL_IMMEDIATE);
             }
         }
     }
@@ -185,7 +185,7 @@ public class SmelterTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         tagCompound.putInt("processTime", processTime);
         tagCompound.putInt("processTimeLeft", processTimeLeft);
         tagCompound.putFloat("finalQuality", finalQuality);
@@ -195,7 +195,7 @@ public class SmelterTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
 
         processTime = (short) tagCompound.getInt("processTime");

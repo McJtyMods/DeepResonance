@@ -6,18 +6,18 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.util.CrystalHelper;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import java.util.Random;
 
 public class ModCommands {
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
-        LiteralCommandNode<CommandSource> commands = dispatcher.register(
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        LiteralCommandNode<CommandSourceStack> commands = dispatcher.register(
                 Commands.literal(DeepResonance.MODID)
                         .then(registerCreateCrystal(dispatcher))
 //                        .then(registerReset(dispatcher))
@@ -29,14 +29,14 @@ public class ModCommands {
         dispatcher.register(Commands.literal("dr").redirect(commands));
     }
 
-    public static ArgumentBuilder<CommandSource, ?> registerCreateCrystal(CommandDispatcher<CommandSource> dispatcher) {
+    public static ArgumentBuilder<CommandSourceStack, ?> registerCreateCrystal(CommandDispatcher<CommandSourceStack> dispatcher) {
         return Commands.literal("create")
                 .requires(cs -> cs.hasPermission(2))
                 .then(Commands.argument("special", IntegerArgumentType.integer())
                         .executes(context -> {
                             int special = context.getArgument("special", Integer.class);
-                            ServerPlayerEntity player = context.getSource().getPlayerOrException();
-                            World world = player.getLevel();
+                            ServerPlayer player = context.getSource().getPlayerOrException();
+                            Level world = player.getLevel();
                             int x = (int) (player.getX() - .5);
                             int y = (int) player.getY();
                             int z = (int) (player.getZ() - .5);

@@ -11,15 +11,14 @@ import mcjty.deepresonance.modules.core.util.CrystalConfig;
 import mcjty.deepresonance.modules.core.util.ResonatingPlateBlockConfig;
 import mcjty.deepresonance.setup.Registration;
 import mcjty.lib.modules.IModule;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.common.ToolType;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.registries.RegistryObject;
 
 import static mcjty.deepresonance.setup.Registration.TILES;
 
@@ -27,7 +26,10 @@ public class CoreModule implements IModule {
 
     public static final String TILE_DATA_TAG = "BlockEntityTag";
 
-    private static final Block.Properties ORE_PROPERTIES = Block.Properties.of(Material.STONE).strength(3, 5).harvestLevel(3).harvestTool(ToolType.PICKAXE);
+    private static final Block.Properties ORE_PROPERTIES = Block.Properties.of(Material.STONE)
+            .strength(3, 5);
+//            .harvestLevel(3)  // @todo 1.18 harvestlevel 3
+//            .harvestTool(ToolType.PICKAXE);
 
     public static final RegistryObject<Fluid> LIQUID_CRYSTAL = Registration.FLUIDS.register("liquid_crystal", FluidLiquidCrystal::new);
 
@@ -39,7 +41,7 @@ public class CoreModule implements IModule {
     public static final RegistryObject<Item> RESONATING_CRYSTAL_NATURAL_EMPTY_ITEM = Registration.fromBlock(RESONATING_CRYSTAL_NATURAL_EMPTY);
     public static final RegistryObject<Item> RESONATING_CRYSTAL_GENERATED_ITEM = Registration.fromBlock(RESONATING_CRYSTAL_GENERATED);
     public static final RegistryObject<Item> RESONATING_CRYSTAL_GENERATED_EMPTY_ITEM = Registration.fromBlock(RESONATING_CRYSTAL_GENERATED_EMPTY);
-    public static final RegistryObject<TileEntityType<ResonatingCrystalTileEntity>> TYPE_RESONATING_CRYSTAL = TILES.register("resonating_crystal", () -> TileEntityType.Builder.of(ResonatingCrystalTileEntity::new,
+    public static final RegistryObject<BlockEntityType<ResonatingCrystalTileEntity>> TYPE_RESONATING_CRYSTAL = TILES.register("resonating_crystal", () -> BlockEntityType.Builder.of(ResonatingCrystalTileEntity::new,
             RESONATING_CRYSTAL_GENERATED.get(), RESONATING_CRYSTAL_GENERATED_EMPTY.get(),
             RESONATING_CRYSTAL_NATURAL.get(), RESONATING_CRYSTAL_NATURAL_EMPTY.get())
             .build(null));
@@ -47,7 +49,8 @@ public class CoreModule implements IModule {
     public static final RegistryObject<Block> RESONATING_ORE_STONE_BLOCK = Registration.BLOCKS.register("resonating_ore_stone", () -> new Block(ORE_PROPERTIES));
     public static final RegistryObject<Block> RESONATING_ORE_NETHER_BLOCK = Registration.BLOCKS.register("resonating_ore_nether", () -> new Block(ORE_PROPERTIES));
     public static final RegistryObject<Block> RESONATING_ORE_END_BLOCK = Registration.BLOCKS.register("resonating_ore_end", () -> new Block(ORE_PROPERTIES));
-    public static final RegistryObject<Block> RESONATING_PLATE_BLOCK_BLOCK = Registration.BLOCKS.register("resonating_plate_block", () -> new BlockResonatingPlate(Block.Properties.of(Material.STONE).strength(3, 5).harvestLevel(2).harvestTool(ToolType.PICKAXE)));
+    public static final RegistryObject<Block> RESONATING_PLATE_BLOCK_BLOCK = Registration.BLOCKS.register("resonating_plate_block", () -> new BlockResonatingPlate(Block.Properties.of(Material.STONE)
+            .strength(3, 5)));
 
     public static final RegistryObject<Item> RESONATING_PLATE_ITEM = Registration.ITEMS.register("resonating_plate", () -> new Item(Registration.createStandardProperties()));
     public static final RegistryObject<Item> FILTER_MATERIAL_ITEM = Registration.ITEMS.register("filter_material", () -> new Item(Registration.createStandardProperties()));    // @todo 1.16 ItemWithTooltip?

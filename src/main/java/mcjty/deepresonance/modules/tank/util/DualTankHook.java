@@ -1,10 +1,10 @@
 package mcjty.deepresonance.modules.tank.util;
 
-import net.minecraft.fluid.Fluid;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -13,7 +13,7 @@ import java.lang.ref.WeakReference;
 
 public class DualTankHook {
 
-    public DualTankHook(TileEntity tile, Direction dir1, Direction dir2) {
+    public DualTankHook(BlockEntity tile, Direction dir1, Direction dir2) {
         this.tile = new WeakReference<>(tile);
         this.dir1 = dir1;
         this.dir2 = dir2;
@@ -21,7 +21,7 @@ public class DualTankHook {
         this.timeout = this.timeCounter = 0;
     }
 
-    private final WeakReference<TileEntity> tile;
+    private final WeakReference<BlockEntity> tile;
     private final Direction dir1;
     private final Direction dir2;
     private boolean allowDuplicates;
@@ -75,11 +75,11 @@ public class DualTankHook {
     }
 
     public boolean checkTanks() {
-        TileEntity tile_ = this.tile.get();
+        BlockEntity tile_ = this.tile.get();
         if (tile_ == null) {
             throw new IllegalStateException();
         }
-        World world = tile_.getLevel();
+        Level world = tile_.getLevel();
         BlockPos pos = tile_.getBlockPos();
         boolean check = false;
         if (!tank1Present()) {
@@ -88,7 +88,7 @@ public class DualTankHook {
                 return false;
             }
             check = true;
-            TileEntity tile = world.getBlockEntity(pos.relative(dir1));
+            BlockEntity tile = world.getBlockEntity(pos.relative(dir1));
             if (tile != null) {
                 LazyOptional<IFluidHandler> f = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN);
                 if (f.isPresent()) {
@@ -111,7 +111,7 @@ public class DualTankHook {
                 return false;
             }
             check = true;
-            TileEntity tile = world.getBlockEntity(pos.relative(dir2));
+            BlockEntity tile = world.getBlockEntity(pos.relative(dir2));
             if (tile != null) {
                 LazyOptional<IFluidHandler> f = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP);
                 if (f.isPresent()) {

@@ -19,10 +19,12 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.OrientationTools;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -50,7 +52,7 @@ public class PurifierTileEntity extends TickingTileEntity {
             .build();
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Purifier")
+    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Purifier")
             .containerSupplier(container(MachinesModule.PURIFIER_CONTAINER, CONTAINER_FACTORY,this))
             .itemHandler(() -> items)
             .setupSync(this));
@@ -61,8 +63,8 @@ public class PurifierTileEntity extends TickingTileEntity {
     private int timeToGo = 0;
     private ILiquidCrystalData processing = null;
 
-    public PurifierTileEntity() {
-        super(MachinesModule.TYPE_PURIFIER.get());
+    public PurifierTileEntity(BlockPos pos, BlockState state) {
+        super(MachinesModule.TYPE_PURIFIER.get(), pos, state);
     }
 
     public static BaseBlock createBlock() {
@@ -163,10 +165,10 @@ public class PurifierTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         tagCompound.putInt("timeToGo", timeToGo);
         if (processing != null) {
-            CompoundNBT tag = new CompoundNBT();
+            CompoundTag tag = new CompoundTag();
             processing.getFluidStack().writeToNBT(tag);
             tagCompound.put("processing", tag);
         }
@@ -175,7 +177,7 @@ public class PurifierTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         timeToGo = tagCompound.getInt("timeToGo");
         if (tagCompound.contains("processing")) {
             processing = DeepResonanceFluidHelper.readCrystalDataFromStack(FluidStack.loadFluidStackFromNBT(tagCompound.getCompound("processing")));

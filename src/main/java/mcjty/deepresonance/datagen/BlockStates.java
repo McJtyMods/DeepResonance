@@ -9,14 +9,16 @@ import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.tank.client.TankTESR;
 import mcjty.lib.datagen.BaseBlockStateProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
+
+import net.minecraftforge.client.model.generators.ModelBuilder.ElementBuilder;
 
 public class BlockStates extends BaseBlockStateProvider {
 

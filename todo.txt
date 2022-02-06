@@ -1,1 +1,3 @@
 - Implement tank item renderer fully
+
+- Tags for mining

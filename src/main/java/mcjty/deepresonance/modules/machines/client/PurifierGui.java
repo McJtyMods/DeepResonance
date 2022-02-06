@@ -9,8 +9,8 @@ import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.Panel;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.resources.ResourceLocation;
 
 import java.awt.*;
 
@@ -21,7 +21,7 @@ public class PurifierGui extends GenericGuiContainer<PurifierTileEntity, Generic
 
     private static final ResourceLocation GUI = new ResourceLocation(DeepResonance.MODID, "textures/gui/purifier.png");
 
-    public PurifierGui(PurifierTileEntity tileEntity, GenericContainer container, PlayerInventory inventory) {
+    public PurifierGui(PurifierTileEntity tileEntity, GenericContainer container, Inventory inventory) {
         super(tileEntity, container, inventory, ManualEntry.EMPTY); // @todo 1.16 manual
 
         imageWidth = PURIFIER_WIDTH;

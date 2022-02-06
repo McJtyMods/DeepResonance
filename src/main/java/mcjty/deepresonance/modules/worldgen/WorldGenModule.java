@@ -7,7 +7,7 @@ import mcjty.deepresonance.modules.worldgen.world.ResonantCrystalFeatureConfig;
 import mcjty.lib.modules.IModule;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 

@@ -2,8 +2,8 @@ package mcjty.deepresonance.modules.generator.data;
 
 import mcjty.lib.multiblock.IMultiblockFixer;
 import mcjty.lib.multiblock.MultiblockDriver;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -12,17 +12,17 @@ import java.util.Set;
 public class GeneratorFixer implements IMultiblockFixer<GeneratorBlob> {
 
     @Override
-    public void initialize(MultiblockDriver<GeneratorBlob> driver, World level, GeneratorBlob newMb, int id) {
+    public void initialize(MultiblockDriver<GeneratorBlob> driver, Level level, GeneratorBlob newMb, int id) {
     }
 
     @Override
-    public void merge(MultiblockDriver<GeneratorBlob> driver, World level, GeneratorBlob mbMain, GeneratorBlob mbOther) {
+    public void merge(MultiblockDriver<GeneratorBlob> driver, Level level, GeneratorBlob mbMain, GeneratorBlob mbOther) {
         mbMain.merge(mbOther);
         mbMain.setCollectorBlocks(-1);
     }
 
     @Override
-    public void distribute(MultiblockDriver<GeneratorBlob> driver, World level, GeneratorBlob original, List<Pair<Integer, Set<BlockPos>>> todo) {
+    public void distribute(MultiblockDriver<GeneratorBlob> driver, Level level, GeneratorBlob original, List<Pair<Integer, Set<BlockPos>>> todo) {
         int totalEnergy = original.getEnergy();
         int totalBlocks = 0;
         for (Pair<Integer, Set<BlockPos>> pair : todo) {

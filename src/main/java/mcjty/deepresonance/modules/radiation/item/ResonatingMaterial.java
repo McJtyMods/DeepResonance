@@ -1,15 +1,15 @@
 package mcjty.deepresonance.modules.radiation.item;
 
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.LazyValue;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.util.LazyLoadedValue;
+import net.minecraft.sounds.SoundEvent;
 
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
-public class ResonatingMaterial implements IArmorMaterial {
+public class ResonatingMaterial implements ArmorMaterial {
 
     private static final int[] HEALTH_PER_SLOT = new int[]{13, 15, 16, 11};
     private final String name;
@@ -19,7 +19,7 @@ public class ResonatingMaterial implements IArmorMaterial {
     private final SoundEvent sound;
     private final float toughness;
     private final float knockbackResistance;
-    private final LazyValue<Ingredient> repairIngredient;
+    private final LazyLoadedValue<Ingredient> repairIngredient;
 
     public ResonatingMaterial(String name, int durabilityMultiplier, int[] slotProtections, int enchantmentValue, SoundEvent sound, float toughness, float knockbackResistance, Supplier<Ingredient> repairIngredient) {
         this.name = name;
@@ -29,16 +29,16 @@ public class ResonatingMaterial implements IArmorMaterial {
         this.sound = sound;
         this.toughness = toughness;
         this.knockbackResistance = knockbackResistance;
-        this.repairIngredient = new LazyValue<>(repairIngredient);
+        this.repairIngredient = new LazyLoadedValue<>(repairIngredient);
     }
 
     @Override
-    public int getDurabilityForSlot(EquipmentSlotType type) {
+    public int getDurabilityForSlot(EquipmentSlot type) {
         return HEALTH_PER_SLOT[type.getIndex()] * this.durabilityMultiplier;
     }
 
     @Override
-    public int getDefenseForSlot(EquipmentSlotType type) {
+    public int getDefenseForSlot(EquipmentSlot type) {
         return this.slotProtections[type.getIndex()];
     }
 

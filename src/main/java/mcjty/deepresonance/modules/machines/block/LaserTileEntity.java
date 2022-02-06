@@ -23,19 +23,18 @@ import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.OrientationTools;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -93,14 +92,14 @@ public class LaserTileEntity extends TickingTileEntity {
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, LaserConfig.POWER_MAXIMUM.get(), LaserConfig.POWER_PER_TICK_IN.get());
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Laser")
+    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Laser")
             .containerSupplier(container(MachinesModule.LASER_CONTAINER, CONTAINER_FACTORY, this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage)
             .setupSync(this));
 
-    public LaserTileEntity() {
-        super(MachinesModule.TYPE_LASER.get());
+    public LaserTileEntity(BlockPos pos, BlockState state) {
+        super(MachinesModule.TYPE_LASER.get(), pos, state);
     }
 
     public static BaseBlock createBlock() {
@@ -115,7 +114,7 @@ public class LaserTileEntity extends TickingTileEntity {
             }
 
             @Override
-            protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
+            protected void createBlockStateDefinition(@Nonnull StateDefinition.Builder<Block, BlockState> builder) {
                 super.createBlockStateDefinition(builder);
                 builder.add(COLOR);
             }
@@ -233,7 +232,7 @@ public class LaserTileEntity extends TickingTileEntity {
         energyStorage.consumeEnergy(LaserConfig.RFUSE_PER_CATALYST.get());
         crystalLiquid -= LaserConfig.RCL_PER_CATALYST.get();
 
-        TileEntity te = level.getBlockEntity(tankCoordinate);
+        BlockEntity te = level.getBlockEntity(tankCoordinate);
         if (te instanceof TankTileEntity) {
             TankTileEntity tileTank = (TankTileEntity) te;
             if (validRCLTank(tileTank)) {
@@ -274,7 +273,7 @@ public class LaserTileEntity extends TickingTileEntity {
             } else if (color == 0) {
                 mcolor = 0;    // Off
             }
-            level.setBlock(worldPosition, level.getBlockState(worldPosition).setValue(COLOR, mcolor), Constants.BlockFlags.DEFAULT);
+            level.setBlock(worldPosition, level.getBlockState(worldPosition).setValue(COLOR, mcolor), Block.UPDATE_ALL);
             setChanged();
         }
     }
@@ -286,7 +285,7 @@ public class LaserTileEntity extends TickingTileEntity {
     private void checkCrystal() {
         ItemStack stack = items.getStackInSlot(SLOT_CRYSTAL);
         if (!stack.isEmpty()) {
-            CompoundNBT tagCompound = stack.getOrCreateTag().getCompound(CoreModule.TILE_DATA_TAG);
+            CompoundTag tagCompound = stack.getOrCreateTag().getCompound(CoreModule.TILE_DATA_TAG);
             float strength = tagCompound.contains("strength") ? tagCompound.getFloat("strength") / 100.0f : 0;
             int toAdd = (int) (LaserConfig.MIN_CRYSTAL_LIQUID_PER_CRYSTAL.get() + strength * (LaserConfig.MAX_CRYSTAL_LIQUID_PER_CRYSTAL.get() - LaserConfig.MIN_CRYSTAL_LIQUID_PER_CRYSTAL.get()));
             float amt = crystalLiquid + toAdd;
@@ -300,27 +299,27 @@ public class LaserTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         tagCompound.putInt("progress", progressCounter);
         super.saveAdditional(tagCompound);
     }
 
     @Override
-    protected void saveInfo(CompoundNBT tagCompound) {
+    protected void saveInfo(CompoundTag tagCompound) {
         super.saveInfo(tagCompound);
         getOrCreateInfo(tagCompound).putFloat("liquid", crystalLiquid);
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         progressCounter = tagCompound.getInt("progress");
         super.load(tagCompound);
     }
 
     @Override
-    protected void loadInfo(CompoundNBT tagCompound) {
+    protected void loadInfo(CompoundTag tagCompound) {
         super.loadInfo(tagCompound);
-        CompoundNBT info = tagCompound.getCompound("Info");
+        CompoundTag info = tagCompound.getCompound("Info");
         crystalLiquid = info.getFloat("liquid");
     }
 
@@ -333,8 +332,8 @@ public class LaserTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(getBlockPos().getX() - 10, getBlockPos().getY() - 10, getBlockPos().getZ() - 10, getBlockPos().getX() + 10, getBlockPos().getY() + 10, getBlockPos().getZ() + 10);
+    public AABB getRenderBoundingBox() {
+        return new AABB(getBlockPos().getX() - 10, getBlockPos().getY() - 10, getBlockPos().getZ() - 10, getBlockPos().getX() + 10, getBlockPos().getY() + 10, getBlockPos().getZ() + 10);
     }
 
     // Client side

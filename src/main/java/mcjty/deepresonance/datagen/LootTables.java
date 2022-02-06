@@ -27,20 +27,20 @@ public class LootTables extends BaseLootTableProvider {
 
 //        addSimpleTable(PulserModule.PULSER_BLOCK.get());
         addSimpleTable(MachinesModule.LENS_BLOCK.get());
-        addSimpleTable(MachinesModule.CRYSTALLIZER_BLOCK.get());
         addSimpleTable(GeneratorModule.ENERGY_COLLECTOR_BLOCK.get());
         addSimpleTable(GeneratorModule.GENERATOR_CONTROLLER_BLOCK.get());
 
-        addStandardTable(MachinesModule.SMELTER_BLOCK.get());
-        addStandardTable(MachinesModule.PURIFIER_BLOCK.get());
-        addStandardTable(GeneratorModule.GENERATOR_PART_BLOCK.get());
-        addStandardTable(MachinesModule.VALVE_BLOCK.get());
-        addStandardTable(MachinesModule.LASER_BLOCK.get());
-        addStandardTable(CoreModule.RESONATING_CRYSTAL_GENERATED.get());
-        addStandardTable(CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY.get());
-        addStandardTable(CoreModule.RESONATING_CRYSTAL_NATURAL.get());
-        addStandardTable(CoreModule.RESONATING_CRYSTAL_NATURAL_EMPTY.get());
-        addStandardTable(TankModule.TANK_BLOCK.get());
+        addStandardTable(MachinesModule.CRYSTALLIZER_BLOCK.get(), MachinesModule.TYPE_CRYSTALIZER.get());
+        addStandardTable(MachinesModule.SMELTER_BLOCK.get(), MachinesModule.TYPE_SMELTER.get());
+        addStandardTable(MachinesModule.PURIFIER_BLOCK.get(), MachinesModule.TYPE_PURIFIER.get());
+        addStandardTable(GeneratorModule.GENERATOR_PART_BLOCK.get(), GeneratorModule.TYPE_GENERATOR_PART.get());
+        addStandardTable(MachinesModule.VALVE_BLOCK.get(), MachinesModule.TYPE_VALVE.get());
+        addStandardTable(MachinesModule.LASER_BLOCK.get(), MachinesModule.TYPE_LASER.get());
+        addStandardTable(CoreModule.RESONATING_CRYSTAL_GENERATED.get(), CoreModule.TYPE_RESONATING_CRYSTAL.get());
+        addStandardTable(CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY.get(), CoreModule.TYPE_RESONATING_CRYSTAL.get());
+        addStandardTable(CoreModule.RESONATING_CRYSTAL_NATURAL.get(), CoreModule.TYPE_RESONATING_CRYSTAL.get());
+        addStandardTable(CoreModule.RESONATING_CRYSTAL_NATURAL_EMPTY.get(), CoreModule.TYPE_RESONATING_CRYSTAL.get());
+        addStandardTable(TankModule.TANK_BLOCK.get(), TankModule.TYPE_TANK.get());
     }
 
 }

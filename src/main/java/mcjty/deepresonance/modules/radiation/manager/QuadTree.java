@@ -1,8 +1,8 @@
 package mcjty.deepresonance.modules.radiation.manager;
 
 import mcjty.deepresonance.modules.radiation.util.SimpleAABB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Created by McJty
@@ -105,17 +105,17 @@ public class QuadTree {
 
 
     public double factor(int x1, int y1, int z1, int x2, int y2, int z2) {
-        Vector3d p1 = new Vector3d(x1 + .5, y1 + .5, z1 + .5);
-        Vector3d p2 = new Vector3d(x2 + .5, y2 + .5, z2 + .5);
+        Vec3 p1 = new Vec3(x1 + .5, y1 + .5, z1 + .5);
+        Vec3 p2 = new Vec3(x2 + .5, y2 + .5, z2 + .5);
         return factor(new Ray(p1, p2));
     }
 
     // Calculate radiation for a 2-high character
     public double factor2(int x1, int y1, int z1, int x2, int y2, int z2) {
-        Vector3d p1 = new Vector3d(x1 + .5, y1 + .5, z1 + .5);
-        Vector3d p2 = new Vector3d(x2 + .5, y2 + .5, z2 + .5);
+        Vec3 p1 = new Vec3(x1 + .5, y1 + .5, z1 + .5);
+        Vec3 p2 = new Vec3(x2 + .5, y2 + .5, z2 + .5);
         double f1 = factor(new Ray(p1, p2));
-        Vector3d p3 = new Vector3d(x2 + .5, y2 + 1.1, z2 + .5);
+        Vec3 p3 = new Vec3(x2 + .5, y2 + 1.1, z2 + .5);
         double f2 = factor(new Ray(p1, p3));
         return Math.max(f1, f2);
     }
@@ -136,7 +136,7 @@ public class QuadTree {
     }
 
     private static boolean testIntersect(SimpleAABB box, Ray ray) {
-        Vector3d invDir = ray.getInvDir();
+        Vec3 invDir = ray.getInvDir();
 
         boolean signDirX = invDir.x < 0;
         boolean signDirY = invDir.y < 0;
@@ -199,28 +199,28 @@ public class QuadTree {
 
     private static class Ray {
 
-        private final Vector3d start;
-        private final Vector3d dir;
-        private final Vector3d invDir;
+        private final Vec3 start;
+        private final Vec3 dir;
+        private final Vec3 invDir;
         private final double length;
 
-        public Ray(Vector3d start, Vector3d end) {
+        public Ray(Vec3 start, Vec3 end) {
             this.start = start;
-            Vector3d dir = end.subtract(start);
+            Vec3 dir = end.subtract(start);
             length = dir.length();
             this.dir = dir.normalize();
-            this.invDir = new Vector3d(1.0 / this.dir.x, 1.0 / this.dir.y, 1.0 / this.dir.z);
+            this.invDir = new Vec3(1.0 / this.dir.x, 1.0 / this.dir.y, 1.0 / this.dir.z);
         }
 
-        public Vector3d getDir() {
+        public Vec3 getDir() {
             return dir;
         }
 
-        public Vector3d getInvDir() {
+        public Vec3 getInvDir() {
             return invDir;
         }
 
-        public Vector3d getStart() {
+        public Vec3 getStart() {
             return start;
         }
 

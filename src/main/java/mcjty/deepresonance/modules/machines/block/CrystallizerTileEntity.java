@@ -18,20 +18,17 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.TickingTileEntity;
-import mcjty.lib.varia.LevelTools;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-
-import javax.annotation.Nonnull;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.container.GenericItemHandler.no;
@@ -57,7 +54,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, CrystallizerConfig.POWER_MAXIMUM.get(), CrystallizerConfig.POWER_PER_TICK_IN.get());
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Crystalizer")
+    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Crystalizer")
             .containerSupplier(container(MachinesModule.CRYSTALIZER_CONTAINER, CONTAINER_FACTORY,this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage)
@@ -68,8 +65,8 @@ public class CrystallizerTileEntity extends TickingTileEntity {
     private LazyOptional<IFluidHandler> rclTank;
     private int tankCooldown = 0;
 
-    public CrystallizerTileEntity() {
-        super(MachinesModule.TYPE_CRYSTALIZER.get());
+    public CrystallizerTileEntity(BlockPos pos, BlockState state) {
+        super(MachinesModule.TYPE_CRYSTALIZER.get(), pos, state);
     }
 
     public static BaseBlock createBlock() {
@@ -106,7 +103,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
             }
         }
         if (crystalData != null && crystalData.getAmount() >= rclPerCrystal) {
-            ResonatingCrystalTileEntity crystal = new ResonatingCrystalTileEntity();
+            ResonatingCrystalTileEntity crystal = new ResonatingCrystalTileEntity(worldPosition, CoreModule.RESONATING_CRYSTAL_GENERATED.get().defaultBlockState());
             crystal.setEfficiency(crystalData.getEfficiency() * 100f);
             crystal.setPurity(crystalData.getPurity() * 100f);
             crystal.setStrength(crystalData.getStrength() * 100f);
@@ -117,10 +114,8 @@ public class CrystallizerTileEntity extends TickingTileEntity {
         }
         int newProgress = crystalData == null ? 0 : (int) ((crystalData.getAmount() / (float) getRclPerCrystal()) * 100);
         if (progress != newProgress) {
-            CompoundNBT packet = new CompoundNBT();
-            packet.putInt("progress", newProgress);
-            LevelTools.getAllPlayersWatchingBlock(level, worldPosition).forEach(player -> player.connection.send(new SUpdateTileEntityPacket(worldPosition, 3, packet)));
             progress = newProgress;
+            markDirtyClient();
         }
     }
 
@@ -160,7 +155,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
         rclTank = null;
         if (tankCooldown <= 0) {
             tankCooldown = 21;
-            TileEntity tile = level.getBlockEntity(worldPosition.below());
+            BlockEntity tile = level.getBlockEntity(worldPosition.below());
             if (tile != null) {
                 rclTank = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
                 return rclTank.isPresent();
@@ -174,32 +169,37 @@ public class CrystallizerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
-        if (packet.getType() == 3) {
-            progress = packet.getTag().getInt("progress");
-            return;
-        }
-        super.onDataPacket(net, packet);
-    }
-
-    @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    protected void saveInfo(CompoundTag tagCompound) {
+        super.saveInfo(tagCompound);
+        CompoundTag info = getOrCreateInfo(tagCompound);
         if (crystalData != null) {
-            CompoundNBT tag = new CompoundNBT();
+            CompoundTag tag = new CompoundTag();
             crystalData.getFluidStack().writeToNBT(tag);
-            tagCompound.put("crystalData", tag);
+            info.put("crystalData", tag);
         }
-        super.saveAdditional(tagCompound);
+        info.putInt("progress", progress);
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
-        if (tagCompound.contains("crystalData")) {
-            crystalData = DeepResonanceFluidHelper.readCrystalDataFromStack(FluidStack.loadFluidStackFromNBT(tagCompound.getCompound("crystalData")));
+    public void saveClientDataToNBT(CompoundTag tagCompound) {
+        tagCompound.putInt("progress", progress);
+    }
+
+    @Override
+    public void loadInfo(CompoundTag tagCompound) {
+        super.loadInfo(tagCompound);
+        CompoundTag info = tagCompound.getCompound("Info");
+        if (info.contains("crystalData")) {
+            crystalData = DeepResonanceFluidHelper.readCrystalDataFromStack(FluidStack.loadFluidStackFromNBT(info.getCompound("crystalData")));
         } else {
             crystalData = null;
         }
-        super.load(tagCompound);
+        progress = info.getInt("progress");
+    }
+
+    @Override
+    public void loadClientDataFromNBT(CompoundTag tagCompound) {
+        progress = tagCompound.getInt("progress");
     }
 
     private static int getRclPerCrystal() {
@@ -207,8 +207,8 @@ public class CrystallizerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(getBlockPos().getX() - 10, getBlockPos().getY() - 10, getBlockPos().getZ() - 10, getBlockPos().getX() + 10, getBlockPos().getY() + 10, getBlockPos().getZ() + 10);
+    public AABB getRenderBoundingBox() {
+        return new AABB(getBlockPos().getX() - 10, getBlockPos().getY() - 10, getBlockPos().getZ() - 10, getBlockPos().getX() + 10, getBlockPos().getY() + 10, getBlockPos().getZ() + 10);
     }
 
     // Client side

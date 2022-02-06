@@ -6,20 +6,22 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraftforge.fluids.FluidStack;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
+
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class TankBlock extends BaseBlock {
 
@@ -33,11 +35,11 @@ public class TankBlock extends BaseBlock {
     }
 
     private static String getLiquid(ItemStack itemStack) {
-        CompoundNBT tag = itemStack.getTag();
+        CompoundTag tag = itemStack.getTag();
         if (tag == null) {
             return "";
         }
-        CompoundNBT infoTag = tag.getCompound("BlockEntityTag").getCompound("Info");
+        CompoundTag infoTag = tag.getCompound("BlockEntityTag").getCompound("Info");
         if (infoTag.contains("preserved")) {
             FluidStack fluidStack = FluidStack.loadFluidStackFromNBT(infoTag.getCompound("preserved"));
             if (!fluidStack.isEmpty()) {
@@ -53,12 +55,13 @@ public class TankBlock extends BaseBlock {
         return RotationType.NONE;
     }
 
+
     @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
         ItemStack ret = new ItemStack(this);
-        TileEntity tile = world.getBlockEntity(pos);
+        BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TankTileEntity) {
-            ret.addTagElement(CoreModule.TILE_DATA_TAG, tile.save(new CompoundNBT()));
+            ret.addTagElement(CoreModule.TILE_DATA_TAG, tile.saveWithoutMetadata());
         }
         return ret;
     }

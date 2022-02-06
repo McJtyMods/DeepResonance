@@ -2,11 +2,11 @@ package mcjty.deepresonance.modules.machines.client;
 
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 
 public class ClientSetup {
     public static void initClient() {
-        RenderTypeLookup.setRenderLayer(MachinesModule.CRYSTALLIZER_BLOCK.get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(MachinesModule.CRYSTALLIZER_BLOCK.get(), RenderType.translucent());
 //        RenderTypeLookup.setRenderLayer(MachinesModule.LASER_BLOCK.get(), RenderType.cutout());
     }
 

@@ -4,9 +4,9 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.radiation.network.PacketGetRadiationLevel;
 import mcjty.deepresonance.modules.radiation.network.PacketReturnRadiation;
 import mcjty.lib.network.PacketHandler;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 public class DeepResonanceMessages {
 

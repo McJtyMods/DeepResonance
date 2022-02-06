@@ -4,21 +4,18 @@ import mcjty.deepresonance.compat.DeepResonanceTOPDriver;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
-import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.varia.NBTTools;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -36,7 +33,7 @@ public class GeneratorPartBlock extends BaseBlock {
     }
 
     private static String getPowerString(ItemStack stack) {
-        return NBTTools.getInfoNBT(stack, CompoundNBT::getInt, "preserved", 0) + "FE";
+        return NBTTools.getInfoNBT(stack, CompoundTag::getInt, "preserved", 0) + "FE";
     }
 
     @Override
@@ -46,9 +43,9 @@ public class GeneratorPartBlock extends BaseBlock {
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockState state = super.getStateForPlacement(context);
-        World world = context.getLevel();
+        Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         return state.setValue(BlockStateProperties.UP, world.getBlockState(pos.above()).getBlock() == this)
                 .setValue(BlockStateProperties.DOWN, world.getBlockState(pos.below()).getBlock() == this)
@@ -58,7 +55,7 @@ public class GeneratorPartBlock extends BaseBlock {
     @SuppressWarnings("deprecation")
     @Nonnull
     @Override
-    public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockPos facingPos) {
+    public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor world, @Nonnull BlockPos pos, @Nonnull BlockPos facingPos) {
         if (facing == Direction.UP) {
             return state.setValue(BlockStateProperties.UP, facingState.getBlock() == this);
         }
@@ -69,7 +66,7 @@ public class GeneratorPartBlock extends BaseBlock {
     }
 
     @Override
-    protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(@Nonnull StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(BlockStateProperties.POWERED, BlockStateProperties.UP, BlockStateProperties.DOWN);
     }

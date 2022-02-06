@@ -6,13 +6,13 @@ import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.varia.OrientationTools;
 import mcjty.lib.worlddata.AbstractWorldData;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.material.Fluid;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
@@ -33,7 +33,7 @@ public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
             .fixer(new TankFixer())
             .holderGetter(
                     (world, blockPos) -> {
-                        TileEntity be = world.getBlockEntity(blockPos);
+                        BlockEntity be = world.getBlockEntity(blockPos);
                         if (be instanceof IMultiblockConnector) {
                             IMultiblockConnector connector = (IMultiblockConnector) be;
                             if (TANK_NETWORK_ID.equals(connector.getId())) {
@@ -44,12 +44,12 @@ public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
                     })
             .build();
 
-    public static void foreach(World level, int blobId, Consumer<BlockPos> consumer, BlockPos current) {
+    public static void foreach(Level level, int blobId, Consumer<BlockPos> consumer, BlockPos current) {
         MultiblockDriver<TankBlob> driver = getNetwork(level).getDriver();
         foreach(level, blobId, consumer, driver, current, new HashSet<>());
     }
 
-    private static void foreach(World level, int blobId, Consumer<BlockPos> consumer, MultiblockDriver<TankBlob> driver, BlockPos current, Set<BlockPos> done) {
+    private static void foreach(Level level, int blobId, Consumer<BlockPos> consumer, MultiblockDriver<TankBlob> driver, BlockPos current, Set<BlockPos> done) {
         if (done.contains(current)) {
             return;
         }
@@ -73,8 +73,11 @@ public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
         return fluid1 == fluid2;
     }
 
-    public DRTankNetwork(String name) {
-        super(name);
+    public DRTankNetwork() {
+    }
+
+    public DRTankNetwork(CompoundTag tag) {
+        driver.load(tag);
     }
 
     public void clear() {
@@ -85,8 +88,8 @@ public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
         return driver;
     }
 
-    public static DRTankNetwork getNetwork(World world) {
-        return getData(world, () -> new DRTankNetwork(TANK_NETWORK_NAME), TANK_NETWORK_NAME);
+    public static DRTankNetwork getNetwork(Level world) {
+        return getData(world, DRTankNetwork::new, DRTankNetwork::new, TANK_NETWORK_NAME);
     }
 
     public TankBlob getBlob(int id) {
@@ -111,14 +114,9 @@ public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
         return driver.createId();
     }
 
-    @Override
-    public void load(@Nonnull CompoundNBT tagCompound) {
-        driver.load(tagCompound);
-    }
-
     @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
+    public CompoundTag save(@Nonnull CompoundTag tagCompound) {
         return driver.save(tagCompound);
     }
 

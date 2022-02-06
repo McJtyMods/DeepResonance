@@ -12,14 +12,14 @@ import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.Broadcaster;
 import mcjty.lib.varia.Logging;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
@@ -39,8 +39,8 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
     private int radiationUpdateCount = MAXTICKS;
     private int blobId = -1;
 
-    public EnergyCollectorTileEntity() {
-        super(GeneratorModule.TYPE_ENERGY_COLLECTOR.get());
+    public EnergyCollectorTileEntity(BlockPos pos, BlockState state) {
+        super(GeneratorModule.TYPE_ENERGY_COLLECTOR.get(), pos, state);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
         int startup = 0;
         GeneratorBlob network = null;
 
-        TileEntity te = level.getBlockEntity(getBlockPos().below());
+        BlockEntity te = level.getBlockEntity(getBlockPos().below());
         if (te instanceof GeneratorPartTileEntity) {
             GeneratorPartTileEntity generatorTileEntity = (GeneratorPartTileEntity) te;
             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getNetwork(level);
@@ -111,7 +111,7 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
 
     public void disableCrystalGlow() {
         for (BlockPos coordinate : crystals) {
-            TileEntity te = level.getBlockEntity(new BlockPos(getBlockPos().getX() + coordinate.getX(), getBlockPos().getY() + coordinate.getY(), getBlockPos().getZ() + coordinate.getZ()));
+            BlockEntity te = level.getBlockEntity(new BlockPos(getBlockPos().getX() + coordinate.getX(), getBlockPos().getY() + coordinate.getY(), getBlockPos().getZ() + coordinate.getZ()));
             if (te instanceof ResonatingCrystalTileEntity) {
                 ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
                 resonatingCrystalTileEntity.setGlowing(false);
@@ -147,7 +147,7 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
 
         int rf = 0;
         for (BlockPos coordinate : crystals) {
-            TileEntity te = getLevel().getBlockEntity(new BlockPos(getBlockPos().getX() + coordinate.getX(), getBlockPos().getY() + coordinate.getY(), getBlockPos().getZ() + coordinate.getZ()));
+            BlockEntity te = getLevel().getBlockEntity(new BlockPos(getBlockPos().getX() + coordinate.getX(), getBlockPos().getY() + coordinate.getY(), getBlockPos().getZ() + coordinate.getZ()));
             if (te instanceof ResonatingCrystalTileEntity) {
                 ResonatingCrystalTileEntity crystal = (ResonatingCrystalTileEntity) te;
                 if (crystal.getPower() > CRYSTAL_MIN_POWER) {
@@ -208,9 +208,9 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    public void onBlockPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         if (!world.isClientSide()) {
-            TileEntity te = world.getBlockEntity(pos.below());
+            BlockEntity te = world.getBlockEntity(pos.below());
             if (te instanceof GeneratorPartTileEntity) {
                 blobId = ((GeneratorPartTileEntity) te).getMultiblockId();
                 getDriver().modify(blobId, holder -> holder.getMb().setCollectorBlocks(-1));
@@ -219,8 +219,8 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void onReplaced(World world, BlockPos pos, BlockState state, BlockState newstate) {
-        TileEntity te = world.getBlockEntity(pos.below());
+    public void onReplaced(Level world, BlockPos pos, BlockState state, BlockState newstate) {
+        BlockEntity te = world.getBlockEntity(pos.below());
         if (te instanceof GeneratorPartTileEntity) {
             int id = ((GeneratorPartTileEntity) te).getMultiblockId();
             getDriver().modify(id, holder -> holder.getMb().setCollectorBlocks(-1));
@@ -286,7 +286,7 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
 
         int maxSupportedRF = blob.getGeneratorBlocks() * GeneratorConfig.MAX_POWER_INPUT_PER_BLOCK.get();
         for (BlockPos coordinate : crystals) {
-            TileEntity te = level.getBlockEntity(new BlockPos(getBlockPos().getX() + coordinate.getX(), getBlockPos().getY() + coordinate.getY(), getBlockPos().getZ() + coordinate.getZ()));
+            BlockEntity te = level.getBlockEntity(new BlockPos(getBlockPos().getX() + coordinate.getX(), getBlockPos().getY() + coordinate.getY(), getBlockPos().getZ() + coordinate.getZ()));
             if (te instanceof ResonatingCrystalTileEntity) {
                 ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
                 if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
@@ -308,7 +308,7 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
     private int addCrystal(int x, int y, int z, GeneratorBlob network, Set<BlockPos> newCrystals, Set<BlockPos> oldCrystals, int maxSupportedRF) {
         int maxSupportedCrystals = network.getGeneratorBlocks() * GeneratorConfig.MAX_CRYSTALS_PER_BLOCK.get();
 
-        TileEntity te = level.getBlockEntity(new BlockPos(x, y, z));
+        BlockEntity te = level.getBlockEntity(new BlockPos(x, y, z));
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
             if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
@@ -339,14 +339,14 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
 
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         saveClientDataToNBT(tagCompound);
         tagCompound.putInt("networkId", blobId);
         super.saveAdditional(tagCompound);
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
         loadClientDataFromNBT(tagCompound);
         if (tagCompound.contains("networkId")) {
@@ -357,7 +357,7 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
+    public void loadClientDataFromNBT(CompoundTag tagCompound) {
         lasersActive = tagCompound.getBoolean("lasersActive");
         laserStartup = tagCompound.getInt("laserStartup");
         byte[] crystalX = tagCompound.getByteArray("crystalsX");
@@ -370,7 +370,7 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundNBT tagCompound) {
+    public void saveClientDataToNBT(CompoundTag tagCompound) {
         byte[] crystalX = new byte[crystals.size()];
         byte[] crystalY = new byte[crystals.size()];
         byte[] crystalZ = new byte[crystals.size()];

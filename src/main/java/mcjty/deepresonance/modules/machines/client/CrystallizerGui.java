@@ -1,6 +1,6 @@
 package mcjty.deepresonance.modules.machines.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.CrystallizerTileEntity;
@@ -12,8 +12,8 @@ import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -28,7 +28,7 @@ public class CrystallizerGui extends GenericGuiContainer<CrystallizerTileEntity,
     private EnergyBar energyBar;
     private Label percentage;
 
-    public CrystallizerGui(CrystallizerTileEntity tileEntity, GenericContainer container, PlayerInventory inventory) {
+    public CrystallizerGui(CrystallizerTileEntity tileEntity, GenericContainer container, Inventory inventory) {
         super(tileEntity, container, inventory, ManualEntry.EMPTY); // @todo 1.16 manual
 
         imageWidth = CRYSTALIZER_WIDTH;
@@ -60,7 +60,7 @@ public class CrystallizerGui extends GenericGuiContainer<CrystallizerTileEntity,
     }
 
     @Override
-    protected void renderBg(@Nonnull MatrixStack matrixStack, float partialTicks, int x, int y) {
+    protected void renderBg(@Nonnull PoseStack matrixStack, float partialTicks, int x, int y) {
         percentage.text(tileEntity.getProgress() + "%");
         updateEnergyBar(energyBar);
         super.renderBg(matrixStack, partialTicks, x, y);

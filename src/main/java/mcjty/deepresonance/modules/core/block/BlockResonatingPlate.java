@@ -2,14 +2,16 @@ package mcjty.deepresonance.modules.core.block;
 
 import mcjty.deepresonance.modules.core.util.ResonatingPlateBlockConfig;
 import mcjty.deepresonance.modules.radiation.manager.DRRadiationManager;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.server.level.ServerLevel;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
+
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class BlockResonatingPlate extends Block {
 
@@ -24,7 +26,7 @@ public class BlockResonatingPlate extends Block {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void tick(@Nonnull BlockState state, @Nonnull ServerWorld worldIn, @Nonnull BlockPos pos, @Nonnull Random rand) {
+    public void tick(@Nonnull BlockState state, @Nonnull ServerLevel worldIn, @Nonnull BlockPos pos, @Nonnull Random rand) {
         if (!isRandomlyTicking(state)) {
             return;
         }

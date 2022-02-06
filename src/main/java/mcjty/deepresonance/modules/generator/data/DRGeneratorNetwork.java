@@ -4,10 +4,10 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.worlddata.AbstractWorldData;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nonnull;
 
@@ -24,7 +24,7 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
             .fixer(new GeneratorFixer())
             .holderGetter(
                     (world, blockPos) -> {
-                        TileEntity be = world.getBlockEntity(blockPos);
+                        BlockEntity be = world.getBlockEntity(blockPos);
                         if (be instanceof IMultiblockConnector && ((IMultiblockConnector) be).getId().equals(GENERATOR_NETWORK_ID)) {
                             return (IMultiblockConnector) be;
                         } else {
@@ -33,8 +33,11 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
                     })
             .build();
 
-    public DRGeneratorNetwork(String name) {
-        super(name);
+    public DRGeneratorNetwork() {
+    }
+
+    public DRGeneratorNetwork(CompoundTag tag) {
+        driver.load(tag);
     }
 
     public void clear() {
@@ -45,8 +48,8 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
         return driver;
     }
 
-    public static DRGeneratorNetwork getNetwork(World world) {
-        return getData(world, () -> new DRGeneratorNetwork(GENERATOR_NETWORK_NAME), GENERATOR_NETWORK_NAME);
+    public static DRGeneratorNetwork getNetwork(Level world) {
+        return getData(world, DRGeneratorNetwork::new, DRGeneratorNetwork::new, GENERATOR_NETWORK_NAME);
     }
 
     public GeneratorBlob getBlob(int id) {
@@ -72,14 +75,9 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
         return driver.createId();
     }
 
-    @Override
-    public void load(@Nonnull CompoundNBT tagCompound) {
-        driver.load(tagCompound);
-    }
-
     @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
+    public CompoundTag save(@Nonnull CompoundTag tagCompound) {
         return driver.save(tagCompound);
     }
 

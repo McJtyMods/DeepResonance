@@ -1,8 +1,8 @@
 package mcjty.deepresonance.modules.core.fluid;
 
 import mcjty.deepresonance.DeepResonance;
-import net.minecraft.fluid.EmptyFluid;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.material.EmptyFluid;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidAttributes;
 
 import javax.annotation.Nonnull;

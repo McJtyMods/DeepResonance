@@ -1,7 +1,7 @@
 package mcjty.deepresonance.modules.tank.data;
 
 import mcjty.deepresonance.util.LiquidCrystalData;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -10,12 +10,14 @@ import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+
 public class DRTankHandler implements IFluidHandler, IFluidTank {
 
-    private final World level;
+    private final Level level;
     private final Supplier<Integer> blobIdGetter;
 
-    public DRTankHandler(World level, Supplier<Integer> blobIdGetter) {
+    public DRTankHandler(Level level, Supplier<Integer> blobIdGetter) {
         this.level = level;
         this.blobIdGetter = blobIdGetter;
     }

@@ -5,15 +5,16 @@ import mcjty.deepresonance.modules.core.client.ModelLoaderCoreModule;
 import mcjty.deepresonance.modules.core.util.CrystalConfig;
 import mcjty.deepresonance.modules.core.util.CrystalHelper;
 import mcjty.lib.tileentity.GenericTileEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
-import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
@@ -41,8 +42,8 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     private boolean glowing = false;
 
-    public ResonatingCrystalTileEntity() {
-        super(CoreModule.TYPE_RESONATING_CRYSTAL.get());
+    public ResonatingCrystalTileEntity(BlockPos pos, BlockState state) {
+        super(CoreModule.TYPE_RESONATING_CRYSTAL.get(), pos, state);
     }
 
     public double getStrength() {
@@ -87,7 +88,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
             if (level != null) {
                 if (getBlockState().getBlock() instanceof ResonatingCrystalBlock) {
                     ResonatingCrystalBlock crystalBlock = (ResonatingCrystalBlock) getBlockState().getBlock();
-                    level.setBlock(worldPosition, crystalBlock.getEmpty().defaultBlockState(), Constants.BlockFlags.DEFAULT_AND_RERENDER);
+                    level.setBlock(worldPosition, crystalBlock.getEmpty().defaultBlockState(), BlockResonatingPlate.UPDATE_ALL_IMMEDIATE);
                 }
             }
             setChanged();
@@ -158,22 +159,22 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
         boolean oldempty = isEmpty();
         boolean oldVeryPure = CrystalHelper.isVeryPure(getPurity());
         super.onDataPacket(net, packet);
         boolean newempty = isEmpty();
         if (oldempty != newempty || oldVeryPure != CrystalHelper.isVeryPure(getPurity())) {
             requestModelDataUpdate();
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     }
 
     @Override
-    protected void loadInfo(CompoundNBT tagCompound) {
+    protected void loadInfo(CompoundTag tagCompound) {
         super.loadInfo(tagCompound);
         if (tagCompound.contains("Info")) {
-            CompoundNBT info = tagCompound.getCompound("Info");
+            CompoundTag info = tagCompound.getCompound("Info");
             strength = info.getDouble("strength");
             power = info.getDouble("power");
             efficiency = info.getDouble("efficiency");
@@ -182,9 +183,9 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     }
 
     @Override
-    protected void saveInfo(CompoundNBT tagCompound) {
+    protected void saveInfo(CompoundTag tagCompound) {
         super.saveInfo(tagCompound);
-        CompoundNBT info = getOrCreateInfo(tagCompound);
+        CompoundTag info = getOrCreateInfo(tagCompound);
         info.putDouble("strength", strength);
         info.putDouble("power", power);
         info.putDouble("efficiency", efficiency);
@@ -192,24 +193,24 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void load(@Nonnull CompoundNBT tagCompound) {
+    public void load(@Nonnull CompoundTag tagCompound) {
         super.load(tagCompound);
         glowing = tagCompound.getBoolean("glowing");
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         super.saveAdditional(tagCompound);
         tagCompound.putBoolean("glowing", glowing);
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
+    public void loadClientDataFromNBT(CompoundTag tagCompound) {
         glowing = tagCompound.getBoolean("glowing");
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundNBT tagCompound) {
+    public void saveClientDataToNBT(CompoundTag tagCompound) {
         tagCompound.putBoolean("glowing", glowing);
     }
 
@@ -228,9 +229,9 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     // Special == 2, best random
     // Special == 3, best non-overcharged
     // Special == 4, almost depleted
-    public static void spawnRandomCrystal(World world, Random random, BlockPos pos, int special) {
-        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_GENERATED.get().defaultBlockState(), Constants.BlockFlags.DEFAULT);
-        TileEntity te = world.getBlockEntity(pos);
+    public static void spawnRandomCrystal(Level world, Random random, BlockPos pos, int special) {
+        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_GENERATED.get().defaultBlockState(), Block.UPDATE_ALL);
+        BlockEntity te = world.getBlockEntity(pos);
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
             if (special >= 5) {
@@ -252,9 +253,9 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         }
     }
 
-    public static void spawnRandomCrystal(World world, Random random, BlockPos pos, float str, float pow, float eff, float pur) {
-        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_GENERATED.get().defaultBlockState(), Constants.BlockFlags.DEFAULT);
-        TileEntity te = world.getBlockEntity(pos);
+    public static void spawnRandomCrystal(Level world, Random random, BlockPos pos, float str, float pow, float eff, float pur) {
+        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_GENERATED.get().defaultBlockState(), Block.UPDATE_ALL);
+        BlockEntity te = world.getBlockEntity(pos);
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
             resonatingCrystalTileEntity.setStrength(Math.min(100.0f, random.nextFloat() * str * 3.0f + 0.01f));

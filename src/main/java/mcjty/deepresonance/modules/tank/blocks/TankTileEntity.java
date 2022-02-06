@@ -12,20 +12,20 @@ import mcjty.lib.multiblock.MultiblockSupport;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericTileEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -49,8 +49,8 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     @Cap(type = CapType.FLUIDS)
     private final LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(this::createFluidHandler);
 
-    public TankTileEntity() {
-        super(TankModule.TYPE_TANK.get());
+    public TankTileEntity(BlockPos pos, BlockState state) {
+        super(TankModule.TYPE_TANK.get(), pos, state);
     }
 
     public void setClientData(float newHeight, Fluid render) {
@@ -79,22 +79,22 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         tagCompound.putInt("blobid", blobId);
         saveClientDataToNBT(tagCompound);
         super.saveAdditional(tagCompound);
     }
 
     @Override
-    protected void saveInfo(CompoundNBT tagCompound) {
+    protected void saveInfo(CompoundTag tagCompound) {
         super.saveInfo(tagCompound);
-        CompoundNBT tag = new CompoundNBT();
+        CompoundTag tag = new CompoundTag();
         preservedFluid.writeToNBT(tag);
         getOrCreateInfo(tagCompound).put("preserved", tag);
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         if (tagCompound.contains("blobid")) {
             blobId = tagCompound.getInt("blobid");
         } else {
@@ -105,9 +105,9 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     @Override
-    protected void loadInfo(CompoundNBT tagCompound) {
+    protected void loadInfo(CompoundTag tagCompound) {
         super.loadInfo(tagCompound);
-        CompoundNBT info = tagCompound.getCompound("Info");
+        CompoundTag info = tagCompound.getCompound("Info");
         if (info.contains("preserved")) {
             preservedFluid = FluidStack.loadFluidStackFromNBT(info.getCompound("preserved"));
         } else {
@@ -116,7 +116,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundNBT tagCompound) {
+    public void saveClientDataToNBT(CompoundTag tagCompound) {
         tagCompound.putFloat("renderC", renderHeight);
         if (clientRenderFluid != null) {
             tagCompound.putString("fluidC", clientRenderFluid.getRegistryName().toString());
@@ -124,7 +124,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
+    public void loadClientDataFromNBT(CompoundTag tagCompound) {
         renderHeight = tagCompound.getFloat("renderC");
         if (tagCompound.contains("fluidC")) {
             clientRenderFluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(tagCompound.getString("fluidC")));
@@ -134,26 +134,26 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
+    public InteractionResult onBlockActivated(BlockState state, Player player, InteractionHand hand, BlockHitResult result) {
         if (FluidUtil.getFluidHandler(player.getItemInHand(hand)).isPresent()) {
             if (!level.isClientSide) {
                 FluidUtil.interactWithFluidHandler(player, hand, getLevel(), result.getBlockPos(), result.getDirection());
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         return super.onBlockActivated(state, player, hand, result);
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    public void onBlockPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         if (!world.isClientSide()) {
             addBlockToNetwork();
             TankBlob network = getBlob();
             if (network != null) {
-                CompoundNBT tag = stack.getTag();
+                CompoundTag tag = stack.getTag();
                 if (tag != null) {
                     getDriver().modify(getMultiblockId(), holder -> {
-                        CompoundNBT infoTag = tag.getCompound("BlockEntityTag").getCompound("Info");
+                        CompoundTag infoTag = tag.getCompound("BlockEntityTag").getCompound("Info");
                         if (infoTag.contains("preserved")) {
                             FluidStack fluidStack = FluidStack.loadFluidStackFromNBT(infoTag.getCompound("preserved"));
                             holder.getMb().fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
@@ -165,7 +165,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     @Override
-    public void onReplaced(World world, BlockPos pos, BlockState state, BlockState newstate) {
+    public void onReplaced(Level world, BlockPos pos, BlockState state, BlockState newstate) {
         if (!world.isClientSide()) {
             if (newstate.getBlock() != GeneratorModule.GENERATOR_PART_BLOCK.get()) {
                 TankBlob network = getBlob();
@@ -183,11 +183,11 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
 
             BlockState stateUp = world.getBlockState(pos.above());
             if (stateUp.getBlock() == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
-                world.sendBlockUpdated(pos.above(), stateUp, stateUp, Constants.BlockFlags.DEFAULT);
+                world.sendBlockUpdated(pos.above(), stateUp, stateUp, Block.UPDATE_ALL);
             }
             BlockState stateDown = world.getBlockState(pos.below());
             if (stateDown.getBlock() == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
-                world.sendBlockUpdated(pos.below(), stateDown, stateDown, Constants.BlockFlags.DEFAULT);
+                world.sendBlockUpdated(pos.below(), stateDown, stateDown, Block.UPDATE_ALL);
             }
         }
     }
@@ -211,7 +211,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
             int amount = fluidStack.getAmount();
             int capacityPerTank = blob.getCapacityPerTank();
             DRTankNetwork.foreach(level, id, blockPos -> {
-                TileEntity be = level.getBlockEntity(blockPos);
+                BlockEntity be = level.getBlockEntity(blockPos);
                 if (be instanceof TankTileEntity) {
                     int countBelow = blob.getBlocksBelowY(blockPos.getY());
                     int countAtY = blob.getBlocksAtY(blockPos.getY());

@@ -1,9 +1,9 @@
 package mcjty.deepresonance.modules.core.client;
 
 import mcjty.deepresonance.DeepResonance;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 public class ModelLoaderCoreModule {

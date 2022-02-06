@@ -3,9 +3,10 @@ package mcjty.deepresonance.modules.core.util;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.util.Constants;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.Random;
 
@@ -32,7 +33,7 @@ public class CrystalHelper {
     // Special == 2, best random
     // Special == 3, best non-overcharged
     // Special == 4, almost depleted
-    public static void spawnRandomCrystal(World world, Random random, BlockPos pos, int special) {
+    public static void spawnRandomCrystal(Level world, Random random, BlockPos pos, int special) {
         float strength;
         float power;
         float efficiency;
@@ -56,7 +57,7 @@ public class CrystalHelper {
         spawnCrystal(world, pos, strength, power, efficiency, purity);
     }
 
-    public static void spawnRandomCrystal(World world, Random random, BlockPos pos, float str, float pow, float eff, float pur) {
+    public static void spawnRandomCrystal(Level world, Random random, BlockPos pos, float str, float pow, float eff, float pur) {
         spawnCrystal(world, pos,
                 Math.min(100.0f, random.nextFloat() * pur * 10.0f + 5.0f),
                 Math.min(100.0f, random.nextFloat() * str * 3.0f + 0.01f),
@@ -64,9 +65,9 @@ public class CrystalHelper {
                 Math.min(100.0f, random.nextFloat() * pow * 60.0f + 0.2f));
     }
 
-    public static void spawnCrystal(World world, BlockPos pos, float purity, float strength, float efficiency, float power) {
-        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_GENERATED.get().defaultBlockState(), net.minecraftforge.common.util.Constants.BlockFlags.DEFAULT);
-        TileEntity te = world.getBlockEntity(pos);
+    public static void spawnCrystal(Level world, BlockPos pos, float purity, float strength, float efficiency, float power) {
+        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_GENERATED.get().defaultBlockState(), Block.UPDATE_ALL);
+        BlockEntity te = world.getBlockEntity(pos);
         if (te instanceof ResonatingCrystalTileEntity) {
             ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
             resonatingCrystalTileEntity.setPurity(purity);

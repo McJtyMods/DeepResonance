@@ -18,12 +18,13 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Type;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -38,7 +39,7 @@ public class ValveTileEntity extends TickingTileEntity {
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(0));
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Valve")
+    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Valve")
             .containerSupplier(container(MachinesModule.VALVE_CONTAINER, CONTAINER_FACTORY,this))
             .setupSync(this));
 
@@ -62,8 +63,8 @@ public class ValveTileEntity extends TickingTileEntity {
     public static final Value<?, Integer> VALUE_MAXMB = Value.create("maxMb", Type.INTEGER, ValveTileEntity::getMaxMb, ValveTileEntity::setMaxMb);
     private int maxMb = 0;
 
-    public ValveTileEntity() {
-        super(MachinesModule.TYPE_VALVE.get());
+    public ValveTileEntity(BlockPos pos, BlockState state) {
+        super(MachinesModule.TYPE_VALVE.get(), pos, state);
     }
 
     public static BaseBlock createBlock() {
@@ -79,7 +80,7 @@ public class ValveTileEntity extends TickingTileEntity {
             }
 
             @Override
-            protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
+            protected void createBlockStateDefinition(@Nonnull StateDefinition.Builder<Block, BlockState> builder) {
                 super.createBlockStateDefinition(builder);
                 builder.add();
             }
@@ -184,7 +185,7 @@ public class ValveTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         tagCompound.putInt("progress", progress);
 
         tagCompound.putFloat("minPurity", minPurity);
@@ -196,7 +197,7 @@ public class ValveTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
 
         progress = tagCompound.getInt("progress");

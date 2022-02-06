@@ -21,8 +21,8 @@ import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.gui.widgets.*;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.RedstoneMode;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.resources.ResourceLocation;
 
 import java.awt.*;
 
@@ -41,7 +41,7 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
     private TextField minEfficiency;
     private TextField maxAmount;
 
-    public ValveGui(ValveTileEntity tileEntity, GenericContainer container, PlayerInventory inventory) {
+    public ValveGui(ValveTileEntity tileEntity, GenericContainer container, Inventory inventory) {
         super(tileEntity, container, inventory, ManualEntry.EMPTY); // @todo 1.16 manual
 
         imageWidth = VALVE_WIDTH;
@@ -83,7 +83,7 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
 
         window = new Window(this, toplevel);
 
-        window.bind(McJtyLib.networkHandler, "redstone", tileEntity, GenericTileEntity.VALUE_RSMODE.getName());
+        window.bind(McJtyLib.networkHandler, "redstone", tileEntity, GenericTileEntity.VALUE_RSMODE.name());
         window.event("apply", (source, params) -> updateSettings());
     }
 
