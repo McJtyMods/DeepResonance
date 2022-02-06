@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "deepresonance:spent_filter_material"
+            "items": [
+              "deepresonance:spent_filter_material"
+            ]
           }
         ]
       }

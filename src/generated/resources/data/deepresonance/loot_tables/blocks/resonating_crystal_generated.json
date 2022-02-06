@@ -3,7 +3,8 @@
   "pools": [
     {
       "name": "resonating_crystal_generated",
-      "rolls": 1,
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
@@ -23,7 +24,7 @@
                 },
                 {
                   "source": "Items",
-                  "target": "BlockEntityTag.Items",
+                  "target": "BlockEntityTag.McItems",
                   "op": "replace"
                 },
                 {
@@ -35,6 +36,7 @@
             },
             {
               "function": "minecraft:set_contents",
+              "type": "deepresonance:resonating_crystal",
               "entries": [
                 {
                   "type": "minecraft:dynamic",
