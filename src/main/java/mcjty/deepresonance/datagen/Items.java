@@ -39,6 +39,7 @@ class Items extends BaseItemModelProvider {
         parentedBlock(CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY.get(), "block/crystal_empty_pure");
 
         parentedBlock(CoreModule.RESONATING_ORE_STONE_BLOCK.get());
+        parentedBlock(CoreModule.RESONATING_ORE_BLACKSTONE_BLOCK.get());
         parentedBlock(CoreModule.RESONATING_ORE_NETHER_BLOCK.get());
         parentedBlock(CoreModule.RESONATING_ORE_END_BLOCK.get());
         parentedBlock(RadiationModule.POISONED_DIRT_BLOCK.get());

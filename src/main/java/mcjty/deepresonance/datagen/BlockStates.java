@@ -36,6 +36,7 @@ public class BlockStates extends BaseBlockStateProvider {
         registerTankModel();
         registerGeneratorPart();
         simpleBlock(CoreModule.RESONATING_ORE_STONE_BLOCK.get());
+        simpleBlock(CoreModule.RESONATING_ORE_BLACKSTONE_BLOCK.get());
         simpleBlock(CoreModule.RESONATING_ORE_NETHER_BLOCK.get());
         simpleBlock(CoreModule.RESONATING_ORE_END_BLOCK.get());
         simpleBlock(RadiationModule.POISONED_DIRT_BLOCK.get());

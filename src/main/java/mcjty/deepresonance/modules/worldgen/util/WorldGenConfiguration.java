@@ -55,35 +55,35 @@ public class WorldGenConfiguration {
 
         Config.COMMON_BUILDER.push("overworld");
         OVERWORLD_VEIN_SIZE = Config.COMMON_BUILDER.comment("Size of resonant ore veins")
-                .defineInRange("minOreVeinSize", 3, 1, 8);
+                .defineInRange("minOreVeinSize", 4, 1, Integer.MAX_VALUE);
         OVERWORLD_SPAWN_CHANCES = Config.COMMON_BUILDER.comment("Chances for the ore to spawn in a chunk")
-                .defineInRange("chancesToSpawn", 5, 1, 16);
+                .defineInRange("chancesToSpawn", 7, 1, Integer.MAX_VALUE);
         OVERWORLD_MINY = Config.COMMON_BUILDER.comment("Minimum y-level where resonant ore will spawn")
-                .defineInRange("minY", 2, 1, 256);
+                .defineInRange("minY", -60, -2048, 2048);
         OVERWORLD_MAXY = Config.COMMON_BUILDER.comment("Maximum y-level where resonant ore will spawn")
-                .defineInRange("maxY", 32, 1, 256);
+                .defineInRange("maxY", 32, -2048, 2048);
         Config.COMMON_BUILDER.pop();
 
         Config.COMMON_BUILDER.push("nether");
         NETHER_VEIN_SIZE = Config.COMMON_BUILDER.comment("Size of resonant ore veins")
-                .defineInRange("minOreVeinSize", 3, 1, 8);
+                .defineInRange("minOreVeinSize", 8, 1, Integer.MAX_VALUE);
         NETHER_SPAWN_CHANCES = Config.COMMON_BUILDER.comment("Chances for the ore to spawn in a chunk")
-                .defineInRange("chancesToSpawn", 5, 1, 16);
+                .defineInRange("chancesToSpawn", 12, 1, Integer.MAX_VALUE);
         NETHER_MINY = Config.COMMON_BUILDER.comment("Minimum y-level where resonant ore will spawn")
-                .defineInRange("minY", 2, 1, 256);
+                .defineInRange("minY", 2, -2048, 2048);
         NETHER_MAXY = Config.COMMON_BUILDER.comment("Maximum y-level where resonant ore will spawn")
-                .defineInRange("maxY", 32, 1, 256);
+                .defineInRange("maxY", 32, -2048, 2048);
         Config.COMMON_BUILDER.pop();
 
         Config.COMMON_BUILDER.push("end");
         END_VEIN_SIZE = Config.COMMON_BUILDER.comment("Size of resonant ore veins")
-                .defineInRange("minOreVeinSize", 3, 1, 8);
+                .defineInRange("minOreVeinSize", 5, 1, Integer.MAX_VALUE);
         END_SPAWN_CHANCES = Config.COMMON_BUILDER.comment("Chances for the ore to spawn in a chunk")
-                .defineInRange("chancesToSpawn", 5, 1, 16);
+                .defineInRange("chancesToSpawn", 8, 1, Integer.MAX_VALUE);
         END_MINY = Config.COMMON_BUILDER.comment("Minimum y-level where resonant ore will spawn")
-                .defineInRange("minY", 2, 1, 256);
+                .defineInRange("minY", 2, -2048, 2048);
         END_MAXY = Config.COMMON_BUILDER.comment("Maximum y-level where resonant ore will spawn")
-                .defineInRange("maxY", 32, 1, 256);
+                .defineInRange("maxY", 32, -2048, 2048);
         Config.COMMON_BUILDER.pop();
 
         NETHER_CRYSTALS = Config.COMMON_BUILDER.comment("Enable this if you want resonating crystals in nether biomes")

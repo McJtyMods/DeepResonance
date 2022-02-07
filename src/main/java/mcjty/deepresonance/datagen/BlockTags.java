@@ -17,7 +17,8 @@ public class BlockTags extends BlockTagsProvider {
 
     @Override
     protected void addTags() {
-        tag(DeepResonanceTags.RESONANT_ORE).add(CoreModule.RESONATING_ORE_STONE_BLOCK.get(), CoreModule.RESONATING_ORE_NETHER_BLOCK.get(), CoreModule.RESONATING_ORE_END_BLOCK.get());
+        tag(DeepResonanceTags.RESONANT_ORE)
+                .add(CoreModule.RESONATING_ORE_BLACKSTONE_BLOCK.get(), CoreModule.RESONATING_ORE_STONE_BLOCK.get(), CoreModule.RESONATING_ORE_NETHER_BLOCK.get(), CoreModule.RESONATING_ORE_END_BLOCK.get());
     }
 
     @Override
