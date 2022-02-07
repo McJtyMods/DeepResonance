@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.setup.ClientSetup;
+import mcjty.lib.client.CustomRenderTypes;
 import mcjty.lib.client.DelayedRenderer;
 import mcjty.lib.client.RenderHelper;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -21,7 +22,7 @@ public class ResonatingCrystalRenderer implements BlockEntityRenderer<Resonating
     @Override
     public void render(ResonatingCrystalTileEntity tileEntity, float partialTicks, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
         if (tileEntity.isGlowing()) {
-            DelayedRenderer.addRender(tileEntity.getBlockPos(), (stack, buf) -> {
+            DelayedRenderer.addRender(CustomRenderTypes.TRANSLUCENT_ADD_NOLIGHTMAPS, tileEntity.getBlockPos(), (stack, buf) -> {
                     RenderHelper.renderBillboardQuadBright(stack, buf, 0.6f, ClientSetup.REDHALO);
             });
         }

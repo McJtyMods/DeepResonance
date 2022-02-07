@@ -97,9 +97,9 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
         if (slot.hasItem()) {
             InfusingBonus bonus = LaserTileEntity.getInfusingBonus(slot.getItem());
             if (bonus != null) {
-                setBonusText(bonus.getPurityModifier(), "P", purifyBonus);
-                setBonusText(bonus.getStrengthModifier(), "S", strengthBonus);
-                setBonusText(bonus.getEfficiencyModifier(), "E", efficiencyBonus);
+                setBonusText(bonus.purityModifier(), "P", purifyBonus);
+                setBonusText(bonus.strengthModifier(), "S", strengthBonus);
+                setBonusText(bonus.efficiencyModifier(), "E", efficiencyBonus);
             } else {
                 purifyBonus.text("Not a catalyst!");
                 strengthBonus.text("");
@@ -117,8 +117,8 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
     }
 
     private void setBonusText(InfusingBonus.Modifier modifier, String prefix, Label label) {
-        if (Math.abs(modifier.getBonus()) > 0.01f) {
-            label.text(prefix + ": " + formatted(modifier.getBonus()) + "% (cap " + formatted(modifier.getMaxOrMin()) + ")");
+        if (Math.abs(modifier.bonus()) > 0.01f) {
+            label.text(prefix + ": " + formatted(modifier.bonus()) + "% (cap " + formatted(modifier.maxOrMin()) + ")");
         } else {
             label.text(prefix + ": none");
         }

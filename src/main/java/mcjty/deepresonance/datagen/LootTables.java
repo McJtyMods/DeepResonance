@@ -16,7 +16,7 @@ public class LootTables extends BaseLootTableProvider {
 
     @Override
     protected void addTables() {
-        addSimpleTable(CoreModule.RESONATING_ORE_BLACKSTONE_BLOCK.get());
+        addSimpleTable(CoreModule.RESONATING_ORE_DEEPSLATE_BLOCK.get());
         addSimpleTable(CoreModule.RESONATING_ORE_STONE_BLOCK.get());
         addSimpleTable(CoreModule.RESONATING_ORE_NETHER_BLOCK.get());
         addSimpleTable(CoreModule.RESONATING_ORE_END_BLOCK.get());

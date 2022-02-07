@@ -19,10 +19,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.ClientRegistry;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
@@ -56,19 +54,22 @@ public class CollectorRenderer implements BlockEntityRenderer<EnergyCollectorTil
             return;
         }
 
-        DelayedRenderer.addRender(tileEntity.getBlockPos(), (stack, buf) -> {
-            renderInternal(tileEntity.getBlockPos(), tileEntity.getLaserStartup(), tileEntity.getCrystals(), stack, buf);
+        DelayedRenderer.addRender(CustomRenderTypes.TRANSLUCENT_LIGHTNING_NOLIGHTMAPS, tileEntity.getBlockPos(), (stack, buf) -> {
+            renderHalo(tileEntity.getBlockPos(), tileEntity.getLaserStartup(), tileEntity.getCrystals(), stack, buf);
+        });
+        DelayedRenderer.addRender(CustomRenderTypes.TRANSLUCENT_ADD_NOLIGHTMAPS, tileEntity.getBlockPos(), (stack, buf) -> {
+            renderLasers(tileEntity.getBlockPos(), tileEntity.getLaserStartup(), tileEntity.getCrystals(), stack, buf);
         });
     }
 
-    private void renderInternal(BlockPos pos, int laserStartup, Set<BlockPos> crystals, PoseStack matrixStack, MultiBufferSource buffer) {
+    private void renderHalo(BlockPos pos, int laserStartup, Set<BlockPos> crystals, PoseStack matrixStack, MultiBufferSource buffer) {
         matrixStack.translate(0f, .25f, .0f);
-
         RenderHelper.renderBillboardQuadBright(matrixStack, buffer, 1.0f, ClientSetup.HALO, SETTINGS);// + random.nextFloat() * .05f);
-
-        float startupFactor = laserStartup / (float) GeneratorConfig.STARTUP_TIME.get();
-
         matrixStack.translate(0, -.25f, 0f);
+    }
+
+    private void renderLasers(BlockPos pos, int laserStartup, Set<BlockPos> crystals, PoseStack matrixStack, MultiBufferSource buffer) {
+        float startupFactor = laserStartup / (float) GeneratorConfig.STARTUP_TIME.get();
         for (BlockPos destination : crystals) {
             TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(ClientSetup.LASERBEAMS[random.nextInt(4)]);
 

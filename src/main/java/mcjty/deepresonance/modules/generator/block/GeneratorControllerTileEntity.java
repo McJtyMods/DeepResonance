@@ -46,7 +46,7 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
         boolean working = isPowered();
         super.onDataPacket(net, packet);
 
-        if (level.isClientSide()) {
+        if (level.isClientSide) {
             // If needed send a render update.
             if (isPowered() != working) {
                 BlockState state = getBlockState();
@@ -58,7 +58,7 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
     @Override
     public void setRemoved() {
         super.setRemoved();
-        if (level.isClientSide()) {
+        if (level.isClientSide) {
             stopSounds();
         }
     }

@@ -34,17 +34,13 @@ public class LensBlock extends BaseBlock {
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-        switch (facing) {
-            case NORTH:
-                return SHAPE_NORTH;
-            case SOUTH:
-                return SHAPE_SOUTH;
-            case WEST:
-                return SHAPE_WEST;
-            case EAST:
-                return SHAPE_EAST;
-        }
-        return SHAPE_WEST;
+        return switch (facing) {
+            case NORTH -> SHAPE_NORTH;
+            case SOUTH -> SHAPE_SOUTH;
+            case WEST -> SHAPE_WEST;
+            case EAST -> SHAPE_EAST;
+            default -> SHAPE_WEST;
+        };
     }
 
     @Override

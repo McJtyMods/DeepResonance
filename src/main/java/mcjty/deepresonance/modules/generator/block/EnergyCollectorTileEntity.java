@@ -50,23 +50,22 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
         GeneratorBlob network = null;
 
         BlockEntity te = level.getBlockEntity(getBlockPos().below());
-        if (te instanceof GeneratorPartTileEntity) {
-            GeneratorPartTileEntity generatorTileEntity = (GeneratorPartTileEntity) te;
+        if (te instanceof GeneratorPartTileEntity generator) {
             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getNetwork(level);
 
-            if (blobId != generatorTileEntity.getMultiblockId()) {
+            if (blobId != generator.getMultiblockId()) {
                 if (blobId != -1) {
                     getDriver().modify(blobId, holder -> holder.getMb().setCollectorBlocks(-1));
                 }
 
-                blobId = generatorTileEntity.getMultiblockId();
+                blobId = generator.getMultiblockId();
                 getDriver().modify(blobId, holder -> holder.getMb().setCollectorBlocks(-1));
                 generatorNetwork.save();
             }
 
 
-            int multiblockId = generatorTileEntity.getMultiblockId();
-            network = generatorTileEntity.getBlob();
+            int multiblockId = generator.getMultiblockId();
+            network = generator.getBlob();
             if (network != null) {
                 if (network.isActive()) {
                     getDriver().modify(multiblockId, holder -> {
@@ -112,9 +111,8 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
     public void disableCrystalGlow() {
         for (BlockPos coordinate : crystals) {
             BlockEntity te = level.getBlockEntity(new BlockPos(getBlockPos().getX() + coordinate.getX(), getBlockPos().getY() + coordinate.getY(), getBlockPos().getZ() + coordinate.getZ()));
-            if (te instanceof ResonatingCrystalTileEntity) {
-                ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
-                resonatingCrystalTileEntity.setGlowing(false);
+            if (te instanceof ResonatingCrystalTileEntity crystal) {
+                crystal.setGlowing(false);
             }
         }
     }
@@ -148,8 +146,7 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
         int rf = 0;
         for (BlockPos coordinate : crystals) {
             BlockEntity te = getLevel().getBlockEntity(new BlockPos(getBlockPos().getX() + coordinate.getX(), getBlockPos().getY() + coordinate.getY(), getBlockPos().getZ() + coordinate.getZ()));
-            if (te instanceof ResonatingCrystalTileEntity) {
-                ResonatingCrystalTileEntity crystal = (ResonatingCrystalTileEntity) te;
+            if (te instanceof ResonatingCrystalTileEntity crystal) {
                 if (crystal.getPower() > CRYSTAL_MIN_POWER) {
                     crystal.setGlowing(lasersActive);
                     tokeep.add(coordinate);
@@ -240,11 +237,11 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
         int yCoord = getBlockPos().getY();
         int zCoord = getBlockPos().getZ();
         for (int y = yCoord - CollectorConfig.MAX_VERTICAL_CRYSTAL_DISTANCE.get(); y <= yCoord + CollectorConfig.MAX_VERTICAL_CRYSTAL_DISTANCE.get() ; y++) {
-            if (y >= 0 && y < getLevel().getHeight()) {
+            if (y >= level.getMinBuildHeight() && y < level.getMaxBuildHeight()) {
                 int maxhordist = CollectorConfig.MAX_HORIZONTAL_CRYSTAL_DISTANCE.get();
                 for (int x = xCoord - maxhordist; x <= xCoord + maxhordist; x++) {
                     for (int z = zCoord - maxhordist; z <= zCoord + maxhordist; z++) {
-                        if (getLevel().getBlockState(new BlockPos(x, y, z)).getBlock() instanceof ResonatingCrystalBlock) {
+                        if (level.getBlockState(new BlockPos(x, y, z)).getBlock() instanceof ResonatingCrystalBlock) {
                             maxSupportedRF = addCrystal(x, y, z, network, newCrystals, crystals, maxSupportedRF);
                             if (maxSupportedRF == ERROR_TOOMANYCRYSTALS) {
                                 tooManyCrystals = true;
@@ -287,10 +284,9 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
         int maxSupportedRF = blob.getGeneratorBlocks() * GeneratorConfig.MAX_POWER_INPUT_PER_BLOCK.get();
         for (BlockPos coordinate : crystals) {
             BlockEntity te = level.getBlockEntity(new BlockPos(getBlockPos().getX() + coordinate.getX(), getBlockPos().getY() + coordinate.getY(), getBlockPos().getZ() + coordinate.getZ()));
-            if (te instanceof ResonatingCrystalTileEntity) {
-                ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
-                if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
-                    maxSupportedRF -= resonatingCrystalTileEntity.getRfPerTick();
+            if (te instanceof ResonatingCrystalTileEntity crystal) {
+                if (crystal.getPower() > CRYSTAL_MIN_POWER) {
+                    maxSupportedRF -= crystal.getRfPerTick();
                 }
             }
         }
@@ -309,29 +305,28 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
         int maxSupportedCrystals = network.getGeneratorBlocks() * GeneratorConfig.MAX_CRYSTALS_PER_BLOCK.get();
 
         BlockEntity te = level.getBlockEntity(new BlockPos(x, y, z));
-        if (te instanceof ResonatingCrystalTileEntity) {
-            ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
-            if (resonatingCrystalTileEntity.getPower() > CRYSTAL_MIN_POWER) {
+        if (te instanceof ResonatingCrystalTileEntity crystal) {
+            if (crystal.getPower() > CRYSTAL_MIN_POWER) {
                 BlockPos crystalCoordinate = new BlockPos(x - getBlockPos().getX(), y - getBlockPos().getY(), z - getBlockPos().getZ());
-                if (resonatingCrystalTileEntity.isGlowing() && !oldCrystals.contains(crystalCoordinate)) {
+                if (crystal.isGlowing() && !oldCrystals.contains(crystalCoordinate)) {
                     // The crystal is already glowing and is not in our 'old' crystal set. That means that it
                     // is currently being managed by another generator. We ignore it then.
                     return maxSupportedRF;
                 }
 
                 if (newCrystals.size() >= maxSupportedCrystals) {
-                    resonatingCrystalTileEntity.setGlowing(false);
+                    crystal.setGlowing(false);
                     return ERROR_TOOMANYCRYSTALS;
-                } else if (resonatingCrystalTileEntity.getRfPerTick() > maxSupportedRF) {
-                    resonatingCrystalTileEntity.setGlowing(false);
+                } else if (crystal.getRfPerTick() > maxSupportedRF) {
+                    crystal.setGlowing(false);
                     return ERROR_TOOMUCHPOWER;
                 } else {
-                    maxSupportedRF -= resonatingCrystalTileEntity.getRfPerTick();
+                    maxSupportedRF -= crystal.getRfPerTick();
                     newCrystals.add(crystalCoordinate);
-                    resonatingCrystalTileEntity.setGlowing(lasersActive);
+                    crystal.setGlowing(lasersActive);
                 }
             } else {
-                resonatingCrystalTileEntity.setGlowing(false);
+                crystal.setGlowing(false);
             }
         }
         return maxSupportedRF;

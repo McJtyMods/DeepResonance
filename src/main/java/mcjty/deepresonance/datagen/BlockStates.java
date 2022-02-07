@@ -18,8 +18,6 @@ import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-import net.minecraftforge.client.model.generators.ModelBuilder.ElementBuilder;
-
 public class BlockStates extends BaseBlockStateProvider {
 
     private static final ResourceLocation DEFAULT_TOP = new ResourceLocation(DeepResonance.MODID, "block/machine_top");
@@ -36,7 +34,7 @@ public class BlockStates extends BaseBlockStateProvider {
         registerTankModel();
         registerGeneratorPart();
         simpleBlock(CoreModule.RESONATING_ORE_STONE_BLOCK.get());
-        simpleBlock(CoreModule.RESONATING_ORE_BLACKSTONE_BLOCK.get());
+        simpleBlock(CoreModule.RESONATING_ORE_DEEPSLATE_BLOCK.get());
         simpleBlock(CoreModule.RESONATING_ORE_NETHER_BLOCK.get());
         simpleBlock(CoreModule.RESONATING_ORE_END_BLOCK.get());
         simpleBlock(RadiationModule.POISONED_DIRT_BLOCK.get());
@@ -56,7 +54,6 @@ public class BlockStates extends BaseBlockStateProvider {
                 .withExistingParent("lens_mc", new ResourceLocation(DeepResonance.MODID, "lens"))
                 .texture("lens_texture", "deepresonance:block/lens")
                 .texture("particle", "deepresonance:block/lens"));
-//        simpleFront(PulserModule.PULSER_BLOCK);
         horizontalOrientedBlock(MachinesModule.LASER_BLOCK.get(), createLaserModel());
         horizontalOrientedBlock(MachinesModule.CRYSTALLIZER_BLOCK.get(), createCrystallizerModel());
         simpleBlock(GeneratorModule.ENERGY_COLLECTOR_BLOCK.get(),
@@ -157,20 +154,4 @@ public class BlockStates extends BaseBlockStateProvider {
         return models().cube("laser", DEFAULT_BOTTOM, DEFAULT_TOP, laserTxt, laserBackTxt, laserBackTxt, laserBackTxt)
                 .texture("particle", laserTxt);
     }
-//
-//    @Override
-//    protected ResourceLocation getDefaultTopLocation() {
-//        return DEFAULT_TOP;
-//    }
-//
-//    @Override
-//    protected ResourceLocation getDefaultBottomLocation() {
-//        return DEFAULT_BOTTOM;
-//    }
-//
-//    @Override
-//    protected ResourceLocation getDefaultSideLocation() {
-//        return DEFAULT_SIDE;
-//    }
-
 }

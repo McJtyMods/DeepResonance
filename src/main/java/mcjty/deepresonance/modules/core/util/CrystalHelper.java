@@ -16,10 +16,6 @@ public class CrystalHelper {
         return power < Constants.CRYSTAL_MIN_POWER;
     }
 
-    public static boolean isVeryPure(double purity) {
-        return purity > Constants.PURE_MODEL_THRESHOLD;
-    }
-
     public static int getRfPerTick(double efficiency, double purity) {
         return (int) (CrystalConfig.MAX_POWER_TICK.get() * efficiency / 100.1 * (purity + 2.0) / 102.0 + 1);
     }
@@ -68,12 +64,11 @@ public class CrystalHelper {
     public static void spawnCrystal(Level world, BlockPos pos, float purity, float strength, float efficiency, float power) {
         world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_GENERATED.get().defaultBlockState(), Block.UPDATE_ALL);
         BlockEntity te = world.getBlockEntity(pos);
-        if (te instanceof ResonatingCrystalTileEntity) {
-            ResonatingCrystalTileEntity resonatingCrystalTileEntity = (ResonatingCrystalTileEntity) te;
-            resonatingCrystalTileEntity.setPurity(purity);
-            resonatingCrystalTileEntity.setStrength(strength);
-            resonatingCrystalTileEntity.setEfficiency(efficiency);
-            resonatingCrystalTileEntity.setPower(power);
+        if (te instanceof ResonatingCrystalTileEntity crystal) {
+            crystal.setPurity(purity);
+            crystal.setStrength(strength);
+            crystal.setEfficiency(efficiency);
+            crystal.setPower(power);
         }
     }
 

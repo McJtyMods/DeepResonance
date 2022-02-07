@@ -19,9 +19,6 @@ import net.minecraftforge.registries.RegistryObject;
 
 import static mcjty.deepresonance.setup.Registration.TILES;
 
-/**
- * TODO: Generator sounds
- */
 public class GeneratorModule implements IModule {
 
     public static final RegistryObject<Block> ENERGY_COLLECTOR_BLOCK = Registration.BLOCKS.register("energy_collector", EnergyCollectorBlock::new);

@@ -260,7 +260,7 @@ public class RadiationTickEvent {
         float baseStrength = radiationSource.getStrength();
 
         AABB area = new AABB(centerx - radius, centery - radius, centerz - radius, centerx + radius, centery + radius, centerz + radius);
-        List<LivingEntity> list = world.getEntitiesOfClass(LivingEntity.class, area, null);
+        List<LivingEntity> list = world.getEntitiesOfClass(LivingEntity.class, area, livingEntity -> true);
         for (LivingEntity entityLivingBase : list) {
 
             float protection = ItemRadiationSuit.getRadiationProtection(entityLivingBase);

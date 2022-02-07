@@ -120,9 +120,6 @@ public class ValveTileEntity extends TickingTileEntity {
         int amt = fluidStack.getAmount();
         if (bottom.fill(DeepResonanceFluidHelper.makeLiquidCrystalStack(amt), IFluidHandler.FluidAction.SIMULATE) == amt) {
             ILiquidCrystalData data = DeepResonanceFluidHelper.readCrystalDataFromStack(fluidStack);
-            if (data == null) {
-                return;
-            }
             if (data.getPurity() < minPurity) {
                 return;
             }

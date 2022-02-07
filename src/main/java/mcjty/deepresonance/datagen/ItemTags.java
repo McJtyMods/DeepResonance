@@ -19,7 +19,7 @@ public class ItemTags extends ItemTagsProvider {
     @Override
     protected void addTags() {
         tag(DeepResonanceTags.RESONANT_ORE_ITEM)
-                .add(CoreModule.RESONATING_ORE_BLACKSTONE_ITEM.get(), CoreModule.RESONATING_ORE_STONE_ITEM.get(), CoreModule.RESONATING_ORE_NETHER_ITEM.get(), CoreModule.RESONATING_ORE_END_ITEM.get());
+                .add(CoreModule.RESONATING_ORE_DEEPSLATE_ITEM.get(), CoreModule.RESONATING_ORE_STONE_ITEM.get(), CoreModule.RESONATING_ORE_NETHER_ITEM.get(), CoreModule.RESONATING_ORE_END_ITEM.get());
     }
 
     @Nonnull

@@ -2,14 +2,14 @@ package mcjty.deepresonance.modules.generator.sound;
 
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 public class GeneratorSound extends AbstractTickableSoundInstance {
 
@@ -32,7 +32,6 @@ public class GeneratorSound extends AbstractTickableSoundInstance {
     private final BlockPos pos;
     private final boolean loop;
     private final SoundEvent sound;
-    private float scaleDown = 1.0f;
 
 
     @Override
@@ -50,12 +49,6 @@ public class GeneratorSound extends AbstractTickableSoundInstance {
         } else {
             volume = (float) (GeneratorConfig.BASE_GENERATOR_VOLUME.get() * (20-distance)/20.0);
         }
-
-//        volume = (float) (GeneratorConfig.BASE_GENERATOR_VOLUME.get() * (loop ? scaleDown : 1));
-//        if (loop && scaleDown > GeneratorConfig.LOOP_VOLUME_FACTOR.get()) {
-//            scaleDown -= 0.01f;
-//        }
-
     }
 
     protected boolean isSoundType(SoundEvent event){

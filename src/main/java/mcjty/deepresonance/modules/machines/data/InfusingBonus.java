@@ -1,58 +1,17 @@
 package mcjty.deepresonance.modules.machines.data;
 
-public class InfusingBonus {
-    private final int color;
-    private final Modifier purityModifier;
-    private final Modifier strengthModifier;
-    private final Modifier efficiencyModifier;
+public record InfusingBonus(int color, Modifier purityModifier, Modifier strengthModifier,
+                            Modifier efficiencyModifier) {
 
     public static final InfusingBonus EMPTY = new InfusingBonus(0, Modifier.NONE, Modifier.NONE, Modifier.NONE);
-
-    public InfusingBonus(int color, Modifier purityModifier, Modifier strengthModifier, Modifier efficiencyModifier) {
-        this.color = color;
-        this.efficiencyModifier = efficiencyModifier;
-        this.purityModifier = purityModifier;
-        this.strengthModifier = strengthModifier;
-    }
 
     public boolean isEmpty() {
         return Math.abs(purityModifier.bonus) < 0.001f && Math.abs(strengthModifier.bonus) < 0.001f && Math.abs(efficiencyModifier.bonus) < 0.001f;
     }
 
-    public int getColor() {
-        return color;
-    }
-
-    public Modifier getEfficiencyModifier() {
-        return efficiencyModifier;
-    }
-
-    public Modifier getPurityModifier() {
-        return purityModifier;
-    }
-
-    public Modifier getStrengthModifier() {
-        return strengthModifier;
-    }
-
-    public static class Modifier {
-        private final float bonus;      // Can be positive or negative. A number between 0 and 100
-        private final float maxOrMin;   // Max if bonus is positive, otherwise minimum
+    public record Modifier(float bonus, float maxOrMin) {
 
         public static final Modifier NONE = new Modifier(0.0f, 0.0f);
-
-        public Modifier(float bonus, float maxOrMin) {
-            this.maxOrMin = maxOrMin;
-            this.bonus = bonus;
-        }
-
-        public float getMaxOrMin() {
-            return maxOrMin;
-        }
-
-        public float getBonus() {
-            return bonus;
-        }
 
         public float modify(double value, double quality, double factor) {
             return modify((float) value, (float) quality, (float) factor);

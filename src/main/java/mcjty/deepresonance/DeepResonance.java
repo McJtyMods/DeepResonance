@@ -22,7 +22,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class DeepResonance {
 
     public static final String MODID = "deepresonance";
-    public static final String MODNAME = "DeepResonance";
 
     public static final String SHIFT_MESSAGE = "message.deepresonance.shiftmessage";
 

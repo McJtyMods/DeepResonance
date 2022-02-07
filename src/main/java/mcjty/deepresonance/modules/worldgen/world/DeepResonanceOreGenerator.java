@@ -37,9 +37,9 @@ public class DeepResonanceOreGenerator {
                 BiomeFilter.biome(),
                 HeightRangePlacement.uniform(VerticalAnchor.absolute(WorldGenConfiguration.OVERWORLD_MINY.get()), VerticalAnchor.absolute(WorldGenConfiguration.OVERWORLD_MAXY.get())));
 
-        OreConfiguration blackstoneConfig = new OreConfiguration(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, CoreModule.RESONATING_ORE_BLACKSTONE_BLOCK.get().defaultBlockState(),
+        OreConfiguration deepslateConfig = new OreConfiguration(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, CoreModule.RESONATING_ORE_DEEPSLATE_BLOCK.get().defaultBlockState(),
                 WorldGenConfiguration.OVERWORLD_VEIN_SIZE.get());
-        OVERWORLDBS_RESONATING_ORE = registerPlacedFeature("resonating_overworld_bs", Feature.ORE.configured(blackstoneConfig),
+        OVERWORLDBS_RESONATING_ORE = registerPlacedFeature("resonating_overworld_ds", Feature.ORE.configured(deepslateConfig),
                 CountPlacement.of(WorldGenConfiguration.OVERWORLD_SPAWN_CHANCES.get()),
                 InSquarePlacement.spread(),
                 BiomeFilter.biome(),

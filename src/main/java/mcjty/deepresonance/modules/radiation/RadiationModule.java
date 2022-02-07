@@ -25,10 +25,12 @@ public class RadiationModule implements IModule {
     public static final RegistryObject<Block> DENSE_GLASS_BLOCK = Registration.BLOCKS.register("dense_glass",
             () -> new GlassBlock(Block.Properties.of(Material.GLASS)
                     .strength(3.0f, 500.0f)
+                    .requiresCorrectToolForDrops()
                     .noOcclusion()
                     .sound(SoundType.GLASS)));
     public static final RegistryObject<Block> DENSE_OBSIDIAN_BLOCK = Registration.BLOCKS.register("dense_obsidian", () -> new Block(Block.Properties.of(Material.STONE, MaterialColor.COLOR_BLACK)
             .strength(50.0f, 2000.0f)
+            .requiresCorrectToolForDrops()
             .sound(SoundType.STONE)));
 //            .harvestTool(ToolType.PICKAXE)    // @todo 1.18 HARVEST 3
 //            .harvestLevel(3)));

@@ -37,7 +37,7 @@ public class LaserRenderer implements BlockEntityRenderer<LaserTileEntity> {
 
     @Override
     public void render(@Nonnull LaserTileEntity tileEntity, float partialTicks, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
-        DelayedRenderer.addRender(tileEntity.getBlockPos(), (stack, buf) -> {
+        DelayedRenderer.addRender(CustomRenderTypes.TRANSLUCENT_ADD_NOLIGHTMAPS, tileEntity.getBlockPos(), (stack, buf) -> {
             renderInternal(tileEntity, stack, buf);
         });
     }
@@ -51,13 +51,13 @@ public class LaserRenderer implements BlockEntityRenderer<LaserTileEntity> {
             float destY = 0.5f;
             float destZ = 0.5f + direction.getStepZ()*2.5f;
 
-            ResourceLocation laser = null;
-            switch (color) {
-                case InfusionBonusRegistry.COLOR_BLUE: laser = ClientSetup.BLUELASER; break;
-                case InfusionBonusRegistry.COLOR_RED: laser = ClientSetup.REDLASER; break;
-                case InfusionBonusRegistry.COLOR_GREEN: laser = ClientSetup.GREENLASER; break;
-                case InfusionBonusRegistry.COLOR_YELLOW: laser = ClientSetup.YELLOWLASER; break;
-            }
+            ResourceLocation laser = switch (color) {
+                case InfusionBonusRegistry.COLOR_BLUE -> ClientSetup.BLUELASER;
+                case InfusionBonusRegistry.COLOR_RED -> ClientSetup.REDLASER;
+                case InfusionBonusRegistry.COLOR_GREEN -> ClientSetup.GREENLASER;
+                case InfusionBonusRegistry.COLOR_YELLOW -> ClientSetup.YELLOWLASER;
+                default -> null;
+            };
 
             int tex = tileEntity.getBlockPos().getX();
             int tey = tileEntity.getBlockPos().getY();

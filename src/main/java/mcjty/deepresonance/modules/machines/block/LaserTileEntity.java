@@ -172,7 +172,7 @@ public class LaserTileEntity extends TickingTileEntity {
 
         BlockPos tankCoordinate = findLens();
         if (tankCoordinate != null) {
-            changeColor(bonus.getColor());
+            changeColor(bonus.color());
         } else {
             changeColor(0);
             return;
@@ -233,18 +233,17 @@ public class LaserTileEntity extends TickingTileEntity {
         crystalLiquid -= LaserConfig.RCL_PER_CATALYST.get();
 
         BlockEntity te = level.getBlockEntity(tankCoordinate);
-        if (te instanceof TankTileEntity) {
-            TankTileEntity tileTank = (TankTileEntity) te;
-            if (validRCLTank(tileTank)) {
-                tileTank.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).ifPresent(handler -> {
+        if (te instanceof TankTileEntity tank) {
+            if (validRCLTank(tank)) {
+                tank.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).ifPresent(handler -> {
                     FluidStack stack = handler.drain(1000 * mcjty.deepresonance.util.Constants.TANK_BUCKETS, IFluidHandler.FluidAction.SIMULATE);
                     if (!stack.isEmpty()) {
                         stack = handler.drain(1000 * mcjty.deepresonance.util.Constants.TANK_BUCKETS, IFluidHandler.FluidAction.EXECUTE);
                         LiquidCrystalData fluidData = LiquidCrystalData.fromStack(stack);
                         float factor = (float) LaserConfig.RCL_PER_CATALYST.get() / stack.getAmount();
-                        float purity = bonus.getPurityModifier().modify(fluidData.getPurity(), fluidData.getQuality(), factor);
-                        float strength = bonus.getStrengthModifier().modify(fluidData.getStrength(), fluidData.getQuality(), factor);
-                        float efficiency = bonus.getEfficiencyModifier().modify(fluidData.getEfficiency(), fluidData.getQuality(), factor);
+                        float purity = bonus.purityModifier().modify(fluidData.getPurity(), fluidData.getQuality(), factor);
+                        float strength = bonus.strengthModifier().modify(fluidData.getStrength(), fluidData.getQuality(), factor);
+                        float efficiency = bonus.efficiencyModifier().modify(fluidData.getEfficiency(), fluidData.getQuality(), factor);
                         fluidData.setPurity(purity);
                         fluidData.setStrength(strength);
                         fluidData.setEfficiency(efficiency);

@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "deepresonance:resonating_ore_deepslate",
+    "deepresonance:resonating_ore_end",
+    "deepresonance:resonating_ore_nether",
+    "deepresonance:resonating_ore_stone",
+    "deepresonance:resonating_crystal_generated",
+    "deepresonance:resonating_crystal_generated_empty",
+    "deepresonance:resonating_crystal_natural",
+    "deepresonance:resonating_crystal_natural_empty",
+    "deepresonance:dense_obsidian"
+  ]
+}

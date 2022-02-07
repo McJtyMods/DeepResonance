@@ -34,8 +34,7 @@ public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
             .holderGetter(
                     (world, blockPos) -> {
                         BlockEntity be = world.getBlockEntity(blockPos);
-                        if (be instanceof IMultiblockConnector) {
-                            IMultiblockConnector connector = (IMultiblockConnector) be;
+                        if (be instanceof IMultiblockConnector connector) {
                             if (TANK_NETWORK_ID.equals(connector.getId())) {
                                 return connector;
                             }

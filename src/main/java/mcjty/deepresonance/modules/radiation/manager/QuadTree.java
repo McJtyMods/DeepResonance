@@ -72,23 +72,20 @@ public class QuadTree {
             }
             if (largest > 1) {
                 switch (axis) {
-                    case 0: {
+                    case 0 -> {
                         int middle = (box.maxX + box.minX) / 2;
                         child1 = new QuadTree(box.minX, box.minY, box.minZ, middle, box.maxY, box.maxZ);
                         child2 = new QuadTree(middle, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
-                        break;
                     }
-                    case 1: {
+                    case 1 -> {
                         int middle = (box.maxY + box.minY) / 2;
                         child1 = new QuadTree(box.minX, box.minY, box.minZ, box.maxX, middle, box.maxZ);
                         child2 = new QuadTree(box.minX, middle, box.minZ, box.maxX, box.maxY, box.maxZ);
-                        break;
                     }
-                    case 2: {
+                    case 2 -> {
                         int middle = (box.maxZ + box.minZ) / 2;
                         child1 = new QuadTree(box.minX, box.minY, box.minZ, box.maxX, box.maxY, middle);
                         child2 = new QuadTree(box.minX, box.minY, middle, box.maxX, box.maxY, box.maxZ);
-                        break;
                     }
                 }
                 child1.blocker = this.blocker;
