@@ -4,15 +4,16 @@ import com.google.common.collect.Sets;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
 import mcjty.deepresonance.modules.generator.data.GeneratorBlob;
+import mcjty.deepresonance.modules.generator.data.NetworkEnergyStorage;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.multiblock.MultiblockSupport;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
-import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.EnergyTools;
+import mcjty.lib.varia.NBTTools;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -35,7 +36,10 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
     private int blobId = -1;
 
     @Cap(type = CapType.ENERGY)
-    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, false, GeneratorConfig.POWER_STORAGE_PER_BLOCK.get(), 0);
+    private final NetworkEnergyStorage energyStorage = new NetworkEnergyStorage(this);
+
+    // This is used when the block is broken so the remaining energy can be stored in the drop
+    private int preservedEnergy;
 
     public GeneratorPartTileEntity() {
         super(GeneratorModule.TYPE_GENERATOR_PART.get());
@@ -48,6 +52,7 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
             return;
         }
 
+        boolean dirty = false;
         for (Direction facing : OrientationTools.DIRECTION_VALUES) {
             BlockPos pos = getBlockPos().relative(facing);
             TileEntity te = level.getBlockEntity(pos);
@@ -55,11 +60,18 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
             if (EnergyTools.isEnergyTE(te, opposite)) {
                 int rfToGive = Math.min(GeneratorConfig.POWER_PER_TICKOUT.get(), energyStored);   // @todo 1.16 is this the right config?
                 int received = (int) EnergyTools.receiveEnergy(te, opposite, rfToGive);
-                energyStored -= energyStorage.extractEnergy(received, false);
+                if (received > 0) {
+                    dirty = true;
+                    energyStored -= energyStorage.consumeEnergy(received);
+                }
                 if (energyStored <= 0) {
                     break;
                 }
             }
+        }
+        if (dirty) {
+            DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getNetwork(level);
+            generatorNetwork.setDirty();
         }
     }
 
@@ -71,10 +83,25 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
             if (network != null) {
                 CompoundNBT tag = stack.getTag();
                 if (tag != null) {
-                    getDriver().modify(getMultiblockId(), holder -> holder.getMb().setEnergy(holder.getMb().getEnergy() + tag.getInt("energy")));
+                    int energy = NBTTools.getInfoNBT(stack, CompoundNBT::getInt, "preserved", 0);
+                    getDriver().modify(getMultiblockId(), holder -> holder.getMb().setEnergy(holder.getMb().getEnergy() + energy));
                 }
             }
         }
+    }
+
+    @Override
+    protected void loadInfo(CompoundNBT tagCompound) {
+        super.loadInfo(tagCompound);
+        if (tagCompound.contains("Info")) {
+            preservedEnergy = tagCompound.getCompound("Info").getInt("preserved");
+        }
+    }
+
+    @Override
+    protected void saveInfo(CompoundNBT tagCompound) {
+        super.saveInfo(tagCompound);
+        getOrCreateInfo(tagCompound).putInt("preserved", preservedEnergy);
     }
 
     @Override
@@ -85,7 +112,11 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
                 if (network != null) {
                     int energy = network.getEnergy() / network.getGeneratorBlocks();
                     network.setEnergy(network.getEnergy() - energy);
+                    preservedEnergy = energy;
+                } else {
+                    preservedEnergy = 0;
                 }
+                setChanged();
                 removeBlockFromNetwork();
             }
 

@@ -56,5 +56,7 @@
   "message.deepresonance.generator_controller.header": "Part of a generator multi-block. Use this block to turn on/off the reactor with a redstone signal.",
   "message.deepresonance.energy_collector.header": "Part of a generator multi-block. Place this on top of a generator with crystals nearby.",
   "message.deepresonance.generator_part.header": "Part of a generator multi-block. You can place these in any configuration.",
-  "message.deepresonance.laser.header": "Place this laser so it faces a lens. It will infuse the liquid in the tank depending on the materials used."
+  "message.deepresonance.generator_part.power": "Power: ",
+  "message.deepresonance.laser.header": "Place this laser so it faces a lens. It will infuse the liquid in the tank depending on the materials used.",
+  "message.deepresonance.laser.liquid": "Liquid: "
 }

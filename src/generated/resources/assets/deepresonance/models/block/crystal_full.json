@@ -1,6 +1,7 @@
 {
   "parent": "deepresonance:block/crystal",
   "textures": {
-    "crystal_texture": "deepresonance:block/crystal"
+    "crystal_texture": "deepresonance:block/crystal",
+    "particle": "deepresonance:block/crystal"
   }
 }

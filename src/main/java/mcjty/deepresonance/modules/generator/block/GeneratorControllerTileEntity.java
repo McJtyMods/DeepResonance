@@ -105,6 +105,9 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
                 }
             }
         }
+        if (networks.isEmpty()) {
+            shutdown = 0;
+        }
         if (dirty) {
             DRGeneratorNetwork generatorNetwork = DRGeneratorNetwork.getNetwork(level);
             generatorNetwork.save();

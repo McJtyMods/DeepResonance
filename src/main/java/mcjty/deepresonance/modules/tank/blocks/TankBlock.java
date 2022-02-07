@@ -9,6 +9,7 @@ import mcjty.lib.builder.BlockBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -28,15 +29,23 @@ public class TankBlock extends BaseBlock {
                 .topDriver(DeepResonanceTOPDriver.DRIVER)
                 .tileEntitySupplier(TankTileEntity::new)
                 .info(key(DeepResonance.SHIFT_MESSAGE))
-                .infoShift(header(), parameter("liquid", itemStack -> {
-                    FluidStack stack = readFromTileNbt(itemStack.getOrCreateTagElement(CoreModule.TILE_DATA_TAG));
-                    if (!stack.isEmpty()) {
-                        // @todo 1.16
-//                        return TextFormatting.GREEN + "Fluid: " + StatCollector.translateToLocal(stack.getFluid().getAttributes().getTranslationKey(stack))
-//                                + "\n" + TextFormatting.GREEN + "Amount: " + stack.getAmount() + " mb";
-                    }
-                    return "";
-                })));
+                .infoShift(header(), parameter("liquid", TankBlock::getLiquid)));
+    }
+
+    private static String getLiquid(ItemStack itemStack) {
+        CompoundNBT tag = itemStack.getTag();
+        if (tag == null) {
+            return "";
+        }
+        CompoundNBT infoTag = tag.getCompound("BlockEntityTag").getCompound("Info");
+        if (infoTag.contains("preserved")) {
+            FluidStack fluidStack = FluidStack.loadFluidStackFromNBT(infoTag.getCompound("preserved"));
+            if (!fluidStack.isEmpty()) {
+                String name = I18n.get(fluidStack.getTranslationKey());
+                return name + " (" + fluidStack.getAmount() + "mb)";
+            }
+        }
+        return "";
     }
 
     @Override
@@ -70,12 +79,5 @@ public class TankBlock extends BaseBlock {
 //        }
 //        return super.getComparatorInputOverride(blockState, worldIn, pos);
 //    }
-
-    public static FluidStack readFromTileNbt(CompoundNBT tag) {
-        if (tag == null || !tag.contains("grid_data")) {
-            return FluidStack.EMPTY;
-        }
-        return FluidStack.loadFluidStackFromNBT(tag.getCompound("grid_data").getCompound("fluid"));
-    }
 
 }

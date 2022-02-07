@@ -24,7 +24,10 @@ public class GeneratorFixer implements IMultiblockFixer<GeneratorBlob> {
     @Override
     public void distribute(MultiblockDriver<GeneratorBlob> driver, World level, GeneratorBlob original, List<Pair<Integer, Set<BlockPos>>> todo) {
         int totalEnergy = original.getEnergy();
-        int totalBlocks = original.getGeneratorBlocks();
+        int totalBlocks = 0;
+        for (Pair<Integer, Set<BlockPos>> pair : todo) {
+            totalBlocks += pair.getRight().size();
+        }
         int energyPerBlock = totalEnergy / totalBlocks;
         int remainder = totalEnergy % totalBlocks;
 

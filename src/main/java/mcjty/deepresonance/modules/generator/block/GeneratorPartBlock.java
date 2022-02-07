@@ -5,11 +5,16 @@ import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.builder.TooltipBuilder;
+import mcjty.lib.varia.NBTTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
@@ -18,14 +23,20 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static mcjty.lib.builder.TooltipBuilder.*;
+
 public class GeneratorPartBlock extends BaseBlock {
 
     public GeneratorPartBlock() {
         super(new BlockBuilder()
                 .tileEntitySupplier(GeneratorPartTileEntity::new)
                 .topDriver(DeepResonanceTOPDriver.DRIVER)
-                .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))
-                .infoShift(TooltipBuilder.header()));
+                .info(key("message.deepresonance.shiftmessage"))
+                .infoShift(header(), parameter("power", GeneratorPartBlock::getPowerString)));
+    }
+
+    private static String getPowerString(ItemStack stack) {
+        return NBTTools.getInfoNBT(stack, CompoundNBT::getInt, "preserved", 0) + "FE";
     }
 
     @Override
@@ -62,5 +73,22 @@ public class GeneratorPartBlock extends BaseBlock {
         super.createBlockStateDefinition(builder);
         builder.add(BlockStateProperties.POWERED, BlockStateProperties.UP, BlockStateProperties.DOWN);
     }
+
+//    @Override
+//    public void setPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nullable LivingEntity placer, @Nonnull ItemStack stack) {
+//        super.setPlacedBy(world, pos, state, placer, stack);
+//        if (!world.isClientSide) {
+//
+//            TileEntity te = world.getBlockEntity(pos);
+//            if (te instanceof GeneratorPartTileEntity) {
+//                GeneratorPartTileEntity part = (GeneratorPartTileEntity) te;
+//                long energy = stack.hasTag() ? stack.getTag().getLong("energy") : 0;
+//                part.setLocalEnergy(energy);
+//                part.getNetwork();   // Force a rebuild of the network
+//                part.markDirtyQuick();
+//            }
+//        }
+//    }
+//
 
 }
