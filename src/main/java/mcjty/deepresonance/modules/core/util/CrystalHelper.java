@@ -15,10 +15,6 @@ public class CrystalHelper {
         return power < Constants.CRYSTAL_MIN_POWER;
     }
 
-    public static boolean isVeryPure(double purity) {
-        return purity > Constants.PURE_MODEL_THRESHOLD;
-    }
-
     public static int getRfPerTick(double efficiency, double purity) {
         return (int) (CrystalConfig.MAX_POWER_TICK.get() * efficiency / 100.1 * (purity + 2.0) / 102.0 + 1);
     }

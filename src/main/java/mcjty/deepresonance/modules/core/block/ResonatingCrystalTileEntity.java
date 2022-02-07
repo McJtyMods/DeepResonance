@@ -1,9 +1,7 @@
 package mcjty.deepresonance.modules.core.block;
 
 import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.deepresonance.modules.core.client.ModelLoaderCoreModule;
 import mcjty.deepresonance.modules.core.util.CrystalConfig;
-import mcjty.deepresonance.modules.core.util.CrystalHelper;
 import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
@@ -11,8 +9,6 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
@@ -160,11 +156,9 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
         boolean oldempty = isEmpty();
-        boolean oldVeryPure = CrystalHelper.isVeryPure(getPurity());
         super.onDataPacket(net, packet);
         boolean newempty = isEmpty();
-        if (oldempty != newempty || oldVeryPure != CrystalHelper.isVeryPure(getPurity())) {
-            requestModelDataUpdate();
+        if (oldempty != newempty) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
         }
     }
@@ -212,16 +206,6 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     public void saveClientDataToNBT(CompoundNBT tagCompound) {
         tagCompound.putBoolean("glowing", glowing);
     }
-
-    @Nonnull
-    @Override
-    public IModelData getModelData() {
-        IModelData tileData = new ModelDataMap.Builder().build();
-        tileData.setData(ModelLoaderCoreModule.POWER, getPower());
-        tileData.setData(ModelLoaderCoreModule.PURITY, getPurity());
-        return tileData;
-    }
-
 
     // Special == 0, normal
     // Special == 1, average random
