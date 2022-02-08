@@ -1,5 +1,6 @@
 package mcjty.deepresonance.modules.generator.client;
 
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
@@ -54,26 +55,22 @@ public class CollectorRenderer implements BlockEntityRenderer<EnergyCollectorTil
             return;
         }
 
+        DelayedRenderer.addRender(CustomRenderTypes.TRANSLUCENT_LIGHTNING_NOLIGHTMAPS, tileEntity.getBlockPos(), this::renderHalo);
         DelayedRenderer.addRender(CustomRenderTypes.TRANSLUCENT_LIGHTNING_NOLIGHTMAPS, tileEntity.getBlockPos(), (stack, buf) -> {
-            renderHalo(tileEntity.getBlockPos(), tileEntity.getLaserStartup(), tileEntity.getCrystals(), stack, buf);
-        });
-        DelayedRenderer.addRender(CustomRenderTypes.TRANSLUCENT_ADD_NOLIGHTMAPS, tileEntity.getBlockPos(), (stack, buf) -> {
             renderLasers(tileEntity.getBlockPos(), tileEntity.getLaserStartup(), tileEntity.getCrystals(), stack, buf);
         });
     }
 
-    private void renderHalo(BlockPos pos, int laserStartup, Set<BlockPos> crystals, PoseStack matrixStack, MultiBufferSource buffer) {
+    private void renderHalo(PoseStack matrixStack, VertexConsumer buffer) {
         matrixStack.translate(0f, .25f, .0f);
         RenderHelper.renderBillboardQuadBright(matrixStack, buffer, 1.0f, ClientSetup.HALO, SETTINGS);// + random.nextFloat() * .05f);
         matrixStack.translate(0, -.25f, 0f);
     }
 
-    private void renderLasers(BlockPos pos, int laserStartup, Set<BlockPos> crystals, PoseStack matrixStack, MultiBufferSource buffer) {
+    private void renderLasers(BlockPos pos, int laserStartup, Set<BlockPos> crystals, PoseStack matrixStack, VertexConsumer builder) {
         float startupFactor = laserStartup / (float) GeneratorConfig.STARTUP_TIME.get();
         for (BlockPos destination : crystals) {
             TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(ClientSetup.LASERBEAMS[random.nextInt(4)]);
-
-            VertexConsumer builder = buffer.getBuffer(CustomRenderTypes.TRANSLUCENT_ADD_NOLIGHTMAPS);
 
             int tex = pos.getX();
             int tey = pos.getY();

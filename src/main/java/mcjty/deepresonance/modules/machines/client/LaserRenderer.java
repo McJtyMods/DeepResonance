@@ -38,14 +38,13 @@ public class LaserRenderer implements BlockEntityRenderer<LaserTileEntity> {
     @Override
     public void render(@Nonnull LaserTileEntity tileEntity, float partialTicks, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
         DelayedRenderer.addRender(CustomRenderTypes.TRANSLUCENT_ADD_NOLIGHTMAPS, tileEntity.getBlockPos(), (stack, buf) -> {
-            renderInternal(tileEntity, stack, buf);
+            int color = tileEntity.getBlockState().getValue(LaserTileEntity.COLOR);
+            renderInternal(tileEntity.getBlockPos(), color, stack, buf);
         });
     }
 
-    private void renderInternal(LaserTileEntity tileEntity, PoseStack matrixStack, MultiBufferSource buffer) {
-        int color = tileEntity.getBlockState().getValue(LaserTileEntity.COLOR);
+    private void renderInternal(BlockPos pos, int color, PoseStack matrixStack, VertexConsumer builder) {
         if (color != 0) {
-            BlockPos pos = tileEntity.getBlockPos();
             Direction direction = OrientationTools.getOrientationHoriz(Minecraft.getInstance().level.getBlockState(pos));
             float destX = 0.5f + direction.getStepX()*2.5f;
             float destY = 0.5f;
@@ -59,9 +58,9 @@ public class LaserRenderer implements BlockEntityRenderer<LaserTileEntity> {
                 default -> null;
             };
 
-            int tex = tileEntity.getBlockPos().getX();
-            int tey = tileEntity.getBlockPos().getY();
-            int tez = tileEntity.getBlockPos().getZ();
+            int tex = pos.getX();
+            int tey = pos.getY();
+            int tez = pos.getZ();
             Vec3 projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().add(-tex, -tey, -tez);
 
             // Crystal coordinates are relative!
@@ -72,7 +71,6 @@ public class LaserRenderer implements BlockEntityRenderer<LaserTileEntity> {
             TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(laser);
 
             matrixStack.pushPose();
-            VertexConsumer builder = buffer.getBuffer(CustomRenderTypes.TRANSLUCENT_ADD_NOLIGHTMAPS);
             RenderSettings settingsLaser = RenderSettings.builder()
                     .width(.25f)
                     .alpha(128)

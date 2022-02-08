@@ -22,8 +22,8 @@ public class ResonatingCrystalRenderer implements BlockEntityRenderer<Resonating
     @Override
     public void render(ResonatingCrystalTileEntity tileEntity, float partialTicks, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
         if (tileEntity.isGlowing()) {
-            DelayedRenderer.addRender(CustomRenderTypes.TRANSLUCENT_ADD_NOLIGHTMAPS, tileEntity.getBlockPos(), (stack, buf) -> {
-                    RenderHelper.renderBillboardQuadBright(stack, buf, 0.6f, ClientSetup.REDHALO);
+            DelayedRenderer.addRender(CustomRenderTypes.TRANSLUCENT_LIGHTNING_NOLIGHTMAPS, tileEntity.getBlockPos(), (stack, buf) -> {
+                    RenderHelper.renderBillboardQuadBright(stack, buf, 0.6f, ClientSetup.REDHALO, RenderHelper.DEFAULT_SETTINGS);
             });
         }
     }
