@@ -8,6 +8,7 @@ import mcjty.lib.client.CustomRenderTypes;
 import mcjty.lib.client.DelayedRenderer;
 import mcjty.lib.client.RenderHelper;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -22,7 +23,7 @@ public class ResonatingCrystalRenderer implements BlockEntityRenderer<Resonating
     @Override
     public void render(ResonatingCrystalTileEntity tileEntity, float partialTicks, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
         if (tileEntity.isGlowing()) {
-            DelayedRenderer.addRender(CustomRenderTypes.TRANSLUCENT_LIGHTNING_NOLIGHTMAPS, tileEntity.getBlockPos(), (stack, buf) -> {
+            DelayedRenderer.addRender(RenderType.translucent(), tileEntity.getBlockPos(), (stack, buf) -> {
                     RenderHelper.renderBillboardQuadBright(stack, buf, 0.6f, ClientSetup.REDHALO, RenderHelper.DEFAULT_SETTINGS);
             });
         }

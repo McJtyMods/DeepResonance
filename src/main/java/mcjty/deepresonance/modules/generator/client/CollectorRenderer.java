@@ -15,6 +15,7 @@ import mcjty.lib.client.RenderHelper;
 import mcjty.lib.client.RenderSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -55,8 +56,8 @@ public class CollectorRenderer implements BlockEntityRenderer<EnergyCollectorTil
             return;
         }
 
-        DelayedRenderer.addRender(CustomRenderTypes.TRANSLUCENT_LIGHTNING_NOLIGHTMAPS, tileEntity.getBlockPos(), this::renderHalo);
-        DelayedRenderer.addRender(CustomRenderTypes.TRANSLUCENT_LIGHTNING_NOLIGHTMAPS, tileEntity.getBlockPos(), (stack, buf) -> {
+        DelayedRenderer.addRender(RenderType.translucent(), tileEntity.getBlockPos(), this::renderHalo);
+        DelayedRenderer.addRender(RenderType.translucent(), tileEntity.getBlockPos(), (stack, buf) -> {
             renderLasers(tileEntity.getBlockPos(), tileEntity.getLaserStartup(), tileEntity.getCrystals(), stack, buf);
         });
     }
