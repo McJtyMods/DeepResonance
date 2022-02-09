@@ -7,13 +7,13 @@ import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.LaserTileEntity;
 import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
 import mcjty.deepresonance.setup.ClientSetup;
-import mcjty.lib.client.CustomRenderTypes;
 import mcjty.lib.client.DelayedRenderer;
 import mcjty.lib.client.RenderHelper;
 import mcjty.lib.client.RenderSettings;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -37,7 +37,7 @@ public class LaserRenderer implements BlockEntityRenderer<LaserTileEntity> {
 
     @Override
     public void render(@Nonnull LaserTileEntity tileEntity, float partialTicks, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
-        DelayedRenderer.addRender(CustomRenderTypes.TRANSLUCENT_ADD_NOLIGHTMAPS, tileEntity.getBlockPos(), (stack, buf) -> {
+        DelayedRenderer.addRender(RenderType.translucent(), tileEntity.getBlockPos(), (stack, buf) -> {
             int color = tileEntity.getBlockState().getValue(LaserTileEntity.COLOR);
             renderInternal(tileEntity.getBlockPos(), color, stack, buf);
         });

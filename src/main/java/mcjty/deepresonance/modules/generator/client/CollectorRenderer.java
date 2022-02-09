@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.generator.client;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
@@ -16,11 +15,11 @@ import mcjty.lib.client.RenderSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 
@@ -56,16 +55,14 @@ public class CollectorRenderer implements BlockEntityRenderer<EnergyCollectorTil
             return;
         }
 
-        DelayedRenderer.addRender(RenderType.translucent(), tileEntity.getBlockPos(), this::renderHalo);
         DelayedRenderer.addRender(RenderType.translucent(), tileEntity.getBlockPos(), (stack, buf) -> {
+            renderHalo(stack, buf);
             renderLasers(tileEntity.getBlockPos(), tileEntity.getLaserStartup(), tileEntity.getCrystals(), stack, buf);
         });
     }
 
     private void renderHalo(PoseStack matrixStack, VertexConsumer buffer) {
-        matrixStack.translate(0f, .25f, .0f);
-        RenderHelper.renderBillboardQuadBright(matrixStack, buffer, 1.0f, ClientSetup.HALO, SETTINGS);// + random.nextFloat() * .05f);
-        matrixStack.translate(0, -.25f, 0f);
+        RenderHelper.renderSplitBillboard(matrixStack, buffer, 1.0f, new Vec3(0, .25, 0), ClientSetup.HALO);
     }
 
     private void renderLasers(BlockPos pos, int laserStartup, Set<BlockPos> crystals, PoseStack matrixStack, VertexConsumer builder) {
