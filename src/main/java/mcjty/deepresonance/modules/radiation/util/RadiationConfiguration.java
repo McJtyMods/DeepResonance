@@ -37,6 +37,13 @@ public class RadiationConfiguration {
     public static ForgeConfigSpec.DoubleValue RADIATION_SHIELD_DENSE_GLASS_FACTOR;
     public static ForgeConfigSpec.DoubleValue RADIATION_SHIELD_LEAD_FACTOR;
 
+    //@todo make config!
+    public static float radiationExplosionFactor = 1.3f;
+    public static float minimumExplosionMultiplier = 6.0f;
+    public static float maximumExplosionMultiplier = 17.0f;
+    public static float absoluteMaximumExplosionMultiplier = 20.0f;
+
+
     public static final ForgeConfigSpec.DoubleValue[] SUIT_PROTECTION = new ForgeConfigSpec.DoubleValue[4];
 
     public static void init() {
