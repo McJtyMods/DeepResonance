@@ -37,16 +37,17 @@ public class RadiationConfiguration {
     public static ForgeConfigSpec.DoubleValue RADIATION_SHIELD_DENSE_GLASS_FACTOR;
     public static ForgeConfigSpec.DoubleValue RADIATION_SHIELD_LEAD_FACTOR;
 
-    //@todo make config!
-    public static float radiationExplosionFactor = 1.3f;
-    public static float minimumExplosionMultiplier = 6.0f;
-    public static float maximumExplosionMultiplier = 17.0f;
-    public static float absoluteMaximumExplosionMultiplier = 20.0f;
+    public static ForgeConfigSpec.DoubleValue RADIATION_EXPLOSION_FACTOR;
+    public static ForgeConfigSpec.DoubleValue MINIMUM_EXPLOSION_MULTIPLIER;
+    public static ForgeConfigSpec.DoubleValue MAXIMUM_EXPLOSION_MULTIPLIER;
+    public static ForgeConfigSpec.DoubleValue ABSOLUTE_MAXIMUM_EXPLOSION_MULTIPLIER;
 
 
     public static final ForgeConfigSpec.DoubleValue[] SUIT_PROTECTION = new ForgeConfigSpec.DoubleValue[4];
 
     public static void init() {
+        initExplosionSettings();
+
         Config.SERVER_BUILDER.push("radiation");
 
         MIN_RADIATION_RADIUS = Config.SERVER_BUILDER.comment("The minimum radiation radius")
@@ -110,6 +111,21 @@ public class RadiationConfiguration {
             SUIT_PROTECTION[i] = Config.SERVER_BUILDER.comment("How much protection you get from radiation with " + (i+1) + " radiation suit piece equipped")
                     .defineInRange("suitProtection" + (i+1), def[i], 0.0f, Float.MAX_VALUE);
         }
+
+        Config.SERVER_BUILDER.pop();
+    }
+
+    private static void initExplosionSettings() {
+        Config.SERVER_BUILDER.push("explosion");
+
+        RADIATION_EXPLOSION_FACTOR = Config.SERVER_BUILDER.comment("This factor increases the radius of radiation on explosion and decreases the strength")
+                .defineInRange("radiationExplosionFactor", 1.3, 0.0, 1000.0);
+        MINIMUM_EXPLOSION_MULTIPLIER = Config.SERVER_BUILDER.comment("The minimum explosion multiplier")
+                .defineInRange("minimumExplosionMultiplier", 6.0, 0.1, 200.0);
+        MAXIMUM_EXPLOSION_MULTIPLIER = Config.SERVER_BUILDER.comment("The maximum explosion multiplier for a 100%/100% power/strength crystal")
+                .defineInRange("maximumExplosionMultiplier", 17.0, 0.1, 200.0);
+        ABSOLUTE_MAXIMUM_EXPLOSION_MULTIPLIER = Config.SERVER_BUILDER.comment("The maximum explosion multiplier that is possible. Set to 0 to disable all explosions")
+                .defineInRange("absoluteMaximumExplosionMultiplier", 20.0, 0.1, 200.0);
 
         Config.SERVER_BUILDER.pop();
     }
