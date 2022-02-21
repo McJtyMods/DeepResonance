@@ -2,22 +2,29 @@ package mcjty.deepresonance.modules.core.block;
 
 import mcjty.deepresonance.compat.DeepResonanceTOPDriver;
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.radiation.manager.DRRadiationManager;
+import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.util.Constants;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.TickTask;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -111,6 +118,63 @@ public class ResonatingCrystalBlock extends BaseBlock {
                 items.add(stack);
             }
         }
+    }
+
+    @Override
+    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
+        if (!world.isClientSide) {
+            explode(world, pos, false);
+        }
+        super.onBlockExploded(state, world, pos, explosion);
+    }
+
+    private static void explodeHelper(Level world, BlockPos location, float radius) {
+        Explosion boom = new Explosion(world, null, location.getX(), location.getY(), location.getZ(), radius, false, Explosion.BlockInteraction.BREAK);
+        for(int x = (int)(-radius); x < radius; ++x) {
+            for(int y = (int)(-radius); y < radius; ++y) {
+                for(int z = (int)(-radius); z < radius; ++z) {
+                    BlockPos targetPosition = location.offset(x, y, z);
+                    double dist = Math.sqrt(location.distSqr(targetPosition));
+                    if(dist < radius) {
+                        BlockState state = world.getBlockState(targetPosition);
+                        Block block = state.getBlock();
+                        float resistance = state.getExplosionResistance(world, targetPosition, boom);
+                        if (!state.isAir() && resistance > 0 && (dist < radius - 1.0F || world.random.nextFloat() > 0.7D)) {
+                            block.onBlockExploded(state, world, targetPosition, boom);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    public static void explode(Level world, BlockPos pos, boolean strong) {
+        BlockEntity theCrystalTile = world.getBlockEntity(pos);
+        world.getServer().tell(new TickTask((int) (world.getGameTime()+1), () -> {
+            float forceMultiplier = 1;
+            if (theCrystalTile instanceof ResonatingCrystalTileEntity crystal) {
+                float explosionStrength = (float) ((crystal.getPower() * crystal.getStrength()) / (100.0f * 100.0f));
+                forceMultiplier = explosionStrength * (RadiationConfiguration.maximumExplosionMultiplier - RadiationConfiguration.minimumExplosionMultiplier) + RadiationConfiguration.minimumExplosionMultiplier;
+                if (forceMultiplier > RadiationConfiguration.absoluteMaximumExplosionMultiplier) {
+                    forceMultiplier = RadiationConfiguration.absoluteMaximumExplosionMultiplier;
+                }
+                if (forceMultiplier > 0.001f) {
+                    DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
+                    DRRadiationManager.RadiationSource source = radiationManager.getOrCreateRadiationSource(GlobalPos.of(world.dimension(), pos));
+                    float radiationRadius = DRRadiationManager.calculateRadiationRadius(crystal.getStrength(), crystal.getEfficiency(), crystal.getPurity());
+                    float radiationStrength = DRRadiationManager.calculateRadiationStrength(crystal.getStrength(), crystal.getPurity());
+                    source.update(radiationRadius * RadiationConfiguration.radiationExplosionFactor, radiationStrength / RadiationConfiguration.radiationExplosionFactor, 1000);
+                }
+            }
+            if (forceMultiplier > 0.001f) {
+                explodeHelper(world, pos, forceMultiplier);
+                if (strong) {
+//                    explodeHelper(world, pos.west(15), forceMultiplier);
+//                    explodeHelper(world, pos.west(15), forceMultiplier);
+                }
+            }
+        }));
     }
 
     @Override
