@@ -1,3 +1,6 @@
+Upcoming:
+- Crystals can explode again
+
 2.0.0-beta:
 - Port to 1.16
 

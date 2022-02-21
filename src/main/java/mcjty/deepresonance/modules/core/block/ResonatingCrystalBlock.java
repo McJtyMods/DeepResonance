@@ -123,7 +123,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
     @Override
     public void onBlockExploded(BlockState state, World world, BlockPos pos, Explosion explosion) {
         if (!world.isClientSide) {
-            explode(world, pos, false);
+            explode(world, pos);
         }
         super.onBlockExploded(state, world, pos, explosion);
     }
@@ -149,31 +149,27 @@ public class ResonatingCrystalBlock extends BaseBlock {
     }
 
 
-    public static void explode(World world, BlockPos pos, boolean strong) {
+    public static void explode(World world, BlockPos pos) {
         TileEntity theCrystalTile = world.getBlockEntity(pos);
         world.getServer().tell(new TickDelayedTask((int) (world.getGameTime()+1), () -> {
-            float forceMultiplier = 1;
+            double forceMultiplier = 1;
             if (theCrystalTile instanceof ResonatingCrystalTileEntity) {
                 ResonatingCrystalTileEntity crystal = (ResonatingCrystalTileEntity) theCrystalTile;
                 float explosionStrength = (float) ((crystal.getPower() * crystal.getStrength()) / (100.0f * 100.0f));
-                forceMultiplier = explosionStrength * (RadiationConfiguration.maximumExplosionMultiplier - RadiationConfiguration.minimumExplosionMultiplier) + RadiationConfiguration.minimumExplosionMultiplier;
-                if (forceMultiplier > RadiationConfiguration.absoluteMaximumExplosionMultiplier) {
-                    forceMultiplier = RadiationConfiguration.absoluteMaximumExplosionMultiplier;
+                forceMultiplier = explosionStrength * (RadiationConfiguration.MAXIMUM_EXPLOSION_MULTIPLIER.get() - RadiationConfiguration.MINIMUM_EXPLOSION_MULTIPLIER.get()) + RadiationConfiguration.MINIMUM_EXPLOSION_MULTIPLIER.get();
+                if (forceMultiplier > RadiationConfiguration.ABSOLUTE_MAXIMUM_EXPLOSION_MULTIPLIER.get()) {
+                    forceMultiplier = RadiationConfiguration.ABSOLUTE_MAXIMUM_EXPLOSION_MULTIPLIER.get();
                 }
                 if (forceMultiplier > 0.001f) {
                     DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
                     DRRadiationManager.RadiationSource source = radiationManager.getOrCreateRadiationSource(GlobalPos.of(world.dimension(), pos));
-                    float radiationRadius = DRRadiationManager.calculateRadiationRadius(crystal.getStrength(), crystal.getEfficiency(), crystal.getPurity());
-                    float radiationStrength = DRRadiationManager.calculateRadiationStrength(crystal.getStrength(), crystal.getPurity());
-                    source.update(radiationRadius * RadiationConfiguration.radiationExplosionFactor, radiationStrength / RadiationConfiguration.radiationExplosionFactor, 1000);
+                    double radiationRadius = DRRadiationManager.calculateRadiationRadius(crystal.getStrength(), crystal.getEfficiency(), crystal.getPurity());
+                    double radiationStrength = DRRadiationManager.calculateRadiationStrength(crystal.getStrength(), crystal.getPurity());
+                    source.update((float) (radiationRadius * RadiationConfiguration.RADIATION_EXPLOSION_FACTOR.get()), (float) (radiationStrength / RadiationConfiguration.RADIATION_EXPLOSION_FACTOR.get()), 1000);
                 }
             }
             if (forceMultiplier > 0.001f) {
-                explodeHelper(world, pos, forceMultiplier);
-                if (strong) {
-//                    explodeHelper(world, pos.west(15), forceMultiplier);
-//                    explodeHelper(world, pos.west(15), forceMultiplier);
-                }
+                explodeHelper(world, pos, (float) forceMultiplier);
             }
         }));
     }
