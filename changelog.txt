@@ -1,4 +1,4 @@
-Upcoming:
+1.16-2.0.1-beta:
 - Crystals can explode again
 
 2.0.0-beta:
