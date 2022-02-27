@@ -1,3 +1,6 @@
+Upcoming:
+- Added a potential fix for divide by zero
+
 1.16-2.0.1-beta:
 - Crystals can explode again
 

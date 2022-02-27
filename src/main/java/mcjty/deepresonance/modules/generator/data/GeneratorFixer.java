@@ -28,6 +28,9 @@ public class GeneratorFixer implements IMultiblockFixer<GeneratorBlob> {
         for (Pair<Integer, Set<BlockPos>> pair : todo) {
             totalBlocks += pair.getRight().size();
         }
+        if (totalBlocks == 0) {
+            return;
+        }
         int energyPerBlock = totalEnergy / totalBlocks;
         int remainder = totalEnergy % totalBlocks;
 
