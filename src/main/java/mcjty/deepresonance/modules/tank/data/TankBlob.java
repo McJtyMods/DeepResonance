@@ -16,7 +16,7 @@ import java.util.Set;
 
 public class TankBlob implements IMultiblock {
 
-    private LiquidCrystalData data;
+    @Nonnull private LiquidCrystalData data = LiquidCrystalData.EMPTY;
     private int tankBlocks;
     private int minY;               // Minimum Y for this tank blob
     private int[] blocksPerLevel;   // Amount of blocks per Y level
@@ -63,10 +63,10 @@ public class TankBlob implements IMultiblock {
     }
 
     public void merge(TankBlob other) {
-        if (this.data != null) {
-            other.getData().ifPresent(d -> this.data.merge(d));
+        if (!this.data.isEmpty()) {
+            this.data.merge(other.getData());
         } else {
-            this.data = other.getData().orElse(null);
+            this.data = LiquidCrystalData.fromStack(other.getData().getFluidStack());
         }
         this.tankBlocks += other.getTankBlocks();
         if (this.blocksPerLevel == null) {
@@ -103,7 +103,7 @@ public class TankBlob implements IMultiblock {
     public int fill(FluidStack stack, IFluidHandler.FluidAction action) {
         if (stack.isEmpty()) {
             return 0;
-        } else if (data == null || data.getFluidStack().isEmpty()) {
+        } else if (data.isEmpty()) {
             int amountToTransfer = Math.min(stack.getAmount(), getCapacity());
             if (action.execute()) {
                 data = LiquidCrystalData.fromStack(stack);
@@ -126,14 +126,14 @@ public class TankBlob implements IMultiblock {
     // Return the fluid that was drained
     @Nonnull
     public FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action) {
-        if (resource.isEmpty() || data == null || data.getFluidStack().isEmpty()) {
+        if (resource.isEmpty() || data.isEmpty()) {
             return FluidStack.EMPTY;
         } else if (resource.getFluid() != data.getFluidStack().getFluid()) {
             return FluidStack.EMPTY;
         } else if (resource.getAmount() >= data.getAmount()) {
             FluidStack result = data.getFluidStack();
             if (action.execute()) {
-                data = null;
+                data = LiquidCrystalData.EMPTY;
             }
             return result;
         } else {
@@ -149,12 +149,12 @@ public class TankBlob implements IMultiblock {
     // Return the fluid that was drained
     @Nonnull
     public FluidStack drain(int amount, IFluidHandler.FluidAction action) {
-        if (amount <= 0 || data == null || data.getFluidStack().isEmpty()) {
+        if (amount <= 0 || data.isEmpty()) {
             return FluidStack.EMPTY;
         } else if (amount >= data.getAmount()) {
             FluidStack result = data.getFluidStack().copy();
             if (action.execute()) {
-                data = null;
+                data = LiquidCrystalData.EMPTY;
             }
             return result;
         } else {
@@ -168,8 +168,8 @@ public class TankBlob implements IMultiblock {
     }
 
     @Nonnull
-    public Optional<LiquidCrystalData> getData() {
-        return Optional.ofNullable(data);
+    public LiquidCrystalData getData() {
+        return data;
     }
 
     public TankBlob copyData(LiquidCrystalData data) {
@@ -204,7 +204,7 @@ public class TankBlob implements IMultiblock {
     }
 
     public static CompoundTag save(CompoundTag tagCompound, TankBlob network) {
-        if (network.data != null) {
+        if (!network.data.isEmpty()) {
             tagCompound.put("fluid", network.data.getFluidStack().writeToNBT(new CompoundTag()));
         }
         tagCompound.putInt("refcount", network.tankBlocks);

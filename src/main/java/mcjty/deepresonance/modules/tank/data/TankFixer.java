@@ -1,5 +1,6 @@
 package mcjty.deepresonance.modules.tank.data;
 
+import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.multiblock.IMultiblockFixer;
 import mcjty.lib.multiblock.MultiblockDriver;
 import net.minecraft.core.BlockPos;
@@ -22,26 +23,28 @@ public class TankFixer implements IMultiblockFixer<TankBlob> {
 
     @Override
     public void distribute(MultiblockDriver<TankBlob> driver, Level level, TankBlob original, List<Pair<Integer, Set<BlockPos>>> todo) {
-        original.getData().ifPresent(data -> {
-            int totalAmount = data.getAmount();
-            int totalBlocks = 0;
-            for (Pair<Integer, Set<BlockPos>> pair : todo) {
-                totalBlocks += pair.getRight().size();
-            }
+        LiquidCrystalData data = original.getData();
+        int totalAmount = data.getAmount();
+        int totalBlocks = 0;
+        for (Pair<Integer, Set<BlockPos>> pair : todo) {
+            totalBlocks += pair.getRight().size();
+        }
 
-            int amountPerBlock = totalAmount / totalBlocks;
-            int remainder = totalAmount % totalBlocks;
+        if (totalBlocks == 0) {
+            return;
+        }
+        int amountPerBlock = totalAmount / totalBlocks;
+        int remainder = totalAmount % totalBlocks;
 
-            for (Pair<Integer, Set<BlockPos>> pair : todo) {
-                TankBlob builder = new TankBlob();
-                int generatorBlocks = pair.getRight().size();
-                data.setAmount(remainder + amountPerBlock * generatorBlocks);
-                TankBlob mb = builder.setTankBlocks(generatorBlocks)
-                        .copyData(data);
-                mb.updateDistribution(pair.getRight());
-                driver.createOrUpdate(pair.getKey(), mb);
-                remainder = 0;
-            }
-        });
+        for (Pair<Integer, Set<BlockPos>> pair : todo) {
+            TankBlob builder = new TankBlob();
+            int generatorBlocks = pair.getRight().size();
+            data.setAmount(remainder + amountPerBlock * generatorBlocks);
+            TankBlob mb = builder.setTankBlocks(generatorBlocks)
+                    .copyData(data);
+            mb.updateDistribution(pair.getRight());
+            driver.createOrUpdate(pair.getKey(), mb);
+            remainder = 0;
+        }
     }
 }

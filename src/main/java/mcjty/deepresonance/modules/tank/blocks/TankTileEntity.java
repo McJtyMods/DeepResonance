@@ -14,6 +14,8 @@ import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -34,13 +36,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
+import java.util.Objects;
 
 public class TankTileEntity extends GenericTileEntity implements IMultiblockConnector {
 
     private int blobId = -1;
 
     // Client only
-    private Fluid clientRenderFluid;
+    @Nonnull private LiquidCrystalData clientRenderFluid = LiquidCrystalData.EMPTY;
     private float renderHeight; //Value from 0.0f to 1.0f
 
     // Only used when the tank is broken and needs to be put back later
@@ -53,14 +56,14 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         super(TankModule.TYPE_TANK.get(), pos, state);
     }
 
-    public void setClientData(float newHeight, Fluid render) {
+    public void setClientData(float newHeight, LiquidCrystalData render) {
         boolean dirty = false;
         if (newHeight >= 0 && renderHeight != newHeight) {
             renderHeight = newHeight;
             dirty = true;
         }
-        if (clientRenderFluid != render) {
-            clientRenderFluid = render;
+        if (!Objects.equals(clientRenderFluid, render)) {
+            clientRenderFluid = LiquidCrystalData.fromStack(render.getFluidStack());
             dirty = true;
         }
         if (dirty) {
@@ -74,8 +77,9 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     // Client side
+    @Nonnull
     public Fluid getClientRenderFluid() {
-        return clientRenderFluid;
+        return clientRenderFluid.getFluidStack().getFluid();
     }
 
     @Override
@@ -118,8 +122,10 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     @Override
     public void saveClientDataToNBT(CompoundTag tagCompound) {
         tagCompound.putFloat("renderC", renderHeight);
-        if (clientRenderFluid != null) {
-            tagCompound.putString("fluidC", clientRenderFluid.getRegistryName().toString());
+        if (!clientRenderFluid.isEmpty()) {
+            CompoundTag tag = new CompoundTag();
+            clientRenderFluid.getFluidStack().writeToNBT(tag);
+            tagCompound.put("fluidC", tag);
         }
     }
 
@@ -127,9 +133,17 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     public void loadClientDataFromNBT(CompoundTag tagCompound) {
         renderHeight = tagCompound.getFloat("renderC");
         if (tagCompound.contains("fluidC")) {
-            clientRenderFluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(tagCompound.getString("fluidC")));
+            Tag fluidTag = tagCompound.get("fluidC");
+            if (StringTag.TYPE.equals(fluidTag.getType())) {
+                // For compatibility
+                Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(fluidTag.getAsString()));
+                clientRenderFluid = LiquidCrystalData.fromStack(new FluidStack(fluid, 1));
+            } else {
+                FluidStack fluidStack = FluidStack.loadFluidStackFromNBT((CompoundTag) fluidTag);
+                clientRenderFluid = LiquidCrystalData.fromStack(fluidStack);
+            }
         } else {
-            clientRenderFluid = null;
+            clientRenderFluid = LiquidCrystalData.EMPTY;
         }
     }
 
@@ -170,13 +184,14 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
             if (newstate.getBlock() != GeneratorModule.GENERATOR_PART_BLOCK.get()) {
                 TankBlob network = getBlob();
                 if (network != null) {
-                    network.getData().ifPresent(data -> {
+                    LiquidCrystalData data = network.getData();
+                    if (!data.isEmpty()) {
                         preservedFluid = data.getFluidStack().copy();
                         int amount = data.getAmount() / network.getTankBlocks();
                         preservedFluid.setAmount(amount);
-                        data.setAmount(data.getAmount()-amount);
-                        setChanged();
-                    });
+                        data.setAmount(data.getAmount() - amount);
+                    }
+                    setChanged();
                 }
                 removeBlockFromNetwork();
             }
@@ -203,11 +218,17 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         MultiblockSupport.removeBlock(level, getBlockPos(), DRTankNetwork.getNetwork(level).getDriver());
     }
 
+    @Nonnull
+    private LiquidCrystalData getClientLiquidData() {
+        return clientRenderFluid;
+    }
+
     private void updateHeightsForClient() {
         int id = getMultiblockId();
         if (id != -1) {
             TankBlob blob = getBlob();
-            FluidStack fluidStack = blob.getData().map(LiquidCrystalData::getFluidStack).orElse(FluidStack.EMPTY);
+            LiquidCrystalData data = blob.getData();
+            FluidStack fluidStack = data.getFluidStack();
             int amount = fluidStack.getAmount();
             int capacityPerTank = blob.getCapacityPerTank();
             DRTankNetwork.foreach(level, id, blockPos -> {
@@ -227,7 +248,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
                         height /= (countAtY * capacityPerTank);
                     }
 
-                    ((TankTileEntity) be).setClientData(height, fluidStack.getFluid());
+                    ((TankTileEntity) be).setClientData(height, data);
                 }
             }, worldPosition);
         }
@@ -265,7 +286,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
 
     @Nonnull
     private IFluidHandler createFluidHandler() {
-        return new DRTankHandler(level, this::getMultiblockId) {
+        return new DRTankHandler(level, this::getMultiblockId, this::getClientLiquidData) {
             @Override
             public void onUpdate() {
                 updateHeightsForClient();

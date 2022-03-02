@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a problem with the client side liquid capability for the tanks potentially crashing
+
 3.0.2-beta:
 - Added a potential fix for divide by zero
 

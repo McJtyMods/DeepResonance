@@ -10,15 +10,19 @@ import mcjty.deepresonance.modules.generator.data.GeneratorBlob;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.deepresonance.modules.tank.data.TankBlob;
+import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.compat.theoneprobe.McJtyLibTOPDriver;
 import mcjty.lib.compat.theoneprobe.TOPDriver;
 import mcjty.lib.varia.Tools;
-import mcjty.theoneprobe.api.*;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.resources.ResourceLocation;
+import mcjty.theoneprobe.api.CompoundText;
+import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.ChatFormatting;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.math.RoundingMode;
@@ -131,20 +135,19 @@ public class DeepResonanceTOPDriver implements TOPDriver {
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (TankTileEntity tank) -> {
                 TankBlob blob = tank.getBlob();
                 if (blob != null) {
-                    blob.getData().ifPresent(d -> {
-                        FluidStack stack = d.getFluidStack();
-                        if (!stack.isEmpty()) {
-                            probeInfo.tankSimple(blob.getCapacity(), stack);
-                            if (stack.getFluid() == CoreModule.LIQUID_CRYSTAL.get()) {
-                                DecimalFormat decimalFormat = new DecimalFormat("#.#");
-                                decimalFormat.setRoundingMode(RoundingMode.DOWN);
-                                probeInfo.text(CompoundText.createLabelInfo("Quality ", decimalFormat.format(d.getQuality() * 100) + "%"));
-                                probeInfo.text(CompoundText.createLabelInfo("Efficiency ", decimalFormat.format(d.getEfficiency() * 100) + "%"));
-                                probeInfo.text(CompoundText.createLabelInfo("Purity ", decimalFormat.format(d.getPurity() * 100) + "%"));
-                                probeInfo.text(CompoundText.createLabelInfo("Strength ", decimalFormat.format(d.getStrength() * 100) + "%"));
-                            }
+                    LiquidCrystalData d = blob.getData();
+                    FluidStack stack = d.getFluidStack();
+                    if (!stack.isEmpty()) {
+                        probeInfo.tankSimple(blob.getCapacity(), stack);
+                        if (stack.getFluid() == CoreModule.LIQUID_CRYSTAL.get()) {
+                            DecimalFormat decimalFormat = new DecimalFormat("#.#");
+                            decimalFormat.setRoundingMode(RoundingMode.DOWN);
+                            probeInfo.text(CompoundText.createLabelInfo("Quality ", decimalFormat.format(d.getQuality() * 100) + "%"));
+                            probeInfo.text(CompoundText.createLabelInfo("Efficiency ", decimalFormat.format(d.getEfficiency() * 100) + "%"));
+                            probeInfo.text(CompoundText.createLabelInfo("Purity ", decimalFormat.format(d.getPurity() * 100) + "%"));
+                            probeInfo.text(CompoundText.createLabelInfo("Strength ", decimalFormat.format(d.getStrength() * 100) + "%"));
                         }
-                    });
+                    }
                     if (mode == ProbeMode.DEBUG) {
                         probeInfo.text(CompoundText.createLabelInfo("Id ", tank.getMultiblockId()));
                         probeInfo.text(CompoundText.createLabelInfo("Client Height ", tank.getClientRenderHeight()));

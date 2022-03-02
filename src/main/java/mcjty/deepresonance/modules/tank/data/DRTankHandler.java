@@ -7,19 +7,18 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 import java.util.function.Supplier;
-
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class DRTankHandler implements IFluidHandler, IFluidTank {
 
     private final Level level;
     private final Supplier<Integer> blobIdGetter;
+    private final Supplier<LiquidCrystalData> clientDataGetter;
 
-    public DRTankHandler(Level level, Supplier<Integer> blobIdGetter) {
+    public DRTankHandler(Level level, Supplier<Integer> blobIdGetter, Supplier<LiquidCrystalData> clientDataGetter) {
         this.level = level;
         this.blobIdGetter = blobIdGetter;
+        this.clientDataGetter = clientDataGetter;
     }
 
     @Override
@@ -27,10 +26,14 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
         return 1;
     }
 
-    private Optional<LiquidCrystalData> getData() {
+    @Nonnull
+    private LiquidCrystalData getData() {
+        if (level.isClientSide) {
+            return clientDataGetter.get();
+        }
         TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
         if (blob == null) {
-            return Optional.empty();
+            return LiquidCrystalData.EMPTY;
         } else {
             return blob.getData();
         }
@@ -39,11 +42,14 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
     @Nonnull
     @Override
     public FluidStack getFluidInTank(int tank) {
-        return getData().map(LiquidCrystalData::getFluidStack).orElse(FluidStack.EMPTY);
+        return getData().getFluidStack();
     }
 
     @Override
     public int getTankCapacity(int tank) {
+        if (level.isClientSide) {
+            return 10 * 1000;   // @todo not correct!
+        }
         TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
         if (blob != null) {
             return blob.getCapacity();
@@ -59,6 +65,9 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
 
     @Override
     public int fill(FluidStack resource, FluidAction action) {
+        if (level.isClientSide) {
+            return 0;
+        }
         TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
         if (blob != null) {
             int filled = blob.fill(resource, action);
@@ -74,6 +83,9 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
     @Nonnull
     @Override
     public FluidStack drain(FluidStack resource, FluidAction action) {
+        if (level.isClientSide) {
+            return FluidStack.EMPTY;
+        }
         TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
         if (blob != null) {
             FluidStack drained = blob.drain(resource, action);
@@ -89,6 +101,9 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
     @Nonnull
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
+        if (level.isClientSide) {
+            return FluidStack.EMPTY;
+        }
         TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
         if (blob != null) {
             FluidStack drained = blob.drain(maxDrain, action);
@@ -104,16 +119,25 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
     @Nonnull
     @Override
     public FluidStack getFluid() {
-        return getData().map(LiquidCrystalData::getFluidStack).orElse(FluidStack.EMPTY);
+        if (level.isClientSide) {
+            return clientDataGetter.get().getFluidStack();
+        }
+        return getData().getFluidStack();
     }
 
     @Override
     public int getFluidAmount() {
-        return getData().map(LiquidCrystalData::getAmount).orElse(0);
+        if (level.isClientSide) {
+            return clientDataGetter.get().getFluidStack().getAmount();
+        }
+        return getData().getAmount();
     }
 
     @Override
     public int getCapacity() {
+        if (level.isClientSide) {
+            return 10 * 1000;   // @todo not correct!
+        }
         TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
         if (blob != null) {
             return blob.getCapacity();
