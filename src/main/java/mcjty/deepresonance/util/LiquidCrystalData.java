@@ -2,8 +2,8 @@ package mcjty.deepresonance.util;
 
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.core.CoreModule;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
@@ -21,20 +21,27 @@ public class LiquidCrystalData implements ILiquidCrystalData {
         this.referenceStack = referenceStack.copy();
     }
 
-    public LiquidCrystalData(PacketBuffer buf) {
-        this.referenceStack = buf.readFluidStack();
+    public static FluidStack makeLiquidCrystalStack(int amount, float quality, float purity, float strength, float efficiency) {
+        FluidStack fluidStack = new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), amount);
+        setStats(fluidStack, quality, purity, strength, efficiency);
+        return fluidStack;
     }
 
-    public static FluidStack makeLiquidCrystalStack(int amount, float quality, float purity, float strength, float efficiency) {
-        LiquidCrystalData data = new LiquidCrystalData(new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), amount));
-        data.setAmount(amount);
-        data.setStats(quality, purity, strength, efficiency);
-        return data.getFluidStack();
+    public static FluidStack makeLiquidCrystalStack(int amount) {
+        return makeLiquidCrystalStack(amount, 0, 0, 0, 0);
     }
 
     @Nonnull
     public static LiquidCrystalData fromStack(FluidStack stack) {
         return new LiquidCrystalData(stack);
+    }
+
+    public static boolean isLiquidCrystal(Fluid fluid) {
+        return fluid == CoreModule.LIQUID_CRYSTAL.get();
+    }
+
+    public static boolean isValidLiquidCrystalStack(@Nonnull FluidStack stack) {
+        return !stack.isEmpty() && isLiquidCrystal(stack.getRawFluid()); //Stack might have size 0
     }
 
     public boolean isEmpty() {
@@ -66,7 +73,11 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     }
 
     private void setStats(double quality, double purity, double strength, double efficiency) {
-        CompoundNBT tag = referenceStack.getOrCreateTag();
+        setStats(referenceStack, quality, purity, strength, efficiency);
+    }
+
+    private static void setStats(FluidStack fluidStack, double quality, double purity, double strength, double efficiency) {
+        CompoundNBT tag = fluidStack.getOrCreateTag();
         tag.putDouble("quality", quality);
         tag.putDouble("purity", purity);
         tag.putDouble("strength", strength);
@@ -78,10 +89,6 @@ public class LiquidCrystalData implements ILiquidCrystalData {
         double thisValue = referenceStack.getTag() == null ? 0 : referenceStack.getTag().getDouble(tag);
         double otherValue = other.getTag() == null ? 0 : other.getTag().getDouble(tag);
         return (1 - f) * thisValue + f * otherValue;
-    }
-
-    public void toBytes(PacketBuffer buf) {
-        buf.writeFluidStack(referenceStack);
     }
 
     @Override

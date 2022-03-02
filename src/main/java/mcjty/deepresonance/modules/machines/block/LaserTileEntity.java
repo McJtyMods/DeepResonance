@@ -6,7 +6,6 @@ import mcjty.deepresonance.modules.machines.data.InfusingBonus;
 import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
 import mcjty.deepresonance.modules.machines.util.config.LaserConfig;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
-import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
@@ -199,7 +198,7 @@ public class LaserTileEntity extends TickingTileEntity {
 
     private boolean validRCLTank(TankTileEntity tank) {
         return tank.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-                .map(handler -> DeepResonanceFluidHelper.isLiquidCrystal(handler.getFluidInTank(0).getFluid()))
+                .map(handler -> LiquidCrystalData.isLiquidCrystal(handler.getFluidInTank(0).getFluid()))
                 .orElse(false);
     }
 

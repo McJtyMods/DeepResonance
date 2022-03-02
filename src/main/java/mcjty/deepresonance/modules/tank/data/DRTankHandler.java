@@ -9,6 +9,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
+import static mcjty.deepresonance.util.Constants.TANK_BUCKETS;
+
 public class DRTankHandler implements IFluidHandler, IFluidTank {
 
     private final World level;
@@ -48,7 +50,7 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
     @Override
     public int getTankCapacity(int tank) {
         if (level.isClientSide) {
-            return 10 * 1000;   // @todo not correct!
+            return TANK_BUCKETS * 1000;   // @todo not correct!
         }
         TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
         if (blob != null) {
@@ -136,7 +138,7 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
     @Override
     public int getCapacity() {
         if (level.isClientSide) {
-            return 10 * 1000;   // @todo not correct!
+            return TANK_BUCKETS * 1000;   // @todo not correct!
         }
         TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
         if (blob != null) {
