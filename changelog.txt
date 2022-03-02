@@ -1,5 +1,7 @@
 Upcoming:
 - Fixed a problem with the client side liquid capability for the tanks potentially crashing
+- Fixed the redstone mode button in the valve crashing the game
+- Fixed the gui for the valve. The player inventory wasn't shown
 
 3.0.2-beta:
 - Added a potential fix for divide by zero

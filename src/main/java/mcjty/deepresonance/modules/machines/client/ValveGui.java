@@ -4,7 +4,6 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.ValveTileEntity;
 import mcjty.deepresonance.setup.DeepResonanceMessages;
-import mcjty.lib.McJtyLib;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
@@ -21,8 +20,8 @@ import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.gui.widgets.*;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.RedstoneMode;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 import java.awt.*;
 
@@ -83,7 +82,7 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
 
         window = new Window(this, toplevel);
 
-        window.bind(McJtyLib.networkHandler, "redstone", tileEntity, GenericTileEntity.VALUE_RSMODE.name());
+        window.bind(DeepResonanceMessages.INSTANCE, "redstone", tileEntity, GenericTileEntity.VALUE_RSMODE.name());
         window.event("apply", (source, params) -> updateSettings());
     }
 
