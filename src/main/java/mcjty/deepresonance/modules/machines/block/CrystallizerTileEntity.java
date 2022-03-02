@@ -4,7 +4,6 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.util.config.CrystallizerConfig;
-import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.BaseBlock;
@@ -95,7 +94,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
         }
         if (drain > 0) { //Config can change between ticks
             FluidStack stack = rclTank.orElseThrow(NullPointerException::new).drain(drain, IFluidHandler.FluidAction.EXECUTE);
-            LiquidCrystalData data = DeepResonanceFluidHelper.readCrystalDataFromStack(stack);
+            LiquidCrystalData data = LiquidCrystalData.fromStack(stack);
             if (crystalData == null) {
                 crystalData = data;
             } else {
@@ -148,7 +147,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
             return false;
         }
 
-        return DeepResonanceFluidHelper.isValidLiquidCrystalStack(fluidStack);
+        return LiquidCrystalData.isValidLiquidCrystalStack(fluidStack);
     }
 
     private boolean checkTank() {
@@ -190,7 +189,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
         super.loadInfo(tagCompound);
         CompoundTag info = tagCompound.getCompound("Info");
         if (info.contains("crystalData")) {
-            crystalData = DeepResonanceFluidHelper.readCrystalDataFromStack(FluidStack.loadFluidStackFromNBT(info.getCompound("crystalData")));
+            crystalData = LiquidCrystalData.fromStack(FluidStack.loadFluidStackFromNBT(info.getCompound("crystalData")));
         } else {
             crystalData = null;
         }

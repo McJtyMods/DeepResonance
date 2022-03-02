@@ -3,8 +3,8 @@ package mcjty.deepresonance.modules.machines.block;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.util.config.SmelterConfig;
 import mcjty.deepresonance.modules.tank.util.DualTankHook;
-import mcjty.deepresonance.util.DeepResonanceFluidHelper;
 import mcjty.deepresonance.util.DeepResonanceTags;
+import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.blocks.BaseBlock;
@@ -19,15 +19,15 @@ import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.TickingTileEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluids;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.core.Direction;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -133,7 +133,7 @@ public class SmelterTileEntity extends TickingTileEntity {
             return false;
         }
         int fill = SmelterConfig.RCL_PER_ORE.get();
-        if (tankHook.getTank2().fill(DeepResonanceFluidHelper.makeLiquidCrystalStack(fill), IFluidHandler.FluidAction.SIMULATE) != fill) {
+        if (tankHook.getTank2().fill(LiquidCrystalData.makeLiquidCrystalStack(fill), IFluidHandler.FluidAction.SIMULATE) != fill) {
             return false;
         }
         return energyStorage.getEnergyStored() >= SmelterConfig.POWER_PER_ORE_TICK.get();
@@ -179,7 +179,7 @@ public class SmelterTileEntity extends TickingTileEntity {
 
     private void finishSmelting() {
         if (finalQuality > 0.0f) {
-            FluidStack stack = DeepResonanceFluidHelper.makeLiquidCrystalStack(SmelterConfig.RCL_PER_ORE.get(), finalQuality, finalPurity, 0.1f, 0.1f);
+            FluidStack stack = LiquidCrystalData.makeLiquidCrystalStack(SmelterConfig.RCL_PER_ORE.get(), finalQuality, finalPurity, 0.1f, 0.1f);
             tankHook.getTank2().fill(stack, IFluidHandler.FluidAction.EXECUTE);
         }
     }

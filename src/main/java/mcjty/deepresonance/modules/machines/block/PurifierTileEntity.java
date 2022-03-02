@@ -5,7 +5,7 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.util.config.PurifierConfig;
 import mcjty.deepresonance.modules.tank.util.DualTankHook;
-import mcjty.deepresonance.util.DeepResonanceFluidHelper;
+import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
@@ -20,10 +20,10 @@ import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
@@ -97,11 +97,11 @@ public class PurifierTileEntity extends TickingTileEntity {
             }
             timeToGo--;
         } else {
-            if (!DeepResonanceFluidHelper.isValidLiquidCrystalStack(tankHook.getTank1().drain(1, IFluidHandler.FluidAction.SIMULATE))) {
+            if (!LiquidCrystalData.isValidLiquidCrystalStack(tankHook.getTank1().drain(1, IFluidHandler.FluidAction.SIMULATE))) {
                 timeToGo = 20; //Wait 1 second before re-trying
                 return;
             }
-            processing = DeepResonanceFluidHelper.readCrystalDataFromStack(tankHook.getTank1().drain(PurifierConfig.RCL_PER_PURIFY.get(), IFluidHandler.FluidAction.EXECUTE));
+            processing = LiquidCrystalData.fromStack(tankHook.getTank1().drain(PurifierConfig.RCL_PER_PURIFY.get(), IFluidHandler.FluidAction.EXECUTE));
             timeToGo = PurifierConfig.TICKS_PER_PURIFY.get();
         }
         setChanged();
@@ -180,7 +180,7 @@ public class PurifierTileEntity extends TickingTileEntity {
     public void load(CompoundTag tagCompound) {
         timeToGo = tagCompound.getInt("timeToGo");
         if (tagCompound.contains("processing")) {
-            processing = DeepResonanceFluidHelper.readCrystalDataFromStack(FluidStack.loadFluidStackFromNBT(tagCompound.getCompound("processing")));
+            processing = LiquidCrystalData.fromStack(FluidStack.loadFluidStackFromNBT(tagCompound.getCompound("processing")));
         } else {
             processing = null;
         }

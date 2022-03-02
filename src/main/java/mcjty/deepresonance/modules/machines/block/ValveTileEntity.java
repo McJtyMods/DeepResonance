@@ -4,7 +4,7 @@ import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.util.config.ValveConfig;
 import mcjty.deepresonance.modules.tank.util.DualTankHook;
-import mcjty.deepresonance.util.DeepResonanceFluidHelper;
+import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.bindings.Value;
@@ -119,8 +119,8 @@ public class ValveTileEntity extends TickingTileEntity {
             return;
         }
         int amt = fluidStack.getAmount();
-        if (bottom.fill(DeepResonanceFluidHelper.makeLiquidCrystalStack(amt), IFluidHandler.FluidAction.SIMULATE) == amt) {
-            ILiquidCrystalData data = DeepResonanceFluidHelper.readCrystalDataFromStack(fluidStack);
+        if (bottom.fill(LiquidCrystalData.makeLiquidCrystalStack(amt), IFluidHandler.FluidAction.SIMULATE) == amt) {
+            ILiquidCrystalData data = LiquidCrystalData.fromStack(fluidStack);
             if (data.getPurity() < minPurity) {
                 return;
             }

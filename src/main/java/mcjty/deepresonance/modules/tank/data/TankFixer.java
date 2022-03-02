@@ -26,7 +26,7 @@ public class TankFixer implements IMultiblockFixer<TankBlob> {
         LiquidCrystalData data = original.getData();
         int totalAmount = data.getAmount();
         int totalBlocks = 0;
-        for (Pair<Integer, Set<BlockPos>> pair : todo) {
+        for (var pair : todo) {
             totalBlocks += pair.getRight().size();
         }
 
@@ -36,7 +36,7 @@ public class TankFixer implements IMultiblockFixer<TankBlob> {
         int amountPerBlock = totalAmount / totalBlocks;
         int remainder = totalAmount % totalBlocks;
 
-        for (Pair<Integer, Set<BlockPos>> pair : todo) {
+        for (var pair : todo) {
             TankBlob builder = new TankBlob();
             int generatorBlocks = pair.getRight().size();
             data.setAmount(remainder + amountPerBlock * generatorBlocks);

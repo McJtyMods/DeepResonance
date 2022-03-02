@@ -1,20 +1,20 @@
 package mcjty.deepresonance.modules.core.item;
 
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
-import mcjty.deepresonance.util.DeepResonanceFluidHelper;
+import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.tooltips.ITooltipSettings;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -26,8 +26,6 @@ import java.util.List;
 
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
-
-import net.minecraft.world.item.Item.Properties;
 
 public class ItemLiquidInjector extends Item implements ITooltipSettings {
 
@@ -54,7 +52,7 @@ public class ItemLiquidInjector extends Item implements ITooltipSettings {
             BlockEntity tile = world.getBlockEntity(context.getClickedPos());
             if (tile instanceof TankTileEntity) {
                 LazyOptional<IFluidHandler> fluidHanderCap = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
-                fluidHanderCap.ifPresent(fluidHander -> fluidHander.fill(DeepResonanceFluidHelper.makeLiquidCrystalStack(100, 1.0f, 0.1f, 0.1f, 0.1f), IFluidHandler.FluidAction.EXECUTE));
+                fluidHanderCap.ifPresent(fluidHander -> fluidHander.fill(LiquidCrystalData.makeLiquidCrystalStack(100, 1.0f, 0.1f, 0.1f, 0.1f), IFluidHandler.FluidAction.EXECUTE));
             } else if (context.getPlayer() != null) {
                 context.getPlayer().sendMessage(new TranslatableComponent("message.deepresonance.no_tank").withStyle(ChatFormatting.YELLOW), Util.NIL_UUID);
             }
