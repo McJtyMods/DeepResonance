@@ -35,7 +35,8 @@ import static mcjty.lib.api.container.DefaultContainerProvider.container;
 
 public class ValveTileEntity extends TickingTileEntity {
 
-    public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(0));
+    public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(0)
+            .playerSlots(10, 70));
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Valve")

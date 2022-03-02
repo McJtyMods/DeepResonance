@@ -4,7 +4,6 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.ValveTileEntity;
 import mcjty.deepresonance.setup.DeepResonanceMessages;
-import mcjty.lib.McJtyLib;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
@@ -83,7 +82,7 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
 
         window = new Window(this, toplevel);
 
-        window.bind(McJtyLib.networkHandler, "redstone", tileEntity, GenericTileEntity.VALUE_RSMODE.getName());
+        window.bind(DeepResonanceMessages.INSTANCE, "redstone", tileEntity, GenericTileEntity.VALUE_RSMODE.getName());
         window.event("apply", (source, params) -> updateSettings());
     }
 
