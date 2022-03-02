@@ -56,7 +56,7 @@ public class TankTESR extends TileEntityRenderer<TankTileEntity> {
         final Fluid fluidToRender = tileTank.getClientRenderFluid();
 
         Set<Direction> dirs = Arrays.stream(OrientationTools.DIRECTION_VALUES).filter(dir -> {
-            if (dir == Direction.DOWN && tileTank.getClientRenderHeight() > 0.0001 && !(fluidToRender == null || fluidToRender == Fluids.EMPTY) && RenderTypeLookup.canRenderInLayer(fluidToRender.defaultFluidState(), RenderType.solid())) {
+            if (dir == Direction.DOWN && tileTank.getClientRenderHeight() > 0.0001 && !(fluidToRender == Fluids.EMPTY) && RenderTypeLookup.canRenderInLayer(fluidToRender.defaultFluidState(), RenderType.solid())) {
                 return false; //If there is a fluid being rendered, the bottom doesn't need to be checked if the fluid is opaque
             }
             TileEntity tile = tileTank.getLevel().getBlockEntity(pos.relative(dir));
@@ -64,11 +64,11 @@ public class TankTESR extends TileEntityRenderer<TankTileEntity> {
         }).collect(Collectors.toCollection(() -> EnumSet.noneOf(Direction.class)));
 
         float scale = tileTank.getClientRenderHeight();
-        if (fluidToRender != null) {
+        if (fluidToRender != Fluids.EMPTY) {
             int color = fluidToRender.getAttributes().getColor(tileTank.getLevel(), tileTank.getBlockPos());
             int luminosity = fluidToRender.getAttributes().getLuminosity();
-            int block = LightTexture.block(combinedLightIn);
-            int packed = LightTexture.pack(Math.max(luminosity, block), 0);
+//            int block = LightTexture.block(combinedLightIn);
+            int packed = LightTexture.pack(Math.max(luminosity, combinedLightIn), 0);
             render(matrixStackIn, bufferIn, fluidToRender, dirs, combinedLightIn, packed, scale, color);
         }
     }

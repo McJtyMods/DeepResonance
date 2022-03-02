@@ -16,7 +16,6 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -63,13 +62,13 @@ public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
         }
     }
 
-    public static boolean isCompatible(@Nonnull Optional<LiquidCrystalData> data1, @Nonnull Optional<LiquidCrystalData> data2) {
+    public static boolean isCompatible(@Nonnull LiquidCrystalData data1, @Nonnull LiquidCrystalData data2) {
         // If one liquid is empty then it is compatible
-        if (!data1.isPresent() || !data2.isPresent() || data1.get().getFluidStack().isEmpty() || data2.get().getFluidStack().isEmpty()) {
+        if (data1.getFluidStack().isEmpty() || data2.getFluidStack().isEmpty()) {
             return true;
         }
-        Fluid fluid1 = data1.get().getFluidStack().getFluid();
-        Fluid fluid2 = data2.get().getFluidStack().getFluid();
+        Fluid fluid1 = data1.getFluidStack().getFluid();
+        Fluid fluid2 = data2.getFluidStack().getFluid();
         return fluid1 == fluid2;
     }
 

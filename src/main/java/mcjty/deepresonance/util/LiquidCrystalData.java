@@ -15,6 +15,8 @@ public class LiquidCrystalData implements ILiquidCrystalData {
 
     private final FluidStack referenceStack;
 
+    public static final LiquidCrystalData EMPTY = LiquidCrystalData.fromStack(FluidStack.EMPTY);
+
     private LiquidCrystalData(FluidStack referenceStack) {
         this.referenceStack = referenceStack.copy();
     }
@@ -33,6 +35,10 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     @Nonnull
     public static LiquidCrystalData fromStack(FluidStack stack) {
         return new LiquidCrystalData(stack);
+    }
+
+    public boolean isEmpty() {
+        return referenceStack.isEmpty();
     }
 
     @Override

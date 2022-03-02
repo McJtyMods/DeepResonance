@@ -16,6 +16,7 @@ public class FluidLiquidCrystal extends EmptyFluid {
     protected FluidAttributes createAttributes() {
         return FluidAttributes.builder(texture, texture)
                 .translationKey("fluid.deepresonance.liquid_crystal")
+                .color(0xffffdd00)
                 .build(this);
     }
 
