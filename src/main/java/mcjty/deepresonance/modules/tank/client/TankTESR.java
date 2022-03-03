@@ -67,8 +67,8 @@ public class TankTESR extends TileEntityRenderer<TankTileEntity> {
         if (fluidToRender != Fluids.EMPTY) {
             int color = fluidToRender.getAttributes().getColor(tileTank.getLevel(), tileTank.getBlockPos());
             int luminosity = fluidToRender.getAttributes().getLuminosity();
-//            int block = LightTexture.block(combinedLightIn);
-            int packed = LightTexture.pack(Math.max(luminosity, combinedLightIn), 0);
+            int block = LightTexture.block(combinedLightIn);
+            int packed = LightTexture.pack(Math.max(luminosity, block), 0);
             render(matrixStackIn, bufferIn, fluidToRender, dirs, combinedLightIn, packed, scale, color);
         }
     }
