@@ -18,6 +18,7 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.TickingTileEntity;
+import mcjty.lib.varia.TagTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -141,7 +142,7 @@ public class SmelterTileEntity extends TickingTileEntity {
 
 
     private boolean inputSlotValid() {
-        return !items.getStackInSlot(SLOT).isEmpty() && DeepResonanceTags.RESONANT_ORE_ITEM.contains(items.getStackInSlot(SLOT).getItem());
+        return !items.getStackInSlot(SLOT).isEmpty() && TagTools.hasTag(items.getStackInSlot(SLOT).getItem(), DeepResonanceTags.RESONANT_ORE_ITEM);
     }
 
     private void startSmelting() {

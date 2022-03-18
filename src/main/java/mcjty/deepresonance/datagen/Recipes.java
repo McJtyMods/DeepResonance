@@ -6,6 +6,7 @@ import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.lib.datagen.BaseRecipeProvider;
+import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -43,11 +44,11 @@ public class Recipes extends BaseRecipeProvider {
 
         build(consumer, ShapedRecipeBuilder.shaped(CoreModule.FILTER_MATERIAL_ITEM.get(), 8)
                         .define('g', Tags.Items.GRAVEL)
-                        .unlockedBy("has_gravel", has(Tags.Items.GRAVEL)),
+                        .unlockedBy("has_gravel", inventoryTrigger(ItemPredicate.Builder.item().of(Tags.Items.GRAVEL).build())),
                 "gcg", "csc", "gcg");
         build(consumer, ShapedRecipeBuilder.shaped(CoreModule.MACHINE_FRAME_ITEM.get())
                         .define('g', Tags.Items.STONE)
-                        .unlockedBy("has_iron", has(Tags.Items.INGOTS_IRON)),
+                        .unlockedBy("has_iron", inventoryTrigger(ItemPredicate.Builder.item().of(Tags.Items.INGOTS_IRON).build())),
                 "iPi", "PgP", "iPi");
         build(consumer, ShapedRecipeBuilder.shaped(CoreModule.RESONATING_PLATE_BLOCK_ITEM.get())
                         .unlockedBy("has_resonant_plate", has(CoreModule.RESONATING_PLATE_ITEM.get())),

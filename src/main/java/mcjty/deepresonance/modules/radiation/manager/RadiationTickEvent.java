@@ -265,7 +265,7 @@ public class RadiationTickEvent {
 
             float protection = ItemRadiationSuit.getRadiationProtection(entityLivingBase);
 
-            double distanceSq = entityLivingBase.blockPosition().distSqr(centerx, centery, centerz, true);
+            double distanceSq = entityLivingBase.blockPosition().distToCenterSqr(centerx, centery, centerz);
 
             if (distanceSq < radiusSq) {
                 double distance = Math.sqrt(distanceSq);

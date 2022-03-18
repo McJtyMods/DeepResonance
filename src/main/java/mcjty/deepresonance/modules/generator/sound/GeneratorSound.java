@@ -43,7 +43,7 @@ public class GeneratorSound extends AbstractTickableSoundInstance {
         }
 
         LocalPlayer player = Minecraft.getInstance().player;
-        double distance = Math.sqrt(this.pos.distSqr(player.getX(), player.getY(), player.getZ(), true));
+        double distance = Math.sqrt(this.pos.distToCenterSqr(player.getX(), player.getY(), player.getZ()));
         if (distance > 20) {
             volume = 0;
         } else {
