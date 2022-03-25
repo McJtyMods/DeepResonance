@@ -1,3 +1,6 @@
+Upcoming:
+- Port to 1.18.2
+
 3.0.3-beta:
 - Fixed a problem with the client side liquid capability for the tanks potentially crashing
 - Fixed the redstone mode button in the valve crashing the game
