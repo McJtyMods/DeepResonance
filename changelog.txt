@@ -1,4 +1,4 @@
-Upcoming:
+1.16-2.0.4-beta:
 - The comparator works again in combination with the tank
 
 1.16-2.0.3-beta:
