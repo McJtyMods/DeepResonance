@@ -71,6 +71,13 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         }
     }
 
+    public int getComparatorValue() {
+        return fluidHandler.map(handler -> {
+            float f = (float) handler.getFluidInTank(0).getAmount() / handler.getTankCapacity(0);
+            return (int)(f * 15);
+        }).orElse(0);
+    }
+
     // Client side
     public float getClientRenderHeight() {
         return renderHeight;

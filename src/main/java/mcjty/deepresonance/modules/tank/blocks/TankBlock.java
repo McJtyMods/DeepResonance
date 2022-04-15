@@ -17,6 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
@@ -63,21 +64,19 @@ public class TankBlock extends BaseBlock {
         return ret;
     }
 
-//@todo 1.16
-//    @Override
-//    @SuppressWarnings("deprecation")
-//    public boolean hasComparatorInputOverride(@Nonnull BlockState state) {
-//        return true;
-//    }
-//
-//    @Override
-//    @SuppressWarnings("deprecation")
-//    public int getComparatorInputOverride(@Nonnull BlockState blockState, @Nonnull World worldIn, @Nonnull BlockPos pos) {
-//        TileEntity tile = WorldHelper.getTileAt(worldIn, pos);
-//        if (tile instanceof TileEntityTank) {
-//            return 0;
-//        }
-//        return super.getComparatorInputOverride(blockState, worldIn, pos);
-//    }
+    @Override
+    public boolean hasAnalogOutputSignal(BlockState pState) {
+        return true;
+    }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState blockState, World worldIn, BlockPos pos) {
+        TileEntity tile = worldIn.getBlockEntity(pos);
+        if (tile instanceof TankTileEntity) {
+            TankTileEntity tank = (TankTileEntity) tile;
+            return tank.getComparatorValue();
+        }
+        return 0;
+    }
 
 }
