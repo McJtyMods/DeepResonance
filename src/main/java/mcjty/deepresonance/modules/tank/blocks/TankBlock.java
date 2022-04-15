@@ -6,6 +6,7 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
@@ -66,21 +67,18 @@ public class TankBlock extends BaseBlock {
         return ret;
     }
 
-//@todo 1.16
-//    @Override
-//    @SuppressWarnings("deprecation")
-//    public boolean hasComparatorInputOverride(@Nonnull BlockState state) {
-//        return true;
-//    }
-//
-//    @Override
-//    @SuppressWarnings("deprecation")
-//    public int getComparatorInputOverride(@Nonnull BlockState blockState, @Nonnull World worldIn, @Nonnull BlockPos pos) {
-//        TileEntity tile = WorldHelper.getTileAt(worldIn, pos);
-//        if (tile instanceof TileEntityTank) {
-//            return 0;
-//        }
-//        return super.getComparatorInputOverride(blockState, worldIn, pos);
-//    }
+    @Override
+    public boolean hasAnalogOutputSignal(BlockState pState) {
+        return true;
+    }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState blockState, Level worldIn, BlockPos pos) {
+        BlockEntity tile = worldIn.getBlockEntity(pos);
+        if (tile instanceof TankTileEntity tank) {
+            return tank.getComparatorValue();
+        }
+        return 0;
+    }
 
 }
