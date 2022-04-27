@@ -1,4 +1,4 @@
-Upcoming:
+1.16-2.0.5-beta:
 - Fixed a server side bug
 
 1.16-2.0.4-beta:
