@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a server side bug
+
 1.16-2.0.4-beta:
 - The comparator works again in combination with the tank
 

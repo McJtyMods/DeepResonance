@@ -21,7 +21,7 @@ public class TankModule implements IModule {
 
     public static final RegistryObject<Block> TANK_BLOCK = Registration.BLOCKS.register("tank", TankBlock::new);
     public static final RegistryObject<Item> TANK_ITEM = Registration.ITEMS.register("tank", () -> new BlockItem(TANK_BLOCK.get(),
-            Registration.createStandardProperties().setISTER(TankItemRenderer::getRenderer)));
+            Registration.createStandardProperties()));//.setISTER(TankItemRenderer::getRenderer)));
     public static final RegistryObject<TileEntityType<TankTileEntity>> TYPE_TANK = TILES.register("tank", () -> TileEntityType.Builder.of(TankTileEntity::new, TANK_BLOCK.get()).build(null));
 
     public TankModule() {
