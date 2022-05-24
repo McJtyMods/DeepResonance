@@ -12,10 +12,14 @@ import mcjty.lib.multiblock.MultiblockSupport;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericTileEntity;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -35,6 +39,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.Objects;
 
@@ -43,7 +48,8 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     private int blobId = -1;
 
     // Client only
-    @Nonnull private LiquidCrystalData clientRenderFluid = LiquidCrystalData.EMPTY;
+    @Nonnull
+    private LiquidCrystalData clientRenderFluid = LiquidCrystalData.EMPTY;
     private float renderHeight; //Value from 0.0f to 1.0f
 
     // Only used when the tank is broken and needs to be put back later
@@ -74,7 +80,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     public int getComparatorValue() {
         return fluidHandler.map(handler -> {
             float f = (float) handler.getFluidInTank(0).getAmount() / handler.getTankCapacity(0);
-            return (int)(f * 15);
+            return (int) (f * 15);
         }).orElse(0);
     }
 
@@ -156,13 +162,38 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
 
     @Override
     public InteractionResult onBlockActivated(BlockState state, Player player, InteractionHand hand, BlockHitResult result) {
-        if (FluidUtil.getFluidHandler(player.getItemInHand(hand)).isPresent()) {
+        ItemStack itemInHand = player.getItemInHand(hand);
+        if (FluidUtil.getFluidHandler(itemInHand).isPresent()) {
             if (!level.isClientSide) {
                 FluidUtil.interactWithFluidHandler(player, hand, getLevel(), result.getBlockPos(), result.getDirection());
             }
             return InteractionResult.SUCCESS;
+        } else {
+            // Show info about contained liquid
+            if (!level.isClientSide) {
+                fluidHandler.ifPresent(handler -> {
+                    DecimalFormat decimalFormat = new DecimalFormat("#.#");
+                    FluidStack fluid = handler.getFluidInTank(0);
+                    if (fluid.isEmpty()) {
+                        player.sendMessage(new TextComponent("Tank is empty").withStyle(ChatFormatting.YELLOW), Util.NIL_UUID);
+                    } else {
+                        String amount = " (" + fluid.getAmount() + " mb)";
+                        player.sendMessage(new TextComponent("Liquid: ")
+                                .append(new TranslatableComponent(fluid.getTranslationKey()))
+                                .append(new TextComponent(amount))
+                                .withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
+                        if (LiquidCrystalData.isLiquidCrystal(fluid.getFluid())) {
+                            LiquidCrystalData d = LiquidCrystalData.fromStack(fluid);
+                            player.sendMessage(new TextComponent("Quality " + decimalFormat.format(d.getQuality() * 100) + "%"), Util.NIL_UUID);
+                            player.sendMessage(new TextComponent("Efficiency " + decimalFormat.format(d.getEfficiency() * 100) + "%"), Util.NIL_UUID);
+                            player.sendMessage(new TextComponent("Purity " + decimalFormat.format(d.getPurity() * 100) + "%"), Util.NIL_UUID);
+                            player.sendMessage(new TextComponent("Strength " + decimalFormat.format(d.getStrength() * 100) + "%"), Util.NIL_UUID);
+                        }
+                    }
+                });
+            }
+            return InteractionResult.SUCCESS;
         }
-        return super.onBlockActivated(state, player, hand, result);
     }
 
     @Override
