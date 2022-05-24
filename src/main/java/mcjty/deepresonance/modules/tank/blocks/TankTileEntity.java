@@ -24,8 +24,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
@@ -35,6 +39,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.Objects;
 
@@ -161,6 +166,30 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
                 FluidUtil.interactWithFluidHandler(player, hand, getLevel(), result.getBlockPos(), result.getDirection());
             }
             return ActionResultType.SUCCESS;
+        } else {
+            // Show info about contained liquid
+            if (!level.isClientSide) {
+                fluidHandler.ifPresent(handler -> {
+                    DecimalFormat decimalFormat = new DecimalFormat("#.#");
+                    FluidStack fluid = handler.getFluidInTank(0);
+                    if (fluid.isEmpty()) {
+                        player.sendMessage(new StringTextComponent("Tank is empty").withStyle(TextFormatting.YELLOW), Util.NIL_UUID);
+                    } else {
+                        String amount = " (" + fluid.getAmount() + " mb)";
+                        player.sendMessage(new StringTextComponent("Liquid: ")
+                                .append(new TranslationTextComponent(fluid.getTranslationKey()))
+                                .append(new StringTextComponent(amount))
+                                .withStyle(TextFormatting.AQUA), Util.NIL_UUID);
+                        if (LiquidCrystalData.isLiquidCrystal(fluid.getFluid())) {
+                            LiquidCrystalData d = LiquidCrystalData.fromStack(fluid);
+                            player.sendMessage(new StringTextComponent("Quality " + decimalFormat.format(d.getQuality() * 100) + "%"), Util.NIL_UUID);
+                            player.sendMessage(new StringTextComponent("Efficiency " + decimalFormat.format(d.getEfficiency() * 100) + "%"), Util.NIL_UUID);
+                            player.sendMessage(new StringTextComponent("Purity " + decimalFormat.format(d.getPurity() * 100) + "%"), Util.NIL_UUID);
+                            player.sendMessage(new StringTextComponent("Strength " + decimalFormat.format(d.getStrength() * 100) + "%"), Util.NIL_UUID);
+                        }
+                    }
+                });
+            }
         }
         return super.onBlockActivated(state, player, hand, result);
     }
