@@ -42,6 +42,11 @@ public class Recipes extends BaseRecipeProvider {
 //                .unlockedBy("has_ore", has(DeepResonanceTags.RESONANT_ORE_ITEM))
 //                .save(consumer);
 
+        build(consumer, ShapedRecipeBuilder.shaped(MachinesModule.LENS_BLOCK.get())
+                        .define('g', Tags.Items.GLASS_PANES)
+                        .unlockedBy("has_pane", has(Tags.Items.GLASS_PANES)),
+                "gPg", "P P", "gPg");
+
         build(consumer, ShapedRecipeBuilder.shaped(CoreModule.FILTER_MATERIAL_ITEM.get(), 8)
                         .define('g', Tags.Items.GRAVEL)
                         .unlockedBy("has_gravel", inventoryTrigger(ItemPredicate.Builder.item().of(Tags.Items.GRAVEL).build())),

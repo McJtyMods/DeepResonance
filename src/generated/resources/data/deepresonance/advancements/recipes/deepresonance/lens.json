@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "deepresonance:lens"
+    ]
+  },
+  "criteria": {
+    "has_pane": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:glass_panes"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "deepresonance:lens"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_pane",
+      "has_the_recipe"
+    ]
+  ]
+}
