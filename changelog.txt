@@ -1,4 +1,4 @@
-Upcoming:
+3.0.5:
 - If you right click on the tank with something that is not a fluid container (or empty hand) you get information about the liquid contained in the tank
 - Added a missing recipe for the lens
 
