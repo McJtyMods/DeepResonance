@@ -1,4 +1,4 @@
-Upcoming:
+3.0.6:
 - Fixed dimensional shards in the laser
 
 3.0.5:
