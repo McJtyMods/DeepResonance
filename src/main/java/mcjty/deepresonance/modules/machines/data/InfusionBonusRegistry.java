@@ -112,7 +112,7 @@ public class InfusionBonusRegistry {
                 new InfusingBonus.Modifier(1.0f, 30.0f),
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(1.0f, 40.0f)));
-        infusingBonusMap.put(new ResourceLocation("rftoolsbase", "dimensional_shard"), new InfusingBonus(
+        infusingBonusMap.put(new ResourceLocation("rftoolsbase", "dimensionalshard"), new InfusingBonus(
                 COLOR_BLUE,
                 new InfusingBonus.Modifier(1.0f, 100.0f),
                 new InfusingBonus.Modifier(8.0f, 80.0f),
