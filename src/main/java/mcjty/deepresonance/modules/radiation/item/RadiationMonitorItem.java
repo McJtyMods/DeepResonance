@@ -6,25 +6,23 @@ import mcjty.deepresonance.modules.radiation.manager.QuadTree;
 import mcjty.deepresonance.modules.radiation.network.PacketGetRadiationLevel;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.setup.DeepResonanceMessages;
+import mcjty.lib.varia.ComponentFactory;
 import mcjty.lib.varia.SafeClientTools;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.ChatFormatting;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
-
-import net.minecraft.world.item.Item.Properties;
 
 public class RadiationMonitorItem extends Item {
 
@@ -95,9 +93,9 @@ public class RadiationMonitorItem extends Item {
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> list, TooltipFlag flag) {
         fetchRadiation(SafeClientTools.getClientPlayer());
         if (radiationStrength <= 0.0f) {
-            list.add(new TextComponent("No radiation detected").withStyle(ChatFormatting.GREEN));
+            list.add(ComponentFactory.literal("No radiation detected").withStyle(ChatFormatting.GREEN));
         } else {
-            list.add(new TextComponent("Radiation: " + (int)radiationStrength + "!").withStyle(ChatFormatting.RED));
+            list.add(ComponentFactory.literal("Radiation: " + (int)radiationStrength + "!").withStyle(ChatFormatting.RED));
         }
     }
 

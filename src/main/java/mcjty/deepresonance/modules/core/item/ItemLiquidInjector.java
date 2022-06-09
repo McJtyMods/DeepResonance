@@ -4,10 +4,10 @@ import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.tooltips.ITooltipSettings;
+import mcjty.lib.varia.ComponentFactory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -54,7 +54,7 @@ public class ItemLiquidInjector extends Item implements ITooltipSettings {
                 LazyOptional<IFluidHandler> fluidHanderCap = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
                 fluidHanderCap.ifPresent(fluidHander -> fluidHander.fill(LiquidCrystalData.makeLiquidCrystalStack(100, 1.0f, 0.1f, 0.1f, 0.1f), IFluidHandler.FluidAction.EXECUTE));
             } else if (context.getPlayer() != null) {
-                context.getPlayer().sendMessage(new TranslatableComponent("message.deepresonance.no_tank").withStyle(ChatFormatting.YELLOW), Util.NIL_UUID);
+                context.getPlayer().sendMessage(ComponentFactory.translatable("message.deepresonance.no_tank").withStyle(ChatFormatting.YELLOW), Util.NIL_UUID);
             }
         }
         return InteractionResult.SUCCESS;

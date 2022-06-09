@@ -12,14 +12,13 @@ import mcjty.lib.multiblock.MultiblockSupport;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.varia.ComponentFactory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -175,19 +174,19 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
                     DecimalFormat decimalFormat = new DecimalFormat("#.#");
                     FluidStack fluid = handler.getFluidInTank(0);
                     if (fluid.isEmpty()) {
-                        player.sendMessage(new TextComponent("Tank is empty").withStyle(ChatFormatting.YELLOW), Util.NIL_UUID);
+                        player.sendMessage(ComponentFactory.literal("Tank is empty").withStyle(ChatFormatting.YELLOW), Util.NIL_UUID);
                     } else {
                         String amount = " (" + fluid.getAmount() + " mb)";
-                        player.sendMessage(new TextComponent("Liquid: ")
-                                .append(new TranslatableComponent(fluid.getTranslationKey()))
-                                .append(new TextComponent(amount))
+                        player.sendMessage(ComponentFactory.literal("Liquid: ")
+                                .append(ComponentFactory.translatable(fluid.getTranslationKey()))
+                                .append(ComponentFactory.literal(amount))
                                 .withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
                         if (LiquidCrystalData.isLiquidCrystal(fluid.getFluid())) {
                             LiquidCrystalData d = LiquidCrystalData.fromStack(fluid);
-                            player.sendMessage(new TextComponent("Quality " + decimalFormat.format(d.getQuality() * 100) + "%"), Util.NIL_UUID);
-                            player.sendMessage(new TextComponent("Efficiency " + decimalFormat.format(d.getEfficiency() * 100) + "%"), Util.NIL_UUID);
-                            player.sendMessage(new TextComponent("Purity " + decimalFormat.format(d.getPurity() * 100) + "%"), Util.NIL_UUID);
-                            player.sendMessage(new TextComponent("Strength " + decimalFormat.format(d.getStrength() * 100) + "%"), Util.NIL_UUID);
+                            player.sendMessage(ComponentFactory.literal("Quality " + decimalFormat.format(d.getQuality() * 100) + "%"), Util.NIL_UUID);
+                            player.sendMessage(ComponentFactory.literal("Efficiency " + decimalFormat.format(d.getEfficiency() * 100) + "%"), Util.NIL_UUID);
+                            player.sendMessage(ComponentFactory.literal("Purity " + decimalFormat.format(d.getPurity() * 100) + "%"), Util.NIL_UUID);
+                            player.sendMessage(ComponentFactory.literal("Strength " + decimalFormat.format(d.getStrength() * 100) + "%"), Util.NIL_UUID);
                         }
                     }
                 });

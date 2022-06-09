@@ -8,14 +8,13 @@ import mcjty.deepresonance.util.Constants;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
+import mcjty.lib.varia.ComponentFactory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.TickTask;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
@@ -187,9 +186,9 @@ public class ResonatingCrystalBlock extends BaseBlock {
             power = tagCompound.getFloat("power");
         }
         if (power > Constants.CRYSTAL_MIN_POWER) {
-            tooltip.add(new TranslatableComponent("message.deepresonance.crystal_power"));
+            tooltip.add(ComponentFactory.translatable("message.deepresonance.crystal_power"));
         } else {
-            tooltip.add(new TranslatableComponent("message.deepresonance.crystal_empty"));
+            tooltip.add(ComponentFactory.translatable("message.deepresonance.crystal_empty"));
         }
         if (tagCompound != null) {
             addBasicInformation(tooltip::add, tagCompound, power, true);
@@ -199,7 +198,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
     public static void addBasicInformation(Consumer<Component> tooltip, CompoundTag tag, float power, boolean showPower) {
         DecimalFormat decimalFormat = new DecimalFormat("#.#");
         decimalFormat.setRoundingMode(RoundingMode.DOWN);
-        tooltip.accept(new TranslatableComponent("message.deepresonance.crystal_sep")
+        tooltip.accept(ComponentFactory.translatable("message.deepresonance.crystal_sep")
                 .withStyle(ChatFormatting.GREEN)
                 .append(": "
                         + decimalFormat.format(tag.getFloat("strength")) + "% "
@@ -208,7 +207,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
                 )
         );
         if (showPower) {
-            tooltip.accept(new TextComponent("Power left: " + decimalFormat.format(power) + "%").withStyle(ChatFormatting.YELLOW));
+            tooltip.accept(ComponentFactory.literal("Power left: " + decimalFormat.format(power) + "%").withStyle(ChatFormatting.YELLOW));
         }
 
     }
