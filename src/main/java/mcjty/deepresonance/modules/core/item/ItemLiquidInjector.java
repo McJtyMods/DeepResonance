@@ -5,6 +5,7 @@ import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.tooltips.ITooltipSettings;
 import mcjty.lib.varia.ComponentFactory;
+import mcjty.lib.varia.Tools;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
@@ -41,7 +42,7 @@ public class ItemLiquidInjector extends Item implements ITooltipSettings {
     @Override
     public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flags) {
         super.appendHoverText(stack, level, tooltip, flags);
-        tooltipBuilder.get().makeTooltip(getRegistryName(), stack, tooltip, flags);
+        tooltipBuilder.get().makeTooltip(Tools.getId(this), stack, tooltip, flags);
     }
 
     @Nonnull

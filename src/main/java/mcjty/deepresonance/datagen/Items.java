@@ -57,7 +57,7 @@ class Items extends BaseItemModelProvider {
         parentedBlock(GeneratorModule.GENERATOR_CONTROLLER_BLOCK.get());
         parentedBlock(GeneratorModule.GENERATOR_PART_BLOCK.get());
 
-        getBuilder(RadiationModule.RADIATION_MONITOR.get().getRegistryName().getPath())
+        getBuilder(RadiationModule.RADIATION_MONITOR.getId().getPath())
                 .parent(getExistingFile(mcLoc("item/handheld")))
                 .texture("layer0", "item/monitor/radiationmonitoritem")
                 .override().predicate(RADIATION_PROPERTY, 0).model(createMonitorModel(0)).end()
