@@ -61,6 +61,12 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         super(TankModule.TYPE_TANK.get());
     }
 
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        fluidHandler.invalidate();
+    }
+
     public void setClientData(float newHeight, LiquidCrystalData render) {
         boolean dirty = false;
         if (newHeight >= 0 && renderHeight != newHeight) {
