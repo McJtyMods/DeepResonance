@@ -40,7 +40,7 @@ public class CrystallizerRenderer extends TileEntityRenderer<CrystallizerTileEnt
         if (progress > 0) {
             matrixStack.pushPose();
             float scale = 0.75f + 0.45f * (progress / 100.0f);
-            float f = Math.floorMod(tile.getLevel().getGameTime(), 120);
+            float f = floorMod(tile.getLevel().getGameTime(), 120);
             matrixStack.translate(0.5, 0.35 + (0.00 * progress), 0.5);
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(f * 3));
             matrixStack.scale(scale, scale, scale);
@@ -51,4 +51,15 @@ public class CrystallizerRenderer extends TileEntityRenderer<CrystallizerTileEnt
         }
     }
 
+    public static long floorMod(long a, long b) {
+        return a - floorDiv(a, b) * b;
+    }
+
+    public static long floorDiv(long a, long b) {
+        long divider = a / b;
+        if ((a ^ b) < 0L && divider * b != a) {
+            --divider;
+        }
+        return divider;
+    }
 }
