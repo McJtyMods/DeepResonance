@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a fluid destroying bug with the purifier and valve
+
 3.0.6:
 - Fixed dimensional shards in the laser
 
