@@ -16,10 +16,7 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
-import mcjty.lib.tileentity.Cap;
-import mcjty.lib.tileentity.CapType;
-import mcjty.lib.tileentity.GenericEnergyStorage;
-import mcjty.lib.tileentity.TickingTileEntity;
+import mcjty.lib.tileentity.*;
 import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.core.BlockPos;
@@ -44,7 +41,6 @@ import javax.annotation.Nonnull;
 
 import static mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry.COLOR_RED;
 import static mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry.COLOR_YELLOW;
-import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.container.GenericItemHandler.notslot;
 import static mcjty.lib.container.GenericItemHandler.yes;
 import static mcjty.lib.container.SlotDefinition.generic;
@@ -92,7 +88,7 @@ public class LaserTileEntity extends TickingTileEntity {
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Laser")
-            .containerSupplier(container(MachinesModule.LASER_CONTAINER, CONTAINER_FACTORY, this))
+            .containerSupplier((windowId, player) -> new LaserContainer(MachinesModule.LASER_CONTAINER, windowId, CONTAINER_FACTORY, this, player))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage)
             .setupSync(this));
