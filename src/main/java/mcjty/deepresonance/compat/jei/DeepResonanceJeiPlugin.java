@@ -1,13 +1,19 @@
 package mcjty.deepresonance.compat.jei;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.compat.jei.laser.LaserRecipeCategory;
 import mcjty.deepresonance.compat.jei.laser.LaserRecipeHandler;
-import mcjty.deepresonance.modules.machines.block.LaserContainer;
+import mcjty.deepresonance.compat.jei.laser.LaserRecipeWrapper;
+import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.registration.IRecipeTransferRegistration;
-import mezz.jei.api.registration.ISubtypeRegistration;
+import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.helpers.IJeiHelpers;
+import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.registration.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -16,6 +22,8 @@ import java.util.List;
 @JeiPlugin
 public class DeepResonanceJeiPlugin implements IModPlugin {
 
+    public static final RecipeType<LaserRecipeWrapper> LASER_RECIPE = RecipeType.create(DeepResonance.MODID, "laser", LaserRecipeWrapper.class);
+
     @Nonnull
     @Override
     public ResourceLocation getPluginUid() {
@@ -23,37 +31,23 @@ public class DeepResonanceJeiPlugin implements IModPlugin {
     }
 
     @Override
-    public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
-        registration.addRecipeTransferHandler(new LaserRecipeHandler());
+    public void registerCategories(IRecipeCategoryRegistration registration) {
+        IJeiHelpers jeiHelpers = registration.getJeiHelpers();
+        IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
+        registration.addRecipeCategories(new LaserRecipeCategory(guiHelper));
     }
 
     @Override
-    public void registerItemSubtypes(ISubtypeRegistration registration) {
-        registration.registerSubtypeInterpreter();
+    public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
+        registration.addRecipeTransferHandler(new LaserRecipeHandler(), LASER_RECIPE);
+    }
 
-        IJeiHelpers helpers = registry.getJeiHelpers();
-        IGuiHelper guiHelper = helpers.getGuiHelper();
-
-        registry.addRecipeCategories(
-                new LaserRecipeCategory(guiHelper),
-                new SmelterRecipeCategory(guiHelper),
-                new PurifierRecipeCategory(guiHelper));
-        registry.addRecipeHandlers(
-                new LaserRecipeHandler(),
-                new SmelterRecipeHandler(),
-                new PurifierRecipeHandler());
-
-        List<IRecipeWrapper> recipes = new ArrayList<>();
-        for (String registryName : LaserTileEntity.infusingBonusMap.keySet()) {
-            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(registryName));
-            recipes.add(new LaserRecipeWrapper(item));
-        }
-        recipes.add(new SmelterRecipeWrapper());
-        recipes.add(new PurifierRecipeWrapper());
-        registry.addRecipes(recipes);
-
-        registry.addRecipeCategoryCraftingItem(new ItemStack(LaserSetup.laserBlock), LaserRecipeCategory.ID);
-        registry.addRecipeCategoryCraftingItem(new ItemStack(SmelterSetup.smelter), SmelterRecipeCategory.ID);
-        registry.addRecipeCategoryCraftingItem(new ItemStack(PurifierSetup.purifierBlock), PurifierRecipeCategory.ID);
+    @Override
+    public void registerRecipes(IRecipeRegistration registration) {
+        List<LaserRecipeWrapper> recipes = new ArrayList<>();
+        InfusionBonusRegistry.getInfusingBonusMap().forEach((id, bonus) -> {
+            recipes.add(new LaserRecipeWrapper(new ItemStack(ForgeRegistries.ITEMS.getValue(id))));
+        });
+        registration.addRecipes(LASER_RECIPE, recipes);
     }
 }

@@ -1,10 +1,6 @@
 package mcjty.deepresonance.compat.jei.purifier;
 
-import mezz.jei.api.recipe.IRecipeWrapper;
-
-import javax.annotation.Nonnull;
-
-public class PurifierRecipeHandler implements mezz.jei.api.recipe.IRecipeHandler<PurifierRecipeWrapper> {
+public class PurifierRecipeHandler {}/*implements mezz.jei.api.recipe.IRecipeHandler<PurifierRecipeWrapper> {
 
     private final String id;
 
@@ -34,3 +30,4 @@ public class PurifierRecipeHandler implements mezz.jei.api.recipe.IRecipeHandler
         return true;
     }
 }
+*/

@@ -1,52 +1,47 @@
 package mcjty.deepresonance.compat.jei.laser;
 
-import mcjty.deepresonance.blocks.laser.InfusingBonus;
-import mcjty.deepresonance.blocks.laser.LaserTileEntity;
+import com.mojang.blaze3d.vertex.PoseStack;
+import mcjty.deepresonance.modules.machines.block.LaserTileEntity;
+import mcjty.deepresonance.modules.machines.data.InfusingBonus;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.gui.Font;
+import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nonnull;
+public class LaserRecipeWrapper {
 
-public class LaserRecipeWrapper extends BlankRecipeWrapper {
+    private final ItemStack item;
 
-    private final Item item;
-
-    public LaserRecipeWrapper(Item item) {
+    public LaserRecipeWrapper(ItemStack item) {
         this.item = item;
     }
 
-    public Item getItem() {
+    public ItemStack getItem() {
         return item;
     }
 
-    @Override
     public void getIngredients(IIngredients ingredients) {
-        ingredients.setInput(ItemStack.class, new ItemStack(item));
+        ingredients.setInput(VanillaTypes.ITEM, item);
     }
 
+    // @todo where is this in 1.18?
+    public void drawInfo(PoseStack stack, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
+        InfusingBonus bonus = LaserTileEntity.getInfusingBonus(item);
 
-    @Override
-    public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
-        super.drawInfo(minecraft, recipeWidth, recipeHeight, mouseX, mouseY);
-        InfusingBonus bonus = LaserTileEntity.infusingBonusMap.get(item.getRegistryName().toString());
-
-        renderStat("Purity:", bonus.getPurityModifier(), 30);
-        renderStat("Strength:", bonus.getStrengthModifier(), 40);
-        renderStat("Efficiency:", bonus.getEfficiencyModifier(), 50);
+        renderStat(stack, "Purity:", bonus.purityModifier(), 30);
+        renderStat(stack, "Strength:", bonus.strengthModifier(), 40);
+        renderStat(stack, "Efficiency:", bonus.efficiencyModifier(), 50);
     }
 
-    private void renderStat(String label, InfusingBonus.Modifier modifier, int y) {
-        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
-        fontRenderer.drawString(label, 0, y, 0xffffffff, true);
-        float purityBonus = modifier.getBonus();
-        fontRenderer.drawString(String.valueOf(purityBonus)+"%", 60, y,
-                purityBonus > 0 ? 0xff006600 : 0xffff0000, false);
-        fontRenderer.drawString("(" + String.valueOf(modifier.getMaxOrMin()) + ")", 100, y,
-                0xff000000, false);
+    private void renderStat(PoseStack stack, String label, InfusingBonus.Modifier modifier, int y) {
+        Font fontRenderer = Minecraft.getInstance().font;
+        fontRenderer.draw(stack, label, 0, y, 0xffffffff);
+        float purityBonus = modifier.bonus();
+        fontRenderer.draw(stack, String.valueOf(purityBonus)+"%", 60, y,
+                purityBonus > 0 ? 0xff006600 : 0xffff0000);
+        fontRenderer.draw(stack, "(" + String.valueOf(modifier.maxOrMin()) + ")", 100, y,
+                0xff000000);
     }
 
 }

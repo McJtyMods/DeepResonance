@@ -1,10 +1,6 @@
 package mcjty.deepresonance.compat.jei.smelter;
 
-import mezz.jei.api.recipe.IRecipeWrapper;
-
-import javax.annotation.Nonnull;
-
-public class SmelterRecipeHandler implements mezz.jei.api.recipe.IRecipeHandler<SmelterRecipeWrapper> {
+public class SmelterRecipeHandler {}/*implements mezz.jei.api.recipe.IRecipeHandler<SmelterRecipeWrapper> {
 
     private final String id;
 
@@ -34,3 +30,4 @@ public class SmelterRecipeHandler implements mezz.jei.api.recipe.IRecipeHandler<
         return true;
     }
 }
+*/
