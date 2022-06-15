@@ -21,11 +21,6 @@ public class LaserRecipeWrapper {
         return item;
     }
 
-    public void getIngredients(IIngredients ingredients) {
-        ingredients.setInput(VanillaTypes.ITEM, item);
-    }
-
-    // @todo where is this in 1.18?
     public void drawInfo(PoseStack stack) {
         InfusingBonus bonus = LaserTileEntity.getInfusingBonus(item);
 

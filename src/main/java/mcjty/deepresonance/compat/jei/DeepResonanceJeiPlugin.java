@@ -5,6 +5,8 @@ import mcjty.deepresonance.compat.jei.laser.LaserRecipeCategory;
 import mcjty.deepresonance.compat.jei.laser.LaserRecipeWrapper;
 import mcjty.deepresonance.compat.jei.purifier.PurifierRecipeCategory;
 import mcjty.deepresonance.compat.jei.purifier.PurifierRecipeWrapper;
+import mcjty.deepresonance.compat.jei.smelter.SmelterRecipeCategory;
+import mcjty.deepresonance.compat.jei.smelter.SmelterRecipeWrapper;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
 import mezz.jei.api.IModPlugin;
@@ -29,6 +31,7 @@ public class DeepResonanceJeiPlugin implements IModPlugin {
 
     public static final RecipeType<LaserRecipeWrapper> LASER_RECIPE = RecipeType.create(DeepResonance.MODID, "laser", LaserRecipeWrapper.class);
     public static final RecipeType<PurifierRecipeWrapper> PURIFIER_RECIPE = RecipeType.create(DeepResonance.MODID, "purifier", PurifierRecipeWrapper.class);
+    public static final RecipeType<SmelterRecipeWrapper> SMELTER_RECIPE = RecipeType.create(DeepResonance.MODID, "smelter", SmelterRecipeWrapper.class);
 
     @Nonnull
     @Override
@@ -40,6 +43,7 @@ public class DeepResonanceJeiPlugin implements IModPlugin {
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(new ItemStack(MachinesModule.LASER_BLOCK.get()), LASER_RECIPE);
         registration.addRecipeCatalyst(new ItemStack(MachinesModule.PURIFIER_BLOCK.get()), PURIFIER_RECIPE);
+        registration.addRecipeCatalyst(new ItemStack(MachinesModule.SMELTER_BLOCK.get()), SMELTER_RECIPE);
     }
 
     @Override
@@ -48,6 +52,7 @@ public class DeepResonanceJeiPlugin implements IModPlugin {
         IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
         registration.addRecipeCategories(new LaserRecipeCategory(guiHelper));
         registration.addRecipeCategories(new PurifierRecipeCategory(guiHelper));
+        registration.addRecipeCategories(new SmelterRecipeCategory(guiHelper));
     }
 
     @Override
@@ -58,5 +63,6 @@ public class DeepResonanceJeiPlugin implements IModPlugin {
         });
         registration.addRecipes(LASER_RECIPE, recipes);
         registration.addRecipes(PURIFIER_RECIPE, Collections.singletonList(new PurifierRecipeWrapper()));
+        registration.addRecipes(SMELTER_RECIPE, Collections.singletonList(new SmelterRecipeWrapper()));
     }
 }

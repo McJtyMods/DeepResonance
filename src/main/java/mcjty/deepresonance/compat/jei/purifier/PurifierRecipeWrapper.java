@@ -3,9 +3,6 @@ package mcjty.deepresonance.compat.jei.purifier;
 
 public class PurifierRecipeWrapper {
 
-    public PurifierRecipeWrapper() {
-    }
-
 //    @Override
 //    public void getIngredients(IIngredients ingredients) {
 //        ingredients.setInput(ItemStack.class, new ItemStack(ModItems.filterMaterialItem));
