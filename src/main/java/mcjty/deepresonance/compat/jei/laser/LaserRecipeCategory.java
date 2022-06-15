@@ -7,10 +7,13 @@ import mcjty.deepresonance.modules.machines.util.config.LaserConfig;
 import mcjty.lib.varia.ComponentFactory;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -33,7 +36,7 @@ public class LaserRecipeCategory implements IRecipeCategory<LaserRecipeWrapper> 
         this.guiHelper = guiHelper;
         slot = guiHelper.getSlotDrawable();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(MachinesModule.LASER_BLOCK.get()));
-        background = guiHelper.createBlankDrawable(120, 70);
+        background = guiHelper.createBlankDrawable(150, 62);
     }
 
     @Override
@@ -67,13 +70,13 @@ public class LaserRecipeCategory implements IRecipeCategory<LaserRecipeWrapper> 
         return background;
     }
 
-
     @Override
-    public void draw(LaserRecipeWrapper recipe, PoseStack stack, double mouseX, double mouseY) {
+    public void draw(LaserRecipeWrapper recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY) {
         slot.draw(stack);
         Font font = Minecraft.getInstance().font;
         font.draw(stack, "Per " + LaserConfig.RCL_PER_CATALYST.get() + "mb RCL", 24, 0, 0xffffffff);
         font.draw(stack, "and " + LaserConfig.RCL_PER_CATALYST.get() + "mb crystal", 24, 10, 0xffffffff);
+        recipe.drawInfo(stack);
     }
 
     @Override
