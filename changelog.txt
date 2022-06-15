@@ -1,3 +1,6 @@
+Upcoming:
+- Added resonating ore to the ores tag
+
 3.0.7:
 - Fixed a fluid destroying bug with the purifier and valve
 

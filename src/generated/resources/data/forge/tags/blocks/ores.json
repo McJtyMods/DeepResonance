@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "deepresonance:resonating_ore_deepslate",
+    "deepresonance:resonating_ore_stone",
+    "deepresonance:resonating_ore_nether",
+    "deepresonance:resonating_ore_end"
+  ]
+}

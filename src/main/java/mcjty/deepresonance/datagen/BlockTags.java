@@ -5,14 +5,12 @@ import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
-import mcjty.deepresonance.modules.worldgen.WorldGenModule;
 import mcjty.deepresonance.util.DeepResonanceTags;
 import mcjty.lib.datagen.BaseBlockTagsProvider;
 import mcjty.rftoolsbase.RFToolsBase;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 
@@ -24,6 +22,8 @@ public class BlockTags extends BaseBlockTagsProvider {
 
     @Override
     protected void addTags() {
+        tag(Tags.Blocks.ORES)
+                .add(CoreModule.RESONATING_ORE_DEEPSLATE_BLOCK.get(), CoreModule.RESONATING_ORE_STONE_BLOCK.get(), CoreModule.RESONATING_ORE_NETHER_BLOCK.get(), CoreModule.RESONATING_ORE_END_BLOCK.get());
         tag(DeepResonanceTags.RESONANT_ORE)
                 .add(CoreModule.RESONATING_ORE_DEEPSLATE_BLOCK.get(), CoreModule.RESONATING_ORE_STONE_BLOCK.get(), CoreModule.RESONATING_ORE_NETHER_BLOCK.get(), CoreModule.RESONATING_ORE_END_BLOCK.get());
         ironPickaxe(
