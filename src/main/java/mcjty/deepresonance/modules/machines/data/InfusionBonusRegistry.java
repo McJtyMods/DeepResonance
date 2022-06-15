@@ -119,6 +119,9 @@ public class InfusionBonusRegistry {
                 new InfusingBonus.Modifier(8.0f, 80.0f)));
     }
 
+    public static Map<ResourceLocation, InfusingBonus> getInfusingBonusMap() {
+        return infusingBonusMap;
+    }
 
     public static InfusingBonus getInfusionBonus(ItemStack stack) {
         return infusingBonusMap
