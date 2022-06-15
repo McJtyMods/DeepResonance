@@ -13,10 +13,6 @@ import java.util.function.Supplier;
 
 public class LaserContainer extends GenericContainer {
 
-    public LaserContainer(@Nullable MenuType<?> type, int id, ContainerFactory factory, BlockPos pos, @Nullable GenericTileEntity te, @NotNull Player player) {
-        super(type, id, factory, pos, te, player);
-    }
-
     public LaserContainer(@NotNull Supplier<MenuType<GenericContainer>> type, int id, @NotNull Supplier<ContainerFactory> factory, @Nullable GenericTileEntity te, @NotNull Player player) {
         super(type, id, factory, te, player);
     }

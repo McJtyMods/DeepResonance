@@ -26,7 +26,7 @@ public class LaserRecipeWrapper {
     }
 
     // @todo where is this in 1.18?
-    public void drawInfo(PoseStack stack, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
+    public void drawInfo(PoseStack stack) {
         InfusingBonus bonus = LaserTileEntity.getInfusingBonus(item);
 
         renderStat(stack, "Purity:", bonus.purityModifier(), 30);
