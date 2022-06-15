@@ -1,4 +1,4 @@
-Upcoming:
+3.0.8:
 - Added resonating ore to the ores tag
 - Implemented the JEI integration for the smelter, purifier, and laser again
 
