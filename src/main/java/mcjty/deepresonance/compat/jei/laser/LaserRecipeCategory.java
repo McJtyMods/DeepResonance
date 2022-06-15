@@ -37,6 +37,11 @@ public class LaserRecipeCategory implements IRecipeCategory<LaserRecipeWrapper> 
     }
 
     @Override
+    public void setIngredients(LaserRecipeWrapper recipe, IIngredients ingredients) {
+        ingredients.setInput(VanillaTypes.ITEM_STACK, recipe.getItem());
+    }
+
+    @Override
     public IDrawable getIcon() {
         return icon;
     }

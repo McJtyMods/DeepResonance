@@ -4,6 +4,7 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.compat.jei.laser.LaserRecipeCategory;
 import mcjty.deepresonance.compat.jei.laser.LaserRecipeHandler;
 import mcjty.deepresonance.compat.jei.laser.LaserRecipeWrapper;
+import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -28,6 +29,11 @@ public class DeepResonanceJeiPlugin implements IModPlugin {
     @Override
     public ResourceLocation getPluginUid() {
         return new ResourceLocation(DeepResonance.MODID, "jeiplugin");
+    }
+
+    @Override
+    public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+        registration.addRecipeCatalyst(new ItemStack(MachinesModule.LASER_BLOCK.get()), LASER_RECIPE);
     }
 
     @Override
