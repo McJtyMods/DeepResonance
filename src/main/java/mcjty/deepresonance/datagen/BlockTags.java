@@ -5,6 +5,7 @@ import mcjty.deepresonance.util.DeepResonanceTags;
 import mcjty.rftoolsbase.RFToolsBase;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nonnull;
@@ -17,7 +18,10 @@ public class BlockTags extends BlockTagsProvider {
 
     @Override
     protected void addTags() {
-        tag(DeepResonanceTags.RESONANT_ORE).add(CoreModule.RESONATING_ORE_STONE_BLOCK.get(), CoreModule.RESONATING_ORE_NETHER_BLOCK.get(), CoreModule.RESONATING_ORE_END_BLOCK.get());
+        tag(Tags.Blocks.ORES)
+                .add(CoreModule.RESONATING_ORE_STONE_BLOCK.get(), CoreModule.RESONATING_ORE_NETHER_BLOCK.get(), CoreModule.RESONATING_ORE_END_BLOCK.get());
+        tag(DeepResonanceTags.RESONANT_ORE)
+                .add(CoreModule.RESONATING_ORE_STONE_BLOCK.get(), CoreModule.RESONATING_ORE_NETHER_BLOCK.get(), CoreModule.RESONATING_ORE_END_BLOCK.get());
     }
 
     @Override

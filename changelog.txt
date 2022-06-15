@@ -1,3 +1,6 @@
+Upcoming:
+- Added resonating ore to the ores tag
+
 1.16-2.0.8:
 - Avoid Math.floorMod since apparently older Java 8 versions don't have it
 - Fixed a fluid destroying bug with the purifier and valve
