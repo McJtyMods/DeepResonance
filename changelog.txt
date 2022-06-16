@@ -1,4 +1,4 @@
-Upcoming:
+3.0.9:
 - Fixed wrong configs with the Laser which makes it MUCH less effective then it was in 1.12
 
 3.0.8:
