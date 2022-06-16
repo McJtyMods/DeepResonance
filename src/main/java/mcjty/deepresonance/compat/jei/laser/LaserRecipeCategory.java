@@ -75,7 +75,7 @@ public class LaserRecipeCategory implements IRecipeCategory<LaserRecipeWrapper> 
         slot.draw(stack);
         Font font = Minecraft.getInstance().font;
         font.draw(stack, "Per " + LaserConfig.RCL_PER_CATALYST.get() + "mb RCL", 24, 0, 0xffffffff);
-        font.draw(stack, "and " + LaserConfig.RCL_PER_CATALYST.get() + "mb crystal", 24, 10, 0xffffffff);
+        font.draw(stack, "and " + LaserConfig.CRYSTAL_LIQUID_PER_CATALYST.get() + "mb crystal", 24, 10, 0xffffffff);
         recipe.drawInfo(stack);
     }
 

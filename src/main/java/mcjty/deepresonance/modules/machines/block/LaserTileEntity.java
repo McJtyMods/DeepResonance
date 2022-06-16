@@ -160,7 +160,7 @@ public class LaserTileEntity extends TickingTileEntity {
             return;
         }
 
-        if (crystalLiquid < LaserConfig.RCL_PER_CATALYST.get()) {
+        if (crystalLiquid < LaserConfig.CRYSTAL_LIQUID_PER_CATALYST.get()) {
             changeColor(0);
             return;
         }
@@ -225,7 +225,7 @@ public class LaserTileEntity extends TickingTileEntity {
         // We consume stuff even if the tank does not have enough liquid. Player has to be careful
         items.decrStackSize(SLOT_CATALYST, 1);
         energyStorage.consumeEnergy(LaserConfig.RFUSE_PER_CATALYST.get());
-        crystalLiquid -= LaserConfig.RCL_PER_CATALYST.get();
+        crystalLiquid -= LaserConfig.CRYSTAL_LIQUID_PER_CATALYST.get();
 
         BlockEntity te = level.getBlockEntity(tankCoordinate);
         if (te instanceof TankTileEntity tank) {
