@@ -14,6 +14,7 @@ public class LaserConfig {
     public static ForgeConfigSpec.IntValue RFUSE_PER_CATALYST;
     public static ForgeConfigSpec.IntValue TICKS10_PER_CATALYST;
     public static ForgeConfigSpec.IntValue RCL_PER_CATALYST;
+    public static ForgeConfigSpec.IntValue CRYSTAL_LIQUID_PER_CATALYST;
 
     public static void init() {
         Config.SERVER_BUILDER.push("laser");
@@ -32,8 +33,10 @@ public class LaserConfig {
                 .defineInRange("rfUsePerCatalyst", 4000, 0, Integer.MAX_VALUE);
         TICKS10_PER_CATALYST = Config.SERVER_BUILDER.comment("How many multiples of 10 ticks are needed to infuse one catalyst item")
                 .defineInRange("ticks10PerCatalyst", 4, 0, 100000);
-        RCL_PER_CATALYST = Config.SERVER_BUILDER.comment("The amount of crystal liquid we consume per catalyst item")
+        CRYSTAL_LIQUID_PER_CATALYST = Config.SERVER_BUILDER.comment("The amount of crystal liquid we consume per catalyst item")
                 .defineInRange("crystalLiquidPerCatalyst", 25, 1, Integer.MAX_VALUE);
+        RCL_PER_CATALYST = Config.SERVER_BUILDER.comment("The amount of crystal liquid we consume per catalyst item")
+                .defineInRange("rclPerCatalyst", 500, 1, Integer.MAX_VALUE);
         Config.SERVER_BUILDER.pop();
     }
 
