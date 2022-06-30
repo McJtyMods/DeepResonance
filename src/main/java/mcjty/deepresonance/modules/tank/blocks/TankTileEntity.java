@@ -213,6 +213,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
                         if (infoTag.contains("preserved")) {
                             FluidStack fluidStack = FluidStack.loadFluidStackFromNBT(infoTag.getCompound("preserved"));
                             holder.getMb().fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
+                            updateHeightsForClient();
                         }
                     });
                 }
@@ -223,7 +224,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     @Override
     public void onReplaced(World world, BlockPos pos, BlockState state, BlockState newstate) {
         if (!world.isClientSide()) {
-            if (newstate.getBlock() != GeneratorModule.GENERATOR_PART_BLOCK.get()) {
+            if (newstate.getBlock() != TankModule.TANK_BLOCK.get()) {
                 TankBlob network = getBlob();
                 if (network != null) {
                     LiquidCrystalData data = network.getData();
@@ -232,6 +233,8 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
                         int amount = data.getAmount() / network.getTankBlocks();
                         preservedFluid.setAmount(amount);
                         data.setAmount(data.getAmount() - amount);
+                    } else {
+                        preservedFluid = FluidStack.EMPTY;
                     }
                     setChanged();
                 }

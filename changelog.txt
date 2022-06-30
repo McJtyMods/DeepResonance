@@ -1,3 +1,7 @@
+Upcoming:
+- Fixed a dupe bug when breaking completely empty tanks (which were filled before)
+- Fixed the tank not visually updating when placed down and containing liquid
+
 1.16-2.0.10:
 - Fixed wrong configs with the Laser which makes it MUCH less effective then it was in 1.12
 
