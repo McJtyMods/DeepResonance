@@ -41,7 +41,7 @@ public class RadiationTickEvent {
     public static MobEffect wither;
 
     @SubscribeEvent
-    public void onTick(TickEvent.WorldTickEvent evt) {
+    public void onTick(TickEvent.LevelTickEvent evt) {
         if (evt.phase == TickEvent.Phase.START) {
             return;
         }
