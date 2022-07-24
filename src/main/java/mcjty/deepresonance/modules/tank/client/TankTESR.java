@@ -25,6 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -64,8 +65,9 @@ public class TankTESR implements BlockEntityRenderer<TankTileEntity> {
 
         float scale = tileTank.getClientRenderHeight();
         if (fluidToRender != Fluids.EMPTY) {
-            int color = fluidToRender.getAttributes().getColor(tileTank.getLevel(), tileTank.getBlockPos());
-            int luminosity = fluidToRender.getAttributes().getLuminosity();
+            IClientFluidTypeExtensions attributes = IClientFluidTypeExtensions.of(fluidToRender);
+            int color = attributes.getTintColor(fluidToRender.defaultFluidState(), tileTank.getLevel(), tileTank.getBlockPos());
+            int luminosity = fluidToRender.getFluidType().getLightLevel();
 //            int block = LightTexture.block(combinedLightIn);
             int packed = LightTexture.pack(Math.max(luminosity, combinedLightIn), 0);
             render(matrixStackIn, bufferIn, fluidToRender, dirs, combinedLightIn, packed, scale, color);
