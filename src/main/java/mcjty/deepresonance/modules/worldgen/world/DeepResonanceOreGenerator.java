@@ -61,19 +61,4 @@ public class DeepResonanceOreGenerator {
     private static <C extends FeatureConfiguration, F extends Feature<C>> Holder<PlacedFeature> registerPlacedFeature(String registryName, ConfiguredFeature<C, F> feature, PlacementModifier... placementModifiers) {
         return PlacementUtils.register(registryName, Holder.direct(feature), placementModifiers);
     }
-
-    // @todo 1.19 biome decorator
-//    public static void onBiomeLoadingEvent(BiomeLoadingEvent event) {
-//        if (event.getCategory() == Biome.BiomeCategory.NETHER) {
-//            event.getGeneration().addFeature(GenerationStep.Decoration.RAW_GENERATION, ResonantCrystalFeature.CRYSTAL_CONFIGURED_NETHER);
-//            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, NETHER_RESONATING_ORE);
-//        } else if (event.getCategory() == Biome.BiomeCategory.THEEND) {
-//            event.getGeneration().addFeature(GenerationStep.Decoration.RAW_GENERATION, ResonantCrystalFeature.CRYSTAL_CONFIGURED_END);
-//            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, END_RESONATING_ORE);
-//        } else {
-//            event.getGeneration().addFeature(GenerationStep.Decoration.RAW_GENERATION, ResonantCrystalFeature.CRYSTAL_CONFIGURED_OVERWORLD);
-//            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, OVERWORLD_RESONATING_ORE);
-//            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, OVERWORLDBS_RESONATING_ORE);
-//        }
-//    }
 }

@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": "deepresonance:configured_crystal_overworld",
+  "step": "raw_generation"
+}

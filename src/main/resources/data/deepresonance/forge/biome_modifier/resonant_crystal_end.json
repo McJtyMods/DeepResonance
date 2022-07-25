@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_end",
+  "features": "deepresonance:configured_crystal_end",
+  "step": "raw_generation"
+}
