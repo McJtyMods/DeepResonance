@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.radiation;
 
-import mcjty.deepresonance.modules.radiation.client.ClientSetup;
 import mcjty.deepresonance.modules.radiation.client.RadiationOverlayRenderer;
 import mcjty.deepresonance.modules.radiation.item.ItemRadiationSuit;
 import mcjty.deepresonance.modules.radiation.item.RadiationMonitorItem;
@@ -57,7 +56,6 @@ public class RadiationModule implements IModule {
         event.enqueueWork(() -> {
             RadiationMonitorItem.initOverrides(RADIATION_MONITOR.get());
         });
-        ClientSetup.initClient();
         MinecraftForge.EVENT_BUS.addListener(RadiationOverlayRenderer::onRender);
     }
 

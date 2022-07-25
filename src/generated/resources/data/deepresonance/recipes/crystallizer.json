@@ -1,14 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "GXG",
-    "qmq",
-    "iii"
-  ],
   "key": {
-    "q": {
-      "item": "minecraft:quartz"
-    },
     "G": {
       "tag": "forge:glass"
     },
@@ -20,8 +12,16 @@
     },
     "m": {
       "item": "deepresonance:machine_frame"
+    },
+    "q": {
+      "item": "minecraft:quartz"
     }
   },
+  "pattern": [
+    "GXG",
+    "qmq",
+    "iii"
+  ],
   "result": {
     "item": "deepresonance:crystallizer"
   }

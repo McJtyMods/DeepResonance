@@ -1,5 +1,6 @@
 {
   "parent": "deepresonance:block/crystal_generated",
+  "render_type": "minecraft:translucent",
   "textures": {
     "crystal_texture": "deepresonance:block/crystal",
     "particle": "deepresonance:block/crystal"

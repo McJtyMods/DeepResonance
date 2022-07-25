@@ -2,15 +2,15 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "poisoned_dirt",
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
           "name": "deepresonance:poisoned_dirt"
         }
-      ]
+      ],
+      "name": "poisoned_dirt",
+      "rolls": 1.0
     }
   ]
 }

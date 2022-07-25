@@ -2,18 +2,16 @@ package mcjty.deepresonance.modules.tank;
 
 import mcjty.deepresonance.modules.tank.blocks.TankBlock;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
-import mcjty.deepresonance.modules.tank.client.ClientSetup;
-import mcjty.deepresonance.modules.tank.client.TankItemRenderer;
 import mcjty.deepresonance.modules.tank.client.TankTESR;
 import mcjty.deepresonance.setup.Registration;
 import mcjty.lib.modules.IModule;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.registries.RegistryObject;
 
 import static mcjty.deepresonance.setup.Registration.TILES;
 
@@ -35,7 +33,6 @@ public class TankModule implements IModule {
 
     @Override
     public void initClient(FMLClientSetupEvent event) {
-        ClientSetup.initClient();
         TankTESR.register();
     }
 

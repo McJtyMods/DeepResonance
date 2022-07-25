@@ -1,27 +1,27 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "GXG",
-    "eme",
-    "ddd"
-  ],
   "key": {
-    "d": {
-      "item": "minecraft:diamond"
-    },
-    "e": {
-      "item": "minecraft:emerald"
-    },
     "G": {
       "tag": "forge:glass"
     },
     "X": {
       "tag": "forge:ingots/gold"
     },
+    "d": {
+      "item": "minecraft:diamond"
+    },
+    "e": {
+      "item": "minecraft:emerald"
+    },
     "m": {
       "item": "deepresonance:machine_frame"
     }
   },
+  "pattern": [
+    "GXG",
+    "eme",
+    "ddd"
+  ],
   "result": {
     "item": "deepresonance:laser"
   }

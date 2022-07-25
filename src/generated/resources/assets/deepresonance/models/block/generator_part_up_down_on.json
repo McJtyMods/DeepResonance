@@ -2,11 +2,11 @@
   "parent": "minecraft:block/cube",
   "textures": {
     "down": "deepresonance:block/machine_bottom",
-    "up": "deepresonance:block/machine_top",
-    "north": "deepresonance:block/generator_part_side_up_down_on",
-    "south": "deepresonance:block/generator_part_side_up_down_on",
     "east": "deepresonance:block/generator_part_side_up_down_on",
-    "west": "deepresonance:block/generator_part_side_up_down_on",
-    "particle": "deepresonance:block/generator_part_side_up_down_on"
+    "north": "deepresonance:block/generator_part_side_up_down_on",
+    "particle": "deepresonance:block/generator_part_side_up_down_on",
+    "south": "deepresonance:block/generator_part_side_up_down_on",
+    "up": "deepresonance:block/machine_top",
+    "west": "deepresonance:block/generator_part_side_up_down_on"
   }
 }

@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "XRX",
-    "imi",
-    "PRP"
-  ],
   "key": {
     "P": {
       "item": "deepresonance:resonating_plate"
@@ -22,6 +17,11 @@
       "item": "deepresonance:machine_frame"
     }
   },
+  "pattern": [
+    "XRX",
+    "imi",
+    "PRP"
+  ],
   "result": {
     "item": "deepresonance:generator_part"
   }

@@ -1,14 +1,14 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "P P",
-    "P P"
-  ],
   "key": {
     "P": {
       "item": "deepresonance:resonating_plate"
     }
   },
+  "pattern": [
+    "P P",
+    "P P"
+  ],
   "result": {
     "item": "deepresonance:radiation_suit_boots"
   }

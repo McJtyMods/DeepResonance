@@ -1,5 +1,9 @@
 {
   "variants": {
+    "facing=east": {
+      "model": "deepresonance:block/crystal_full",
+      "y": 90
+    },
     "facing=north": {
       "model": "deepresonance:block/crystal_full"
     },
@@ -10,10 +14,6 @@
     "facing=west": {
       "model": "deepresonance:block/crystal_full",
       "y": 270
-    },
-    "facing=east": {
-      "model": "deepresonance:block/crystal_full",
-      "y": 90
     }
   }
 }

@@ -2,15 +2,15 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "resonating_ore_deepslate",
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
           "name": "deepresonance:resonating_ore_deepslate"
         }
-      ]
+      ],
+      "name": "resonating_ore_deepslate",
+      "rolls": 1.0
     }
   ]
 }

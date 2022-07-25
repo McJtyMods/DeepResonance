@@ -1,13 +1,11 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "qCq",
-    "ror",
-    "qxq"
-  ],
   "key": {
-    "x": {
-      "item": "minecraft:clock"
+    "C": {
+      "item": "minecraft:comparator"
+    },
+    "o": {
+      "tag": "forge:ender_pearls"
     },
     "q": {
       "item": "minecraft:quartz"
@@ -15,13 +13,15 @@
     "r": {
       "item": "minecraft:redstone"
     },
-    "C": {
-      "item": "minecraft:comparator"
-    },
-    "o": {
-      "tag": "forge:ender_pearls"
+    "x": {
+      "item": "minecraft:clock"
     }
   },
+  "pattern": [
+    "qCq",
+    "ror",
+    "qxq"
+  ],
   "result": {
     "item": "deepresonance:radiation_monitor"
   }

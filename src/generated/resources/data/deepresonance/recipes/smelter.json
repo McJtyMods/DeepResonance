@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "FFF",
-    "imi",
-    "FFF"
-  ],
   "key": {
     "F": {
       "item": "deepresonance:filter_material"
@@ -16,6 +11,11 @@
       "item": "deepresonance:machine_frame"
     }
   },
+  "pattern": [
+    "FFF",
+    "imi",
+    "FFF"
+  ],
   "result": {
     "item": "deepresonance:smelter"
   }

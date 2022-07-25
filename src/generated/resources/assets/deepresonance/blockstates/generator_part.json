@@ -3,23 +3,23 @@
     "down=false,powered=false,up=false": {
       "model": "deepresonance:block/generator_part"
     },
-    "down=true,powered=false,up=false": {
-      "model": "deepresonance:block/generator_part_down"
+    "down=false,powered=false,up=true": {
+      "model": "deepresonance:block/generator_part_up"
     },
     "down=false,powered=true,up=false": {
       "model": "deepresonance:block/generator_part_on"
     },
-    "down=true,powered=true,up=false": {
-      "model": "deepresonance:block/generator_part_down_on"
+    "down=false,powered=true,up=true": {
+      "model": "deepresonance:block/generator_part_up_on"
     },
-    "down=false,powered=false,up=true": {
-      "model": "deepresonance:block/generator_part_up"
+    "down=true,powered=false,up=false": {
+      "model": "deepresonance:block/generator_part_down"
     },
     "down=true,powered=false,up=true": {
       "model": "deepresonance:block/generator_part_up_down"
     },
-    "down=false,powered=true,up=true": {
-      "model": "deepresonance:block/generator_part_up_on"
+    "down=true,powered=true,up=false": {
+      "model": "deepresonance:block/generator_part_down_on"
     },
     "down=true,powered=true,up=true": {
       "model": "deepresonance:block/generator_part_up_down_on"

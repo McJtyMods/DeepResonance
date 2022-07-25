@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "fGf",
-    "GOG",
-    "fGf"
-  ],
   "key": {
-    "f": {
-      "item": "deepresonance:spent_filter_material"
-    },
     "G": {
       "tag": "forge:glass"
     },
     "O": {
       "item": "minecraft:obsidian"
+    },
+    "f": {
+      "item": "deepresonance:spent_filter_material"
     }
   },
+  "pattern": [
+    "fGf",
+    "GOG",
+    "fGf"
+  ],
   "result": {
     "item": "deepresonance:dense_glass"
   }

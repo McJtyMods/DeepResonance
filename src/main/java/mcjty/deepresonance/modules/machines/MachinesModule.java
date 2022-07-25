@@ -8,13 +8,13 @@ import mcjty.deepresonance.modules.machines.util.config.*;
 import mcjty.deepresonance.setup.Registration;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.modules.IModule;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.registries.RegistryObject;
 
 import static mcjty.deepresonance.setup.Registration.CONTAINERS;
 import static mcjty.deepresonance.setup.Registration.TILES;
@@ -55,8 +55,6 @@ public class MachinesModule implements IModule {
 
     @Override
     public void initClient(FMLClientSetupEvent event) {
-        ClientSetup.initClient();
-
         CrystallizerRenderer.register();
         LaserRenderer.register();
 

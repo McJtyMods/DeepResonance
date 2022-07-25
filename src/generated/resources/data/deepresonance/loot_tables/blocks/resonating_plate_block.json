@@ -2,15 +2,15 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "resonating_plate_block",
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
           "name": "deepresonance:resonating_plate_block"
         }
-      ]
+      ],
+      "name": "resonating_plate_block",
+      "rolls": 1.0
     }
   ]
 }

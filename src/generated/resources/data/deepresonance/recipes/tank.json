@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "tag": "forge:glass"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "P": {
+      "item": "deepresonance:resonating_plate"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    }
+  },
   "pattern": [
     "iPi",
     "GGG",
     "iOi"
   ],
-  "key": {
-    "P": {
-      "item": "deepresonance:resonating_plate"
-    },
-    "G": {
-      "tag": "forge:glass"
-    },
-    "i": {
-      "tag": "forge:ingots/iron"
-    },
-    "O": {
-      "item": "minecraft:obsidian"
-    }
-  },
   "result": {
     "item": "deepresonance:tank"
   }

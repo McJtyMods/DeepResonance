@@ -1,19 +1,14 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "RCR",
-    "imi",
-    "PiP"
-  ],
   "key": {
+    "C": {
+      "item": "minecraft:comparator"
+    },
     "P": {
       "item": "deepresonance:resonating_plate"
     },
     "R": {
       "item": "minecraft:redstone_block"
-    },
-    "C": {
-      "item": "minecraft:comparator"
     },
     "i": {
       "tag": "forge:ingots/iron"
@@ -22,6 +17,11 @@
       "item": "deepresonance:machine_frame"
     }
   },
+  "pattern": [
+    "RCR",
+    "imi",
+    "PiP"
+  ],
   "result": {
     "item": "deepresonance:generator_controller"
   }

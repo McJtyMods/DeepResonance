@@ -1,23 +1,23 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "gcg",
-    "csc",
-    "gcg"
-  ],
   "key": {
-    "g": {
-      "tag": "forge:gravel"
-    },
     "c": {
       "tag": "minecraft:coals"
+    },
+    "g": {
+      "tag": "forge:gravel"
     },
     "s": {
       "tag": "minecraft:sand"
     }
   },
+  "pattern": [
+    "gcg",
+    "csc",
+    "gcg"
+  ],
   "result": {
-    "item": "deepresonance:filter_material",
-    "count": 8
+    "count": 8,
+    "item": "deepresonance:filter_material"
   }
 }

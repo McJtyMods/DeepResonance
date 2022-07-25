@@ -1,14 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "PPP",
-    "imi",
-    "xxx"
-  ],
   "key": {
-    "x": {
-      "item": "minecraft:nether_brick"
-    },
     "P": {
       "item": "deepresonance:resonating_plate"
     },
@@ -17,8 +9,16 @@
     },
     "m": {
       "item": "deepresonance:machine_frame"
+    },
+    "x": {
+      "item": "minecraft:nether_brick"
     }
   },
+  "pattern": [
+    "PPP",
+    "imi",
+    "xxx"
+  ],
   "result": {
     "item": "deepresonance:purifier"
   }
