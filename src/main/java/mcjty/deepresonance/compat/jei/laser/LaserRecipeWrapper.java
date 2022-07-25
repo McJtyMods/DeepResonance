@@ -3,8 +3,6 @@ package mcjty.deepresonance.compat.jei.laser;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.deepresonance.modules.machines.block.LaserTileEntity;
 import mcjty.deepresonance.modules.machines.data.InfusingBonus;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.world.item.ItemStack;

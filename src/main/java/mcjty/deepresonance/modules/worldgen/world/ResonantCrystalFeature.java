@@ -11,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
@@ -65,7 +66,7 @@ public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig
         return false;
     }
 
-    private boolean trySpawnCrystal(@Nonnull WorldGenLevel world, @Nonnull ChunkGenerator generator, ChunkPos chunkPos, Random random, ResonantCrystalFeatureConfig config) {
+    private boolean trySpawnCrystal(@Nonnull WorldGenLevel world, @Nonnull ChunkGenerator generator, ChunkPos chunkPos, RandomSource random, ResonantCrystalFeatureConfig config) {
         for (int i = 0; i < WorldGenConfiguration.CRYSTAL_SPAWN_TRIES.get(); i++) {
             BlockPos pos = new BlockPos(chunkPos.getMinBlockX() + random.nextInt(16), 0, chunkPos.getMinBlockZ() + random.nextInt(16));
             if (false) { // @todo 1.16 detect if the world has a ceilijng generator.getSettings().) {
@@ -95,7 +96,7 @@ public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig
         return false;
     }
 
-    public static void spawnRandomCrystal(WorldGenLevel world, Random random, BlockPos pos, float str, float pow, float eff, float pur) {
+    public static void spawnRandomCrystal(WorldGenLevel world, RandomSource random, BlockPos pos, float str, float pow, float eff, float pur) {
         world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_NATURAL.get().defaultBlockState(), Block.UPDATE_ALL);
         BlockEntity te = world.getBlockEntity(pos);
         if (te instanceof ResonatingCrystalTileEntity tile) {

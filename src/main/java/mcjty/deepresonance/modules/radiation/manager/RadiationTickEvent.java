@@ -45,7 +45,7 @@ public class RadiationTickEvent {
         if (evt.phase == TickEvent.Phase.START) {
             return;
         }
-        if (!Objects.equals(Level.OVERWORLD, evt.world.dimension())) {
+        if (!Objects.equals(Level.OVERWORLD, evt.level.dimension())) {
             return;
         }
         counter--;
@@ -58,7 +58,7 @@ public class RadiationTickEvent {
                 counterEffects = EFFECTS_MAX;
                 doEffects = true;
             }
-            serverTick(evt.world, doEffects);
+            serverTick(evt.level, doEffects);
         }
     }
 

@@ -2,18 +2,17 @@ package mcjty.deepresonance.compat.jei.laser;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.compat.jei.DeepResonanceJeiPlugin;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.util.config.LaserConfig;
 import mcjty.lib.varia.ComponentFactory;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -35,13 +34,20 @@ public class LaserRecipeCategory implements IRecipeCategory<LaserRecipeWrapper> 
     public LaserRecipeCategory(IGuiHelper guiHelper) {
         this.guiHelper = guiHelper;
         slot = guiHelper.getSlotDrawable();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(MachinesModule.LASER_BLOCK.get()));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(MachinesModule.LASER_BLOCK.get()));
         background = guiHelper.createBlankDrawable(150, 62);
     }
 
+//@todo 1.19
+//    @Override
+//    public void setIngredients(LaserRecipeWrapper recipe, IIngredients ingredients) {
+//        ingredients.setInput(VanillaTypes.ITEM_STACK, recipe.getItem());
+//    }
+
+
     @Override
-    public void setIngredients(LaserRecipeWrapper recipe, IIngredients ingredients) {
-        ingredients.setInput(VanillaTypes.ITEM_STACK, recipe.getItem());
+    public RecipeType<LaserRecipeWrapper> getRecipeType() {
+        return DeepResonanceJeiPlugin.LASER_RECIPE;
     }
 
     @Override
@@ -49,20 +55,21 @@ public class LaserRecipeCategory implements IRecipeCategory<LaserRecipeWrapper> 
         return icon;
     }
 
-    @Override
-    public Class<? extends LaserRecipeWrapper> getRecipeClass() {
-        return LaserRecipeWrapper.class;
-    }
+//    @Override
+//    public Class<? extends LaserRecipeWrapper> getRecipeClass() {
+//        return LaserRecipeWrapper.class;
+//    }
 
     @Override
+    @Nonnull
     public Component getTitle() {
         return ComponentFactory.literal("Deep Resonance Laser");
     }
 
-    @Override
-    public ResourceLocation getUid() {
-        return ID;
-    }
+//    @Override
+//    public ResourceLocation getUid() {
+//        return ID;
+//    }
 
     @Nonnull
     @Override
@@ -80,9 +87,10 @@ public class LaserRecipeCategory implements IRecipeCategory<LaserRecipeWrapper> 
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, LaserRecipeWrapper recipeWrapper, IIngredients ingredients) {
-        IGuiItemStackGroup group = recipeLayout.getItemStacks();
-        group.init(0, true, 0, 0);
-        group.set(0, ingredients.getInputs(VanillaTypes.ITEM).get(0));
+    public void setRecipe(IRecipeLayoutBuilder recipeLayout, LaserRecipeWrapper recipe, IFocusGroup focuses) {
+        // @todo 1.19
+//        IGuiItemStackGroup group = recipeLayout.getItemStacks();
+//        group.init(0, true, 0, 0);
+//        group.set(0, ingredients.getInputs(VanillaTypes.ITEM).get(0));
     }
 }

@@ -5,16 +5,17 @@ import mcjty.deepresonance.modules.radiation.item.RadiationMonitorItem;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import org.lwjgl.opengl.GL11;
 
 public class RadiationOverlayRenderer {
 
-    public static void onRender(RenderGameOverlayEvent event) {
-        if (event.isCancelable() || event.getType() != RenderGameOverlayEvent.ElementType.BOSSINFO) {
+    public static void onRender(RenderGuiOverlayEvent event) {
+        if (event.isCancelable() || event.getOverlay() != VanillaGuiOverlay.BOSS_EVENT_PROGRESS.type()) {
             return;
         }
 
@@ -36,13 +37,13 @@ public class RadiationOverlayRenderer {
         int radiation = (int) RadiationMonitorItem.radiationStrength;
         Font fontRenderer = Minecraft.getInstance().font;
         if (radiation > 0) {
-            fontRenderer.draw(event.getMatrixStack(),
+            fontRenderer.draw(event.getPoseStack(),
                     "Radiation: " + radiation,
                     RadiationConfiguration.RADIATION_OVERLAY_X.get(), RadiationConfiguration.RADIATION_OVERLAY_Y.get(),
                     RadiationConfiguration.RADIATION_OVERLAY_COLOR.get());
         } else {
             fontRenderer.draw(
-                    event.getMatrixStack(),
+                    event.getPoseStack(),
                     "No radiation detected",
                     RadiationConfiguration.RADIATION_OVERLAY_X.get(), RadiationConfiguration.RADIATION_OVERLAY_Y.get(),
                     RadiationConfiguration.RADIATION_OVERLAY_COLOR_NORADIATION.get());

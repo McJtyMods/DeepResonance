@@ -16,9 +16,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Material;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
+
+import java.util.function.Consumer;
 
 import static mcjty.deepresonance.setup.Registration.TILES;
 
@@ -30,6 +34,18 @@ public class CoreModule implements IModule {
             .requiresCorrectToolForDrops()
             .strength(3, 5);
 
+    public static final RegistryObject<FluidType> LIQUID_CRYSTAL_TYPE = Registration.FLUID_TYPES.register("liquid_crystal_type",
+            () -> new FluidType(FluidType.Properties.create()) {
+                @Override
+                public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
+                    consumer.accept(new FluidLiquidCrystal.ClientExtensions());
+                }
+
+                @Override
+                public String getDescriptionId() {
+                    return "fluid.deepresonance.liquid_crystal";
+                }
+            });
     public static final RegistryObject<Fluid> LIQUID_CRYSTAL = Registration.FLUIDS.register("liquid_crystal", FluidLiquidCrystal::new);
 
     public static final RegistryObject<ResonatingCrystalBlock> RESONATING_CRYSTAL_NATURAL = Registration.BLOCKS.register("resonating_crystal_natural", () -> new ResonatingCrystalBlock(false, false));

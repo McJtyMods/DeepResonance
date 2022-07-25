@@ -56,7 +56,7 @@ public class TankTESR implements BlockEntityRenderer<TankTileEntity> {
         final Fluid fluidToRender = tileTank.getClientRenderFluid();
 
         Set<Direction> dirs = Arrays.stream(OrientationTools.DIRECTION_VALUES).filter(dir -> {
-            if (dir == Direction.DOWN && tileTank.getClientRenderHeight() > 0.0001 && !(fluidToRender == Fluids.EMPTY) && ItemBlockRenderTypes.canRenderInLayer(fluidToRender.defaultFluidState(), RenderType.solid())) {
+            if (dir == Direction.DOWN && tileTank.getClientRenderHeight() > 0.0001 && !(fluidToRender == Fluids.EMPTY) && ItemBlockRenderTypes.getRenderLayer(fluidToRender.defaultFluidState()) == RenderType.solid()) {
                 return false; //If there is a fluid being rendered, the bottom doesn't need to be checked if the fluid is opaque
             }
             BlockEntity tile = tileTank.getLevel().getBlockEntity(pos.relative(dir));
@@ -89,7 +89,7 @@ public class TankTESR implements BlockEntityRenderer<TankTileEntity> {
 
         if (renderFluid != null) {
             for (RenderType renderType : RenderType.chunkBufferLayers()) {
-                if (ItemBlockRenderTypes.canRenderInLayer(renderFluid.defaultFluidState(), renderType)) {
+                if (ItemBlockRenderTypes.getRenderLayer(renderFluid.defaultFluidState()) == renderType) {
                     renderFluid(scale, color, bufferIn.getBuffer(renderType), renderFluid, dirs, liquidBrightness, matrixStackIn);
                 }
             }
@@ -118,7 +118,8 @@ public class TankTESR implements BlockEntityRenderer<TankTileEntity> {
     private static void renderFluid(float scale, int color, VertexConsumer vertexBuilder, Fluid fluidToRender, Set<Direction> dirs, int brightness, PoseStack matrixStack) {
 
         float offset = -0.002f;
-        TextureAtlasSprite fluid = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(fluidToRender.getAttributes().getStillTexture());
+        ResourceLocation stillTexture = IClientFluidTypeExtensions.of(fluidToRender).getStillTexture();
+        TextureAtlasSprite fluid = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(stillTexture);
 
         float u1 = fluid.getU0();
         float v1 = fluid.getV0();

@@ -21,7 +21,8 @@ public class WorldGenModule implements IModule {
 
 
     public WorldGenModule() {
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, DeepResonanceOreGenerator::onBiomeLoadingEvent);
+        // @todo 1.19 biome decorator
+//        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, DeepResonanceOreGenerator::onBiomeLoadingEvent);
     }
 
     @Override
