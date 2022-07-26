@@ -27,7 +27,7 @@ public class DeepResonanceOreGenerator {
     public static void registerConfiguredFeatures() {
         OreConfiguration overworldConfig = new OreConfiguration(OreFeatures.STONE_ORE_REPLACEABLES, CoreModule.RESONATING_ORE_STONE_BLOCK.get().defaultBlockState(),
                 WorldGenConfiguration.OVERWORLD_VEIN_SIZE.get());
-        OVERWORLD_RESONATING_ORE = registerPlacedFeature("resonating_overworld", new ConfiguredFeature<>(Feature.ORE, overworldConfig),
+        OVERWORLD_RESONATING_ORE = registerPlacedFeature("deepresonance:resonating_overworld", new ConfiguredFeature<>(Feature.ORE, overworldConfig),
                 CountPlacement.of(WorldGenConfiguration.OVERWORLD_SPAWN_CHANCES.get()),
                 InSquarePlacement.spread(),
                 BiomeFilter.biome(),
@@ -35,7 +35,7 @@ public class DeepResonanceOreGenerator {
 
         OreConfiguration deepslateConfig = new OreConfiguration(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, CoreModule.RESONATING_ORE_DEEPSLATE_BLOCK.get().defaultBlockState(),
                 WorldGenConfiguration.OVERWORLD_VEIN_SIZE.get());
-        OVERWORLDBS_RESONATING_ORE = registerPlacedFeature("resonating_overworld_ds", new ConfiguredFeature<>(Feature.ORE, deepslateConfig),
+        OVERWORLDBS_RESONATING_ORE = registerPlacedFeature("deepresonance:resonating_overworld_ds", new ConfiguredFeature<>(Feature.ORE, deepslateConfig),
                 CountPlacement.of(WorldGenConfiguration.OVERWORLD_SPAWN_CHANCES.get()),
                 InSquarePlacement.spread(),
                 BiomeFilter.biome(),
@@ -43,7 +43,7 @@ public class DeepResonanceOreGenerator {
 
         OreConfiguration netherConfig = new OreConfiguration(OreFeatures.NETHER_ORE_REPLACEABLES, CoreModule.RESONATING_ORE_NETHER_BLOCK.get().defaultBlockState(),
                 WorldGenConfiguration.NETHER_VEIN_SIZE.get());
-        NETHER_RESONATING_ORE = registerPlacedFeature("resonating_nether", new ConfiguredFeature<>(Feature.ORE, netherConfig),
+        NETHER_RESONATING_ORE = registerPlacedFeature("deepresonance:resonating_nether", new ConfiguredFeature<>(Feature.ORE, netherConfig),
                 CountPlacement.of(WorldGenConfiguration.NETHER_SPAWN_CHANCES.get()),
                 InSquarePlacement.spread(),
                 BiomeFilter.biome(),
@@ -51,7 +51,7 @@ public class DeepResonanceOreGenerator {
 
         OreConfiguration endConfig = new OreConfiguration(ENDSTONE_TEST, CoreModule.RESONATING_ORE_END_BLOCK.get().defaultBlockState(),
                 WorldGenConfiguration.END_VEIN_SIZE.get());
-        END_RESONATING_ORE = registerPlacedFeature("resonating_end", new ConfiguredFeature<>(Feature.ORE, endConfig),
+        END_RESONATING_ORE = registerPlacedFeature("deepresonance:resonating_end", new ConfiguredFeature<>(Feature.ORE, endConfig),
                 CountPlacement.of(WorldGenConfiguration.END_SPAWN_CHANCES.get()),
                 InSquarePlacement.spread(),
                 BiomeFilter.biome(),

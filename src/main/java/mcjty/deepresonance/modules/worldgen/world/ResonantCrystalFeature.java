@@ -43,13 +43,13 @@ public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig
 
     public static void registerConfiguredFeatures() {
         // @todo 1.16 configure correctly!
-        CRYSTAL_CONFIGURED_OVERWORLD = registerPlacedFeature("configured_crystal_overworld", new ConfiguredFeature<>(WorldGenModule.CRYSTAL_FEATURE.get(),
+        CRYSTAL_CONFIGURED_OVERWORLD = registerPlacedFeature("deepresonance:configured_crystal_overworld", new ConfiguredFeature<>(WorldGenModule.CRYSTAL_FEATURE.get(),
                     new ResonantCrystalFeatureConfig(1.0f, 1.0f, 1.0f, 1.0f)),
                 CountPlacement.of(1));
-        CRYSTAL_CONFIGURED_NETHER = registerPlacedFeature("configured_crystal_nether", new ConfiguredFeature<>(WorldGenModule.CRYSTAL_FEATURE.get(),
+        CRYSTAL_CONFIGURED_NETHER = registerPlacedFeature("deepresonance:configured_crystal_nether", new ConfiguredFeature<>(WorldGenModule.CRYSTAL_FEATURE.get(),
                         new ResonantCrystalFeatureConfig(1.0f, 1.0f, 1.0f, 1.0f)),
                 CountPlacement.of(1));
-        CRYSTAL_CONFIGURED_END = registerPlacedFeature("configured_crystal_end", new ConfiguredFeature<>(WorldGenModule.CRYSTAL_FEATURE.get(),
+        CRYSTAL_CONFIGURED_END = registerPlacedFeature("deepresonance:configured_crystal_end", new ConfiguredFeature<>(WorldGenModule.CRYSTAL_FEATURE.get(),
                         new ResonantCrystalFeatureConfig(1.0f, 1.0f, 1.0f, 1.0f)),
                 CountPlacement.of(1));
     }
