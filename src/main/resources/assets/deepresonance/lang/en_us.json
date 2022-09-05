@@ -48,7 +48,7 @@
 
   "message.deepresonance.liquid_injector.header": "Creative only item to inject 100mb of liquid crystal into a tank.",
 
-  "message.deepresonance.tank.header": "This tank can hold up to 16 buckets of liquid. It is also capable of mixing the characteristics of liquid crystal. Place a comparator next to this tank to detect how full the tank is",
+  "message.deepresonance.tank.header": "This tank can hold up to 10 buckets of liquid. It is also capable of mixing the characteristics of liquid crystal. Place a comparator next to this tank to detect how full the tank is",
   "message.deepresonance.tank.liquid": "Liquid: ",
   "message.deepresonance.valve.header": "This machine will transfer fluids from the upper tank to a tank below if the fluid matches certain conditions.",
   "message.deepresonance.smelter.header": "This machine smelts resonating ore and produces liquid crystal in a tank placed on top of this. Place a tank below the smelter about half-filled with lava",
