@@ -1,5 +1,6 @@
 Upcoming:
 - Fixed the tank tooltip so it only says 10 instead of 16 buckets
+- Reimplemented support for RFTools Control so that you can check the status of a crystal or liquid using new opcodes
 
 3.0.10:
 - Fixed a dupe bug when breaking completely empty tanks (which were filled before)
