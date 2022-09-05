@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed the tank tooltip so it only says 10 instead of 16 buckets
+
 1.19-4.0.0:
 - Port to 1.19
 
