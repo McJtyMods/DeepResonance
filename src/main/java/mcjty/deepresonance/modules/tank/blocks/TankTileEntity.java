@@ -53,8 +53,9 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     // Only used when the tank is broken and needs to be put back later
     private FluidStack preservedFluid = FluidStack.EMPTY;
 
+    private DRTankHandler intFluidHandler = createFluidHandler();
     @Cap(type = CapType.FLUIDS)
-    private final LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(this::createFluidHandler);
+    private final LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(() -> intFluidHandler);
 
     public TankTileEntity(BlockPos pos, BlockState state) {
         super(TankModule.TYPE_TANK.get(), pos, state);
@@ -82,10 +83,8 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     public int getComparatorValue() {
-        return fluidHandler.map(handler -> {
-            float f = (float) handler.getFluidInTank(0).getAmount() / handler.getTankCapacity(0);
-            return (int) (f * 15);
-        }).orElse(0);
+        float f = (float) intFluidHandler.getFluidInTank(0).getAmount() / intFluidHandler.getTankCapacity(0);
+        return (int) (f * 15);
     }
 
     // Client side
@@ -97,6 +96,10 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     @Nonnull
     public Fluid getClientRenderFluid() {
         return clientRenderFluid.getFluidStack().getFluid();
+    }
+
+    public DRTankHandler getFluidHandler() {
+        return intFluidHandler;
     }
 
     @Override
@@ -175,26 +178,24 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         } else {
             // Show info about contained liquid
             if (!level.isClientSide) {
-                fluidHandler.ifPresent(handler -> {
-                    DecimalFormat decimalFormat = new DecimalFormat("#.#");
-                    FluidStack fluid = handler.getFluidInTank(0);
-                    if (fluid.isEmpty()) {
-                        player.sendSystemMessage(ComponentFactory.literal("Tank is empty").withStyle(ChatFormatting.YELLOW));
-                    } else {
-                        String amount = " (" + fluid.getAmount() + " mb)";
-                        player.sendSystemMessage(ComponentFactory.literal("Liquid: ")
-                                .append(ComponentFactory.translatable(fluid.getTranslationKey()))
-                                .append(ComponentFactory.literal(amount))
-                                .withStyle(ChatFormatting.AQUA));
-                        if (LiquidCrystalData.isLiquidCrystal(fluid.getFluid())) {
-                            LiquidCrystalData d = LiquidCrystalData.fromStack(fluid);
-                            player.sendSystemMessage(ComponentFactory.literal("Quality " + decimalFormat.format(d.getQuality() * 100) + "%"));
-                            player.sendSystemMessage(ComponentFactory.literal("Efficiency " + decimalFormat.format(d.getEfficiency() * 100) + "%"));
-                            player.sendSystemMessage(ComponentFactory.literal("Purity " + decimalFormat.format(d.getPurity() * 100) + "%"));
-                            player.sendSystemMessage(ComponentFactory.literal("Strength " + decimalFormat.format(d.getStrength() * 100) + "%"));
-                        }
+                DecimalFormat decimalFormat = new DecimalFormat("#.#");
+                FluidStack fluid = intFluidHandler.getFluidInTank(0);
+                if (fluid.isEmpty()) {
+                    player.sendMessage(ComponentFactory.literal("Tank is empty").withStyle(ChatFormatting.YELLOW), Util.NIL_UUID);
+                } else {
+                    String amount = " (" + fluid.getAmount() + " mb)";
+                    player.sendMessage(ComponentFactory.literal("Liquid: ")
+                            .append(ComponentFactory.translatable(fluid.getTranslationKey()))
+                            .append(ComponentFactory.literal(amount))
+                            .withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
+                    if (LiquidCrystalData.isLiquidCrystal(fluid.getFluid())) {
+                        LiquidCrystalData d = LiquidCrystalData.fromStack(fluid);
+                        player.sendMessage(ComponentFactory.literal("Quality " + decimalFormat.format(d.getQuality() * 100) + "%"), Util.NIL_UUID);
+                        player.sendMessage(ComponentFactory.literal("Efficiency " + decimalFormat.format(d.getEfficiency() * 100) + "%"), Util.NIL_UUID);
+                        player.sendMessage(ComponentFactory.literal("Purity " + decimalFormat.format(d.getPurity() * 100) + "%"), Util.NIL_UUID);
+                        player.sendMessage(ComponentFactory.literal("Strength " + decimalFormat.format(d.getStrength() * 100) + "%"), Util.NIL_UUID);
                     }
-                });
+                }
             }
             return InteractionResult.SUCCESS;
         }
@@ -330,7 +331,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     @Nonnull
-    private IFluidHandler createFluidHandler() {
+    private DRTankHandler createFluidHandler() {
         return new DRTankHandler(level, this::getMultiblockId, this::getClientLiquidData) {
             @Override
             public void onUpdate() {
