@@ -181,19 +181,19 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
                 DecimalFormat decimalFormat = new DecimalFormat("#.#");
                 FluidStack fluid = intFluidHandler.getFluidInTank(0);
                 if (fluid.isEmpty()) {
-                    player.sendMessage(ComponentFactory.literal("Tank is empty").withStyle(ChatFormatting.YELLOW), Util.NIL_UUID);
+                    player.sendSystemMessage(ComponentFactory.literal("Tank is empty").withStyle(ChatFormatting.YELLOW));
                 } else {
                     String amount = " (" + fluid.getAmount() + " mb)";
-                    player.sendMessage(ComponentFactory.literal("Liquid: ")
+                    player.sendSystemMessage(ComponentFactory.literal("Liquid: ")
                             .append(ComponentFactory.translatable(fluid.getTranslationKey()))
                             .append(ComponentFactory.literal(amount))
-                            .withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
+                            .withStyle(ChatFormatting.AQUA));
                     if (LiquidCrystalData.isLiquidCrystal(fluid.getFluid())) {
                         LiquidCrystalData d = LiquidCrystalData.fromStack(fluid);
-                        player.sendMessage(ComponentFactory.literal("Quality " + decimalFormat.format(d.getQuality() * 100) + "%"), Util.NIL_UUID);
-                        player.sendMessage(ComponentFactory.literal("Efficiency " + decimalFormat.format(d.getEfficiency() * 100) + "%"), Util.NIL_UUID);
-                        player.sendMessage(ComponentFactory.literal("Purity " + decimalFormat.format(d.getPurity() * 100) + "%"), Util.NIL_UUID);
-                        player.sendMessage(ComponentFactory.literal("Strength " + decimalFormat.format(d.getStrength() * 100) + "%"), Util.NIL_UUID);
+                        player.sendSystemMessage(ComponentFactory.literal("Quality " + decimalFormat.format(d.getQuality() * 100) + "%"));
+                        player.sendSystemMessage(ComponentFactory.literal("Efficiency " + decimalFormat.format(d.getEfficiency() * 100) + "%"));
+                        player.sendSystemMessage(ComponentFactory.literal("Purity " + decimalFormat.format(d.getPurity() * 100) + "%"));
+                        player.sendSystemMessage(ComponentFactory.literal("Strength " + decimalFormat.format(d.getStrength() * 100) + "%"));
                     }
                 }
             }
