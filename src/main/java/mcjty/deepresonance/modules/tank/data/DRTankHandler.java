@@ -103,7 +103,7 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
     @Nonnull
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
-        if (level.isClientSide) {
+        if (level == null || level.isClientSide) {
             return FluidStack.EMPTY;
         }
         TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
