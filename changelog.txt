@@ -1,4 +1,4 @@
-Upcoming:
+3.0.12:
 - Added test to avoid rare crash
 
 3.0.11:
