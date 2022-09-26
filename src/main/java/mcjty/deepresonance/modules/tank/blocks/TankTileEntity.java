@@ -53,9 +53,9 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     // Only used when the tank is broken and needs to be put back later
     private FluidStack preservedFluid = FluidStack.EMPTY;
 
-    private DRTankHandler intFluidHandler = createFluidHandler();
+    private DRTankHandler intFluidHandler = null;
     @Cap(type = CapType.FLUIDS)
-    private final LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(() -> intFluidHandler);
+    private final LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(this::createFluidHandler);
 
     public TankTileEntity(BlockPos pos, BlockState state) {
         super(TankModule.TYPE_TANK.get(), pos, state);
@@ -83,7 +83,8 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     public int getComparatorValue() {
-        float f = (float) intFluidHandler.getFluidInTank(0).getAmount() / intFluidHandler.getTankCapacity(0);
+        DRTankHandler handler = createFluidHandler();
+        float f = (float) handler.getFluidInTank(0).getAmount() / handler.getTankCapacity(0);
         return (int) (f * 15);
     }
 
@@ -99,7 +100,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     public DRTankHandler getFluidHandler() {
-        return intFluidHandler;
+        return createFluidHandler();
     }
 
     @Override
@@ -179,7 +180,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
             // Show info about contained liquid
             if (!level.isClientSide) {
                 DecimalFormat decimalFormat = new DecimalFormat("#.#");
-                FluidStack fluid = intFluidHandler.getFluidInTank(0);
+                FluidStack fluid = createFluidHandler().getFluidInTank(0);
                 if (fluid.isEmpty()) {
                     player.sendSystemMessage(ComponentFactory.literal("Tank is empty").withStyle(ChatFormatting.YELLOW));
                 } else {
@@ -332,13 +333,16 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
 
     @Nonnull
     private DRTankHandler createFluidHandler() {
-        return new DRTankHandler(level, this::getMultiblockId, this::getClientLiquidData) {
-            @Override
-            public void onUpdate() {
-                updateHeightsForClient();
-                setChanged();
-                DRTankNetwork.getNetwork(level).save();
-            }
-        };
+        if (intFluidHandler == null) {
+            intFluidHandler = new DRTankHandler(level, this::getMultiblockId, this::getClientLiquidData) {
+                @Override
+                public void onUpdate() {
+                    updateHeightsForClient();
+                    setChanged();
+                    DRTankNetwork.getNetwork(level).save();
+                }
+            };
+        }
+        return intFluidHandler;
     }
 }
