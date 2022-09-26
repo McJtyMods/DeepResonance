@@ -1,4 +1,4 @@
-Upcoming:
+3.0.13:
 - Fixed a serious bugs in the Deep Resonance tanks which basically broke all interaction with them
 
 3.0.12:
