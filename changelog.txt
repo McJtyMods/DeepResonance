@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a problem with config comments introduced by recent forge
+
 1.19-4.0.3:
 - Fixed a serious bugs in the Deep Resonance tanks which basically broke all interaction with them
 
