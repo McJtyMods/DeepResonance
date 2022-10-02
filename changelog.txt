@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a problem with config comments introduced by recent forge
+
 3.0.14:
 - Fix patchouli manual
 
