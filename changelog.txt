@@ -1,4 +1,4 @@
-Upcoming:
+3.0.16:
 - Safety for mods that call BreakEvent client side
 
 3.0.15:
