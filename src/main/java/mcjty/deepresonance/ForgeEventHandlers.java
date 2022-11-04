@@ -16,12 +16,15 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onBlockBreakEvent(BlockEvent.BreakEvent event) {
+        Level world = event.getPlayer().level;
+        if (world.isClientSide) {
+            return;
+        }
         float blocker = (float) RadiationShieldRegistry.getBlocker(event.getState());
         if (blocker >= 0.99f) {
             return;
         }
 
-        Level world = event.getPlayer().level;
         DRRadiationManager radiationManager = DRRadiationManager.getManager(world);
         Map<GlobalPos, DRRadiationManager.RadiationSource> radiationSources = radiationManager.getRadiationSources();
         if (radiationSources.isEmpty()) {
