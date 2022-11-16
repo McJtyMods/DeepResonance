@@ -109,7 +109,8 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
             if (newstate.getBlock() != GeneratorModule.GENERATOR_PART_BLOCK.get()) {
                 GeneratorBlob network = getBlob();
                 if (network != null) {
-                    int energy = network.getEnergy() / network.getGeneratorBlocks();
+                    int generatorBlocks = network.getGeneratorBlocks();
+                    int energy = generatorBlocks == 0 ? 0 : (network.getEnergy() / generatorBlocks);
                     network.setEnergy(network.getEnergy() - energy);
                     preservedEnergy = energy;
                 } else {
