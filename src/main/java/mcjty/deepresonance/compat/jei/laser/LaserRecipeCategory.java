@@ -12,6 +12,7 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
@@ -21,6 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public class LaserRecipeCategory implements IRecipeCategory<LaserRecipeWrapper> {
 
@@ -55,21 +57,11 @@ public class LaserRecipeCategory implements IRecipeCategory<LaserRecipeWrapper> 
         return icon;
     }
 
-//    @Override
-//    public Class<? extends LaserRecipeWrapper> getRecipeClass() {
-//        return LaserRecipeWrapper.class;
-//    }
-
     @Override
     @Nonnull
     public Component getTitle() {
         return ComponentFactory.literal("Deep Resonance Laser");
     }
-
-//    @Override
-//    public ResourceLocation getUid() {
-//        return ID;
-//    }
 
     @Nonnull
     @Override
@@ -87,7 +79,10 @@ public class LaserRecipeCategory implements IRecipeCategory<LaserRecipeWrapper> 
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder recipeLayout, LaserRecipeWrapper recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, LaserRecipeWrapper recipe, IFocusGroup focuses) {
+        builder.addSlot(RecipeIngredientRole.INPUT, 0, 0).addIngredients(VanillaTypes.ITEM_STACK,
+                List.of(recipe.getItem()));
+
         // @todo 1.19
 //        IGuiItemStackGroup group = recipeLayout.getItemStacks();
 //        group.init(0, true, 0, 0);
