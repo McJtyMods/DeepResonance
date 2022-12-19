@@ -17,13 +17,13 @@ public class WorldGenModule implements IModule {
             ResonantCrystalFeature.FEATURE_CRYSTAL_ID.getPath(),
             () -> new ResonantCrystalFeature(ResonantCrystalFeatureConfig.CODEC));
 
+    public WorldGenModule() {
+        DeepResonanceOreGenerator.init();
+        ResonantCrystalFeature.init();
+    }
 
     @Override
     public void init(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            DeepResonanceOreGenerator.registerConfiguredFeatures();
-            ResonantCrystalFeature.registerConfiguredFeatures();
-        });
     }
 
     @Override

@@ -6,10 +6,9 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.worldgen.WorldGenModule;
 import mcjty.deepresonance.modules.worldgen.util.WorldGenConfiguration;
+import mcjty.deepresonance.setup.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
@@ -21,41 +20,49 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.CountPlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.levelgen.placement.PlacementModifier;
+import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
+import java.util.List;
 
 public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig> {
 
+    public static final void init() {
+    }
+
     public static final ResourceLocation FEATURE_CRYSTAL_ID = new ResourceLocation(DeepResonance.MODID, "resonant_crystal");
 
-    public static Holder<PlacedFeature> CRYSTAL_CONFIGURED_OVERWORLD;
-    public static Holder<PlacedFeature> CRYSTAL_CONFIGURED_NETHER;
-    public static Holder<PlacedFeature> CRYSTAL_CONFIGURED_END;
+    public static final RegistryObject<ConfiguredFeature<?, ?>> CRYSTAL_CONFIGURED_OVERWORLD = Registration.CONFIGURED_FEATURES.register(
+            "configured_crystal_overworld",
+            () -> new ConfiguredFeature<>(WorldGenModule.CRYSTAL_FEATURE.get(),
+                    new ResonantCrystalFeatureConfig(1.0f, 1.0f, 1.0f, 1.0f)));
+    public static final RegistryObject<PlacedFeature> CRYSTAL_PLACED_OVERWORLD = Registration.PLACED_FEATURES.register(
+            "configured_crystal_overworld",
+            () -> new PlacedFeature(CRYSTAL_CONFIGURED_OVERWORLD.getHolder().get(), List.of(
+                    CountPlacement.of(1))));
+
+    public static final RegistryObject<ConfiguredFeature<?, ?>> CRYSTAL_CONFIGURED_NETHER = Registration.CONFIGURED_FEATURES.register(
+            "configured_crystal_nether",
+            () -> new ConfiguredFeature<>(WorldGenModule.CRYSTAL_FEATURE.get(),
+                    new ResonantCrystalFeatureConfig(1.0f, 1.0f, 1.0f, 1.0f)));
+    public static final RegistryObject<PlacedFeature> CRYSTAL_PLACED_NETHER = Registration.PLACED_FEATURES.register(
+            "configured_crystal_nether",
+            () -> new PlacedFeature(CRYSTAL_CONFIGURED_NETHER.getHolder().get(), List.of(
+                    CountPlacement.of(1))));
+
+    public static final RegistryObject<ConfiguredFeature<?, ?>> CRYSTAL_CONFIGURED_END = Registration.CONFIGURED_FEATURES.register(
+            "configured_crystal_end",
+            () -> new ConfiguredFeature<>(WorldGenModule.CRYSTAL_FEATURE.get(),
+                    new ResonantCrystalFeatureConfig(1.0f, 1.0f, 1.0f, 1.0f)));
+    public static final RegistryObject<PlacedFeature> CRYSTAL_PLACED_END = Registration.PLACED_FEATURES.register(
+            "configured_crystal_end",
+            () -> new PlacedFeature(CRYSTAL_CONFIGURED_END.getHolder().get(), List.of(
+                    CountPlacement.of(1))));
 
     public ResonantCrystalFeature(Codec<ResonantCrystalFeatureConfig> codec) {
         super(codec);
-    }
-
-    public static void registerConfiguredFeatures() {
-        // @todo 1.16 configure correctly!
-        CRYSTAL_CONFIGURED_OVERWORLD = registerPlacedFeature("deepresonance:configured_crystal_overworld", new ConfiguredFeature<>(WorldGenModule.CRYSTAL_FEATURE.get(),
-                    new ResonantCrystalFeatureConfig(1.0f, 1.0f, 1.0f, 1.0f)),
-                CountPlacement.of(1));
-        CRYSTAL_CONFIGURED_NETHER = registerPlacedFeature("deepresonance:configured_crystal_nether", new ConfiguredFeature<>(WorldGenModule.CRYSTAL_FEATURE.get(),
-                        new ResonantCrystalFeatureConfig(1.0f, 1.0f, 1.0f, 1.0f)),
-                CountPlacement.of(1));
-        CRYSTAL_CONFIGURED_END = registerPlacedFeature("deepresonance:configured_crystal_end", new ConfiguredFeature<>(WorldGenModule.CRYSTAL_FEATURE.get(),
-                        new ResonantCrystalFeatureConfig(1.0f, 1.0f, 1.0f, 1.0f)),
-                CountPlacement.of(1));
-    }
-
-    private static <C extends FeatureConfiguration, F extends Feature<C>> Holder<PlacedFeature> registerPlacedFeature(String registryName, ConfiguredFeature<C, F> feature, PlacementModifier... placementModifiers) {
-        return PlacementUtils.register(registryName, Holder.direct(feature), placementModifiers);
     }
 
     @Override

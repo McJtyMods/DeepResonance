@@ -1,3 +1,6 @@
+Upcoming:
+- Improved feature registration
+
 1.19-4.0.7:
 - Fixed the liquid crystal texture
 - Fixed the JEI integration
