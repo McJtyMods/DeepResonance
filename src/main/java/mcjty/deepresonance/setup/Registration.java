@@ -48,7 +48,7 @@ public class Registration {
     }
 
     public static Item.Properties createStandardProperties() {
-        return new Item.Properties().tab(DeepResonance.setup.getTab());
+        return DeepResonance.setup.defaultProperties();
     }
 
     public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {
