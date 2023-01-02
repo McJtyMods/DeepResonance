@@ -99,19 +99,17 @@ public class TankTESR implements BlockEntityRenderer<TankTileEntity> {
     }
 
     private static void renderModel(PoseStack matrixStack, VertexConsumer vertexBuilder, Set<Direction> dirs, int brightness) {
-        Matrix4f matrix = matrixStack.last().pose();
-
         if (dirs.contains(Direction.UP)) {
             TextureAtlasSprite tank_top = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(TANK_TOP);
-            RenderHelper.drawQuad(matrix, vertexBuilder, tank_top, Direction.UP, true, 0.1f, RenderSettings.builder().brightness(brightness).build());
+            RenderHelper.drawQuad(matrixStack, vertexBuilder, tank_top, Direction.UP, true, 0.1f, RenderSettings.builder().brightness(brightness).build());
         }
         if (dirs.contains(Direction.DOWN)) {
             TextureAtlasSprite tank_bottom = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(TANK_BOTTOM);
-            RenderHelper.drawQuad(matrix, vertexBuilder, tank_bottom, Direction.DOWN, true, 0.1f, RenderSettings.builder().brightness(brightness).build());
+            RenderHelper.drawQuad(matrixStack, vertexBuilder, tank_bottom, Direction.DOWN, true, 0.1f, RenderSettings.builder().brightness(brightness).build());
         }
         TextureAtlasSprite tank_side = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(TANK_SIDE);
         for (Direction dir : OrientationTools.HORIZONTAL_DIRECTION_VALUES) {
-            RenderHelper.drawQuad(matrix, vertexBuilder, tank_side, dir, true, 0.1f, RenderSettings.builder().brightness(brightness).build());
+            RenderHelper.drawQuad(matrixStack, vertexBuilder, tank_side, dir, true, 0.1f, RenderSettings.builder().brightness(brightness).build());
         }
     }
 

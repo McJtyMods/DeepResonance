@@ -2,7 +2,6 @@ package mcjty.deepresonance.modules.machines.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.LaserTileEntity;
 import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
@@ -27,6 +26,8 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nonnull;
 
 public class LaserRenderer implements BlockEntityRenderer<LaserTileEntity> {
+
+    public static final Vec3 START = new Vec3(.5, .5, .5);
 
     public LaserRenderer(BlockEntityRendererProvider.Context context) {
     }
@@ -61,12 +62,10 @@ public class LaserRenderer implements BlockEntityRenderer<LaserTileEntity> {
             int tex = pos.getX();
             int tey = pos.getY();
             int tez = pos.getZ();
-            Vec3 projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().add(-tex, -tey, -tez);
+            Vec3 player = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().add(-tex, -tey, -tez);
 
             // Crystal coordinates are relative!
-            Vector3f start = new Vector3f(.5f, .5f, .5f);
-            Vector3f end = new Vector3f(destX, destY, destZ);
-            Vector3f player = new Vector3f((float)projectedView.x, (float)projectedView.y, (float)projectedView.z);
+            Vec3 end = new Vec3(destX, destY, destZ);
 
             TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(laser);
 
@@ -75,29 +74,8 @@ public class LaserRenderer implements BlockEntityRenderer<LaserTileEntity> {
                     .width(.25f)
                     .alpha(128)
                     .build();
-            RenderHelper.drawBeam(matrixStack.last().pose(), builder, sprite, start, end, player, settingsLaser);
+            RenderHelper.drawBeam(matrixStack, builder, sprite, START, end, player, settingsLaser);
             matrixStack.popPose();
         }
     }
-
-    // @todo 1.16
-//    static {
-//        RenderingRegistry.instance().registerLoader(new IModelAndTextureLoader() {
-//
-//            private TextureAtlasSprite tex;
-//
-//            @Override
-//            public void registerTextures(IIconRegistrar iconRegistrar) {
-//                tex = iconRegistrar.registerSprite(new ResourceLocation(DeepResonance.MODID, "effects/laserbeam"));
-//            }
-//
-//            @Override
-//            public void registerModels(IQuadBakery quadBakery, IModelBakery modelBakery, ITemplateBakery templateBakery) {
-//                IForgeTransformationMatrix m = new TransformationMatrix(new Vector3f(0, 0, -1), null, null, null);
-//                LaserTESR.quad = quadBakery.bakeQuad(new Vector3f(-BEAM_WIDTH / 2, BEAM_WIDTH / 2, 0), new Vector3f(BEAM_WIDTH / 2, BEAM_WIDTH / 2, 16), tex, Direction.UP, m);
-//            }
-//
-//        });
-//    }
-
 }

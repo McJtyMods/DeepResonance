@@ -2,8 +2,6 @@ package mcjty.deepresonance.modules.generator.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.block.EnergyCollectorTileEntity;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
@@ -39,6 +37,7 @@ public class CollectorRenderer implements BlockEntityRenderer<EnergyCollectorTil
             .width(.1f)
             .alpha(128)
             .build();
+    public static final Vec3 START = new Vec3(.5, .8, .5);
 
     private final Random random = new Random();
 
@@ -66,35 +65,31 @@ public class CollectorRenderer implements BlockEntityRenderer<EnergyCollectorTil
     }
 
     private void renderLasers(BlockPos pos, int laserStartup, Set<BlockPos> crystals, PoseStack matrixStack, VertexConsumer builder) {
-        float startupFactor = laserStartup / (float) GeneratorConfig.STARTUP_TIME.get();
+        double startupFactor = (double) laserStartup / GeneratorConfig.STARTUP_TIME.get();
         for (BlockPos destination : crystals) {
             TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(ClientSetup.LASERBEAMS[random.nextInt(4)]);
 
             int tex = pos.getX();
             int tey = pos.getY();
             int tez = pos.getZ();
-            Vec3 projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().add(-tex, -tey, -tez);
+            Vec3 player = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().add(-tex, -tey, -tez);
 
             // Crystal coordinates are relative!
-            Vector3f start = new Vector3f(.5f, .8f, .5f);
-            Vector3f end = new Vector3f(destination.getX() + .5f, destination.getY() + .5f, destination.getZ() + .5f);
-            Vector3f player = new Vector3f((float)projectedView.x, (float)projectedView.y, (float)projectedView.z);
+            Vec3 end = new Vec3(destination.getX() + .5, destination.getY() + .5, destination.getZ() + .5);
 
-            Matrix4f matrix = matrixStack.last().pose();
-
-            if (startupFactor > .8f) {
+            if (startupFactor > .8) {
                 // Do nothing
-            } else if (startupFactor > .001f) {
-                Vector3f middle = new Vector3f(jitter(startupFactor, start.x(), end.x()), jitter(startupFactor, start.y(), end.y()), jitter(startupFactor, start.z(), end.z()));
-                RenderHelper.drawBeam(matrix, builder, sprite, start, middle, player, SETTINGS_LASER);
-                RenderHelper.drawBeam(matrix, builder, sprite, middle, end, player, SETTINGS_LASER);
+            } else if (startupFactor > .001) {
+                Vec3 middle = new Vec3(jitter(startupFactor, START.x(), end.x()), jitter(startupFactor, START.y(), end.y()), jitter(startupFactor, START.z(), end.z()));
+                RenderHelper.drawBeam(matrixStack, builder, sprite, START, middle, player, SETTINGS_LASER);
+                RenderHelper.drawBeam(matrixStack, builder, sprite, middle, end, player, SETTINGS_LASER);
             } else {
-                RenderHelper.drawBeam(matrix, builder, sprite, start, end, player, SETTINGS_LASER);
+                RenderHelper.drawBeam(matrixStack, builder, sprite, START, end, player, SETTINGS_LASER);
             }
         }
     }
 
-    private float jitter(float startupFactor, float a1, float a2) {
-        return (a1 + a2) / 2.0f + (random.nextFloat() * 2.0f - 1.0f) * startupFactor;
+    private double jitter(double startupFactor, double a1, double a2) {
+        return (a1 + a2) / 2.0 + (random.nextDouble() * 2.0 - 1.0) * startupFactor;
     }
 }

@@ -1,7 +1,6 @@
 package mcjty.deepresonance.modules.machines.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.CrystallizerTileEntity;
@@ -41,7 +40,7 @@ public class CrystallizerRenderer implements BlockEntityRenderer<CrystallizerTil
             float scale = 0.75f + 0.45f * (progress / 100.0f);
             float f = Math.floorMod(tile.getLevel().getGameTime(), 120);
             matrixStack.translate(0.5, 0.35 + (0.00 * progress), 0.5);
-            matrixStack.mulPose(Vector3f.YP.rotationDegrees(f * 3));
+            RenderHelper.rotateYP(matrixStack, f * 3);
             matrixStack.scale(scale, scale, scale);
             ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
             BakedModel ibakedmodel = itemRenderer.getModel(stack, Minecraft.getInstance().level, null, 0);  // @todo last parameter?
