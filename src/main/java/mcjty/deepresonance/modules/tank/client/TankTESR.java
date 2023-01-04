@@ -2,7 +2,6 @@ package mcjty.deepresonance.modules.tank.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
@@ -114,72 +113,20 @@ public class TankTESR implements BlockEntityRenderer<TankTileEntity> {
     }
 
     private static void renderFluid(float scale, int color, VertexConsumer vertexBuilder, Fluid fluidToRender, Set<Direction> dirs, int brightness, PoseStack matrixStack) {
-
-        float offset = -0.002f;
-        ResourceLocation stillTexture = IClientFluidTypeExtensions.of(fluidToRender).getStillTexture();
-        TextureAtlasSprite fluid = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(stillTexture);
-
-        float u1 = fluid.getU0();
-        float v1 = fluid.getV0();
-        float u2 = fluid.getU1();
-        float v2 = fluid.getV1();
-        float edge = 2.9f / 16f;
-
-        int b1 = brightness >> 16 & 65535;
-        int b2 = brightness & 65535;
-
-//        vertexBuilder.setColorRGBA_I(color, 255);
-//        vertexBuilder.setBrightness(brightness);
-//        vertexBuilder.setMatrix(matrixStack.getLast().getMatrix());
-        float r = (color >> 16 & 0xFF) / 255.0F;
-        float g = (color >> 8 & 0xFF) / 255.0F;
-        float b = (color & 0xFF) / 255.0F;
-        float a = (color >> 24 & 0xFF) / 255.0F;
-
-        Matrix4f matrix = matrixStack.last().pose();
-
         if (scale > 0.0f) {
-            //TOP
-            RenderHelper.vt(vertexBuilder, matrix, 0, scale + offset, 0, u1, v1, b1, b2, r, g, b, a);
-            RenderHelper.vt(vertexBuilder, matrix, 0, scale + offset, 1, u1, v2, b1, b2, r, g, b, a);
-            RenderHelper.vt(vertexBuilder, matrix, 1, scale + offset, 1, u2, v2, b1, b2, r, g, b, a);
-            RenderHelper.vt(vertexBuilder, matrix, 1, scale + offset, 0, u2, v1, b1, b2, r, g, b, a);
+            float offset = 0.015f;
+            ResourceLocation stillTexture = IClientFluidTypeExtensions.of(fluidToRender).getStillTexture();
+            TextureAtlasSprite fluid = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(stillTexture);
 
-            if (scale > edge) {
-                if (scale > 1 - edge) {
-                    scale = 1 - edge;
-                }
+            RenderSettings settings = RenderSettings.builder()
+                    .color(color)
+                    .brightness(brightness)
+                    .build();
 
-                v2 -= (fluid.getV1() - fluid.getV0()) * (1 - scale);
-
-                if (dirs.contains(Direction.NORTH)) {
-                    RenderHelper.vt(vertexBuilder, matrix, 1 - edge, scale, -offset, u1, v1, b1, b2, r, g, b, a);
-                    RenderHelper.vt(vertexBuilder, matrix, 1 - edge, edge, -offset, u1, v2, b1, b2, r, g, b, a);
-                    RenderHelper.vt(vertexBuilder, matrix, edge, edge, -offset, u2, v2, b1, b2, r, g, b, a);
-                    RenderHelper.vt(vertexBuilder, matrix, edge, scale, -offset, u2, v1, b1, b2, r, g, b, a);
-                }
-
-                if (dirs.contains(Direction.WEST)) {
-                    RenderHelper.vt(vertexBuilder, matrix, -offset, edge, 1 - edge, u1, v2, b1, b2, r, g, b, a);
-                    RenderHelper.vt(vertexBuilder, matrix, -offset, scale, 1 - edge, u1, v1, b1, b2, r, g, b, a);
-                    RenderHelper.vt(vertexBuilder, matrix, -offset, scale, edge, u2, v1, b1, b2, r, g, b, a);
-                    RenderHelper.vt(vertexBuilder, matrix, -offset, edge, edge, u2, v2, b1, b2, r, g, b, a);
-                }
-
-                if (dirs.contains(Direction.SOUTH)) {
-                    RenderHelper.vt(vertexBuilder, matrix, 1 - edge, edge, 1 + offset, u1, v2, b1, b2, r, g, b, a);
-                    RenderHelper.vt(vertexBuilder, matrix, 1 - edge, scale, 1 + offset, u1, v1, b1, b2, r, g, b, a);
-                    RenderHelper.vt(vertexBuilder, matrix, edge, scale, 1 + offset, u2, v1, b1, b2, r, g, b, a);
-                    RenderHelper.vt(vertexBuilder, matrix, edge, edge, 1 + offset, u2, v2, b1, b2, r, g, b, a);
-                }
-
-                if (dirs.contains(Direction.EAST)) {
-                    RenderHelper.vt(vertexBuilder, matrix, 1 + offset, scale, 1 - edge, u1, v1, b1, b2, r, g, b, a);
-                    RenderHelper.vt(vertexBuilder, matrix, 1 + offset, edge, 1 - edge, u1, v2, b1, b2, r, g, b, a);
-                    RenderHelper.vt(vertexBuilder, matrix, 1 + offset, edge, edge, u2, v2, b1, b2, r, g, b, a);
-                    RenderHelper.vt(vertexBuilder, matrix, 1 + offset, scale, edge, u2, v1, b1, b2, r, g, b, a);
-                }
-            }
+            RenderHelper.drawBox(matrixStack, vertexBuilder, fluid,
+                    false, true, dirs.contains(Direction.NORTH), dirs.contains(Direction.SOUTH), dirs.contains(Direction.WEST), dirs.contains(Direction.EAST),
+                    offset, 1 - offset, offset, scale - offset, offset, 1 - offset,
+                    settings);
         }
     }
 
