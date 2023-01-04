@@ -55,9 +55,9 @@ public class Recipes extends BaseRecipeProvider {
                         .define('g', Tags.Items.STONE)
                         .unlockedBy("has_iron", inventoryTrigger(ItemPredicate.Builder.item().of(Tags.Items.INGOTS_IRON).build())),
                 "iPi", "PgP", "iPi");
-        build(consumer, ShapedRecipeBuilder.shaped(CoreModule.RESONATING_PLATE_BLOCK_ITEM.get())
-                        .unlockedBy("has_resonant_plate", has(CoreModule.RESONATING_PLATE_ITEM.get())),
-                "PPP", "PPP", "PPP");
+//        build(consumer, ShapedRecipeBuilder.shaped(CoreModule.RESONATING_PLATE_BLOCK_ITEM.get())
+//                        .unlockedBy("has_resonant_plate", has(CoreModule.RESONATING_PLATE_ITEM.get())),
+//                "PPP", "PPP", "PPP");
         // @todo 1.16 FIX THIS
 //        build(consumer, ShapelessRecipeBuilder.shapeless(CoreModule.RESONATING_PLATE_ITEM.get(), 9)
 //                .requires(CoreModule.RESONATING_PLATE_BLOCK_ITEM.get()));

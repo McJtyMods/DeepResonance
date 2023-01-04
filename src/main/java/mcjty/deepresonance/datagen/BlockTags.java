@@ -22,12 +22,12 @@ public class BlockTags extends BaseBlockTagsProvider {
 
     @Override
     protected void addTags() {
-        tag(Tags.Blocks.ORES)
-                .add(CoreModule.RESONATING_ORE_DEEPSLATE_BLOCK.get(), CoreModule.RESONATING_ORE_STONE_BLOCK.get(), CoreModule.RESONATING_ORE_NETHER_BLOCK.get(), CoreModule.RESONATING_ORE_END_BLOCK.get());
-        tag(DeepResonanceTags.RESONANT_ORE)
-                .add(CoreModule.RESONATING_ORE_DEEPSLATE_BLOCK.get(), CoreModule.RESONATING_ORE_STONE_BLOCK.get(), CoreModule.RESONATING_ORE_NETHER_BLOCK.get(), CoreModule.RESONATING_ORE_END_BLOCK.get());
+//        tag(Tags.Blocks.ORES)
+//                .add(CoreModule.RESONATING_ORE_STONE_BLOCK.get(), CoreModule.RESONATING_ORE_NETHER_BLOCK.get(), CoreModule.RESONATING_ORE_END_BLOCK.get());
+//        tag(DeepResonanceTags.RESONANT_ORE)
+//                .add(CoreModule.RESONATING_ORE_STONE_BLOCK.get(), CoreModule.RESONATING_ORE_NETHER_BLOCK.get(), CoreModule.RESONATING_ORE_END_BLOCK.get());
         ironPickaxe(
-                CoreModule.RESONATING_PLATE_BLOCK_BLOCK,
+//                CoreModule.RESONATING_PLATE_BLOCK_BLOCK,
                 GeneratorModule.ENERGY_COLLECTOR_BLOCK, GeneratorModule.GENERATOR_CONTROLLER_BLOCK, GeneratorModule.GENERATOR_PART_BLOCK,
                 MachinesModule.CRYSTALLIZER_BLOCK, MachinesModule.LASER_BLOCK, MachinesModule.LENS_BLOCK, MachinesModule.PURIFIER_BLOCK,
                 MachinesModule.SMELTER_BLOCK, MachinesModule.VALVE_BLOCK,
@@ -35,8 +35,8 @@ public class BlockTags extends BaseBlockTagsProvider {
                 TankModule.TANK_BLOCK
         );
         diamondPickaxe(
-                CoreModule.RESONATING_ORE_DEEPSLATE_BLOCK, CoreModule.RESONATING_ORE_END_BLOCK, CoreModule.RESONATING_ORE_NETHER_BLOCK, CoreModule.RESONATING_ORE_STONE_BLOCK,
-                CoreModule.RESONATING_CRYSTAL_GENERATED, CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY, CoreModule.RESONATING_CRYSTAL_NATURAL, CoreModule.RESONATING_CRYSTAL_NATURAL_EMPTY,
+//                CoreModule.RESONATING_ORE_END_BLOCK, CoreModule.RESONATING_ORE_NETHER_BLOCK, CoreModule.RESONATING_ORE_STONE_BLOCK,
+//                CoreModule.RESONATING_CRYSTAL_GENERATED, CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY, CoreModule.RESONATING_CRYSTAL_NATURAL, CoreModule.RESONATING_CRYSTAL_NATURAL_EMPTY,
                 RadiationModule.DENSE_OBSIDIAN_BLOCK
         );
         tag(net.minecraft.tags.BlockTags.MINEABLE_WITH_SHOVEL).add(RadiationModule.POISONED_DIRT_BLOCK.get());

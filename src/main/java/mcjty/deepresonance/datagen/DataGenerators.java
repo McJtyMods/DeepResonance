@@ -1,15 +1,12 @@
 package mcjty.deepresonance.datagen;
 
-import mcjty.deepresonance.DeepResonance;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = DeepResonance.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+//@Mod.EventBusSubscriber(modid = DeepResonance.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class DataGenerators {
 
-    @SubscribeEvent
+//    @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         generator.addProvider(event.includeServer(), new Recipes(generator));

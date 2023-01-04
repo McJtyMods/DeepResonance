@@ -123,7 +123,7 @@ public class TankTESR implements BlockEntityRenderer<TankTileEntity> {
                     .brightness(brightness)
                     .build();
 
-            RenderHelper.drawBox(matrixStack, vertexBuilder, fluid,
+            RenderHelper.drawBoxUnit(matrixStack, vertexBuilder, fluid,
                     false, true, dirs.contains(Direction.NORTH), dirs.contains(Direction.SOUTH), dirs.contains(Direction.WEST), dirs.contains(Direction.EAST),
                     offset, 1 - offset, offset, scale - offset, offset, 1 - offset,
                     settings);

@@ -33,19 +33,19 @@ class Items extends BaseItemModelProvider {
         cubeAll(name(CoreModule.MACHINE_FRAME_ITEM.get()), modLoc("block/machine_side"));
 
         parentedItem(TankModule.TANK_ITEM.get(), "block/tank");
-        parentedBlock(CoreModule.RESONATING_CRYSTAL_NATURAL.get(), "block/crystal_full");
-        parentedBlock(CoreModule.RESONATING_CRYSTAL_NATURAL_EMPTY.get(), "block/crystal_empty");
-        parentedBlock(CoreModule.RESONATING_CRYSTAL_GENERATED.get(), "block/crystal_full_pure");
-        parentedBlock(CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY.get(), "block/crystal_empty_pure");
+//        parentedBlock(CoreModule.RESONATING_CRYSTAL_NATURAL.get(), "block/crystal_full");
+//        parentedBlock(CoreModule.RESONATING_CRYSTAL_NATURAL_EMPTY.get(), "block/crystal_empty");
+//        parentedBlock(CoreModule.RESONATING_CRYSTAL_GENERATED.get(), "block/crystal_full_pure");
+//        parentedBlock(CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY.get(), "block/crystal_empty_pure");
 
-        parentedBlock(CoreModule.RESONATING_ORE_STONE_BLOCK.get());
-        parentedBlock(CoreModule.RESONATING_ORE_DEEPSLATE_BLOCK.get());
-        parentedBlock(CoreModule.RESONATING_ORE_NETHER_BLOCK.get());
-        parentedBlock(CoreModule.RESONATING_ORE_END_BLOCK.get());
+//        parentedBlock(CoreModule.RESONATING_ORE_STONE_BLOCK.get());
+//        parentedBlock(CoreModule.RESONATING_ORE_DEEPSLATE_BLOCK.get());
+//        parentedBlock(CoreModule.RESONATING_ORE_NETHER_BLOCK.get());
+//        parentedBlock(CoreModule.RESONATING_ORE_END_BLOCK.get());
         parentedBlock(RadiationModule.POISONED_DIRT_BLOCK.get());
         parentedBlock(RadiationModule.DENSE_GLASS_BLOCK.get());
         parentedBlock(RadiationModule.DENSE_OBSIDIAN_BLOCK.get());
-        parentedBlock(CoreModule.RESONATING_PLATE_BLOCK_BLOCK.get());
+//        parentedBlock(CoreModule.RESONATING_PLATE_BLOCK_BLOCK.get());
         parentedBlock(MachinesModule.VALVE_BLOCK.get());
         parentedBlock(MachinesModule.SMELTER_BLOCK.get());
         parentedBlock(MachinesModule.PURIFIER_BLOCK.get());

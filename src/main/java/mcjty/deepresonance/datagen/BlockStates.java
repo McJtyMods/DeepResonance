@@ -1,21 +1,18 @@
 package mcjty.deepresonance.datagen;
 
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.tank.client.TankTESR;
 import mcjty.lib.datagen.BaseBlockStateProvider;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.core.Direction;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelBuilder;
-import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class BlockStates extends BaseBlockStateProvider {
@@ -30,17 +27,17 @@ public class BlockStates extends BaseBlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        registerCrystalModel();
+//        registerCrystalModel();
         registerTankModel();
         registerGeneratorPart();
-        simpleBlock(CoreModule.RESONATING_ORE_STONE_BLOCK.get());
-        simpleBlock(CoreModule.RESONATING_ORE_DEEPSLATE_BLOCK.get());
-        simpleBlock(CoreModule.RESONATING_ORE_NETHER_BLOCK.get());
-        simpleBlock(CoreModule.RESONATING_ORE_END_BLOCK.get());
+//        simpleBlock(CoreModule.RESONATING_ORE_STONE_BLOCK.get());
+//        simpleBlock(CoreModule.RESONATING_ORE_DEEPSLATE_BLOCK.get());
+//        simpleBlock(CoreModule.RESONATING_ORE_NETHER_BLOCK.get());
+//        simpleBlock(CoreModule.RESONATING_ORE_END_BLOCK.get());
         simpleBlock(RadiationModule.POISONED_DIRT_BLOCK.get());
         simpleBlockC(RadiationModule.DENSE_GLASS_BLOCK.get(), modelBuilder -> modelBuilder.renderType("cutout"));
         simpleBlock(RadiationModule.DENSE_OBSIDIAN_BLOCK.get());
-        simpleBlock(CoreModule.RESONATING_PLATE_BLOCK_BLOCK.get());
+//        simpleBlock(CoreModule.RESONATING_PLATE_BLOCK_BLOCK.get());
         simpleBlock(MachinesModule.VALVE_BLOCK.get(), models().cubeBottomTop(name(MachinesModule.VALVE_BLOCK.get()), new ResourceLocation(DeepResonance.MODID, "block/valve"), DEFAULT_BOTTOM, DEFAULT_TOP));
         horizontalOrientedBlock(MachinesModule.SMELTER_BLOCK.get(), (state, builder) -> {
             if (state.getValue(BlockStateProperties.POWERED)) {
@@ -88,49 +85,6 @@ public class BlockStates extends BaseBlockStateProvider {
     private void registerTankModel() {
         simpleBlock(TankModule.TANK_BLOCK.get(),
                 models().cubeBottomTop("tank", TankTESR.TANK_SIDE, TankTESR.TANK_BOTTOM, TankTESR.TANK_TOP).renderType("translucent"));
-    }
-
-    private void registerCrystalModel() {
-        ResourceLocation crystal = new ResourceLocation(DeepResonance.MODID, "crystal");
-        ResourceLocation crystalGenerated = new ResourceLocation(DeepResonance.MODID, "crystal_generated");
-
-        ModelFile emptyNatural = models().withExistingParent("crystal_empty", crystal).texture("crystal_texture", "deepresonance:block/empty_crystal")
-                .texture("particle", "deepresonance:block/empty_crystal").renderType("translucent");
-        ModelFile emptyGenerated = models().withExistingParent("crystal_empty_pure", crystalGenerated).texture("crystal_texture", "deepresonance:block/empty_crystal")
-                .texture("particle", "deepresonance:block/empty_crystal").renderType("translucent");
-        ModelFile fullNatural = models().withExistingParent("crystal_full", crystal).texture("crystal_texture", "deepresonance:block/crystal")
-                .texture("particle", "deepresonance:block/crystal").renderType("translucent");
-        ModelFile fullGenerated = models().withExistingParent("crystal_full_pure", crystalGenerated).texture("crystal_texture", "deepresonance:block/crystal")
-                .texture("particle", "deepresonance:block/crystal").renderType("translucent");
-
-        getVariantBuilder(CoreModule.RESONATING_CRYSTAL_GENERATED.get()).forAllStates(state -> {
-            Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-            return ConfiguredModel.builder()
-                    .modelFile(fullGenerated)
-                    .rotationY((int) ((direction.toYRot() + 180) % 360))
-                    .build();
-        });
-        getVariantBuilder(CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY.get()).forAllStates(state -> {
-            Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-            return ConfiguredModel.builder()
-                    .modelFile(emptyGenerated)
-                    .rotationY((int) ((direction.toYRot() + 180) % 360))
-                    .build();
-        });
-        getVariantBuilder(CoreModule.RESONATING_CRYSTAL_NATURAL.get()).forAllStates(state -> {
-            Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-            return ConfiguredModel.builder()
-                    .modelFile(fullNatural)
-                    .rotationY((int) ((direction.toYRot() + 180) % 360))
-                    .build();
-        });
-        getVariantBuilder(CoreModule.RESONATING_CRYSTAL_NATURAL_EMPTY.get()).forAllStates(state -> {
-            Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-            return ConfiguredModel.builder()
-                    .modelFile(emptyNatural)
-                    .rotationY((int) ((direction.toYRot() + 180) % 360))
-                    .build();
-        });
     }
 
     public BlockModelBuilder createCrystallizerModel() {

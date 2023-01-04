@@ -1,5 +1,6 @@
 package mcjty.deepresonance;
 
+import mcjty.deepresonance.datagen.DataGenerators;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
@@ -11,8 +12,10 @@ import mcjty.deepresonance.setup.Config;
 import mcjty.deepresonance.setup.ModSetup;
 import mcjty.deepresonance.setup.Registration;
 import mcjty.deepresonance.util.DeepResonanceTags;
+import mcjty.lib.datagen.DataGen;
 import mcjty.lib.modules.Modules;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -44,11 +47,20 @@ public class DeepResonance {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(setup::init);
         bus.addListener(modules::init);
+        bus.addListener(this::onDataGen);
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             bus.addListener(ClientSetup::onTextureStitch);
             bus.addListener(modules::initClient);
         });
+    }
+
+    private void onDataGen(GatherDataEvent event) {
+        DataGen datagen = new DataGen(event);
+        modules.datagen(datagen);
+        datagen.generate();
+
+        DataGenerators.gatherData(event);
     }
 
     private void setupModules() {
