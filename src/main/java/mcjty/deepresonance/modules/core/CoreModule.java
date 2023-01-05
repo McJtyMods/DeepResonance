@@ -1,5 +1,6 @@
 package mcjty.deepresonance.modules.core;
 
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.block.BlockResonatingPlate;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalBlock;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
@@ -13,7 +14,10 @@ import mcjty.deepresonance.util.DeepResonanceTags;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
+import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -61,8 +65,8 @@ public class CoreModule implements IModule {
     public static final RegistryObject<Item> RESONATING_CRYSTAL_GENERATED_ITEM = Registration.fromBlock(RESONATING_CRYSTAL_GENERATED);
     public static final RegistryObject<Item> RESONATING_CRYSTAL_GENERATED_EMPTY_ITEM = Registration.fromBlock(RESONATING_CRYSTAL_GENERATED_EMPTY);
     public static final RegistryObject<BlockEntityType<ResonatingCrystalTileEntity>> TYPE_RESONATING_CRYSTAL = TILES.register("resonating_crystal", () -> BlockEntityType.Builder.of(ResonatingCrystalTileEntity::new,
-            RESONATING_CRYSTAL_GENERATED.get(), RESONATING_CRYSTAL_GENERATED_EMPTY.get(),
-            RESONATING_CRYSTAL_NATURAL.get(), RESONATING_CRYSTAL_NATURAL_EMPTY.get())
+                    RESONATING_CRYSTAL_GENERATED.get(), RESONATING_CRYSTAL_GENERATED_EMPTY.get(),
+                    RESONATING_CRYSTAL_NATURAL.get(), RESONATING_CRYSTAL_NATURAL_EMPTY.get())
             .build(null));
 
     public static final RegistryObject<Block> RESONATING_ORE_STONE_BLOCK = Registration.BLOCKS.register("resonating_ore_stone", () -> new Block(ORE_PROPERTIES));
@@ -104,63 +108,87 @@ public class CoreModule implements IModule {
     @Override
     public void initDatagen(DataGen dataGen) {
         dataGen.add(
-                Dob.builder(RESONATING_ORE_DEEPSLATE_BLOCK)
+                Dob.builder(RESONATING_ORE_DEEPSLATE_BLOCK, RESONATING_ORE_DEEPSLATE_ITEM)
                         .simpleLoot()
                         .simpleBlockstate()
                         .parentedItem()
-                        .blockTags(Tags.Blocks.ORES, DeepResonanceTags.RESONANT_ORE, net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL),
-                Dob.builder(RESONATING_ORE_END_BLOCK)
+                        .blockTags(Tags.Blocks.ORES, DeepResonanceTags.RESONANT_ORE, net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL)
+                        .itemTags(DeepResonanceTags.RESONANT_ORE_ITEM),
+                Dob.builder(RESONATING_ORE_END_BLOCK, RESONATING_ORE_END_ITEM)
                         .simpleLoot()
                         .simpleBlockstate()
                         .parentedItem()
-                        .blockTags(Tags.Blocks.ORES, DeepResonanceTags.RESONANT_ORE, net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL),
-                Dob.builder(RESONATING_ORE_NETHER_BLOCK)
+                        .blockTags(Tags.Blocks.ORES, DeepResonanceTags.RESONANT_ORE, net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL)
+                        .itemTags(DeepResonanceTags.RESONANT_ORE_ITEM),
+                Dob.builder(RESONATING_ORE_NETHER_BLOCK, RESONATING_ORE_NETHER_ITEM)
                         .simpleLoot()
                         .simpleBlockstate()
                         .parentedItem()
-                        .blockTags(Tags.Blocks.ORES, DeepResonanceTags.RESONANT_ORE, net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL),
-                Dob.builder(RESONATING_ORE_STONE_BLOCK)
+                        .blockTags(Tags.Blocks.ORES, DeepResonanceTags.RESONANT_ORE, net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL)
+                        .itemTags(DeepResonanceTags.RESONANT_ORE_ITEM),
+                Dob.builder(RESONATING_ORE_STONE_BLOCK, RESONATING_ORE_STONE_ITEM)
                         .simpleLoot()
                         .simpleBlockstate()
                         .parentedItem()
-                        .blockTags(Tags.Blocks.ORES, DeepResonanceTags.RESONANT_ORE, net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL),
-                Dob.builder(RESONATING_PLATE_BLOCK_BLOCK)
+                        .blockTags(Tags.Blocks.ORES, DeepResonanceTags.RESONANT_ORE, net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL)
+                        .itemTags(DeepResonanceTags.RESONANT_ORE_ITEM),
+                Dob.blockBuilder(RESONATING_PLATE_BLOCK_BLOCK)
                         .simpleLoot()
                         .simpleBlockstate()
                         .parentedItem()
                         .blockTags(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL)
                         .shaped(ShapedRecipeBuilder.shaped(RESONATING_PLATE_BLOCK_ITEM.get())
                                         .unlockedBy("has_resonant_plate", DataGen.has(RESONATING_PLATE_ITEM.get()))
-                                        .define('P', net.minecraft.world.item.Items.PAPER),
+                                        .define('P', RESONATING_PLATE_ITEM.get()),
                                 "PPP", "PPP", "PPP"),
-                Dob.builder(RESONATING_CRYSTAL_NATURAL_EMPTY)
+                Dob.blockBuilder(RESONATING_CRYSTAL_NATURAL_EMPTY)
                         .standardLoot(TYPE_RESONATING_CRYSTAL)
-                        .blockstate((f, provider) -> {
+                        .blockstate(provider -> {
                             DataGenHelper.generateCrystal(RESONATING_CRYSTAL_NATURAL_EMPTY, provider, "crystal_empty", "crystal", "empty_crystal");
                         })
                         .parentedItem("block/crystal_empty")
                         .blockTags(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL),
-                Dob.builder(RESONATING_CRYSTAL_NATURAL)
+                Dob.blockBuilder(RESONATING_CRYSTAL_NATURAL)
                         .standardLoot(TYPE_RESONATING_CRYSTAL)
-                        .blockstate((f, provider) -> {
+                        .blockstate(provider -> {
                             DataGenHelper.generateCrystal(RESONATING_CRYSTAL_NATURAL, provider, "crystal_full", "crystal", "crystal");
                         })
                         .parentedItem("block/crystal_full")
                         .blockTags(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL),
-                Dob.builder(RESONATING_CRYSTAL_GENERATED_EMPTY)
+                Dob.blockBuilder(RESONATING_CRYSTAL_GENERATED_EMPTY)
                         .standardLoot(TYPE_RESONATING_CRYSTAL)
-                        .blockstate((f, provider) -> {
+                        .blockstate(provider -> {
                             DataGenHelper.generateCrystal(RESONATING_CRYSTAL_GENERATED_EMPTY, provider, "crystal_empty_pure", "crystal_generated", "empty_crystal");
                         })
-                        .parentedItem("block/crystal_empty")
+                        .parentedItem("block/crystal_empty_pure")
                         .blockTags(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL),
-                Dob.builder(RESONATING_CRYSTAL_GENERATED)
+                Dob.blockBuilder(RESONATING_CRYSTAL_GENERATED)
                         .standardLoot(TYPE_RESONATING_CRYSTAL)
-                        .blockstate((f, provider) -> {
+                        .blockstate(provider -> {
                             DataGenHelper.generateCrystal(RESONATING_CRYSTAL_GENERATED, provider, "crystal_full_pure", "crystal_generated", "crystal");
                         })
-                        .parentedItem("block/crystal_full")
-                        .blockTags(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL)
+                        .parentedItem("block/crystal_full_pure")
+                        .blockTags(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL),
+                Dob.itemBuilder(FILTER_MATERIAL_ITEM)
+                        .generatedItem("item/filter_material")
+                        .shaped(ShapedRecipeBuilder.shaped(FILTER_MATERIAL_ITEM.get(), 8)
+                                        .define('g', Tags.Items.GRAVEL)
+                                        .define('s', ItemTags.SAND)
+                                        .unlockedBy("has_gravel", DataGen.inventoryTrigger(ItemPredicate.Builder.item().of(Tags.Items.GRAVEL).build())),
+                                "gcg", "csc", "gcg"),
+                Dob.itemBuilder(LIQUID_INJECTOR_ITEM)
+                        .generatedItem("item/liquid_injector"),
+                Dob.itemBuilder(RESONATING_PLATE_ITEM)
+                        .generatedItem("item/resonating_plate"),
+                Dob.itemBuilder(SPENT_FILTER_ITEM)
+                        .generatedItem("item/spent_filter_material"),
+                Dob.itemBuilder(MACHINE_FRAME_ITEM)
+                        .cubeAll(new ResourceLocation(DeepResonance.MODID, "block/machine_side"))
+                        .shaped(ShapedRecipeBuilder.shaped(MACHINE_FRAME_ITEM.get())
+                                        .define('g', Tags.Items.STONE)
+                                        .define('P', RESONATING_PLATE_ITEM.get())
+                                        .unlockedBy("has_iron", DataGen.inventoryTrigger(ItemPredicate.Builder.item().of(Tags.Items.INGOTS_IRON).build())),
+                                "iPi", "PgP", "iPi")
         );
 
     }

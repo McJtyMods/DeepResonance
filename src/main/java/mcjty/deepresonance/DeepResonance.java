@@ -56,7 +56,7 @@ public class DeepResonance {
     }
 
     private void onDataGen(GatherDataEvent event) {
-        DataGen datagen = new DataGen(event);
+        DataGen datagen = new DataGen(MODID, event);
         modules.datagen(datagen);
         datagen.generate();
 

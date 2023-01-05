@@ -13,7 +13,6 @@ public final class DataGenerators {
         generator.addProvider(event.includeServer(), new LootTables(generator));
         BlockTags blockTags = new BlockTags(generator, event.getExistingFileHelper());
         generator.addProvider(event.includeServer(), blockTags);
-        generator.addProvider(event.includeServer(), new ItemTags(generator, blockTags, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new BlockStates(generator, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new Items(generator, event.getExistingFileHelper()));
     }

@@ -21,16 +21,16 @@ class Items extends BaseItemModelProvider {
 
     @Override
     protected void registerModels() {
-        itemGenerated(CoreModule.FILTER_MATERIAL_ITEM.get(), "item/filter_material");
-        itemGenerated(CoreModule.LIQUID_INJECTOR_ITEM.get(), "item/liquid_injector");
-        itemGenerated(CoreModule.RESONATING_PLATE_ITEM.get(), "item/resonating_plate");
-        itemGenerated(CoreModule.SPENT_FILTER_ITEM.get(), "item/spent_filter_material");
+//        itemGenerated(CoreModule.FILTER_MATERIAL_ITEM.get(), "item/filter_material");
+//        itemGenerated(CoreModule.LIQUID_INJECTOR_ITEM.get(), "item/liquid_injector");
+//        itemGenerated(CoreModule.RESONATING_PLATE_ITEM.get(), "item/resonating_plate");
+//        itemGenerated(CoreModule.SPENT_FILTER_ITEM.get(), "item/spent_filter_material");
         itemGenerated(RadiationModule.RADIATION_SUIT_HELMET.get(), "item/radiation_suit_helmet");
         itemGenerated(RadiationModule.RADIATION_SUIT_CHESTPLATE.get(), "item/radiation_suit_chestplate");
         itemGenerated(RadiationModule.RADIATION_SUIT_LEGGINGS.get(), "item/radiation_suit_leggings");
         itemGenerated(RadiationModule.RADIATION_SUIT_BOOTS.get(), "item/radiation_suit_boots");
 
-        cubeAll(name(CoreModule.MACHINE_FRAME_ITEM.get()), modLoc("block/machine_side"));
+//        cubeAll(name(CoreModule.MACHINE_FRAME_ITEM.get()), modLoc("block/machine_side"));
 
         parentedItem(TankModule.TANK_ITEM.get(), "block/tank");
 //        parentedBlock(CoreModule.RESONATING_CRYSTAL_NATURAL.get(), "block/crystal_full");
