@@ -30,6 +30,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import static mcjty.deepresonance.setup.Registration.TILES;
@@ -110,65 +111,69 @@ public class CoreModule implements IModule {
         dataGen.add(
                 Dob.builder(RESONATING_ORE_DEEPSLATE_BLOCK, RESONATING_ORE_DEEPSLATE_ITEM)
                         .simpleLoot()
-                        .simpleBlockstate()
+                        .simpleBlockState()
                         .parentedItem()
-                        .blockTags(Tags.Blocks.ORES, DeepResonanceTags.RESONANT_ORE, net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL)
-                        .itemTags(DeepResonanceTags.RESONANT_ORE_ITEM),
+                        .diamondPickaxeTags()
+                        .blockTags(List.of(Tags.Blocks.ORES, DeepResonanceTags.RESONANT_ORE))
+                        .itemTags(List.of(Tags.Items.ORES, DeepResonanceTags.RESONANT_ORE_ITEM)),
                 Dob.builder(RESONATING_ORE_END_BLOCK, RESONATING_ORE_END_ITEM)
                         .simpleLoot()
-                        .simpleBlockstate()
+                        .simpleBlockState()
                         .parentedItem()
-                        .blockTags(Tags.Blocks.ORES, DeepResonanceTags.RESONANT_ORE, net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL)
-                        .itemTags(DeepResonanceTags.RESONANT_ORE_ITEM),
+                        .diamondPickaxeTags()
+                        .blockTags(List.of(Tags.Blocks.ORES, DeepResonanceTags.RESONANT_ORE))
+                        .itemTags(List.of(Tags.Items.ORES, DeepResonanceTags.RESONANT_ORE_ITEM)),
                 Dob.builder(RESONATING_ORE_NETHER_BLOCK, RESONATING_ORE_NETHER_ITEM)
                         .simpleLoot()
-                        .simpleBlockstate()
+                        .simpleBlockState()
                         .parentedItem()
-                        .blockTags(Tags.Blocks.ORES, DeepResonanceTags.RESONANT_ORE, net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL)
-                        .itemTags(DeepResonanceTags.RESONANT_ORE_ITEM),
+                        .diamondPickaxeTags()
+                        .blockTags(List.of(Tags.Blocks.ORES, DeepResonanceTags.RESONANT_ORE))
+                        .itemTags(List.of(Tags.Items.ORES, DeepResonanceTags.RESONANT_ORE_ITEM)),
                 Dob.builder(RESONATING_ORE_STONE_BLOCK, RESONATING_ORE_STONE_ITEM)
                         .simpleLoot()
-                        .simpleBlockstate()
+                        .simpleBlockState()
                         .parentedItem()
-                        .blockTags(Tags.Blocks.ORES, DeepResonanceTags.RESONANT_ORE, net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL)
-                        .itemTags(DeepResonanceTags.RESONANT_ORE_ITEM),
+                        .diamondPickaxeTags()
+                        .blockTags(List.of(Tags.Blocks.ORES, DeepResonanceTags.RESONANT_ORE))
+                        .itemTags(List.of(Tags.Items.ORES, DeepResonanceTags.RESONANT_ORE_ITEM)),
                 Dob.blockBuilder(RESONATING_PLATE_BLOCK_BLOCK)
                         .simpleLoot()
-                        .simpleBlockstate()
+                        .simpleBlockState()
                         .parentedItem()
-                        .blockTags(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL)
+                        .diamondPickaxeTags()
                         .shaped(ShapedRecipeBuilder.shaped(RESONATING_PLATE_BLOCK_ITEM.get())
                                         .unlockedBy("has_resonant_plate", DataGen.has(RESONATING_PLATE_ITEM.get()))
                                         .define('P', RESONATING_PLATE_ITEM.get()),
                                 "PPP", "PPP", "PPP"),
                 Dob.blockBuilder(RESONATING_CRYSTAL_NATURAL_EMPTY)
                         .standardLoot(TYPE_RESONATING_CRYSTAL)
-                        .blockstate(provider -> {
+                        .blockState(provider -> {
                             DataGenHelper.generateCrystal(RESONATING_CRYSTAL_NATURAL_EMPTY, provider, "crystal_empty", "crystal", "empty_crystal");
                         })
                         .parentedItem("block/crystal_empty")
-                        .blockTags(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL),
+                        .diamondPickaxeTags(),
                 Dob.blockBuilder(RESONATING_CRYSTAL_NATURAL)
                         .standardLoot(TYPE_RESONATING_CRYSTAL)
-                        .blockstate(provider -> {
+                        .blockState(provider -> {
                             DataGenHelper.generateCrystal(RESONATING_CRYSTAL_NATURAL, provider, "crystal_full", "crystal", "crystal");
                         })
                         .parentedItem("block/crystal_full")
-                        .blockTags(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL),
+                        .diamondPickaxeTags(),
                 Dob.blockBuilder(RESONATING_CRYSTAL_GENERATED_EMPTY)
                         .standardLoot(TYPE_RESONATING_CRYSTAL)
-                        .blockstate(provider -> {
+                        .blockState(provider -> {
                             DataGenHelper.generateCrystal(RESONATING_CRYSTAL_GENERATED_EMPTY, provider, "crystal_empty_pure", "crystal_generated", "empty_crystal");
                         })
                         .parentedItem("block/crystal_empty_pure")
-                        .blockTags(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL),
+                        .diamondPickaxeTags(),
                 Dob.blockBuilder(RESONATING_CRYSTAL_GENERATED)
                         .standardLoot(TYPE_RESONATING_CRYSTAL)
-                        .blockstate(provider -> {
+                        .blockState(provider -> {
                             DataGenHelper.generateCrystal(RESONATING_CRYSTAL_GENERATED, provider, "crystal_full_pure", "crystal_generated", "crystal");
                         })
                         .parentedItem("block/crystal_full_pure")
-                        .blockTags(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE, net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL),
+                        .diamondPickaxeTags(),
                 Dob.itemBuilder(FILTER_MATERIAL_ITEM)
                         .generatedItem("item/filter_material")
                         .shaped(ShapedRecipeBuilder.shaped(FILTER_MATERIAL_ITEM.get(), 8)

@@ -1,5 +1,7 @@
 package mcjty.deepresonance.modules.machines;
 
+import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.block.*;
 import mcjty.deepresonance.modules.machines.client.*;
 import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
@@ -7,15 +9,23 @@ import mcjty.deepresonance.modules.machines.item.ItemLens;
 import mcjty.deepresonance.modules.machines.util.config.*;
 import mcjty.deepresonance.setup.Registration;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.datagen.DataGen;
+import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 
+import static mcjty.deepresonance.datagen.BlockStates.*;
 import static mcjty.deepresonance.setup.Registration.CONTAINERS;
 import static mcjty.deepresonance.setup.Registration.TILES;
 
@@ -79,5 +89,88 @@ public class MachinesModule implements IModule {
         PurifierConfig.init();
         SmelterConfig.init();
         ValveConfig.init();
+    }
+
+    @Override
+    public void initDatagen(DataGen dataGen) {
+        dataGen.add(
+                Dob.blockBuilder(VALVE_BLOCK)
+                        .ironPickaxeTags()
+                        .parentedItem()
+                        .standardLoot(TYPE_VALVE)
+                        .blockState(provider -> provider.simpleBlock(VALVE_BLOCK.get(), provider.models().cubeBottomTop(provider.name(VALVE_BLOCK.get()), new ResourceLocation(DeepResonance.MODID, "block/valve"), DEFAULT_BOTTOM, DEFAULT_TOP)))
+                        .shaped(ShapedRecipeBuilder.shaped(VALVE_ITEM.get())
+                                        .define('F', CoreModule.FILTER_MATERIAL_ITEM.get())
+                                        .define('m', CoreModule.MACHINE_FRAME_ITEM.get())
+                                        .define('C', Items.COMPARATOR)
+                                        .unlockedBy("has_machine_frame", DataGen.has(CoreModule.MACHINE_FRAME_ITEM.get())),
+                                "GGG", "FmF", "GCG"),
+                Dob.blockBuilder(SMELTER_BLOCK)
+                        .ironPickaxeTags()
+                        .parentedItem()
+                        .standardLoot(TYPE_SMELTER)
+                        .blockState(provider -> provider.horizontalOrientedBlock(SMELTER_BLOCK.get(), (state, builder) -> {
+                            if (state.getValue(BlockStateProperties.POWERED)) {
+                                builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()) + "_active", new ResourceLocation(DeepResonance.MODID, "block/smelter_active"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
+                            } else {
+                                builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/smelter"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
+                            }
+                        }))
+                        .shaped(ShapedRecipeBuilder.shaped(SMELTER_ITEM.get())
+                                        .define('F', CoreModule.FILTER_MATERIAL_ITEM.get())
+                                        .define('m', CoreModule.MACHINE_FRAME_ITEM.get())
+                                        .unlockedBy("has_machine_frame", DataGen.has(CoreModule.MACHINE_FRAME_ITEM.get())),
+                                "FFF", "imi", "FFF"),
+                Dob.blockBuilder(PURIFIER_BLOCK)
+                        .ironPickaxeTags()
+                        .parentedItem()
+                        .standardLoot(TYPE_PURIFIER)
+                        .blockState(provider -> provider.horizontalOrientedBlock(PURIFIER_BLOCK.get(),
+                                (state, builder) -> builder.modelFile(provider.frontBasedModel(
+                                        provider.name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/purifier"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM))))
+                        .shaped(ShapedRecipeBuilder.shaped(PURIFIER_ITEM.get())
+                                        .define('P', CoreModule.RESONATING_PLATE_ITEM.get())
+                                        .define('m', CoreModule.MACHINE_FRAME_ITEM.get())
+                                        .define('x', Items.NETHER_BRICK)
+                                        .unlockedBy("has_machine_frame", DataGen.has(CoreModule.MACHINE_FRAME_ITEM.get())),
+                                "PPP", "imi", "xxx"),
+                Dob.blockBuilder(LENS_BLOCK)
+                        .ironPickaxeTags()
+                        .simpleLoot()
+                        .parentedItem("block/lens_mc")
+                        .blockState(provider -> {
+                            provider.horizontalOrientedBlock(LENS_BLOCK.get(), provider.models()
+                                    .withExistingParent("lens_mc", new ResourceLocation(DeepResonance.MODID, "lens"))
+                                    .texture("lens_texture", "deepresonance:block/lens")
+                                    .texture("particle", "deepresonance:block/lens"));
+
+                        })
+                        .shaped(ShapedRecipeBuilder.shaped(LENS_BLOCK.get())
+                                        .define('g', Tags.Items.GLASS_PANES)
+                                        .define('P', CoreModule.RESONATING_PLATE_ITEM.get())
+                                        .unlockedBy("has_pane", DataGen.has(Tags.Items.GLASS_PANES)),
+                                "gPg", "P P", "gPg"),
+                Dob.blockBuilder(LASER_BLOCK)
+                        .ironPickaxeTags()
+                        .parentedItem()
+                        .standardLoot(TYPE_LASER)
+                        .blockState(provider -> provider.horizontalOrientedBlock(LASER_BLOCK.get(), DataGenHelper.createLaserModel(provider)))
+                        .shaped(ShapedRecipeBuilder.shaped(LASER_ITEM.get())
+                                        .define('m', CoreModule.MACHINE_FRAME_ITEM.get())
+                                        .define('X', Tags.Items.INGOTS_GOLD)
+                                        .unlockedBy("has_machine_frame", DataGen.has(CoreModule.MACHINE_FRAME_ITEM.get())),
+                                "GXG", "eme", "ddd"),
+                Dob.blockBuilder(CRYSTALLIZER_BLOCK)
+                        .ironPickaxeTags()
+                        .parentedItem()
+                        .standardLoot(TYPE_CRYSTALIZER)
+                        .blockState(provider -> provider.horizontalBlock(CRYSTALLIZER_BLOCK.get(), DataGenHelper.createCrystallizerModel(provider)))
+                        .shaped(ShapedRecipeBuilder.shaped(CRYSTALLIZER_ITEM.get())
+                                        .define('q', Items.QUARTZ)
+                                        .define('m', CoreModule.MACHINE_FRAME_ITEM.get())
+                                        .define('X', Tags.Items.INGOTS_GOLD)
+                                        .unlockedBy("has_machine_frame", DataGen.has(CoreModule.MACHINE_FRAME_ITEM.get())),
+                                "GXG", "qmq", "iii")
+        );
     }
 }

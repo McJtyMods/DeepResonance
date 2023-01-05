@@ -1,10 +1,15 @@
 package mcjty.deepresonance.modules.tank;
 
+import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.tank.blocks.TankBlock;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.deepresonance.modules.tank.client.TankTESR;
 import mcjty.deepresonance.setup.Registration;
+import mcjty.lib.datagen.DataGen;
+import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -38,5 +43,23 @@ public class TankModule implements IModule {
 
     @Override
     public void initConfig() {
+    }
+
+    @Override
+    public void initDatagen(DataGen dataGen) {
+        dataGen.add(
+                Dob.blockBuilder(TANK_BLOCK)
+                        .blockState(provider -> {
+                            provider.simpleBlock(TANK_BLOCK.get(),
+                                    provider.models().cubeBottomTop("tank", TankTESR.TANK_SIDE, TankTESR.TANK_BOTTOM, TankTESR.TANK_TOP).renderType("translucent"));
+                        })
+                        .ironPickaxeTags()
+                        .standardLoot(TYPE_TANK)
+                        .parentedItem("block/tank")
+                        .shaped(ShapedRecipeBuilder.shaped(TANK_ITEM.get())
+                                        .define('P', CoreModule.RESONATING_PLATE_ITEM.get())
+                                        .unlockedBy("has_resonant_plate", DataGen.has(CoreModule.RESONATING_PLATE_ITEM.get())),
+                                "iPi", "GGG", "iOi")
+        );
     }
 }

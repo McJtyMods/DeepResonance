@@ -1,6 +1,5 @@
 package mcjty.deepresonance;
 
-import mcjty.deepresonance.datagen.DataGenerators;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
@@ -59,8 +58,6 @@ public class DeepResonance {
         DataGen datagen = new DataGen(MODID, event);
         modules.datagen(datagen);
         datagen.generate();
-
-        DataGenerators.gatherData(event);
     }
 
     private void setupModules() {

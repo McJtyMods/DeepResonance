@@ -1,13 +1,19 @@
 package mcjty.deepresonance.modules.radiation;
 
+import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.radiation.client.RadiationOverlayRenderer;
 import mcjty.deepresonance.modules.radiation.item.ItemRadiationSuit;
 import mcjty.deepresonance.modules.radiation.item.RadiationMonitorItem;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.setup.Registration;
+import mcjty.lib.datagen.DataGen;
+import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.GlassBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -17,6 +23,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class RadiationModule implements IModule {
 
@@ -31,8 +40,6 @@ public class RadiationModule implements IModule {
             .strength(50.0f, 2000.0f)
             .requiresCorrectToolForDrops()
             .sound(SoundType.STONE)));
-//            .harvestTool(ToolType.PICKAXE)    // @todo 1.18 HARVEST 3
-//            .harvestLevel(3)));
 
     public static final RegistryObject<Item> POISONED_DIRT_ITEM = Registration.fromBlock(POISONED_DIRT_BLOCK);
     public static final RegistryObject<Item> DENSE_GLASS_ITEM = Registration.fromBlock(DENSE_GLASS_BLOCK);
@@ -62,5 +69,67 @@ public class RadiationModule implements IModule {
     @Override
     public void initConfig() {
         RadiationConfiguration.init();
+    }
+
+    @Override
+    public void initDatagen(DataGen dataGen) {
+        dataGen.add(
+                Dob.blockBuilder(POISONED_DIRT_BLOCK)
+                        .simpleBlockState()
+                        .parentedItem()
+                        .simpleLoot()
+                        .blockTags(List.of(BlockTags.MINEABLE_WITH_SHOVEL, BlockTags.NEEDS_IRON_TOOL)),
+                Dob.blockBuilder(DENSE_GLASS_BLOCK)
+                        .blockState(provider -> provider.simpleBlockC(RadiationModule.DENSE_GLASS_BLOCK.get(), modelBuilder -> modelBuilder.renderType("cutout")))
+                        .parentedItem()
+                        .simpleLoot()
+                        .ironPickaxeTags()
+                        .shaped(ShapedRecipeBuilder.shaped(DENSE_GLASS_ITEM.get())
+                                        .define('f', CoreModule.SPENT_FILTER_ITEM.get())
+                                        .unlockedBy("has_spent_filter", DataGen.has(CoreModule.SPENT_FILTER_ITEM.get())),
+                                "fGf", "GOG", "fGf"),
+                Dob.blockBuilder(DENSE_OBSIDIAN_BLOCK)
+                        .simpleBlockState()
+                        .parentedItem()
+                        .simpleLoot()
+                        .diamondPickaxeTags()
+                        .shaped(ShapedRecipeBuilder.shaped(DENSE_OBSIDIAN_ITEM.get())
+                                        .define('f', CoreModule.SPENT_FILTER_ITEM.get())
+                                        .unlockedBy("has_spent_filter", DataGen.has(CoreModule.SPENT_FILTER_ITEM.get())),
+                                "OfO", "fOf", "OfO"),
+                Dob.itemBuilder(RADIATION_SUIT_BOOTS)
+                        .generatedItem("item/radiation_suit_boots")
+                        .shaped(ShapedRecipeBuilder.shaped(RADIATION_SUIT_BOOTS.get())
+                                        .define('P', CoreModule.RESONATING_PLATE_ITEM.get())
+                                        .unlockedBy("has_resonant_plate", DataGen.has(CoreModule.RESONATING_PLATE_ITEM.get())),
+                                "P P", "P P"),
+                Dob.itemBuilder(RADIATION_SUIT_CHESTPLATE)
+                        .generatedItem("item/radiation_suit_chestplate")
+                        .shaped(ShapedRecipeBuilder.shaped(RADIATION_SUIT_CHESTPLATE.get())
+                                        .define('P', CoreModule.RESONATING_PLATE_ITEM.get())
+                                        .unlockedBy("has_resonant_plate", DataGen.has(CoreModule.RESONATING_PLATE_ITEM.get())),
+                                "P P", "PPP", "PPP"),
+                Dob.itemBuilder(RADIATION_SUIT_HELMET)
+                        .generatedItem("item/radiation_suit_helmet")
+                        .shaped(ShapedRecipeBuilder.shaped(RADIATION_SUIT_HELMET.get())
+                                        .define('P', CoreModule.RESONATING_PLATE_ITEM.get())
+                                        .unlockedBy("has_resonant_plate", DataGen.has(CoreModule.RESONATING_PLATE_ITEM.get())),
+                                "PPP", "P P"),
+                Dob.itemBuilder(RADIATION_SUIT_LEGGINGS)
+                        .generatedItem("item/radiation_suit_leggings")
+                        .shaped(ShapedRecipeBuilder.shaped(RADIATION_SUIT_LEGGINGS.get())
+                                        .define('P', CoreModule.RESONATING_PLATE_ITEM.get())
+                                        .unlockedBy("has_resonant_plate", DataGen.has(CoreModule.RESONATING_PLATE_ITEM.get())),
+                                "PPP", "P P", "P P"),
+                Dob.itemBuilder(RADIATION_MONITOR)
+                        .itemModel(DataGenHelper::generateMonitor)
+                        .shaped(ShapedRecipeBuilder.shaped(RADIATION_MONITOR.get())
+                                        .define('C', Items.COMPARATOR)
+                                        .define('x', Items.CLOCK)
+                                        .define('q', Items.QUARTZ)
+                                        .unlockedBy("", DataGen.has(CoreModule.RESONATING_PLATE_ITEM.get())),
+                                "qCq", "ror", "qxq"
+                        )
+        );
     }
 }
