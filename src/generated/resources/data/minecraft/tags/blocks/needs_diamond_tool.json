@@ -4,10 +4,11 @@
     "deepresonance:resonating_ore_end",
     "deepresonance:resonating_ore_nether",
     "deepresonance:resonating_ore_stone",
-    "deepresonance:resonating_crystal_generated",
-    "deepresonance:resonating_crystal_generated_empty",
-    "deepresonance:resonating_crystal_natural",
+    "deepresonance:resonating_plate_block",
     "deepresonance:resonating_crystal_natural_empty",
+    "deepresonance:resonating_crystal_natural",
+    "deepresonance:resonating_crystal_generated_empty",
+    "deepresonance:resonating_crystal_generated",
     "deepresonance:dense_obsidian"
   ]
 }

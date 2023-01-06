@@ -70,7 +70,7 @@ public class GeneratorModule implements IModule {
                         .parentedItem()
                         .standardLoot(TYPE_GENERATOR_PART)
                         .ironPickaxeTags()
-                        .shaped(ShapedRecipeBuilder.shaped(GENERATOR_PART_ITEM.get())
+                        .shaped(builder -> builder
                                         .define('P', CoreModule.RESONATING_PLATE_ITEM.get())
                                         .define('X', Tags.Items.INGOTS_GOLD)
                                         .define('m', CoreModule.MACHINE_FRAME_ITEM.get())
@@ -82,7 +82,7 @@ public class GeneratorModule implements IModule {
                         .parentedItem()
                         .simpleLoot()
                         .ironPickaxeTags()
-                        .shaped(ShapedRecipeBuilder.shaped(ENERGY_COLLECTOR_ITEM.get())
+                        .shaped(builder -> builder
                                         .define('X', Tags.Items.INGOTS_GOLD)
                                         .define('P', CoreModule.RESONATING_PLATE_ITEM.get())
                                         .define('q', Items.QUARTZ)
@@ -102,7 +102,7 @@ public class GeneratorModule implements IModule {
                         .parentedItem()
                         .simpleLoot()
                         .ironPickaxeTags()
-                        .shaped(ShapedRecipeBuilder.shaped(GENERATOR_CONTROLLER_ITEM.get())
+                        .shaped(builder -> builder
                                         .define('P', CoreModule.RESONATING_PLATE_ITEM.get())
                                         .define('C', Items.COMPARATOR)
                                         .define('m', CoreModule.MACHINE_FRAME_ITEM.get())

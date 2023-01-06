@@ -142,7 +142,7 @@ public class CoreModule implements IModule {
                         .simpleBlockState()
                         .parentedItem()
                         .diamondPickaxeTags()
-                        .shaped(ShapedRecipeBuilder.shaped(RESONATING_PLATE_BLOCK_ITEM.get())
+                        .shaped(builder -> builder
                                         .unlockedBy("has_resonant_plate", DataGen.has(RESONATING_PLATE_ITEM.get()))
                                         .define('P', RESONATING_PLATE_ITEM.get()),
                                 "PPP", "PPP", "PPP"),
@@ -176,10 +176,11 @@ public class CoreModule implements IModule {
                         .diamondPickaxeTags(),
                 Dob.itemBuilder(FILTER_MATERIAL_ITEM)
                         .generatedItem("item/filter_material")
-                        .shaped(ShapedRecipeBuilder.shaped(FILTER_MATERIAL_ITEM.get(), 8)
+                        .shaped(builder -> builder
                                         .define('g', Tags.Items.GRAVEL)
                                         .define('s', ItemTags.SAND)
                                         .unlockedBy("has_gravel", DataGen.inventoryTrigger(ItemPredicate.Builder.item().of(Tags.Items.GRAVEL).build())),
+                                8,
                                 "gcg", "csc", "gcg"),
                 Dob.itemBuilder(LIQUID_INJECTOR_ITEM)
                         .generatedItem("item/liquid_injector"),
@@ -189,7 +190,7 @@ public class CoreModule implements IModule {
                         .generatedItem("item/spent_filter_material"),
                 Dob.itemBuilder(MACHINE_FRAME_ITEM)
                         .cubeAll(new ResourceLocation(DeepResonance.MODID, "block/machine_side"))
-                        .shaped(ShapedRecipeBuilder.shaped(MACHINE_FRAME_ITEM.get())
+                        .shaped(builder -> builder
                                         .define('g', Tags.Items.STONE)
                                         .define('P', RESONATING_PLATE_ITEM.get())
                                         .unlockedBy("has_iron", DataGen.inventoryTrigger(ItemPredicate.Builder.item().of(Tags.Items.INGOTS_IRON).build())),

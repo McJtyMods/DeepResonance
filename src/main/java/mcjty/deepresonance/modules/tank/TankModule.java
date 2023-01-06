@@ -56,7 +56,7 @@ public class TankModule implements IModule {
                         .ironPickaxeTags()
                         .standardLoot(TYPE_TANK)
                         .parentedItem("block/tank")
-                        .shaped(ShapedRecipeBuilder.shaped(TANK_ITEM.get())
+                        .shaped(builder -> builder
                                         .define('P', CoreModule.RESONATING_PLATE_ITEM.get())
                                         .unlockedBy("has_resonant_plate", DataGen.has(CoreModule.RESONATING_PLATE_ITEM.get())),
                                 "iPi", "GGG", "iOi")

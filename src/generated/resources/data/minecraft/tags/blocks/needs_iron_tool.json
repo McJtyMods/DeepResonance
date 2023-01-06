@@ -1,17 +1,16 @@
 {
   "values": [
-    "deepresonance:resonating_plate_block",
+    "deepresonance:generator_part",
     "deepresonance:energy_collector",
     "deepresonance:generator_controller",
-    "deepresonance:generator_part",
-    "deepresonance:crystallizer",
-    "deepresonance:laser",
-    "deepresonance:lens",
-    "deepresonance:purifier",
-    "deepresonance:smelter",
     "deepresonance:valve",
+    "deepresonance:smelter",
+    "deepresonance:purifier",
+    "deepresonance:lens",
+    "deepresonance:laser",
+    "deepresonance:crystallizer",
+    "deepresonance:poisoned_dirt",
     "deepresonance:dense_glass",
-    "deepresonance:tank",
-    "deepresonance:poisoned_dirt"
+    "deepresonance:tank"
   ]
 }

@@ -99,7 +99,7 @@ public class MachinesModule implements IModule {
                         .parentedItem()
                         .standardLoot(TYPE_VALVE)
                         .blockState(provider -> provider.simpleBlock(VALVE_BLOCK.get(), provider.models().cubeBottomTop(provider.name(VALVE_BLOCK.get()), new ResourceLocation(DeepResonance.MODID, "block/valve"), DEFAULT_BOTTOM, DEFAULT_TOP)))
-                        .shaped(ShapedRecipeBuilder.shaped(VALVE_ITEM.get())
+                        .shaped(builder -> builder
                                         .define('F', CoreModule.FILTER_MATERIAL_ITEM.get())
                                         .define('m', CoreModule.MACHINE_FRAME_ITEM.get())
                                         .define('C', Items.COMPARATOR)
@@ -116,7 +116,7 @@ public class MachinesModule implements IModule {
                                 builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/smelter"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
                             }
                         }))
-                        .shaped(ShapedRecipeBuilder.shaped(SMELTER_ITEM.get())
+                        .shaped(builder -> builder
                                         .define('F', CoreModule.FILTER_MATERIAL_ITEM.get())
                                         .define('m', CoreModule.MACHINE_FRAME_ITEM.get())
                                         .unlockedBy("has_machine_frame", DataGen.has(CoreModule.MACHINE_FRAME_ITEM.get())),
@@ -128,7 +128,7 @@ public class MachinesModule implements IModule {
                         .blockState(provider -> provider.horizontalOrientedBlock(PURIFIER_BLOCK.get(),
                                 (state, builder) -> builder.modelFile(provider.frontBasedModel(
                                         provider.name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/purifier"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM))))
-                        .shaped(ShapedRecipeBuilder.shaped(PURIFIER_ITEM.get())
+                        .shaped(builder -> builder
                                         .define('P', CoreModule.RESONATING_PLATE_ITEM.get())
                                         .define('m', CoreModule.MACHINE_FRAME_ITEM.get())
                                         .define('x', Items.NETHER_BRICK)
@@ -145,7 +145,7 @@ public class MachinesModule implements IModule {
                                     .texture("particle", "deepresonance:block/lens"));
 
                         })
-                        .shaped(ShapedRecipeBuilder.shaped(LENS_BLOCK.get())
+                        .shaped(builder -> builder
                                         .define('g', Tags.Items.GLASS_PANES)
                                         .define('P', CoreModule.RESONATING_PLATE_ITEM.get())
                                         .unlockedBy("has_pane", DataGen.has(Tags.Items.GLASS_PANES)),
@@ -155,7 +155,7 @@ public class MachinesModule implements IModule {
                         .parentedItem()
                         .standardLoot(TYPE_LASER)
                         .blockState(provider -> provider.horizontalOrientedBlock(LASER_BLOCK.get(), DataGenHelper.createLaserModel(provider)))
-                        .shaped(ShapedRecipeBuilder.shaped(LASER_ITEM.get())
+                        .shaped(builder -> builder
                                         .define('m', CoreModule.MACHINE_FRAME_ITEM.get())
                                         .define('X', Tags.Items.INGOTS_GOLD)
                                         .unlockedBy("has_machine_frame", DataGen.has(CoreModule.MACHINE_FRAME_ITEM.get())),
@@ -165,7 +165,7 @@ public class MachinesModule implements IModule {
                         .parentedItem()
                         .standardLoot(TYPE_CRYSTALIZER)
                         .blockState(provider -> provider.horizontalBlock(CRYSTALLIZER_BLOCK.get(), DataGenHelper.createCrystallizerModel(provider)))
-                        .shaped(ShapedRecipeBuilder.shaped(CRYSTALLIZER_ITEM.get())
+                        .shaped(builder -> builder
                                         .define('q', Items.QUARTZ)
                                         .define('m', CoreModule.MACHINE_FRAME_ITEM.get())
                                         .define('X', Tags.Items.INGOTS_GOLD)

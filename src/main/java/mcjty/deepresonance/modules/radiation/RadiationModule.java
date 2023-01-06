@@ -84,7 +84,7 @@ public class RadiationModule implements IModule {
                         .parentedItem()
                         .simpleLoot()
                         .ironPickaxeTags()
-                        .shaped(ShapedRecipeBuilder.shaped(DENSE_GLASS_ITEM.get())
+                        .shaped(builder -> builder
                                         .define('f', CoreModule.SPENT_FILTER_ITEM.get())
                                         .unlockedBy("has_spent_filter", DataGen.has(CoreModule.SPENT_FILTER_ITEM.get())),
                                 "fGf", "GOG", "fGf"),
@@ -93,37 +93,37 @@ public class RadiationModule implements IModule {
                         .parentedItem()
                         .simpleLoot()
                         .diamondPickaxeTags()
-                        .shaped(ShapedRecipeBuilder.shaped(DENSE_OBSIDIAN_ITEM.get())
+                        .shaped(builder -> builder
                                         .define('f', CoreModule.SPENT_FILTER_ITEM.get())
                                         .unlockedBy("has_spent_filter", DataGen.has(CoreModule.SPENT_FILTER_ITEM.get())),
                                 "OfO", "fOf", "OfO"),
                 Dob.itemBuilder(RADIATION_SUIT_BOOTS)
                         .generatedItem("item/radiation_suit_boots")
-                        .shaped(ShapedRecipeBuilder.shaped(RADIATION_SUIT_BOOTS.get())
+                        .shaped(builder -> builder
                                         .define('P', CoreModule.RESONATING_PLATE_ITEM.get())
                                         .unlockedBy("has_resonant_plate", DataGen.has(CoreModule.RESONATING_PLATE_ITEM.get())),
                                 "P P", "P P"),
                 Dob.itemBuilder(RADIATION_SUIT_CHESTPLATE)
                         .generatedItem("item/radiation_suit_chestplate")
-                        .shaped(ShapedRecipeBuilder.shaped(RADIATION_SUIT_CHESTPLATE.get())
+                        .shaped(builder -> builder
                                         .define('P', CoreModule.RESONATING_PLATE_ITEM.get())
                                         .unlockedBy("has_resonant_plate", DataGen.has(CoreModule.RESONATING_PLATE_ITEM.get())),
                                 "P P", "PPP", "PPP"),
                 Dob.itemBuilder(RADIATION_SUIT_HELMET)
                         .generatedItem("item/radiation_suit_helmet")
-                        .shaped(ShapedRecipeBuilder.shaped(RADIATION_SUIT_HELMET.get())
+                        .shaped(builder -> builder
                                         .define('P', CoreModule.RESONATING_PLATE_ITEM.get())
                                         .unlockedBy("has_resonant_plate", DataGen.has(CoreModule.RESONATING_PLATE_ITEM.get())),
                                 "PPP", "P P"),
                 Dob.itemBuilder(RADIATION_SUIT_LEGGINGS)
                         .generatedItem("item/radiation_suit_leggings")
-                        .shaped(ShapedRecipeBuilder.shaped(RADIATION_SUIT_LEGGINGS.get())
+                        .shaped(builder -> builder
                                         .define('P', CoreModule.RESONATING_PLATE_ITEM.get())
                                         .unlockedBy("has_resonant_plate", DataGen.has(CoreModule.RESONATING_PLATE_ITEM.get())),
                                 "PPP", "P P", "P P"),
                 Dob.itemBuilder(RADIATION_MONITOR)
                         .itemModel(DataGenHelper::generateMonitor)
-                        .shaped(ShapedRecipeBuilder.shaped(RADIATION_MONITOR.get())
+                        .shaped(builder -> builder
                                         .define('C', Items.COMPARATOR)
                                         .define('x', Items.CLOCK)
                                         .define('q', Items.QUARTZ)
