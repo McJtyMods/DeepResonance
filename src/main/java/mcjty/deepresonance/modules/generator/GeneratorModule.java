@@ -11,10 +11,9 @@ import mcjty.deepresonance.setup.Registration;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import mcjty.lib.varia.SoundTools;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -42,9 +41,9 @@ public class GeneratorModule implements IModule {
     public static final RegistryObject<Item> GENERATOR_PART_ITEM = Registration.fromBlock(GENERATOR_PART_BLOCK);
     public static final RegistryObject<BlockEntityType<GeneratorPartTileEntity>> TYPE_GENERATOR_PART = TILES.register("generator_part", () -> BlockEntityType.Builder.of(GeneratorPartTileEntity::new, GENERATOR_PART_BLOCK.get()).build(null));
 
-    public static final RegistryObject<SoundEvent> STARTUP_SOUND = Registration.SOUNDS.register("engine_start", () -> new SoundEvent(new ResourceLocation(DeepResonance.MODID, "engine_start")));
-    public static final RegistryObject<SoundEvent> LOOP_SOUND = Registration.SOUNDS.register("engine_loop", () -> new SoundEvent(new ResourceLocation(DeepResonance.MODID, "engine_loop")));
-    public static final RegistryObject<SoundEvent> SHUTDOWN_SOUND = Registration.SOUNDS.register("engine_shutdown", () -> new SoundEvent(new ResourceLocation(DeepResonance.MODID, "engine_shutdown")));
+    public static final RegistryObject<SoundEvent> STARTUP_SOUND = Registration.SOUNDS.register("engine_start", () -> SoundTools.createSoundEvent(new ResourceLocation(DeepResonance.MODID, "engine_start")));
+    public static final RegistryObject<SoundEvent> LOOP_SOUND = Registration.SOUNDS.register("engine_loop", () -> SoundTools.createSoundEvent(new ResourceLocation(DeepResonance.MODID, "engine_loop")));
+    public static final RegistryObject<SoundEvent> SHUTDOWN_SOUND = Registration.SOUNDS.register("engine_shutdown", () -> SoundTools.createSoundEvent(new ResourceLocation(DeepResonance.MODID, "engine_shutdown")));
 
     @Override
     public void init(FMLCommonSetupEvent event) {

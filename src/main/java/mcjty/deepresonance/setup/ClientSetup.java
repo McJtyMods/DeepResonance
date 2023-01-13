@@ -5,6 +5,8 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
+import java.util.List;
+
 public class ClientSetup {
 
     public static final ResourceLocation REDHALO = new ResourceLocation(DeepResonance.MODID, "effects/redhalo");
@@ -26,22 +28,9 @@ public class ClientSetup {
     public static void initClient() {
     }
 
-    public static void onTextureStitch(TextureStitchEvent.Pre event) {
-        if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
-            return;
-        }
-        event.addSprite(REDHALO);
-        event.addSprite(HALO);
-        event.addSprite(LASERBEAM);
-        event.addSprite(LASERBEAMS[0]);
-        event.addSprite(LASERBEAMS[1]);
-        event.addSprite(LASERBEAMS[2]);
-        event.addSprite(LASERBEAMS[3]);
-        event.addSprite(BLUELASER);
-        event.addSprite(REDLASER);
-        event.addSprite(GREENLASER);
-        event.addSprite(YELLOWLASER);
-
+    public static List<ResourceLocation> onTextureStitch() {
+        return List.of(REDHALO, HALO, LASERBEAM, LASERBEAMS[0], LASERBEAMS[1], LASERBEAMS[2], LASERBEAMS[3],
+                BLUELASER, REDLASER, GREENLASER, YELLOWLASER);
     }
 
 }

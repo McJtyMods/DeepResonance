@@ -25,6 +25,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 
+import static mcjty.deepresonance.DeepResonance.tab;
 import static mcjty.deepresonance.datagen.BlockStates.*;
 import static mcjty.deepresonance.setup.Registration.CONTAINERS;
 import static mcjty.deepresonance.setup.Registration.TILES;
@@ -47,7 +48,7 @@ public class MachinesModule implements IModule {
     public static final RegistryObject<MenuType<GenericContainer>> PURIFIER_CONTAINER = CONTAINERS.register("purifier", GenericContainer::createContainerType);
 
     public static final RegistryObject<LensBlock> LENS_BLOCK = Registration.BLOCKS.register("lens", LensBlock::new);
-    public static final RegistryObject<Item> LENS_ITEM = Registration.ITEMS.register("lens", () -> new ItemLens(LENS_BLOCK.get(), Registration.createStandardProperties()));
+    public static final RegistryObject<Item> LENS_ITEM = Registration.ITEMS.register("lens", tab(() -> new ItemLens(LENS_BLOCK.get(), Registration.createStandardProperties())));
     public static final RegistryObject<BlockEntityType<LensTileEntity>> TYPE_LENS = TILES.register("lens", () -> BlockEntityType.Builder.of(LensTileEntity::new, LENS_BLOCK.get()).build(null));
 
     public static final RegistryObject<Block> LASER_BLOCK = Registration.BLOCKS.register("laser", LaserTileEntity::createBlock);

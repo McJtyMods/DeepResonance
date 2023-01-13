@@ -1,5 +1,6 @@
 package mcjty.deepresonance.setup;
 
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.ForgeEventHandlers;
 import mcjty.deepresonance.commands.ModCommands;
 import mcjty.deepresonance.compat.rftoolscontrol.RFToolsControlSupport;
@@ -17,7 +18,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 public class ModSetup extends DefaultModSetup {
 
     public ModSetup() {
-        createTab("deepresonance", () -> new ItemStack(CoreModule.RESONATING_CRYSTAL_GENERATED.get())); //resonating crystal
+        createTab(DeepResonance.MODID, "deepresonance", () -> new ItemStack(CoreModule.RESONATING_CRYSTAL_GENERATED.get())); //resonating crystal
     }
 
     @Override

@@ -38,6 +38,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -106,7 +107,8 @@ public class ResonatingCrystalBlock extends BaseBlock {
     }
 
     @Override
-    public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
+    public List<ItemStack> getItemsForTab() {
+        List<ItemStack> items = new ArrayList<>();
         ResonatingCrystalTileEntity crystal = new ResonatingCrystalTileEntity(BlockPos.ZERO, CoreModule.RESONATING_CRYSTAL_GENERATED.get().defaultBlockState());
         for (int power : new int[]{0, 50}) {
             for (int purity : new int[]{0, 50}) {
@@ -117,6 +119,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
                 items.add(stack);
             }
         }
+        return items;
     }
 
     @Override
@@ -128,7 +131,8 @@ public class ResonatingCrystalBlock extends BaseBlock {
     }
 
     private static void explodeHelper(Level world, BlockPos location, float radius) {
-        Explosion boom = new Explosion(world, null, location.getX(), location.getY(), location.getZ(), radius, false, Explosion.BlockInteraction.BREAK);
+        // @todo 1.19.3
+        Explosion boom = new Explosion(world, null, location.getX(), location.getY(), location.getZ(), radius, false, Explosion.BlockInteraction.DESTROY);
         for(int x = (int)(-radius); x < radius; ++x) {
             for(int y = (int)(-radius); y < radius; ++y) {
                 for(int z = (int)(-radius); z < radius; ++z) {

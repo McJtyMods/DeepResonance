@@ -13,12 +13,16 @@ import mcjty.deepresonance.setup.Registration;
 import mcjty.deepresonance.util.DeepResonanceTags;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.modules.Modules;
+import mcjty.lib.varia.ClientTools;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+
+import java.util.function.Supplier;
 
 @Mod(DeepResonance.MODID)
 public class DeepResonance {
@@ -49,9 +53,14 @@ public class DeepResonance {
         bus.addListener(this::onDataGen);
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            bus.addListener(ClientSetup::onTextureStitch);
+            ClientTools.onTextureStitch(bus, ClientSetup::onTextureStitch);
             bus.addListener(modules::initClient);
         });
+    }
+
+    public static <T extends Item> Supplier<T> tab(Supplier<T> supplier) {
+        instance.setup.tab(supplier);
+        return supplier;
     }
 
     private void onDataGen(GatherDataEvent event) {

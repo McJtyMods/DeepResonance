@@ -27,6 +27,8 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.Arrays;
 import java.util.List;
 
+import static mcjty.deepresonance.DeepResonance.tab;
+
 public class RadiationModule implements IModule {
 
     public static final RegistryObject<Block> POISONED_DIRT_BLOCK = Registration.BLOCKS.register("poisoned_dirt", () -> new Block(Block.Properties.of(Material.DIRT, MaterialColor.DIRT).strength(0.5f).sound(SoundType.GRASS)));
@@ -44,12 +46,12 @@ public class RadiationModule implements IModule {
     public static final RegistryObject<Item> POISONED_DIRT_ITEM = Registration.fromBlock(POISONED_DIRT_BLOCK);
     public static final RegistryObject<Item> DENSE_GLASS_ITEM = Registration.fromBlock(DENSE_GLASS_BLOCK);
     public static final RegistryObject<Item> DENSE_OBSIDIAN_ITEM = Registration.fromBlock(DENSE_OBSIDIAN_BLOCK);
-    public static final RegistryObject<RadiationMonitorItem> RADIATION_MONITOR = Registration.ITEMS.register("radiation_monitor", () -> new RadiationMonitorItem(Registration.createStandardProperties().stacksTo(1)));
+    public static final RegistryObject<RadiationMonitorItem> RADIATION_MONITOR = Registration.ITEMS.register("radiation_monitor", tab(() -> new RadiationMonitorItem(Registration.createStandardProperties().stacksTo(1))));
 
-    public static final RegistryObject<Item> RADIATION_SUIT_HELMET = Registration.ITEMS.register("radiation_suit_helmet", () -> new ItemRadiationSuit(EquipmentSlot.HEAD));
-    public static final RegistryObject<Item> RADIATION_SUIT_CHESTPLATE = Registration.ITEMS.register("radiation_suit_chestplate", () -> new ItemRadiationSuit(EquipmentSlot.CHEST));
-    public static final RegistryObject<Item> RADIATION_SUIT_LEGGINGS = Registration.ITEMS.register("radiation_suit_leggings", () -> new ItemRadiationSuit(EquipmentSlot.LEGS));
-    public static final RegistryObject<Item> RADIATION_SUIT_BOOTS = Registration.ITEMS.register("radiation_suit_boots", () -> new ItemRadiationSuit(EquipmentSlot.FEET));
+    public static final RegistryObject<Item> RADIATION_SUIT_HELMET = Registration.ITEMS.register("radiation_suit_helmet", tab(() -> new ItemRadiationSuit(EquipmentSlot.HEAD)));
+    public static final RegistryObject<Item> RADIATION_SUIT_CHESTPLATE = Registration.ITEMS.register("radiation_suit_chestplate", tab(() -> new ItemRadiationSuit(EquipmentSlot.CHEST)));
+    public static final RegistryObject<Item> RADIATION_SUIT_LEGGINGS = Registration.ITEMS.register("radiation_suit_leggings", tab(() -> new ItemRadiationSuit(EquipmentSlot.LEGS)));
+    public static final RegistryObject<Item> RADIATION_SUIT_BOOTS = Registration.ITEMS.register("radiation_suit_boots", tab(() -> new ItemRadiationSuit(EquipmentSlot.FEET)));
 
     public RadiationModule() {
     }

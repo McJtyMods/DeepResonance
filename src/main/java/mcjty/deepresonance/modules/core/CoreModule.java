@@ -33,6 +33,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static mcjty.deepresonance.DeepResonance.tab;
 import static mcjty.deepresonance.setup.Registration.TILES;
 
 public class CoreModule implements IModule {
@@ -77,11 +78,11 @@ public class CoreModule implements IModule {
     public static final RegistryObject<Block> RESONATING_PLATE_BLOCK_BLOCK = Registration.BLOCKS.register("resonating_plate_block", () -> new BlockResonatingPlate(Block.Properties.of(Material.STONE)
             .strength(3, 5)));
 
-    public static final RegistryObject<Item> RESONATING_PLATE_ITEM = Registration.ITEMS.register("resonating_plate", () -> new Item(Registration.createStandardProperties()));
-    public static final RegistryObject<Item> FILTER_MATERIAL_ITEM = Registration.ITEMS.register("filter_material", () -> new Item(Registration.createStandardProperties()));    // @todo 1.16 ItemWithTooltip?
-    public static final RegistryObject<Item> SPENT_FILTER_ITEM = Registration.ITEMS.register("spent_filter_material", () -> new Item(Registration.createStandardProperties()));
-    public static final RegistryObject<Item> LIQUID_INJECTOR_ITEM = Registration.ITEMS.register("liquid_injector", () -> new ItemLiquidInjector(Registration.createStandardProperties()));
-    public static final RegistryObject<Item> MACHINE_FRAME_ITEM = Registration.ITEMS.register("machine_frame", () -> new Item(Registration.createStandardProperties()));
+    public static final RegistryObject<Item> RESONATING_PLATE_ITEM = Registration.ITEMS.register("resonating_plate", tab(() -> new Item(Registration.createStandardProperties())));
+    public static final RegistryObject<Item> FILTER_MATERIAL_ITEM = Registration.ITEMS.register("filter_material", tab(() -> new Item(Registration.createStandardProperties())));    // @todo 1.16 ItemWithTooltip)?
+    public static final RegistryObject<Item> SPENT_FILTER_ITEM = Registration.ITEMS.register("spent_filter_material", tab(() -> new Item(Registration.createStandardProperties())));
+    public static final RegistryObject<Item> LIQUID_INJECTOR_ITEM = Registration.ITEMS.register("liquid_injector", tab(() -> new ItemLiquidInjector(Registration.createStandardProperties())));
+    public static final RegistryObject<Item> MACHINE_FRAME_ITEM = Registration.ITEMS.register("machine_frame", tab(() -> new Item(Registration.createStandardProperties())));
     public static final RegistryObject<Item> RESONATING_ORE_DEEPSLATE_ITEM = Registration.fromBlock(RESONATING_ORE_DEEPSLATE_BLOCK);
     public static final RegistryObject<Item> RESONATING_ORE_STONE_ITEM = Registration.fromBlock(RESONATING_ORE_STONE_BLOCK);
     public static final RegistryObject<Item> RESONATING_ORE_NETHER_ITEM = Registration.fromBlock(RESONATING_ORE_NETHER_BLOCK);

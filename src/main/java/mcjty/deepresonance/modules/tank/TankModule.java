@@ -18,15 +18,16 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 
+import static mcjty.deepresonance.DeepResonance.tab;
 import static mcjty.deepresonance.setup.Registration.TILES;
 
 public class TankModule implements IModule {
 
     public static final RegistryObject<Block> TANK_BLOCK = Registration.BLOCKS.register("tank", TankBlock::new);
-    public static final RegistryObject<Item> TANK_ITEM = Registration.ITEMS.register("tank", () -> new BlockItem(TANK_BLOCK.get(),
+    public static final RegistryObject<Item> TANK_ITEM = Registration.ITEMS.register("tank", tab(() -> new BlockItem(TANK_BLOCK.get(),
             Registration.createStandardProperties()
 //                    .setISTER(TankItemRenderer::getRenderer)));   // @todo 1.18
-    ));
+    )));
     public static final RegistryObject<BlockEntityType<TankTileEntity>> TYPE_TANK = TILES.register("tank", () -> BlockEntityType.Builder.of(TankTileEntity::new, TANK_BLOCK.get()).build(null));
 
     public TankModule() {
