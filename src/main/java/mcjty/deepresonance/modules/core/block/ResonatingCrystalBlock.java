@@ -9,15 +9,14 @@ import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.varia.ComponentFactory;
+import mcjty.lib.varia.ExplosionTools;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -131,8 +130,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
     }
 
     private static void explodeHelper(Level world, BlockPos location, float radius) {
-        // @todo 1.19.3
-        Explosion boom = new Explosion(world, null, location.getX(), location.getY(), location.getZ(), radius, false, Explosion.BlockInteraction.DESTROY);
+        Explosion boom = ExplosionTools.explodeFullDestroy(world, location, radius);
         for(int x = (int)(-radius); x < radius; ++x) {
             for(int y = (int)(-radius); y < radius; ++y) {
                 for(int z = (int)(-radius); z < radius; ++z) {

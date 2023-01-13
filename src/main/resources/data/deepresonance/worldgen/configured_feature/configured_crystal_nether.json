@@ -1,0 +1,9 @@
+{
+  "type": "deepresonance:resonant_crystal",
+  "config": {
+    "strength": 1.0,
+    "power": 1.0,
+    "efficiency": 1.0,
+    "purity": 1.0
+  }
+}
