@@ -22,7 +22,7 @@ public class BlockResonatingPlate extends Block {
 
     @Override
     public boolean isRandomlyTicking(@Nonnull BlockState state) {
-        return ResonatingPlateBlockConfig.RADIATION_STRENGTH.get() > 0;
+        return ResonatingPlateBlockConfig.getRadiationStrength() > 0;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class BlockResonatingPlate extends Block {
             return;
         }
         if (worldIn.getDirectSignalTo(pos) > 0) {
-            DRRadiationManager.getManager(worldIn).getOrCreateRadiationSource(GlobalPos.of(worldIn.dimension(), pos)).update(ResonatingPlateBlockConfig.RADIATION_RADIUS.get(), ResonatingPlateBlockConfig.RADIATION_STRENGTH.get(), ResonatingPlateBlockConfig.RADIATION_TICKS.get());
+            DRRadiationManager.getManager(worldIn).getOrCreateRadiationSource(GlobalPos.of(worldIn.dimension(), pos)).update(ResonatingPlateBlockConfig.RADIATION_RADIUS.get(), ResonatingPlateBlockConfig.getRadiationStrength(), ResonatingPlateBlockConfig.RADIATION_TICKS.get());
         }
     }
 

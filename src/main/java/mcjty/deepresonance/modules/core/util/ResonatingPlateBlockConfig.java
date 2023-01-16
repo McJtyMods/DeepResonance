@@ -2,14 +2,23 @@ package mcjty.deepresonance.modules.core.util;
 
 import mcjty.deepresonance.setup.Config;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class ResonatingPlateBlockConfig {
 
-    public static ForgeConfigSpec.IntValue RADIATION_STRENGTH;
+    private static ForgeConfigSpec.IntValue RADIATION_STRENGTH;
+    private static int radiationStrength;
+
     public static ForgeConfigSpec.IntValue RADIATION_RADIUS;
     public static ForgeConfigSpec.IntValue RADIATION_TICKS;
 
     public static void init() {
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        bus.addListener(ResonatingPlateBlockConfig::onConfigReload);
+
         Config.SERVER_BUILDER.push("plate");
 
         RADIATION_STRENGTH = Config.SERVER_BUILDER.comment("Strength of radiation that a plate block gives when it has a redstone signal. 0 to disable")
@@ -22,4 +31,13 @@ public class ResonatingPlateBlockConfig {
         Config.SERVER_BUILDER.pop();
     }
 
+    public static int getRadiationStrength() {
+        return radiationStrength;
+    }
+
+    public static void onConfigReload(ModConfigEvent.Reloading event) {
+        if (event.getConfig().getType() == ModConfig.Type.SERVER) {
+            radiationStrength = RADIATION_STRENGTH.get();
+        }
+    }
 }
