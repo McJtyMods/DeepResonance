@@ -2,7 +2,7 @@ buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net/' }
         maven { url = 'https://maven.parchmentmc.org' }
-        maven { url 'https://plugins.gradle.org/m2/' }
+        maven { url = 'https://plugins.gradle.org/m2/' }
         mavenCentral()
     }
     dependencies {
@@ -17,22 +17,16 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'eclipse'
 apply plugin: 'com.matthewprenger.cursegradle'
 apply plugin: 'maven-publish'
-apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
+apply from: 'https://raw.githubusercontent.com/McJtyMods/MultiWorkspace/1.19_tech/changelog.gradle'
+//apply from: '../changelog.gradle'
 
 repositories {
-    maven { url 'https://www.dogforce-games.com/maven/' }
-    maven { // JEI
-        url "https://dvs1.progwml6.com/files/maven"
-    }
-    maven { // Patchouli
-        url "https://maven.blamejared.com"
-    }
-    maven { // McJtyLib
-        url "https://maven.k-4u.nl"
-    }
+    maven { url "https://dvs1.progwml6.com/files/maven" } // JEI
+    maven { url "https://maven.blamejared.com" } // Patchouli
+    maven { url "https://maven.k-4u.nl" } // McJtyLib, TOP
 }
 
-group= "com.github.mcjty" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group= "com.github.mcjty"
 archivesBaseName = "deepresonance"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -46,9 +40,7 @@ minecraft {
         client = {
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            // recommended logging data for a userdev environment
-            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
-            // recommended logging level for the console
+            properties 'forge.logging.markers': ''
             properties 'forge.logging.console.level': 'debug'
             workingDirectory project.file('run').canonicalPath
             source sourceSets.main
@@ -56,9 +48,7 @@ minecraft {
         server = {
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            // recommended logging data for a userdev environment
-            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
-            // recommended logging level for the console
+            properties 'forge.logging.markers': ''
             properties 'forge.logging.console.level': 'debug'
             workingDirectory project.file('run').canonicalPath
             source sourceSets.main
@@ -67,7 +57,7 @@ minecraft {
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             workingDirectory project.file('run').canonicalPath
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', ''
             property 'forge.logging.console.level', 'debug'
             args '--mod', 'deepresonance', '--all', '--output', file('src/generated/resources/'), '--existing', sourceSets.main.resources.srcDirs[0]
             source sourceSets.main
@@ -76,6 +66,7 @@ minecraft {
 }
 
 jar {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     manifest {
         attributes 'FMLAT': 'accesstransformer.cfg',
         "Specification-Title": "deepresonance",
@@ -88,10 +79,6 @@ jar {
     }
 }
 
-jar {
-  duplicatesStrategy = DuplicatesStrategy.INCLUDE
-}
-
 sourceSets.main.resources {
     srcDir 'src/generated/resources'
 }
@@ -99,14 +86,12 @@ sourceSets.main.resources {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    // compile against the JEI API but do not include it at runtime
-    compileOnly fg.deobf("mezz.jei:jei-1.19-common-api:${jei_version}")
-    compileOnly fg.deobf("mezz.jei:jei-1.19-forge-api:${jei_version}")
-    // at runtime, use the full JEI jar for Forge
-    runtimeOnly fg.deobf("mezz.jei:jei-1.19-forge:${jei_version}")
+    jei()
+
     implementation fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}") {
         transitive = false
     }
+
 
     if (findProject(':TheOneProbe') != null) {
         implementation project(':TheOneProbe')
@@ -129,37 +114,6 @@ dependencies {
             transitive = false
         })
     }
-}
-
-String getChangelogText() {
-    def changelogFile = file('changelog.txt')
-    String str = ''
-    int lineCount = 0
-    boolean done = false
-    changelogFile.eachLine {
-        if (done || it == null) {
-            return
-        }
-        if (it.size() > 1) {
-            def temp = it
-            if (lineCount == 0) {
-                temp = "${modname} ${version}"
-                temp = "<h2>$temp</h2>"
-            } else if (it.startsWith('-')) {
-                temp = "&nbsp;&nbsp;&nbsp;$temp"
-                temp = temp.replaceAll("(\\S+\\/\\S+)#([0-9]+)\\b", "<a href=\"https://github.com/\$1/issues/\$2\">\$0</a>");
-                temp = temp.replaceAll("#([0-9]+)\\b(?!<\\/a>)", "<a href=\"https://github.com/$github_project/issues/\$1\">\$0</a>");
-            } else {
-                temp = "<h4>$temp</h4>"
-            }
-            str += "$temp<br/>"
-            lineCount++
-            return
-        } else {
-            done = true
-        }
-    }
-    return str
 }
 
 tasks.curseforge.enabled = project.hasProperty('curseforge_key')
