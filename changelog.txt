@@ -1,4 +1,5 @@
 Upcoming:
+- Updated to Latest McJtyLib and made compatible with 1.19.3
 - Fixed ore generation in the nether and the end
 - Small fix to the DR liquid making it more compatible with some other mods
 
