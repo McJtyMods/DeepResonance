@@ -1,5 +1,6 @@
 Upcoming:
 - Fixed ore generation in the nether and the end
+- Small fix to the DR liquid making it more compatible with some other mods
 
 1.19-4.0.8:
 - Improved feature registration

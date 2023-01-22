@@ -35,5 +35,10 @@ public class FluidLiquidCrystal extends EmptyFluid {
         public @Nullable ResourceLocation getOverlayTexture() {
             return texture;
         }
+
+        @Override
+        public ResourceLocation getFlowingTexture() {
+            return texture;
+        }
     }
 }
