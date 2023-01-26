@@ -2,5 +2,5 @@
   "parent": "block/cube",
   "loader": "forge:obj",
   "model": "deepresonance:models/block/collector.obj",
-  "flip-v": true
+  "flip_v": true
 }
