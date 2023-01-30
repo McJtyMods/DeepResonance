@@ -42,6 +42,9 @@ public class RadiationTickEvent {
 
     @SubscribeEvent
     public void onTick(TickEvent.LevelTickEvent evt) {
+        if (evt.level.isClientSide) {
+            return;
+        }
         if (evt.phase == TickEvent.Phase.START) {
             return;
         }

@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a problem ticking server things client side
+
 1.19-4.1.0:
 - Updated to Latest McJtyLib and made compatible with 1.19.3
 - Fixed ore generation in the nether and the end
