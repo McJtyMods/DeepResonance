@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "minecraft:comparator"
+    },
+    "P": {
+      "item": "minecraft:dispenser"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "m": {
+      "item": "deepresonance:machine_frame"
+    }
+  },
+  "pattern": [
+    "iPi",
+    "imi",
+    "iCi"
+  ],
+  "result": {
+    "item": "deepresonance:pedestal"
+  }
+}
