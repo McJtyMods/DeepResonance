@@ -51,7 +51,7 @@ public class PedestalTileEntity extends TickingTileEntity {
     public static final int SLOT_CRYSTAL = 0;
 
     private static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
-            .slot(specific(PedestalTileEntity::isValidCrystal).in(), SLOT_CRYSTAL, 82, 24)
+            .slot(specific(PedestalTileEntity::isValidCrystal).in(), SLOT_CRYSTAL, 64, 24)
             .playerSlots(10, 70));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
@@ -76,12 +76,9 @@ public class PedestalTileEntity extends TickingTileEntity {
                 .infusable()
 //                .manualEntry(ManualHelper.create("rftoolspower:powergeneration/coalgenerator"))
                 .info(key(SHIFT_MESSAGE))
-                .infoShift(header(), gold())
+                .infoShift(header())
         );
     }
-
-
-    //    private InventoryHelper inventoryHelper = new InventoryHelper(this, PedestalContainer.factory, 1);
 
     private int checkCounter = 0;
 
