@@ -3,6 +3,7 @@ package mcjty.deepresonance.datagen;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.pedestal.PedestalModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.lib.datagen.BaseRecipeProvider;
@@ -12,6 +13,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 
 import javax.annotation.Nonnull;
@@ -42,6 +44,12 @@ public class Recipes extends BaseRecipeProvider {
 //                .unlockedBy("has_ore", has(DeepResonanceTags.RESONANT_ORE_ITEM))
 //                .save(consumer);
 
+        build(consumer, ShapedRecipeBuilder.shaped(PedestalModule.PEDESTAL.get())
+                        .define('g', Blocks.DISPENSER)
+                        .define('x', Blocks.COMPARATOR)
+                        .unlockedBy("has_machine_frame", has(CoreModule.MACHINE_FRAME_ITEM.get())),
+                "igi", "imi", "ixi");
+
         build(consumer, ShapedRecipeBuilder.shaped(MachinesModule.LENS_BLOCK.get())
                         .define('g', Tags.Items.GLASS_PANES)
                         .unlockedBy("has_pane", has(Tags.Items.GLASS_PANES)),
@@ -65,7 +73,7 @@ public class Recipes extends BaseRecipeProvider {
         build(consumer, ShapedRecipeBuilder.shaped(RadiationModule.RADIATION_MONITOR.get())
                         .define('x', Items.CLOCK)
                         .unlockedBy("", has(CoreModule.RESONATING_PLATE_ITEM.get())),
-                    "qCq", "ror", "qxq"
+                "qCq", "ror", "qxq"
         );
 
         build(consumer, ShapedRecipeBuilder.shaped(TankModule.TANK_ITEM.get())

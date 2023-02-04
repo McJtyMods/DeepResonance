@@ -3,6 +3,7 @@ package mcjty.deepresonance.datagen;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.pedestal.PedestalModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.util.DeepResonanceTags;
@@ -27,6 +28,7 @@ public class BlockTags extends BaseBlockTagsProvider {
         tag(DeepResonanceTags.RESONANT_ORE)
                 .add(CoreModule.RESONATING_ORE_DEEPSLATE_BLOCK.get(), CoreModule.RESONATING_ORE_STONE_BLOCK.get(), CoreModule.RESONATING_ORE_NETHER_BLOCK.get(), CoreModule.RESONATING_ORE_END_BLOCK.get());
         ironPickaxe(
+                PedestalModule.PEDESTAL,
                 CoreModule.RESONATING_PLATE_BLOCK_BLOCK,
                 GeneratorModule.ENERGY_COLLECTOR_BLOCK, GeneratorModule.GENERATOR_CONTROLLER_BLOCK, GeneratorModule.GENERATOR_PART_BLOCK,
                 MachinesModule.CRYSTALLIZER_BLOCK, MachinesModule.LASER_BLOCK, MachinesModule.LENS_BLOCK, MachinesModule.PURIFIER_BLOCK,

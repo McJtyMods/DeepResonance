@@ -2,6 +2,8 @@
   "type": "minecraft:block",
   "pools": [
     {
+      "name": "pedestal",
+      "rolls": 1.0,
       "bonus_rolls": 0.0,
       "entries": [
         {
@@ -13,41 +15,39 @@
             },
             {
               "function": "minecraft:copy_nbt",
+              "source": "block_entity",
               "ops": [
                 {
-                  "op": "replace",
                   "source": "Info",
-                  "target": "BlockEntityTag.Info"
+                  "target": "BlockEntityTag.Info",
+                  "op": "replace"
                 },
                 {
-                  "op": "replace",
                   "source": "Items",
-                  "target": "BlockEntityTag.McItems"
+                  "target": "BlockEntityTag.McItems",
+                  "op": "replace"
                 },
                 {
-                  "op": "replace",
                   "source": "Energy",
-                  "target": "BlockEntityTag.Energy"
+                  "target": "BlockEntityTag.Energy",
+                  "op": "replace"
                 }
-              ],
-              "source": "block_entity"
+              ]
             },
             {
+              "function": "minecraft:set_contents",
               "type": "deepresonance:pedestal",
               "entries": [
                 {
                   "type": "minecraft:dynamic",
                   "name": "minecraft:contents"
                 }
-              ],
-              "function": "minecraft:set_contents"
+              ]
             }
           ],
           "name": "deepresonance:pedestal"
         }
-      ],
-      "name": "pedestal",
-      "rolls": 1.0
+      ]
     }
   ]
 }

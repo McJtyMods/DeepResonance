@@ -4,6 +4,7 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.pedestal.PedestalModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.lib.datagen.BaseItemModelProvider;
@@ -46,6 +47,7 @@ class Items extends BaseItemModelProvider {
         parentedBlock(RadiationModule.DENSE_GLASS_BLOCK.get());
         parentedBlock(RadiationModule.DENSE_OBSIDIAN_BLOCK.get());
         parentedBlock(CoreModule.RESONATING_PLATE_BLOCK_BLOCK.get());
+        parentedBlock(PedestalModule.PEDESTAL.get());
         parentedBlock(MachinesModule.VALVE_BLOCK.get());
         parentedBlock(MachinesModule.SMELTER_BLOCK.get());
         parentedBlock(MachinesModule.PURIFIER_BLOCK.get());

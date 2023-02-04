@@ -2,11 +2,11 @@
   "parent": "minecraft:block/cube",
   "textures": {
     "down": "deepresonance:block/machine_bottom",
-    "east": "deepresonance:block/machine_bottom",
-    "north": "deepresonance:block/pedestal",
-    "particle": "deepresonance:block/pedestal",
-    "south": "deepresonance:block/machine_bottom",
     "up": "deepresonance:block/machine_bottom",
-    "west": "deepresonance:block/machine_bottom"
+    "north": "deepresonance:block/pedestal",
+    "south": "deepresonance:block/machine_bottom",
+    "east": "deepresonance:block/machine_bottom",
+    "west": "deepresonance:block/machine_bottom",
+    "particle": "deepresonance:block/pedestal"
   }
 }

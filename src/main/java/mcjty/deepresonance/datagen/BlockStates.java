@@ -4,6 +4,7 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.pedestal.PedestalModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.tank.client.TankTESR;
@@ -56,6 +57,7 @@ public class BlockStates extends BaseBlockStateProvider {
                 .texture("particle", "deepresonance:block/lens"));
         horizontalOrientedBlock(MachinesModule.LASER_BLOCK.get(), createLaserModel());
         horizontalOrientedBlock(MachinesModule.CRYSTALLIZER_BLOCK.get(), createCrystallizerModel());
+        orientedBlock(PedestalModule.PEDESTAL.get(), frontBasedModel(name(PedestalModule.PEDESTAL.get()), modLoc("block/pedestal"), DEFAULT_BOTTOM, DEFAULT_BOTTOM, DEFAULT_BOTTOM));
         simpleBlock(GeneratorModule.ENERGY_COLLECTOR_BLOCK.get(),
                 models().withExistingParent("energy_collector", new ResourceLocation(DeepResonance.MODID, "collector")).texture("collector_texture", "deepresonance:block/energy_collector")
                         .texture("particle", "deepresonance:block/energy_collector"));

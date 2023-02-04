@@ -3,6 +3,7 @@ package mcjty.deepresonance.datagen;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.pedestal.PedestalModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.lib.datagen.BaseLootTableProvider;
@@ -31,6 +32,7 @@ public class LootTables extends BaseLootTableProvider {
         addSimpleTable(GeneratorModule.ENERGY_COLLECTOR_BLOCK.get());
         addSimpleTable(GeneratorModule.GENERATOR_CONTROLLER_BLOCK.get());
 
+        addStandardTable(PedestalModule.PEDESTAL.get(), PedestalModule.TYPE_PEDESTAL.get());
         addStandardTable(MachinesModule.CRYSTALLIZER_BLOCK.get(), MachinesModule.TYPE_CRYSTALIZER.get());
         addStandardTable(MachinesModule.SMELTER_BLOCK.get(), MachinesModule.TYPE_SMELTER.get());
         addStandardTable(MachinesModule.PURIFIER_BLOCK.get(), MachinesModule.TYPE_PURIFIER.get());
