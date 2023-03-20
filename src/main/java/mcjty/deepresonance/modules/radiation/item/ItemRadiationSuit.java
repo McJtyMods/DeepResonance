@@ -4,15 +4,15 @@ import mcjty.deepresonance.api.armor.IRadiationArmor;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.setup.Registration;
-import net.minecraft.world.entity.LivingEntity;
+import mcjty.lib.items.GenericArmorItem;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.sounds.SoundEvents;
 
-public class ItemRadiationSuit extends ArmorItem implements IRadiationArmor {
+public class ItemRadiationSuit extends GenericArmorItem implements IRadiationArmor {
 
     public static final ArmorMaterial ARMOR_TYPE = new ResonatingMaterial("deepresonance:resonating_armor",
             12, new int[]{1, 4, 5, 2}, 12, SoundEvents.ARMOR_EQUIP_DIAMOND, 0.5f, 0.0f /* @todo 1.16 what is this?*/,

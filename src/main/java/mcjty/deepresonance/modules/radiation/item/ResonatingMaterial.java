@@ -1,15 +1,15 @@
 package mcjty.deepresonance.modules.radiation.item;
 
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.util.LazyLoadedValue;
+import mcjty.lib.items.GenericArmorMaterial;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.LazyLoadedValue;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
-public class ResonatingMaterial implements ArmorMaterial {
+public class ResonatingMaterial implements GenericArmorMaterial {
 
     private static final int[] HEALTH_PER_SLOT = new int[]{13, 15, 16, 11};
     private final String name;
@@ -33,12 +33,12 @@ public class ResonatingMaterial implements ArmorMaterial {
     }
 
     @Override
-    public int getDurabilityForSlot(EquipmentSlot type) {
+    public int getDurabilityForType(EquipmentSlot type) {
         return HEALTH_PER_SLOT[type.getIndex()] * this.durabilityMultiplier;
     }
 
     @Override
-    public int getDefenseForSlot(EquipmentSlot type) {
+    public int getDefenseForType(EquipmentSlot type) {
         return this.slotProtections[type.getIndex()];
     }
 
