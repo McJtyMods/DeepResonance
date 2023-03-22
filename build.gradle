@@ -51,6 +51,6 @@ dependencies {
     rftoolsbase()
 }
 
-cfdeps(['the-one-probe'], ['mcjtylib', 'rftools-base'], ['1.19.3'])
-modrinth(['the-one-probe'], ['mcjtylib', 'rftools-base'], ['1.19.3'])
+cfdeps(['the-one-probe'], ['mcjtylib', 'rftools-base'], ['1.19.3', '1.19.4'])
+modrinth(['the-one-probe'], ['mcjtylib', 'rftools-base'], ['1.19.3', '1.19.4'])
 
