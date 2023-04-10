@@ -6,7 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.lang.ref.WeakReference;
@@ -90,7 +90,7 @@ public class DualTankHook {
             check = true;
             BlockEntity tile = world.getBlockEntity(pos.relative(dir1));
             if (tile != null) {
-                LazyOptional<IFluidHandler> f = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN);
+                LazyOptional<IFluidHandler> f = tile.getCapability(ForgeCapabilities.FLUID_HANDLER, Direction.DOWN);
                 if (f.isPresent()) {
                     tank1 = f;
                     if (!allowDuplicates && tank2Present() && getTank2().equals(getTank1())) {
@@ -113,7 +113,7 @@ public class DualTankHook {
             check = true;
             BlockEntity tile = world.getBlockEntity(pos.relative(dir2));
             if (tile != null) {
-                LazyOptional<IFluidHandler> f = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP);
+                LazyOptional<IFluidHandler> f = tile.getCapability(ForgeCapabilities.FLUID_HANDLER, Direction.UP);
                 if (f.isPresent()) {
                     tank2 = f;
                     if (!allowDuplicates && tank1Present() && getTank1().equals(getTank2())) {

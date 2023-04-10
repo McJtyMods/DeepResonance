@@ -34,7 +34,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
@@ -192,7 +192,7 @@ public class LaserTileEntity extends TickingTileEntity {
 
 
     private boolean validRCLTank(TankTileEntity tank) {
-        return tank.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        return tank.getCapability(ForgeCapabilities.FLUID_HANDLER)
                 .map(handler -> LiquidCrystalData.isLiquidCrystal(handler.getFluidInTank(0).getFluid()))
                 .orElse(false);
     }
@@ -230,7 +230,7 @@ public class LaserTileEntity extends TickingTileEntity {
         BlockEntity te = level.getBlockEntity(tankCoordinate);
         if (te instanceof TankTileEntity tank) {
             if (validRCLTank(tank)) {
-                tank.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).ifPresent(handler -> {
+                tank.getCapability(ForgeCapabilities.FLUID_HANDLER).ifPresent(handler -> {
                     FluidStack stack = handler.drain(1000 * mcjty.deepresonance.util.Constants.TANK_BUCKETS, IFluidHandler.FluidAction.SIMULATE);
                     if (!stack.isEmpty()) {
                         stack = handler.drain(1000 * mcjty.deepresonance.util.Constants.TANK_BUCKETS, IFluidHandler.FluidAction.EXECUTE);

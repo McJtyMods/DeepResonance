@@ -227,7 +227,7 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
 //                BlockPos pos = getBlockPos().offset(dir);
 //                TileEntity tile = WorldHelper.getTileAt(getLevel(), pos);
 //                if (tile != null) {
-//                    surroundings.put(dir, tile.getCapability(CapabilityEnergy.ENERGY, dir.getOpposite()));
+//                    surroundings.put(dir, tile.getCapability(ForgeCapabilities.ENERGY, dir.getOpposite()));
 //                }
 //            }
 //        }, getLevel());
@@ -246,7 +246,7 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
 //            cap = null;
 //            TileEntity tile = WorldHelper.getTileAt(getLevel(), neighbor);
 //            if (tile != null) {
-//                cap = tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite());
+//                cap = tile.getCapability(ForgeCapabilities.ENERGY, side.getOpposite());
 //            }
 //            surroundings.put(side, cap);
 //        }

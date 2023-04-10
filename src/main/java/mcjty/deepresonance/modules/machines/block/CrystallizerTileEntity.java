@@ -26,7 +26,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
@@ -156,7 +156,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
             tankCooldown = 21;
             BlockEntity tile = level.getBlockEntity(worldPosition.below());
             if (tile != null) {
-                rclTank = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+                rclTank = tile.getCapability(ForgeCapabilities.FLUID_HANDLER);
                 return rclTank.isPresent();
             }
         }

@@ -17,7 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
@@ -51,7 +51,7 @@ public class ItemLiquidInjector extends Item implements ITooltipSettings {
         if (!world.isClientSide) {
             BlockEntity tile = world.getBlockEntity(context.getClickedPos());
             if (tile instanceof TankTileEntity) {
-                LazyOptional<IFluidHandler> fluidHanderCap = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+                LazyOptional<IFluidHandler> fluidHanderCap = tile.getCapability(ForgeCapabilities.FLUID_HANDLER);
                 fluidHanderCap.ifPresent(fluidHander -> fluidHander.fill(LiquidCrystalData.makeLiquidCrystalStack(100, 1.0f, 0.1f, 0.1f, 0.1f), IFluidHandler.FluidAction.EXECUTE));
             } else if (context.getPlayer() != null) {
                 context.getPlayer().sendSystemMessage(ComponentFactory.translatable("message.deepresonance.no_tank").withStyle(ChatFormatting.YELLOW));
