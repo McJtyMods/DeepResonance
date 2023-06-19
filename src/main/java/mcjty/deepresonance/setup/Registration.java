@@ -1,12 +1,12 @@
 package mcjty.deepresonance.setup;
 
 import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.modules.core.CoreModule;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -43,6 +43,7 @@ public class Registration {
         TILES.register(bus);
         SOUNDS.register(bus);
         FEATURES.register(bus);
+        TABS.register(bus);
     }
 
     public static Item.Properties createStandardProperties() {
@@ -52,4 +53,13 @@ public class Registration {
     public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {
         return ITEMS.register(block.getId().getPath(), tab(() -> new BlockItem(block.get(), createStandardProperties())));
     }
+
+    public static RegistryObject<CreativeModeTab> TAB = TABS.register("deepresonance", () -> CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup." + DeepResonance.MODID))
+            .icon(() -> new ItemStack(CoreModule.RESONATING_CRYSTAL_GENERATED.get()))
+            .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
+            .displayItems((featureFlags, output) -> {
+                DeepResonance.setup.populateTab(output);
+            })
+            .build());
 }
