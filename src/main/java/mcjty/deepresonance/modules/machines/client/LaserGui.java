@@ -16,6 +16,7 @@ import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.resources.ResourceLocation;
@@ -92,7 +93,7 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
     }
 
     @Override
-    protected void renderBg(@Nonnull PoseStack matrixStack, float partialTicks, int x, int y) {
+    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int x, int y) {
         Slot slot = this.menu.getSlot(LaserTileEntity.SLOT_CATALYST);
         if (slot.hasItem()) {
             InfusingBonus bonus = LaserTileEntity.getInfusingBonus(slot.getItem());
@@ -113,7 +114,7 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
         crystalBar.value((int) tileEntity.getCrystalLiquid());
         updateEnergyBar(energyBar);
 
-        super.renderBg(matrixStack, partialTicks, x, y);
+        super.renderBg(graphics, partialTicks, x, y);
     }
 
     private void setBonusText(InfusingBonus.Modifier modifier, String prefix, Label label) {

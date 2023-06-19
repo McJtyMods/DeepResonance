@@ -6,7 +6,6 @@ import mcjty.lib.builder.BlockBuilder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.core.Direction;
@@ -27,7 +26,7 @@ public class LensBlock extends BaseBlock {
 
     public LensBlock() {
         super(new BlockBuilder()
-                .properties(Block.Properties.of(Material.METAL).strength(2.0F).sound(SoundType.METAL).noOcclusion().noCollission())
+                .properties(Block.Properties.of().strength(2.0F).sound(SoundType.METAL).noOcclusion().noCollission())
                 .tileEntitySupplier(LensTileEntity::new));
     }
 

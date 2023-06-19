@@ -16,8 +16,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.GlassBlock;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -29,14 +28,14 @@ import static mcjty.deepresonance.DeepResonance.tab;
 
 public class RadiationModule implements IModule {
 
-    public static final RegistryObject<Block> POISONED_DIRT_BLOCK = Registration.BLOCKS.register("poisoned_dirt", () -> new Block(Block.Properties.of(Material.DIRT, MaterialColor.DIRT).strength(0.5f).sound(SoundType.GRASS)));
+    public static final RegistryObject<Block> POISONED_DIRT_BLOCK = Registration.BLOCKS.register("poisoned_dirt", () -> new Block(Block.Properties.of().mapColor(MapColor.DIRT).strength(0.5f).sound(SoundType.GRASS)));
     public static final RegistryObject<Block> DENSE_GLASS_BLOCK = Registration.BLOCKS.register("dense_glass",
-            () -> new GlassBlock(Block.Properties.of(Material.GLASS)
+            () -> new GlassBlock(Block.Properties.of()
                     .strength(3.0f, 500.0f)
                     .requiresCorrectToolForDrops()
                     .noOcclusion()
                     .sound(SoundType.GLASS)));
-    public static final RegistryObject<Block> DENSE_OBSIDIAN_BLOCK = Registration.BLOCKS.register("dense_obsidian", () -> new Block(Block.Properties.of(Material.STONE, MaterialColor.COLOR_BLACK)
+    public static final RegistryObject<Block> DENSE_OBSIDIAN_BLOCK = Registration.BLOCKS.register("dense_obsidian", () -> new Block(Block.Properties.of().mapColor(MapColor.COLOR_BLACK)
             .strength(50.0f, 2000.0f)
             .requiresCorrectToolForDrops()
             .sound(SoundType.STONE)));

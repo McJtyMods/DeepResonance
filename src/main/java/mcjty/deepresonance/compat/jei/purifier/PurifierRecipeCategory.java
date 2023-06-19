@@ -19,6 +19,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -71,10 +72,10 @@ public class PurifierRecipeCategory implements IRecipeCategory<PurifierRecipeWra
     }
 
     @Override
-    public void draw(PurifierRecipeWrapper recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY) {
-        slot.draw(stack, 20, 10);
-        arrow.draw(stack, 50, 10);
-        slot.draw(stack, 80, 10);
+    public void draw(PurifierRecipeWrapper recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+        slot.draw(graphics, 20, 10);
+        arrow.draw(graphics, 50, 10);
+        slot.draw(graphics, 80, 10);
     }
 
     @Override

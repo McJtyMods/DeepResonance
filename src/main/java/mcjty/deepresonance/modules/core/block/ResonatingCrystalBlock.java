@@ -27,7 +27,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -52,7 +51,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
         super(new BlockBuilder()
                 .topDriver(DeepResonanceTOPDriver.DRIVER)
                 .properties(BlockBehaviour.Properties
-                        .of(Material.METAL)
+                        .of()
                         .strength(2.0f)
                         .sound(SoundType.METAL)
                         .noOcclusion()

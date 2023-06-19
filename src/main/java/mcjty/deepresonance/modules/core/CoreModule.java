@@ -15,14 +15,13 @@ import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
 import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidType;
@@ -40,7 +39,8 @@ public class CoreModule implements IModule {
 
     public static final String TILE_DATA_TAG = "BlockEntityTag";
 
-    private static final Block.Properties ORE_PROPERTIES = Block.Properties.of(Material.STONE)
+    private static final Block.Properties ORE_PROPERTIES = Block.Properties.of()
+            .sound(SoundType.STONE)
             .requiresCorrectToolForDrops()
             .strength(3, 5);
 
@@ -75,7 +75,8 @@ public class CoreModule implements IModule {
     public static final RegistryObject<Block> RESONATING_ORE_DEEPSLATE_BLOCK = Registration.BLOCKS.register("resonating_ore_deepslate", () -> new Block(ORE_PROPERTIES));
     public static final RegistryObject<Block> RESONATING_ORE_NETHER_BLOCK = Registration.BLOCKS.register("resonating_ore_nether", () -> new Block(ORE_PROPERTIES));
     public static final RegistryObject<Block> RESONATING_ORE_END_BLOCK = Registration.BLOCKS.register("resonating_ore_end", () -> new Block(ORE_PROPERTIES));
-    public static final RegistryObject<Block> RESONATING_PLATE_BLOCK_BLOCK = Registration.BLOCKS.register("resonating_plate_block", () -> new BlockResonatingPlate(Block.Properties.of(Material.STONE)
+    public static final RegistryObject<Block> RESONATING_PLATE_BLOCK_BLOCK = Registration.BLOCKS.register("resonating_plate_block", () -> new BlockResonatingPlate(Block.Properties.of()
+            .sound(SoundType.STONE)
             .strength(3, 5)));
 
     public static final RegistryObject<Item> RESONATING_PLATE_ITEM = Registration.ITEMS.register("resonating_plate", tab(() -> new Item(Registration.createStandardProperties())));

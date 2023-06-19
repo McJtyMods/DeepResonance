@@ -36,7 +36,7 @@ public class ModCommands {
                         .executes(context -> {
                             int special = context.getArgument("special", Integer.class);
                             ServerPlayer player = context.getSource().getPlayerOrException();
-                            Level world = player.getLevel();
+                            Level world = player.level();
                             int x = (int) (player.getX() - .5);
                             int y = (int) player.getY();
                             int z = (int) (player.getZ() - .5);

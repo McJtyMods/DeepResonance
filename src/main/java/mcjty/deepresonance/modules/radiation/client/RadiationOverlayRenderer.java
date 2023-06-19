@@ -37,13 +37,12 @@ public class RadiationOverlayRenderer {
         int radiation = (int) RadiationMonitorItem.radiationStrength;
         Font fontRenderer = Minecraft.getInstance().font;
         if (radiation > 0) {
-            fontRenderer.draw(event.getPoseStack(),
+            event.getGuiGraphics().drawString(fontRenderer,
                     "Radiation: " + radiation,
                     RadiationConfiguration.RADIATION_OVERLAY_X.get(), RadiationConfiguration.RADIATION_OVERLAY_Y.get(),
                     RadiationConfiguration.RADIATION_OVERLAY_COLOR.get());
         } else {
-            fontRenderer.draw(
-                    event.getPoseStack(),
+            event.getGuiGraphics().drawString(fontRenderer,
                     "No radiation detected",
                     RadiationConfiguration.RADIATION_OVERLAY_X.get(), RadiationConfiguration.RADIATION_OVERLAY_Y.get(),
                     RadiationConfiguration.RADIATION_OVERLAY_COLOR_NORADIATION.get());

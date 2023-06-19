@@ -9,7 +9,6 @@ import mcjty.lib.builder.BlockBuilder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -28,7 +27,7 @@ public class TankBlock extends BaseBlock {
 
     public TankBlock() {
         super(new BlockBuilder()
-                .properties(Properties.of(Material.METAL).noOcclusion().strength(2.0F).sound(SoundType.GLASS))
+                .properties(Properties.of().noOcclusion().strength(2.0F).sound(SoundType.GLASS))
                 .topDriver(DeepResonanceTOPDriver.DRIVER)
                 .tileEntitySupplier(TankTileEntity::new)
                 .info(key(DeepResonance.SHIFT_MESSAGE))

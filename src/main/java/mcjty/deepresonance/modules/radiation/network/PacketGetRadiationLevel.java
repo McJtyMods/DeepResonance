@@ -41,7 +41,7 @@ public class PacketGetRadiationLevel {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             ServerPlayer player = ctx.getSender();
-            Level world = player.getLevel();
+            Level world = player.level();
             float strength = RadiationMonitorItem.calculateRadiationStrength(world, coordinate);
             PacketReturnRadiation packet = new PacketReturnRadiation(strength);
             DeepResonanceMessages.INSTANCE.sendTo(packet, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);

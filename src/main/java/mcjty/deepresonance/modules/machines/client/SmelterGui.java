@@ -13,6 +13,7 @@ import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.ImageLabel;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
 
@@ -63,7 +64,7 @@ public class SmelterGui extends GenericGuiContainer<SmelterTileEntity, GenericCo
     }
 
     @Override
-    protected void renderBg(@Nonnull PoseStack matrixStack, float partialTicks, int x, int y) {
+    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int x, int y) {
         int progress = tileEntity.getProgress();
         if (0 < progress && progress < 100) {
             int p = ((progress / 3) % 9) + 1;
@@ -76,7 +77,7 @@ public class SmelterGui extends GenericGuiContainer<SmelterTileEntity, GenericCo
         percentage.text(progress + "%");
         updateEnergyBar(energyBar);
 
-        super.renderBg(matrixStack, partialTicks, x, y);
+        super.renderBg(graphics, partialTicks, x, y);
     }
 
     public static void register() {

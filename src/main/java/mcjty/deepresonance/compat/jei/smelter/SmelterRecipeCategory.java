@@ -20,6 +20,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -71,12 +72,12 @@ public class SmelterRecipeCategory implements IRecipeCategory<SmelterRecipeWrapp
     }
 
     @Override
-    public void draw(SmelterRecipeWrapper recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY) {
-        slot.draw(stack, 20, 32);
-        arrow.draw(stack, 46, 32);
+    public void draw(SmelterRecipeWrapper recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+        slot.draw(graphics, 20, 32);
+        arrow.draw(graphics, 46, 32);
         Font fontRenderer = Minecraft.getInstance().font;
-        fontRenderer.draw(stack, "Tank below between", 10, 0, 0xffffffff);
-        fontRenderer.draw(stack, "40% and 60% lava", 10, 10, 0xffffffff);
+        graphics.drawString(fontRenderer, "Tank below between", 10, 0, 0xffffffff);
+        graphics.drawString(fontRenderer, "40% and 60% lava", 10, 10, 0xffffffff);
     }
 
     @Override

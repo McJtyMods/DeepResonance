@@ -16,7 +16,7 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onBlockBreakEvent(BlockEvent.BreakEvent event) {
-        Level world = event.getPlayer().level;
+        Level world = event.getPlayer().level();
         if (world.isClientSide) {
             return;
         }
@@ -55,7 +55,7 @@ public class ForgeEventHandlers {
             return;
         }
 
-        Level world = event.getEntity().level;
+        Level world = event.getEntity().level();
         if (world.isClientSide()) {
             // Can normally not happen but in rare situations the PlaceEvent can get called client-side
             return;

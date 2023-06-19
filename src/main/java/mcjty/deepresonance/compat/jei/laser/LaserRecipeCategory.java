@@ -1,6 +1,5 @@
 package mcjty.deepresonance.compat.jei.laser;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.compat.jei.DeepResonanceJeiPlugin;
 import mcjty.deepresonance.modules.machines.MachinesModule;
@@ -17,6 +16,7 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -70,12 +70,12 @@ public class LaserRecipeCategory implements IRecipeCategory<LaserRecipeWrapper> 
     }
 
     @Override
-    public void draw(LaserRecipeWrapper recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY) {
-        slot.draw(stack);
+    public void draw(LaserRecipeWrapper recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+        slot.draw(graphics);
         Font font = Minecraft.getInstance().font;
-        font.draw(stack, "Per " + LaserConfig.RCL_PER_CATALYST.get() + "mb RCL", 24, 0, 0xffffffff);
-        font.draw(stack, "and " + LaserConfig.CRYSTAL_LIQUID_PER_CATALYST.get() + "mb crystal", 24, 10, 0xffffffff);
-        recipe.drawInfo(stack);
+        graphics.drawString(font, "Per " + LaserConfig.RCL_PER_CATALYST.get() + "mb RCL", 24, 0, 0xffffffff);
+        graphics.drawString(font, "and " + LaserConfig.CRYSTAL_LIQUID_PER_CATALYST.get() + "mb crystal", 24, 10, 0xffffffff);
+        recipe.drawInfo(graphics);
     }
 
     @Override

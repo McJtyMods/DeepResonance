@@ -81,7 +81,7 @@ public class RadiationMonitorItem extends Item {
             return;
         }
         if (System.currentTimeMillis() - lastTime > 250) {
-            ResourceKey<Level> id = player.level.dimension();
+            ResourceKey<Level> id = player.level().dimension();
             lastTime = System.currentTimeMillis();
             GlobalPos c = GlobalPos.of(id, player.blockPosition());
             DeepResonanceMessages.INSTANCE.sendToServer(new PacketGetRadiationLevel(c));
