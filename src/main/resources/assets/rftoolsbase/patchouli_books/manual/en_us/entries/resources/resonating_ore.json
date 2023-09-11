@@ -1,7 +1,7 @@
 {
   "name": "Resonating Ore",
   "icon": "deepresonance:resonating_ore_stone",
-  "category": "deepresonance:category_deepresonance_resources",
+  "category": "rftoolsbase:category_deepresonance_resources",
   "sortnum": 10,
   "pages": [
     {
