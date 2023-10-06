@@ -57,7 +57,7 @@ public class SmelterTileEntity extends TickingTileEntity {
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
-            .itemValid((integer, itemStack) -> true) // @todo 1.16 DeepResonanceTags.RESONANT_ORE_ITEM.contains(stack.getItem());
+            .itemValid((integer, itemStack) -> itemStack.is(DeepResonanceTags.RESONANT_ORE_ITEM))
             .build();
 
     @Cap(type = CapType.ENERGY)

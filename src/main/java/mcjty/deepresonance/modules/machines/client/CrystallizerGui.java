@@ -30,7 +30,7 @@ public class CrystallizerGui extends GenericGuiContainer<CrystallizerTileEntity,
     private Label percentage;
 
     public CrystallizerGui(CrystallizerTileEntity tileEntity, GenericContainer container, Inventory inventory) {
-        super(tileEntity, container, inventory, ManualEntry.EMPTY); // @todo 1.16 manual
+        super(tileEntity, container, inventory, ManualEntry.EMPTY);
 
         imageWidth = CRYSTALIZER_WIDTH;
         imageHeight = CRYSTALIZER_HEIGHT;

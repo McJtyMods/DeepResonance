@@ -244,7 +244,6 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
     public void setPowerInput(int powered) {
         boolean changed = powerLevel != powered;
         super.setPowerInput(powered);
-        // @todo 1.16 check, do we need this?
         if (changed) {
             setChanged();
         }

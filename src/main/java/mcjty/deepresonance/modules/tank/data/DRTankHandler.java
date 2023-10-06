@@ -50,7 +50,7 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
     @Override
     public int getTankCapacity(int tank) {
         if (level == null || level.isClientSide) {
-            return TANK_BUCKETS * 1000;   // @todo not correct!
+            return TANK_BUCKETS * 1000;   // @todo not correct for configuration!
         }
         TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
         if (blob != null) {
@@ -138,7 +138,7 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
     @Override
     public int getCapacity() {
         if (level == null || level.isClientSide) {
-            return TANK_BUCKETS * 1000;   // @todo not correct!
+            return TANK_BUCKETS * 1000;   // @todo not correct for configuration!
         }
         TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
         if (blob != null) {

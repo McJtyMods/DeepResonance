@@ -169,11 +169,6 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
                                 radiationRadius = radius;
                             }
                             float strength = DRRadiationManager.calculateRadiationStrength(crystal.getStrength(), purity);
-                            // @todo 1.16
-//                            if (crystal.getResistance() < SuperGenerationConfiguration.maxResistance) {
-//                                float factor = (float) crystal.getResistance() / SuperGenerationConfiguration.maxResistance;
-//                                strength = strength / factor;
-//                            }
                             radiationStrength += strength;
                         }
                     }
@@ -259,7 +254,6 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
         }
 
         if (lasersActive && (tooManyCrystals || tooMuchPower)) {
-            // @todo This should be put in the Logging class as a broadcast message
             if (tooManyCrystals) {
                 Broadcaster.broadcast(getLevel(), xCoord, yCoord, zCoord, "There are too many crystals for this size generator!", 100);
             }

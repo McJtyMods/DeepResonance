@@ -39,7 +39,7 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
     private static final ResourceLocation GUI = new ResourceLocation(DeepResonance.MODID, "textures/gui/laser.png");
 
     public LaserGui(LaserTileEntity tileEntity, GenericContainer container, Inventory inventory) {
-        super(tileEntity, container, inventory, ManualEntry.EMPTY); // @todo 1.16 manual
+        super(tileEntity, container, inventory, ManualEntry.EMPTY);
 
         imageWidth = LASER_WIDTH;
         imageHeight = LASER_HEIGHT;

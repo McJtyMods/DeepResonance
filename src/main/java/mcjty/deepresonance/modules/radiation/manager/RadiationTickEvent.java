@@ -6,17 +6,20 @@ import mcjty.deepresonance.modules.radiation.item.ItemRadiationSuit;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.Logging;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.phys.AABB;
+import mcjty.lib.varia.TagTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.AABB;
+import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -86,12 +89,6 @@ public class RadiationTickEvent {
 //    }
 
     private void serverTick(Level entityWorld, boolean doEffects) {
-//        // @todo improve
-//        MinecraftServer server = FMLServerHandler.instance().getServer();
-//        if (server == null) {
-//            return;
-//        }
-//        World entityWorld = server.getEntityWorld();
         DRRadiationManager radiationManager = DRRadiationManager.getManager(entityWorld);
 
         Set<GlobalPos> toRemove = Sets.newHashSet();
@@ -153,7 +150,7 @@ public class RadiationTickEvent {
         double destz = centerz + dist * Math.sin(theta) * cosphi;
         double desty;
         if (random.nextFloat() > 0.5f) {
-            desty = world.getHeight(Heightmap.Types.WORLD_SURFACE_WG, (int)destx, (int)destz);   // @todo check
+            desty = world.getHeight(Heightmap.Types.WORLD_SURFACE_WG, (int)destx, (int)destz);
         } else {
             desty = centery + dist * Math.sin(phi);
         }
@@ -211,16 +208,14 @@ public class RadiationTickEvent {
                     currentPos = currentPos.set(x, y, z);
 
                     Block block = world.getBlockState(currentPos).getBlock();
-                    // @todo 1.16 use tags?
-                    if (block == Blocks.DIRT || block == Blocks.FARMLAND || block == Blocks.GRASS) {
+                    if (TagTools.hasTag(block, BlockTags.DIRT) || block == Blocks.FARMLAND || block == Blocks.GRASS) {
                         if (random.nextFloat() < poisonBlockChance * str) {
                             world.setBlock(currentPos, RadiationModule.POISONED_DIRT_BLOCK.get().defaultBlockState(), Block.UPDATE_NEIGHBORS);
                         }
-                        // @todo 1.16 tags
-//                    } else if (block.isLeaves(world.getBlockState(currentPos), world, currentPos) || block instanceof IPlantable) {
-//                        if (random.nextFloat() < removeLeafChance * str) {
-//                            world.setBlockToAir(currentPos);
-//                        }
+                    } else if (TagTools.hasTag(block, BlockTags.LEAVES) || block instanceof IPlantable) {
+                        if (random.nextFloat() < removeLeafChance * str) {
+                            world.setBlock(currentPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_NEIGHBORS);
+                        }
                     }
                     if (random.nextFloat() < setOnFireChance * str) {
                         // @todo temporarily disabled fire because it causes 'TickNextTick list out of synch' for some reason

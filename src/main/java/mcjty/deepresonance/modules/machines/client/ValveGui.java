@@ -41,7 +41,7 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
     private TextField maxAmount;
 
     public ValveGui(ValveTileEntity tileEntity, GenericContainer container, Inventory inventory) {
-        super(tileEntity, container, inventory, ManualEntry.EMPTY); // @todo 1.16 manual
+        super(tileEntity, container, inventory, ManualEntry.EMPTY);
 
         imageWidth = VALVE_WIDTH;
         imageHeight = VALVE_HEIGHT;

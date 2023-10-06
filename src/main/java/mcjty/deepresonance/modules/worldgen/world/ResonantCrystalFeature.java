@@ -39,7 +39,7 @@ public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig
     private boolean trySpawnCrystal(@Nonnull WorldGenLevel world, @Nonnull ChunkGenerator generator, ChunkPos chunkPos, RandomSource random, ResonantCrystalFeatureConfig config) {
         for (int i = 0; i < WorldGenConfiguration.CRYSTAL_SPAWN_TRIES.get(); i++) {
             BlockPos pos = new BlockPos(chunkPos.getMinBlockX() + random.nextInt(16), 0, chunkPos.getMinBlockZ() + random.nextInt(16));
-            if (false) { // @todo 1.16 detect if the world has a ceilijng generator.getSettings().) {
+            if (false) { // @todo detect if the world has a ceiling generator.getSettings().) {
                 pos = new BlockPos(pos.getX(), 60, pos.getZ());
             } else {
                 int y = world.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, pos.getX(), pos.getZ());

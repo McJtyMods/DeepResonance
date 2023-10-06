@@ -2,9 +2,12 @@ package mcjty.deepresonance.modules.radiation.util;
 
 import com.google.common.collect.Sets;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
+import mcjty.deepresonance.util.DeepResonanceTags;
+import mcjty.lib.varia.TagTools;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Set;
 
@@ -16,19 +19,9 @@ public class RadiationShieldRegistry {
         if (leadBlocks != null) {
             return leadBlocks;
         }
-        // @todo 1.16
         leadBlocks = Sets.newHashSet();
-//        List<ItemStack> stacks = OreDictionary.getOres("blockLead");
-//        for (ItemStack stack : stacks) {
-//            Item item = stack.getItem();
-//            if (item instanceof ItemBlock) {
-//                ItemBlock itemBlock = (ItemBlock) item;
-//                if (itemBlock.getBlock() != null) {
-//                    leadBlocks.add(itemBlock.getBlock());
-//                }
-//            }
-//        }
-//
+        Iterable<Holder<Block>> blocks = TagTools.getBlocksForTag(DeepResonanceTags.STORAGE_BLOCKS_LEAD);
+        blocks.forEach(h -> leadBlocks.add(h.get()));
         return leadBlocks;
     }
 

@@ -22,7 +22,7 @@ public class PurifierGui extends GenericGuiContainer<PurifierTileEntity, Generic
     private static final ResourceLocation GUI = new ResourceLocation(DeepResonance.MODID, "textures/gui/purifier.png");
 
     public PurifierGui(PurifierTileEntity tileEntity, GenericContainer container, Inventory inventory) {
-        super(tileEntity, container, inventory, ManualEntry.EMPTY); // @todo 1.16 manual
+        super(tileEntity, container, inventory, ManualEntry.EMPTY);
 
         imageWidth = PURIFIER_WIDTH;
         imageHeight = PURIFIER_HEIGHT;

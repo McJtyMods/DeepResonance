@@ -39,9 +39,6 @@ public class CrystallizerRenderer implements BlockEntityRenderer<CrystallizerTil
             RenderHelper.rotateYP(matrixStack, f * 3);
             matrixStack.scale(scale, scale, scale);
             RenderHelper.renderItemGround(matrixStack, buffer, RenderType.solid(), stack, RenderHelper.MAX_BRIGHTNESS / 2, combinedOverlay);
-//            ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-//            BakedModel ibakedmodel = itemRenderer.getModel(stack, Minecraft.getInstance().level, null, 0);  // @todo last parameter?
-//            itemRenderer.render(stack, ItemDisplayContext.GROUND, false, matrixStack, type -> buffer.getBuffer(RenderType.solid()), RenderHelper.MAX_BRIGHTNESS / 2, combinedOverlay, ibakedmodel);
             matrixStack.popPose();
         }
     }

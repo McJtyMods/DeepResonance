@@ -15,7 +15,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 public class ItemRadiationSuit extends GenericArmorItem implements IRadiationArmor {
 
     public static final ArmorMaterial ARMOR_TYPE = new ResonatingMaterial("deepresonance:resonating_armor",
-            12, new int[]{1, 4, 5, 2}, 12, SoundEvents.ARMOR_EQUIP_DIAMOND, 0.5f, 0.0f /* @todo 1.16 what is this?*/,
+            12, new int[]{1, 4, 5, 2}, 12, SoundEvents.ARMOR_EQUIP_DIAMOND, 0.5f, 0.0f,
             () -> Ingredient.of(CoreModule.RESONATING_PLATE_ITEM.get()));
 
     public ItemRadiationSuit(EquipmentSlot slot) {

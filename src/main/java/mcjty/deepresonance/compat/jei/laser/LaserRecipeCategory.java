@@ -40,13 +40,6 @@ public class LaserRecipeCategory implements IRecipeCategory<LaserRecipeWrapper> 
         background = guiHelper.createBlankDrawable(150, 62);
     }
 
-//@todo 1.19
-//    @Override
-//    public void setIngredients(LaserRecipeWrapper recipe, IIngredients ingredients) {
-//        ingredients.setInput(VanillaTypes.ITEM_STACK, recipe.getItem());
-//    }
-
-
     @Override
     public RecipeType<LaserRecipeWrapper> getRecipeType() {
         return DeepResonanceJeiPlugin.LASER_RECIPE;

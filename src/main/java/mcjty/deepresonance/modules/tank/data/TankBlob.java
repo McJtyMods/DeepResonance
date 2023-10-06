@@ -57,11 +57,11 @@ public class TankBlob implements IMultiblock {
     }
 
     public int getCapacityPerTank() {
-        return TANK_BUCKETS * 1000;   // @todo 1.16 configurable
+        return TANK_BUCKETS * 1000;   // @todo configurable
     }
 
     public int getCapacity() {
-        return tankBlocks * TANK_BUCKETS * 1000; // @todo 1.16 configurable!
+        return tankBlocks * TANK_BUCKETS * 1000; // @todo configurable!
     }
 
     public void merge(TankBlob other) {

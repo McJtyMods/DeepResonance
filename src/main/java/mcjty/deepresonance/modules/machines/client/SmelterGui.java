@@ -33,7 +33,7 @@ public class SmelterGui extends GenericGuiContainer<SmelterTileEntity, GenericCo
     private static final ResourceLocation iconBurning = new ResourceLocation(DeepResonance.MODID, "textures/gui/burning.png");
 
     public SmelterGui(SmelterTileEntity tile, GenericContainer container, Inventory inventory) {
-        super(tile, container, inventory, ManualEntry.EMPTY);   // @todo 1.16 manual
+        super(tile, container, inventory, ManualEntry.EMPTY);
 
         imageWidth = SMELTER_WIDTH;
         imageHeight = SMELTER_HEIGHT;

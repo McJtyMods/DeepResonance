@@ -8,8 +8,6 @@ import mcjty.deepresonance.setup.Registration;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -26,7 +24,6 @@ public class TankModule implements IModule {
     public static final RegistryObject<Block> TANK_BLOCK = Registration.BLOCKS.register("tank", TankBlock::new);
     public static final RegistryObject<Item> TANK_ITEM = Registration.ITEMS.register("tank", tab(() -> new BlockItem(TANK_BLOCK.get(),
             Registration.createStandardProperties()
-//                    .setISTER(TankItemRenderer::getRenderer)));   // @todo 1.18
     )));
     public static final RegistryObject<BlockEntityType<TankTileEntity>> TYPE_TANK = TILES.register("tank", () -> BlockEntityType.Builder.of(TankTileEntity::new, TANK_BLOCK.get()).build(null));
 

@@ -80,7 +80,7 @@ public class CoreModule implements IModule {
             .strength(3, 5)));
 
     public static final RegistryObject<Item> RESONATING_PLATE_ITEM = Registration.ITEMS.register("resonating_plate", tab(() -> new Item(Registration.createStandardProperties())));
-    public static final RegistryObject<Item> FILTER_MATERIAL_ITEM = Registration.ITEMS.register("filter_material", tab(() -> new Item(Registration.createStandardProperties())));    // @todo 1.16 ItemWithTooltip)?
+    public static final RegistryObject<Item> FILTER_MATERIAL_ITEM = Registration.ITEMS.register("filter_material", tab(() -> new Item(Registration.createStandardProperties())));
     public static final RegistryObject<Item> SPENT_FILTER_ITEM = Registration.ITEMS.register("spent_filter_material", tab(() -> new Item(Registration.createStandardProperties())));
     public static final RegistryObject<Item> LIQUID_INJECTOR_ITEM = Registration.ITEMS.register("liquid_injector", tab(() -> new ItemLiquidInjector(Registration.createStandardProperties())));
     public static final RegistryObject<Item> MACHINE_FRAME_ITEM = Registration.ITEMS.register("machine_frame", tab(() -> new Item(Registration.createStandardProperties())));

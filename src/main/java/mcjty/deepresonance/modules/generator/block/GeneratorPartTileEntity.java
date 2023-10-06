@@ -57,7 +57,7 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
             BlockEntity te = level.getBlockEntity(pos);
             Direction opposite = facing.getOpposite();
             if (EnergyTools.isEnergyTE(te, opposite)) {
-                int rfToGive = Math.min(GeneratorConfig.POWER_PER_TICKOUT.get(), energyStored);   // @todo 1.16 is this the right config?
+                int rfToGive = Math.min(GeneratorConfig.POWER_PER_TICKOUT.get(), energyStored);
                 int received = (int) EnergyTools.receiveEnergy(te, opposite, rfToGive);
                 if (received > 0) {
                     dirty = true;
@@ -213,42 +213,4 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
         super.load(tagCompound);
         blobId = tagCompound.getInt("networkId");
     }
-
-    // @todo 1.16
-//    @Override
-//    public void validate() {
-//        super.validate();
-//        if (Preconditions.checkNotNull(getLevel()).isRemote) {
-//            return;
-//        }
-//        ElecCore.tickHandler.registerCall(() -> {
-//            surroundings.clear();
-//            for (Direction dir : Direction.values()) {
-//                BlockPos pos = getBlockPos().offset(dir);
-//                TileEntity tile = WorldHelper.getTileAt(getLevel(), pos);
-//                if (tile != null) {
-//                    surroundings.put(dir, tile.getCapability(ForgeCapabilities.ENERGY, dir.getOpposite()));
-//                }
-//            }
-//        }, getLevel());
-//    }
-
-    // @todo 1.16
-//    @Override
-//    public void onNeighborChange(BlockState myState, BlockPos neighbor) {
-//        if (Preconditions.checkNotNull(getLevel()).isRemote) {
-//            return;
-//        }
-//        BlockPos offset = getBlockPos().subtract(neighbor);
-//        Direction side = Preconditions.checkNotNull(Direction.byLong(offset.getX(), offset.getY(), offset.getZ()));
-//        LazyOptional<IEnergyStorage> cap = surroundings.get(side);
-//        if (cap == null || !cap.isPresent()) {
-//            cap = null;
-//            TileEntity tile = WorldHelper.getTileAt(getLevel(), neighbor);
-//            if (tile != null) {
-//                cap = tile.getCapability(ForgeCapabilities.ENERGY, side.getOpposite());
-//            }
-//            surroundings.put(side, cap);
-//        }
-//    }
 }

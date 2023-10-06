@@ -117,15 +117,6 @@ public class LaserTileEntity extends TickingTileEntity {
         };
     }
 
-    // @todo 1.16
-//    @Override
-//    protected void dropInventory() {
-//        for (int i = 0; i < 2; i++) { //Don't drop item that is being processed
-//            WorldHelper.dropStack(getLevel(), getPos(), itemHandler.getStackInSlot(i));
-//        }
-//        itemHandler.clear();
-//    }
-
     private static boolean isCrystalItem(Item item) {
         return item == CoreModule.RESONATING_CRYSTAL_GENERATED_ITEM.get() ||
                 item == CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY_ITEM.get() ||
