@@ -3,6 +3,7 @@ Upcoming:
 - Use dirt tag to detect dirt instead of hardcoded dirt block (for radiation)
 - Also fixed leaves decaying due to radation
 - Lead blocks work again for shielding
+- Fixed a crashing problem with the radiation module
 
 1.20-5.0.1:
 - Fixed patchouli integration

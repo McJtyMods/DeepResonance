@@ -10,7 +10,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
-import org.lwjgl.opengl.GL11;
 
 public class RadiationOverlayRenderer {
 
@@ -30,9 +29,6 @@ public class RadiationOverlayRenderer {
         }
 
         RadiationMonitorItem.fetchRadiation(player);
-
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glDisable(GL11.GL_LIGHTING);
 
         int radiation = (int) RadiationMonitorItem.radiationStrength;
         Font fontRenderer = Minecraft.getInstance().font;
