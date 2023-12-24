@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a problem with the pedestal voiding crystals
+
 1.20-5.0.2:
 - Smelter only accepts resonating ore
 - Use dirt tag to detect dirt instead of hardcoded dirt block (for radiation)
