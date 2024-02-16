@@ -22,6 +22,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import java.util.function.Supplier;
 
@@ -38,6 +39,9 @@ public class DeepResonance {
     private final Modules modules = new Modules();
 
     public DeepResonance() {
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        Dist dist = FMLEnvironment.dist;
+
         instance = this;
         setup = new ModSetup();
 
@@ -48,15 +52,14 @@ public class DeepResonance {
         Config.register(modules);
         Registration.register();
 
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(setup::init);
         bus.addListener(modules::init);
         bus.addListener(this::onDataGen);
 
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+        if (dist.isClient()) {
             ClientTools.onTextureStitch(bus, ClientSetup::onTextureStitch);
             bus.addListener(modules::initClient);
-        });
+        }
     }
 
     public static <T extends Item> Supplier<T> tab(Supplier<T> supplier) {

@@ -9,6 +9,8 @@ import mcjty.deepresonance.setup.Registration;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
+import mcjty.lib.setup.DeferredBlock;
+import mcjty.lib.setup.DeferredItem;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
@@ -28,27 +30,27 @@ import static mcjty.deepresonance.DeepResonance.tab;
 
 public class RadiationModule implements IModule {
 
-    public static final RegistryObject<Block> POISONED_DIRT_BLOCK = Registration.BLOCKS.register("poisoned_dirt", () -> new Block(Block.Properties.of().mapColor(MapColor.DIRT).strength(0.5f).sound(SoundType.GRASS)));
-    public static final RegistryObject<Block> DENSE_GLASS_BLOCK = Registration.BLOCKS.register("dense_glass",
+    public static final DeferredBlock<Block> POISONED_DIRT_BLOCK = Registration.BLOCKS.register("poisoned_dirt", () -> new Block(Block.Properties.of().mapColor(MapColor.DIRT).strength(0.5f).sound(SoundType.GRASS)));
+    public static final DeferredBlock<Block> DENSE_GLASS_BLOCK = Registration.BLOCKS.register("dense_glass",
             () -> new GlassBlock(Block.Properties.of()
                     .strength(3.0f, 500.0f)
                     .requiresCorrectToolForDrops()
                     .noOcclusion()
                     .sound(SoundType.GLASS)));
-    public static final RegistryObject<Block> DENSE_OBSIDIAN_BLOCK = Registration.BLOCKS.register("dense_obsidian", () -> new Block(Block.Properties.of().mapColor(MapColor.COLOR_BLACK)
+    public static final DeferredBlock<Block> DENSE_OBSIDIAN_BLOCK = Registration.BLOCKS.register("dense_obsidian", () -> new Block(Block.Properties.of().mapColor(MapColor.COLOR_BLACK)
             .strength(50.0f, 2000.0f)
             .requiresCorrectToolForDrops()
             .sound(SoundType.STONE)));
 
-    public static final RegistryObject<Item> POISONED_DIRT_ITEM = Registration.fromBlock(POISONED_DIRT_BLOCK);
-    public static final RegistryObject<Item> DENSE_GLASS_ITEM = Registration.fromBlock(DENSE_GLASS_BLOCK);
-    public static final RegistryObject<Item> DENSE_OBSIDIAN_ITEM = Registration.fromBlock(DENSE_OBSIDIAN_BLOCK);
-    public static final RegistryObject<RadiationMonitorItem> RADIATION_MONITOR = Registration.ITEMS.register("radiation_monitor", tab(() -> new RadiationMonitorItem(Registration.createStandardProperties().stacksTo(1))));
+    public static final DeferredItem<Item> POISONED_DIRT_ITEM = Registration.fromBlock(POISONED_DIRT_BLOCK);
+    public static final DeferredItem<Item> DENSE_GLASS_ITEM = Registration.fromBlock(DENSE_GLASS_BLOCK);
+    public static final DeferredItem<Item> DENSE_OBSIDIAN_ITEM = Registration.fromBlock(DENSE_OBSIDIAN_BLOCK);
+    public static final DeferredItem<RadiationMonitorItem> RADIATION_MONITOR = Registration.ITEMS.register("radiation_monitor", tab(() -> new RadiationMonitorItem(Registration.createStandardProperties().stacksTo(1))));
 
-    public static final RegistryObject<Item> RADIATION_SUIT_HELMET = Registration.ITEMS.register("radiation_suit_helmet", tab(() -> new ItemRadiationSuit(EquipmentSlot.HEAD)));
-    public static final RegistryObject<Item> RADIATION_SUIT_CHESTPLATE = Registration.ITEMS.register("radiation_suit_chestplate", tab(() -> new ItemRadiationSuit(EquipmentSlot.CHEST)));
-    public static final RegistryObject<Item> RADIATION_SUIT_LEGGINGS = Registration.ITEMS.register("radiation_suit_leggings", tab(() -> new ItemRadiationSuit(EquipmentSlot.LEGS)));
-    public static final RegistryObject<Item> RADIATION_SUIT_BOOTS = Registration.ITEMS.register("radiation_suit_boots", tab(() -> new ItemRadiationSuit(EquipmentSlot.FEET)));
+    public static final DeferredItem<Item> RADIATION_SUIT_HELMET = Registration.ITEMS.register("radiation_suit_helmet", tab(() -> new ItemRadiationSuit(EquipmentSlot.HEAD)));
+    public static final DeferredItem<Item> RADIATION_SUIT_CHESTPLATE = Registration.ITEMS.register("radiation_suit_chestplate", tab(() -> new ItemRadiationSuit(EquipmentSlot.CHEST)));
+    public static final DeferredItem<Item> RADIATION_SUIT_LEGGINGS = Registration.ITEMS.register("radiation_suit_leggings", tab(() -> new ItemRadiationSuit(EquipmentSlot.LEGS)));
+    public static final DeferredItem<Item> RADIATION_SUIT_BOOTS = Registration.ITEMS.register("radiation_suit_boots", tab(() -> new ItemRadiationSuit(EquipmentSlot.FEET)));
 
     public RadiationModule() {
     }

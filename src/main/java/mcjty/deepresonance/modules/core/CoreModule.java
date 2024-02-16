@@ -14,6 +14,8 @@ import mcjty.deepresonance.util.DeepResonanceTags;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
+import mcjty.lib.setup.DeferredBlock;
+import mcjty.lib.setup.DeferredItem;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
@@ -31,6 +33,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static mcjty.deepresonance.DeepResonance.tab;
 import static mcjty.deepresonance.setup.Registration.TILES;
@@ -44,7 +47,7 @@ public class CoreModule implements IModule {
             .requiresCorrectToolForDrops()
             .strength(3, 5);
 
-    public static final RegistryObject<FluidType> LIQUID_CRYSTAL_TYPE = Registration.FLUID_TYPES.register("liquid_crystal_type",
+    public static final Supplier<FluidType> LIQUID_CRYSTAL_TYPE = Registration.FLUID_TYPES.register("liquid_crystal_type",
             () -> new FluidType(FluidType.Properties.create()) {
                 @Override
                 public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
@@ -56,39 +59,39 @@ public class CoreModule implements IModule {
                     return "fluid.deepresonance.liquid_crystal";
                 }
             });
-    public static final RegistryObject<Fluid> LIQUID_CRYSTAL = Registration.FLUIDS.register("liquid_crystal", FluidLiquidCrystal::new);
+    public static final Supplier<Fluid> LIQUID_CRYSTAL = Registration.FLUIDS.register("liquid_crystal", FluidLiquidCrystal::new);
 
-    public static final RegistryObject<ResonatingCrystalBlock> RESONATING_CRYSTAL_NATURAL = Registration.BLOCKS.register("resonating_crystal_natural", () -> new ResonatingCrystalBlock(false, false));
-    public static final RegistryObject<ResonatingCrystalBlock> RESONATING_CRYSTAL_NATURAL_EMPTY = Registration.BLOCKS.register("resonating_crystal_natural_empty", () -> new ResonatingCrystalBlock(false, true));
-    public static final RegistryObject<ResonatingCrystalBlock> RESONATING_CRYSTAL_GENERATED = Registration.BLOCKS.register("resonating_crystal_generated", () -> new ResonatingCrystalBlock(true, false));
-    public static final RegistryObject<ResonatingCrystalBlock> RESONATING_CRYSTAL_GENERATED_EMPTY = Registration.BLOCKS.register("resonating_crystal_generated_empty", () -> new ResonatingCrystalBlock(true, true));
-    public static final RegistryObject<Item> RESONATING_CRYSTAL_NATURAL_ITEM = Registration.fromBlock(RESONATING_CRYSTAL_NATURAL);
-    public static final RegistryObject<Item> RESONATING_CRYSTAL_NATURAL_EMPTY_ITEM = Registration.fromBlock(RESONATING_CRYSTAL_NATURAL_EMPTY);
-    public static final RegistryObject<Item> RESONATING_CRYSTAL_GENERATED_ITEM = Registration.fromBlock(RESONATING_CRYSTAL_GENERATED);
-    public static final RegistryObject<Item> RESONATING_CRYSTAL_GENERATED_EMPTY_ITEM = Registration.fromBlock(RESONATING_CRYSTAL_GENERATED_EMPTY);
-    public static final RegistryObject<BlockEntityType<ResonatingCrystalTileEntity>> TYPE_RESONATING_CRYSTAL = TILES.register("resonating_crystal", () -> BlockEntityType.Builder.of(ResonatingCrystalTileEntity::new,
+    public static final DeferredBlock<ResonatingCrystalBlock> RESONATING_CRYSTAL_NATURAL = Registration.BLOCKS.register("resonating_crystal_natural", () -> new ResonatingCrystalBlock(false, false));
+    public static final DeferredBlock<ResonatingCrystalBlock> RESONATING_CRYSTAL_NATURAL_EMPTY = Registration.BLOCKS.register("resonating_crystal_natural_empty", () -> new ResonatingCrystalBlock(false, true));
+    public static final DeferredBlock<ResonatingCrystalBlock> RESONATING_CRYSTAL_GENERATED = Registration.BLOCKS.register("resonating_crystal_generated", () -> new ResonatingCrystalBlock(true, false));
+    public static final DeferredBlock<ResonatingCrystalBlock> RESONATING_CRYSTAL_GENERATED_EMPTY = Registration.BLOCKS.register("resonating_crystal_generated_empty", () -> new ResonatingCrystalBlock(true, true));
+    public static final DeferredItem<Item> RESONATING_CRYSTAL_NATURAL_ITEM = Registration.fromBlock(RESONATING_CRYSTAL_NATURAL);
+    public static final DeferredItem<Item> RESONATING_CRYSTAL_NATURAL_EMPTY_ITEM = Registration.fromBlock(RESONATING_CRYSTAL_NATURAL_EMPTY);
+    public static final DeferredItem<Item> RESONATING_CRYSTAL_GENERATED_ITEM = Registration.fromBlock(RESONATING_CRYSTAL_GENERATED);
+    public static final DeferredItem<Item> RESONATING_CRYSTAL_GENERATED_EMPTY_ITEM = Registration.fromBlock(RESONATING_CRYSTAL_GENERATED_EMPTY);
+    public static final Supplier<BlockEntityType<ResonatingCrystalTileEntity>> TYPE_RESONATING_CRYSTAL = TILES.register("resonating_crystal", () -> BlockEntityType.Builder.of(ResonatingCrystalTileEntity::new,
                     RESONATING_CRYSTAL_GENERATED.get(), RESONATING_CRYSTAL_GENERATED_EMPTY.get(),
                     RESONATING_CRYSTAL_NATURAL.get(), RESONATING_CRYSTAL_NATURAL_EMPTY.get())
             .build(null));
 
-    public static final RegistryObject<Block> RESONATING_ORE_STONE_BLOCK = Registration.BLOCKS.register("resonating_ore_stone", () -> new Block(ORE_PROPERTIES));
-    public static final RegistryObject<Block> RESONATING_ORE_DEEPSLATE_BLOCK = Registration.BLOCKS.register("resonating_ore_deepslate", () -> new Block(ORE_PROPERTIES));
-    public static final RegistryObject<Block> RESONATING_ORE_NETHER_BLOCK = Registration.BLOCKS.register("resonating_ore_nether", () -> new Block(ORE_PROPERTIES));
-    public static final RegistryObject<Block> RESONATING_ORE_END_BLOCK = Registration.BLOCKS.register("resonating_ore_end", () -> new Block(ORE_PROPERTIES));
-    public static final RegistryObject<Block> RESONATING_PLATE_BLOCK_BLOCK = Registration.BLOCKS.register("resonating_plate_block", () -> new BlockResonatingPlate(Block.Properties.of()
+    public static final DeferredBlock<Block> RESONATING_ORE_STONE_BLOCK = Registration.BLOCKS.register("resonating_ore_stone", () -> new Block(ORE_PROPERTIES));
+    public static final DeferredBlock<Block> RESONATING_ORE_DEEPSLATE_BLOCK = Registration.BLOCKS.register("resonating_ore_deepslate", () -> new Block(ORE_PROPERTIES));
+    public static final DeferredBlock<Block> RESONATING_ORE_NETHER_BLOCK = Registration.BLOCKS.register("resonating_ore_nether", () -> new Block(ORE_PROPERTIES));
+    public static final DeferredBlock<Block> RESONATING_ORE_END_BLOCK = Registration.BLOCKS.register("resonating_ore_end", () -> new Block(ORE_PROPERTIES));
+    public static final DeferredBlock<Block> RESONATING_PLATE_BLOCK_BLOCK = Registration.BLOCKS.register("resonating_plate_block", () -> new BlockResonatingPlate(Block.Properties.of()
             .sound(SoundType.STONE)
             .strength(3, 5)));
 
-    public static final RegistryObject<Item> RESONATING_PLATE_ITEM = Registration.ITEMS.register("resonating_plate", tab(() -> new Item(Registration.createStandardProperties())));
-    public static final RegistryObject<Item> FILTER_MATERIAL_ITEM = Registration.ITEMS.register("filter_material", tab(() -> new Item(Registration.createStandardProperties())));
-    public static final RegistryObject<Item> SPENT_FILTER_ITEM = Registration.ITEMS.register("spent_filter_material", tab(() -> new Item(Registration.createStandardProperties())));
-    public static final RegistryObject<Item> LIQUID_INJECTOR_ITEM = Registration.ITEMS.register("liquid_injector", tab(() -> new ItemLiquidInjector(Registration.createStandardProperties())));
-    public static final RegistryObject<Item> MACHINE_FRAME_ITEM = Registration.ITEMS.register("machine_frame", tab(() -> new Item(Registration.createStandardProperties())));
-    public static final RegistryObject<Item> RESONATING_ORE_DEEPSLATE_ITEM = Registration.fromBlock(RESONATING_ORE_DEEPSLATE_BLOCK);
-    public static final RegistryObject<Item> RESONATING_ORE_STONE_ITEM = Registration.fromBlock(RESONATING_ORE_STONE_BLOCK);
-    public static final RegistryObject<Item> RESONATING_ORE_NETHER_ITEM = Registration.fromBlock(RESONATING_ORE_NETHER_BLOCK);
-    public static final RegistryObject<Item> RESONATING_ORE_END_ITEM = Registration.fromBlock(RESONATING_ORE_END_BLOCK);
-    public static final RegistryObject<Item> RESONATING_PLATE_BLOCK_ITEM = Registration.fromBlock(RESONATING_PLATE_BLOCK_BLOCK);
+    public static final DeferredItem<Item> RESONATING_PLATE_ITEM = Registration.ITEMS.register("resonating_plate", tab(() -> new Item(Registration.createStandardProperties())));
+    public static final DeferredItem<Item> FILTER_MATERIAL_ITEM = Registration.ITEMS.register("filter_material", tab(() -> new Item(Registration.createStandardProperties())));
+    public static final DeferredItem<Item> SPENT_FILTER_ITEM = Registration.ITEMS.register("spent_filter_material", tab(() -> new Item(Registration.createStandardProperties())));
+    public static final DeferredItem<Item> LIQUID_INJECTOR_ITEM = Registration.ITEMS.register("liquid_injector", tab(() -> new ItemLiquidInjector(Registration.createStandardProperties())));
+    public static final DeferredItem<Item> MACHINE_FRAME_ITEM = Registration.ITEMS.register("machine_frame", tab(() -> new Item(Registration.createStandardProperties())));
+    public static final DeferredItem<Item> RESONATING_ORE_DEEPSLATE_ITEM = Registration.fromBlock(RESONATING_ORE_DEEPSLATE_BLOCK);
+    public static final DeferredItem<Item> RESONATING_ORE_STONE_ITEM = Registration.fromBlock(RESONATING_ORE_STONE_BLOCK);
+    public static final DeferredItem<Item> RESONATING_ORE_NETHER_ITEM = Registration.fromBlock(RESONATING_ORE_NETHER_BLOCK);
+    public static final DeferredItem<Item> RESONATING_ORE_END_ITEM = Registration.fromBlock(RESONATING_ORE_END_BLOCK);
+    public static final DeferredItem<Item> RESONATING_PLATE_BLOCK_ITEM = Registration.fromBlock(RESONATING_PLATE_BLOCK_BLOCK);
 
     public CoreModule() {
     }

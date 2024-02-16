@@ -1,51 +1,48 @@
 package mcjty.deepresonance.modules.radiation.network;
 
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.radiation.item.RadiationMonitorItem;
 import mcjty.deepresonance.setup.DeepResonanceMessages;
+import mcjty.lib.network.CustomPacketPayload;
+import mcjty.lib.network.PlayPayloadContext;
 import mcjty.lib.varia.LevelTools;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.GlobalPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
 
-import java.util.function.Supplier;
+public record PacketGetRadiationLevel(GlobalPos coordinate) implements CustomPacketPayload {
 
-public class PacketGetRadiationLevel {
+    public static final ResourceLocation ID = new ResourceLocation(DeepResonance.MODID, "getradiationlevel");
 
-    private final GlobalPos coordinate;
-
-    public PacketGetRadiationLevel(FriendlyByteBuf buf) {
+    public static PacketGetRadiationLevel create(FriendlyByteBuf buf) {
         ResourceKey<Level> id = LevelTools.getId(buf.readResourceLocation());
-        int x = buf.readInt();
-        int y = buf.readInt();
-        int z = buf.readInt();
-        coordinate = GlobalPos.of(id, new BlockPos(x, y, z));
+        return new PacketGetRadiationLevel(GlobalPos.of(id, buf.readBlockPos()));
     }
 
-    public void toBytes(FriendlyByteBuf buf) {
+    public static PacketGetRadiationLevel create(GlobalPos coordinate) {
+        return new PacketGetRadiationLevel(coordinate);
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buf) {
         buf.writeResourceLocation(coordinate.dimension().location());
-        buf.writeInt(coordinate.pos().getX());
-        buf.writeInt(coordinate.pos().getY());
-        buf.writeInt(coordinate.pos().getZ());
+        buf.writeBlockPos(coordinate.pos());
     }
 
-    public PacketGetRadiationLevel(GlobalPos coordinate) {
-        this.coordinate = coordinate;
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
-        NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
-            ServerPlayer player = ctx.getSender();
-            Level world = player.level();
-            float strength = RadiationMonitorItem.calculateRadiationStrength(world, coordinate);
-            PacketReturnRadiation packet = new PacketReturnRadiation(strength);
-            DeepResonanceMessages.INSTANCE.sendTo(packet, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+    public void handle(PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() -> {
+            ctx.player().ifPresent( player -> {
+                Level world = player.level();
+                float strength = RadiationMonitorItem.calculateRadiationStrength(world, coordinate);
+                DeepResonanceMessages.sendToPlayer(new PacketReturnRadiation(strength), player);
+            });
         });
-        ctx.setPacketHandled(true);
     }
 }

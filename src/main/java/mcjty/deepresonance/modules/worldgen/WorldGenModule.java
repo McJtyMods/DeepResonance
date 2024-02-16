@@ -8,11 +8,13 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.function.Supplier;
+
 import static mcjty.deepresonance.setup.Registration.FEATURES;
 
 public class WorldGenModule implements IModule {
 
-    public static final RegistryObject<ResonantCrystalFeature> CRYSTAL_FEATURE = FEATURES.register(
+    public static final Supplier<ResonantCrystalFeature> CRYSTAL_FEATURE = FEATURES.register(
             ResonantCrystalFeature.FEATURE_CRYSTAL_ID.getPath(),
             () -> new ResonantCrystalFeature(ResonantCrystalFeatureConfig.CODEC));
 

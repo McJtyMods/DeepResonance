@@ -1,35 +1,37 @@
 package mcjty.deepresonance.modules.radiation.network;
 
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.radiation.item.RadiationMonitorItem;
+import mcjty.lib.network.CustomPacketPayload;
+import mcjty.lib.network.PlayPayloadContext;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.resources.ResourceLocation;
 
-import java.util.function.Supplier;
+public record PacketReturnRadiation(float strength) implements CustomPacketPayload {
 
-public class PacketReturnRadiation {
-    private final float strength;
+    public static final ResourceLocation ID = new ResourceLocation(DeepResonance.MODID, "returnradiation");
 
-    public PacketReturnRadiation(FriendlyByteBuf buf) {
-        strength = buf.readFloat();
+    public static PacketReturnRadiation create(FriendlyByteBuf buf) {
+        return new PacketReturnRadiation(buf.readFloat());
     }
 
-    public void toBytes(FriendlyByteBuf buf) {
+    public static PacketReturnRadiation create(float strength) {
+        return new PacketReturnRadiation(strength);
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buf) {
         buf.writeFloat(strength);
     }
 
-    public float getStrength() {
-        return strength;
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 
-    public PacketReturnRadiation(float strength) {
-        this.strength = strength;
-    }
-
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
-        NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
+    public void handle(PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() -> {
             RadiationMonitorItem.radiationStrength = strength;
         });
-        ctx.setPacketHandled(true);
     }
 }

@@ -9,6 +9,8 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
+import mcjty.lib.setup.DeferredBlock;
+import mcjty.lib.setup.DeferredItem;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -19,16 +21,18 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.function.Supplier;
+
 import static mcjty.deepresonance.DeepResonance.tab;
 import static mcjty.deepresonance.datagen.BlockStates.DEFAULT_BOTTOM;
 import static mcjty.deepresonance.setup.Registration.*;
 
 public class PedestalModule implements IModule {
 
-    public static final RegistryObject<BaseBlock> PEDESTAL = BLOCKS.register("pedestal", PedestalTileEntity::createBlock);
-    public static final RegistryObject<Item> PEDESTAL_ITEM = ITEMS.register("pedestal", tab(() -> new BlockItem(PEDESTAL.get(), Registration.createStandardProperties())));
-    public static final RegistryObject<BlockEntityType<?>> TYPE_PEDESTAL = TILES.register("pedestal", () -> BlockEntityType.Builder.of(PedestalTileEntity::new, PEDESTAL.get()).build(null));
-    public static final RegistryObject<MenuType<GenericContainer>> CONTAINER_PEDESTAL = CONTAINERS.register("pedestal", GenericContainer::createContainerType);
+    public static final DeferredBlock<BaseBlock> PEDESTAL = BLOCKS.register("pedestal", PedestalTileEntity::createBlock);
+    public static final DeferredItem<Item> PEDESTAL_ITEM = ITEMS.register("pedestal", tab(() -> new BlockItem(PEDESTAL.get(), Registration.createStandardProperties())));
+    public static final Supplier<BlockEntityType<?>> TYPE_PEDESTAL = TILES.register("pedestal", () -> BlockEntityType.Builder.of(PedestalTileEntity::new, PEDESTAL.get()).build(null));
+    public static final Supplier<MenuType<GenericContainer>> CONTAINER_PEDESTAL = CONTAINERS.register("pedestal", GenericContainer::createContainerType);
 
     @Override
     public void init(FMLCommonSetupEvent event) {

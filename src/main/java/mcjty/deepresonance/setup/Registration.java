@@ -2,6 +2,10 @@ package mcjty.deepresonance.setup;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.lib.setup.DeferredBlock;
+import mcjty.lib.setup.DeferredBlocks;
+import mcjty.lib.setup.DeferredItem;
+import mcjty.lib.setup.DeferredItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
@@ -22,8 +26,8 @@ import static mcjty.deepresonance.DeepResonance.tab;
 
 public class Registration {
 
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, DeepResonance.MODID);
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, DeepResonance.MODID);
+    public static final DeferredItems ITEMS = DeferredItems.create(DeepResonance.MODID);
+    public static final DeferredBlocks BLOCKS = DeferredBlocks.create(DeepResonance.MODID);
     public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, DeepResonance.MODID);
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, DeepResonance.MODID);
     public static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, DeepResonance.MODID);
@@ -50,7 +54,7 @@ public class Registration {
         return DeepResonance.setup.defaultProperties();
     }
 
-    public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {
+    public static <B extends Block> DeferredItem<Item> fromBlock(DeferredBlock<B> block) {
         return ITEMS.register(block.getId().getPath(), tab(() -> new BlockItem(block.get(), createStandardProperties())));
     }
 

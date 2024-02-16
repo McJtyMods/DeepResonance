@@ -11,6 +11,8 @@ import mcjty.deepresonance.setup.Registration;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
+import mcjty.lib.setup.DeferredBlock;
+import mcjty.lib.setup.DeferredItem;
 import mcjty.lib.varia.SoundTools;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -24,26 +26,28 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.function.Supplier;
+
 import static mcjty.deepresonance.datagen.BlockStates.*;
 import static mcjty.deepresonance.setup.Registration.TILES;
 
 public class GeneratorModule implements IModule {
 
-    public static final RegistryObject<Block> ENERGY_COLLECTOR_BLOCK = Registration.BLOCKS.register("energy_collector", EnergyCollectorBlock::new);
-    public static final RegistryObject<Item> ENERGY_COLLECTOR_ITEM = Registration.fromBlock(ENERGY_COLLECTOR_BLOCK);
-    public static final RegistryObject<BlockEntityType<EnergyCollectorTileEntity>> TYPE_ENERGY_COLLECTOR = TILES.register("energy_collector", () -> BlockEntityType.Builder.of(EnergyCollectorTileEntity::new, ENERGY_COLLECTOR_BLOCK.get()).build(null));
+    public static final DeferredBlock ENERGY_COLLECTOR_BLOCK = Registration.BLOCKS.register("energy_collector", EnergyCollectorBlock::new);
+    public static final DeferredItem<Item> ENERGY_COLLECTOR_ITEM = Registration.fromBlock(ENERGY_COLLECTOR_BLOCK);
+    public static final Supplier<BlockEntityType<EnergyCollectorTileEntity>> TYPE_ENERGY_COLLECTOR = TILES.register("energy_collector", () -> BlockEntityType.Builder.of(EnergyCollectorTileEntity::new, ENERGY_COLLECTOR_BLOCK.get()).build(null));
 
-    public static final RegistryObject<Block> GENERATOR_CONTROLLER_BLOCK = Registration.BLOCKS.register("generator_controller", GeneratorControllerBlock::new);
-    public static final RegistryObject<Item> GENERATOR_CONTROLLER_ITEM = Registration.fromBlock(GENERATOR_CONTROLLER_BLOCK);
-    public static final RegistryObject<BlockEntityType<GeneratorControllerTileEntity>> TYPE_GENERATOR_CONTROLLER = TILES.register("generator_controller", () -> BlockEntityType.Builder.of(GeneratorControllerTileEntity::new, GENERATOR_CONTROLLER_BLOCK.get()).build(null));
+    public static final DeferredBlock GENERATOR_CONTROLLER_BLOCK = Registration.BLOCKS.register("generator_controller", GeneratorControllerBlock::new);
+    public static final DeferredItem<Item> GENERATOR_CONTROLLER_ITEM = Registration.fromBlock(GENERATOR_CONTROLLER_BLOCK);
+    public static final Supplier<BlockEntityType<GeneratorControllerTileEntity>> TYPE_GENERATOR_CONTROLLER = TILES.register("generator_controller", () -> BlockEntityType.Builder.of(GeneratorControllerTileEntity::new, GENERATOR_CONTROLLER_BLOCK.get()).build(null));
 
-    public static final RegistryObject<Block> GENERATOR_PART_BLOCK = Registration.BLOCKS.register("generator_part", GeneratorPartBlock::new);
-    public static final RegistryObject<Item> GENERATOR_PART_ITEM = Registration.fromBlock(GENERATOR_PART_BLOCK);
-    public static final RegistryObject<BlockEntityType<GeneratorPartTileEntity>> TYPE_GENERATOR_PART = TILES.register("generator_part", () -> BlockEntityType.Builder.of(GeneratorPartTileEntity::new, GENERATOR_PART_BLOCK.get()).build(null));
+    public static final DeferredBlock GENERATOR_PART_BLOCK = Registration.BLOCKS.register("generator_part", GeneratorPartBlock::new);
+    public static final DeferredItem<Item> GENERATOR_PART_ITEM = Registration.fromBlock(GENERATOR_PART_BLOCK);
+    public static final Supplier<BlockEntityType<GeneratorPartTileEntity>> TYPE_GENERATOR_PART = TILES.register("generator_part", () -> BlockEntityType.Builder.of(GeneratorPartTileEntity::new, GENERATOR_PART_BLOCK.get()).build(null));
 
-    public static final RegistryObject<SoundEvent> STARTUP_SOUND = Registration.SOUNDS.register("engine_start", () -> SoundTools.createSoundEvent(new ResourceLocation(DeepResonance.MODID, "engine_start")));
-    public static final RegistryObject<SoundEvent> LOOP_SOUND = Registration.SOUNDS.register("engine_loop", () -> SoundTools.createSoundEvent(new ResourceLocation(DeepResonance.MODID, "engine_loop")));
-    public static final RegistryObject<SoundEvent> SHUTDOWN_SOUND = Registration.SOUNDS.register("engine_shutdown", () -> SoundTools.createSoundEvent(new ResourceLocation(DeepResonance.MODID, "engine_shutdown")));
+    public static final Supplier<SoundEvent> STARTUP_SOUND = Registration.SOUNDS.register("engine_start", () -> SoundTools.createSoundEvent(new ResourceLocation(DeepResonance.MODID, "engine_start")));
+    public static final Supplier<SoundEvent> LOOP_SOUND = Registration.SOUNDS.register("engine_loop", () -> SoundTools.createSoundEvent(new ResourceLocation(DeepResonance.MODID, "engine_loop")));
+    public static final Supplier<SoundEvent> SHUTDOWN_SOUND = Registration.SOUNDS.register("engine_shutdown", () -> SoundTools.createSoundEvent(new ResourceLocation(DeepResonance.MODID, "engine_shutdown")));
 
     @Override
     public void init(FMLCommonSetupEvent event) {
