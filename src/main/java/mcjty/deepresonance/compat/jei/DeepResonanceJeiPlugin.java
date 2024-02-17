@@ -9,6 +9,7 @@ import mcjty.deepresonance.compat.jei.smelter.SmelterRecipeCategory;
 import mcjty.deepresonance.compat.jei.smelter.SmelterRecipeWrapper;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
+import mcjty.lib.varia.Tools;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -19,7 +20,6 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class DeepResonanceJeiPlugin implements IModPlugin {
     public void registerRecipes(IRecipeRegistration registration) {
         List<LaserRecipeWrapper> recipes = new ArrayList<>();
         InfusionBonusRegistry.getInfusingBonusMap().forEach((id, bonus) -> {
-            recipes.add(new LaserRecipeWrapper(new ItemStack(ForgeRegistries.ITEMS.getValue(id))));
+            recipes.add(new LaserRecipeWrapper(new ItemStack(Tools.getItem(id))));
         });
         registration.addRecipes(LASER_RECIPE, recipes);
         registration.addRecipes(PURIFIER_RECIPE, Collections.singletonList(new PurifierRecipeWrapper()));

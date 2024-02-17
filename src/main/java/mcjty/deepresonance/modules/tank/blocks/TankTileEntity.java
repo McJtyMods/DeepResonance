@@ -13,6 +13,7 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.ComponentFactory;
+import mcjty.lib.varia.Tools;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -34,7 +35,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.text.DecimalFormat;
@@ -157,7 +157,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
             Tag fluidTag = tagCompound.get("fluidC");
             if (StringTag.TYPE.equals(fluidTag.getType())) {
                 // For compatibility
-                Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(fluidTag.getAsString()));
+                Fluid fluid = Tools.getFluid(new ResourceLocation(fluidTag.getAsString()));
                 clientRenderFluid = LiquidCrystalData.fromStack(new FluidStack(fluid, 1));
             } else {
                 FluidStack fluidStack = FluidStack.loadFluidStackFromNBT((CompoundTag) fluidTag);
