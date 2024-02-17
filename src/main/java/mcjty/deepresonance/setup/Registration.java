@@ -17,7 +17,6 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -37,8 +36,7 @@ public class Registration {
 
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, DeepResonance.MODID);
 
-    public static void register() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+    public static void register(IEventBus bus) {
         BLOCKS.register(bus);
         ITEMS.register(bus);
         FLUID_TYPES.register(bus);

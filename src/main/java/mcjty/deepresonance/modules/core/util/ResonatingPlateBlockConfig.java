@@ -5,7 +5,6 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class ResonatingPlateBlockConfig {
 
@@ -15,8 +14,7 @@ public class ResonatingPlateBlockConfig {
     public static ForgeConfigSpec.IntValue RADIATION_RADIUS;
     public static ForgeConfigSpec.IntValue RADIATION_TICKS;
 
-    public static void init() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+    public static void init(IEventBus bus) {
         bus.addListener(ResonatingPlateBlockConfig::onConfigReload);
 
         Config.SERVER_BUILDER.push("plate");
