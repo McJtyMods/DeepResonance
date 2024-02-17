@@ -7,6 +7,7 @@ import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.TagTools;
+import mcjty.lib.varia.Tools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.resources.ResourceLocation;
@@ -22,8 +23,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.*;
 
@@ -235,14 +234,13 @@ public class RadiationTickEvent {
     }
 
     private static void getPotions() {
-        IForgeRegistry<MobEffect> potions = ForgeRegistries.MOB_EFFECTS;
         if (harm == null) {
-            harm = potions.getValue(new ResourceLocation("instant_damage"));
-            hunger = potions.getValue(new ResourceLocation("hunger"));
-            moveSlowdown = potions.getValue(new ResourceLocation("slowness"));
-            weakness = potions.getValue(new ResourceLocation("weakness"));
-            poison = potions.getValue(new ResourceLocation("poison"));
-            wither = potions.getValue(new ResourceLocation("wither"));
+            harm = Tools.getEffect(new ResourceLocation("instant_damage"));
+            hunger = Tools.getEffect(new ResourceLocation("hunger"));
+            moveSlowdown = Tools.getEffect(new ResourceLocation("slowness"));
+            weakness = Tools.getEffect(new ResourceLocation("weakness"));
+            poison = Tools.getEffect(new ResourceLocation("poison"));
+            wither = Tools.getEffect(new ResourceLocation("wither"));
         }
     }
 
