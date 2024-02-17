@@ -7,14 +7,12 @@ import mcjty.deepresonance.modules.pedestal.PedestalModule;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.worldgen.WorldGenModule;
-import mcjty.deepresonance.setup.ClientSetup;
 import mcjty.deepresonance.setup.Config;
 import mcjty.deepresonance.setup.ModSetup;
 import mcjty.deepresonance.setup.Registration;
 import mcjty.deepresonance.util.DeepResonanceTags;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.modules.Modules;
-import mcjty.lib.varia.ClientTools;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -56,7 +54,6 @@ public class DeepResonance {
         bus.addListener(this::onDataGen);
 
         if (dist.isClient()) {
-            ClientTools.onTextureStitch(bus, ClientSetup::onTextureStitch);
             bus.addListener(modules::initClient);
         }
     }
