@@ -3,7 +3,6 @@ package mcjty.deepresonance.modules.machines.client;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.ValveTileEntity;
-import mcjty.deepresonance.setup.DeepResonanceMessages;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
@@ -82,7 +81,7 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
 
         window = new Window(this, toplevel);
 
-        window.bind(DeepResonanceMessages.INSTANCE, "redstone", tileEntity, GenericTileEntity.VALUE_RSMODE.name());
+        window.bind("redstone", tileEntity, GenericTileEntity.VALUE_RSMODE.name());
         window.event("apply", (source, params) -> updateSettings());
     }
 
@@ -184,10 +183,10 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
             //
         }
 
-        setValue(DeepResonanceMessages.INSTANCE, VALUE_MINPURITY, purity / 100.0f);
-        setValue(DeepResonanceMessages.INSTANCE, VALUE_STRENGTH, strength / 100.0f);
-        setValue(DeepResonanceMessages.INSTANCE, VALUE_EFFICIENCY, efficiency / 100.0f);
-        setValue(DeepResonanceMessages.INSTANCE, VALUE_MAXMB, maxMb);
+        setValue(VALUE_MINPURITY, purity / 100.0f);
+        setValue(VALUE_STRENGTH, strength / 100.0f);
+        setValue(VALUE_EFFICIENCY, efficiency / 100.0f);
+        setValue(VALUE_MAXMB, maxMb);
     }
 
     public static void register() {

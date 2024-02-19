@@ -3,7 +3,6 @@ package mcjty.deepresonance.setup;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.radiation.network.PacketGetRadiationLevel;
 import mcjty.deepresonance.modules.radiation.network.PacketReturnRadiation;
-import mcjty.lib.network.PacketHandler;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -15,7 +14,7 @@ import static mcjty.lib.network.PlayPayloadContext.wrap;
 
 public class DeepResonanceMessages {
 
-    public static SimpleChannel INSTANCE;
+    private static SimpleChannel INSTANCE;
 
     private static int packetId = 0;
     private static int id() {
@@ -34,8 +33,6 @@ public class DeepResonanceMessages {
 
         net.registerMessage(id(), PacketGetRadiationLevel.class, PacketGetRadiationLevel::write, PacketGetRadiationLevel::create, wrap(PacketGetRadiationLevel::handle));
         net.registerMessage(id(), PacketReturnRadiation.class, PacketReturnRadiation::write, PacketReturnRadiation::create, wrap(PacketReturnRadiation::handle));
-
-        PacketHandler.registerStandardMessages(id(), net);
     }
 
     public static <T> void sendToPlayer(T packet, Player player) {
