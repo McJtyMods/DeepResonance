@@ -1,12 +1,12 @@
 package mcjty.deepresonance.modules.tank.util;
 
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.lang.ref.WeakReference;
@@ -27,8 +27,8 @@ public class DualTankHook {
     private boolean allowDuplicates;
     private int timeout;
     private int timeCounter;
-    private LazyOptional<IFluidHandler> tank1;
-    private LazyOptional<IFluidHandler> tank2;
+    private IFluidHandler tank1;
+    private IFluidHandler tank2;
 
     /**
      * Allows the 2 tanks to be the same tank (in case of multiblocks)
@@ -49,19 +49,19 @@ public class DualTankHook {
     }
 
     public IFluidHandler getTank1() {
-        return tank1.orElseThrow(NullPointerException::new);
+        return tank1;
     }
 
     public IFluidHandler getTank2() {
-        return tank2.orElseThrow(NullPointerException::new);
+        return tank2;
     }
 
     public boolean tank1Present() {
-        return tank1 != null && tank1.isPresent();
+        return tank1 != null;
     }
 
     public boolean tank2Present() {
-        return tank2 != null && tank2.isPresent();
+        return tank2 != null;
     }
 
     public boolean checkTankContents(Fluid fluid1, Fluid fluid2) {
@@ -75,12 +75,12 @@ public class DualTankHook {
     }
 
     public boolean checkTanks() {
-        BlockEntity tile_ = this.tile.get();
-        if (tile_ == null) {
+        BlockEntity be = this.tile.get();
+        if (be == null) {
             throw new IllegalStateException();
         }
-        Level world = tile_.getLevel();
-        BlockPos pos = tile_.getBlockPos();
+        Level world = be.getLevel();
+        BlockPos pos = be.getBlockPos();
         boolean check = false;
         if (!tank1Present()) {
             if (timeCounter > 0) {
@@ -92,7 +92,7 @@ public class DualTankHook {
             if (tile != null) {
                 LazyOptional<IFluidHandler> f = tile.getCapability(ForgeCapabilities.FLUID_HANDLER, Direction.DOWN);
                 if (f.isPresent()) {
-                    tank1 = f;
+                    tank1 = f.orElse(null);
                     if (!allowDuplicates && tank2Present() && getTank2().equals(getTank1())) {
                         tank1 = null; //Do not circle-inject
                         return false;
@@ -115,7 +115,7 @@ public class DualTankHook {
             if (tile != null) {
                 LazyOptional<IFluidHandler> f = tile.getCapability(ForgeCapabilities.FLUID_HANDLER, Direction.UP);
                 if (f.isPresent()) {
-                    tank2 = f;
+                    tank2 = f.orElse(null);
                     if (!allowDuplicates && tank1Present() && getTank1().equals(getTank2())) {
                         tank2 = null; //Do not circle-inject
                         return false;

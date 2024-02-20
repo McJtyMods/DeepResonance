@@ -331,6 +331,10 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         return DRTankNetwork.getNetwork(level).getDriver();
     }
 
+    public DRTankHandler getInternalFluidHandler() {
+        return intFluidHandler;
+    }
+
     @Nonnull
     private DRTankHandler createFluidHandler() {
         if (intFluidHandler == null) {

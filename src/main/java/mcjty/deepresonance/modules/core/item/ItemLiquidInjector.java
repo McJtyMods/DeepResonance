@@ -1,6 +1,7 @@
 package mcjty.deepresonance.modules.core.item;
 
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
+import mcjty.deepresonance.modules.tank.data.DRTankHandler;
 import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.tooltips.ITooltipSettings;
@@ -16,8 +17,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
@@ -50,9 +49,9 @@ public class ItemLiquidInjector extends Item implements ITooltipSettings {
         Level world = context.getLevel();
         if (!world.isClientSide) {
             BlockEntity tile = world.getBlockEntity(context.getClickedPos());
-            if (tile instanceof TankTileEntity) {
-                LazyOptional<IFluidHandler> fluidHanderCap = tile.getCapability(ForgeCapabilities.FLUID_HANDLER);
-                fluidHanderCap.ifPresent(fluidHander -> fluidHander.fill(LiquidCrystalData.makeLiquidCrystalStack(100, 1.0f, 0.1f, 0.1f, 0.1f), IFluidHandler.FluidAction.EXECUTE));
+            if (tile instanceof TankTileEntity tank) {
+                DRTankHandler fluidHandler = tank.getInternalFluidHandler();
+                fluidHandler.fill(LiquidCrystalData.makeLiquidCrystalStack(100, 1.0f, 0.1f, 0.1f, 0.1f), IFluidHandler.FluidAction.EXECUTE);
             } else if (context.getPlayer() != null) {
                 context.getPlayer().sendSystemMessage(ComponentFactory.translatable("message.deepresonance.no_tank").withStyle(ChatFormatting.YELLOW));
             }
