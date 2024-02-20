@@ -20,7 +20,7 @@ public class ModSetup extends DefaultModSetup {
         MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
         MinecraftForge.EVENT_BUS.register(new RadiationTickEvent());
         MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
-        DeepResonanceMessages.registerMessages("deepresonance");
+        DeepResonanceMessages.registerMessages();
     }
 
     @Override
