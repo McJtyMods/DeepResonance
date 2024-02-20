@@ -37,13 +37,13 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.Optional;
 
 import static mcjty.deepresonance.DeepResonance.SHIFT_MESSAGE;
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
-import static mcjty.lib.builder.TooltipBuilder.*;
+import static mcjty.lib.builder.TooltipBuilder.header;
+import static mcjty.lib.builder.TooltipBuilder.key;
 import static mcjty.lib.container.SlotDefinition.specific;
 
 public class PedestalTileEntity extends TickingTileEntity {
@@ -60,7 +60,7 @@ public class PedestalTileEntity extends TickingTileEntity {
             ).build();
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Pedestal")
+    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Pedestal")
             .containerSupplier(container(PedestalModule.CONTAINER_PEDESTAL, CONTAINER_FACTORY, this))
             .itemHandler(() -> items)
             .setupSync(this));
