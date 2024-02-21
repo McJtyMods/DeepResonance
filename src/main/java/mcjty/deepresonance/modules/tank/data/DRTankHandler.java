@@ -1,5 +1,6 @@
 package mcjty.deepresonance.modules.tank.data;
 
+import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.deepresonance.util.LiquidCrystalData;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
@@ -7,20 +8,15 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
-import java.util.function.Supplier;
 
 import static mcjty.deepresonance.util.Constants.TANK_BUCKETS;
 
 public class DRTankHandler implements IFluidHandler, IFluidTank {
 
-    private final Level level;
-    private final Supplier<Integer> blobIdGetter;
-    private final Supplier<LiquidCrystalData> clientDataGetter;
+    private final TankTileEntity tank;
 
-    public DRTankHandler(Level level, Supplier<Integer> blobIdGetter, Supplier<LiquidCrystalData> clientDataGetter) {
-        this.level = level;
-        this.blobIdGetter = blobIdGetter;
-        this.clientDataGetter = clientDataGetter;
+    public DRTankHandler(TankTileEntity tank) {
+        this.tank = tank;
     }
 
     @Override
@@ -30,10 +26,11 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
 
     @Nonnull
     private LiquidCrystalData getData() {
+        Level level = tank.getLevel();
         if (level == null || level.isClientSide) {
-            return clientDataGetter.get();
+            return tank.getClientLiquidData();
         }
-        TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
+        TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(tank.getMultiblockId());
         if (blob == null) {
             return LiquidCrystalData.EMPTY;
         } else {
@@ -48,11 +45,12 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
     }
 
     @Override
-    public int getTankCapacity(int tank) {
+    public int getTankCapacity(int tankNr) {
+        Level level = tank.getLevel();
         if (level == null || level.isClientSide) {
             return TANK_BUCKETS * 1000;   // @todo not correct for configuration!
         }
-        TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
+        TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(tank.getMultiblockId());
         if (blob != null) {
             return blob.getCapacity();
         } else {
@@ -67,10 +65,11 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
 
     @Override
     public int fill(FluidStack resource, FluidAction action) {
+        Level level = tank.getLevel();
         if (level == null || level.isClientSide) {
             return 0;
         }
-        TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
+        TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(tank.getMultiblockId());
         if (blob != null) {
             int filled = blob.fill(resource, action);
             if (filled > 0 && action.execute()) {
@@ -85,10 +84,11 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
     @Nonnull
     @Override
     public FluidStack drain(FluidStack resource, FluidAction action) {
+        Level level = tank.getLevel();
         if (level == null || level.isClientSide) {
             return FluidStack.EMPTY;
         }
-        TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
+        TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(tank.getMultiblockId());
         if (blob != null) {
             FluidStack drained = blob.drain(resource, action);
             if (!drained.isEmpty() && action.execute()) {
@@ -103,10 +103,11 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
     @Nonnull
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
+        Level level = tank.getLevel();
         if (level == null || level.isClientSide) {
             return FluidStack.EMPTY;
         }
-        TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
+        TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(tank.getMultiblockId());
         if (blob != null) {
             FluidStack drained = blob.drain(maxDrain, action);
             if (!drained.isEmpty() && action.execute()) {
@@ -121,26 +122,29 @@ public class DRTankHandler implements IFluidHandler, IFluidTank {
     @Nonnull
     @Override
     public FluidStack getFluid() {
+        Level level = tank.getLevel();
         if (level == null || level.isClientSide) {
-            return clientDataGetter.get().getFluidStack();
+            return tank.getClientLiquidData().getFluidStack();
         }
         return getData().getFluidStack();
     }
 
     @Override
     public int getFluidAmount() {
+        Level level = tank.getLevel();
         if (level == null || level.isClientSide) {
-            return clientDataGetter.get().getFluidStack().getAmount();
+            return tank.getClientLiquidData().getFluidStack().getAmount();
         }
         return getData().getAmount();
     }
 
     @Override
     public int getCapacity() {
+        Level level = tank.getLevel();
         if (level == null || level.isClientSide) {
             return TANK_BUCKETS * 1000;   // @todo not correct for configuration!
         }
-        TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(blobIdGetter.get());
+        TankBlob blob = DRTankNetwork.getNetwork(level).getBlob(tank.getMultiblockId());
         if (blob != null) {
             return blob.getCapacity();
         } else {

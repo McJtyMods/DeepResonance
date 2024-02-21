@@ -31,7 +31,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -53,18 +52,11 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     // Only used when the tank is broken and needs to be put back later
     private FluidStack preservedFluid = FluidStack.EMPTY;
 
-    private DRTankHandler intFluidHandler = null;
     @Cap(type = CapType.FLUIDS)
-    private final LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(this::createFluidHandler);
+    private final DRTankHandler fluidHandler = createFluidHandler();
 
     public TankTileEntity(BlockPos pos, BlockState state) {
         super(TankModule.TYPE_TANK.get(), pos, state);
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        fluidHandler.invalidate();
     }
 
     public void setClientData(float newHeight, LiquidCrystalData render) {
@@ -266,7 +258,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     @Nonnull
-    private LiquidCrystalData getClientLiquidData() {
+    public LiquidCrystalData getClientLiquidData() {
         return clientRenderFluid;
     }
 
@@ -332,21 +324,18 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     public DRTankHandler getInternalFluidHandler() {
-        return intFluidHandler;
+        return fluidHandler;
     }
 
     @Nonnull
     private DRTankHandler createFluidHandler() {
-        if (intFluidHandler == null) {
-            intFluidHandler = new DRTankHandler(level, this::getMultiblockId, this::getClientLiquidData) {
-                @Override
-                public void onUpdate() {
-                    updateHeightsForClient();
-                    setChanged();
-                    DRTankNetwork.getNetwork(level).save();
-                }
-            };
-        }
-        return intFluidHandler;
+        return new DRTankHandler(this) {
+            @Override
+            public void onUpdate() {
+                updateHeightsForClient();
+                setChanged();
+                DRTankNetwork.getNetwork(level).save();
+            }
+        };
     }
 }
