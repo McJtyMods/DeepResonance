@@ -1,10 +1,10 @@
 package mcjty.deepresonance.modules.core.util;
 
 import mcjty.deepresonance.setup.Config;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.eventbus.api.IEventBus;
+import net.neoforged.neoforge.fml.config.ModConfig;
+import net.neoforged.neoforge.fml.event.config.ModConfigEvent;
 
 public class ResonatingPlateBlockConfig {
 

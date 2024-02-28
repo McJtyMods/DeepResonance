@@ -1,6 +1,6 @@
 package mcjty.deepresonance.api.fluid;
 
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public interface ILiquidCrystalData {
 

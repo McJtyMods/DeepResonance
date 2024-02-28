@@ -7,8 +7,8 @@ import mcjty.lib.varia.Logging;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.eventbus.api.SubscribeEvent;
 
 import java.util.Map;
 

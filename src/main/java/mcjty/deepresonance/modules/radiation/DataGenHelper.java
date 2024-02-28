@@ -1,7 +1,7 @@
 package mcjty.deepresonance.modules.radiation;
 
 import mcjty.lib.datagen.BaseItemModelProvider;
-import net.minecraftforge.client.model.generators.ItemModelBuilder;
+import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 
 import static mcjty.deepresonance.modules.radiation.item.RadiationMonitorItem.RADIATION_PROPERTY;
 

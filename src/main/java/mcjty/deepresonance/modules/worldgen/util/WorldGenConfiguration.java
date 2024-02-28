@@ -2,7 +2,7 @@ package mcjty.deepresonance.modules.worldgen.util;
 
 import com.google.common.collect.Lists;
 import mcjty.deepresonance.setup.Config;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ForgeConfigSpec;
 
 import java.util.List;
 

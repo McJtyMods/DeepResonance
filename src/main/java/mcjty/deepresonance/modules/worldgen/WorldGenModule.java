@@ -4,9 +4,9 @@ import mcjty.deepresonance.modules.worldgen.util.WorldGenConfiguration;
 import mcjty.deepresonance.modules.worldgen.world.ResonantCrystalFeature;
 import mcjty.deepresonance.modules.worldgen.world.ResonantCrystalFeatureConfig;
 import mcjty.lib.modules.IModule;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.eventbus.api.IEventBus;
+import net.neoforged.neoforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import java.util.function.Supplier;
 

@@ -2,7 +2,7 @@ package mcjty.deepresonance.modules.generator.data;
 
 import mcjty.deepresonance.modules.generator.block.GeneratorPartTileEntity;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 public class NetworkEnergyStorage implements IEnergyStorage {
 

@@ -3,9 +3,9 @@ package mcjty.deepresonance.modules.tank.data;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.deepresonance.util.LiquidCrystalData;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.IFluidTank;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
 

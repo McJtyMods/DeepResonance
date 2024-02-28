@@ -4,8 +4,8 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.lib.datagen.BaseBlockStateProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.client.model.generators.ModelBuilder;
+import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
+import net.neoforged.neoforge.client.model.generators.ModelBuilder;
 
 import static mcjty.deepresonance.datagen.BlockStates.*;
 

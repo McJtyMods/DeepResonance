@@ -1,7 +1,7 @@
 package mcjty.deepresonance.modules.machines.util.config;
 
 import mcjty.deepresonance.setup.Config;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ForgeConfigSpec;
 
 public class SmelterConfig {
 

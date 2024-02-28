@@ -1,7 +1,7 @@
 package mcjty.deepresonance.modules.generator.util;
 
 import mcjty.deepresonance.setup.Config;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ForgeConfigSpec;
 
 public class GeneratorConfig {
 
