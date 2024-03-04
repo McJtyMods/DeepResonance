@@ -2,25 +2,25 @@ package mcjty.deepresonance.modules.worldgen.util;
 
 import com.google.common.collect.Lists;
 import mcjty.deepresonance.setup.Config;
-import net.neoforged.neoforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.List;
 
 public class WorldGenConfiguration {
 
-    public static ForgeConfigSpec.BooleanValue RETROGEN;
-    public static ForgeConfigSpec.BooleanValue VERBOSE;
+    public static ModConfigSpec.BooleanValue RETROGEN;
+    public static ModConfigSpec.BooleanValue VERBOSE;
 
-    public static ForgeConfigSpec.BooleanValue NETHER_ORE;
-    public static ForgeConfigSpec.BooleanValue END_ORE;
-    public static ForgeConfigSpec.BooleanValue OTHER_ORE;
-    public static ForgeConfigSpec.ConfigValue<List<? extends String>> ORE_BLACKLIST;
+    public static ModConfigSpec.BooleanValue NETHER_ORE;
+    public static ModConfigSpec.BooleanValue END_ORE;
+    public static ModConfigSpec.BooleanValue OTHER_ORE;
+    public static ModConfigSpec.ConfigValue<List<? extends String>> ORE_BLACKLIST;
 
-    public static ForgeConfigSpec.DoubleValue CRYSTAL_SPAWN_CHANCE;
-    public static ForgeConfigSpec.IntValue CRYSTAL_SPAWN_TRIES;
-    public static ForgeConfigSpec.BooleanValue NETHER_CRYSTALS;
-    public static ForgeConfigSpec.BooleanValue OTHER_CRYSTALS;
-    public static ForgeConfigSpec.ConfigValue<List<? extends String>> CRYSTAL_BLACKLIST;
+    public static ModConfigSpec.DoubleValue CRYSTAL_SPAWN_CHANCE;
+    public static ModConfigSpec.IntValue CRYSTAL_SPAWN_TRIES;
+    public static ModConfigSpec.BooleanValue NETHER_CRYSTALS;
+    public static ModConfigSpec.BooleanValue OTHER_CRYSTALS;
+    public static ModConfigSpec.ConfigValue<List<? extends String>> CRYSTAL_BLACKLIST;
 
     public static void init() {
 

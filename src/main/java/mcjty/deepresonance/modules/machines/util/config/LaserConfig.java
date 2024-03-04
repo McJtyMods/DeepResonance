@@ -1,20 +1,20 @@
 package mcjty.deepresonance.modules.machines.util.config;
 
 import mcjty.deepresonance.setup.Config;
-import net.neoforged.neoforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class LaserConfig {
 
-    public static ForgeConfigSpec.IntValue POWER_PER_TICK_IN;
-    public static ForgeConfigSpec.IntValue POWER_MAXIMUM;
-    public static ForgeConfigSpec.IntValue CRYSTAL_LIQUID_MAXIMUM;
-    public static ForgeConfigSpec.IntValue MIN_CRYSTAL_LIQUID_PER_CRYSTAL;
-    public static ForgeConfigSpec.IntValue MAX_CRYSTAL_LIQUID_PER_CRYSTAL;
+    public static ModConfigSpec.IntValue POWER_PER_TICK_IN;
+    public static ModConfigSpec.IntValue POWER_MAXIMUM;
+    public static ModConfigSpec.IntValue CRYSTAL_LIQUID_MAXIMUM;
+    public static ModConfigSpec.IntValue MIN_CRYSTAL_LIQUID_PER_CRYSTAL;
+    public static ModConfigSpec.IntValue MAX_CRYSTAL_LIQUID_PER_CRYSTAL;
 
-    public static ForgeConfigSpec.IntValue RFUSE_PER_CATALYST;
-    public static ForgeConfigSpec.IntValue TICKS10_PER_CATALYST;
-    public static ForgeConfigSpec.IntValue RCL_PER_CATALYST;
-    public static ForgeConfigSpec.IntValue CRYSTAL_LIQUID_PER_CATALYST;
+    public static ModConfigSpec.IntValue RFUSE_PER_CATALYST;
+    public static ModConfigSpec.IntValue TICKS10_PER_CATALYST;
+    public static ModConfigSpec.IntValue RCL_PER_CATALYST;
+    public static ModConfigSpec.IntValue CRYSTAL_LIQUID_PER_CATALYST;
 
     public static void init() {
         Config.SERVER_BUILDER.push("laser");

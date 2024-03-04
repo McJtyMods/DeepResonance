@@ -1,12 +1,12 @@
 package mcjty.deepresonance.modules.core.util;
 
 import mcjty.deepresonance.setup.Config;
-import net.neoforged.neoforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CrystalConfig {
 
-    public static ForgeConfigSpec.IntValue MAX_POWER_STORED;
-    public static ForgeConfigSpec.IntValue MAX_POWER_TICK;
+    public static ModConfigSpec.IntValue MAX_POWER_STORED;
+    public static ModConfigSpec.IntValue MAX_POWER_TICK;
 
     public static void init() {
         Config.SERVER_BUILDER.push("crystals");

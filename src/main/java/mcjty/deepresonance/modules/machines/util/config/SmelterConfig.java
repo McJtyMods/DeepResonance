@@ -1,16 +1,16 @@
 package mcjty.deepresonance.modules.machines.util.config;
 
 import mcjty.deepresonance.setup.Config;
-import net.neoforged.neoforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class SmelterConfig {
 
-    public static ForgeConfigSpec.IntValue POWER_PER_TICK_IN;
-    public static ForgeConfigSpec.IntValue POWER_PER_ORE_TICK;
-    public static ForgeConfigSpec.IntValue POWER_MAXIMUM;
-    public static ForgeConfigSpec.IntValue PROCESS_TIME;
-    public static ForgeConfigSpec.IntValue LAVA_COST;
-    public static ForgeConfigSpec.IntValue RCL_PER_ORE;
+    public static ModConfigSpec.IntValue POWER_PER_TICK_IN;
+    public static ModConfigSpec.IntValue POWER_PER_ORE_TICK;
+    public static ModConfigSpec.IntValue POWER_MAXIMUM;
+    public static ModConfigSpec.IntValue PROCESS_TIME;
+    public static ModConfigSpec.IntValue LAVA_COST;
+    public static ModConfigSpec.IntValue RCL_PER_ORE;
 
 
     public static void init() {

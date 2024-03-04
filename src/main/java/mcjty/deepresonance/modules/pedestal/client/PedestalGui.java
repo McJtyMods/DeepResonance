@@ -43,7 +43,7 @@ public class PedestalGui extends GenericGuiContainer<PedestalTileEntity, Generic
 
     @Override
     protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int x, int y) {
-        drawWindow(graphics);
+        drawWindow(graphics, xxx, xxx, yyy);
     }
 
     public static void register() {

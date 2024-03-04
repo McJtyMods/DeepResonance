@@ -1,21 +1,21 @@
 package mcjty.deepresonance.modules.generator.util;
 
 import mcjty.deepresonance.setup.Config;
-import net.neoforged.neoforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class GeneratorConfig {
 
-    public static ForgeConfigSpec.IntValue STARTUP_TIME;
-    public static ForgeConfigSpec.IntValue SHUTDOWN_TIME;
+    public static ModConfigSpec.IntValue STARTUP_TIME;
+    public static ModConfigSpec.IntValue SHUTDOWN_TIME;
 
-    public static ForgeConfigSpec.DoubleValue BASE_GENERATOR_VOLUME;
-    public static ForgeConfigSpec.DoubleValue LOOP_VOLUME_FACTOR;
+    public static ModConfigSpec.DoubleValue BASE_GENERATOR_VOLUME;
+    public static ModConfigSpec.DoubleValue LOOP_VOLUME_FACTOR;
 
-    public static ForgeConfigSpec.IntValue POWER_STORAGE_PER_BLOCK;
-    public static ForgeConfigSpec.IntValue POWER_PER_TICKOUT;
+    public static ModConfigSpec.IntValue POWER_STORAGE_PER_BLOCK;
+    public static ModConfigSpec.IntValue POWER_PER_TICKOUT;
 
-    public static ForgeConfigSpec.IntValue MAX_CRYSTALS_PER_BLOCK;
-    public static ForgeConfigSpec.IntValue MAX_POWER_INPUT_PER_BLOCK;
+    public static ModConfigSpec.IntValue MAX_CRYSTALS_PER_BLOCK;
+    public static ModConfigSpec.IntValue MAX_POWER_INPUT_PER_BLOCK;
 
     public static void init() {
         STARTUP_TIME = Config.SERVER_BUILDER.comment("Startup time before the generator is active")

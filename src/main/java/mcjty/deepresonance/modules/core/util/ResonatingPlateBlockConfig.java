@@ -1,18 +1,18 @@
 package mcjty.deepresonance.modules.core.util;
 
 import mcjty.deepresonance.setup.Config;
-import net.neoforged.neoforge.common.ForgeConfigSpec;
-import net.neoforged.neoforge.eventbus.api.IEventBus;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fml.config.ModConfig;
 import net.neoforged.neoforge.fml.event.config.ModConfigEvent;
 
 public class ResonatingPlateBlockConfig {
 
-    private static ForgeConfigSpec.IntValue RADIATION_STRENGTH;
+    private static ModConfigSpec.IntValue RADIATION_STRENGTH;
     private static int radiationStrength;
 
-    public static ForgeConfigSpec.IntValue RADIATION_RADIUS;
-    public static ForgeConfigSpec.IntValue RADIATION_TICKS;
+    public static ModConfigSpec.IntValue RADIATION_RADIUS;
+    public static ModConfigSpec.IntValue RADIATION_TICKS;
 
     public static void init(IEventBus bus) {
         bus.addListener(ResonatingPlateBlockConfig::onConfigReload);

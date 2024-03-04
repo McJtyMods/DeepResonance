@@ -1,15 +1,15 @@
 package mcjty.deepresonance.modules.machines.util.config;
 
 import mcjty.deepresonance.setup.Config;
-import net.neoforged.neoforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CrystallizerConfig {
 
-    public static ForgeConfigSpec.IntValue POWER_PER_TICK_IN;
-    public static ForgeConfigSpec.IntValue POWER_MAXIMUM;
-    public static ForgeConfigSpec.IntValue POWER_PER_TICK;
-    public static ForgeConfigSpec.IntValue RCL_PER_CRYSTAL;
-    public static ForgeConfigSpec.IntValue RCL_PER_TICK;
+    public static ModConfigSpec.IntValue POWER_PER_TICK_IN;
+    public static ModConfigSpec.IntValue POWER_MAXIMUM;
+    public static ModConfigSpec.IntValue POWER_PER_TICK;
+    public static ModConfigSpec.IntValue RCL_PER_CRYSTAL;
+    public static ModConfigSpec.IntValue RCL_PER_TICK;
 
     public static void init() {
         Config.SERVER_BUILDER.push("crystallizer");

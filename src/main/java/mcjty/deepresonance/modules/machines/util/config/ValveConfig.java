@@ -1,12 +1,12 @@
 package mcjty.deepresonance.modules.machines.util.config;
 
 import mcjty.deepresonance.setup.Config;
-import net.neoforged.neoforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ValveConfig {
 
-    public static ForgeConfigSpec.IntValue TICKS_PER_OPERATION;
-    public static ForgeConfigSpec.IntValue RCL_PER_OPERATION;
+    public static ModConfigSpec.IntValue TICKS_PER_OPERATION;
+    public static ModConfigSpec.IntValue RCL_PER_OPERATION;
 
     public static void init() {
         Config.SERVER_BUILDER.push("valve");

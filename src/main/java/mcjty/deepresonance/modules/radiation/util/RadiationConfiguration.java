@@ -1,49 +1,49 @@
 package mcjty.deepresonance.modules.radiation.util;
 
 import mcjty.deepresonance.setup.Config;
-import net.neoforged.neoforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class RadiationConfiguration {
 
-    public static ForgeConfigSpec.DoubleValue MIN_RADIATION_RADIUS;
-    public static ForgeConfigSpec.DoubleValue MAX_RADIATION_RADIUS;
+    public static ModConfigSpec.DoubleValue MIN_RADIATION_RADIUS;
+    public static ModConfigSpec.DoubleValue MAX_RADIATION_RADIUS;
 
-    public static ForgeConfigSpec.DoubleValue MIN_RADIATION_STRENGTH;
-    public static ForgeConfigSpec.DoubleValue MAX_RADIATION_STRENGTH;
+    public static ModConfigSpec.DoubleValue MIN_RADIATION_STRENGTH;
+    public static ModConfigSpec.DoubleValue MAX_RADIATION_STRENGTH;
 
-    public static ForgeConfigSpec.DoubleValue STRENGTH_GROWTH_FACTOR;
-    public static ForgeConfigSpec.DoubleValue STRENGTH_DECREASE_TICK;
+    public static ModConfigSpec.DoubleValue STRENGTH_GROWTH_FACTOR;
+    public static ModConfigSpec.DoubleValue STRENGTH_DECREASE_TICK;
 
-    public static ForgeConfigSpec.DoubleValue RADIATION_DESTRUCTION_EVENT_LEVEL;
-    public static ForgeConfigSpec.DoubleValue RADIATION_DESTRUCTION_EVENT_CHANCE;
+    public static ModConfigSpec.DoubleValue RADIATION_DESTRUCTION_EVENT_LEVEL;
+    public static ModConfigSpec.DoubleValue RADIATION_DESTRUCTION_EVENT_CHANCE;
 
-    public static ForgeConfigSpec.DoubleValue RADIATION_EFFECT_LEVEL_NONE;
-    public static ForgeConfigSpec.DoubleValue RADIATION_EFFECT_LEVEL_0;
-    public static ForgeConfigSpec.DoubleValue RADIATION_EFFECT_LEVEL_1;
-    public static ForgeConfigSpec.DoubleValue RADIATION_EFFECT_LEVEL_2;
-    public static ForgeConfigSpec.DoubleValue RADIATION_EFFECT_LEVEL_3;
-    public static ForgeConfigSpec.DoubleValue RADIATION_EFFECT_LEVEL_4;
-    public static ForgeConfigSpec.DoubleValue RADIATION_EFFECT_LEVEL_5;
+    public static ModConfigSpec.DoubleValue RADIATION_EFFECT_LEVEL_NONE;
+    public static ModConfigSpec.DoubleValue RADIATION_EFFECT_LEVEL_0;
+    public static ModConfigSpec.DoubleValue RADIATION_EFFECT_LEVEL_1;
+    public static ModConfigSpec.DoubleValue RADIATION_EFFECT_LEVEL_2;
+    public static ModConfigSpec.DoubleValue RADIATION_EFFECT_LEVEL_3;
+    public static ModConfigSpec.DoubleValue RADIATION_EFFECT_LEVEL_4;
+    public static ModConfigSpec.DoubleValue RADIATION_EFFECT_LEVEL_5;
 
-    public static ForgeConfigSpec.DoubleValue MAX_RADIATION_METER;
+    public static ModConfigSpec.DoubleValue MAX_RADIATION_METER;
 
-    public static ForgeConfigSpec.IntValue RADIATION_OVERLAY_COLOR;
-    public static ForgeConfigSpec.IntValue RADIATION_OVERLAY_COLOR_NORADIATION;
-    public static ForgeConfigSpec.IntValue RADIATION_OVERLAY_X;
-    public static ForgeConfigSpec.IntValue RADIATION_OVERLAY_Y;
+    public static ModConfigSpec.IntValue RADIATION_OVERLAY_COLOR;
+    public static ModConfigSpec.IntValue RADIATION_OVERLAY_COLOR_NORADIATION;
+    public static ModConfigSpec.IntValue RADIATION_OVERLAY_X;
+    public static ModConfigSpec.IntValue RADIATION_OVERLAY_Y;
 
-    public static ForgeConfigSpec.DoubleValue RADIATION_SHIELD_OBSIDIAN_FACTOR;
-    public static ForgeConfigSpec.DoubleValue RADIATION_SHIELD_DENSE_OBSIDIAN_FACTOR;
-    public static ForgeConfigSpec.DoubleValue RADIATION_SHIELD_DENSE_GLASS_FACTOR;
-    public static ForgeConfigSpec.DoubleValue RADIATION_SHIELD_LEAD_FACTOR;
+    public static ModConfigSpec.DoubleValue RADIATION_SHIELD_OBSIDIAN_FACTOR;
+    public static ModConfigSpec.DoubleValue RADIATION_SHIELD_DENSE_OBSIDIAN_FACTOR;
+    public static ModConfigSpec.DoubleValue RADIATION_SHIELD_DENSE_GLASS_FACTOR;
+    public static ModConfigSpec.DoubleValue RADIATION_SHIELD_LEAD_FACTOR;
 
-    public static ForgeConfigSpec.DoubleValue RADIATION_EXPLOSION_FACTOR;
-    public static ForgeConfigSpec.DoubleValue MINIMUM_EXPLOSION_MULTIPLIER;
-    public static ForgeConfigSpec.DoubleValue MAXIMUM_EXPLOSION_MULTIPLIER;
-    public static ForgeConfigSpec.DoubleValue ABSOLUTE_MAXIMUM_EXPLOSION_MULTIPLIER;
+    public static ModConfigSpec.DoubleValue RADIATION_EXPLOSION_FACTOR;
+    public static ModConfigSpec.DoubleValue MINIMUM_EXPLOSION_MULTIPLIER;
+    public static ModConfigSpec.DoubleValue MAXIMUM_EXPLOSION_MULTIPLIER;
+    public static ModConfigSpec.DoubleValue ABSOLUTE_MAXIMUM_EXPLOSION_MULTIPLIER;
 
 
-    public static final ForgeConfigSpec.DoubleValue[] SUIT_PROTECTION = new ForgeConfigSpec.DoubleValue[4];
+    public static final ModConfigSpec.DoubleValue[] SUIT_PROTECTION = new ModConfigSpec.DoubleValue[4];
 
     public static void init() {
         initExplosionSettings();

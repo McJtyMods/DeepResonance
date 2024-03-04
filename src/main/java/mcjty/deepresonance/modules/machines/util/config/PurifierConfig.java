@@ -1,14 +1,14 @@
 package mcjty.deepresonance.modules.machines.util.config;
 
 import mcjty.deepresonance.setup.Config;
-import net.neoforged.neoforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class PurifierConfig {
 
-    public static ForgeConfigSpec.IntValue TICKS_PER_PURIFY;
-    public static ForgeConfigSpec.IntValue RCL_PER_PURIFY;
-    public static ForgeConfigSpec.IntValue ADDED_PURITY;
-    public static ForgeConfigSpec.IntValue MAX_PURITY;
+    public static ModConfigSpec.IntValue TICKS_PER_PURIFY;
+    public static ModConfigSpec.IntValue RCL_PER_PURIFY;
+    public static ModConfigSpec.IntValue ADDED_PURITY;
+    public static ModConfigSpec.IntValue MAX_PURITY;
 
     public static void init() {
         Config.SERVER_BUILDER.push("purifier");
