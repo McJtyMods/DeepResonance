@@ -3,8 +3,6 @@ package mcjty.deepresonance.setup;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.radiation.network.PacketGetRadiationLevel;
 import mcjty.deepresonance.modules.radiation.network.PacketReturnRadiation;
-import mcjty.lib.network.CustomPacketPayload;
-import mcjty.lib.network.IPayloadRegistrar;
 import mcjty.lib.network.Networking;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;

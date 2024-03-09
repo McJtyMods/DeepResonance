@@ -3,8 +3,6 @@ package mcjty.deepresonance.modules.radiation.network;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.radiation.item.RadiationMonitorItem;
 import mcjty.deepresonance.setup.DeepResonanceMessages;
-import mcjty.lib.network.CustomPacketPayload;
-import mcjty.lib.network.PlayPayloadContext;
 import mcjty.lib.varia.LevelTools;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.FriendlyByteBuf;
