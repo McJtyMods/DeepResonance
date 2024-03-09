@@ -2,9 +2,7 @@ package mcjty.deepresonance.setup;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.lib.setup.DeferredBlock;
 import mcjty.lib.setup.DeferredBlocks;
-import mcjty.lib.setup.DeferredItem;
 import mcjty.lib.setup.DeferredItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;

@@ -8,8 +8,8 @@ import mcjty.lib.setup.DefaultModSetup;
 import mcjty.lib.varia.Logging;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.fml.InterModComms;
-import net.neoforged.neoforge.fml.ModList;
+import net.neoforged.fml.InterModComms;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class ModSetup extends DefaultModSetup {
