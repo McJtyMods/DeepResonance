@@ -9,7 +9,7 @@ import mcjty.deepresonance.modules.machines.util.config.PurifierConfig;
 import mcjty.deepresonance.modules.machines.util.config.SmelterConfig;
 import mcjty.lib.varia.ComponentFactory;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -36,13 +36,13 @@ public class PurifierRecipeCategory implements IRecipeCategory<PurifierRecipeWra
     private final IDrawable arrow;
     private final IDrawable icon;
 
-    public static final ResourceLocation ID = new ResourceLocation(DeepResonance.MODID, "purifier");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "purifier");
 
     public PurifierRecipeCategory(IGuiHelper guiHelper) {
         this.guiHelper = guiHelper;
         slot = guiHelper.getSlotDrawable();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(MachinesModule.PURIFIER_BLOCK.get()));
-        arrow = guiHelper.createDrawable(new ResourceLocation(DeepResonance.MODID, "textures/gui/guielements.png"),
+        arrow = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/guielements.png"),
                 144, 0, 16, 16);
         background = guiHelper.createBlankDrawable(120, 80);
     }
@@ -86,14 +86,14 @@ public class PurifierRecipeCategory implements IRecipeCategory<PurifierRecipeWra
                 List.of(new ItemStack(CoreModule.SPENT_FILTER_ITEM.get())));
         builder.addSlot(RecipeIngredientRole.INPUT, 15, 35)
                 .setFluidRenderer(PurifierConfig.RCL_PER_PURIFY.get(), true, 30, 30)
-                .addIngredients(ForgeTypes.FLUID_STACK,
+                .addIngredients(NeoForgeTypes.FLUID_STACK,
                         List.of(new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), SmelterConfig.RCL_PER_ORE.get())))
                 .addTooltipCallback((view, tooltip) -> {
                     tooltip.add(ComponentFactory.literal("Purity: X").withStyle(ChatFormatting.GREEN));
                 });
         builder.addSlot(RecipeIngredientRole.OUTPUT, 75, 35)
                 .setFluidRenderer(PurifierConfig.RCL_PER_PURIFY.get(), true, 30, 30)
-                .addIngredients(ForgeTypes.FLUID_STACK,
+                .addIngredients(NeoForgeTypes.FLUID_STACK,
                         List.of(new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), SmelterConfig.RCL_PER_ORE.get())))
                 .addTooltipCallback((view, tooltip) -> {
                     tooltip.add(ComponentFactory.literal("Purity: X + 25%").withStyle(ChatFormatting.GREEN));

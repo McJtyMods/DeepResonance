@@ -26,6 +26,8 @@ import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtension
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
@@ -192,7 +194,7 @@ public class CoreModule implements IModule {
                 Dob.itemBuilder(SPENT_FILTER_ITEM)
                         .generatedItem("item/spent_filter_material"),
                 Dob.itemBuilder(MACHINE_FRAME_ITEM)
-                        .cubeAll(new ResourceLocation(DeepResonance.MODID, "block/machine_side"))
+                        .cubeAll(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/machine_side"))
                         .shaped(builder -> builder
                                         .define('g', Tags.Items.STONE)
                                         .define('P', RESONATING_PLATE_ITEM.get())

@@ -14,12 +14,11 @@ import mcjty.deepresonance.util.DeepResonanceTags;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.modules.Modules;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.api.distmarker.Dist;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.fml.common.Mod;
-import net.neoforged.neoforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.neoforged.neoforge.fml.loading.FMLEnvironment;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
 
 import java.util.function.Supplier;
 
@@ -35,10 +34,7 @@ public class DeepResonance {
 
     private final Modules modules = new Modules();
 
-    public DeepResonance() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        Dist dist = FMLEnvironment.dist;
-
+    public DeepResonance(ModContainer mod, IEventBus bus, Dist dist) {
         instance = this;
         setup = new ModSetup();
 
@@ -46,7 +42,7 @@ public class DeepResonance {
 
         setupModules();
 
-        Config.register(bus, modules);
+        Config.register(mod, bus, modules);
         Registration.register(bus);
 
         bus.addListener(setup::init);
@@ -64,7 +60,7 @@ public class DeepResonance {
 
     private void onDataGen(GatherDataEvent event) {
         DataGen datagen = new DataGen(MODID, event);
-        modules.datagen(datagen);
+        modules.datagen(datagen, event.getLookupProvider());
         datagen.generate();
     }
 

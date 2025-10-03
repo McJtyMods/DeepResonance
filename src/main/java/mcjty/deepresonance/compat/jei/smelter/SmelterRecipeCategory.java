@@ -8,7 +8,7 @@ import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.util.config.SmelterConfig;
 import mcjty.lib.varia.ComponentFactory;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -37,13 +37,13 @@ public class SmelterRecipeCategory implements IRecipeCategory<SmelterRecipeWrapp
     private final IDrawable icon;
     private final IDrawable background;
 
-    public static final ResourceLocation ID = new ResourceLocation(DeepResonance.MODID, "smelter");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "smelter");
 
     public SmelterRecipeCategory(IGuiHelper guiHelper) {
         this.guiHelper = guiHelper;
         slot = guiHelper.getSlotDrawable();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(MachinesModule.SMELTER_BLOCK.get()));
-        arrow = guiHelper.createDrawable(new ResourceLocation(DeepResonance.MODID, "textures/gui/guielements.png"),
+        arrow = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/guielements.png"),
                 144, 0, 16, 16);
         background = guiHelper.createBlankDrawable(120, 60);
     }
@@ -90,7 +90,7 @@ public class SmelterRecipeCategory implements IRecipeCategory<SmelterRecipeWrapp
                                 new ItemStack(CoreModule.RESONATING_ORE_STONE_BLOCK.get())));
         builder.addSlot(RecipeIngredientRole.OUTPUT, 70, 25)
                 .setFluidRenderer(SmelterConfig.RCL_PER_ORE.get(), true, 30, 30)
-                .addIngredients(ForgeTypes.FLUID_STACK,
+                .addIngredients(NeoForgeTypes.FLUID_STACK,
                         List.of(new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), SmelterConfig.RCL_PER_ORE.get())))
                 .addTooltipCallback((view, tooltip) -> {
                     tooltip.add(ComponentFactory.literal("Purity: 10%").withStyle(ChatFormatting.GREEN));

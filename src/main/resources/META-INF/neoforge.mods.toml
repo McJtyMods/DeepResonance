@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[47,)"
+loaderVersion="[2,)"
 license="MIT License https://github.com/McJtyMods/DeepResonance/blob/1.18/LICENCE"
 issueTrackerURL="https://github.com/McJtyMods/DeepResonance/issues"
 displayURL="https://github.com/McJtyMods/DeepResonance"
@@ -12,20 +12,20 @@ displayName="DeepResonance"
 description="Power generation based on resonating crystals."
 
 [[dependencies.deepresonance]]
-    modId="forge"
-    mandatory=true
-    versionRange="[39.0.0,)"
+    modId="neoforge"
+    type="required"
+    versionRange="[21.0,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.deepresonance]]
     modId="mcjtylib"
     mandatory=true
-    versionRange="[1.20-8.0.0,)"
+    versionRange="[1.21-9.0.9,)"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.deepresonance]]
     modId="rftoolsbase"
     mandatory=true
-    versionRange="[1.20-5.0.0,)"
+    versionRange="[1.21-6.0.8,)"
     ordering="AFTER"
     side="BOTH"
