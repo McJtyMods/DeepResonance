@@ -5,6 +5,7 @@ import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.tank.data.DRTankHandler;
 import mcjty.deepresonance.modules.tank.data.DRTankNetwork;
 import mcjty.deepresonance.modules.tank.data.TankBlob;
+import mcjty.deepresonance.util.ItemDataHelper;
 import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
@@ -16,6 +17,7 @@ import mcjty.lib.varia.ComponentFactory;
 import mcjty.lib.varia.Tools;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
@@ -96,63 +98,52 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
+        super.saveAdditional(tagCompound, provider);
         tagCompound.putInt("blobid", blobId);
-        saveClientDataToNBT(tagCompound);
-        super.saveAdditional(tagCompound);
-    }
-
-    @Override
-    protected void saveInfo(CompoundTag tagCompound) {
-        super.saveInfo(tagCompound);
-        CompoundTag tag = new CompoundTag();
-        preservedFluid.writeToNBT(tag);
-        getOrCreateInfo(tagCompound).put("preserved", tag);
-    }
-
-    @Override
-    public void load(CompoundTag tagCompound) {
-        if (tagCompound.contains("blobid")) {
-            blobId = tagCompound.getInt("blobid");
-        } else {
-            blobId = -1;
+        saveClientDataToNBT(tagCompound, provider);
+        if (!preservedFluid.isEmpty()) {
+            ItemDataHelper.getOrCreateInfo(tagCompound).put("preserved", (CompoundTag) preservedFluid.saveOptional(provider));
         }
-        loadClientDataFromNBT(tagCompound);
-        super.load(tagCompound);
     }
 
     @Override
-    protected void loadInfo(CompoundTag tagCompound) {
-        super.loadInfo(tagCompound);
-        CompoundTag info = tagCompound.getCompound("Info");
-        if (info.contains("preserved")) {
-            preservedFluid = FluidStack.loadFluidStackFromNBT(info.getCompound("preserved"));
+    public void loadAdditional(CompoundTag tagCompound, HolderLookup.Provider provider) {
+        super.loadAdditional(tagCompound, provider);
+        blobId = tagCompound.contains("blobid") ? tagCompound.getInt("blobid") : -1;
+        loadClientDataFromNBT(tagCompound, provider);
+        if (tagCompound.contains("Info")) {
+            CompoundTag info = tagCompound.getCompound("Info");
+            if (info.contains("preserved")) {
+                preservedFluid = FluidStack.parseOptional(provider, info.getCompound("preserved"));
+            } else {
+                preservedFluid = FluidStack.EMPTY;
+            }
         } else {
             preservedFluid = FluidStack.EMPTY;
         }
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundTag tagCompound) {
+    public void saveClientDataToNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
         tagCompound.putFloat("renderC", renderHeight);
         if (!clientRenderFluid.isEmpty()) {
-            CompoundTag tag = new CompoundTag();
-            clientRenderFluid.getFluidStack().writeToNBT(tag);
+            CompoundTag tag = (CompoundTag) clientRenderFluid.getFluidStack().saveOptional(provider);
             tagCompound.put("fluidC", tag);
         }
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundTag tagCompound) {
+    public void loadClientDataFromNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
         renderHeight = tagCompound.getFloat("renderC");
         if (tagCompound.contains("fluidC")) {
             Tag fluidTag = tagCompound.get("fluidC");
             if (StringTag.TYPE.equals(fluidTag.getType())) {
                 // For compatibility
-                Fluid fluid = Tools.getFluid(new ResourceLocation(fluidTag.getAsString()));
+                Fluid fluid = Tools.getFluid(ResourceLocation.parse(fluidTag.getAsString()));
                 clientRenderFluid = LiquidCrystalData.fromStack(new FluidStack(fluid, 1));
             } else {
-                FluidStack fluidStack = FluidStack.loadFluidStackFromNBT((CompoundTag) fluidTag);
+                FluidStack fluidStack = FluidStack.parseOptional(provider, (CompoundTag) fluidTag);
                 clientRenderFluid = LiquidCrystalData.fromStack(fluidStack);
             }
         } else {
@@ -200,12 +191,11 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
             addBlockToNetwork();
             TankBlob network = getBlob();
             if (network != null) {
-                CompoundTag tag = stack.getTag();
-                if (tag != null) {
+                CompoundTag infoTag = ItemDataHelper.getInfoTag(stack);
+                if (infoTag != null && infoTag.contains("preserved")) {
                     getDriver().modify(getMultiblockId(), holder -> {
-                        CompoundTag infoTag = tag.getCompound("BlockEntityTag").getCompound("Info");
-                        if (infoTag.contains("preserved")) {
-                            FluidStack fluidStack = FluidStack.loadFluidStackFromNBT(infoTag.getCompound("preserved"));
+                        FluidStack fluidStack = FluidStack.parseOptional(world.registryAccess(), infoTag.getCompound("preserved"));
+                        if (!fluidStack.isEmpty()) {
                             holder.getMb().fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
                             updateHeightsForClient();
                         }

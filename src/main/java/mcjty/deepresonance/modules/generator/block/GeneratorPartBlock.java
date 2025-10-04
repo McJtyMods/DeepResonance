@@ -4,12 +4,11 @@ import mcjty.deepresonance.compat.DeepResonanceTOPDriver;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
-import mcjty.lib.varia.NBTTools;
+import mcjty.deepresonance.util.ItemDataHelper;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.core.Direction;
@@ -33,7 +32,7 @@ public class GeneratorPartBlock extends BaseBlock {
     }
 
     private static String getPowerString(ItemStack stack) {
-        return NBTTools.getInfoNBT(stack, CompoundTag::getInt, "preserved", 0) + "FE";
+        return ItemDataHelper.getInfoInt(stack, "preserved", 0) + "FE";
     }
 
     @Override

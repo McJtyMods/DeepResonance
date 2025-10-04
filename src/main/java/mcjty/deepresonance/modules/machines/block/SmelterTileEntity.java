@@ -21,6 +21,7 @@ import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.TagTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.ItemStack;
@@ -185,19 +186,17 @@ public class SmelterTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
+        super.saveAdditional(tagCompound, provider);
         tagCompound.putInt("processTime", processTime);
         tagCompound.putInt("processTimeLeft", processTimeLeft);
         tagCompound.putFloat("finalQuality", finalQuality);
         tagCompound.putFloat("finalPurity", finalPurity);
-
-        super.saveAdditional(tagCompound);
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-
+    public void loadAdditional(CompoundTag tagCompound, HolderLookup.Provider provider) {
+        super.loadAdditional(tagCompound, provider);
         processTime = (short) tagCompound.getInt("processTime");
         processTimeLeft = (short) tagCompound.getInt("processTimeLeft");
         finalQuality = tagCompound.getFloat("finalQuality");

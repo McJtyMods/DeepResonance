@@ -24,7 +24,7 @@ public class CrystallizerGui extends GenericGuiContainer<CrystallizerTileEntity,
     public static final int CRYSTALIZER_WIDTH = 180;
     public static final int CRYSTALIZER_HEIGHT = 152;
 
-    private static final ResourceLocation GUI = new ResourceLocation(DeepResonance.MODID, "textures/gui/crystallizer.png");
+    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/crystallizer.png");
 
     private EnergyBar energyBar;
     private Label percentage;

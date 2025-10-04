@@ -12,6 +12,7 @@ import mcjty.lib.varia.Broadcaster;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -259,30 +260,30 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
+        super.saveAdditional(tagCompound, provider);
         tagCompound.putInt("startup", startup);
         tagCompound.putInt("shutdown", shutdown);
         tagCompound.putBoolean("active", active);
         tagCompound.putInt("playingSound", clientSound.ordinal());
-        super.saveAdditional(tagCompound);
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
+    public void loadAdditional(CompoundTag tagCompound, HolderLookup.Provider provider) {
+        super.loadAdditional(tagCompound, provider);
         startup = tagCompound.getInt("startup");
         shutdown = tagCompound.getInt("shutdown");
         active = tagCompound.getBoolean("active");
         clientSound = PlayingSound.values()[tagCompound.getInt("playingSound")];
-        super.load(tagCompound);
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundTag tagCompound) {
+    public void saveClientDataToNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
         tagCompound.putInt("playingSound", clientSound.ordinal());
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundTag tagCompound) {
+    public void loadClientDataFromNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
         clientSound = PlayingSound.values()[tagCompound.getInt("playingSound")];
     }
 }

@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class RadiationMonitorItem extends Item {
 
-    public static final ResourceLocation RADIATION_PROPERTY = new ResourceLocation(DeepResonance.MODID, "radiation");
+    public static final ResourceLocation RADIATION_PROPERTY = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "radiation");
 
     private static long lastTime = 0;
     public static float radiationStrength = 0.0f;
@@ -90,7 +90,7 @@ public class RadiationMonitorItem extends Item {
 
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> list, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> list, TooltipFlag flag) {
         fetchRadiation(SafeClientTools.getClientPlayer());
         if (radiationStrength <= 0.0f) {
             list.add(ComponentFactory.literal("No radiation detected").withStyle(ChatFormatting.GREEN));

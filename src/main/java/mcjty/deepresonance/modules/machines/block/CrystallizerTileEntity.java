@@ -4,6 +4,7 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.util.config.CrystallizerConfig;
+import mcjty.deepresonance.util.ItemDataHelper;
 import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.BaseBlock;
@@ -18,6 +19,7 @@ import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.TickingTileEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -168,28 +170,21 @@ public class CrystallizerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    protected void saveInfo(CompoundTag tagCompound) {
-        super.saveInfo(tagCompound);
-        CompoundTag info = getOrCreateInfo(tagCompound);
-        if (crystalData != null) {
-            CompoundTag tag = new CompoundTag();
-            crystalData.getFluidStack().writeToNBT(tag);
-            info.put("crystalData", tag);
-        }
-        info.putInt("progress", progress);
+    public void loadClientDataFromNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
+        progress = tagCompound.getInt("progress");
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundTag tagCompound) {
+    public void saveClientDataToNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
         tagCompound.putInt("progress", progress);
     }
 
     @Override
-    public void loadInfo(CompoundTag tagCompound) {
-        super.loadInfo(tagCompound);
+    public void loadAdditional(CompoundTag tagCompound, HolderLookup.Provider provider) {
+        super.loadAdditional(tagCompound, provider);
         CompoundTag info = tagCompound.getCompound("Info");
         if (info.contains("crystalData")) {
-            crystalData = LiquidCrystalData.fromStack(FluidStack.loadFluidStackFromNBT(info.getCompound("crystalData")));
+            crystalData = LiquidCrystalData.fromStack(FluidStack.parseOptional(provider, info.getCompound("crystalData")));
         } else {
             crystalData = null;
         }
@@ -197,8 +192,13 @@ public class CrystallizerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundTag tagCompound) {
-        progress = tagCompound.getInt("progress");
+    public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
+        super.saveAdditional(tagCompound, provider);
+        CompoundTag info = ItemDataHelper.getOrCreateInfo(tagCompound);
+        if (crystalData != null) {
+            info.put("crystalData", (CompoundTag) crystalData.getFluidStack().saveOptional(provider));
+        }
+        info.putInt("progress", progress);
     }
 
     private static int getRclPerCrystal() {

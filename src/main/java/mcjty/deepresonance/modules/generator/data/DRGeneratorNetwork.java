@@ -4,6 +4,7 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.worlddata.AbstractWorldData;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -14,7 +15,7 @@ import javax.annotation.Nonnull;
 public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
 
     private static final String GENERATOR_NETWORK_NAME = "DRGeneratorNetwork";
-    public static final ResourceLocation GENERATOR_NETWORK_ID = new ResourceLocation(DeepResonance.MODID, "generator");
+    public static final ResourceLocation GENERATOR_NETWORK_ID = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "generator");
 
     private final MultiblockDriver<GeneratorBlob> driver = MultiblockDriver.<GeneratorBlob>builder()
             .loader(GeneratorBlob::load)
@@ -77,7 +78,7 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
 
     @Nonnull
     @Override
-    public CompoundTag save(@Nonnull CompoundTag tagCompound) {
+    public CompoundTag save(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
         return driver.save(tagCompound);
     }
 

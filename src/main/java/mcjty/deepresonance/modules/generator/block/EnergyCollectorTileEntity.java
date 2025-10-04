@@ -15,6 +15,7 @@ import mcjty.lib.varia.Logging;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
@@ -328,25 +329,21 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
 
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        saveClientDataToNBT(tagCompound);
+    public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
+        super.saveAdditional(tagCompound, provider);
+        saveClientDataToNBT(tagCompound, provider);
         tagCompound.putInt("networkId", blobId);
-        super.saveAdditional(tagCompound);
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        loadClientDataFromNBT(tagCompound);
-        if (tagCompound.contains("networkId")) {
-            blobId = tagCompound.getInt("networkId");
-        } else {
-            blobId = -1;
-        }
+    public void loadAdditional(CompoundTag tagCompound, HolderLookup.Provider provider) {
+        super.loadAdditional(tagCompound, provider);
+        loadClientDataFromNBT(tagCompound, provider);
+        blobId = tagCompound.contains("networkId") ? tagCompound.getInt("networkId") : -1;
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundTag tagCompound) {
+    public void loadClientDataFromNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
         lasersActive = tagCompound.getBoolean("lasersActive");
         laserStartup = tagCompound.getInt("laserStartup");
         byte[] crystalX = tagCompound.getByteArray("crystalsX");
@@ -359,7 +356,7 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundTag tagCompound) {
+    public void saveClientDataToNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
         byte[] crystalX = new byte[crystals.size()];
         byte[] crystalY = new byte[crystals.size()];
         byte[] crystalZ = new byte[crystals.size()];

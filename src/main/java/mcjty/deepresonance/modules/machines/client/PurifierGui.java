@@ -19,7 +19,7 @@ public class PurifierGui extends GenericGuiContainer<PurifierTileEntity, Generic
     public static final int PURIFIER_WIDTH = 180;
     public static final int PURIFIER_HEIGHT = 152;
 
-    private static final ResourceLocation GUI = new ResourceLocation(DeepResonance.MODID, "textures/gui/purifier.png");
+    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/purifier.png");
 
     public PurifierGui(PurifierTileEntity tileEntity, GenericContainer container, Inventory inventory) {
         super(tileEntity, container, inventory, ManualEntry.EMPTY);

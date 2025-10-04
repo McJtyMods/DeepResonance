@@ -36,7 +36,7 @@ public class DeepResonanceJeiPlugin implements IModPlugin {
     @Nonnull
     @Override
     public ResourceLocation getPluginUid() {
-        return new ResourceLocation(DeepResonance.MODID, "jeiplugin");
+        return ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "jeiplugin");
     }
 
     @Override

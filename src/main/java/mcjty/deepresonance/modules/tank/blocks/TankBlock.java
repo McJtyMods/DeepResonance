@@ -3,20 +3,26 @@ package mcjty.deepresonance.modules.tank.blocks;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.compat.DeepResonanceTOPDriver;
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.tank.TankModule;
+import mcjty.deepresonance.util.ItemDataHelper;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.HitResult;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
@@ -24,6 +30,8 @@ import static mcjty.lib.builder.TooltipBuilder.*;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class TankBlock extends BaseBlock {
+
+    private static final HolderLookup.Provider BUILTIN_PROVIDER = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).freeze();
 
     public TankBlock() {
         super(new BlockBuilder()
@@ -35,19 +43,16 @@ public class TankBlock extends BaseBlock {
     }
 
     private static String getLiquid(ItemStack itemStack) {
-        CompoundTag tag = itemStack.getTag();
-        if (tag == null) {
+        CompoundTag infoTag = ItemDataHelper.getInfoTag(itemStack);
+        if (infoTag == null || !infoTag.contains("preserved")) {
             return "";
         }
-        CompoundTag infoTag = tag.getCompound("BlockEntityTag").getCompound("Info");
-        if (infoTag.contains("preserved")) {
-            FluidStack fluidStack = FluidStack.loadFluidStackFromNBT(infoTag.getCompound("preserved"));
-            if (!fluidStack.isEmpty()) {
-                String name = I18n.get(fluidStack.getTranslationKey());
-                return name + " (" + fluidStack.getAmount() + "mb)";
-            }
+        FluidStack fluidStack = FluidStack.parseOptional(provider(), infoTag.getCompound("preserved"));
+        if (fluidStack.isEmpty()) {
+            return "";
         }
-        return "";
+        String name = I18n.get(fluidStack.getTranslationKey());
+        return name + " (" + fluidStack.getAmount() + "mb)";
     }
 
     @Override
@@ -60,8 +65,8 @@ public class TankBlock extends BaseBlock {
     public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
         ItemStack ret = new ItemStack(this);
         BlockEntity tile = world.getBlockEntity(pos);
-        if (tile instanceof TankTileEntity) {
-            ret.addTagElement(CoreModule.TILE_DATA_TAG, tile.saveWithoutMetadata());
+        if (tile instanceof TankTileEntity tank) {
+            BlockItem.setBlockEntityData(ret, TankModule.TYPE_TANK.get(), (CompoundTag) tank.saveWithoutMetadata(provider()));
         }
         return ret;
     }
@@ -78,6 +83,10 @@ public class TankBlock extends BaseBlock {
             return tank.getComparatorValue();
         }
         return 0;
+    }
+
+    private static HolderLookup.Provider provider() {
+        return BUILTIN_PROVIDER;
     }
 
 }

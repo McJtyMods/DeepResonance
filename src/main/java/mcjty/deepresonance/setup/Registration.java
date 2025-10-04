@@ -37,6 +37,7 @@ public class Registration {
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, DeepResonance.MODID);
 
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(BuiltInRegistries.FEATURE, DeepResonance.MODID);
+    public static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS = DeferredRegister.create(Registries.ARMOR_MATERIAL, DeepResonance.MODID);
 
     public static void register(IEventBus bus) {
         BLOCKS.register(bus);
@@ -47,6 +48,7 @@ public class Registration {
         TILES.register(bus);
         SOUNDS.register(bus);
         FEATURES.register(bus);
+        ARMOR_MATERIALS.register(bus);
         TABS.register(bus);
     }
 

@@ -5,6 +5,7 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.radiation.manager.DRRadiationManager;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.util.Constants;
+import mcjty.deepresonance.util.ItemDataHelper;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
@@ -13,11 +14,15 @@ import mcjty.lib.varia.ExplosionTools;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
@@ -100,7 +105,8 @@ public class ResonatingCrystalBlock extends BaseBlock {
 
     public ItemStack createStack(ResonatingCrystalTileEntity crystal) {
         ItemStack ret = new ItemStack(this);
-        ret.addTagElement(CoreModule.TILE_DATA_TAG, crystal.saveWithoutMetadata());
+        HolderLookup.Provider provider = crystal.getLevel() != null ? crystal.getLevel().registryAccess() : builtInProvider();
+        BlockItem.setBlockEntityData(ret, CoreModule.TYPE_RESONATING_CRYSTAL.get(), (CompoundTag) crystal.saveWithoutMetadata(provider));
         return ret;
     }
 
@@ -110,11 +116,9 @@ public class ResonatingCrystalBlock extends BaseBlock {
         ResonatingCrystalTileEntity crystal = new ResonatingCrystalTileEntity(BlockPos.ZERO, CoreModule.RESONATING_CRYSTAL_GENERATED.get().defaultBlockState());
         for (int power : new int[]{0, 50}) {
             for (int purity : new int[]{0, 50}) {
-                ItemStack stack = new ItemStack(this);
                 crystal.setPurity(purity);
                 crystal.setPower(power);
-                stack.addTagElement(CoreModule.TILE_DATA_TAG, crystal.saveWithoutMetadata());
-                items.add(stack);
+                items.add(createStack(crystal));
             }
         }
         return items;
@@ -174,17 +178,14 @@ public class ResonatingCrystalBlock extends BaseBlock {
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nullable BlockGetter world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag advanced) {
-        CompoundTag tagCompound = stack.getTag();
-        if (tagCompound != null) {
-            tagCompound = tagCompound.getCompound(CoreModule.TILE_DATA_TAG).getCompound("Info");
-        }
+    public void appendHoverText(@Nonnull ItemStack stack, Item.TooltipContext context, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag advanced) {
+        CompoundTag tagCompound = ItemDataHelper.getInfoTag(stack);
 
-        super.appendHoverText(stack, world, tooltip, advanced);
+        super.appendHoverText(stack, context, tooltip, advanced);
 
         float power = 100.0f;
         if (tagCompound != null) {
-            power = tagCompound.getFloat("power");
+            power = (float) tagCompound.getDouble("power");
         }
         if (power > Constants.CRYSTAL_MIN_POWER) {
             tooltip.add(ComponentFactory.translatable("message.deepresonance.crystal_power"));
@@ -211,5 +212,9 @@ public class ResonatingCrystalBlock extends BaseBlock {
             tooltip.accept(ComponentFactory.literal("Power left: " + decimalFormat.format(power) + "%").withStyle(ChatFormatting.YELLOW));
         }
 
+    }
+
+    private static HolderLookup.Provider builtInProvider() {
+        return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).freeze();
     }
 }

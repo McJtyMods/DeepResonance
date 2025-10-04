@@ -9,9 +9,9 @@ import net.minecraft.world.level.block.Block;
 
 public class DeepResonanceTags {
 
-    public static final TagKey<Block> RESONANT_ORE = TagTools.createBlockTagKey(new ResourceLocation(DeepResonance.MODID, "resonant_ore"));
-    public static final TagKey<Item> RESONANT_ORE_ITEM = TagTools.createItemTagKey(new ResourceLocation(DeepResonance.MODID, "resonant_ore"));
-    public static final TagKey<Block> STORAGE_BLOCKS_LEAD = TagTools.createBlockTagKey(new ResourceLocation("forge", "storage_blocks/lead"));
+    public static final TagKey<Block> RESONANT_ORE = TagTools.createBlockTagKey(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "resonant_ore"));
+    public static final TagKey<Item> RESONANT_ORE_ITEM = TagTools.createItemTagKey(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "resonant_ore"));
+    public static final TagKey<Block> STORAGE_BLOCKS_LEAD = TagTools.createBlockTagKey(ResourceLocation.fromNamespaceAndPath("forge", "storage_blocks/lead"));
 
     public static void init() {
 

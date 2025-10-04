@@ -12,7 +12,7 @@ import static mcjty.deepresonance.datagen.BlockStates.*;
 public class DataGenHelper {
 
     public static BlockModelBuilder createCrystallizerModel(BaseBlockStateProvider provider) {
-        BlockModelBuilder ret = provider.models().cube("crystallizer", DEFAULT_BOTTOM, DEFAULT_TOP, new ResourceLocation(DeepResonance.MODID, "block/crystallizer"), DEFAULT_SIDE, DEFAULT_SIDE, DEFAULT_SIDE);
+        BlockModelBuilder ret = provider.models().cube("crystallizer", DEFAULT_BOTTOM, DEFAULT_TOP, ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/crystallizer"), DEFAULT_SIDE, DEFAULT_SIDE, DEFAULT_SIDE);
         ModelBuilder<BlockModelBuilder>.ElementBuilder elem = ret.element();
         for (Direction direction : Direction.values()) {
             elem = elem.face(direction).cullface(direction).texture("#" + direction.getName()).end();
@@ -29,8 +29,8 @@ public class DataGenHelper {
     }
 
     public static BlockModelBuilder createLaserModel(BaseBlockStateProvider provider) {
-        ResourceLocation laserTxt = new ResourceLocation(DeepResonance.MODID, "block/laser");
-        ResourceLocation laserBackTxt = new ResourceLocation(DeepResonance.MODID, "block/laser_back");
+        ResourceLocation laserTxt = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/laser");
+        ResourceLocation laserBackTxt = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/laser_back");
         return provider.models().cube("laser", DEFAULT_BOTTOM, DEFAULT_TOP, laserTxt, laserBackTxt, laserBackTxt, laserBackTxt)
                 .texture("particle", laserTxt);
     }

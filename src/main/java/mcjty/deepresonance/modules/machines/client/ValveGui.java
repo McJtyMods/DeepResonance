@@ -31,8 +31,8 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
     public static final int VALVE_WIDTH = 180;
     public static final int VALVE_HEIGHT = 152;
 
-    private static final ResourceLocation iconLocation = new ResourceLocation(DeepResonance.MODID, "textures/gui/valve.png");
-    private static final ResourceLocation iconGuiElements = new ResourceLocation(DeepResonance.MODID, "textures/gui/guielements.png");
+    private static final ResourceLocation iconLocation = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/valve.png");
+    private static final ResourceLocation iconGuiElements = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/guielements.png");
 
     private TextField minPurity;
     private TextField minStrength;

@@ -25,7 +25,7 @@ public class DataGenHelper {
             if (state.getValue(BlockStateProperties.POWERED)) {
                 extra += "_on";
             }
-            ResourceLocation id = new ResourceLocation(DeepResonance.MODID, "block/generator_part_side" + extra);
+            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/generator_part_side" + extra);
             return provider.models().cube("generator_part" + extra, DEFAULT_BOTTOM, DEFAULT_TOP, id, id, id, id)
                     .texture("particle", id);
         });

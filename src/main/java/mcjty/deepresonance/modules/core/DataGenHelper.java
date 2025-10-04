@@ -15,7 +15,7 @@ public class DataGenHelper {
 
     public static void generateCrystal(Supplier<? extends Block> blockSupplier, BaseBlockStateProvider provider,
                                        String parentName, String parent, String texture) {
-        ResourceLocation crystal = new ResourceLocation(DeepResonance.MODID, parent);
+        ResourceLocation crystal = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, parent);
 
         ModelFile emptyNatural = provider.models().withExistingParent(parentName, crystal).texture("crystal_texture", "deepresonance:block/" + texture)
                 .texture("particle", "deepresonance:block/" + texture).renderType("translucent");

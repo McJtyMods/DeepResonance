@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
 
     private static final String TANK_NETWORK_NAME = "DRTankNetwork";
-    public static final ResourceLocation TANK_NETWORK_ID = new ResourceLocation(DeepResonance.MODID, "tank");
+    public static final ResourceLocation TANK_NETWORK_ID = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "tank");
 
     private final MultiblockDriver<TankBlob> driver = MultiblockDriver.<TankBlob>builder()
             .loader(TankBlob::load)

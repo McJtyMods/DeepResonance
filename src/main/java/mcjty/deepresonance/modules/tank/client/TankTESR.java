@@ -34,9 +34,9 @@ import java.util.stream.Collectors;
 
 public class TankTESR implements BlockEntityRenderer<TankTileEntity> {
 
-    public static final ResourceLocation TANK_BOTTOM = new ResourceLocation(DeepResonance.MODID, "block/tank_bottom");
-    public static final ResourceLocation TANK_TOP = new ResourceLocation(DeepResonance.MODID, "block/tank_top");
-    public static final ResourceLocation TANK_SIDE = new ResourceLocation(DeepResonance.MODID, "block/tank_side");
+    public static final ResourceLocation TANK_BOTTOM = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/tank_bottom");
+    public static final ResourceLocation TANK_TOP = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/tank_top");
+    public static final ResourceLocation TANK_SIDE = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/tank_side");
 
     public TankTESR(BlockEntityRendererProvider.Context context) {
     }

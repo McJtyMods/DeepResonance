@@ -29,8 +29,8 @@ public class SmelterGui extends GenericGuiContainer<SmelterTileEntity, GenericCo
     private ImageLabel burningImage;
     private Label percentage;
 
-    private static final ResourceLocation iconLocation = new ResourceLocation(DeepResonance.MODID, "textures/gui/smelter.png");
-    private static final ResourceLocation iconBurning = new ResourceLocation(DeepResonance.MODID, "textures/gui/burning.png");
+    private static final ResourceLocation iconLocation = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/smelter.png");
+    private static final ResourceLocation iconBurning = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/burning.png");
 
     public SmelterGui(SmelterTileEntity tile, GenericContainer container, Inventory inventory) {
         super(tile, container, inventory, ManualEntry.EMPTY);

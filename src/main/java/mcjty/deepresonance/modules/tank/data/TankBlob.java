@@ -2,6 +2,9 @@ package mcjty.deepresonance.modules.tank.data;
 
 import mcjty.deepresonance.util.Constants;
 import mcjty.deepresonance.util.LiquidCrystalData;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import mcjty.lib.multiblock.IMultiblock;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.BlockPos;
@@ -194,7 +197,7 @@ public class TankBlob implements IMultiblock {
 
     public static TankBlob load(CompoundTag tagCompound) {
         TankBlob blob = new TankBlob();
-        blob.data = LiquidCrystalData.fromStack(FluidStack.loadFluidStackFromNBT(tagCompound.getCompound("fluid")));
+        blob.data = LiquidCrystalData.fromStack(FluidStack.parseOptional(provider(), tagCompound.getCompound("fluid")));
         blob.setTankBlocks(tagCompound.getInt("refcount"));
         blob.minY = tagCompound.getInt("miny");
         if (tagCompound.contains("blocksperlevel")) {
@@ -207,7 +210,7 @@ public class TankBlob implements IMultiblock {
 
     public static CompoundTag save(CompoundTag tagCompound, TankBlob network) {
         if (!network.data.isEmpty()) {
-            tagCompound.put("fluid", network.data.getFluidStack().writeToNBT(new CompoundTag()));
+            tagCompound.put("fluid", (CompoundTag) network.data.getFluidStack().saveOptional(provider()));
         }
         tagCompound.putInt("refcount", network.tankBlocks);
         tagCompound.putInt("miny", network.minY);
@@ -215,5 +218,9 @@ public class TankBlob implements IMultiblock {
             tagCompound.putIntArray("blocksperlevel", network.blocksPerLevel);
         }
         return tagCompound;
+    }
+
+    private static HolderLookup.Provider provider() {
+        return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).freeze();
     }
 }

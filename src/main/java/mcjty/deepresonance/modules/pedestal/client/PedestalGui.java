@@ -21,7 +21,7 @@ public class PedestalGui extends GenericGuiContainer<PedestalTileEntity, Generic
     public static final int PEDESTAL_WIDTH = 180;
     public static final int PEDESTAL_HEIGHT = 152;
 
-    private static final ResourceLocation iconLocation = new ResourceLocation(DeepResonance.MODID, "textures/gui/pedestal.png");
+    private static final ResourceLocation iconLocation = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/pedestal.png");
 
     public PedestalGui(PedestalTileEntity tileEntity, GenericContainer container, Inventory inventory) {
         super(tileEntity, container, inventory, PedestalModule.PEDESTAL.get().getManualEntry());

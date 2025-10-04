@@ -20,6 +20,7 @@ import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Type;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.Block;
@@ -182,23 +183,19 @@ public class ValveTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
+        super.saveAdditional(tagCompound, provider);
         tagCompound.putInt("progress", progress);
-
         tagCompound.putFloat("minPurity", minPurity);
         tagCompound.putFloat("minStrength", minStrength);
         tagCompound.putFloat("minEfficiency", minEfficiency);
         tagCompound.putInt("maxMb", maxMb);
-
-        super.saveAdditional(tagCompound);
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-
+    public void loadAdditional(CompoundTag tagCompound, HolderLookup.Provider provider) {
+        super.loadAdditional(tagCompound, provider);
         progress = tagCompound.getInt("progress");
-
         minPurity = tagCompound.getFloat("minPurity");
         minStrength = tagCompound.getFloat("minStrength");
         minEfficiency = tagCompound.getFloat("minEfficiency");

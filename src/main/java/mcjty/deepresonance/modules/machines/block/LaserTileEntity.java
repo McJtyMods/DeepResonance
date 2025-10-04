@@ -6,6 +6,7 @@ import mcjty.deepresonance.modules.machines.data.InfusingBonus;
 import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
 import mcjty.deepresonance.modules.machines.util.config.LaserConfig;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
+import mcjty.deepresonance.util.ItemDataHelper;
 import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
@@ -24,6 +25,7 @@ import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.Item;
@@ -272,8 +274,11 @@ public class LaserTileEntity extends TickingTileEntity {
     private void checkCrystal() {
         ItemStack stack = items.getStackInSlot(SLOT_CRYSTAL);
         if (!stack.isEmpty()) {
-            CompoundTag tagCompound = stack.getOrCreateTag().getCompound(CoreModule.TILE_DATA_TAG);
-            float strength = tagCompound.contains("strength") ? tagCompound.getFloat("strength") / 100.0f : 0;
+            CompoundTag tagCompound = ItemDataHelper.getInfoTag(stack);
+            float strength = 0;
+            if (tagCompound != null && tagCompound.contains("strength")) {
+                strength = (float) tagCompound.getDouble("strength") / 100.0f;
+            }
             int toAdd = (int) (LaserConfig.MIN_CRYSTAL_LIQUID_PER_CRYSTAL.get() + strength * (LaserConfig.MAX_CRYSTAL_LIQUID_PER_CRYSTAL.get() - LaserConfig.MIN_CRYSTAL_LIQUID_PER_CRYSTAL.get()));
             float amt = crystalLiquid + toAdd;
             if (amt > LaserConfig.CRYSTAL_LIQUID_MAXIMUM.get()) {
@@ -286,28 +291,19 @@ public class LaserTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        tagCompound.putInt("progress", progressCounter);
-        super.saveAdditional(tagCompound);
-    }
-
-    @Override
-    protected void saveInfo(CompoundTag tagCompound) {
-        super.saveInfo(tagCompound);
-        getOrCreateInfo(tagCompound).putFloat("liquid", crystalLiquid);
-    }
-
-    @Override
-    public void load(CompoundTag tagCompound) {
+    public void loadAdditional(CompoundTag tagCompound, HolderLookup.Provider provider) {
+        super.loadAdditional(tagCompound, provider);
         progressCounter = tagCompound.getInt("progress");
-        super.load(tagCompound);
+        if (tagCompound.contains("Info")) {
+            crystalLiquid = tagCompound.getCompound("Info").getFloat("liquid");
+        }
     }
 
     @Override
-    protected void loadInfo(CompoundTag tagCompound) {
-        super.loadInfo(tagCompound);
-        CompoundTag info = tagCompound.getCompound("Info");
-        crystalLiquid = info.getFloat("liquid");
+    public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
+        super.saveAdditional(tagCompound, provider);
+        tagCompound.putInt("progress", progressCounter);
+        ItemDataHelper.getOrCreateInfo(tagCompound).putFloat("liquid", crystalLiquid);
     }
 
     public int getMaxPower() {

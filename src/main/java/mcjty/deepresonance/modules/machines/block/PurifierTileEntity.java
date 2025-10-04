@@ -21,6 +21,7 @@ import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.ItemStack;
@@ -164,27 +165,23 @@ public class PurifierTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
+        super.saveAdditional(tagCompound, provider);
         tagCompound.putInt("timeToGo", timeToGo);
         if (processing != null) {
-            CompoundTag tag = new CompoundTag();
-            processing.getFluidStack().writeToNBT(tag);
-            tagCompound.put("processing", tag);
+            tagCompound.put("processing", (CompoundTag) processing.getFluidStack().saveOptional(provider));
         }
-
-        super.saveAdditional(tagCompound);
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
+    public void loadAdditional(CompoundTag tagCompound, HolderLookup.Provider provider) {
+        super.loadAdditional(tagCompound, provider);
         timeToGo = tagCompound.getInt("timeToGo");
         if (tagCompound.contains("processing")) {
-            processing = LiquidCrystalData.fromStack(FluidStack.loadFluidStackFromNBT(tagCompound.getCompound("processing")));
+            processing = LiquidCrystalData.fromStack(FluidStack.parseOptional(provider, tagCompound.getCompound("processing")));
         } else {
             processing = null;
         }
-
-        super.load(tagCompound);
     }
 
 }

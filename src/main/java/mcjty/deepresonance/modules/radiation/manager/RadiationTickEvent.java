@@ -10,9 +10,12 @@ import mcjty.lib.varia.TagTools;
 import mcjty.lib.varia.Tools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -21,7 +24,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.IPlantable;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 
 import java.util.*;
@@ -35,22 +38,20 @@ public class RadiationTickEvent {
     private static final int EFFECTS_MAX = 18;
     private int counterEffects = EFFECTS_MAX;
 
-    public static MobEffect harm;
-    public static MobEffect hunger;
-    public static MobEffect moveSlowdown;
-    public static MobEffect weakness;
-    public static MobEffect poison;
-    public static MobEffect wither;
+    public static Holder<MobEffect> harm;
+    public static Holder<MobEffect> hunger;
+    public static Holder<MobEffect> moveSlowdown;
+    public static Holder<MobEffect> weakness;
+    public static Holder<MobEffect> poison;
+    public static Holder<MobEffect> wither;
 
     @SubscribeEvent
-    public void onTick(TickEvent.LevelTickEvent evt) {
-        if (evt.level.isClientSide) {
+    public void onTick(LevelTickEvent.Post evt) {
+        Level level = evt.getLevel();
+        if (level.isClientSide) {
             return;
         }
-        if (evt.phase == TickEvent.Phase.START) {
-            return;
-        }
-        if (!Objects.equals(Level.OVERWORLD, evt.level.dimension())) {
+        if (!Objects.equals(Level.OVERWORLD, level.dimension())) {
             return;
         }
         counter--;
@@ -63,7 +64,7 @@ public class RadiationTickEvent {
                 counterEffects = EFFECTS_MAX;
                 doEffects = true;
             }
-            serverTick(evt.level, doEffects);
+            serverTick(level, doEffects);
         }
     }
 
@@ -207,7 +208,7 @@ public class RadiationTickEvent {
                     currentPos = currentPos.set(x, y, z);
 
                     Block block = world.getBlockState(currentPos).getBlock();
-                    if (TagTools.hasTag(block, BlockTags.DIRT) || block == Blocks.FARMLAND || block == Blocks.GRASS) {
+                    if (TagTools.hasTag(block, BlockTags.DIRT) || block == Blocks.FARMLAND || block == Blocks.GRASS_BLOCK) {
                         if (random.nextFloat() < poisonBlockChance * str) {
                             world.setBlock(currentPos, RadiationModule.POISONED_DIRT_BLOCK.get().defaultBlockState(), Block.UPDATE_NEIGHBORS);
                         }
@@ -235,13 +236,18 @@ public class RadiationTickEvent {
 
     private static void getPotions() {
         if (harm == null) {
-            harm = Tools.getEffect(new ResourceLocation("instant_damage"));
-            hunger = Tools.getEffect(new ResourceLocation("hunger"));
-            moveSlowdown = Tools.getEffect(new ResourceLocation("slowness"));
-            weakness = Tools.getEffect(new ResourceLocation("weakness"));
-            poison = Tools.getEffect(new ResourceLocation("poison"));
-            wither = Tools.getEffect(new ResourceLocation("wither"));
+            harm = getEffect("instant_damage");
+            hunger = getEffect("hunger");
+            moveSlowdown = getEffect("slowness");
+            weakness = getEffect("weakness");
+            poison = getEffect("poison");
+            wither = getEffect("wither");
         }
+    }
+
+    private static Holder<MobEffect> getEffect(String name) {
+        ResourceLocation id = ResourceLocation.parse(name);
+        return BuiltInRegistries.MOB_EFFECT.getHolder(ResourceKey.create(Registries.MOB_EFFECT, id)).orElseThrow(() -> new IllegalStateException("Unknown effect: " + name));
     }
 
     private void handleRadiationEffects(Level world, GlobalPos coordinate, DRRadiationManager.RadiationSource radiationSource) {

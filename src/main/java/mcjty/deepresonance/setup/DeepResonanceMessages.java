@@ -3,28 +3,28 @@ package mcjty.deepresonance.setup;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.radiation.network.PacketGetRadiationLevel;
 import mcjty.deepresonance.modules.radiation.network.PacketReturnRadiation;
-import mcjty.lib.network.Networking;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.NetworkDirection;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class DeepResonanceMessages {
 
-    private static IPayloadRegistrar registrar;
-
-    public static void registerMessages() {
-        registrar = Networking.registrar(DeepResonance.MODID)
+    public static void registerMessages(RegisterPayloadHandlersEvent event) {
+        final PayloadRegistrar registrar = event.registrar(DeepResonance.MODID)
                 .versioned("1.0")
                 .optional();
-        registrar.play(PacketGetRadiationLevel.class, PacketGetRadiationLevel::create, handler -> handler.server(PacketGetRadiationLevel::handle));
-        registrar.play(PacketReturnRadiation.class, PacketReturnRadiation::create, handler -> handler.client(PacketReturnRadiation::handle));
+        registrar.playToServer(PacketGetRadiationLevel.TYPE, PacketGetRadiationLevel.CODEC, PacketGetRadiationLevel::handle);
+        registrar.playToClient(PacketReturnRadiation.TYPE, PacketReturnRadiation.CODEC, PacketReturnRadiation::handle);
     }
 
     public static <T extends CustomPacketPayload> void sendToPlayer(T packet, Player player) {
-        registrar.getChannel().sendTo(packet, ((ServerPlayer)player).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        PacketDistributor.sendToPlayer((ServerPlayer)player, packet);
     }
 
     public static <T extends CustomPacketPayload> void sendToServer(T packet) {
-        registrar.getChannel().sendToServer(packet);
+        PacketDistributor.sendToServer(packet);
     }
 }

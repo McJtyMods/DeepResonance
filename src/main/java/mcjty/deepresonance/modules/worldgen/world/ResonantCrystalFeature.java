@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 
 public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig> {
 
-    public static final ResourceLocation FEATURE_CRYSTAL_ID = new ResourceLocation(DeepResonance.MODID, "resonant_crystal");
+    public static final ResourceLocation FEATURE_CRYSTAL_ID = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "resonant_crystal");
 
     public ResonantCrystalFeature(Codec<ResonantCrystalFeatureConfig> codec) {
         super(codec);

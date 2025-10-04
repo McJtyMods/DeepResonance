@@ -2,10 +2,12 @@ package mcjty.deepresonance.modules.core.block;
 
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.util.CrystalConfig;
+import mcjty.deepresonance.util.ItemDataHelper;
 import mcjty.deepresonance.modules.core.util.CrystalHelper;
 import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
@@ -141,8 +143,19 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     }
 
     @Override
-    protected void loadInfo(CompoundTag tagCompound) {
-        super.loadInfo(tagCompound);
+    public void loadClientDataFromNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
+        glowing = tagCompound.getBoolean("glowing");
+    }
+
+    @Override
+    public void saveClientDataToNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
+        tagCompound.putBoolean("glowing", glowing);
+    }
+
+    @Override
+    public void loadAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
+        super.loadAdditional(tagCompound, provider);
+        glowing = tagCompound.getBoolean("glowing");
         if (tagCompound.contains("Info")) {
             CompoundTag info = tagCompound.getCompound("Info");
             strength = info.getDouble("strength");
@@ -153,35 +166,14 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     }
 
     @Override
-    protected void saveInfo(CompoundTag tagCompound) {
-        super.saveInfo(tagCompound);
-        CompoundTag info = getOrCreateInfo(tagCompound);
+    public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
+        super.saveAdditional(tagCompound, provider);
+        tagCompound.putBoolean("glowing", glowing);
+        CompoundTag info = ItemDataHelper.getOrCreateInfo(tagCompound);
         info.putDouble("strength", strength);
         info.putDouble("power", power);
         info.putDouble("efficiency", efficiency);
         info.putDouble("purity", purity);
-    }
-
-    @Override
-    public void load(@Nonnull CompoundTag tagCompound) {
-        super.load(tagCompound);
-        glowing = tagCompound.getBoolean("glowing");
-    }
-
-    @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        super.saveAdditional(tagCompound);
-        tagCompound.putBoolean("glowing", glowing);
-    }
-
-    @Override
-    public void loadClientDataFromNBT(CompoundTag tagCompound) {
-        glowing = tagCompound.getBoolean("glowing");
-    }
-
-    @Override
-    public void saveClientDataToNBT(CompoundTag tagCompound) {
-        tagCompound.putBoolean("glowing", glowing);
     }
 
     // Special == 0, normal

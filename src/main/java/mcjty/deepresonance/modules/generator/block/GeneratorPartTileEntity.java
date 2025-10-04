@@ -13,10 +13,11 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.EnergyTools;
-import mcjty.lib.varia.NBTTools;
+import mcjty.deepresonance.util.ItemDataHelper;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
@@ -80,27 +81,12 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
             addBlockToNetwork();
             GeneratorBlob network = getBlob();
             if (network != null) {
-                CompoundTag tag = stack.getTag();
-                if (tag != null) {
-                    int energy = NBTTools.getInfoNBT(stack, CompoundTag::getInt, "preserved", 0);
+                int energy = ItemDataHelper.getInfoInt(stack, "preserved", 0);
+                if (energy > 0) {
                     getDriver().modify(getMultiblockId(), holder -> holder.getMb().setEnergy(holder.getMb().getEnergy() + energy));
                 }
             }
         }
-    }
-
-    @Override
-    protected void loadInfo(CompoundTag tagCompound) {
-        super.loadInfo(tagCompound);
-        if (tagCompound.contains("Info")) {
-            preservedEnergy = tagCompound.getCompound("Info").getInt("preserved");
-        }
-    }
-
-    @Override
-    protected void saveInfo(CompoundTag tagCompound) {
-        super.saveInfo(tagCompound);
-        getOrCreateInfo(tagCompound).putInt("preserved", preservedEnergy);
     }
 
     @Override
@@ -203,14 +189,18 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        tagCompound.putInt("networkId", blobId);
-        super.saveAdditional(tagCompound);
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        blobId = tag.getInt("networkId");
+        if (tag.contains("Info")) {
+            preservedEnergy = tag.getCompound("Info").getInt("preserved");
+        }
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        blobId = tagCompound.getInt("networkId");
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        tag.putInt("networkId", blobId);
+        ItemDataHelper.getOrCreateInfo(tag).putInt("preserved", preservedEnergy);
     }
 }

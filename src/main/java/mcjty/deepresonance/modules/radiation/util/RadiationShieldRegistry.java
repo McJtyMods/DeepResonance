@@ -21,7 +21,7 @@ public class RadiationShieldRegistry {
         }
         leadBlocks = Sets.newHashSet();
         Iterable<Holder<Block>> blocks = TagTools.getBlocksForTag(DeepResonanceTags.STORAGE_BLOCKS_LEAD);
-        blocks.forEach(h -> leadBlocks.add(h.get()));
+        blocks.forEach(h -> leadBlocks.add(h.value()));
         return leadBlocks;
     }
 

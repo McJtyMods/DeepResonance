@@ -31,7 +31,7 @@ public class LaserRecipeCategory implements IRecipeCategory<LaserRecipeWrapper> 
     private final IDrawable slot;
     private final IDrawable icon;
 
-    public static final ResourceLocation ID = new ResourceLocation(DeepResonance.MODID, "laser");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "laser");
 
     public LaserRecipeCategory(IGuiHelper guiHelper) {
         this.guiHelper = guiHelper;

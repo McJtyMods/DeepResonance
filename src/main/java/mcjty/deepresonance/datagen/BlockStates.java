@@ -5,8 +5,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class BlockStates {
 
-    public static final ResourceLocation DEFAULT_TOP = new ResourceLocation(DeepResonance.MODID, "block/machine_top");
-    public static final ResourceLocation DEFAULT_SIDE = new ResourceLocation(DeepResonance.MODID, "block/machine_side");
-    public static final ResourceLocation DEFAULT_BOTTOM = new ResourceLocation(DeepResonance.MODID, "block/machine_bottom");
+    public static final ResourceLocation DEFAULT_TOP = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/machine_top");
+    public static final ResourceLocation DEFAULT_SIDE = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/machine_side");
+    public static final ResourceLocation DEFAULT_BOTTOM = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/machine_bottom");
 
 }

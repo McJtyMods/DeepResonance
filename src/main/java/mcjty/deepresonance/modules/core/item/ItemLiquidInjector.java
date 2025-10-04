@@ -38,8 +38,8 @@ public class ItemLiquidInjector extends Item implements ITooltipSettings {
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flags) {
-        super.appendHoverText(stack, level, tooltip, flags);
+    public void appendHoverText(@Nonnull ItemStack stack, Item.TooltipContext context, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flags) {
+        super.appendHoverText(stack, context, tooltip, flags);
         tooltipBuilder.get().makeTooltip(Tools.getId(this), stack, tooltip, flags);
     }
 

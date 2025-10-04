@@ -100,7 +100,7 @@ public class MachinesModule implements IModule {
                         .ironPickaxeTags()
                         .parentedItem()
                         .standardLoot(TYPE_VALVE)
-                        .blockState(provider -> provider.simpleBlock(VALVE_BLOCK.get(), provider.models().cubeBottomTop(provider.name(VALVE_BLOCK.get()), new ResourceLocation(DeepResonance.MODID, "block/valve"), DEFAULT_BOTTOM, DEFAULT_TOP)))
+                        .blockState(provider -> provider.simpleBlock(VALVE_BLOCK.get(), provider.models().cubeBottomTop(provider.name(VALVE_BLOCK.get()), ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/valve"), DEFAULT_BOTTOM, DEFAULT_TOP)))
                         .shaped(builder -> builder
                                         .define('F', CoreModule.FILTER_MATERIAL_ITEM.get())
                                         .define('m', CoreModule.MACHINE_FRAME_ITEM.get())
@@ -113,9 +113,9 @@ public class MachinesModule implements IModule {
                         .standardLoot(TYPE_SMELTER)
                         .blockState(provider -> provider.horizontalOrientedBlock(SMELTER_BLOCK.get(), (state, builder) -> {
                             if (state.getValue(BlockStateProperties.POWERED)) {
-                                builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()) + "_active", new ResourceLocation(DeepResonance.MODID, "block/smelter_active"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
+                                builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()) + "_active", ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/smelter_active"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
                             } else {
-                                builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/smelter"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
+                                builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()), ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/smelter"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
                             }
                         }))
                         .shaped(builder -> builder
@@ -129,7 +129,7 @@ public class MachinesModule implements IModule {
                         .standardLoot(TYPE_PURIFIER)
                         .blockState(provider -> provider.horizontalOrientedBlock(PURIFIER_BLOCK.get(),
                                 (state, builder) -> builder.modelFile(provider.frontBasedModel(
-                                        provider.name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/purifier"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM))))
+                                        provider.name(state.getBlock()), ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/purifier"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM))))
                         .shaped(builder -> builder
                                         .define('P', CoreModule.RESONATING_PLATE_ITEM.get())
                                         .define('m', CoreModule.MACHINE_FRAME_ITEM.get())
@@ -142,7 +142,7 @@ public class MachinesModule implements IModule {
                         .parentedItem("block/lens_mc")
                         .blockState(provider -> {
                             provider.horizontalOrientedBlock(LENS_BLOCK.get(), provider.models()
-                                    .withExistingParent("lens_mc", new ResourceLocation(DeepResonance.MODID, "lens"))
+                                    .withExistingParent("lens_mc", ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "lens"))
                                     .texture("lens_texture", "deepresonance:block/lens")
                                     .texture("particle", "deepresonance:block/lens"));
 

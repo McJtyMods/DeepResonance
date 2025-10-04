@@ -5,26 +5,47 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.setup.Registration;
 import mcjty.lib.items.GenericArmorItem;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.component.CustomData;
+import net.neoforged.neoforge.registries.DeferredHolder;
+
+import java.util.List;
+import java.util.Map;
 
 public class ItemRadiationSuit extends GenericArmorItem implements IRadiationArmor {
 
-    public static final ArmorMaterial ARMOR_TYPE = new ResonatingMaterial("deepresonance:resonating_armor",
-            12, new int[]{1, 4, 5, 2}, 12, SoundEvents.ARMOR_EQUIP_DIAMOND, 0.5f, 0.0f,
-            () -> Ingredient.of(CoreModule.RESONATING_PLATE_ITEM.get()));
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> ARMOR_MATERIAL = Registration.ARMOR_MATERIALS.register("resonating_armor", () -> new ArmorMaterial(
+            Map.of(
+                    ArmorItem.Type.HELMET, 1,
+                    ArmorItem.Type.CHESTPLATE, 4,
+                    ArmorItem.Type.LEGGINGS, 5,
+                    ArmorItem.Type.BOOTS, 2,
+                    ArmorItem.Type.BODY, 0
+            ),
+            12,
+            SoundEvents.ARMOR_EQUIP_DIAMOND,
+            () -> Ingredient.of(CoreModule.RESONATING_PLATE_ITEM.get()),
+            List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "resonating_armor"))),
+            0.5f,
+            0.0f
+    ));
 
     public ItemRadiationSuit(EquipmentSlot slot) {
-        super(ARMOR_TYPE, slot, Registration.createStandardProperties());
+        super(ARMOR_MATERIAL, slot, Registration.createStandardProperties());
     }
 
     public static float getRadiationProtection(LivingEntity entity){
         for (EquipmentSlot slot : EquipmentSlot.values()) {
-            if (slot.getType() == EquipmentSlot.Type.ARMOR) {
+            if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
                 ItemStack stack = entity.getItemBySlot(slot);
                 if (!stack.isEmpty()) {
                     int count = countSuitPieces(entity);
@@ -32,7 +53,7 @@ public class ItemRadiationSuit extends GenericArmorItem implements IRadiationArm
                         return 0.0f;
                     } else if (stack.getItem() instanceof IRadiationArmor && ((IRadiationArmor) stack.getItem()).isActive(stack)) {
                         return ((IRadiationArmor) stack.getItem()).protection(count);
-                    } else if (stack.hasTag() && stack.getTag().contains("AntiRadiationArmor")) {
+                    } else if (hasAntiRadiationFlag(stack)) {
                         return (float) (double) RadiationConfiguration.SUIT_PROTECTION[count].get();
                     }
                 }
@@ -44,17 +65,22 @@ public class ItemRadiationSuit extends GenericArmorItem implements IRadiationArm
     public static int countSuitPieces(LivingEntity entity){
         int cnt = 0;
         for (EquipmentSlot slot : EquipmentSlot.values()) {
-            if (slot.getType() == EquipmentSlot.Type.ARMOR) {
+            if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
                 ItemStack stack = entity.getItemBySlot(slot);
                 if (!stack.isEmpty() && (stack.getItem() instanceof IRadiationArmor) && ((IRadiationArmor)stack.getItem()).isActive(stack)) {
                     cnt++;
-                } else if (stack.hasTag() && stack.getTag().contains("AntiRadiationArmor")) {
+                } else if (hasAntiRadiationFlag(stack)) {
                     cnt++;
                 }
             }
         }
 
         return cnt;
+    }
+
+    private static boolean hasAntiRadiationFlag(ItemStack stack) {
+        CustomData custom = stack.get(DataComponents.CUSTOM_DATA);
+        return custom != null && custom.contains("AntiRadiationArmor");
     }
 
 }

@@ -22,6 +22,8 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.function.Supplier;
 
@@ -42,9 +44,9 @@ public class GeneratorModule implements IModule {
     public static final DeferredItem<Item> GENERATOR_PART_ITEM = Registration.fromBlock(GENERATOR_PART_BLOCK);
     public static final Supplier<BlockEntityType<GeneratorPartTileEntity>> TYPE_GENERATOR_PART = TILES.register("generator_part", () -> BlockEntityType.Builder.of(GeneratorPartTileEntity::new, GENERATOR_PART_BLOCK.get()).build(null));
 
-    public static final Supplier<SoundEvent> STARTUP_SOUND = Registration.SOUNDS.register("engine_start", () -> SoundTools.createSoundEvent(new ResourceLocation(DeepResonance.MODID, "engine_start")));
-    public static final Supplier<SoundEvent> LOOP_SOUND = Registration.SOUNDS.register("engine_loop", () -> SoundTools.createSoundEvent(new ResourceLocation(DeepResonance.MODID, "engine_loop")));
-    public static final Supplier<SoundEvent> SHUTDOWN_SOUND = Registration.SOUNDS.register("engine_shutdown", () -> SoundTools.createSoundEvent(new ResourceLocation(DeepResonance.MODID, "engine_shutdown")));
+    public static final Supplier<SoundEvent> STARTUP_SOUND = Registration.SOUNDS.register("engine_start", () -> SoundTools.createSoundEvent(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "engine_start")));
+    public static final Supplier<SoundEvent> LOOP_SOUND = Registration.SOUNDS.register("engine_loop", () -> SoundTools.createSoundEvent(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "engine_loop")));
+    public static final Supplier<SoundEvent> SHUTDOWN_SOUND = Registration.SOUNDS.register("engine_shutdown", () -> SoundTools.createSoundEvent(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "engine_shutdown")));
 
     @Override
     public void init(FMLCommonSetupEvent event) {
@@ -77,7 +79,7 @@ public class GeneratorModule implements IModule {
                                         .unlockedBy("has_machine_frame", DataGen.has(CoreModule.MACHINE_FRAME_ITEM.get())),
                                 "XRX", "imi", "PRP"),
                 Dob.blockBuilder(ENERGY_COLLECTOR_BLOCK)
-                        .blockState(provider -> provider.simpleBlock(ENERGY_COLLECTOR_BLOCK.get(), provider.models().withExistingParent("energy_collector", new ResourceLocation(DeepResonance.MODID, "collector")).texture("collector_texture", "deepresonance:block/energy_collector")
+                        .blockState(provider -> provider.simpleBlock(ENERGY_COLLECTOR_BLOCK.get(), provider.models().withExistingParent("energy_collector", ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "collector")).texture("collector_texture", "deepresonance:block/energy_collector")
                                 .texture("particle", "deepresonance:block/energy_collector")))
                         .parentedItem()
                         .simpleLoot()
@@ -93,9 +95,9 @@ public class GeneratorModule implements IModule {
                         .blockState(provider -> {
                             provider.horizontalOrientedBlock(GeneratorModule.GENERATOR_CONTROLLER_BLOCK.get(), (state, builder) -> {
                                 if (state.getValue(BlockStateProperties.POWERED)) {
-                                    builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/generator_controller_on"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
+                                    builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()), ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/generator_controller_on"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
                                 } else {
-                                    builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()), new ResourceLocation(DeepResonance.MODID, "block/generator_controller"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
+                                    builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()), ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/generator_controller"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
                                 }
                             });
                         })

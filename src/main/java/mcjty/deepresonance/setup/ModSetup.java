@@ -19,7 +19,7 @@ public class ModSetup extends DefaultModSetup {
         super.init(e);
         NeoForge.EVENT_BUS.register(new ForgeEventHandlers());
         NeoForge.EVENT_BUS.register(new RadiationTickEvent());
-        MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
+        NeoForge.EVENT_BUS.addListener(this::registerCommands);
         DeepResonanceMessages.registerMessages();
     }
 
