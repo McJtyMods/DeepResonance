@@ -30,9 +30,9 @@ public class RadiationShieldRegistry {
         Block block = state.getBlock();
         if (block == Blocks.OBSIDIAN) {
             return RadiationConfiguration.RADIATION_SHIELD_OBSIDIAN_FACTOR.get();
-        } else if (block == RadiationModule.DENSE_OBSIDIAN_BLOCK.get()) {
+        } else if (block == RadiationModule.DENSE_OBSIDIAN.block().get()) {
             return RadiationConfiguration.RADIATION_SHIELD_DENSE_OBSIDIAN_FACTOR.get();
-        } else if (block == RadiationModule.DENSE_GLASS_BLOCK.get()) {
+        } else if (block == RadiationModule.DENSE_GLASS.block().get()) {
             return RadiationConfiguration.RADIATION_SHIELD_DENSE_GLASS_FACTOR.get();
         } else if (getLeadBlocks().contains(block)) {
             return RadiationConfiguration.RADIATION_SHIELD_LEAD_FACTOR.get();

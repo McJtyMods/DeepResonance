@@ -40,13 +40,13 @@ public class DeepResonanceTOPDriver implements TOPDriver {
     public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
         ResourceLocation id = Tools.getId(blockState);
         if (!drivers.containsKey(id)) {
-            if (blockState.getBlock() == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
+            if (blockState.getBlock() == GeneratorModule.GENERATOR_PART.block().get()) {
                 drivers.put(id, new GeneratorPartDriver());
-            } else if (blockState.getBlock() == GeneratorModule.GENERATOR_CONTROLLER_BLOCK.get()) {
+            } else if (blockState.getBlock() == GeneratorModule.GENERATOR_CONTROLLER.block().get()) {
                 drivers.put(id, new GeneratorControllerDriver());
             } else if (blockState.getBlock() instanceof ResonatingCrystalBlock) {
                 drivers.put(id, new CrystalDriver());
-            } else if (blockState.getBlock() == TankModule.TANK_BLOCK.get()) {
+            } else if (blockState.getBlock() == TankModule.TANK.block().get()) {
                 drivers.put(id, new TankDriver());
             } else {
                 drivers.put(id, new DefaultDriver());

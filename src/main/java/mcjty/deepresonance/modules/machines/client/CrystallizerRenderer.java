@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
 
 public class CrystallizerRenderer implements BlockEntityRenderer<CrystallizerTileEntity> {
 
-    private static final ItemStack stack = new ItemStack(CoreModule.RESONATING_CRYSTAL_GENERATED.get());
+    private static final ItemStack stack = new ItemStack(CoreModule.RESONATING_CRYSTAL_GENERATED.block().get());
 
     public CrystallizerRenderer(BlockEntityRendererProvider.Context context) {
     }

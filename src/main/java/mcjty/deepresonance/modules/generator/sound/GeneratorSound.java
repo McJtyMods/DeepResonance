@@ -37,7 +37,7 @@ public class GeneratorSound extends AbstractTickableSoundInstance {
     @Override
     public void tick() {
         Block block = world.getBlockState(pos).getBlock();
-        if (block != GeneratorModule.GENERATOR_CONTROLLER_BLOCK.get()) {
+        if (block != GeneratorModule.GENERATOR_CONTROLLER.block().get()) {
             stop();
             return;
         }

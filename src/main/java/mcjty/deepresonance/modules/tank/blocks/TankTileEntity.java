@@ -208,7 +208,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     @Override
     public void onReplaced(Level world, BlockPos pos, BlockState state, BlockState newstate) {
         if (!world.isClientSide()) {
-            if (newstate.getBlock() != TankModule.TANK_BLOCK.get()) {
+            if (newstate.getBlock() != TankModule.TANK.block().get()) {
                 TankBlob network = getBlob();
                 if (network != null) {
                     LiquidCrystalData data = network.getData();
@@ -226,11 +226,11 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
             }
 
             BlockState stateUp = world.getBlockState(pos.above());
-            if (stateUp.getBlock() == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
+            if (stateUp.getBlock() == GeneratorModule.GENERATOR_PART.block().get()) {
                 world.sendBlockUpdated(pos.above(), stateUp, stateUp, Block.UPDATE_ALL);
             }
             BlockState stateDown = world.getBlockState(pos.below());
-            if (stateDown.getBlock() == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
+            if (stateDown.getBlock() == GeneratorModule.GENERATOR_PART.block().get()) {
                 world.sendBlockUpdated(pos.below(), stateDown, stateDown, Block.UPDATE_ALL);
             }
         }

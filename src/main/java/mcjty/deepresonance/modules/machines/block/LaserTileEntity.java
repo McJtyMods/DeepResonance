@@ -122,10 +122,10 @@ public class LaserTileEntity extends TickingTileEntity {
     }
 
     private static boolean isCrystalItem(Item item) {
-        return item == CoreModule.RESONATING_CRYSTAL_GENERATED_ITEM.get() ||
-                item == CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY_ITEM.get() ||
-                item == CoreModule.RESONATING_CRYSTAL_NATURAL_ITEM.get() ||
-                item == CoreModule.RESONATING_CRYSTAL_NATURAL_EMPTY_ITEM.get();
+        return item == CoreModule.RESONATING_CRYSTAL_GENERATED.item().get() ||
+                item == CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY.item().get() ||
+                item == CoreModule.RESONATING_CRYSTAL_NATURAL.item().get() ||
+                item == CoreModule.RESONATING_CRYSTAL_NATURAL_EMPTY.item().get();
     }
 
     @Override

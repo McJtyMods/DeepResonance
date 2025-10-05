@@ -41,7 +41,7 @@ public class PurifierRecipeCategory implements IRecipeCategory<PurifierRecipeWra
     public PurifierRecipeCategory(IGuiHelper guiHelper) {
         this.guiHelper = guiHelper;
         slot = guiHelper.getSlotDrawable();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(MachinesModule.PURIFIER_BLOCK.get()));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(MachinesModule.PURIFIER.block().get()));
         arrow = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/guielements.png"),
                 144, 0, 16, 16);
         background = guiHelper.createBlankDrawable(120, 80);

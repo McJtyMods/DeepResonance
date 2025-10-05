@@ -41,9 +41,9 @@ public class DeepResonanceJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(new ItemStack(MachinesModule.LASER_BLOCK.get()), LASER_RECIPE);
-        registration.addRecipeCatalyst(new ItemStack(MachinesModule.PURIFIER_BLOCK.get()), PURIFIER_RECIPE);
-        registration.addRecipeCatalyst(new ItemStack(MachinesModule.SMELTER_BLOCK.get()), SMELTER_RECIPE);
+        registration.addRecipeCatalyst(new ItemStack(MachinesModule.LASER.block().get()), LASER_RECIPE);
+        registration.addRecipeCatalyst(new ItemStack(MachinesModule.PURIFIER.block().get()), PURIFIER_RECIPE);
+        registration.addRecipeCatalyst(new ItemStack(MachinesModule.SMELTER.block().get()), SMELTER_RECIPE);
     }
 
     @Override

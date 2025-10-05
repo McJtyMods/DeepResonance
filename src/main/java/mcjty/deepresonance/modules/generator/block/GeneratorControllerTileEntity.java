@@ -75,7 +75,7 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
             BlockPos newC = getBlockPos().relative(direction);
             Block b = level.getBlockState(newC).getBlock();
             // @TODO WHAT IF WE HAVE MULTIPLE SEPARATE NETWORKS ADJACENT TO THE CONTROLLER? DON'T ALLOW!?
-            if (b == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
+            if (b == GeneratorModule.GENERATOR_PART.block().get()) {
                 GeneratorPartTileEntity generatorTileEntity = (GeneratorPartTileEntity) level.getBlockEntity(newC);
                 int networkId = generatorTileEntity.getMultiblockId();
                 if (networkId != -1 && !networks.contains(networkId)) {

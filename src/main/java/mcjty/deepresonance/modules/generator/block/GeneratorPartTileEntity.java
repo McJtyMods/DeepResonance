@@ -92,7 +92,7 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
     @Override
     public void onReplaced(Level world, BlockPos pos, BlockState state, BlockState newstate) {
         if (!world.isClientSide()) {
-            if (newstate.getBlock() != GeneratorModule.GENERATOR_PART_BLOCK.get()) {
+            if (newstate.getBlock() != GeneratorModule.GENERATOR_PART.block().get()) {
                 GeneratorBlob network = getBlob();
                 if (network != null) {
                     int generatorBlocks = network.getGeneratorBlocks();
@@ -107,11 +107,11 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
             }
 
             BlockState stateUp = world.getBlockState(pos.above());
-            if (stateUp.getBlock() == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
+            if (stateUp.getBlock() == GeneratorModule.GENERATOR_PART.block().get()) {
                 world.sendBlockUpdated(pos.above(), stateUp, stateUp, Block.UPDATE_ALL);
             }
             BlockState stateDown = world.getBlockState(pos.below());
-            if (stateDown.getBlock() == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
+            if (stateDown.getBlock() == GeneratorModule.GENERATOR_PART.block().get()) {
                 world.sendBlockUpdated(pos.below(), stateDown, stateDown, Block.UPDATE_ALL);
             }
         }
@@ -181,7 +181,7 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
             BlockPos newC = c.relative(direction);
             if (!done.contains(newC)) {
                 Block block = level.getBlockState(newC).getBlock();
-                if (block == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
+                if (block == GeneratorModule.GENERATOR_PART.block().get()) {
                     activateBlocks(newC, done, active);
                 }
             }

@@ -42,7 +42,7 @@ public class SmelterRecipeCategory implements IRecipeCategory<SmelterRecipeWrapp
     public SmelterRecipeCategory(IGuiHelper guiHelper) {
         this.guiHelper = guiHelper;
         slot = guiHelper.getSlotDrawable();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(MachinesModule.SMELTER_BLOCK.get()));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(MachinesModule.SMELTER.block().get()));
         arrow = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/guielements.png"),
                 144, 0, 16, 16);
         background = guiHelper.createBlankDrawable(120, 60);
@@ -84,10 +84,10 @@ public class SmelterRecipeCategory implements IRecipeCategory<SmelterRecipeWrapp
     public void setRecipe(IRecipeLayoutBuilder builder, SmelterRecipeWrapper recipe, IFocusGroup focuses) {
         builder.addSlot(RecipeIngredientRole.INPUT, 20, 32)
                 .addIngredients(VanillaTypes.ITEM_STACK,
-                        List.of(new ItemStack(CoreModule.RESONATING_ORE_DEEPSLATE_BLOCK.get()),
-                                new ItemStack(CoreModule.RESONATING_ORE_END_BLOCK.get()),
-                                new ItemStack(CoreModule.RESONATING_ORE_NETHER_BLOCK.get()),
-                                new ItemStack(CoreModule.RESONATING_ORE_STONE_BLOCK.get())));
+                        List.of(new ItemStack(CoreModule.RESONATING_ORE_DEEPSLATE.block().get()),
+                                new ItemStack(CoreModule.RESONATING_ORE_END.block().get()),
+                                new ItemStack(CoreModule.RESONATING_ORE_NETHER.block().get()),
+                                new ItemStack(CoreModule.RESONATING_ORE_STONE.block().get())));
         builder.addSlot(RecipeIngredientRole.OUTPUT, 70, 25)
                 .setFluidRenderer(SmelterConfig.RCL_PER_ORE.get(), true, 30, 30)
                 .addIngredients(NeoForgeTypes.FLUID_STACK,

@@ -139,7 +139,7 @@ public class PedestalTileEntity extends TickingTileEntity {
                 BlockPlaceContext context = new BlockPlaceContext(FakePlayerFactory.getMinecraft((ServerLevel) level),
                         InteractionHand.MAIN_HAND, crystalStack, result);
                 blockItem.place(context);
-                ResonatingCrystalBlock b = CoreModule.RESONATING_CRYSTAL_GENERATED.get();
+                ResonatingCrystalBlock b = CoreModule.RESONATING_CRYSTAL_GENERATED.block().get();
                 SoundTools.playSound(level, b.getSoundType(b.defaultBlockState()).getBreakSound(), worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), 1.0f, 1.0f);
 
                 if (findCollector()) {

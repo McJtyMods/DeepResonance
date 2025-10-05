@@ -36,7 +36,7 @@ public class LaserRecipeCategory implements IRecipeCategory<LaserRecipeWrapper> 
     public LaserRecipeCategory(IGuiHelper guiHelper) {
         this.guiHelper = guiHelper;
         slot = guiHelper.getSlotDrawable();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(MachinesModule.LASER_BLOCK.get()));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(MachinesModule.LASER.block().get()));
         background = guiHelper.createBlankDrawable(150, 62);
     }
 

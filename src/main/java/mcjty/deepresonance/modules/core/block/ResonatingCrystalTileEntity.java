@@ -182,7 +182,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     // Special == 3, best non-overcharged
     // Special == 4, almost depleted
     public static void spawnRandomCrystal(Level world, Random random, BlockPos pos, int special) {
-        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_GENERATED.get().defaultBlockState(), Block.UPDATE_ALL);
+        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_GENERATED.block().get().defaultBlockState(), Block.UPDATE_ALL);
         BlockEntity te = world.getBlockEntity(pos);
         if (te instanceof ResonatingCrystalTileEntity crystal) {
             if (special >= 5) {
@@ -205,7 +205,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     }
 
     public static void spawnRandomCrystal(Level world, Random random, BlockPos pos, float str, float pow, float eff, float pur) {
-        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_GENERATED.get().defaultBlockState(), Block.UPDATE_ALL);
+        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_GENERATED.block().get().defaultBlockState(), Block.UPDATE_ALL);
         BlockEntity te = world.getBlockEntity(pos);
         if (te instanceof ResonatingCrystalTileEntity crystal) {
             crystal.setStrength(Math.min(100.0f, random.nextFloat() * str * 3.0f + 0.01f));

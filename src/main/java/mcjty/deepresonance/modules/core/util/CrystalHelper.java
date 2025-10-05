@@ -62,7 +62,7 @@ public class CrystalHelper {
     }
 
     public static void spawnCrystal(Level world, BlockPos pos, float purity, float strength, float efficiency, float power) {
-        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_GENERATED.get().defaultBlockState(), Block.UPDATE_ALL);
+        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_GENERATED.block().get().defaultBlockState(), Block.UPDATE_ALL);
         BlockEntity te = world.getBlockEntity(pos);
         if (te instanceof ResonatingCrystalTileEntity crystal) {
             crystal.setPurity(purity);

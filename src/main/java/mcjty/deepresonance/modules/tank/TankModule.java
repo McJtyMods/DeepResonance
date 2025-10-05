@@ -5,29 +5,29 @@ import mcjty.deepresonance.modules.tank.blocks.TankBlock;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.deepresonance.modules.tank.client.TankTESR;
 import mcjty.deepresonance.setup.Registration;
+import mcjty.lib.blocks.RBlock;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.function.Supplier;
 
-import static mcjty.deepresonance.DeepResonance.tab;
-import static mcjty.deepresonance.setup.Registration.TILES;
-
 public class TankModule implements IModule {
 
-    public static final DeferredBlock<Block> TANK_BLOCK = Registration.BLOCKS.register("tank", TankBlock::new);
-    public static final DeferredItem<Item> TANK_ITEM = Registration.ITEMS.register("tank", tab(() -> new BlockItem(TANK_BLOCK.get(),
-            Registration.createStandardProperties()
-    )));
-    public static final Supplier<BlockEntityType<TankTileEntity>> TYPE_TANK = TILES.register("tank", () -> BlockEntityType.Builder.of(TankTileEntity::new, TANK_BLOCK.get()).build(null));
+    public static final RBlock<TankBlock, BlockItem, TankTileEntity> TANK = Registration.registerBlockWithTile(
+            "tank",
+            TankTileEntity.class,
+            TankBlock::new,
+            block -> new BlockItem(block.get(), Registration.createStandardProperties()),
+            TankTileEntity::new
+    );
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TankTileEntity>> TYPE_TANK = TANK.be();
 
     public TankModule() {
     }
@@ -48,9 +48,9 @@ public class TankModule implements IModule {
     @Override
     public void initDatagen(DataGen dataGen) {
         dataGen.add(
-                Dob.blockBuilder(TANK_BLOCK)
+                Dob.blockBuilder(TANK)
                         .blockState(provider -> {
-                            provider.simpleBlock(TANK_BLOCK.get(),
+                            provider.simpleBlock(TANK.block().get(),
                                     provider.models().cubeBottomTop("tank", TankTESR.TANK_SIDE, TankTESR.TANK_BOTTOM, TankTESR.TANK_TOP).renderType("translucent"));
                         })
                         .ironPickaxeTags()

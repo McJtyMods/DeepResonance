@@ -68,9 +68,9 @@ public class ResonatingCrystalBlock extends BaseBlock {
 
     public ResonatingCrystalBlock getEmpty() {
         if (generated) {
-            return CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY.get();
+            return CoreModule.RESONATING_CRYSTAL_GENERATED_EMPTY.block().get();
         } else {
-            return CoreModule.RESONATING_CRYSTAL_NATURAL_EMPTY.get();
+            return CoreModule.RESONATING_CRYSTAL_NATURAL_EMPTY.block().get();
         }
     }
 
@@ -113,7 +113,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
     @Override
     public List<ItemStack> getItemsForTab() {
         List<ItemStack> items = new ArrayList<>();
-        ResonatingCrystalTileEntity crystal = new ResonatingCrystalTileEntity(BlockPos.ZERO, CoreModule.RESONATING_CRYSTAL_GENERATED.get().defaultBlockState());
+        ResonatingCrystalTileEntity crystal = new ResonatingCrystalTileEntity(BlockPos.ZERO, CoreModule.RESONATING_CRYSTAL_GENERATED.block().get().defaultBlockState());
         for (int power : new int[]{0, 50}) {
             for (int purity : new int[]{0, 50}) {
                 crystal.setPurity(purity);

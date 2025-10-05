@@ -67,7 +67,7 @@ public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig
     }
 
     public static void spawnRandomCrystal(WorldGenLevel world, RandomSource random, BlockPos pos, float str, float pow, float eff, float pur) {
-        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_NATURAL.get().defaultBlockState(), Block.UPDATE_ALL);
+        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_NATURAL.block().get().defaultBlockState(), Block.UPDATE_ALL);
         BlockEntity te = world.getBlockEntity(pos);
         if (te instanceof ResonatingCrystalTileEntity tile) {
             tile.setStrength(Math.min(100.0f, random.nextFloat() * str * 3.0f + 0.01f));

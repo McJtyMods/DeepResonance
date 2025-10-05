@@ -46,7 +46,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
-            .itemValid((integer, stack) -> stack.getItem() == CoreModule.RESONATING_CRYSTAL_GENERATED_ITEM.get())
+            .itemValid((integer, stack) -> stack.getItem() == CoreModule.RESONATING_CRYSTAL_GENERATED.item().get())
             .insertable(no())
             .extractable(yes())
             .build();
@@ -104,13 +104,13 @@ public class CrystallizerTileEntity extends TickingTileEntity {
             }
         }
         if (crystalData != null && crystalData.getAmount() >= rclPerCrystal) {
-            ResonatingCrystalTileEntity crystal = new ResonatingCrystalTileEntity(worldPosition, CoreModule.RESONATING_CRYSTAL_GENERATED.get().defaultBlockState());
+            ResonatingCrystalTileEntity crystal = new ResonatingCrystalTileEntity(worldPosition, CoreModule.RESONATING_CRYSTAL_GENERATED.block().get().defaultBlockState());
             crystal.setEfficiency(crystalData.getEfficiency() * 100f);
             crystal.setPurity(crystalData.getPurity() * 100f);
             crystal.setStrength(crystalData.getStrength() * 100f);
             crystal.setPower(100f);
             crystalData = null;
-            items.setStackInSlot(SLOT, CoreModule.RESONATING_CRYSTAL_GENERATED.get().createStack(crystal));
+            items.setStackInSlot(SLOT, CoreModule.RESONATING_CRYSTAL_GENERATED.block().get().createStack(crystal));
             setChanged();
         }
         int newProgress = crystalData == null ? 0 : (int) ((crystalData.getAmount() / (float) getRclPerCrystal()) * 100);
