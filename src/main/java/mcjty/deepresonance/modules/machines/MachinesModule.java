@@ -14,12 +14,14 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -92,21 +94,22 @@ public class MachinesModule implements IModule {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrystallizerTileEntity>> TYPE_CRYSTALIZER = CRYSTALLIZER.be();
     public static final Supplier<MenuType<GenericContainer>> CRYSTALIZER_CONTAINER = CONTAINERS.register("crystallizer", GenericContainer::createContainerType);
 
-    public MachinesModule() {
+    public MachinesModule(IEventBus bus) {
+        bus.addListener(this::registerMenuScreens);
     }
 
     @Override
     public void initClient(FMLClientSetupEvent event) {
         CrystallizerRenderer.register();
         LaserRenderer.register();
+    }
 
-        event.enqueueWork(() -> {
-            SmelterGui.register();
-            PurifierGui.register();
-            LaserGui.register();
-            ValveGui.register();
-            CrystallizerGui.register();
-        });
+    public void registerMenuScreens(RegisterMenuScreensEvent event) {
+        SmelterGui.register(event);
+        LaserGui.register(event);
+        PurifierGui.register(event);
+        CrystallizerGui.register(event);
+        ValveGui.register(event);
     }
 
     @Override
@@ -124,12 +127,12 @@ public class MachinesModule implements IModule {
     }
 
     @Override
-    public void initDatagen(DataGen dataGen) {
+    public void initDatagen(DataGen dataGen, HolderLookup.Provider lookupProvider) {
         dataGen.add(
                 Dob.blockBuilder(VALVE)
                         .ironPickaxeTags()
                         .parentedItem()
-                        .standardLoot(TYPE_VALVE)
+//                        .standardLoot(TYPE_VALVE) // @todo 1.21
                         .blockState(provider -> provider.simpleBlock(VALVE.block().get(), provider.models().cubeBottomTop(provider.name(VALVE.block().get()), ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/valve"), DEFAULT_BOTTOM, DEFAULT_TOP)))
                         .shaped(builder -> builder
                                         .define('F', CoreModule.FILTER_MATERIAL_ITEM.get())
@@ -140,7 +143,7 @@ public class MachinesModule implements IModule {
                 Dob.blockBuilder(SMELTER)
                         .ironPickaxeTags()
                         .parentedItem()
-                        .standardLoot(TYPE_SMELTER)
+//                        .standardLoot(TYPE_SMELTER)   // @todo 1.21
                         .blockState(provider -> provider.horizontalOrientedBlock(SMELTER.block().get(), (state, builder) -> {
                             if (state.getValue(BlockStateProperties.POWERED)) {
                                 builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()) + "_active", ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/smelter_active"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
@@ -156,7 +159,7 @@ public class MachinesModule implements IModule {
                 Dob.blockBuilder(PURIFIER)
                         .ironPickaxeTags()
                         .parentedItem()
-                        .standardLoot(TYPE_PURIFIER)
+//                        .standardLoot(TYPE_PURIFIER)  // @todo 1.21
                         .blockState(provider -> provider.horizontalOrientedBlock(PURIFIER.block().get(),
                                 (state, builder) -> builder.modelFile(provider.frontBasedModel(
                                         provider.name(state.getBlock()), ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/purifier"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM))))
@@ -185,7 +188,7 @@ public class MachinesModule implements IModule {
                 Dob.blockBuilder(LASER)
                         .ironPickaxeTags()
                         .parentedItem()
-                        .standardLoot(TYPE_LASER)
+//                        .standardLoot(TYPE_LASER) // @todo 1.21
                         .blockState(provider -> provider.horizontalOrientedBlock(LASER.block().get(), DataGenHelper.createLaserModel(provider)))
                         .shaped(builder -> builder
                                         .define('m', CoreModule.MACHINE_FRAME_ITEM.get())
@@ -195,7 +198,7 @@ public class MachinesModule implements IModule {
                 Dob.blockBuilder(CRYSTALLIZER)
                         .ironPickaxeTags()
                         .parentedItem()
-                        .standardLoot(TYPE_CRYSTALIZER)
+//                        .standardLoot(TYPE_CRYSTALIZER)   // @todo 1.21
                         .blockState(provider -> provider.horizontalBlock(CRYSTALLIZER.block().get(), DataGenHelper.createCrystallizerModel(provider)))
                         .shaped(builder -> builder
                                         .define('q', Items.QUARTZ)

@@ -19,6 +19,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -60,11 +61,10 @@ public class TankBlock extends BaseBlock {
         return RotationType.NONE;
     }
 
-
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
         ItemStack ret = new ItemStack(this);
-        BlockEntity tile = world.getBlockEntity(pos);
+        BlockEntity tile = level.getBlockEntity(pos);
         if (tile instanceof TankTileEntity tank) {
             BlockItem.setBlockEntityData(ret, TankModule.TYPE_TANK.get(), (CompoundTag) tank.saveWithoutMetadata(provider()));
         }

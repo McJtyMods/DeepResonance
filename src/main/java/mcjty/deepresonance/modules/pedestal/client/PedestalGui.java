@@ -10,8 +10,10 @@ import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.Panel;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -23,8 +25,8 @@ public class PedestalGui extends GenericGuiContainer<PedestalTileEntity, Generic
 
     private static final ResourceLocation iconLocation = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/pedestal.png");
 
-    public PedestalGui(PedestalTileEntity tileEntity, GenericContainer container, Inventory inventory) {
-        super(tileEntity, container, inventory, PedestalModule.PEDESTAL.get().getManualEntry());
+    public PedestalGui(GenericContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, PedestalModule.PEDESTAL.block().get().getManualEntry());
 
         imageWidth = PEDESTAL_WIDTH;
         imageHeight = PEDESTAL_HEIGHT;
@@ -43,10 +45,10 @@ public class PedestalGui extends GenericGuiContainer<PedestalTileEntity, Generic
 
     @Override
     protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int x, int y) {
-        drawWindow(graphics, xxx, xxx, yyy);
+        drawWindow(graphics, partialTicks, x, y);
     }
 
-    public static void register() {
-        register(PedestalModule.CONTAINER_PEDESTAL.get(), PedestalGui::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(PedestalModule.CONTAINER_PEDESTAL.get(), PedestalGui::new);
     }
 }

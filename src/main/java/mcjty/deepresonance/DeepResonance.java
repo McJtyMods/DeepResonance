@@ -8,6 +8,7 @@ import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.worldgen.WorldGenModule;
 import mcjty.deepresonance.setup.Config;
+import mcjty.deepresonance.setup.DeepResonanceMessages;
 import mcjty.deepresonance.setup.ModSetup;
 import mcjty.deepresonance.setup.Registration;
 import mcjty.deepresonance.util.DeepResonanceTags;
@@ -40,7 +41,7 @@ public class DeepResonance {
 
         DeepResonanceTags.init();
 
-        setupModules();
+        setupModules(bus);
 
         Config.register(mod, bus, modules);
         Registration.register(bus);
@@ -48,6 +49,7 @@ public class DeepResonance {
         bus.addListener(setup::init);
         bus.addListener(modules::init);
         bus.addListener(this::onDataGen);
+        bus.addListener(DeepResonanceMessages::registerMessages);
 
         if (dist.isClient()) {
             bus.addListener(modules::initClient);
@@ -64,13 +66,13 @@ public class DeepResonance {
         datagen.generate();
     }
 
-    private void setupModules() {
+    private void setupModules(IEventBus bus) {
         modules.register(new CoreModule());
         modules.register(new GeneratorModule());
-        modules.register(new MachinesModule());
+        modules.register(new MachinesModule(bus));
         modules.register(new RadiationModule());
         modules.register(new TankModule());
         modules.register(new WorldGenModule());
-        modules.register(new PedestalModule());
+        modules.register(new PedestalModule(bus));
     }
 }

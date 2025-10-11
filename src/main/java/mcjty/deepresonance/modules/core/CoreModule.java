@@ -16,6 +16,7 @@ import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.BlockItem;
@@ -32,6 +33,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -39,6 +41,7 @@ import java.util.function.Supplier;
 
 import static mcjty.deepresonance.DeepResonance.tab;
 import static mcjty.deepresonance.setup.Registration.TILES;
+import static mcjty.lib.datagen.DataGen.has;
 
 public class CoreModule implements IModule {
 
@@ -133,7 +136,7 @@ public class CoreModule implements IModule {
     }
 
     @Override
-    public void initDatagen(DataGen dataGen) {
+    public void initDatagen(DataGen dataGen, HolderLookup.Provider registries) {
         dataGen.add(
                 Dob.builder(RESONATING_ORE_DEEPSLATE.block(), RESONATING_ORE_DEEPSLATE.item())
                         .simpleLoot()
@@ -169,43 +172,43 @@ public class CoreModule implements IModule {
                         .parentedItem()
                         .diamondPickaxeTags()
                         .shaped(builder -> builder
-                                        .unlockedBy("has_resonant_plate", DataGen.has(RESONATING_PLATE_ITEM.get()))
+                                        .unlockedBy("has_resonant_plate", has(RESONATING_PLATE_ITEM.get()))
                                         .define('P', RESONATING_PLATE_ITEM.get()),
                                 "PPP", "PPP", "PPP"),
                 Dob.blockBuilder(RESONATING_CRYSTAL_NATURAL_EMPTY)
-                        .standardLoot(TYPE_RESONATING_CRYSTAL)
+//                        .standardLoot(TYPE_RESONATING_CRYSTAL)    // @todo 1.21
                         .blockState(provider -> {
-                            DataGenHelper.generateCrystal(RESONATING_CRYSTAL_NATURAL_EMPTY, provider, "crystal_empty", "crystal", "empty_crystal");
+                            DataGenHelper.generateCrystal(RESONATING_CRYSTAL_NATURAL_EMPTY.block(), provider, "crystal_empty", "crystal", "empty_crystal");
                         })
                         .parentedItem("block/crystal_empty")
                         .diamondPickaxeTags(),
                 Dob.blockBuilder(RESONATING_CRYSTAL_NATURAL)
-                        .standardLoot(TYPE_RESONATING_CRYSTAL)
+//                        .standardLoot(TYPE_RESONATING_CRYSTAL)    // @todo 1.21
                         .blockState(provider -> {
-                            DataGenHelper.generateCrystal(RESONATING_CRYSTAL_NATURAL, provider, "crystal_full", "crystal", "crystal");
+                            DataGenHelper.generateCrystal(RESONATING_CRYSTAL_NATURAL.block(), provider, "crystal_full", "crystal", "crystal");
                         })
                         .parentedItem("block/crystal_full")
                         .diamondPickaxeTags(),
                 Dob.blockBuilder(RESONATING_CRYSTAL_GENERATED_EMPTY)
-                        .standardLoot(TYPE_RESONATING_CRYSTAL)
+//                        .standardLoot(TYPE_RESONATING_CRYSTAL)    // @todo 1.21
                         .blockState(provider -> {
-                            DataGenHelper.generateCrystal(RESONATING_CRYSTAL_GENERATED_EMPTY, provider, "crystal_empty_pure", "crystal_generated", "empty_crystal");
+                            DataGenHelper.generateCrystal(RESONATING_CRYSTAL_GENERATED_EMPTY.block(), provider, "crystal_empty_pure", "crystal_generated", "empty_crystal");
                         })
                         .parentedItem("block/crystal_empty_pure")
                         .diamondPickaxeTags(),
                 Dob.blockBuilder(RESONATING_CRYSTAL_GENERATED)
-                        .standardLoot(TYPE_RESONATING_CRYSTAL)
+//                        .standardLoot(TYPE_RESONATING_CRYSTAL)    // @todo 1.21
                         .blockState(provider -> {
-                            DataGenHelper.generateCrystal(RESONATING_CRYSTAL_GENERATED, provider, "crystal_full_pure", "crystal_generated", "crystal");
+                            DataGenHelper.generateCrystal(RESONATING_CRYSTAL_GENERATED.block(), provider, "crystal_full_pure", "crystal_generated", "crystal");
                         })
                         .parentedItem("block/crystal_full_pure")
                         .diamondPickaxeTags(),
                 Dob.itemBuilder(FILTER_MATERIAL_ITEM)
                         .generatedItem("item/filter_material")
                         .shaped(builder -> builder
-                                        .define('g', Tags.Items.GRAVEL)
+                                        .define('g', Tags.Items.GRAVELS)
                                         .define('s', ItemTags.SAND)
-                                        .unlockedBy("has_gravel", DataGen.inventoryTrigger(ItemPredicate.Builder.item().of(Tags.Items.GRAVEL).build())),
+                                        .unlockedBy("has_gravel", has(Tags.Items.GRAVELS)),
                                 8,
                                 "gcg", "csc", "gcg"),
                 Dob.itemBuilder(LIQUID_INJECTOR_ITEM)
@@ -217,9 +220,9 @@ public class CoreModule implements IModule {
                 Dob.itemBuilder(MACHINE_FRAME_ITEM)
                         .cubeAll(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/machine_side"))
                         .shaped(builder -> builder
-                                        .define('g', Tags.Items.STONE)
+                                        .define('g', Tags.Items.STONES)
                                         .define('P', RESONATING_PLATE_ITEM.get())
-                                        .unlockedBy("has_iron", DataGen.inventoryTrigger(ItemPredicate.Builder.item().of(Tags.Items.INGOTS_IRON).build())),
+                                        .unlockedBy("has_iron", has(Tags.Items.INGOTS_IRON)),
                                 "iPi", "PgP", "iPi")
         );
 

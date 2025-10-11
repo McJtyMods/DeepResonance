@@ -10,10 +10,12 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -37,15 +39,20 @@ public class PedestalModule implements IModule {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PedestalTileEntity>> TYPE_PEDESTAL = PEDESTAL.be();
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_PEDESTAL = CONTAINERS.register("pedestal", GenericContainer::createContainerType);
 
+    public PedestalModule(IEventBus bus) {
+        bus.addListener(this::registerMenuScreens);
+    }
+
     @Override
     public void init(FMLCommonSetupEvent event) {
     }
 
     @Override
     public void initClient(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            PedestalGui.register();
-        });
+    }
+
+    public void registerMenuScreens(RegisterMenuScreensEvent event) {
+        PedestalGui.register(event);
     }
 
     @Override
@@ -53,10 +60,10 @@ public class PedestalModule implements IModule {
     }
 
     @Override
-    public void initDatagen(DataGen dataGen) {
+    public void initDatagen(DataGen dataGen, HolderLookup.Provider registries) {
         dataGen.add(
                 Dob.blockBuilder(PEDESTAL)
-                        .standardLoot(TYPE_PEDESTAL)
+//                        .standardLoot(TYPE_PEDESTAL)  // @todo 1.21
                         .ironPickaxeTags()
                         .blockState(p -> p.orientedBlock(PEDESTAL.block().get(), p.frontBasedModel(p.name(PEDESTAL.block().get()), p.modLoc("block/pedestal"), DEFAULT_BOTTOM, DEFAULT_BOTTOM, DEFAULT_BOTTOM)))
                         .parentedItem()

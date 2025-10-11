@@ -5,6 +5,7 @@ import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.modules.radiation.util.RadiationShieldRegistry;
 import mcjty.lib.varia.LevelTools;
 import mcjty.lib.worlddata.AbstractWorldData;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.nbt.CompoundTag;
@@ -90,7 +91,7 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
 
     @Nonnull
     @Override
-    public CompoundTag save(@Nonnull CompoundTag tagCompound) {
+    public CompoundTag save(@Nonnull CompoundTag tagCompound, HolderLookup.Provider registries) {
         ListTag lst = new ListTag();
         for (Map.Entry<GlobalPos, RadiationSource> entry : sources.entrySet()) {
             CompoundTag tc = new CompoundTag();

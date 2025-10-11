@@ -140,7 +140,7 @@ public class PedestalTileEntity extends TickingTileEntity {
                         InteractionHand.MAIN_HAND, crystalStack, result);
                 blockItem.place(context);
                 ResonatingCrystalBlock b = CoreModule.RESONATING_CRYSTAL_GENERATED.block().get();
-                SoundTools.playSound(level, b.getSoundType(b.defaultBlockState()).getBreakSound(), worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), 1.0f, 1.0f);
+                SoundTools.playSound(level, b.defaultBlockState().getSoundType(level, pos, null).getBreakSound(), worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), 1.0f, 1.0f);
 
                 if (findCollector()) {
                     BlockEntity tileEntity = level.getBlockEntity(new BlockPos(cachedLocator));
@@ -176,8 +176,8 @@ public class PedestalTileEntity extends TickingTileEntity {
         if (crystalState.getBlock() instanceof ResonatingCrystalBlock crystalBlock) {
             ItemStack spentCrystal = new ItemStack(crystalBlock.getEmpty(), 1);
             CompoundTag tagCompound = new CompoundTag();
-            resonatingCrystalTileEntity.saveAdditional(tagCompound);
-            spentCrystal.setTag(tagCompound);
+            resonatingCrystalTileEntity.saveAdditional(tagCompound, level.registryAccess());
+//            spentCrystal.setTag(tagCompound); // @todo 1.21 data
             inventoryLocator.ejectStack(level, worldPosition, spentCrystal, worldPosition, directions);
             level.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
             SoundTools.playSound(level, crystalState.getSoundType().getBreakSound(), p.getX(), p.getY(), p.getZ(), 1.0f, 1.0f);

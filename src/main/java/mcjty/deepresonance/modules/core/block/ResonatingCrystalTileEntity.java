@@ -133,9 +133,9 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider provider) {
         boolean oldempty = isEmpty();
-        super.onDataPacket(net, packet);
+        super.onDataPacket(net, packet, provider);
         boolean newempty = isEmpty();
         if (oldempty != newempty) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);

@@ -21,12 +21,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -95,8 +97,8 @@ public class ResonatingCrystalBlock extends BaseBlock {
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
-        BlockEntity tile = world.getBlockEntity(pos);
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+        BlockEntity tile = level.getBlockEntity(pos);
         if (tile instanceof ResonatingCrystalTileEntity) {
             return createStack((ResonatingCrystalTileEntity) tile);
         }
@@ -178,10 +180,10 @@ public class ResonatingCrystalBlock extends BaseBlock {
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, Item.TooltipContext context, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag advanced) {
+    public void appendHoverText(@Nonnull ItemStack stack, Item.TooltipContext context, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         CompoundTag tagCompound = ItemDataHelper.getInfoTag(stack);
 
-        super.appendHoverText(stack, context, tooltip, advanced);
+        super.appendHoverText(stack, context, tooltip, flag);
 
         float power = 100.0f;
         if (tagCompound != null) {

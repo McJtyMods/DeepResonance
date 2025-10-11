@@ -14,8 +14,10 @@ import mcjty.lib.gui.widgets.ImageLabel;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -32,8 +34,8 @@ public class SmelterGui extends GenericGuiContainer<SmelterTileEntity, GenericCo
     private static final ResourceLocation iconLocation = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/smelter.png");
     private static final ResourceLocation iconBurning = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/burning.png");
 
-    public SmelterGui(SmelterTileEntity tile, GenericContainer container, Inventory inventory) {
-        super(tile, container, inventory, ManualEntry.EMPTY);
+    public SmelterGui(GenericContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, ManualEntry.EMPTY);
 
         imageWidth = SMELTER_WIDTH;
         imageHeight = SMELTER_HEIGHT;
@@ -43,9 +45,10 @@ public class SmelterGui extends GenericGuiContainer<SmelterTileEntity, GenericCo
     public void init() {
         super.init();
 
-        long maxEnergyStored = tileEntity.getMaxPower();
+        SmelterTileEntity be = getBE();
+        long maxEnergyStored = be.getMaxPower();
         energyBar = new EnergyBar().vertical().maxValue(maxEnergyStored).hint(new PositionalLayout.PositionalHint(10, 7, 8, 54)).showText(false);
-        energyBar.value(tileEntity.getCurrentPower());
+        energyBar.value(be.getCurrentPower());
 
         burningImage = new ImageLabel()
                 .image(iconBurning, 0, 0)
@@ -65,7 +68,8 @@ public class SmelterGui extends GenericGuiContainer<SmelterTileEntity, GenericCo
 
     @Override
     protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int x, int y) {
-        int progress = tileEntity.getProgress();
+        SmelterTileEntity be = getBE();
+        int progress = be.getProgress();
         if (0 < progress && progress < 100) {
             int p = ((progress / 3) % 9) + 1;
             int xx = (p % 4) * 64;
@@ -80,7 +84,7 @@ public class SmelterGui extends GenericGuiContainer<SmelterTileEntity, GenericCo
         super.renderBg(graphics, partialTicks, x, y);
     }
 
-    public static void register() {
-        register(MachinesModule.SMELTER_CONTAINER.get(), SmelterGui::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(MachinesModule.SMELTER_CONTAINER.get(), SmelterGui::new);
     }
 }

@@ -10,19 +10,21 @@ import mcjty.lib.blocks.RBlock;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.GlassBlock;
+import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.List;
@@ -37,7 +39,7 @@ public class RadiationModule implements IModule {
     );
     public static final RBlock<Block, BlockItem, BlockEntity> DENSE_GLASS = Registration.registerSimpleBlock(
             "dense_glass",
-            () -> new GlassBlock(Block.Properties.of()
+            () -> new GrassBlock(Block.Properties.of()
                     .strength(3.0f, 500.0f)
                     .requiresCorrectToolForDrops()
                     .noOcclusion()
@@ -69,7 +71,7 @@ public class RadiationModule implements IModule {
         event.enqueueWork(() -> {
             RadiationMonitorItem.initOverrides(RADIATION_MONITOR.get());
         });
-        MinecraftForge.EVENT_BUS.addListener(RadiationOverlayRenderer::onRender);
+        NeoForge.EVENT_BUS.addListener(RadiationOverlayRenderer::onRender);
     }
 
     @Override
@@ -78,7 +80,7 @@ public class RadiationModule implements IModule {
     }
 
     @Override
-    public void initDatagen(DataGen dataGen) {
+    public void initDatagen(DataGen dataGen, HolderLookup.Provider registries) {
         dataGen.add(
                 Dob.blockBuilder(POISONED_DIRT)
                         .simpleBlockState()

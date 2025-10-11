@@ -10,7 +10,9 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 
 import javax.annotation.Nonnull;
 
@@ -43,4 +45,9 @@ public class CrystallizerRenderer implements BlockEntityRenderer<CrystallizerTil
         }
     }
 
+    @Override
+    public AABB getRenderBoundingBox(CrystallizerTileEntity be) {
+        BlockPos pos = be.getBlockPos();
+        return new AABB(pos.getX() - 10, pos.getY() - 10, pos.getZ() - 10, pos.getX() + 10, pos.getY() + 10, pos.getZ() + 10);
+    }
 }

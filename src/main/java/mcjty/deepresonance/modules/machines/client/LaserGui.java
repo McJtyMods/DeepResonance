@@ -17,9 +17,11 @@ import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -38,8 +40,8 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
 
     private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/laser.png");
 
-    public LaserGui(LaserTileEntity tileEntity, GenericContainer container, Inventory inventory) {
-        super(tileEntity, container, inventory, ManualEntry.EMPTY);
+    public LaserGui(GenericContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, ManualEntry.EMPTY);
 
         imageWidth = LASER_WIDTH;
         imageHeight = LASER_HEIGHT;
@@ -49,12 +51,13 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
     public void init() {
         super.init();
 
+        LaserTileEntity be = getBE();
         energyBar = new EnergyBar()
                 .vertical()
-                .maxValue(tileEntity.getMaxPower())
+                .maxValue(be.getMaxPower())
                 .hint(new PositionalLayout.PositionalHint(10, 7, 8, 59))
                 .showText(false)
-                .value(tileEntity.getCurrentPower());
+                .value(be.getCurrentPower());
 
         crystalBar = new EnergyBar()
                 .vertical()
@@ -111,7 +114,8 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
             strengthBonus.text("");
             efficiencyBonus.text("");
         }
-        crystalBar.value((int) tileEntity.getCrystalLiquid());
+        LaserTileEntity be = getBE();
+        crystalBar.value((int) be.getCrystalLiquid());
         updateEnergyBar(energyBar);
 
         super.renderBg(graphics, partialTicks, x, y);
@@ -129,7 +133,7 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
         return new DecimalFormat("##.#").format(f);
     }
 
-    public static void register() {
-        register(MachinesModule.LASER_CONTAINER.get(), LaserGui::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(MachinesModule.LASER_CONTAINER.get(), LaserGui::new);
     }
 }

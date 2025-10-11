@@ -25,11 +25,12 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+
+import javax.annotation.Nonnull;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.container.GenericItemHandler.no;
@@ -63,7 +64,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
 
     private int progress = 0;
     private LiquidCrystalData crystalData;
-    private LazyOptional<IFluidHandler> rclTank;
+    private IFluidHandler rclTank;
     private int tankCooldown = 0;
 
     public CrystallizerTileEntity(BlockPos pos, BlockState state) {
@@ -95,7 +96,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
             drain = Math.min(drain, rclPerCrystal - crystalData.getAmount());
         }
         if (drain > 0) { //Config can change between ticks
-            FluidStack stack = rclTank.orElseThrow(NullPointerException::new).drain(drain, IFluidHandler.FluidAction.EXECUTE);
+            FluidStack stack = rclTank.drain(drain, IFluidHandler.FluidAction.EXECUTE);
             LiquidCrystalData data = LiquidCrystalData.fromStack(stack);
             if (crystalData == null) {
                 crystalData = data;
@@ -132,7 +133,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
         if (tankCooldown > 0) {
             tankCooldown--;
         }
-        if ((rclTank == null || !rclTank.isPresent()) && !checkTank()) {
+        if (rclTank == null && !checkTank()) {
             return false;
         }
 
@@ -144,7 +145,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
             return false;
         }
 
-        FluidStack fluidStack = rclTank.orElseThrow(NullPointerException::new).drain(CrystallizerConfig.RCL_PER_TICK.get(), IFluidHandler.FluidAction.SIMULATE);
+        FluidStack fluidStack = rclTank.drain(CrystallizerConfig.RCL_PER_TICK.get(), IFluidHandler.FluidAction.SIMULATE);
         if (fluidStack.isEmpty() || fluidStack.getAmount() < 1) {
             return false;
         }
@@ -158,8 +159,8 @@ public class CrystallizerTileEntity extends TickingTileEntity {
             tankCooldown = 21;
             BlockEntity tile = level.getBlockEntity(worldPosition.below());
             if (tile != null) {
-                rclTank = tile.getCapability(ForgeCapabilities.FLUID_HANDLER);
-                return rclTank.isPresent();
+                rclTank = level.getCapability(Capabilities.FluidHandler.BLOCK, worldPosition.below(), null);
+                return rclTank != null;
             }
         }
         return false;
@@ -203,11 +204,6 @@ public class CrystallizerTileEntity extends TickingTileEntity {
 
     private static int getRclPerCrystal() {
         return CrystallizerConfig.RCL_PER_CRYSTAL.get();
-    }
-
-    @Override
-    public AABB getRenderBoundingBox() {
-        return new AABB(getBlockPos().getX() - 10, getBlockPos().getY() - 10, getBlockPos().getZ() - 10, getBlockPos().getX() + 10, getBlockPos().getY() + 10, getBlockPos().getZ() + 10);
     }
 
     // Client side

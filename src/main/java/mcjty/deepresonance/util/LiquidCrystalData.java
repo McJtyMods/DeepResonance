@@ -2,7 +2,7 @@ package mcjty.deepresonance.util;
 
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.core.CoreModule;
-import net.minecraft.nbt.CompoundTag;
+import mcjty.deepresonance.setup.Registration;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -41,7 +41,7 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     }
 
     public static boolean isValidLiquidCrystalStack(@Nonnull FluidStack stack) {
-        return !stack.isEmpty() && isLiquidCrystal(stack.getRawFluid()); //Stack might have size 0
+        return !stack.isEmpty() && isLiquidCrystal(stack.getFluid()); //Stack might have size 0
     }
 
     public boolean isEmpty() {
@@ -60,10 +60,10 @@ public class LiquidCrystalData implements ILiquidCrystalData {
             return;
         }
         if (referenceStack.getFluid() == CoreModule.LIQUID_CRYSTAL.get() && otherFluid.getFluid() == CoreModule.LIQUID_CRYSTAL.get()) {
-            double quality = mix(otherFluid, "quality");
-            double purity = mix(otherFluid, "purity");
-            double strength = mix(otherFluid, "strength");
-            double efficiency = mix(otherFluid, "efficiency");
+            double quality = mixQuality(otherFluid);
+            double purity = mixPurity(otherFluid);
+            double strength = mixStrength(otherFluid);
+            double efficiency = mixEfficiency(otherFluid);
 
             referenceStack.setAmount(referenceStack.getAmount() + otherFluid.getAmount());
             setStats(quality, purity, strength, efficiency);
@@ -77,62 +77,80 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     }
 
     private static void setStats(FluidStack fluidStack, double quality, double purity, double strength, double efficiency) {
-        CompoundTag tag = fluidStack.getOrCreateTag();
-        tag.putDouble("quality", quality);
-        tag.putDouble("purity", purity);
-        tag.putDouble("strength", strength);
-        tag.putDouble("efficiency", efficiency);
+        LCD lcd = new LCD(quality, purity, strength, efficiency);
+        fluidStack.set(Registration.ITEM_LCD_DATA, lcd);
     }
 
-    private double mix(FluidStack other, String tag) {
+    private double mixQuality(FluidStack other) {
         double f = (other.getAmount() / ((float) getAmount() + other.getAmount()));
-        double thisValue = referenceStack.getTag() == null ? 0 : referenceStack.getTag().getDouble(tag);
-        double otherValue = other.getTag() == null ? 0 : other.getTag().getDouble(tag);
+        double thisValue = referenceStack.getOrDefault(Registration.ITEM_LCD_DATA, LCD.DEFAULT).quality();
+        double otherValue = other.getOrDefault(Registration.ITEM_LCD_DATA, LCD.DEFAULT).quality();
+        return (1 - f) * thisValue + f * otherValue;
+    }
+
+    private double mixPurity(FluidStack other) {
+        double f = (other.getAmount() / ((float) getAmount() + other.getAmount()));
+        double thisValue = referenceStack.getOrDefault(Registration.ITEM_LCD_DATA, LCD.DEFAULT).purity();
+        double otherValue = other.getOrDefault(Registration.ITEM_LCD_DATA, LCD.DEFAULT).purity();
+        return (1 - f) * thisValue + f * otherValue;
+    }
+
+    private double mixStrength(FluidStack other) {
+        double f = (other.getAmount() / ((float) getAmount() + other.getAmount()));
+        double thisValue = referenceStack.getOrDefault(Registration.ITEM_LCD_DATA, LCD.DEFAULT).strength();
+        double otherValue = other.getOrDefault(Registration.ITEM_LCD_DATA, LCD.DEFAULT).strength();
+        return (1 - f) * thisValue + f * otherValue;
+    }
+
+    private double mixEfficiency(FluidStack other) {
+        double f = (other.getAmount() / ((float) getAmount() + other.getAmount()));
+        double thisValue = referenceStack.getOrDefault(Registration.ITEM_LCD_DATA, LCD.DEFAULT).efficiency();
+        double otherValue = other.getOrDefault(Registration.ITEM_LCD_DATA, LCD.DEFAULT).efficiency();
         return (1 - f) * thisValue + f * otherValue;
     }
 
     @Override
     public double getQuality() {
-        CompoundTag tag = referenceStack.getTag();
-        return tag == null ? 0 : tag.getDouble("quality");
+        return referenceStack.getOrDefault(Registration.ITEM_LCD_DATA, LCD.DEFAULT).quality();
     }
 
     @Override
     public void setQuality(double quality) {
-        referenceStack.getOrCreateTag().putDouble("quality", quality);
+        LCD lcd = referenceStack.getOrDefault(Registration.ITEM_LCD_DATA, LCD.DEFAULT);
+        referenceStack.set(Registration.ITEM_LCD_DATA, lcd.withQuality(quality));
     }
 
     @Override
     public double getPurity() {
-        CompoundTag tag = referenceStack.getTag();
-        return tag == null ? 0 : tag.getDouble("purity");
+        return referenceStack.getOrDefault(Registration.ITEM_LCD_DATA, LCD.DEFAULT).purity();
     }
 
     @Override
     public void setPurity(double purity) {
-        referenceStack.getOrCreateTag().putDouble("purity", purity);
+        LCD lcd = referenceStack.getOrDefault(Registration.ITEM_LCD_DATA, LCD.DEFAULT);
+        referenceStack.set(Registration.ITEM_LCD_DATA, lcd.withPurity(purity));
     }
 
     @Override
     public double getStrength() {
-        CompoundTag tag = referenceStack.getTag();
-        return tag == null ? 0 : tag.getDouble("strength");
+        return referenceStack.getOrDefault(Registration.ITEM_LCD_DATA, LCD.DEFAULT).strength();
     }
 
     @Override
     public void setStrength(double strength) {
-        referenceStack.getOrCreateTag().putDouble("strength", strength);
+        LCD lcd = referenceStack.getOrDefault(Registration.ITEM_LCD_DATA, LCD.DEFAULT);
+        referenceStack.set(Registration.ITEM_LCD_DATA, lcd.withStrength(strength));
     }
 
     @Override
     public double getEfficiency() {
-        CompoundTag tag = referenceStack.getTag();
-        return tag == null ? 0 : tag.getDouble("efficiency");
+        return referenceStack.getOrDefault(Registration.ITEM_LCD_DATA, LCD.DEFAULT).efficiency();
     }
 
     @Override
     public void setEfficiency(double efficiency) {
-        referenceStack.getOrCreateTag().putDouble("efficiency", efficiency);
+        LCD lcd = referenceStack.getOrDefault(Registration.ITEM_LCD_DATA, LCD.DEFAULT);
+        referenceStack.set(Registration.ITEM_LCD_DATA, lcd.withEfficiency(efficiency));
     }
 
     @Override

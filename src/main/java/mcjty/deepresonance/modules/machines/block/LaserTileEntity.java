@@ -36,7 +36,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -187,9 +187,11 @@ public class LaserTileEntity extends TickingTileEntity {
 
 
     private boolean validRCLTank(TankTileEntity tank) {
-        return tank.getCapability(ForgeCapabilities.FLUID_HANDLER)
-                .map(handler -> LiquidCrystalData.isLiquidCrystal(handler.getFluidInTank(0).getFluid()))
-                .orElse(false);
+        IFluidHandler h = level.getCapability(Capabilities.FluidHandler.BLOCK, tank.getBlockPos(), null);
+        if (h == null) {
+            return false;
+        }
+        return LiquidCrystalData.isLiquidCrystal(h.getFluidInTank(0).getFluid());
     }
 
     private BlockPos findLens() {
@@ -225,7 +227,8 @@ public class LaserTileEntity extends TickingTileEntity {
         BlockEntity te = level.getBlockEntity(tankCoordinate);
         if (te instanceof TankTileEntity tank) {
             if (validRCLTank(tank)) {
-                tank.getCapability(ForgeCapabilities.FLUID_HANDLER).ifPresent(handler -> {
+                IFluidHandler handler = level.getCapability(Capabilities.FluidHandler.BLOCK, tank.getBlockPos(), null);
+                if (handler != null) {
                     FluidStack stack = handler.drain(1000 * mcjty.deepresonance.util.Constants.TANK_BUCKETS, IFluidHandler.FluidAction.SIMULATE);
                     if (!stack.isEmpty()) {
                         stack = handler.drain(1000 * mcjty.deepresonance.util.Constants.TANK_BUCKETS, IFluidHandler.FluidAction.EXECUTE);
@@ -239,7 +242,7 @@ public class LaserTileEntity extends TickingTileEntity {
                         fluidData.setEfficiency(efficiency);
                         FluidStack newStack = fluidData.getFluidStack();
                         if (Math.abs(purity) < 0.01) {
-                            newStack.setAmount(newStack.getAmount()-200);
+                            newStack.setAmount(newStack.getAmount() - 200);
                             if (newStack.getAmount() < 0) {
                                 newStack.setAmount(0);
                             }
@@ -248,7 +251,7 @@ public class LaserTileEntity extends TickingTileEntity {
                             handler.fill(newStack, IFluidHandler.FluidAction.EXECUTE);
                         }
                     }
-                });
+                }
             }
         }
     }
@@ -312,11 +315,6 @@ public class LaserTileEntity extends TickingTileEntity {
 
     public int getCurrentPower() {
         return energyStorage.getEnergyStored();
-    }
-
-    @Override
-    public AABB getRenderBoundingBox() {
-        return new AABB(getBlockPos().getX() - 10, getBlockPos().getY() - 10, getBlockPos().getZ() - 10, getBlockPos().getX() + 10, getBlockPos().getY() + 10, getBlockPos().getZ() + 10);
     }
 
     // Client side

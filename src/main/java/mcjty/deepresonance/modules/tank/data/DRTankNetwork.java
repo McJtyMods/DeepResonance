@@ -8,6 +8,7 @@ import mcjty.lib.varia.OrientationTools;
 import mcjty.lib.worlddata.AbstractWorldData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -114,7 +115,7 @@ public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
 
     @Nonnull
     @Override
-    public CompoundTag save(@Nonnull CompoundTag tagCompound) {
+    public CompoundTag save(@Nonnull CompoundTag tagCompound, HolderLookup.Provider lookupProvider) {
         return driver.save(tagCompound);
     }
 

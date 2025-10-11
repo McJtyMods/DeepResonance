@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
@@ -77,5 +78,11 @@ public class LaserRenderer implements BlockEntityRenderer<LaserTileEntity> {
             RenderHelper.drawBeam(matrixStack, builder, sprite, START, end, player, settingsLaser);
             matrixStack.popPose();
         }
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(LaserTileEntity be) {
+        BlockPos pos = be.getBlockPos();
+        return new AABB(pos.getX() - 10, pos.getY() - 10, pos.getZ() - 10, pos.getX() + 10, pos.getY() + 10, pos.getZ() + 10);
     }
 }

@@ -6,11 +6,11 @@ import mcjty.deepresonance.compat.rftoolscontrol.RFToolsControlSupport;
 import mcjty.deepresonance.modules.radiation.manager.RadiationTickEvent;
 import mcjty.lib.setup.DefaultModSetup;
 import mcjty.lib.varia.Logging;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 public class ModSetup extends DefaultModSetup {
 
@@ -20,7 +20,6 @@ public class ModSetup extends DefaultModSetup {
         NeoForge.EVENT_BUS.register(new ForgeEventHandlers());
         NeoForge.EVENT_BUS.register(new RadiationTickEvent());
         NeoForge.EVENT_BUS.addListener(this::registerCommands);
-        DeepResonanceMessages.registerMessages();
     }
 
     @Override

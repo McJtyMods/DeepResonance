@@ -16,6 +16,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -23,7 +24,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.common.IPlantable;
+import net.neoforged.neoforge.common.SpecialPlantable;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 
@@ -212,7 +213,7 @@ public class RadiationTickEvent {
                         if (random.nextFloat() < poisonBlockChance * str) {
                             world.setBlock(currentPos, RadiationModule.POISONED_DIRT.block().get().defaultBlockState(), Block.UPDATE_NEIGHBORS);
                         }
-                    } else if (TagTools.hasTag(block, BlockTags.LEAVES) || block instanceof IPlantable) {
+                    } else if (TagTools.hasTag(block, BlockTags.LEAVES) || block instanceof SpecialPlantable) {
                         if (random.nextFloat() < removeLeafChance * str) {
                             world.setBlock(currentPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_NEIGHBORS);
                         }

@@ -1,5 +1,6 @@
 package mcjty.deepresonance.modules.radiation.item;
 
+import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.armor.IRadiationArmor;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;

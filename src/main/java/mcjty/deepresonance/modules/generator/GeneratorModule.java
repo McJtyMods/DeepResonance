@@ -13,6 +13,7 @@ import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
 import mcjty.lib.varia.SoundTools;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.BlockItem;
@@ -79,12 +80,12 @@ public class GeneratorModule implements IModule {
     }
 
     @Override
-    public void initDatagen(DataGen dataGen) {
+    public void initDatagen(DataGen dataGen, HolderLookup.Provider lookupProvider) {
         dataGen.add(
                 Dob.blockBuilder(GENERATOR_PART)
                         .blockState(provider -> DataGenHelper.registerGeneratorPart(GENERATOR_PART.block(), provider))
                         .parentedItem()
-                        .standardLoot(TYPE_GENERATOR_PART)
+//                        .standardLoot(TYPE_GENERATOR_PART)    // @todo 1.21
                         .ironPickaxeTags()
                         .shaped(builder -> builder
                                         .define('P', CoreModule.RESONATING_PLATE_ITEM.get())

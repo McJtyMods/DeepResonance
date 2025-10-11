@@ -13,8 +13,10 @@ import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -29,8 +31,8 @@ public class CrystallizerGui extends GenericGuiContainer<CrystallizerTileEntity,
     private EnergyBar energyBar;
     private Label percentage;
 
-    public CrystallizerGui(CrystallizerTileEntity tileEntity, GenericContainer container, Inventory inventory) {
-        super(tileEntity, container, inventory, ManualEntry.EMPTY);
+    public CrystallizerGui(GenericContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, ManualEntry.EMPTY);
 
         imageWidth = CRYSTALIZER_WIDTH;
         imageHeight = CRYSTALIZER_HEIGHT;
@@ -40,13 +42,14 @@ public class CrystallizerGui extends GenericGuiContainer<CrystallizerTileEntity,
     public void init() {
         super.init();
 
-        long maxEnergyStored = tileEntity.getMaxPower();
+        CrystallizerTileEntity be = getBE();
+        long maxEnergyStored = be.getMaxPower();
         energyBar = new EnergyBar()
                 .vertical()
                 .maxValue(maxEnergyStored)
                 .hint(new PositionalLayout.PositionalHint(10, 7, 8, 54))
                 .showText(false)
-                .value(tileEntity.getCurrentPower());
+                .value(be.getCurrentPower());
 
         percentage = new Label()
                 .hint(new PositionalLayout.PositionalHint(54, 44, 32, 14));
@@ -62,12 +65,13 @@ public class CrystallizerGui extends GenericGuiContainer<CrystallizerTileEntity,
 
     @Override
     protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int x, int y) {
-        percentage.text(tileEntity.getProgress() + "%");
+        CrystallizerTileEntity be = getBE();
+        percentage.text(be.getProgress() + "%");
         updateEnergyBar(energyBar);
         super.renderBg(graphics, partialTicks, x, y);
     }
 
-    public static void register() {
-        register(MachinesModule.CRYSTALIZER_CONTAINER.get(), CrystallizerGui::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(MachinesModule.CRYSTALIZER_CONTAINER.get(), CrystallizerGui::new);
     }
 }

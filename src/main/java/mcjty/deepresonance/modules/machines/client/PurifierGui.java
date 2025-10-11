@@ -9,8 +9,10 @@ import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.Panel;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import java.awt.*;
 
@@ -21,8 +23,8 @@ public class PurifierGui extends GenericGuiContainer<PurifierTileEntity, Generic
 
     private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/purifier.png");
 
-    public PurifierGui(PurifierTileEntity tileEntity, GenericContainer container, Inventory inventory) {
-        super(tileEntity, container, inventory, ManualEntry.EMPTY);
+    public PurifierGui(GenericContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, ManualEntry.EMPTY);
 
         imageWidth = PURIFIER_WIDTH;
         imageHeight = PURIFIER_HEIGHT;
@@ -40,7 +42,7 @@ public class PurifierGui extends GenericGuiContainer<PurifierTileEntity, Generic
         window = new Window(this, toplevel);
     }
 
-    public static void register() {
-        register(MachinesModule.PURIFIER_CONTAINER.get(), PurifierGui::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(MachinesModule.PURIFIER_CONTAINER.get(), PurifierGui::new);
     }
 }

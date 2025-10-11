@@ -28,9 +28,9 @@ import static mcjty.lib.builder.TooltipBuilder.key;
 
 public class ItemLiquidInjector extends Item implements ITooltipSettings {
 
-    private final Lazy<TooltipBuilder> tooltipBuilder = () -> new TooltipBuilder()
+    private final Lazy<TooltipBuilder> tooltipBuilder = Lazy.of(() -> new TooltipBuilder()
             .info(key("message.deepresonance.shiftmessage"))
-            .infoShift(header());
+            .infoShift(header()));
 
 
     public ItemLiquidInjector(Properties properties) {

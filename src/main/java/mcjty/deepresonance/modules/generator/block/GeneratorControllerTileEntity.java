@@ -43,9 +43,9 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider provider) {
         boolean working = isPowered();
-        super.onDataPacket(net, packet);
+        super.onDataPacket(net, packet, provider);
 
         if (level.isClientSide) {
             // If needed send a render update.
@@ -70,7 +70,7 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
 
         // @todo optimize this?
         boolean dirty = false;
-        Set<Integer> networks = new HashSet<Integer>();
+        Set<Integer> networks = new HashSet<>();
         for (Direction direction : OrientationTools.DIRECTION_VALUES) {
             BlockPos newC = getBlockPos().relative(direction);
             Block b = level.getBlockState(newC).getBlock();

@@ -19,8 +19,10 @@ import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.gui.widgets.*;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.RedstoneMode;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import java.awt.*;
 
@@ -39,8 +41,8 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
     private TextField minEfficiency;
     private TextField maxAmount;
 
-    public ValveGui(ValveTileEntity tileEntity, GenericContainer container, Inventory inventory) {
-        super(tileEntity, container, inventory, ManualEntry.EMPTY);
+    public ValveGui(GenericContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, ManualEntry.EMPTY);
 
         imageWidth = VALVE_WIDTH;
         imageHeight = VALVE_HEIGHT;
@@ -81,14 +83,15 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
 
         window = new Window(this, toplevel);
 
-        window.bind("redstone", tileEntity, GenericTileEntity.VALUE_RSMODE.name());
+        window.bind("redstone", getBE(), GenericTileEntity.VALUE_RSMODE.name());
         window.event("apply", (source, params) -> updateSettings());
     }
 
     private Panel setupOutputPanel() {
+        ValveTileEntity be = getBE();
         maxAmount = new TextField()
                 .tooltips("The maximum amount of liquid", "in the bottom tank")
-                .text(Integer.toString(tileEntity.getMaxMb()))
+                .text(Integer.toString(be.getMaxMb()))
                 .desiredWidth(45)
                 .desiredHeight(15);
 
@@ -106,19 +109,20 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
     }
 
     private Panel setupInputPanel() {
+        ValveTileEntity be = getBE();
         minPurity = new TextField()
                 .tooltips("The minimum purity % to", "accept the liquid")
-                .text(Integer.toString((int) (tileEntity.getMinPurity() * 100)))
+                .text(Integer.toString((int) (be.getMinPurity() * 100)))
                 .desiredWidth(30)
                 .desiredHeight(15);
         minStrength = new TextField()
                 .tooltips("The minimum strength % to", "accept the liquid")
-                .text(Integer.toString((int) (tileEntity.getMinStrength() * 100)))
+                .text(Integer.toString((int) (be.getMinStrength() * 100)))
                 .desiredWidth(30)
                 .desiredHeight(15);
         minEfficiency = new TextField()
                 .tooltips("The minimum efficiency % to", "accept the liquid")
-                .text(Integer.toString((int) (tileEntity.getMinEfficiency() * 100)))
+                .text(Integer.toString((int) (be.getMinEfficiency() * 100)))
                 .desiredWidth(30)
                 .desiredHeight(15);
         Panel purityPanel = new Panel()
@@ -189,7 +193,7 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
         setValue(VALUE_MAXMB, maxMb);
     }
 
-    public static void register() {
-        register(MachinesModule.VALVE_CONTAINER.get(), ValveGui::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(MachinesModule.VALVE_CONTAINER.get(), ValveGui::new);
     }
 }

@@ -9,6 +9,7 @@ import mcjty.lib.blocks.RBlock;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
@@ -46,7 +47,7 @@ public class TankModule implements IModule {
     }
 
     @Override
-    public void initDatagen(DataGen dataGen) {
+    public void initDatagen(DataGen dataGen, HolderLookup.Provider lookupProvider) {
         dataGen.add(
                 Dob.blockBuilder(TANK)
                         .blockState(provider -> {
@@ -54,7 +55,7 @@ public class TankModule implements IModule {
                                     provider.models().cubeBottomTop("tank", TankTESR.TANK_SIDE, TankTESR.TANK_BOTTOM, TankTESR.TANK_TOP).renderType("translucent"));
                         })
                         .ironPickaxeTags()
-                        .standardLoot(TYPE_TANK)
+//                        .standardLoot(TYPE_TANK)  // @todo 1.21
                         .parentedItem("block/tank")
                         .shaped(builder -> builder
                                         .define('P', CoreModule.RESONATING_PLATE_ITEM.get())

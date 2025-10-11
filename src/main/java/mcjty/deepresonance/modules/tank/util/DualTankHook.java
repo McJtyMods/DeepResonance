@@ -5,8 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import java.lang.ref.WeakReference;
@@ -90,9 +89,9 @@ public class DualTankHook {
             check = true;
             BlockEntity tile = world.getBlockEntity(pos.relative(dir1));
             if (tile != null) {
-                LazyOptional<IFluidHandler> f = tile.getCapability(ForgeCapabilities.FLUID_HANDLER, Direction.DOWN);
-                if (f.isPresent()) {
-                    tank1 = f.orElse(null);
+                IFluidHandler f = world.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(dir1), Direction.DOWN);
+                if (f != null) {
+                    tank1 = f;
                     if (!allowDuplicates && tank2Present() && getTank2().equals(getTank1())) {
                         tank1 = null; //Do not circle-inject
                         return false;
@@ -113,9 +112,9 @@ public class DualTankHook {
             check = true;
             BlockEntity tile = world.getBlockEntity(pos.relative(dir2));
             if (tile != null) {
-                LazyOptional<IFluidHandler> f = tile.getCapability(ForgeCapabilities.FLUID_HANDLER, Direction.UP);
-                if (f.isPresent()) {
-                    tank2 = f.orElse(null);
+                IFluidHandler f = world.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(dir2), Direction.UP);
+                if (f != null) {
+                    tank2 = f;
                     if (!allowDuplicates && tank1Present() && getTank1().equals(getTank2())) {
                         tank2 = null; //Do not circle-inject
                         return false;
