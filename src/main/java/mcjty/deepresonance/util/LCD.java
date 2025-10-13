@@ -8,7 +8,8 @@ import net.minecraft.network.codec.StreamCodec;
 
 public record LCD(double quality, double purity, double strength, double efficiency) {
 
-    public static final LCD DEFAULT = new LCD(0.0, 0.0, 0.0, 0.0);
+    public static final LCD DEFAULT = new LCD(1.0, 1.0, 1.0, 1.0);
+    public static final LCD ZERO = new LCD(0.0, 0.0, 0.0, 0.0);
 
     public static final Codec<LCD> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.DOUBLE.fieldOf("quality").forGetter(LCD::quality),
