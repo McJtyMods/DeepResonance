@@ -176,28 +176,28 @@ public class CoreModule implements IModule {
                                         .define('P', RESONATING_PLATE_ITEM.get()),
                                 "PPP", "PPP", "PPP"),
                 Dob.blockBuilder(RESONATING_CRYSTAL_NATURAL_EMPTY)
-//                        .standardLoot(TYPE_RESONATING_CRYSTAL)    // @todo 1.21
+                        .standardLoot(Registration.ITEM_CRYSTAL_DATA.get())
                         .blockState(provider -> {
                             DataGenHelper.generateCrystal(RESONATING_CRYSTAL_NATURAL_EMPTY.block(), provider, "crystal_empty", "crystal", "empty_crystal");
                         })
                         .parentedItem("block/crystal_empty")
                         .diamondPickaxeTags(),
                 Dob.blockBuilder(RESONATING_CRYSTAL_NATURAL)
-//                        .standardLoot(TYPE_RESONATING_CRYSTAL)    // @todo 1.21
+                        .standardLoot(Registration.ITEM_CRYSTAL_DATA.get())
                         .blockState(provider -> {
                             DataGenHelper.generateCrystal(RESONATING_CRYSTAL_NATURAL.block(), provider, "crystal_full", "crystal", "crystal");
                         })
                         .parentedItem("block/crystal_full")
                         .diamondPickaxeTags(),
                 Dob.blockBuilder(RESONATING_CRYSTAL_GENERATED_EMPTY)
-//                        .standardLoot(TYPE_RESONATING_CRYSTAL)    // @todo 1.21
+                        .standardLoot(Registration.ITEM_CRYSTAL_DATA.get())
                         .blockState(provider -> {
                             DataGenHelper.generateCrystal(RESONATING_CRYSTAL_GENERATED_EMPTY.block(), provider, "crystal_empty_pure", "crystal_generated", "empty_crystal");
                         })
                         .parentedItem("block/crystal_empty_pure")
                         .diamondPickaxeTags(),
                 Dob.blockBuilder(RESONATING_CRYSTAL_GENERATED)
-//                        .standardLoot(TYPE_RESONATING_CRYSTAL)    // @todo 1.21
+                        .standardLoot(Registration.ITEM_CRYSTAL_DATA.get())
                         .blockState(provider -> {
                             DataGenHelper.generateCrystal(RESONATING_CRYSTAL_GENERATED.block(), provider, "crystal_full_pure", "crystal_generated", "crystal");
                         })

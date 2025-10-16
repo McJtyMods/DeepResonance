@@ -2,6 +2,8 @@ package mcjty.deepresonance.modules.core.block;
 
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.util.CrystalConfig;
+import mcjty.deepresonance.setup.Registration;
+import mcjty.deepresonance.util.Crystal;
 import mcjty.deepresonance.util.ItemDataHelper;
 import mcjty.deepresonance.modules.core.util.CrystalHelper;
 import mcjty.lib.tileentity.GenericTileEntity;
@@ -31,11 +33,6 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     // The RF/tick you can get out of a crystal with the above characteristics is:
     //    * RFTick = FullRFTick * (E/100.1) * ((P+2)/102) + 1           (the divide by 100.1 is to make sure we don't go above 20000)
 
-    private double strength = 1.0;
-    private double power = 1.0;         // Default 1% power
-    private double efficiency = 1.0;    // Default 1%
-    private double purity = 1.0;        // Default 1% purity
-
     private float powerPerTick = -1;    // Calculated value that contains the power/tick that is drained for this crystal.
     private int rfPerTick = -1;         // Calculated value that contains the RF/tick for this crystal.
 
@@ -46,19 +43,23 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     }
 
     public double getStrength() {
-        return strength;
+        Crystal data = getData(Registration.CRYSTAL_DATA);
+        return data.strength();
     }
 
     public double getPower() {
-        return power;
+        Crystal data = getData(Registration.CRYSTAL_DATA);
+        return data.power();
     }
 
     public double getEfficiency() {
-        return efficiency;
+        Crystal data = getData(Registration.CRYSTAL_DATA);
+        return data.efficiency();
     }
 
     public double getPurity() {
-        return purity;
+        Crystal data = getData(Registration.CRYSTAL_DATA);
+        return data.purity();
     }
 
     public boolean isGlowing() {
@@ -66,18 +67,18 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     }
 
     public void setStrength(double strength) {
-        this.strength = strength;
-        setChanged();
+        Crystal data = getData(Registration.CRYSTAL_DATA);
+        data = data.withStrength(strength);
+        setData(Registration.CRYSTAL_DATA, data);
     }
 
     public boolean isEmpty() {
-        return power < mcjty.deepresonance.util.Constants.CRYSTAL_MIN_POWER;
+        return getPower() < mcjty.deepresonance.util.Constants.CRYSTAL_MIN_POWER;
     }
 
     public void setPower(double power) {
         boolean oldempty = isEmpty();
-        this.power = power;
-        setChanged();
+        this.setPower(power);
         boolean newempty = isEmpty();
         if (oldempty != newempty) {
             if (level != null) {
@@ -91,8 +92,8 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     public float getPowerPerTick() {
         if (powerPerTick < 0) {
-            double totalRF = ResonatingCrystalTileEntity.getTotalPower(strength, purity);
-            double numticks = totalRF / ResonatingCrystalTileEntity.getRfPerTick(efficiency, purity);
+            double totalRF = ResonatingCrystalTileEntity.getTotalPower(getStrength(), getPurity());
+            double numticks = totalRF / ResonatingCrystalTileEntity.getRfPerTick(getEfficiency(), getPurity());
 //            float numticks = totalRF / getRfPerTick();
             powerPerTick = (float)(100.0 / numticks);
         }
@@ -105,7 +106,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     public int getRfPerTick() {
         if (rfPerTick == -1) {
-            rfPerTick = ResonatingCrystalTileEntity.getRfPerTick(efficiency, purity);
+            rfPerTick = ResonatingCrystalTileEntity.getRfPerTick(getEfficiency(), getPurity());
         }
         return rfPerTick;
     }
@@ -115,13 +116,15 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     }
 
     public void setEfficiency(double efficiency) {
-        this.efficiency = efficiency;
-        setChanged();
+        Crystal data = getData(Registration.CRYSTAL_DATA);
+        data = data.withEfficiency(efficiency);
+        setData(Registration.CRYSTAL_DATA, data);
     }
 
     public void setPurity(double purity) {
-        this.purity = purity;
-        setChanged();
+        Crystal data = getData(Registration.CRYSTAL_DATA);
+        data = data.withPurity(purity);
+        setData(Registration.CRYSTAL_DATA, data);
     }
 
     public void setGlowing(boolean glowing) {
@@ -156,24 +159,12 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     public void loadAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
         super.loadAdditional(tagCompound, provider);
         glowing = tagCompound.getBoolean("glowing");
-        if (tagCompound.contains("Info")) {
-            CompoundTag info = tagCompound.getCompound("Info");
-            strength = info.getDouble("strength");
-            power = info.getDouble("power");
-            efficiency = info.getDouble("efficiency");
-            purity = info.getDouble("purity");
-        }
     }
 
     @Override
     public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
         super.saveAdditional(tagCompound, provider);
         tagCompound.putBoolean("glowing", glowing);
-        CompoundTag info = ItemDataHelper.getOrCreateInfo(tagCompound);
-        info.putDouble("strength", strength);
-        info.putDouble("power", power);
-        info.putDouble("efficiency", efficiency);
-        info.putDouble("purity", purity);
     }
 
     // Special == 0, normal

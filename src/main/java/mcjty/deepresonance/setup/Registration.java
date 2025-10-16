@@ -2,6 +2,7 @@ package mcjty.deepresonance.setup;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.util.Crystal;
 import mcjty.deepresonance.util.LCD;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RBlock;
@@ -66,6 +67,16 @@ public class Registration {
             builder -> builder
                     .persistent(LCD.CODEC)
                     .networkSynchronized(LCD.STREAM_CODEC));
+
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Crystal>> CRYSTAL_DATA = ATTACHMENT_TYPES.register(
+            "crystal", () -> AttachmentType.builder(() -> Crystal.DEFAULT)
+                    .serialize(Crystal.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Crystal>> ITEM_CRYSTAL_DATA = COMPONENTS.registerComponentType(
+            "crystal",
+            builder -> builder
+                    .persistent(Crystal.CODEC)
+                    .networkSynchronized(Crystal.STREAM_CODEC));
 
     public static void register(IEventBus bus) {
         RBLOCKS.register(bus);
