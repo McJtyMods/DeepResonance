@@ -4,6 +4,7 @@ import mcjty.deepresonance.compat.DeepResonanceTOPDriver;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalBlock;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
+import mcjty.deepresonance.modules.core.data.Crystal;
 import mcjty.deepresonance.modules.generator.block.EnergyCollectorBlock;
 import mcjty.deepresonance.modules.generator.block.EnergyCollectorTileEntity;
 import mcjty.deepresonance.modules.generator.util.CollectorConfig;
@@ -175,9 +176,8 @@ public class PedestalTileEntity extends TickingTileEntity {
         BlockState crystalState = level.getBlockState(p);
         if (crystalState.getBlock() instanceof ResonatingCrystalBlock crystalBlock) {
             ItemStack spentCrystal = new ItemStack(crystalBlock.getEmpty(), 1);
-            CompoundTag tagCompound = new CompoundTag();
-            resonatingCrystalTileEntity.saveAdditional(tagCompound, level.registryAccess());
-//            spentCrystal.setTag(tagCompound); // @todo 1.21 data
+            Crystal data = resonatingCrystalTileEntity.getData(CoreModule.CRYSTAL_DATA);
+            spentCrystal.set(CoreModule.ITEM_CRYSTAL_DATA, data);
             inventoryLocator.ejectStack(level, worldPosition, spentCrystal, worldPosition, directions);
             level.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
             SoundTools.playSound(level, crystalState.getSoundType().getBreakSound(), p.getX(), p.getY(), p.getZ(), 1.0f, 1.0f);

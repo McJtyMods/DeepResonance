@@ -1,4 +1,4 @@
-package mcjty.deepresonance.util;
+package mcjty.deepresonance.modules.core.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

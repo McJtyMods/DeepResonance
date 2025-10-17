@@ -2,15 +2,12 @@ package mcjty.deepresonance.setup;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.deepresonance.util.Crystal;
-import mcjty.deepresonance.util.LCD;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RBlock;
 import mcjty.lib.blocks.RBlockRegistry;
 import mcjty.lib.setup.DeferredBlocks;
 import mcjty.lib.setup.DeferredItems;
 import mcjty.lib.tileentity.GenericTileEntity;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -31,7 +28,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -57,26 +53,6 @@ public class Registration {
 
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(BuiltInRegistries.FEATURE, DeepResonance.MODID);
     public static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS = DeferredRegister.create(Registries.ARMOR_MATERIAL, DeepResonance.MODID);
-
-    public static final DeferredHolder<AttachmentType<?>, AttachmentType<LCD>> LCD_DATA = ATTACHMENT_TYPES.register(
-            "lcd", () -> AttachmentType.builder(() -> LCD.DEFAULT)
-                    .serialize(LCD.CODEC)
-                    .build());
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<LCD>> ITEM_LCD_DATA = COMPONENTS.registerComponentType(
-            "lcd",
-            builder -> builder
-                    .persistent(LCD.CODEC)
-                    .networkSynchronized(LCD.STREAM_CODEC));
-
-    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Crystal>> CRYSTAL_DATA = ATTACHMENT_TYPES.register(
-            "crystal", () -> AttachmentType.builder(() -> Crystal.DEFAULT)
-                    .serialize(Crystal.CODEC)
-                    .build());
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Crystal>> ITEM_CRYSTAL_DATA = COMPONENTS.registerComponentType(
-            "crystal",
-            builder -> builder
-                    .persistent(Crystal.CODEC)
-                    .networkSynchronized(Crystal.STREAM_CODEC));
 
     public static void register(IEventBus bus) {
         RBLOCKS.register(bus);

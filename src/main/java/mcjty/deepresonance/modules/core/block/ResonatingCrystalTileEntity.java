@@ -1,15 +1,14 @@
 package mcjty.deepresonance.modules.core.block;
 
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.core.data.Crystal;
+import mcjty.deepresonance.modules.core.data.ResonatingCrystalData;
 import mcjty.deepresonance.modules.core.util.CrystalConfig;
-import mcjty.deepresonance.setup.Registration;
-import mcjty.deepresonance.util.Crystal;
-import mcjty.deepresonance.util.ItemDataHelper;
-import mcjty.deepresonance.modules.core.util.CrystalHelper;
 import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
@@ -17,10 +16,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import javax.annotation.Nonnull;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
 public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
@@ -36,40 +32,39 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     private float powerPerTick = -1;    // Calculated value that contains the power/tick that is drained for this crystal.
     private int rfPerTick = -1;         // Calculated value that contains the RF/tick for this crystal.
 
-    private boolean glowing = false;
-
     public ResonatingCrystalTileEntity(BlockPos pos, BlockState state) {
         super(CoreModule.TYPE_RESONATING_CRYSTAL.get(), pos, state);
     }
 
     public double getStrength() {
-        Crystal data = getData(Registration.CRYSTAL_DATA);
+        Crystal data = getData(CoreModule.CRYSTAL_DATA);
         return data.strength();
     }
 
     public double getPower() {
-        Crystal data = getData(Registration.CRYSTAL_DATA);
+        Crystal data = getData(CoreModule.CRYSTAL_DATA);
         return data.power();
     }
 
     public double getEfficiency() {
-        Crystal data = getData(Registration.CRYSTAL_DATA);
+        Crystal data = getData(CoreModule.CRYSTAL_DATA);
         return data.efficiency();
     }
 
     public double getPurity() {
-        Crystal data = getData(Registration.CRYSTAL_DATA);
+        Crystal data = getData(CoreModule.CRYSTAL_DATA);
         return data.purity();
     }
 
     public boolean isGlowing() {
-        return glowing;
+        ResonatingCrystalData data = getData(CoreModule.RESONATING_CRYSTAL_DATA);
+        return data.glowing();
     }
 
     public void setStrength(double strength) {
-        Crystal data = getData(Registration.CRYSTAL_DATA);
+        Crystal data = getData(CoreModule.CRYSTAL_DATA);
         data = data.withStrength(strength);
-        setData(Registration.CRYSTAL_DATA, data);
+        setData(CoreModule.CRYSTAL_DATA, data);
     }
 
     public boolean isEmpty() {
@@ -116,22 +111,24 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     }
 
     public void setEfficiency(double efficiency) {
-        Crystal data = getData(Registration.CRYSTAL_DATA);
+        Crystal data = getData(CoreModule.CRYSTAL_DATA);
         data = data.withEfficiency(efficiency);
-        setData(Registration.CRYSTAL_DATA, data);
+        setData(CoreModule.CRYSTAL_DATA, data);
     }
 
     public void setPurity(double purity) {
-        Crystal data = getData(Registration.CRYSTAL_DATA);
+        Crystal data = getData(CoreModule.CRYSTAL_DATA);
         data = data.withPurity(purity);
-        setData(Registration.CRYSTAL_DATA, data);
+        setData(CoreModule.CRYSTAL_DATA, data);
     }
 
     public void setGlowing(boolean glowing) {
-        if (this.glowing == glowing) {
+        ResonatingCrystalData data = getData(CoreModule.RESONATING_CRYSTAL_DATA);
+        if (data.glowing() == glowing) {
             return;
         }
-        this.glowing = glowing;
+        data = data.withGlowing(glowing);
+        setData(CoreModule.RESONATING_CRYSTAL_DATA, data);
         markDirtyClient();
     }
 
@@ -147,24 +144,12 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     @Override
     public void loadClientDataFromNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
-        glowing = tagCompound.getBoolean("glowing");
+        setGlowing(tagCompound.getBoolean("glowing"));
     }
 
     @Override
     public void saveClientDataToNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
-        tagCompound.putBoolean("glowing", glowing);
-    }
-
-    @Override
-    public void loadAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
-        super.loadAdditional(tagCompound, provider);
-        glowing = tagCompound.getBoolean("glowing");
-    }
-
-    @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
-        super.saveAdditional(tagCompound, provider);
-        tagCompound.putBoolean("glowing", glowing);
+        tagCompound.putBoolean("glowing", isGlowing());
     }
 
     // Special == 0, normal
@@ -215,6 +200,4 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
             return 1.0f;
         }
     }
-
-
 }

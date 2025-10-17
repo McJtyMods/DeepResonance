@@ -5,6 +5,9 @@ import mcjty.deepresonance.modules.core.block.BlockResonatingPlate;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalBlock;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.core.client.ResonatingCrystalRenderer;
+import mcjty.deepresonance.modules.core.data.Crystal;
+import mcjty.deepresonance.modules.core.data.LCD;
+import mcjty.deepresonance.modules.core.data.ResonatingCrystalData;
 import mcjty.deepresonance.modules.core.fluid.FluidLiquidCrystal;
 import mcjty.deepresonance.modules.core.item.ItemLiquidInjector;
 import mcjty.deepresonance.modules.core.util.CrystalConfig;
@@ -15,8 +18,8 @@ import mcjty.lib.blocks.RBlock;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
-import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.BlockItem;
@@ -26,6 +29,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.bus.api.IEventBus;
@@ -46,6 +50,35 @@ import static mcjty.lib.datagen.DataGen.has;
 public class CoreModule implements IModule {
 
     public static final String TILE_DATA_TAG = "BlockEntityTag";
+
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<LCD>> LCD_DATA = Registration.ATTACHMENT_TYPES.register(
+            "lcd", () -> AttachmentType.builder(() -> LCD.DEFAULT)
+                    .serialize(LCD.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<LCD>> ITEM_LCD_DATA = Registration.COMPONENTS.registerComponentType(
+            "lcd",
+            builder -> builder
+                    .persistent(LCD.CODEC)
+                    .networkSynchronized(LCD.STREAM_CODEC));
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Crystal>> CRYSTAL_DATA = Registration.ATTACHMENT_TYPES.register(
+            "crystal", () -> AttachmentType.builder(() -> Crystal.DEFAULT)
+                    .serialize(Crystal.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Crystal>> ITEM_CRYSTAL_DATA = Registration.COMPONENTS.registerComponentType(
+            "crystal",
+            builder -> builder
+                    .persistent(Crystal.CODEC)
+                    .networkSynchronized(Crystal.STREAM_CODEC));
+
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<ResonatingCrystalData>> RESONATING_CRYSTAL_DATA = Registration.ATTACHMENT_TYPES.register(
+            "resonating_crystal", () -> AttachmentType.builder(() -> ResonatingCrystalData.DEFAULT)
+                    .serialize(ResonatingCrystalData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResonatingCrystalData>> ITEM_RESONATING_CRYSTAL_DATA = Registration.COMPONENTS.registerComponentType(
+            "resonating_crystal",
+            builder -> builder
+                    .persistent(ResonatingCrystalData.CODEC)
+                    .networkSynchronized(ResonatingCrystalData.STREAM_CODEC));
 
     private static final Block.Properties ORE_PROPERTIES = Block.Properties.of()
             .sound(SoundType.STONE)
@@ -176,28 +209,28 @@ public class CoreModule implements IModule {
                                         .define('P', RESONATING_PLATE_ITEM.get()),
                                 "PPP", "PPP", "PPP"),
                 Dob.blockBuilder(RESONATING_CRYSTAL_NATURAL_EMPTY)
-                        .standardLoot(Registration.ITEM_CRYSTAL_DATA.get())
+                        .standardLoot(ITEM_CRYSTAL_DATA.get())
                         .blockState(provider -> {
                             DataGenHelper.generateCrystal(RESONATING_CRYSTAL_NATURAL_EMPTY.block(), provider, "crystal_empty", "crystal", "empty_crystal");
                         })
                         .parentedItem("block/crystal_empty")
                         .diamondPickaxeTags(),
                 Dob.blockBuilder(RESONATING_CRYSTAL_NATURAL)
-                        .standardLoot(Registration.ITEM_CRYSTAL_DATA.get())
+                        .standardLoot(ITEM_CRYSTAL_DATA.get())
                         .blockState(provider -> {
                             DataGenHelper.generateCrystal(RESONATING_CRYSTAL_NATURAL.block(), provider, "crystal_full", "crystal", "crystal");
                         })
                         .parentedItem("block/crystal_full")
                         .diamondPickaxeTags(),
                 Dob.blockBuilder(RESONATING_CRYSTAL_GENERATED_EMPTY)
-                        .standardLoot(Registration.ITEM_CRYSTAL_DATA.get())
+                        .standardLoot(ITEM_CRYSTAL_DATA.get())
                         .blockState(provider -> {
                             DataGenHelper.generateCrystal(RESONATING_CRYSTAL_GENERATED_EMPTY.block(), provider, "crystal_empty_pure", "crystal_generated", "empty_crystal");
                         })
                         .parentedItem("block/crystal_empty_pure")
                         .diamondPickaxeTags(),
                 Dob.blockBuilder(RESONATING_CRYSTAL_GENERATED)
-                        .standardLoot(Registration.ITEM_CRYSTAL_DATA.get())
+                        .standardLoot(ITEM_CRYSTAL_DATA.get())
                         .blockState(provider -> {
                             DataGenHelper.generateCrystal(RESONATING_CRYSTAL_GENERATED.block(), provider, "crystal_full_pure", "crystal_generated", "crystal");
                         })
