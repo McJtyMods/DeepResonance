@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "X": {
+      "tag": "c:ingots/gold"
+    },
+    "d": {
+      "item": "minecraft:diamond"
+    },
+    "e": {
+      "item": "minecraft:emerald"
+    },
+    "m": {
+      "item": "deepresonance:machine_frame"
+    }
+  },
+  "pattern": [
+    "GXG",
+    "eme",
+    "ddd"
+  ],
+  "result": {
+    "count": 1,
+    "id": "deepresonance:laser"
+  }
+}

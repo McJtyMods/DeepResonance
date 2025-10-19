@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "item": "deepresonance:resonating_plate"
+    },
+    "g": {
+      "tag": "c:stones"
+    },
+    "i": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    "iPi",
+    "PgP",
+    "iPi"
+  ],
+  "result": {
+    "count": 1,
+    "id": "deepresonance:machine_frame"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "deepresonance:filter_material"
+    },
+    "i": {
+      "tag": "c:ingots/iron"
+    },
+    "m": {
+      "item": "deepresonance:machine_frame"
+    }
+  },
+  "pattern": [
+    "FFF",
+    "imi",
+    "FFF"
+  ],
+  "result": {
+    "count": 1,
+    "id": "deepresonance:smelter"
+  }
+}

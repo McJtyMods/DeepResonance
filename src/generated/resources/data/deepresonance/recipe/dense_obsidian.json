@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "f": {
+      "item": "deepresonance:spent_filter_material"
+    }
+  },
+  "pattern": [
+    "OfO",
+    "fOf",
+    "OfO"
+  ],
+  "result": {
+    "count": 1,
+    "id": "deepresonance:dense_obsidian"
+  }
+}

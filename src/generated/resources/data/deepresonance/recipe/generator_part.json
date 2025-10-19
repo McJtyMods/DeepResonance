@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "item": "deepresonance:resonating_plate"
+    },
+    "R": {
+      "item": "minecraft:redstone_block"
+    },
+    "X": {
+      "tag": "c:ingots/gold"
+    },
+    "i": {
+      "tag": "c:ingots/iron"
+    },
+    "m": {
+      "item": "deepresonance:machine_frame"
+    }
+  },
+  "pattern": [
+    "XRX",
+    "imi",
+    "PRP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "deepresonance:generator_part"
+  }
+}

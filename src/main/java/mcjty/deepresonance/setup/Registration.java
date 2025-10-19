@@ -2,6 +2,7 @@ package mcjty.deepresonance.setup;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.radiation.item.ItemRadiationSuit;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RBlock;
 import mcjty.lib.blocks.RBlockRegistry;
@@ -68,6 +69,7 @@ public class Registration {
         TABS.register(bus);
         ATTACHMENT_TYPES.register(bus);
         COMPONENTS.register(bus);
+        ItemRadiationSuit.init();
     }
 
     public static Item.Properties createStandardProperties() {

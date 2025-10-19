@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "P": {
+      "item": "deepresonance:resonating_plate"
+    },
+    "i": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    "iPi",
+    "GGG",
+    "iOi"
+  ],
+  "result": {
+    "count": 1,
+    "id": "deepresonance:tank"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "item": "deepresonance:resonating_plate"
+    },
+    "g": {
+      "tag": "c:glass_panes"
+    }
+  },
+  "pattern": [
+    "gPg",
+    "P P",
+    "gPg"
+  ],
+  "result": {
+    "count": 1,
+    "id": "deepresonance:lens"
+  }
+}

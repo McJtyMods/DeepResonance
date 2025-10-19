@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "minecraft:comparator"
+    },
+    "o": {
+      "tag": "c:ender_pearls"
+    },
+    "q": {
+      "item": "minecraft:quartz"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "x": {
+      "item": "minecraft:clock"
+    }
+  },
+  "pattern": [
+    "qCq",
+    "ror",
+    "qxq"
+  ],
+  "result": {
+    "count": 1,
+    "id": "deepresonance:radiation_monitor"
+  }
+}

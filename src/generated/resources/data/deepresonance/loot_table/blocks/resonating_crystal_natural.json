@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "mcjtylib:item_energy",
+                "mcjtylib:item_inventory",
+                "deepresonance:crystal"
+              ],
+              "source": "block_entity"
+            }
+          ],
+          "name": "deepresonance:resonating_crystal_natural"
+        }
+      ],
+      "name": "resonating_crystal_natural",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "deepresonance:blocks/resonating_crystal_natural"
+}

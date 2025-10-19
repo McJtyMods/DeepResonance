@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "tag": "minecraft:coals"
+    },
+    "g": {
+      "tag": "c:gravels"
+    },
+    "s": {
+      "tag": "minecraft:sand"
+    }
+  },
+  "pattern": [
+    "gcg",
+    "csc",
+    "gcg"
+  ],
+  "result": {
+    "count": 8,
+    "id": "deepresonance:filter_material"
+  }
+}

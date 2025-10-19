@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "X": {
+      "tag": "c:ingots/gold"
+    },
+    "i": {
+      "tag": "c:ingots/iron"
+    },
+    "m": {
+      "item": "deepresonance:machine_frame"
+    },
+    "q": {
+      "item": "minecraft:quartz"
+    }
+  },
+  "pattern": [
+    "GXG",
+    "qmq",
+    "iii"
+  ],
+  "result": {
+    "count": 1,
+    "id": "deepresonance:crystallizer"
+  }
+}

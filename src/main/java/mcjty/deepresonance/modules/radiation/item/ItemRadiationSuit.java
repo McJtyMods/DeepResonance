@@ -24,6 +24,11 @@ import java.util.Map;
 
 public class ItemRadiationSuit extends GenericArmorItem implements IRadiationArmor {
 
+    // To force class loading
+    public static void init() {
+
+    }
+
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> ARMOR_MATERIAL = Registration.ARMOR_MATERIALS.register("resonating_armor", () -> new ArmorMaterial(
             Map.of(
                     ArmorItem.Type.HELMET, 1,

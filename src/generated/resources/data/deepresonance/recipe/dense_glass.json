@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "f": {
+      "item": "deepresonance:spent_filter_material"
+    }
+  },
+  "pattern": [
+    "fGf",
+    "GOG",
+    "fGf"
+  ],
+  "result": {
+    "count": 1,
+    "id": "deepresonance:dense_glass"
+  }
+}
