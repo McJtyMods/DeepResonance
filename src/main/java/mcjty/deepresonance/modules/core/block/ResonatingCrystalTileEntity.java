@@ -73,7 +73,9 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     public void setPower(double power) {
         boolean oldempty = isEmpty();
-        this.setPower(power);
+        Crystal data = getData(CoreModule.CRYSTAL_DATA);
+        data.withPower(power);
+        setData(CoreModule.CRYSTAL_DATA, data);
         boolean newempty = isEmpty();
         if (oldempty != newempty) {
             if (level != null) {
@@ -156,14 +158,19 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     protected void collectImplicitComponents(DataComponentMap.Builder components) {
         super.collectImplicitComponents(components);
         components.set(CoreModule.ITEM_RESONATING_CRYSTAL_DATA, getData(CoreModule.RESONATING_CRYSTAL_DATA));
+        components.set(CoreModule.ITEM_CRYSTAL_DATA, getData(CoreModule.CRYSTAL_DATA));
     }
 
     @Override
     protected void applyImplicitComponents(DataComponentInput input) {
         super.applyImplicitComponents(input);
-        ResonatingCrystalData data = input.get(CoreModule.ITEM_RESONATING_CRYSTAL_DATA);
-        if (data != null) {
-            setData(CoreModule.RESONATING_CRYSTAL_DATA, data);
+        ResonatingCrystalData rcdata = input.get(CoreModule.ITEM_RESONATING_CRYSTAL_DATA);
+        if (rcdata != null) {
+            setData(CoreModule.RESONATING_CRYSTAL_DATA, rcdata);
+        }
+        Crystal cdata = input.get(CoreModule.ITEM_CRYSTAL_DATA);
+        if (cdata != null) {
+            setData(CoreModule.CRYSTAL_DATA, cdata);
         }
     }
 

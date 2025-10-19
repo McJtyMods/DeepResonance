@@ -2,10 +2,10 @@ package mcjty.deepresonance.modules.core.block;
 
 import mcjty.deepresonance.compat.DeepResonanceTOPDriver;
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.core.data.Crystal;
 import mcjty.deepresonance.modules.radiation.manager.DRRadiationManager;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.util.Constants;
-import mcjty.deepresonance.util.ItemDataHelper;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
@@ -20,10 +20,9 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
@@ -34,13 +33,11 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -181,33 +178,33 @@ public class ResonatingCrystalBlock extends BaseBlock {
 
     @Override
     public void appendHoverText(@Nonnull ItemStack stack, Item.TooltipContext context, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
-        CompoundTag tagCompound = ItemDataHelper.getInfoTag(stack);
-
         super.appendHoverText(stack, context, tooltip, flag);
 
-        float power = 100.0f;
-        if (tagCompound != null) {
-            power = (float) tagCompound.getDouble("power");
+        Crystal data = stack.get(CoreModule.ITEM_CRYSTAL_DATA);
+
+        double power = 100.0;
+        if (data != null) {
+            power = data.power();
         }
         if (power > Constants.CRYSTAL_MIN_POWER) {
             tooltip.add(ComponentFactory.translatable("message.deepresonance.crystal_power"));
         } else {
             tooltip.add(ComponentFactory.translatable("message.deepresonance.crystal_empty"));
         }
-        if (tagCompound != null) {
-            addBasicInformation(tooltip::add, tagCompound, power, true);
+        if (data != null) {
+            addBasicInformation(tooltip::add, data, power, true);
         }
     }
 
-    public static void addBasicInformation(Consumer<Component> tooltip, CompoundTag tag, float power, boolean showPower) {
+    public static void addBasicInformation(Consumer<Component> tooltip, Crystal data, double power, boolean showPower) {
         DecimalFormat decimalFormat = new DecimalFormat("#.#");
         decimalFormat.setRoundingMode(RoundingMode.DOWN);
         tooltip.accept(ComponentFactory.translatable("message.deepresonance.crystal_sep")
                 .withStyle(ChatFormatting.GREEN)
                 .append(": "
-                        + decimalFormat.format(tag.getFloat("strength")) + "% "
-                        + decimalFormat.format(tag.getFloat("efficiency")) + "% "
-                        + decimalFormat.format(tag.getFloat("purity")) + "%"
+                        + decimalFormat.format(data.strength()) + "% "
+                        + decimalFormat.format(data.efficiency()) + "% "
+                        + decimalFormat.format(data.purity()) + "%"
                 )
         );
         if (showPower) {

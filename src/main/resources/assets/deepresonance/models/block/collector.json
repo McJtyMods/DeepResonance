@@ -1,6 +1,6 @@
 {
   "parent": "block/cube",
-  "loader": "forge:obj",
+  "loader": "neoforge:obj",
   "model": "deepresonance:models/block/collector.obj",
   "flip_v": true
 }
