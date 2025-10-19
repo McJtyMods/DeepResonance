@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
 import mcjty.deepresonance.modules.generator.data.GeneratorBlob;
+import mcjty.deepresonance.modules.generator.data.GeneratorPartData;
 import mcjty.deepresonance.modules.generator.data.NetworkEnergyStorage;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.lib.multiblock.IMultiblockConnector;
@@ -30,16 +31,15 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import javax.annotation.Nonnull;
 import java.util.Set;
+import java.util.function.Function;
 
 public class GeneratorPartTileEntity extends TickingTileEntity implements IMultiblockConnector {
 
     private int blobId = -1;
 
-    @Cap(type = CapType.ENERGY)
     private final NetworkEnergyStorage energyStorage = new NetworkEnergyStorage(this);
-
-    // This is used when the block is broken so the remaining energy can be stored in the drop
-    private int preservedEnergy;
+    @Cap(type = CapType.ENERGY)
+    private static final Function<GeneratorPartTileEntity, NetworkEnergyStorage> ENERGY_CAP = tile -> tile.energyStorage;
 
     public GeneratorPartTileEntity(BlockPos pos, BlockState state) {
         super(GeneratorModule.TYPE_GENERATOR_PART.get(), pos, state);
@@ -81,7 +81,8 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
             addBlockToNetwork();
             GeneratorBlob network = getBlob();
             if (network != null) {
-                int energy = ItemDataHelper.getInfoInt(stack, "preserved", 0);
+                GeneratorPartData data = stack.getOrDefault(GeneratorModule.ITEM_GENERATOR_PART_DATA, GeneratorPartData.DEFAULT);
+                int energy = data.preservedEnergy();
                 if (energy > 0) {
                     getDriver().modify(getMultiblockId(), holder -> holder.getMb().setEnergy(holder.getMb().getEnergy() + energy));
                 }
@@ -98,9 +99,9 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
                     int generatorBlocks = network.getGeneratorBlocks();
                     int energy = generatorBlocks == 0 ? 0 : (network.getEnergy() / generatorBlocks);
                     network.setEnergy(network.getEnergy() - energy);
-                    preservedEnergy = energy;
+                    setData(GeneratorModule.GENERATOR_PART_DATA, new GeneratorPartData(energy));
                 } else {
-                    preservedEnergy = 0;
+                    setData(GeneratorModule.GENERATOR_PART_DATA, new GeneratorPartData(0));
                 }
                 setChanged();
                 removeBlockFromNetwork();
@@ -192,15 +193,11 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
         blobId = tag.getInt("networkId");
-        if (tag.contains("Info")) {
-            preservedEnergy = tag.getCompound("Info").getInt("preserved");
-        }
     }
 
     @Override
     public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
         tag.putInt("networkId", blobId);
-        ItemDataHelper.getOrCreateInfo(tag).putInt("preserved", preservedEnergy);
     }
 }

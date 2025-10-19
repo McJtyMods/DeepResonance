@@ -32,6 +32,8 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
 
+import java.util.function.Function;
+
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 
 public class ValveTileEntity extends TickingTileEntity {
@@ -40,9 +42,9 @@ public class ValveTileEntity extends TickingTileEntity {
             .playerSlots(10, 70));
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Valve")
-            .containerSupplier(container(MachinesModule.VALVE_CONTAINER, CONTAINER_FACTORY,this))
-            .setupSync(this));
+    private static final Function<ValveTileEntity, MenuProvider> screenHandler = be -> new DefaultContainerProvider<GenericContainer>("Valve")
+            .containerSupplier(container(MachinesModule.VALVE_CONTAINER, CONTAINER_FACTORY, be))
+            .setupSync(be);
 
     private final DualTankHook tankHook = new DualTankHook(this, Direction.UP, Direction.DOWN);
 

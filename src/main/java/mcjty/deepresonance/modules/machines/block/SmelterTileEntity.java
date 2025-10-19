@@ -14,6 +14,7 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
+import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -22,6 +23,7 @@ import mcjty.lib.varia.TagTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.ItemStack;
@@ -35,6 +37,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
+import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.container.SlotDefinition.generic;
@@ -55,20 +58,22 @@ public class SmelterTileEntity extends TickingTileEntity {
             .slot(generic().in().out(), SLOT, 64, 24)
             .playerSlots(10, 70));
 
-    @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
             .itemValid((integer, itemStack) -> itemStack.is(DeepResonanceTags.RESONANT_ORE_ITEM))
             .build();
+    @Cap(type = CapType.ITEMS_AUTOMATION)
+    private static final Function<SmelterTileEntity, GenericItemHandler> ITEMS_CAP = tile -> tile.items;
 
-    @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SmelterConfig.POWER_MAXIMUM.get(), SmelterConfig.POWER_PER_TICK_IN.get());
+    @Cap(type = CapType.ENERGY)
+    private static final Function<SmelterTileEntity, GenericEnergyStorage> ENERGY_CAP = tile -> tile.energyStorage;
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Smelter")
-            .containerSupplier(container(MachinesModule.SMELTER_CONTAINER, CONTAINER_FACTORY, this))
-            .energyHandler(() -> energyStorage)
-            .itemHandler(() -> items)
-            .setupSync(this));
+    private static final Function<SmelterTileEntity, MenuProvider> screenHandler = be -> new DefaultContainerProvider<GenericContainer>("Smelter")
+            .containerSupplier(container(MachinesModule.SMELTER_CONTAINER, CONTAINER_FACTORY, be))
+            .energyHandler(() -> be.energyStorage)
+            .itemHandler(() -> be.items)
+            .setupSync(be);
 
     private float finalQuality = 1.0f;  // Calculated quality based on the amount of lava in the lava tank
     private float finalPurity = 0.1f;   // Calculated quality based on the amount of lava in the lava tank
@@ -219,4 +224,17 @@ public class SmelterTileEntity extends TickingTileEntity {
         return energyStorage.getEnergyStored();
     }
 
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        energyStorage.applyImplicitComponents(input.get(Registration.ITEM_ENERGY));
+        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        energyStorage.collectImplicitComponents(builder);
+        items.collectImplicitComponents(builder);
+    }
 }

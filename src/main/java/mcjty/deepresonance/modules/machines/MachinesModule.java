@@ -4,28 +4,32 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.block.*;
 import mcjty.deepresonance.modules.machines.client.*;
+import mcjty.deepresonance.modules.machines.data.CrystalizerData;
 import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
+import mcjty.deepresonance.modules.machines.data.LaserData;
 import mcjty.deepresonance.modules.machines.item.ItemLens;
 import mcjty.deepresonance.modules.machines.util.config.*;
-import mcjty.lib.blocks.BaseBlock;
 import mcjty.deepresonance.setup.Registration;
+import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RBlock;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.function.Supplier;
@@ -94,6 +98,24 @@ public class MachinesModule implements IModule {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrystallizerTileEntity>> TYPE_CRYSTALIZER = CRYSTALLIZER.be();
     public static final Supplier<MenuType<GenericContainer>> CRYSTALIZER_CONTAINER = CONTAINERS.register("crystallizer", GenericContainer::createContainerType);
 
+    // No attachment type needed
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CrystalizerData>> ITEM_CRYSTALIZER_DATA = Registration.COMPONENTS.registerComponentType(
+            "crystalizer",
+            builder -> builder
+                    .persistent(CrystalizerData.CODEC)
+                    .networkSynchronized(CrystalizerData.STREAM_CODEC));
+
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<LaserData>> LASER_DATA = Registration.ATTACHMENT_TYPES.register(
+            "laser", () -> AttachmentType.builder(() -> LaserData.DEFAULT)
+                    .serialize(LaserData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<LaserData>> ITEM_LASER_DATA = Registration.COMPONENTS.registerComponentType(
+            "laser",
+            builder -> builder
+                    .persistent(LaserData.CODEC)
+                    .networkSynchronized(LaserData.STREAM_CODEC));
+
+
     public MachinesModule(IEventBus bus) {
         bus.addListener(this::registerMenuScreens);
     }
@@ -132,7 +154,7 @@ public class MachinesModule implements IModule {
                 Dob.blockBuilder(VALVE)
                         .ironPickaxeTags()
                         .parentedItem()
-//                        .standardLoot(TYPE_VALVE) // @todo 1.21
+                        .standardLoot()
                         .blockState(provider -> provider.simpleBlock(VALVE.block().get(), provider.models().cubeBottomTop(provider.name(VALVE.block().get()), ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/valve"), DEFAULT_BOTTOM, DEFAULT_TOP)))
                         .shaped(builder -> builder
                                         .define('F', CoreModule.FILTER_MATERIAL_ITEM.get())
@@ -143,7 +165,7 @@ public class MachinesModule implements IModule {
                 Dob.blockBuilder(SMELTER)
                         .ironPickaxeTags()
                         .parentedItem()
-//                        .standardLoot(TYPE_SMELTER)   // @todo 1.21
+                        .standardLoot()
                         .blockState(provider -> provider.horizontalOrientedBlock(SMELTER.block().get(), (state, builder) -> {
                             if (state.getValue(BlockStateProperties.POWERED)) {
                                 builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()) + "_active", ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/smelter_active"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
@@ -159,7 +181,7 @@ public class MachinesModule implements IModule {
                 Dob.blockBuilder(PURIFIER)
                         .ironPickaxeTags()
                         .parentedItem()
-//                        .standardLoot(TYPE_PURIFIER)  // @todo 1.21
+                        .standardLoot()
                         .blockState(provider -> provider.horizontalOrientedBlock(PURIFIER.block().get(),
                                 (state, builder) -> builder.modelFile(provider.frontBasedModel(
                                         provider.name(state.getBlock()), ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/purifier"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM))))
@@ -188,7 +210,7 @@ public class MachinesModule implements IModule {
                 Dob.blockBuilder(LASER)
                         .ironPickaxeTags()
                         .parentedItem()
-//                        .standardLoot(TYPE_LASER) // @todo 1.21
+                        .standardLoot(ITEM_LASER_DATA.get())
                         .blockState(provider -> provider.horizontalOrientedBlock(LASER.block().get(), DataGenHelper.createLaserModel(provider)))
                         .shaped(builder -> builder
                                         .define('m', CoreModule.MACHINE_FRAME_ITEM.get())
@@ -198,7 +220,7 @@ public class MachinesModule implements IModule {
                 Dob.blockBuilder(CRYSTALLIZER)
                         .ironPickaxeTags()
                         .parentedItem()
-//                        .standardLoot(TYPE_CRYSTALIZER)   // @todo 1.21
+                        .standardLoot(ITEM_CRYSTALIZER_DATA.get(), CoreModule.ITEM_LCD_DATA.get())
                         .blockState(provider -> provider.horizontalBlock(CRYSTALLIZER.block().get(), DataGenHelper.createCrystallizerModel(provider)))
                         .shaped(builder -> builder
                                         .define('q', Items.QUARTZ)

@@ -5,6 +5,7 @@ import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.tank.data.DRTankHandler;
 import mcjty.deepresonance.modules.tank.data.DRTankNetwork;
 import mcjty.deepresonance.modules.tank.data.TankBlob;
+import mcjty.deepresonance.modules.tank.data.TankData;
 import mcjty.deepresonance.util.ItemDataHelper;
 import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.multiblock.IMultiblockConnector;
@@ -18,6 +19,7 @@ import mcjty.lib.varia.Tools;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
@@ -41,6 +43,7 @@ import javax.annotation.Nonnull;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.function.Function;
 
 public class TankTileEntity extends GenericTileEntity implements IMultiblockConnector {
 
@@ -52,10 +55,11 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     private float renderHeight; //Value from 0.0f to 1.0f
 
     // Only used when the tank is broken and needs to be put back later
-    private FluidStack preservedFluid = FluidStack.EMPTY;
+//    private FluidStack preservedFluid = FluidStack.EMPTY;
 
-    @Cap(type = CapType.FLUIDS)
     private final DRTankHandler fluidHandler = createFluidHandler();
+    @Cap(type = CapType.FLUIDS)
+    private static final Function<TankTileEntity, DRTankHandler> FLUID_CAP = tile -> tile.fluidHandler;
 
     public TankTileEntity(BlockPos pos, BlockState state) {
         super(TankModule.TYPE_TANK.get(), pos, state);
@@ -102,9 +106,6 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         super.saveAdditional(tagCompound, provider);
         tagCompound.putInt("blobid", blobId);
         saveClientDataToNBT(tagCompound, provider);
-        if (!preservedFluid.isEmpty()) {
-            ItemDataHelper.getOrCreateInfo(tagCompound).put("preserved", (CompoundTag) preservedFluid.saveOptional(provider));
-        }
     }
 
     @Override
@@ -112,16 +113,6 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         super.loadAdditional(tagCompound, provider);
         blobId = tagCompound.contains("blobid") ? tagCompound.getInt("blobid") : -1;
         loadClientDataFromNBT(tagCompound, provider);
-        if (tagCompound.contains("Info")) {
-            CompoundTag info = tagCompound.getCompound("Info");
-            if (info.contains("preserved")) {
-                preservedFluid = FluidStack.parseOptional(provider, info.getCompound("preserved"));
-            } else {
-                preservedFluid = FluidStack.EMPTY;
-            }
-        } else {
-            preservedFluid = FluidStack.EMPTY;
-        }
     }
 
     @Override
@@ -148,6 +139,36 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
             }
         } else {
             clientRenderFluid = LiquidCrystalData.EMPTY;
+        }
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        // @todo 1.21 check!
+//        var data = input.get(TankModule.ITEM_TANK_DATA);
+//        if (data != null) {
+//            setData(CoalGeneratorModule.COAL_GENERATOR_DATA, data);
+//        }
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        TankBlob network = getBlob();
+        if (network != null) {
+            FluidStack preservedFluid;
+            LiquidCrystalData data = network.getData();
+            if (!data.isEmpty()) {
+                preservedFluid = data.getFluidStack().copy();
+                // @todo 1.21 is it correct to do this here?
+                int amount = data.getAmount() / network.getTankBlocks();
+                preservedFluid.setAmount(amount);
+                data.setAmount(data.getAmount() - amount);
+            } else {
+                preservedFluid = FluidStack.EMPTY;
+            }
+            builder.set(TankModule.ITEM_TANK_DATA, new TankData(preservedFluid));
         }
     }
 
@@ -209,19 +230,20 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     public void onReplaced(Level world, BlockPos pos, BlockState state, BlockState newstate) {
         if (!world.isClientSide()) {
             if (newstate.getBlock() != TankModule.TANK.block().get()) {
-                TankBlob network = getBlob();
-                if (network != null) {
-                    LiquidCrystalData data = network.getData();
-                    if (!data.isEmpty()) {
-                        preservedFluid = data.getFluidStack().copy();
-                        int amount = data.getAmount() / network.getTankBlocks();
-                        preservedFluid.setAmount(amount);
-                        data.setAmount(data.getAmount() - amount);
-                    } else {
-                        preservedFluid = FluidStack.EMPTY;
-                    }
-                    setChanged();
-                }
+                // @todo 1.21 check!
+//                TankBlob network = getBlob();
+//                if (network != null) {
+//                    LiquidCrystalData data = network.getData();
+//                    if (!data.isEmpty()) {
+//                        preservedFluid = data.getFluidStack().copy();
+//                        int amount = data.getAmount() / network.getTankBlocks();
+//                        preservedFluid.setAmount(amount);
+//                        data.setAmount(data.getAmount() - amount);
+//                    } else {
+//                        preservedFluid = FluidStack.EMPTY;
+//                    }
+//                    setChanged();
+//                }
                 removeBlockFromNetwork();
             }
 

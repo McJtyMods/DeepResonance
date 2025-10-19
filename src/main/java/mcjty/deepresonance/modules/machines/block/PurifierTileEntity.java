@@ -15,6 +15,7 @@ import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.container.InventoryLocator;
+import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.TickingTileEntity;
@@ -22,6 +23,7 @@ import mcjty.lib.varia.OrientationTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.ItemStack;
@@ -31,6 +33,8 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
+
+import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.container.GenericItemHandler.match;
@@ -46,16 +50,17 @@ public class PurifierTileEntity extends TickingTileEntity {
             .slot(specific(CoreModule.FILTER_MATERIAL_ITEM.get()).in().out(), SLOT, 64, 24)
             .playerSlots(10, 70));
 
-    @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
             .itemValid(match(CoreModule.FILTER_MATERIAL_ITEM))
             .build();
+    @Cap(type = CapType.ITEMS_AUTOMATION)
+    private static final Function<PurifierTileEntity, GenericItemHandler> ITEMS_CAP = tile -> tile.items;
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Purifier")
-            .containerSupplier(container(MachinesModule.PURIFIER_CONTAINER, CONTAINER_FACTORY,this))
-            .itemHandler(() -> items)
-            .setupSync(this));
+    private static final Function<PurifierTileEntity, MenuProvider> SCREEN_CAP = be -> new DefaultContainerProvider<GenericContainer>("Purifier")
+            .containerSupplier(container(MachinesModule.PURIFIER_CONTAINER, CONTAINER_FACTORY, be))
+            .itemHandler(() -> be.items)
+            .setupSync(be);
 
     // Cache for the inventory used to put the spent filter material in.
     private final InventoryLocator inventoryLocator = new InventoryLocator();
@@ -169,7 +174,7 @@ public class PurifierTileEntity extends TickingTileEntity {
         super.saveAdditional(tagCompound, provider);
         tagCompound.putInt("timeToGo", timeToGo);
         if (processing != null) {
-            tagCompound.put("processing", (CompoundTag) processing.getFluidStack().saveOptional(provider));
+            tagCompound.put("processing", processing.getFluidStack().saveOptional(provider));
         }
     }
 
@@ -182,6 +187,18 @@ public class PurifierTileEntity extends TickingTileEntity {
         } else {
             processing = null;
         }
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        items.collectImplicitComponents(builder);
     }
 
 }

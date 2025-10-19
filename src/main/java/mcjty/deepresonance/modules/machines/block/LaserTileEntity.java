@@ -4,12 +4,14 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.data.InfusingBonus;
 import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
+import mcjty.deepresonance.modules.machines.data.LaserData;
 import mcjty.deepresonance.modules.machines.util.config.LaserConfig;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.deepresonance.util.ItemDataHelper;
 import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
+import mcjty.lib.bindings.Value;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
@@ -21,6 +23,7 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.TickingTileEntity;
+import mcjty.lib.typed.Type;
 import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.core.BlockPos;
@@ -35,13 +38,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
+import java.util.function.Function;
 
 import static mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry.COLOR_RED;
 import static mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry.COLOR_YELLOW;
@@ -62,7 +65,7 @@ public class LaserTileEntity extends TickingTileEntity {
     private int progressCounter = 0;
 
     @GuiValue
-    private float crystalLiquid = 0;
+    public static final Value<?, Float> VALUE_LIQUID = Value.<LaserTileEntity, Float>create("crystalLiquid", Type.FLOAT, LaserTileEntity::getCrystalLiquid, LaserTileEntity::setCrystalLiquid);
 
     private int color = 0;          // 0 means not active, > 0 means a color laser
 
@@ -72,7 +75,6 @@ public class LaserTileEntity extends TickingTileEntity {
             .slot(generic().out(), SLOT_ACTIVE_CATALYST, 21, 48)
             .playerSlots(10, 70));
 
-    @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
             .itemValid((slot, stack) -> {
                 if (slot == SLOT_CRYSTAL) {
@@ -86,16 +88,19 @@ public class LaserTileEntity extends TickingTileEntity {
             .insertable(notslot(SLOT_ACTIVE_CATALYST))
             .extractable(yes())
             .build();
+    @Cap(type = CapType.ITEMS_AUTOMATION)
+    private static final Function<LaserTileEntity, GenericItemHandler> ITEMS_CAP = tile -> tile.items;
 
-    @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, LaserConfig.POWER_MAXIMUM.get(), LaserConfig.POWER_PER_TICK_IN.get());
+    @Cap(type = CapType.ENERGY)
+    private static final Function<LaserTileEntity, GenericEnergyStorage> ENERGY_CAP = tile -> tile.energyStorage;
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Laser")
-            .containerSupplier((windowId, player) -> new LaserContainer(MachinesModule.LASER_CONTAINER, windowId, CONTAINER_FACTORY, this, player))
-            .itemHandler(() -> items)
-            .energyHandler(() -> energyStorage)
-            .setupSync(this));
+    private static final Function<LaserTileEntity, MenuProvider> SCREEN_CAP = be -> new DefaultContainerProvider<GenericContainer>("Laser")
+            .containerSupplier((windowId, player) -> new LaserContainer(MachinesModule.LASER_CONTAINER, windowId, CONTAINER_FACTORY, be, player))
+            .itemHandler(() -> be.items)
+            .energyHandler(() -> be.energyStorage)
+            .setupSync(be);
 
     public LaserTileEntity(BlockPos pos, BlockState state) {
         super(MachinesModule.TYPE_LASER.get(), pos, state);
@@ -155,7 +160,8 @@ public class LaserTileEntity extends TickingTileEntity {
             return;
         }
 
-        if (crystalLiquid < LaserConfig.CRYSTAL_LIQUID_PER_CATALYST.get()) {
+        LaserData data = getData(MachinesModule.LASER_DATA);
+        if (data.crystalLiquid() < LaserConfig.CRYSTAL_LIQUID_PER_CATALYST.get()) {
             changeColor(0);
             return;
         }
@@ -222,7 +228,10 @@ public class LaserTileEntity extends TickingTileEntity {
         // We consume stuff even if the tank does not have enough liquid. Player has to be careful
         items.decrStackSize(SLOT_CATALYST, 1);
         energyStorage.consumeEnergy(LaserConfig.RFUSE_PER_CATALYST.get());
+        LaserData data = getData(MachinesModule.LASER_DATA);
+        float crystalLiquid = data.crystalLiquid();
         crystalLiquid -= LaserConfig.CRYSTAL_LIQUID_PER_CATALYST.get();
+        setData(MachinesModule.LASER_DATA, data.withCrystalLiquid(crystalLiquid));
 
         BlockEntity te = level.getBlockEntity(tankCoordinate);
         if (te instanceof TankTileEntity tank) {
@@ -282,14 +291,14 @@ public class LaserTileEntity extends TickingTileEntity {
             if (tagCompound != null && tagCompound.contains("strength")) {
                 strength = (float) tagCompound.getDouble("strength") / 100.0f;
             }
+        LaserData data = getData(MachinesModule.LASER_DATA);
             int toAdd = (int) (LaserConfig.MIN_CRYSTAL_LIQUID_PER_CRYSTAL.get() + strength * (LaserConfig.MAX_CRYSTAL_LIQUID_PER_CRYSTAL.get() - LaserConfig.MIN_CRYSTAL_LIQUID_PER_CRYSTAL.get()));
-            float amt = crystalLiquid + toAdd;
+            float amt = data.crystalLiquid() + toAdd;
             if (amt > LaserConfig.CRYSTAL_LIQUID_MAXIMUM.get()) {
                 return;
             }
             stack.shrink(1);
-            crystalLiquid = amt;
-            setChanged();
+            setData(MachinesModule.LASER_DATA, data.withCrystalLiquid(amt));
         }
     }
 
@@ -297,16 +306,12 @@ public class LaserTileEntity extends TickingTileEntity {
     public void loadAdditional(CompoundTag tagCompound, HolderLookup.Provider provider) {
         super.loadAdditional(tagCompound, provider);
         progressCounter = tagCompound.getInt("progress");
-        if (tagCompound.contains("Info")) {
-            crystalLiquid = tagCompound.getCompound("Info").getFloat("liquid");
-        }
     }
 
     @Override
     public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
         super.saveAdditional(tagCompound, provider);
         tagCompound.putInt("progress", progressCounter);
-        ItemDataHelper.getOrCreateInfo(tagCompound).putFloat("liquid", crystalLiquid);
     }
 
     public int getMaxPower() {
@@ -317,8 +322,13 @@ public class LaserTileEntity extends TickingTileEntity {
         return energyStorage.getEnergyStored();
     }
 
-    // Client side
     public float getCrystalLiquid() {
-        return crystalLiquid;
+        LaserData data = getData(MachinesModule.LASER_DATA);
+        return data.crystalLiquid();
+    }
+
+    public void setCrystalLiquid(float v) {
+        LaserData data = getData(MachinesModule.LASER_DATA);
+        setData(MachinesModule.LASER_DATA, data.withCrystalLiquid(v));
     }
 }

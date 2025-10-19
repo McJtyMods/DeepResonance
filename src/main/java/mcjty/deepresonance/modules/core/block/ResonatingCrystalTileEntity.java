@@ -7,7 +7,7 @@ import mcjty.deepresonance.modules.core.util.CrystalConfig;
 import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -150,6 +150,21 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     @Override
     public void saveClientDataToNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
         tagCompound.putBoolean("glowing", isGlowing());
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        components.set(CoreModule.ITEM_RESONATING_CRYSTAL_DATA, getData(CoreModule.RESONATING_CRYSTAL_DATA));
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        ResonatingCrystalData data = input.get(CoreModule.ITEM_RESONATING_CRYSTAL_DATA);
+        if (data != null) {
+            setData(CoreModule.RESONATING_CRYSTAL_DATA, data);
+        }
     }
 
     // Special == 0, normal

@@ -5,6 +5,7 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.generator.block.*;
 import mcjty.deepresonance.modules.generator.client.ClientSetup;
 import mcjty.deepresonance.modules.generator.client.CollectorRenderer;
+import mcjty.deepresonance.modules.generator.data.GeneratorPartData;
 import mcjty.deepresonance.modules.generator.util.CollectorConfig;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.deepresonance.setup.Registration;
@@ -14,16 +15,18 @@ import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
 import mcjty.lib.varia.SoundTools;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.function.Supplier;
@@ -59,6 +62,16 @@ public class GeneratorModule implements IModule {
     );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GeneratorPartTileEntity>> TYPE_GENERATOR_PART = GENERATOR_PART.be();
 
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<GeneratorPartData>> GENERATOR_PART_DATA = Registration.ATTACHMENT_TYPES.register(
+            "generator_part", () -> AttachmentType.builder(() -> GeneratorPartData.DEFAULT)
+                    .serialize(GeneratorPartData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<GeneratorPartData>> ITEM_GENERATOR_PART_DATA = Registration.COMPONENTS.registerComponentType(
+            "generator_part",
+            builder -> builder
+                    .persistent(GeneratorPartData.CODEC)
+                    .networkSynchronized(GeneratorPartData.STREAM_CODEC));
+
     public static final Supplier<SoundEvent> STARTUP_SOUND = Registration.SOUNDS.register("engine_start", () -> SoundTools.createSoundEvent(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "engine_start")));
     public static final Supplier<SoundEvent> LOOP_SOUND = Registration.SOUNDS.register("engine_loop", () -> SoundTools.createSoundEvent(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "engine_loop")));
     public static final Supplier<SoundEvent> SHUTDOWN_SOUND = Registration.SOUNDS.register("engine_shutdown", () -> SoundTools.createSoundEvent(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "engine_shutdown")));
@@ -85,7 +98,7 @@ public class GeneratorModule implements IModule {
                 Dob.blockBuilder(GENERATOR_PART)
                         .blockState(provider -> DataGenHelper.registerGeneratorPart(GENERATOR_PART.block(), provider))
                         .parentedItem()
-//                        .standardLoot(TYPE_GENERATOR_PART)    // @todo 1.21
+                        .standardLoot(ITEM_GENERATOR_PART_DATA.get())
                         .ironPickaxeTags()
                         .shaped(builder -> builder
                                         .define('P', CoreModule.RESONATING_PLATE_ITEM.get())

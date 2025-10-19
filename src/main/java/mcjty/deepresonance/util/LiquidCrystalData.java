@@ -27,6 +27,12 @@ public class LiquidCrystalData implements ILiquidCrystalData {
         return fluidStack;
     }
 
+    public static FluidStack makeLiquidCrystalStack(int amount, LCD lcd) {
+        FluidStack fluidStack = new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), amount);
+        fluidStack.set(CoreModule.ITEM_LCD_DATA, lcd);
+        return fluidStack;
+    }
+
     public static FluidStack makeLiquidCrystalStack(int amount) {
         return makeLiquidCrystalStack(amount, 0, 0, 0, 0);
     }
@@ -156,6 +162,10 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     @Override
     public int getAmount() {
         return referenceStack.getAmount();
+    }
+
+    public LCD getLCD() {
+        return referenceStack.getOrDefault(CoreModule.ITEM_LCD_DATA, LCD.ZERO);
     }
 
     @Override

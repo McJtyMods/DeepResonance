@@ -2,9 +2,10 @@ package mcjty.deepresonance.modules.machines.block;
 
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
+import mcjty.deepresonance.modules.core.data.LCD;
 import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.machines.data.CrystalizerData;
 import mcjty.deepresonance.modules.machines.util.config.CrystallizerConfig;
-import mcjty.deepresonance.util.ItemDataHelper;
 import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.BaseBlock;
@@ -14,23 +15,24 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
+import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.TickingTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-import javax.annotation.Nonnull;
+import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.container.GenericItemHandler.no;
@@ -45,22 +47,24 @@ public class CrystallizerTileEntity extends TickingTileEntity {
             .slot(generic().out(), SLOT, 64, 24)
             .playerSlots(10, 70));
 
-    @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
             .itemValid((integer, stack) -> stack.getItem() == CoreModule.RESONATING_CRYSTAL_GENERATED.item().get())
             .insertable(no())
             .extractable(yes())
             .build();
+    @Cap(type = CapType.ITEMS_AUTOMATION)
+    private final static Function<CrystallizerTileEntity, GenericItemHandler> ITEMS_CAP = tile -> tile.items;
 
-    @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, CrystallizerConfig.POWER_MAXIMUM.get(), CrystallizerConfig.POWER_PER_TICK_IN.get());
+    @Cap(type = CapType.ENERGY)
+    private final static Function<CrystallizerTileEntity, GenericEnergyStorage> ENERGY_CAP = tile -> tile.energyStorage;
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Crystalizer")
-            .containerSupplier(container(MachinesModule.CRYSTALIZER_CONTAINER, CONTAINER_FACTORY,this))
-            .itemHandler(() -> items)
-            .energyHandler(() -> energyStorage)
-            .setupSync(this));
+    private static final Function<CrystallizerTileEntity, MenuProvider> SCREEN_CAP = be -> new DefaultContainerProvider<GenericContainer>("Crystalizer")
+            .containerSupplier(container(MachinesModule.CRYSTALIZER_CONTAINER, CONTAINER_FACTORY, be))
+            .itemHandler(() -> be.items)
+            .energyHandler(() -> be.energyStorage)
+            .setupSync(be);
 
     private int progress = 0;
     private LiquidCrystalData crystalData;
@@ -181,25 +185,28 @@ public class CrystallizerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tagCompound, HolderLookup.Provider provider) {
-        super.loadAdditional(tagCompound, provider);
-        CompoundTag info = tagCompound.getCompound("Info");
-        if (info.contains("crystalData")) {
-            crystalData = LiquidCrystalData.fromStack(FluidStack.parseOptional(provider, info.getCompound("crystalData")));
-        } else {
-            crystalData = null;
+    protected void collectImplicitComponents(DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        if (crystalData != null) {
+            components.set(MachinesModule.ITEM_CRYSTALIZER_DATA, new CrystalizerData(crystalData.getAmount(), progress));
+            components.set(CoreModule.ITEM_LCD_DATA, crystalData.getLCD());
         }
-        progress = info.getInt("progress");
+        energyStorage.collectImplicitComponents(components);
+        items.collectImplicitComponents(components);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
-        super.saveAdditional(tagCompound, provider);
-        CompoundTag info = ItemDataHelper.getOrCreateInfo(tagCompound);
-        if (crystalData != null) {
-            info.put("crystalData", (CompoundTag) crystalData.getFluidStack().saveOptional(provider));
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        CrystalizerData cdata = input.get(MachinesModule.ITEM_CRYSTALIZER_DATA);
+        LCD lcd = input.get(CoreModule.ITEM_LCD_DATA);
+        if (cdata != null && lcd != null) {
+            FluidStack stack = LiquidCrystalData.makeLiquidCrystalStack(cdata.amount(), lcd);
+            crystalData = LiquidCrystalData.fromStack(stack);
+            progress = cdata.progress();
         }
-        info.putInt("progress", progress);
+        energyStorage.applyImplicitComponents(input.get(Registration.ITEM_ENERGY));
+        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
     }
 
     private static int getRclPerCrystal() {

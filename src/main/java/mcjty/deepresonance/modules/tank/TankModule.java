@@ -4,20 +4,20 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.tank.blocks.TankBlock;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.deepresonance.modules.tank.client.TankTESR;
+import mcjty.deepresonance.modules.tank.data.TankData;
 import mcjty.deepresonance.setup.Registration;
 import mcjty.lib.blocks.RBlock;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
-
-import java.util.function.Supplier;
 
 public class TankModule implements IModule {
 
@@ -29,6 +29,13 @@ public class TankModule implements IModule {
             TankTileEntity::new
     );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TankTileEntity>> TYPE_TANK = TANK.be();
+
+    // No attachment type needed
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<TankData>> ITEM_TANK_DATA = Registration.COMPONENTS.registerComponentType(
+            "tank",
+            builder -> builder
+                    .persistent(TankData.CODEC)
+                    .networkSynchronized(TankData.STREAM_CODEC));
 
     public TankModule() {
     }
@@ -55,7 +62,7 @@ public class TankModule implements IModule {
                                     provider.models().cubeBottomTop("tank", TankTESR.TANK_SIDE, TankTESR.TANK_BOTTOM, TankTESR.TANK_TOP).renderType("translucent"));
                         })
                         .ironPickaxeTags()
-//                        .standardLoot(TYPE_TANK)  // @todo 1.21
+                        .standardLoot(ITEM_TANK_DATA.get())
                         .parentedItem("block/tank")
                         .shaped(builder -> builder
                                         .define('P', CoreModule.RESONATING_PLATE_ITEM.get())

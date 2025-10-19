@@ -16,6 +16,7 @@ import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.container.InventoryLocator;
+import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.TickingTileEntity;
@@ -23,7 +24,7 @@ import mcjty.lib.varia.OrientationTools;
 import mcjty.lib.varia.SoundTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
@@ -40,6 +41,7 @@ import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 import static mcjty.deepresonance.DeepResonance.SHIFT_MESSAGE;
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
@@ -55,16 +57,17 @@ public class PedestalTileEntity extends TickingTileEntity {
             .slot(specific(PedestalTileEntity::isValidCrystal).in(), SLOT_CRYSTAL, 64, 24)
             .playerSlots(10, 70));
 
-    @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
             .itemValid((slot, stack) -> isValidCrystal(stack)
             ).build();
+    @Cap(type = CapType.ITEMS_AUTOMATION)
+    private static final Function<PedestalTileEntity, GenericItemHandler> ITEMS_CAP = tile -> tile.items;
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Pedestal")
-            .containerSupplier(container(PedestalModule.CONTAINER_PEDESTAL, CONTAINER_FACTORY, this))
-            .itemHandler(() -> items)
-            .setupSync(this));
+    private static final Function<PedestalTileEntity, MenuProvider> SCREEN_CAP = be -> new DefaultContainerProvider<GenericContainer>("Pedestal")
+            .containerSupplier(container(PedestalModule.CONTAINER_PEDESTAL, CONTAINER_FACTORY, be))
+            .itemHandler(() -> be.items)
+            .setupSync(be);
 
     public PedestalTileEntity(BlockPos pos, BlockState state) {
         super(PedestalModule.TYPE_PEDESTAL.get(), pos, state);
@@ -214,5 +217,17 @@ public class PedestalTileEntity extends TickingTileEntity {
             }
         }
         return cachedLocator != null;
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        items.collectImplicitComponents(builder);
     }
 }
