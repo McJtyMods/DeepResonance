@@ -1,20 +1,21 @@
 package mcjty.deepresonance.modules.generator.block;
 
 import mcjty.deepresonance.compat.DeepResonanceTOPDriver;
+import mcjty.deepresonance.modules.generator.GeneratorModule;
+import mcjty.deepresonance.modules.generator.data.GeneratorPartData;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
-import mcjty.deepresonance.util.ItemDataHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,7 +33,8 @@ public class GeneratorPartBlock extends BaseBlock {
     }
 
     private static String getPowerString(ItemStack stack) {
-        return ItemDataHelper.getInfoInt(stack, "preserved", 0) + "FE";
+        GeneratorPartData data = stack.getOrDefault(GeneratorModule.ITEM_GENERATOR_PART_DATA, GeneratorPartData.DEFAULT);
+        return data.preservedEnergy() + "FE";
     }
 
     @Override

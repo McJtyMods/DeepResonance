@@ -1,13 +1,13 @@
 package mcjty.deepresonance.modules.machines.block;
 
 import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.core.data.Crystal;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.data.InfusingBonus;
 import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
 import mcjty.deepresonance.modules.machines.data.LaserData;
 import mcjty.deepresonance.modules.machines.util.config.LaserConfig;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
-import mcjty.deepresonance.util.ItemDataHelper;
 import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
@@ -286,12 +286,9 @@ public class LaserTileEntity extends TickingTileEntity {
     private void checkCrystal() {
         ItemStack stack = items.getStackInSlot(SLOT_CRYSTAL);
         if (!stack.isEmpty()) {
-            CompoundTag tagCompound = ItemDataHelper.getInfoTag(stack);
-            float strength = 0;
-            if (tagCompound != null && tagCompound.contains("strength")) {
-                strength = (float) tagCompound.getDouble("strength") / 100.0f;
-            }
-        LaserData data = getData(MachinesModule.LASER_DATA);
+            Crystal crystal = stack.getOrDefault(CoreModule.ITEM_CRYSTAL_DATA, Crystal.ZERO);
+            double strength = crystal.strength() / 100.0;
+            LaserData data = getData(MachinesModule.LASER_DATA);
             int toAdd = (int) (LaserConfig.MIN_CRYSTAL_LIQUID_PER_CRYSTAL.get() + strength * (LaserConfig.MAX_CRYSTAL_LIQUID_PER_CRYSTAL.get() - LaserConfig.MIN_CRYSTAL_LIQUID_PER_CRYSTAL.get()));
             float amt = data.crystalLiquid() + toAdd;
             if (amt > LaserConfig.CRYSTAL_LIQUID_MAXIMUM.get()) {

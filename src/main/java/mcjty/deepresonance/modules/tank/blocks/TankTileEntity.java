@@ -6,7 +6,6 @@ import mcjty.deepresonance.modules.tank.data.DRTankHandler;
 import mcjty.deepresonance.modules.tank.data.DRTankNetwork;
 import mcjty.deepresonance.modules.tank.data.TankBlob;
 import mcjty.deepresonance.modules.tank.data.TankData;
-import mcjty.deepresonance.util.ItemDataHelper;
 import mcjty.deepresonance.util.LiquidCrystalData;
 import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
@@ -212,10 +211,10 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
             addBlockToNetwork();
             TankBlob network = getBlob();
             if (network != null) {
-                CompoundTag infoTag = ItemDataHelper.getInfoTag(stack);
-                if (infoTag != null && infoTag.contains("preserved")) {
+                TankData data = stack.get(TankModule.ITEM_TANK_DATA);
+                if (data != null && !data.preservedLiquid().isEmpty()) {
                     getDriver().modify(getMultiblockId(), holder -> {
-                        FluidStack fluidStack = FluidStack.parseOptional(world.registryAccess(), infoTag.getCompound("preserved"));
+                        FluidStack fluidStack = data.preservedLiquid();
                         if (!fluidStack.isEmpty()) {
                             holder.getMb().fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
                             updateHeightsForClient();

@@ -4,6 +4,7 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.util.Constants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -16,52 +17,48 @@ public class CrystalHelper {
         return power < Constants.CRYSTAL_MIN_POWER;
     }
 
-    public static int getRfPerTick(double efficiency, double purity) {
-        return (int) (CrystalConfig.MAX_POWER_TICK.get() * efficiency / 100.1 * (purity + 2.0) / 102.0 + 1);
-    }
+    public static void spawnCrystal(Level world, Random random, BlockPos pos, CrystalOption type) {
+        float strength = 0;
+        float power = 0;
+        float efficiency = 0;
+        float purity = 0;
 
-    public static double getTotalPower(double strength, double purity) {
-        return 1000.0 * CrystalConfig.MAX_POWER_STORED.get() * strength / 100.0 * (purity + 30.0) / 130.0;
-    }
-
-    // Special == 0, normal
-    // Special == 1, average random
-    // Special == 2, best random
-    // Special == 3, best non-overcharged
-    // Special == 4, almost depleted
-    public static void spawnRandomCrystal(Level world, Random random, BlockPos pos, int special) {
-        float strength;
-        float power;
-        float efficiency;
-        float purity;
-
-        if (special >= 5) {
-            strength = 1;
-            power = 0.05f;
-            efficiency = 1;
-            purity = 100;
-        } else if (special >= 3) {
-            strength = power = efficiency = 100;
-            purity = special == 4 ? 1 : 100;
-        } else {
-            strength = getRandomSpecial(random, special) * 3.0f + 0.01f;
-            power = getRandomSpecial(random, special) * 60.0f + 0.2f;
-            efficiency = getRandomSpecial(random, special) * 3.0f + 0.1f;
-            purity = getRandomSpecial(random, special) * 10.0f + 5.0f;
+        switch (type) {
+            case DEFAULT:
+                strength = 20.0f;
+                power = 100.0f;
+                efficiency = 20.0f;
+                purity = 20.0f;
+                break;
+            case DEPLETED:
+                strength = 20.0f;
+                power = 0.001f;
+                efficiency = 20.0f;
+                purity = 20.0f;
+                break;
+            case RANDOM:
+                strength = random.nextFloat() * 100.0f;
+                power = random.nextFloat() * 100.0f;
+                efficiency = random.nextFloat() *  100.0f;
+                purity = random.nextFloat() *   100.0f;
+                break;
+            case MAX:
+                strength = 100.0f;
+                power = 100.0f;
+                efficiency = 100.0f;
+                purity = 100.0f;
+                break;
+            case DIRTY:
+                strength = 100.0f;
+                power = 100.0f;
+                efficiency = 100.0f;
+                purity = 1.0f;
+                break;
         }
-
         spawnCrystal(world, pos, strength, power, efficiency, purity);
     }
 
-    public static void spawnRandomCrystal(Level world, Random random, BlockPos pos, float str, float pow, float eff, float pur) {
-        spawnCrystal(world, pos,
-                Math.min(100.0f, random.nextFloat() * pur * 10.0f + 5.0f),
-                Math.min(100.0f, random.nextFloat() * str * 3.0f + 0.01f),
-                Math.min(100.0f, random.nextFloat() * eff * 3.0f + 0.1f),
-                Math.min(100.0f, random.nextFloat() * pow * 60.0f + 0.2f));
-    }
-
-    public static void spawnCrystal(Level world, BlockPos pos, float purity, float strength, float efficiency, float power) {
+    private static void spawnCrystal(Level world, BlockPos pos, float purity, float strength, float efficiency, float power) {
         world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_GENERATED.block().get().defaultBlockState(), Block.UPDATE_ALL);
         BlockEntity te = world.getBlockEntity(pos);
         if (te instanceof ResonatingCrystalTileEntity crystal) {
@@ -72,14 +69,16 @@ public class CrystalHelper {
         }
     }
 
-    private static float getRandomSpecial(Random random, int special) {
-        if (special == 0) {
-            return random.nextFloat();
-        } else if (special == 1) {
-            return .5f;
-        } else {
-            return 1.0f;
+    public enum CrystalOption implements StringRepresentable {
+        DEFAULT,
+        DEPLETED,
+        RANDOM,
+        MAX,
+        DIRTY;
+
+        @Override
+        public String getSerializedName() {
+            return getSerializedName();
         }
     }
-
 }

@@ -74,7 +74,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     public void setPower(double power) {
         boolean oldempty = isEmpty();
         Crystal data = getData(CoreModule.CRYSTAL_DATA);
-        data.withPower(power);
+        data = data.withPower(power);
         setData(CoreModule.CRYSTAL_DATA, data);
         boolean newempty = isEmpty();
         if (oldempty != newempty) {

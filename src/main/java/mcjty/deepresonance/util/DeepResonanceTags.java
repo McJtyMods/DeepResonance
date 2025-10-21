@@ -11,7 +11,7 @@ public class DeepResonanceTags {
 
     public static final TagKey<Block> RESONANT_ORE = TagTools.createBlockTagKey(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "resonant_ore"));
     public static final TagKey<Item> RESONANT_ORE_ITEM = TagTools.createItemTagKey(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "resonant_ore"));
-    public static final TagKey<Block> STORAGE_BLOCKS_LEAD = TagTools.createBlockTagKey(ResourceLocation.fromNamespaceAndPath("forge", "storage_blocks/lead"));
+    public static final TagKey<Block> STORAGE_BLOCKS_LEAD = TagTools.createBlockTagKey(ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/lead"));
 
     public static void init() {
 

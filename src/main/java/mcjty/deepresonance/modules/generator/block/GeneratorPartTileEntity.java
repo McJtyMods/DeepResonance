@@ -14,7 +14,6 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.EnergyTools;
-import mcjty.deepresonance.util.ItemDataHelper;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

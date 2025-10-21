@@ -23,9 +23,11 @@ public class ResonatingCrystalRenderer implements BlockEntityRenderer<Resonating
     @Override
     public void render(ResonatingCrystalTileEntity tileEntity, float partialTicks, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
         if (tileEntity.isGlowing()) {
-            DelayedRenderer.addRender(RenderType.translucent(), tileEntity.getBlockPos(), (stack, buf) -> {
-                RenderHelper.renderSplitBillboard(matrixStack, buf, .6f, new Vec3(0, 0, 0), ClientSetup.REDHALO);
-            });
+            RenderHelper.renderSplitBillboard(matrixStack, buffer.getBuffer(RenderType.TRANSLUCENT), .6f, new Vec3(0, 0, 0), ClientSetup.REDHALO);
+//
+//            DelayedRenderer.addRender(RenderType.translucent(), tileEntity.getBlockPos(), (stack, buf) -> {
+//                RenderHelper.renderSplitBillboard(matrixStack, buf, .6f, new Vec3(0, 0, 0), ClientSetup.REDHALO);
+//            });
         }
     }
 

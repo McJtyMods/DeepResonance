@@ -196,7 +196,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
         }
     }
 
-    public static void addBasicInformation(Consumer<Component> tooltip, Crystal data, double power, boolean showPower) {
+    private static void addBasicInformation(Consumer<Component> tooltip, Crystal data, double power, boolean showPower) {
         DecimalFormat decimalFormat = new DecimalFormat("#.#");
         decimalFormat.setRoundingMode(RoundingMode.DOWN);
         tooltip.accept(ComponentFactory.translatable("message.deepresonance.crystal_sep")
