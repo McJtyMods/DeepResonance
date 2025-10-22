@@ -104,8 +104,10 @@ public class ResonatingCrystalBlock extends BaseBlock {
 
     public ItemStack createStack(ResonatingCrystalTileEntity crystal) {
         ItemStack ret = new ItemStack(this);
+        Crystal data = crystal.getData(CoreModule.CRYSTAL_DATA);
         HolderLookup.Provider provider = crystal.getLevel() != null ? crystal.getLevel().registryAccess() : builtInProvider();
-        BlockItem.setBlockEntityData(ret, CoreModule.TYPE_RESONATING_CRYSTAL.get(), (CompoundTag) crystal.saveWithoutMetadata(provider));
+        ret.set(CoreModule.ITEM_CRYSTAL_DATA, data);
+//        BlockItem.setBlockEntityData(ret, CoreModule.TYPE_RESONATING_CRYSTAL.get(), crystal.saveWithoutMetadata(provider));
         return ret;
     }
 

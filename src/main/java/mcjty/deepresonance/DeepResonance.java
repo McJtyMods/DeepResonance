@@ -49,6 +49,7 @@ public class DeepResonance {
         bus.addListener(setup::init);
         bus.addListener(modules::init);
         bus.addListener(this::onDataGen);
+        bus.addListener(setup.getBlockCapabilityRegistrar(Registration.RBLOCKS));
         bus.addListener(DeepResonanceMessages::registerMessages);
 
         if (dist.isClient()) {

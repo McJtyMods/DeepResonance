@@ -162,7 +162,6 @@ public class PedestalTileEntity extends TickingTileEntity {
     };
 
     private void checkCrystal() {
-        BlockPos p = getCrystalPosition();
         Optional<Boolean> powerLow = getCrystal().map(tile -> tile.getPower() <= EnergyCollectorTileEntity.CRYSTAL_MIN_POWER);
         if (powerLow.orElse(false)) {
             dropCrystal();
@@ -170,21 +169,18 @@ public class PedestalTileEntity extends TickingTileEntity {
     }
 
     public void dropCrystal() {
-        Optional<ResonatingCrystalTileEntity> crystal = getCrystal();
-        if (!crystal.isPresent()) {
-            return;
-        }
-        ResonatingCrystalTileEntity resonatingCrystalTileEntity = crystal.get();
-        BlockPos p = resonatingCrystalTileEntity.getBlockPos();
-        BlockState crystalState = level.getBlockState(p);
-        if (crystalState.getBlock() instanceof ResonatingCrystalBlock crystalBlock) {
-            ItemStack spentCrystal = new ItemStack(crystalBlock.getEmpty(), 1);
-            Crystal data = resonatingCrystalTileEntity.getData(CoreModule.CRYSTAL_DATA);
-            spentCrystal.set(CoreModule.ITEM_CRYSTAL_DATA, data);
-            inventoryLocator.ejectStack(level, worldPosition, spentCrystal, worldPosition, directions);
-            level.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-            SoundTools.playSound(level, crystalState.getSoundType().getBreakSound(), p.getX(), p.getY(), p.getZ(), 1.0f, 1.0f);
-        }
+        getCrystal().ifPresent(crystal -> {
+            BlockPos p = crystal.getBlockPos();
+            BlockState crystalState = level.getBlockState(p);
+            if (crystalState.getBlock() instanceof ResonatingCrystalBlock crystalBlock) {
+                ItemStack spentCrystal = new ItemStack(crystalBlock.getEmpty(), 1);
+                Crystal data = crystal.getData(CoreModule.CRYSTAL_DATA);
+                spentCrystal.set(CoreModule.ITEM_CRYSTAL_DATA, data);
+                inventoryLocator.ejectStack(level, worldPosition, spentCrystal, worldPosition, directions);
+                level.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+                SoundTools.playSound(level, crystalState.getSoundType().getBreakSound(), p.getX(), p.getY(), p.getZ(), 1.0f, 1.0f);
+            }
+        });
     }
 
     private boolean findCollector() {

@@ -98,7 +98,10 @@ public class MachinesModule implements IModule {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrystallizerTileEntity>> TYPE_CRYSTALIZER = CRYSTALLIZER.be();
     public static final Supplier<MenuType<GenericContainer>> CRYSTALIZER_CONTAINER = CONTAINERS.register("crystallizer", GenericContainer::createContainerType);
 
-    // No attachment type needed
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<CrystalizerData>> CRYSTALIZER_DATA = Registration.ATTACHMENT_TYPES.register(
+            "crystalizer", () -> AttachmentType.builder(() -> CrystalizerData.DEFAULT)
+                    .serialize(CrystalizerData.CODEC)
+                    .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CrystalizerData>> ITEM_CRYSTALIZER_DATA = Registration.COMPONENTS.registerComponentType(
             "crystalizer",
             builder -> builder

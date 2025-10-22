@@ -66,7 +66,6 @@ public class CrystallizerTileEntity extends TickingTileEntity {
             .energyHandler(() -> be.energyStorage)
             .setupSync(be);
 
-    private int progress = 0;
     private LiquidCrystalData crystalData;
     private IFluidHandler rclTank;
     private int tankCooldown = 0;
@@ -119,8 +118,9 @@ public class CrystallizerTileEntity extends TickingTileEntity {
             setChanged();
         }
         int newProgress = crystalData == null ? 0 : (int) ((crystalData.getAmount() / (float) getRclPerCrystal()) * 100);
-        if (progress != newProgress) {
-            progress = newProgress;
+        CrystalizerData data = getData(MachinesModule.CRYSTALIZER_DATA);
+        if (data.progress() != newProgress) {
+            setProgress(newProgress);
             markDirtyClient();
         }
     }
@@ -176,19 +176,19 @@ public class CrystallizerTileEntity extends TickingTileEntity {
 
     @Override
     public void loadClientDataFromNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
-        progress = tagCompound.getInt("progress");
+        setProgress(tagCompound.getInt("progress"));
     }
 
     @Override
     public void saveClientDataToNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
-        tagCompound.putInt("progress", progress);
+        tagCompound.putInt("progress", getProgress());
     }
 
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder components) {
         super.collectImplicitComponents(components);
         if (crystalData != null) {
-            components.set(MachinesModule.ITEM_CRYSTALIZER_DATA, new CrystalizerData(crystalData.getAmount(), progress));
+            components.set(MachinesModule.ITEM_CRYSTALIZER_DATA, new CrystalizerData(crystalData.getAmount(), getProgress()));
             components.set(CoreModule.ITEM_LCD_DATA, crystalData.getLCD());
         }
         energyStorage.collectImplicitComponents(components);
@@ -203,7 +203,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
         if (cdata != null && lcd != null) {
             FluidStack stack = LiquidCrystalData.makeLiquidCrystalStack(cdata.amount(), lcd);
             crystalData = LiquidCrystalData.fromStack(stack);
-            progress = cdata.progress();
+            setProgress(cdata.progress());
         }
         energyStorage.applyImplicitComponents(input.get(Registration.ITEM_ENERGY));
         items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
@@ -215,7 +215,11 @@ public class CrystallizerTileEntity extends TickingTileEntity {
 
     // Client side
     public int getProgress() {
-        return progress;
+        return getData(MachinesModule.CRYSTALIZER_DATA).progress();
     }
 
+    public void setProgress(int progress) {
+        CrystalizerData data = getData(MachinesModule.CRYSTALIZER_DATA).withProgress(progress);
+        setData(MachinesModule.CRYSTALIZER_DATA, data);
+    }
 }

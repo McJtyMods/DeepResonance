@@ -13,7 +13,7 @@ public record TankData(FluidStack preservedLiquid) {
     public static final TankData DEFAULT = new TankData(FluidStack.EMPTY);
 
     public static final Codec<TankData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            FluidStack.CODEC.fieldOf("liquid").forGetter(TankData::preservedLiquid)
+            FluidStack.OPTIONAL_CODEC.fieldOf("liquid").forGetter(TankData::preservedLiquid)
     ).apply(instance, TankData::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, TankData> STREAM_CODEC = StreamCodec.composite(
