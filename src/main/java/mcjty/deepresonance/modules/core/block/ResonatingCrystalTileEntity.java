@@ -11,12 +11,8 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.Random;
 
 public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
@@ -80,7 +76,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         if (oldempty != newempty) {
             if (level != null) {
                 if (getBlockState().getBlock() instanceof ResonatingCrystalBlock crystalBlock) {
-                    level.setBlock(worldPosition, crystalBlock.getEmpty().defaultBlockState(), BlockResonatingPlate.UPDATE_ALL_IMMEDIATE);
+                    level.setBlock(worldPosition, getBlockState(), BlockResonatingPlate.UPDATE_ALL_IMMEDIATE);
                 }
             }
             setChanged();
@@ -171,55 +167,6 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
         Crystal cdata = input.get(CoreModule.ITEM_CRYSTAL_DATA);
         if (cdata != null) {
             setData(CoreModule.CRYSTAL_DATA, cdata);
-        }
-    }
-
-    // Special == 0, normal
-    // Special == 1, average random
-    // Special == 2, best random
-    // Special == 3, best non-overcharged
-    // Special == 4, almost depleted
-    public static void spawnRandomCrystal(Level world, Random random, BlockPos pos, int special) {
-        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_GENERATED.block().get().defaultBlockState(), Block.UPDATE_ALL);
-        BlockEntity te = world.getBlockEntity(pos);
-        if (te instanceof ResonatingCrystalTileEntity crystal) {
-            if (special >= 5) {
-                crystal.setStrength(1);
-                crystal.setPower(.05f);
-                crystal.setEfficiency(1);
-                crystal.setPurity(100);
-            } else if (special >= 3) {
-                crystal.setStrength(100);
-                crystal.setPower(100);
-                crystal.setEfficiency(100);
-                crystal.setPurity(special == 4 ? 1 : 100);
-            } else {
-                crystal.setStrength(getRandomSpecial(random, special) * 3.0f + 0.01f);
-                crystal.setPower(getRandomSpecial(random, special) * 60.0f + 0.2f);
-                crystal.setEfficiency(getRandomSpecial(random, special) * 3.0f + 0.1f);
-                crystal.setPurity(getRandomSpecial(random, special) * 10.0f + 5.0f);
-            }
-        }
-    }
-
-    public static void spawnRandomCrystal(Level world, Random random, BlockPos pos, float str, float pow, float eff, float pur) {
-        world.setBlock(pos, CoreModule.RESONATING_CRYSTAL_GENERATED.block().get().defaultBlockState(), Block.UPDATE_ALL);
-        BlockEntity te = world.getBlockEntity(pos);
-        if (te instanceof ResonatingCrystalTileEntity crystal) {
-            crystal.setStrength(Math.min(100.0f, random.nextFloat() * str * 3.0f + 0.01f));
-            crystal.setPower(Math.min(100.0f, random.nextFloat() * pow * 60.0f + 0.2f));
-            crystal.setEfficiency(Math.min(100.0f, random.nextFloat() * eff * 3.0f + 0.1f));
-            crystal.setPurity(Math.min(100.0f, random.nextFloat() * pur * 10.0f + 5.0f));
-        }
-    }
-
-    private static float getRandomSpecial(Random random, int special) {
-        if (special == 0) {
-            return random.nextFloat();
-        } else if (special == 1) {
-            return .5f;
-        } else {
-            return 1.0f;
         }
     }
 }

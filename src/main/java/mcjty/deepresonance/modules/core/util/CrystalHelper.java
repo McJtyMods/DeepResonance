@@ -55,7 +55,7 @@ public class CrystalHelper {
                 purity = 1.0f;
                 break;
         }
-        spawnCrystal(world, pos, strength, power, efficiency, purity);
+        spawnCrystal(world, pos, purity, strength, efficiency, power);
     }
 
     private static void spawnCrystal(Level world, BlockPos pos, float purity, float strength, float efficiency, float power) {

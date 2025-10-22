@@ -54,10 +54,13 @@ public class CollectorRenderer implements BlockEntityRenderer<EnergyCollectorTil
             return;
         }
 
-        DelayedRenderer.addRender(RenderType.translucent(), tileEntity.getBlockPos(), (stack, buf) -> {
-            renderHalo(stack, buf);
-            renderLasers(tileEntity.getBlockPos(), tileEntity.getLaserStartup(), tileEntity.getCrystals(), stack, buf);
-        });
+        VertexConsumer buf = buffer.getBuffer(RenderType.TRANSLUCENT);
+        renderHalo(matrixStack, buf);
+        renderLasers(tileEntity.getBlockPos(), tileEntity.getLaserStartup(), tileEntity.getCrystals(), matrixStack, buf);
+//        DelayedRenderer.addRender(RenderType.translucent(), tileEntity.getBlockPos(), (stack, buf) -> {
+//            renderHalo(stack, buf);
+//            renderLasers(tileEntity.getBlockPos(), tileEntity.getLaserStartup(), tileEntity.getCrystals(), stack, buf);
+//        });
     }
 
     private void renderHalo(PoseStack matrixStack, VertexConsumer buffer) {
