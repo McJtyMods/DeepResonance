@@ -19,6 +19,7 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
+import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -29,6 +30,7 @@ import mcjty.lib.varia.OrientationTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.Item;
@@ -300,15 +302,39 @@ public class LaserTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tagCompound, HolderLookup.Provider provider) {
-        super.loadAdditional(tagCompound, provider);
-        progressCounter = tagCompound.getInt("progress");
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        progressCounter = tag.getInt("progress");
+        energyStorage.load(tag, "energy", provider);
+        items.load(tag, "items", provider);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
-        super.saveAdditional(tagCompound, provider);
-        tagCompound.putInt("progress", progressCounter);
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        tag.putInt("progress", progressCounter);
+        energyStorage.save(tag, "energy", provider);
+        items.save(tag, "items", provider);
+    }
+
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        energyStorage.applyImplicitComponents(input.get(Registration.ITEM_ENERGY));
+        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
+        LaserData laserData = input.get(MachinesModule.ITEM_LASER_DATA);
+        if  (laserData != null) {
+            setData(MachinesModule.LASER_DATA, laserData);
+        }
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        energyStorage.collectImplicitComponents(builder);
+        items.collectImplicitComponents(builder);
+        builder.set(MachinesModule.ITEM_LASER_DATA, getData(MachinesModule.LASER_DATA));
     }
 
     public int getMaxPower() {

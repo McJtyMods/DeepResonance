@@ -2,6 +2,7 @@ package mcjty.deepresonance.modules.machines.block;
 
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.machines.MachinesModule;
+import mcjty.deepresonance.modules.machines.data.ValveData;
 import mcjty.deepresonance.modules.machines.util.config.ValveConfig;
 import mcjty.deepresonance.modules.tank.util.DualTankHook;
 import mcjty.deepresonance.util.LiquidCrystalData;
@@ -21,6 +22,7 @@ import mcjty.lib.typed.Type;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.Block;
@@ -31,7 +33,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
-
 import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
@@ -42,8 +43,9 @@ public class ValveTileEntity extends TickingTileEntity {
             .playerSlots(10, 70));
 
     @Cap(type = CapType.CONTAINER)
-    private static final Function<ValveTileEntity, MenuProvider> screenHandler = be -> new DefaultContainerProvider<GenericContainer>("Valve")
+    private static final Function<ValveTileEntity, MenuProvider> SCREEN_CAP = be -> new DefaultContainerProvider<GenericContainer>("Valve")
             .containerSupplier(container(MachinesModule.VALVE_CONTAINER, CONTAINER_FACTORY, be))
+            .data(MachinesModule.VALVE_DATA, ValveData.STREAM_CODEC, ValveData.CODEC)
             .setupSync(be);
 
     private final DualTankHook tankHook = new DualTankHook(this, Direction.UP, Direction.DOWN);
@@ -52,19 +54,15 @@ public class ValveTileEntity extends TickingTileEntity {
 
     @GuiValue
     public static final Value<?, Float> VALUE_MINPURITY = Value.create("minPurity", Type.FLOAT, ValveTileEntity::getMinPurity, ValveTileEntity::setMinPurity);
-    private float minPurity = 1.0f;
-
+    
     @GuiValue
     public static final Value<?, Float> VALUE_STRENGTH = Value.create("minStrength", Type.FLOAT, ValveTileEntity::getMinStrength, ValveTileEntity::setMinStrength);
-    private float minStrength = 1.0f;
 
     @GuiValue
     public static final Value<?, Float> VALUE_EFFICIENCY = Value.create("minEfficiency", Type.FLOAT, ValveTileEntity::getMinEfficiency, ValveTileEntity::setMinEfficiency);
-    private float minEfficiency = 1.0f;
 
     @GuiValue
     public static final Value<?, Integer> VALUE_MAXMB = Value.create("maxMb", Type.INTEGER, ValveTileEntity::getMaxMb, ValveTileEntity::setMaxMb);
-    private int maxMb = 0;
 
     public ValveTileEntity(BlockPos pos, BlockState state) {
         super(MachinesModule.TYPE_VALVE.get(), pos, state);
@@ -123,16 +121,17 @@ public class ValveTileEntity extends TickingTileEntity {
         int amt = fluidStack.getAmount();
         if (bottom.fill(LiquidCrystalData.makeLiquidCrystalStack(amt), IFluidHandler.FluidAction.SIMULATE) == amt) {
             ILiquidCrystalData data = LiquidCrystalData.fromStack(fluidStack);
-            if (data.getPurity() < minPurity) {
+            if (data.getPurity() < getMinPurity()) {
                 return;
             }
-            if (data.getStrength() < minStrength) {
+            if (data.getStrength() < getMinStrength()) {
                 return;
             }
-            if (data.getEfficiency() < minEfficiency) {
+            if (data.getEfficiency() < getMinEfficiency()) {
                 return;
             }
 
+            int maxMb = getMaxMb();
             if (maxMb > 0) {
                 // We have to check maximum volume
                 int fluidAmount = bottom.getFluidInTank(0).getAmount();
@@ -149,58 +148,61 @@ public class ValveTileEntity extends TickingTileEntity {
     }
 
     public int getMaxMb() {
-        return maxMb;
+        return getData(MachinesModule.VALVE_DATA).maxMb();
     }
 
     public void setMaxMb(int maxMb) {
-        this.maxMb = maxMb;
-        setChanged();
+        setData(MachinesModule.VALVE_DATA, getData(MachinesModule.VALVE_DATA).withMaxMb(maxMb));
     }
 
     public float getMinEfficiency() {
-        return minEfficiency;
+        return getData(MachinesModule.VALVE_DATA).minEfficiency();
     }
 
     public void setMinEfficiency(float minEfficiency) {
-        this.minEfficiency = minEfficiency;
-        setChanged();
+        setData(MachinesModule.VALVE_DATA, getData(MachinesModule.VALVE_DATA).withMinEfficiency(minEfficiency));
     }
 
     public float getMinPurity() {
-        return minPurity;
+        return getData(MachinesModule.VALVE_DATA).minPurity();
     }
 
     public void setMinPurity(float minPurity) {
-        this.minPurity = minPurity;
-        setChanged();
+        setData(MachinesModule.VALVE_DATA, getData(MachinesModule.VALVE_DATA).withMinPurity(minPurity));
     }
 
     public float getMinStrength() {
-        return minStrength;
+        return getData(MachinesModule.VALVE_DATA).minStrength();
     }
 
     public void setMinStrength(float minStrength) {
-        this.minStrength = minStrength;
-        setChanged();
+        setData(MachinesModule.VALVE_DATA, getData(MachinesModule.VALVE_DATA).withMinStrength(minStrength));
     }
 
     @Override
     public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
         super.saveAdditional(tagCompound, provider);
         tagCompound.putInt("progress", progress);
-        tagCompound.putFloat("minPurity", minPurity);
-        tagCompound.putFloat("minStrength", minStrength);
-        tagCompound.putFloat("minEfficiency", minEfficiency);
-        tagCompound.putInt("maxMb", maxMb);
     }
 
     @Override
     public void loadAdditional(CompoundTag tagCompound, HolderLookup.Provider provider) {
         super.loadAdditional(tagCompound, provider);
         progress = tagCompound.getInt("progress");
-        minPurity = tagCompound.getFloat("minPurity");
-        minStrength = tagCompound.getFloat("minStrength");
-        minEfficiency = tagCompound.getFloat("minEfficiency");
-        maxMb = tagCompound.getInt("maxMb");
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        ValveData valveData = input.get(MachinesModule.ITEM_VALVE_DATA);
+        if  (valveData != null) {
+            setData(MachinesModule.VALVE_DATA, valveData);
+        }
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(MachinesModule.ITEM_VALVE_DATA, getData(MachinesModule.VALVE_DATA));
     }
 }

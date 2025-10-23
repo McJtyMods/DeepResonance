@@ -7,6 +7,7 @@ import mcjty.deepresonance.modules.machines.client.*;
 import mcjty.deepresonance.modules.machines.data.CrystalizerData;
 import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
 import mcjty.deepresonance.modules.machines.data.LaserData;
+import mcjty.deepresonance.modules.machines.data.ValveData;
 import mcjty.deepresonance.modules.machines.item.ItemLens;
 import mcjty.deepresonance.modules.machines.util.config.*;
 import mcjty.deepresonance.setup.Registration;
@@ -114,6 +115,15 @@ public class MachinesModule implements IModule {
                     .persistent(LaserData.CODEC)
                     .networkSynchronized(LaserData.STREAM_CODEC));
 
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<ValveData>> VALVE_DATA = Registration.ATTACHMENT_TYPES.register(
+            "valve", () -> AttachmentType.builder(() -> ValveData.DEFAULT)
+                    .serialize(ValveData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ValveData>> ITEM_VALVE_DATA = Registration.COMPONENTS.registerComponentType(
+            "valve",
+            builder -> builder
+                    .persistent(ValveData.CODEC)
+                    .networkSynchronized(ValveData.STREAM_CODEC));
 
     public MachinesModule(IEventBus bus) {
         bus.addListener(this::registerMenuScreens);
@@ -153,7 +163,7 @@ public class MachinesModule implements IModule {
                 Dob.blockBuilder(VALVE)
                         .ironPickaxeTags()
                         .parentedItem()
-                        .standardLoot()
+                        .standardLoot(ITEM_VALVE_DATA.get())
                         .blockState(provider -> provider.simpleBlock(VALVE.block().get(), provider.models().cubeBottomTop(provider.name(VALVE.block().get()), ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/valve"), DEFAULT_BOTTOM, DEFAULT_TOP)))
                         .shaped(builder -> builder
                                         .define('F', CoreModule.FILTER_MATERIAL_ITEM.get())

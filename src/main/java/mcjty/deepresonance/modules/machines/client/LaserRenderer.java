@@ -39,10 +39,11 @@ public class LaserRenderer implements BlockEntityRenderer<LaserTileEntity> {
 
     @Override
     public void render(@Nonnull LaserTileEntity tileEntity, float partialTicks, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
-        DelayedRenderer.addRender(RenderType.translucent(), tileEntity.getBlockPos(), (stack, buf) -> {
+//        DelayedRenderer.addRender(RenderType.translucent(), tileEntity.getBlockPos(), (stack, buf) -> {
             int color = tileEntity.getBlockState().getValue(LaserTileEntity.COLOR);
-            renderInternal(tileEntity.getBlockPos(), color, stack, buf);
-        });
+        VertexConsumer buf = buffer.getBuffer(RenderType.TRANSLUCENT);
+            renderInternal(tileEntity.getBlockPos(), color, matrixStack, buf);
+//        });
     }
 
     private void renderInternal(BlockPos pos, int color, PoseStack matrixStack, VertexConsumer builder) {

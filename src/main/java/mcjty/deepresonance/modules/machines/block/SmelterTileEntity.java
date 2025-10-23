@@ -191,21 +191,25 @@ public class SmelterTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
-        super.saveAdditional(tagCompound, provider);
-        tagCompound.putInt("processTime", processTime);
-        tagCompound.putInt("processTimeLeft", processTimeLeft);
-        tagCompound.putFloat("finalQuality", finalQuality);
-        tagCompound.putFloat("finalPurity", finalPurity);
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        tag.putInt("processTime", processTime);
+        tag.putInt("processTimeLeft", processTimeLeft);
+        tag.putFloat("finalQuality", finalQuality);
+        tag.putFloat("finalPurity", finalPurity);
+        energyStorage.save(tag, "energy", provider);
+        items.save(tag, "items", provider);
     }
 
     @Override
-    public void loadAdditional(CompoundTag tagCompound, HolderLookup.Provider provider) {
-        super.loadAdditional(tagCompound, provider);
-        processTime = (short) tagCompound.getInt("processTime");
-        processTimeLeft = (short) tagCompound.getInt("processTimeLeft");
-        finalQuality = tagCompound.getFloat("finalQuality");
-        finalPurity = tagCompound.getFloat("finalPurity");
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        processTime = (short) tag.getInt("processTime");
+        processTimeLeft = (short) tag.getInt("processTimeLeft");
+        finalQuality = tag.getFloat("finalQuality");
+        finalPurity = tag.getFloat("finalPurity");
+        energyStorage.load(tag, "energy", provider);
+        items.load(tag,  "items", provider);
     }
 
     public int getProgress() {
