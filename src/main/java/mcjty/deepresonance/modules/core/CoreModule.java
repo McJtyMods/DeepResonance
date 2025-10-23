@@ -51,10 +51,6 @@ public class CoreModule implements IModule {
 
     public static final String TILE_DATA_TAG = "BlockEntityTag";
 
-    public static final DeferredHolder<AttachmentType<?>, AttachmentType<LCD>> LCD_DATA = Registration.ATTACHMENT_TYPES.register(
-            "lcd", () -> AttachmentType.builder(() -> LCD.DEFAULT)
-                    .serialize(LCD.CODEC)
-                    .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<LCD>> ITEM_LCD_DATA = Registration.COMPONENTS.registerComponentType(
             "lcd",
             builder -> builder
