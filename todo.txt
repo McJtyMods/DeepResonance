@@ -1,1 +1,1 @@
-- If a crystal is broken that is being used by a machine, the machine should stop working.
+- If a crystal is broken that is being used by a machine, the machine should stop working. DONE

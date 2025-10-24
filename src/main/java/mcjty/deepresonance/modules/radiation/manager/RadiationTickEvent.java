@@ -211,11 +211,11 @@ public class RadiationTickEvent {
                     Block block = world.getBlockState(currentPos).getBlock();
                     if (TagTools.hasTag(block, BlockTags.DIRT) || block == Blocks.FARMLAND || block == Blocks.GRASS_BLOCK) {
                         if (random.nextFloat() < poisonBlockChance * str) {
-                            world.setBlock(currentPos, RadiationModule.POISONED_DIRT.block().get().defaultBlockState(), Block.UPDATE_NEIGHBORS);
+                            world.setBlock(currentPos, RadiationModule.POISONED_DIRT.block().get().defaultBlockState(), Block.UPDATE_ALL);
                         }
                     } else if (TagTools.hasTag(block, BlockTags.LEAVES) || block instanceof SpecialPlantable) {
                         if (random.nextFloat() < removeLeafChance * str) {
-                            world.setBlock(currentPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_NEIGHBORS);
+                            world.setBlock(currentPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
                         }
                     }
                     if (random.nextFloat() < setOnFireChance * str) {
