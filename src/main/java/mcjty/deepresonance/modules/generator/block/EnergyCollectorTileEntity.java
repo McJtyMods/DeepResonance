@@ -182,7 +182,7 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
         }
         if (dirty) {
             crystals = tokeep;
-            setChanged();
+            markDirtyClient();
         }
 
         if (doRadiation && radiationRadius > 0.1f) {
