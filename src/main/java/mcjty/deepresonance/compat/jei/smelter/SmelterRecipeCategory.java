@@ -65,14 +65,15 @@ public class SmelterRecipeCategory implements IRecipeCategory<SmelterRecipeWrapp
         return DeepResonanceJeiPlugin.SMELTER_RECIPE;
     }
 
-    @Nonnull
-    @Override
-    public IDrawable getBackground() {
-        return background;
-    }
+//    @Nonnull
+//    @Override
+//    public IDrawable getBackground() {
+//        return background;
+//    }
 
     @Override
     public void draw(SmelterRecipeWrapper recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+        background.draw(graphics);  // @todo 1.21 check
         slot.draw(graphics, 20, 32);
         arrow.draw(graphics, 46, 32);
         Font fontRenderer = Minecraft.getInstance().font;
@@ -92,7 +93,7 @@ public class SmelterRecipeCategory implements IRecipeCategory<SmelterRecipeWrapp
                 .setFluidRenderer(SmelterConfig.RCL_PER_ORE.get(), true, 30, 30)
                 .addIngredients(NeoForgeTypes.FLUID_STACK,
                         List.of(new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), SmelterConfig.RCL_PER_ORE.get())))
-                .addTooltipCallback((view, tooltip) -> {
+                .addRichTooltipCallback((view, tooltip) -> {
                     tooltip.add(ComponentFactory.literal("Purity: 10%").withStyle(ChatFormatting.GREEN));
                     tooltip.add(ComponentFactory.literal("Strength: 10%").withStyle(ChatFormatting.GREEN));
                     tooltip.add(ComponentFactory.literal("Efficiency: 10%").withStyle(ChatFormatting.GREEN));

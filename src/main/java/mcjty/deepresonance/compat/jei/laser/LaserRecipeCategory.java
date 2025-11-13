@@ -56,15 +56,16 @@ public class LaserRecipeCategory implements IRecipeCategory<LaserRecipeWrapper> 
         return ComponentFactory.literal("Deep Resonance Laser");
     }
 
-    @Nonnull
-    @Override
-    public IDrawable getBackground() {
-        return background;
-    }
-
+//    @Nonnull
+//    @Override
+//    public IDrawable getBackground() {
+//        return background;
+//    }
+//
     @Override
     public void draw(LaserRecipeWrapper recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
         slot.draw(graphics);
+        background.draw(graphics); // @todo 1.21 check this
         Font font = Minecraft.getInstance().font;
         graphics.drawString(font, "Per " + LaserConfig.RCL_PER_CATALYST.get() + "mb RCL", 24, 0, 0xffffffff);
         graphics.drawString(font, "and " + LaserConfig.CRYSTAL_LIQUID_PER_CATALYST.get() + "mb crystal", 24, 10, 0xffffffff);

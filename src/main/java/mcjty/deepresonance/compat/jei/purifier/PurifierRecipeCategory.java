@@ -65,14 +65,15 @@ public class PurifierRecipeCategory implements IRecipeCategory<PurifierRecipeWra
         return icon;
     }
 
-    @Override
-    @Nonnull
-    public IDrawable getBackground() {
-        return background;
-    }
+//    @Override
+//    @Nonnull
+//    public IDrawable getBackground() {
+//        return background;
+//    }
 
     @Override
     public void draw(PurifierRecipeWrapper recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+        background.draw(graphics);  // @todo 1.21 check
         slot.draw(graphics, 20, 10);
         arrow.draw(graphics, 50, 10);
         slot.draw(graphics, 80, 10);
@@ -88,14 +89,14 @@ public class PurifierRecipeCategory implements IRecipeCategory<PurifierRecipeWra
                 .setFluidRenderer(PurifierConfig.RCL_PER_PURIFY.get(), true, 30, 30)
                 .addIngredients(NeoForgeTypes.FLUID_STACK,
                         List.of(new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), SmelterConfig.RCL_PER_ORE.get())))
-                .addTooltipCallback((view, tooltip) -> {
+                .addRichTooltipCallback((view, tooltip) -> {
                     tooltip.add(ComponentFactory.literal("Purity: X").withStyle(ChatFormatting.GREEN));
                 });
         builder.addSlot(RecipeIngredientRole.OUTPUT, 75, 35)
                 .setFluidRenderer(PurifierConfig.RCL_PER_PURIFY.get(), true, 30, 30)
                 .addIngredients(NeoForgeTypes.FLUID_STACK,
                         List.of(new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), SmelterConfig.RCL_PER_ORE.get())))
-                .addTooltipCallback((view, tooltip) -> {
+                .addRichTooltipCallback((view, tooltip) -> {
                     tooltip.add(ComponentFactory.literal("Purity: X + 25%").withStyle(ChatFormatting.GREEN));
                 });
     }

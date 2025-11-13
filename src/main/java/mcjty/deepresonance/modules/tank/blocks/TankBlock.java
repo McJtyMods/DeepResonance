@@ -43,7 +43,7 @@ public class TankBlock extends BaseBlock {
             return "";
         }
         FluidStack fluidStack = data.preservedLiquid();
-        String name = I18n.get(fluidStack.getTranslationKey());
+        String name = I18n.get(fluidStack.getFluidType().getDescriptionId(fluidStack));
         return name + " (" + fluidStack.getAmount() + "mb)";
     }
 

@@ -189,7 +189,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
                 } else {
                     String amount = " (" + fluid.getAmount() + " mb)";
                     player.sendSystemMessage(ComponentFactory.literal("Liquid: ")
-                            .append(ComponentFactory.translatable(fluid.getTranslationKey()))
+                            .append(ComponentFactory.translatable(fluid.getFluidType().getDescriptionId(fluid)))
                             .append(ComponentFactory.literal(amount))
                             .withStyle(ChatFormatting.AQUA));
                     if (LiquidCrystalData.isLiquidCrystal(fluid.getFluid())) {
