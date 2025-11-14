@@ -29,18 +29,19 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.common.Tags;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
+import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static mcjty.deepresonance.DeepResonance.tab;
@@ -84,11 +85,7 @@ public class CoreModule implements IModule {
     public static final Supplier<FluidType> LIQUID_CRYSTAL_TYPE = Registration.FLUID_TYPES.register("liquid_crystal_type",
             () -> new FluidType(FluidType.Properties.create()) {
                 @Override
-                public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-                    consumer.accept(new FluidLiquidCrystal.ClientExtensions());
-                }
-
-                @Override
+                @Nonnull
                 public String getDescriptionId() {
                     return "fluid.deepresonance.liquid_crystal";
                 }
@@ -146,11 +143,18 @@ public class CoreModule implements IModule {
     public static final DeferredItem<Item> LIQUID_INJECTOR_ITEM = Registration.ITEMS.register("liquid_injector", tab(() -> new ItemLiquidInjector(Registration.createStandardProperties())));
     public static final DeferredItem<Item> MACHINE_FRAME_ITEM = Registration.ITEMS.register("machine_frame", tab(() -> new Item(Registration.createStandardProperties())));
 
-    public CoreModule() {
+    public CoreModule(IEventBus bus, Dist dist) {
+        if (dist.isClient()) {
+            bus.addListener(this::onClientExtensionRegistration);
+        }
     }
 
     @Override
     public void init(FMLCommonSetupEvent event) {
+    }
+
+    public void onClientExtensionRegistration(RegisterClientExtensionsEvent event) {
+        event.registerFluidType(new FluidLiquidCrystal.ClientExtensions(), LIQUID_CRYSTAL_TYPE.get());
     }
 
     @Override

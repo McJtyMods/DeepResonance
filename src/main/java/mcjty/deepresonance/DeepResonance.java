@@ -41,7 +41,7 @@ public class DeepResonance {
 
         DeepResonanceTags.init();
 
-        setupModules(bus);
+        setupModules(bus, dist);
 
         Config.register(mod, bus, modules);
         Registration.register(bus);
@@ -67,8 +67,8 @@ public class DeepResonance {
         datagen.generate();
     }
 
-    private void setupModules(IEventBus bus) {
-        modules.register(new CoreModule());
+    private void setupModules(IEventBus bus, Dist dist) {
+        modules.register(new CoreModule(bus, dist));
         modules.register(new GeneratorModule());
         modules.register(new MachinesModule(bus));
         modules.register(new RadiationModule());
