@@ -20,7 +20,7 @@ description="Power generation based on resonating crystals."
 [[dependencies.deepresonance]]
     modId="mcjtylib"
     mandatory=true
-    versionRange="[1.21-9.0.16,)"
+    versionRange="[1.21-9.0.17,)"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.deepresonance]]
