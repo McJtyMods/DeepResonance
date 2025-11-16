@@ -65,15 +65,19 @@ public class SmelterRecipeCategory implements IRecipeCategory<SmelterRecipeWrapp
         return DeepResonanceJeiPlugin.SMELTER_RECIPE;
     }
 
-//    @Nonnull
-//    @Override
-//    public IDrawable getBackground() {
-//        return background;
-//    }
+    @Override
+    public int getWidth() {
+        return 120;
+    }
+
+    @Override
+    public int getHeight() {
+        return 60;
+    }
 
     @Override
     public void draw(SmelterRecipeWrapper recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
-        background.draw(graphics);  // @todo 1.21 check
+        background.draw(graphics);
         slot.draw(graphics, 20, 32);
         arrow.draw(graphics, 46, 32);
         Font fontRenderer = Minecraft.getInstance().font;

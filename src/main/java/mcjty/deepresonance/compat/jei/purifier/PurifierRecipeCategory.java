@@ -65,15 +65,19 @@ public class PurifierRecipeCategory implements IRecipeCategory<PurifierRecipeWra
         return icon;
     }
 
-//    @Override
-//    @Nonnull
-//    public IDrawable getBackground() {
-//        return background;
-//    }
+    @Override
+    public int getWidth() {
+        return 120;
+    }
+
+    @Override
+    public int getHeight() {
+        return 80;
+    }
 
     @Override
     public void draw(PurifierRecipeWrapper recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
-        background.draw(graphics);  // @todo 1.21 check
+        background.draw(graphics);
         slot.draw(graphics, 20, 10);
         arrow.draw(graphics, 50, 10);
         slot.draw(graphics, 80, 10);
