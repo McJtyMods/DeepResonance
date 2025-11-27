@@ -142,16 +142,6 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
-        super.applyImplicitComponents(input);
-        // @todo 1.21 check!
-//        var data = input.get(TankModule.ITEM_TANK_DATA);
-//        if (data != null) {
-//            setData(CoalGeneratorModule.COAL_GENERATOR_DATA, data);
-//        }
-    }
-
-    @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
         TankBlob network = getBlob();
@@ -160,7 +150,6 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
             LiquidCrystalData data = network.getData();
             if (!data.isEmpty()) {
                 preservedFluid = data.getFluidStack().copy();
-                // @todo 1.21 is it correct to do this here?
                 int amount = data.getAmount() / network.getTankBlocks();
                 preservedFluid.setAmount(amount);
                 data.setAmount(data.getAmount() - amount);
@@ -229,20 +218,15 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     public void onReplaced(Level world, BlockPos pos, BlockState state, BlockState newstate) {
         if (!world.isClientSide()) {
             if (newstate.getBlock() != TankModule.TANK.block().get()) {
-                // @todo 1.21 check!
-//                TankBlob network = getBlob();
-//                if (network != null) {
-//                    LiquidCrystalData data = network.getData();
-//                    if (!data.isEmpty()) {
-//                        preservedFluid = data.getFluidStack().copy();
-//                        int amount = data.getAmount() / network.getTankBlocks();
-//                        preservedFluid.setAmount(amount);
-//                        data.setAmount(data.getAmount() - amount);
-//                    } else {
-//                        preservedFluid = FluidStack.EMPTY;
-//                    }
-//                    setChanged();
-//                }
+                TankBlob network = getBlob();
+                if (network != null) {
+                    LiquidCrystalData data = network.getData();
+                    if (!data.isEmpty()) {
+                        int amount = data.getAmount() / network.getTankBlocks();
+                        data.setAmount(data.getAmount() - amount);
+                    }
+                    setChanged();
+                }
                 removeBlockFromNetwork();
             }
 
