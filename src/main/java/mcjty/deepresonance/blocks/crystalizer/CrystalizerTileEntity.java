@@ -147,9 +147,9 @@ public class CrystalizerTileEntity extends GenericEnergyReceiverTileEntity imple
         ItemStack stack = new ItemStack(ModBlocks.resonatingCrystalBlock);
         NBTTagCompound compound = new NBTTagCompound();
         compound.setFloat("power", 100.0f);
-        compound.setFloat("strength", mergedData.getStrength() * 100.0f);
-        compound.setFloat("efficiency", mergedData.getEfficiency() * 100.0f);
-        compound.setFloat("purity", mergedData.getPurity() * 100.0f);
+        compound.setFloat("strength", Math.round(mergedData.getStrength() * 1000.0f) / 10.0f);
+        compound.setFloat("efficiency", Math.round(mergedData.getEfficiency() * 1000.0f) / 10.0f);
+        compound.setFloat("purity", Math.round(mergedData.getPurity() * 1000.0f) / 10.0f);
         compound.setByte("version", (byte) 2);      // Legacy support to support older crystals.
         stack.setTagCompound(compound);
         mergedData = null;
