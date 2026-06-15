@@ -1,0 +1,7 @@
+{
+  "name": "Machines",
+  "description": "Processing liquid crystal",
+  "parent": "rftoolsbase:category_deepresonance",
+  "icon": "deepresonance:smelter",
+  "sortnum": 40
+}

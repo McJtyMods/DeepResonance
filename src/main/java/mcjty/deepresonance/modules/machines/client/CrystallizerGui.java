@@ -6,12 +6,12 @@ import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.CrystallizerTileEntity;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
-import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +30,7 @@ public class CrystallizerGui extends GenericGuiContainer<CrystallizerTileEntity,
     private Label percentage;
 
     public CrystallizerGui(CrystallizerTileEntity tileEntity, GenericContainer container, Inventory inventory) {
-        super(tileEntity, container, inventory, ManualEntry.EMPTY);
+        super(tileEntity, container, inventory, ManualHelper.create("deepresonance:machines/crystallizer"));
 
         imageWidth = CRYSTALIZER_WIDTH;
         imageHeight = CRYSTALIZER_HEIGHT;

@@ -1,0 +1,19 @@
+{
+  "name": "Energy Collector",
+  "icon": "deepresonance:energy_collector",
+  "category": "rftoolsbase:category_deepresonance_generator",
+  "extra_recipe_mappings": {
+    "deepresonance:energy_collector": 1
+  },
+  "sortnum": 20,
+  "pages": [
+    {
+      "type": "text",
+      "text": "Place exactly one Energy Collector on top of the generator part network. It drains nearby resonating crystals and feeds the generated FE into the multiblock."
+    },
+    {
+      "type": "crafting",
+      "recipe": "deepresonance:energy_collector"
+    }
+  ]
+}

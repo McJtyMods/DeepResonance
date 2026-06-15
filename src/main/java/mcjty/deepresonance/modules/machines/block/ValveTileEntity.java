@@ -18,6 +18,7 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Type;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -71,6 +72,7 @@ public class ValveTileEntity extends TickingTileEntity {
         return new BaseBlock(
                 new BlockBuilder()
                         .tileEntitySupplier(ValveTileEntity::new)
+                        .manualEntry(ManualHelper.create("deepresonance:machines/valve"))
                         .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))
                         .infoShift(TooltipBuilder.header())) {
 

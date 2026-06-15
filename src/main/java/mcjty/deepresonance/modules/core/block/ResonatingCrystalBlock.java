@@ -10,6 +10,7 @@ import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.varia.ComponentFactory;
 import mcjty.lib.varia.ExplosionTools;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -56,6 +57,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
                         .sound(SoundType.METAL)
                         .noOcclusion()
                 )
+                .manualEntry(ManualHelper.create("deepresonance:resources/crystals"))
                 .tileEntitySupplier(ResonatingCrystalTileEntity::new));
         this.generated = generated;
         this.empty = empty;

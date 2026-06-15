@@ -1,0 +1,24 @@
+{
+  "name": "Generator Multiblock",
+  "icon": "deepresonance:generator_controller",
+  "category": "rftoolsbase:category_deepresonance_generator",
+  "extra_recipe_mappings": {
+    "deepresonance:generator_controller": 1,
+    "deepresonance:generator_part": 2
+  },
+  "sortnum": 10,
+  "pages": [
+    {
+      "type": "text",
+      "text": "The generator is a multiblock made from Generator Parts. Place a Generator Controller against the structure to enable it and provide the FE output."
+    },
+    {
+      "type": "crafting",
+      "recipe": "deepresonance:generator_controller"
+    },
+    {
+      "type": "crafting",
+      "recipe": "deepresonance:generator_part"
+    }
+  ]
+}

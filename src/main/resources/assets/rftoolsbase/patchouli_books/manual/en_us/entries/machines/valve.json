@@ -1,0 +1,19 @@
+{
+  "name": "Valve",
+  "icon": "deepresonance:valve",
+  "category": "rftoolsbase:category_deepresonance_machines",
+  "extra_recipe_mappings": {
+    "deepresonance:valve": 1
+  },
+  "sortnum": 60,
+  "pages": [
+    {
+      "type": "text",
+      "text": "The Valve moves liquid crystal from the tank above to the tank below. Its GUI filters by minimum purity, strength, efficiency, and transfer amount."
+    },
+    {
+      "type": "crafting",
+      "recipe": "deepresonance:valve"
+    }
+  ]
+}

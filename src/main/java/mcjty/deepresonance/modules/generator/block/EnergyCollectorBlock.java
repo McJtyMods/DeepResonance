@@ -4,6 +4,7 @@ import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.builder.TooltipBuilder;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -20,6 +21,7 @@ public class EnergyCollectorBlock extends BaseBlock {
     public EnergyCollectorBlock() {
         super(new BlockBuilder()
                 .tileEntitySupplier(EnergyCollectorTileEntity::new)
+                .manualEntry(ManualHelper.create("deepresonance:generator/energy_collector"))
                 .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))
                 .infoShift(TooltipBuilder.header()));
     }

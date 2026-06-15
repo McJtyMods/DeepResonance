@@ -1,0 +1,22 @@
+{
+  "name": "Resonating Crystals",
+  "icon": "deepresonance:resonating_crystal_natural",
+  "category": "rftoolsbase:category_deepresonance_resources",
+  "extra_recipe_mappings": {
+    "deepresonance:resonating_crystal_natural": 0,
+    "deepresonance:resonating_crystal_natural_empty": 0,
+    "deepresonance:resonating_crystal_generated": 0,
+    "deepresonance:resonating_crystal_generated_empty": 0
+  },
+  "sortnum": 20,
+  "pages": [
+    {
+      "type": "text",
+      "text": "Resonating crystals contain power and have strength, efficiency, and purity stats. Better stats improve the RF yield and rate. Empty crystals can remain after their power is spent."
+    },
+    {
+      "type": "text",
+      "text": "Natural crystals come from resonating ore. Generated crystals are made with the Crystallizer from liquid crystal and are usually cleaner and easier to control."
+    }
+  ]
+}

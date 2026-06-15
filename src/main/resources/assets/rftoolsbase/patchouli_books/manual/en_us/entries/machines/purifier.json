@@ -1,0 +1,19 @@
+{
+  "name": "Purifier",
+  "icon": "deepresonance:purifier",
+  "category": "rftoolsbase:category_deepresonance_machines",
+  "extra_recipe_mappings": {
+    "deepresonance:purifier": 1
+  },
+  "sortnum": 20,
+  "pages": [
+    {
+      "type": "text",
+      "text": "The Purifier improves liquid crystal purity. Put liquid crystal in a tank above, an output tank below, and filter material in the machine."
+    },
+    {
+      "type": "crafting",
+      "recipe": "deepresonance:purifier"
+    }
+  ]
+}

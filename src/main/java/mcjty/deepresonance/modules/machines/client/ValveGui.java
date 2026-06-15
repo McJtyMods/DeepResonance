@@ -6,7 +6,6 @@ import mcjty.deepresonance.modules.machines.block.ValveTileEntity;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
-import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.layout.HorizontalLayout;
@@ -19,6 +18,7 @@ import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.gui.widgets.*;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.RedstoneMode;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -40,7 +40,7 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
     private TextField maxAmount;
 
     public ValveGui(ValveTileEntity tileEntity, GenericContainer container, Inventory inventory) {
-        super(tileEntity, container, inventory, ManualEntry.EMPTY);
+        super(tileEntity, container, inventory, ManualHelper.create("deepresonance:machines/valve"));
 
         imageWidth = VALVE_WIDTH;
         imageHeight = VALVE_HEIGHT;

@@ -19,6 +19,7 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.OrientationTools;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -70,6 +71,7 @@ public class PurifierTileEntity extends TickingTileEntity {
         return new BaseBlock(
                 new BlockBuilder()
                         .tileEntitySupplier(PurifierTileEntity::new)
+                        .manualEntry(ManualHelper.create("deepresonance:machines/purifier"))
                         .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))
                         .infoShift(TooltipBuilder.header())) {
 
