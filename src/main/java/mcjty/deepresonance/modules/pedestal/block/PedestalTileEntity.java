@@ -22,6 +22,7 @@ import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.OrientationTools;
 import mcjty.lib.varia.SoundTools;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentMap;
@@ -78,7 +79,7 @@ public class PedestalTileEntity extends TickingTileEntity {
                 .tileEntitySupplier(PedestalTileEntity::new)
                 .topDriver(DeepResonanceTOPDriver.DRIVER)
                 .infusable()
-//                .manualEntry(ManualHelper.create("rftoolspower:powergeneration/coalgenerator"))
+                .manualEntry(ManualHelper.create("deepresonance:machines/pedestal"))
                 .info(key(SHIFT_MESSAGE))
                 .infoShift(header())
         );

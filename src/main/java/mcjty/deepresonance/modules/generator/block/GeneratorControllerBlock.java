@@ -5,6 +5,7 @@ import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.builder.TooltipBuilder;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -18,6 +19,7 @@ public class GeneratorControllerBlock extends BaseBlock {
         super(new BlockBuilder()
                 .tileEntitySupplier(GeneratorControllerTileEntity::new)
                 .topDriver(DeepResonanceTOPDriver.DRIVER)
+                .manualEntry(ManualHelper.create("deepresonance:generator/generator"))
                 .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))
                 .infoShift(TooltipBuilder.header()));
     }

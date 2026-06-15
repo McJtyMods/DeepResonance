@@ -9,6 +9,7 @@ import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.Panel;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +25,7 @@ public class PurifierGui extends GenericGuiContainer<PurifierTileEntity, Generic
     private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/purifier.png");
 
     public PurifierGui(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, ManualEntry.EMPTY);
+        super(container, inventory, title, ManualHelper.create("deepresonance:machines/purifier"));
 
         imageWidth = PURIFIER_WIDTH;
         imageHeight = PURIFIER_HEIGHT;

@@ -1,0 +1,19 @@
+{
+  "name": "Tank",
+  "icon": "deepresonance:tank",
+  "category": "rftoolsbase:category_deepresonance_machines",
+  "extra_recipe_mappings": {
+    "deepresonance:tank": 1
+  },
+  "sortnum": 50,
+  "pages": [
+    {
+      "type": "text",
+      "text": "Deep Resonance tanks store liquid crystal and can form larger multiblocks. A broken tank keeps its stored fluid, and comparators show fill level."
+    },
+    {
+      "type": "crafting",
+      "recipe": "deepresonance:tank"
+    }
+  ]
+}

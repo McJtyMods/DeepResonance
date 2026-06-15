@@ -20,6 +20,7 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.TickingTileEntity;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
@@ -79,6 +80,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
     public static BaseBlock createBlock() {
         return new BaseBlock(new BlockBuilder()
                 .tileEntitySupplier(CrystallizerTileEntity::new)
+                .manualEntry(ManualHelper.create("deepresonance:machines/crystallizer"))
                 .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))
                 .infoShift(TooltipBuilder.header())) {
             @Override

@@ -7,6 +7,7 @@ import mcjty.deepresonance.modules.tank.data.TankData;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -33,6 +34,7 @@ public class TankBlock extends BaseBlock {
                 .properties(Properties.of().noOcclusion().strength(2.0F).sound(SoundType.GLASS))
                 .topDriver(DeepResonanceTOPDriver.DRIVER)
                 .tileEntitySupplier(TankTileEntity::new)
+                .manualEntry(ManualHelper.create("deepresonance:machines/tank"))
                 .info(key(DeepResonance.SHIFT_MESSAGE))
                 .infoShift(header(), parameter("liquid", TankBlock::getLiquid)));
     }

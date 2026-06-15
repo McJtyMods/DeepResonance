@@ -1,0 +1,32 @@
+{
+  "name": "Materials",
+  "icon": "deepresonance:machine_frame",
+  "category": "rftoolsbase:category_deepresonance_resources",
+  "extra_recipe_mappings": {
+    "deepresonance:machine_frame": 1,
+    "deepresonance:resonating_plate": 0,
+    "deepresonance:resonating_plate_block": 2,
+    "deepresonance:filter_material": 3,
+    "deepresonance:spent_filter_material": 0,
+    "deepresonance:liquid_injector": 0
+  },
+  "sortnum": 30,
+  "pages": [
+    {
+      "type": "text",
+      "text": "Resonating plates and machine frames are core crafting parts. Filter material is consumed by the Purifier and can leave spent filter material."
+    },
+    {
+      "type": "crafting",
+      "recipe": "deepresonance:machine_frame"
+    },
+    {
+      "type": "crafting",
+      "recipe": "deepresonance:resonating_plate_block"
+    },
+    {
+      "type": "crafting",
+      "recipe": "deepresonance:filter_material"
+    }
+  ]
+}

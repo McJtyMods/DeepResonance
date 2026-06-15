@@ -3,6 +3,7 @@ package mcjty.deepresonance.modules.machines.block;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.SoundType;
@@ -27,6 +28,7 @@ public class LensBlock extends BaseBlock {
     public LensBlock() {
         super(new BlockBuilder()
                 .properties(Block.Properties.of().strength(2.0F).sound(SoundType.METAL).noOcclusion().noCollission())
+                .manualEntry(ManualHelper.create("deepresonance:machines/laser_lens"))
                 .tileEntitySupplier(LensTileEntity::new));
     }
 

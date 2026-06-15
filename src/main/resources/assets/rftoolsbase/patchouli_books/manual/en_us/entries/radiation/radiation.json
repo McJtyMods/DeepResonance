@@ -1,0 +1,38 @@
+{
+  "name": "Radiation",
+  "icon": "deepresonance:radiation_monitor",
+  "category": "rftoolsbase:category_deepresonance_radiation",
+  "extra_recipe_mappings": {
+    "deepresonance:radiation_monitor": 1,
+    "deepresonance:radiation_suit_helmet": 2,
+    "deepresonance:radiation_suit_chestplate": 2,
+    "deepresonance:radiation_suit_leggings": 2,
+    "deepresonance:radiation_suit_boots": 2,
+    "deepresonance:dense_glass": 3,
+    "deepresonance:dense_obsidian": 4,
+    "deepresonance:poisoned_dirt": 0
+  },
+  "sortnum": 10,
+  "pages": [
+    {
+      "type": "text",
+      "text": "Resonating crystals can produce radiation, especially when misused or depleted badly. The Radiation Monitor shows the current radiation level."
+    },
+    {
+      "type": "crafting",
+      "recipe": "deepresonance:radiation_monitor"
+    },
+    {
+      "type": "text",
+      "text": "The radiation suit reduces radiation effects while worn. More suit pieces give better protection."
+    },
+    {
+      "type": "crafting",
+      "recipe": "deepresonance:dense_glass"
+    },
+    {
+      "type": "crafting",
+      "recipe": "deepresonance:dense_obsidian"
+    }
+  ]
+}

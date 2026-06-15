@@ -13,6 +13,7 @@ import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.ImageLabel;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -35,7 +36,7 @@ public class SmelterGui extends GenericGuiContainer<SmelterTileEntity, GenericCo
     private static final ResourceLocation iconBurning = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/burning.png");
 
     public SmelterGui(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, ManualEntry.EMPTY);
+        super(container, inventory, title, ManualHelper.create("deepresonance:machines/smelter"));
 
         imageWidth = SMELTER_WIDTH;
         imageHeight = SMELTER_HEIGHT;

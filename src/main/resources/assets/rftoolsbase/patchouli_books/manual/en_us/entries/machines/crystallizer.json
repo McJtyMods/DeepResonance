@@ -1,0 +1,19 @@
+{
+  "name": "Crystallizer",
+  "icon": "deepresonance:crystallizer",
+  "category": "rftoolsbase:category_deepresonance_machines",
+  "extra_recipe_mappings": {
+    "deepresonance:crystallizer": 1
+  },
+  "sortnum": 30,
+  "pages": [
+    {
+      "type": "text",
+      "text": "The Crystallizer consumes liquid crystal and FE to create generated resonating crystals. The liquid crystal stats are copied into the crystal."
+    },
+    {
+      "type": "crafting",
+      "recipe": "deepresonance:crystallizer"
+    }
+  ]
+}

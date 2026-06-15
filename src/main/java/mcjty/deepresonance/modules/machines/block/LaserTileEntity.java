@@ -27,6 +27,7 @@ import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Type;
 import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.OrientationTools;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -111,6 +112,7 @@ public class LaserTileEntity extends TickingTileEntity {
     public static BaseBlock createBlock() {
         return new BaseBlock(new BlockBuilder()
                 .tileEntitySupplier(LaserTileEntity::new)
+                .manualEntry(ManualHelper.create("deepresonance:machines/laser_lens"))
                 .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))
                 .infoShift(TooltipBuilder.header())) {
 

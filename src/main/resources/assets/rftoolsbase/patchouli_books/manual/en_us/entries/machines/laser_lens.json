@@ -1,0 +1,28 @@
+{
+  "name": "Laser and Lens",
+  "icon": "deepresonance:laser",
+  "category": "rftoolsbase:category_deepresonance_machines",
+  "extra_recipe_mappings": {
+    "deepresonance:laser": 1,
+    "deepresonance:lens": 2
+  },
+  "sortnum": 40,
+  "pages": [
+    {
+      "type": "text",
+      "text": "The Laser modifies liquid crystal in a tank beyond a Lens. Put one air block between the Laser and Lens, then place the target tank after the Lens."
+    },
+    {
+      "type": "crafting",
+      "recipe": "deepresonance:laser"
+    },
+    {
+      "type": "crafting",
+      "recipe": "deepresonance:lens"
+    },
+    {
+      "type": "text",
+      "text": "The Laser uses FE, crystal liquid from inserted crystals, and a catalyst item. The catalyst controls how purity, strength, and efficiency are changed."
+    }
+  ]
+}

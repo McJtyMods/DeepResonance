@@ -1,0 +1,23 @@
+{
+  "name": "Smelter",
+  "icon": "deepresonance:smelter",
+  "category": "rftoolsbase:category_deepresonance_machines",
+  "extra_recipe_mappings": {
+    "deepresonance:smelter": 1
+  },
+  "sortnum": 10,
+  "pages": [
+    {
+      "type": "text",
+      "text": "The Smelter turns resonating ore into liquid crystal. It needs FE, ore in its slot, lava in a tank below, and an output tank above."
+    },
+    {
+      "type": "text",
+      "text": "For best quality, keep the lava tank below as close to 50% full as possible. Anything between 40% and 60% is still good."
+    },
+    {
+      "type": "crafting",
+      "recipe": "deepresonance:smelter"
+    }
+  ]
+}

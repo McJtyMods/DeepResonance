@@ -1,0 +1,7 @@
+{
+  "name": "Radiation",
+  "description": "Monitoring and protection",
+  "parent": "rftoolsbase:category_deepresonance",
+  "icon": "deepresonance:radiation_monitor",
+  "sortnum": 50
+}

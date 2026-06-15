@@ -20,6 +20,7 @@ import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.TagTools;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -86,6 +87,7 @@ public class SmelterTileEntity extends TickingTileEntity {
         return new BaseBlock(
                 new BlockBuilder()
                         .tileEntitySupplier(SmelterTileEntity::new)
+                .manualEntry(ManualHelper.create("deepresonance:machines/smelter"))
                         .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))
                         .infoShift(TooltipBuilder.header())) {
 

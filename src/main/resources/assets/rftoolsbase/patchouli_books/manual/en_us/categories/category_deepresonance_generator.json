@@ -1,0 +1,7 @@
+{
+  "name": "Power Generation",
+  "description": "Crystal based power generation",
+  "parent": "rftoolsbase:category_deepresonance",
+  "icon": "deepresonance:generator_controller",
+  "sortnum": 30
+}

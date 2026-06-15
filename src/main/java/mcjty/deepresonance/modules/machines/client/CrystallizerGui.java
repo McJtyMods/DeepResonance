@@ -12,6 +12,7 @@ import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -32,7 +33,7 @@ public class CrystallizerGui extends GenericGuiContainer<CrystallizerTileEntity,
     private Label percentage;
 
     public CrystallizerGui(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, ManualEntry.EMPTY);
+        super(container, inventory, title, ManualHelper.create("deepresonance:machines/crystallizer"));
 
         imageWidth = CRYSTALIZER_WIDTH;
         imageHeight = CRYSTALIZER_HEIGHT;

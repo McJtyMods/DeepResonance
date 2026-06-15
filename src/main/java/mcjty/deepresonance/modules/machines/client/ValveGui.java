@@ -19,6 +19,7 @@ import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.gui.widgets.*;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.RedstoneMode;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -42,7 +43,7 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
     private TextField maxAmount;
 
     public ValveGui(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, ManualEntry.EMPTY);
+        super(container, inventory, title, ManualHelper.create("deepresonance:machines/valve"));
 
         imageWidth = VALVE_WIDTH;
         imageHeight = VALVE_HEIGHT;

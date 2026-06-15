@@ -16,6 +16,7 @@ import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -41,7 +42,7 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
     private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/laser.png");
 
     public LaserGui(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, ManualEntry.EMPTY);
+        super(container, inventory, title, ManualHelper.create("deepresonance:machines/laser_lens"));
 
         imageWidth = LASER_WIDTH;
         imageHeight = LASER_HEIGHT;

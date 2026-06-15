@@ -6,6 +6,7 @@ import mcjty.deepresonance.modules.generator.data.GeneratorPartData;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -28,6 +29,7 @@ public class GeneratorPartBlock extends BaseBlock {
         super(new BlockBuilder()
                 .tileEntitySupplier(GeneratorPartTileEntity::new)
                 .topDriver(DeepResonanceTOPDriver.DRIVER)
+                .manualEntry(ManualHelper.create("deepresonance:generator/generator"))
                 .info(key("message.deepresonance.shiftmessage"))
                 .infoShift(header(), parameter("power", GeneratorPartBlock::getPowerString)));
     }

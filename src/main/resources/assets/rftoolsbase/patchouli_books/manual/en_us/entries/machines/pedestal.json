@@ -1,0 +1,19 @@
+{
+  "name": "Pedestal",
+  "icon": "deepresonance:pedestal",
+  "category": "rftoolsbase:category_deepresonance_machines",
+  "extra_recipe_mappings": {
+    "deepresonance:pedestal": 1
+  },
+  "sortnum": 70,
+  "pages": [
+    {
+      "type": "text",
+      "text": "The Pedestal places a resonating crystal in front of itself and removes it again when it is spent. It can feed crystals to a nearby Energy Collector."
+    },
+    {
+      "type": "crafting",
+      "recipe": "deepresonance:pedestal"
+    }
+  ]
+}
