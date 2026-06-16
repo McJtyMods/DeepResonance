@@ -26,6 +26,6 @@ description="Power generation based on resonating crystals."
 [[dependencies.deepresonance]]
     modId="rftoolsbase"
     mandatory=true
-    versionRange="[1.21-6.0.10,)"
+    versionRange="[1.21-6.0.11,)"
     ordering="AFTER"
     side="BOTH"
