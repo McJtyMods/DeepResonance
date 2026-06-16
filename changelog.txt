@@ -1,3 +1,6 @@
+1.20-5.0.6:
+- Various Patchouli documentation updates and fixes
+
 1.20-5.0.5:
 - Fixed a problem with the generator not noticing that a crystal was broken
 
