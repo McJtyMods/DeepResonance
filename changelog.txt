@@ -1,3 +1,6 @@
+1.20-5.0.7:
+- Maintenance release for Minecraft 1.20.1.
+
 1.20-5.0.6:
 - Various Patchouli documentation updates and fixes
 
