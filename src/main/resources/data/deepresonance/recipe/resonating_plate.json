@@ -3,7 +3,10 @@
   "ingredient": {
     "tag": "deepresonance:resonant_ore"
   },
-  "result": { "item": "deepresonance:resonating_plate", "count": 8},
+  "result": {
+    "id": "deepresonance:resonating_plate",
+    "count": 8
+  },
   "experience": 0.4,
   "cookingtime": 200
 }

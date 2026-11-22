@@ -11,7 +11,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "deepresonance:resonant_ore"
+            "items": "#deepresonance:resonant_ore"
           }
         ]
       }

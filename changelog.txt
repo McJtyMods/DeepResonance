@@ -1,3 +1,6 @@
+1.21-6.0.3:
+- Fixed furnace smelting of Resonating Ore into Resonating Plates
+
 1.21-6.0.2:
 - Updated and expanded the Patchouli manual documentation
 
