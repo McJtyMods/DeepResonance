@@ -1,5 +1,7 @@
 package mcjty.deepresonance.modules.core.block;
 
+import java.util.function.BiConsumer;
+import net.minecraft.server.level.ServerLevel;
 import mcjty.deepresonance.compat.DeepResonanceTOPDriver;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.data.Crystal;
@@ -18,7 +20,6 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.world.item.BlockItem;
@@ -32,7 +33,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -52,11 +52,10 @@ public class ResonatingCrystalBlock extends BaseBlock {
     private final boolean generated;
     private final boolean empty;
 
-    public ResonatingCrystalBlock(boolean generated, boolean empty) {
+    public ResonatingCrystalBlock(Properties properties, boolean generated, boolean empty) {
         super(new BlockBuilder()
                 .topDriver(DeepResonanceTOPDriver.DRIVER)
-                .properties(BlockBehaviour.Properties
-                        .of()
+                .properties(properties
                         .strength(2.0f)
                         .sound(SoundType.METAL)
                         .noOcclusion()
@@ -96,7 +95,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
     }
 
     @Override
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
         BlockEntity tile = level.getBlockEntity(pos);
         if (tile instanceof ResonatingCrystalTileEntity) {
             return createStack((ResonatingCrystalTileEntity) tile);
@@ -108,7 +107,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
         ItemStack ret = new ItemStack(this);
         Crystal data = crystal.getData(CoreModule.CRYSTAL_DATA);
         HolderLookup.Provider provider = crystal.getLevel() != null ? crystal.getLevel().registryAccess() : builtInProvider();
-        ret.set(CoreModule.ITEM_CRYSTAL_DATA, data);
+        ret.set(CoreModule.ITEM_CRYSTAL_DATA.get(), data);
 //        BlockItem.setBlockEntityData(ret, CoreModule.TYPE_RESONATING_CRYSTAL.get(), crystal.saveWithoutMetadata(provider));
         return ret;
     }
@@ -128,14 +127,14 @@ public class ResonatingCrystalBlock extends BaseBlock {
     }
 
     @Override
-    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
-        if (!world.isClientSide) {
+    protected void onExplosionHit(BlockState state, ServerLevel world, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> drops) {
+        if (!world.isClientSide()) {
             explode(world, pos);
         }
-        super.onBlockExploded(state, world, pos, explosion);
+        super.onExplosionHit(state, world, pos, explosion, drops);
     }
 
-    private static void explodeHelper(Level world, BlockPos location, float radius) {
+    private static void explodeHelper(ServerLevel world, BlockPos location, float radius) {
         Explosion boom = ExplosionTools.explodeFullDestroy(world, location, radius);
         for(int x = (int)(-radius); x < radius; ++x) {
             for(int y = (int)(-radius); y < radius; ++y) {
@@ -145,9 +144,9 @@ public class ResonatingCrystalBlock extends BaseBlock {
                     if(dist < radius) {
                         BlockState state = world.getBlockState(targetPosition);
                         Block block = state.getBlock();
-                        float resistance = state.getExplosionResistance(world, targetPosition, boom);
-                        if (!state.isAir() && resistance > 0 && (dist < radius - 1.0F || world.random.nextFloat() > 0.7D)) {
-                            block.onBlockExploded(state, world, targetPosition, boom);
+                        float resistance = block.getExplosionResistance();
+                        if (!state.isAir() && resistance > 0 && (dist < radius - 1.0F || world.getRandom().nextFloat() > 0.7D)) {
+                            state.onExplosionHit(world, targetPosition, boom, (stack, dropPos) -> Block.popResource(world, dropPos, stack));
                         }
                     }
                 }
@@ -155,10 +154,12 @@ public class ResonatingCrystalBlock extends BaseBlock {
         }
     }
 
-
     public static void explode(Level world, BlockPos pos) {
         BlockEntity theCrystalTile = world.getBlockEntity(pos);
-        world.getServer().tell(new TickTask((int) (world.getGameTime()+1), () -> {
+        if (!(world instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        serverLevel.getServer().schedule(new TickTask(serverLevel.getServer().getTickCount() + 1, () -> {
             double forceMultiplier = 1;
             if (theCrystalTile instanceof ResonatingCrystalTileEntity crystal) {
                 float explosionStrength = (float) ((crystal.getPower() * crystal.getStrength()) / (100.0f * 100.0f));
@@ -175,7 +176,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
                 }
             }
             if (forceMultiplier > 0.001f) {
-                explodeHelper(world, pos, (float) forceMultiplier);
+                explodeHelper(serverLevel, pos, (float) forceMultiplier);
             }
         }));
     }
@@ -184,7 +185,7 @@ public class ResonatingCrystalBlock extends BaseBlock {
     public void appendHoverText(@Nonnull ItemStack stack, Item.TooltipContext context, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
 
-        Crystal data = stack.get(CoreModule.ITEM_CRYSTAL_DATA);
+        Crystal data = stack.get(CoreModule.ITEM_CRYSTAL_DATA.get());
 
         double power = 100.0;
         if (data != null) {

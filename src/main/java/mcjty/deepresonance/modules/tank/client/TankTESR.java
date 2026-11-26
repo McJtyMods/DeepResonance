@@ -1,133 +1,98 @@
 package mcjty.deepresonance.modules.tank.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import mcjty.deepresonance.DeepResonance;
+import mcjty.deepresonance.modules.core.CoreModule;
+import mcjty.deepresonance.modules.core.fluid.FluidLiquidCrystal;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
+import mcjty.lib.client.CustomRenderTypes;
 import mcjty.lib.client.RenderHelper;
 import mcjty.lib.client.RenderSettings;
-import mcjty.lib.varia.OrientationTools;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer.CrumblingOverlay;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.BlockPos;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraft.world.phys.Vec3;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderingRegistry;
+import net.minecraft.client.color.block.BlockTintSource;
 
-import javax.annotation.Nonnull;
-import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-public class TankTESR implements BlockEntityRenderer<TankTileEntity> {
+public class TankTESR implements BlockEntityRenderer<TankTileEntity, TankTESR.State> {
 
-    public static final ResourceLocation TANK_BOTTOM = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/tank_bottom");
-    public static final ResourceLocation TANK_TOP = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/tank_top");
-    public static final ResourceLocation TANK_SIDE = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/tank_side");
+    public static class State extends BlockEntityRenderState {
+        TextureAtlasSprite sprite;
+        int color;
+        float height;
+        final EnumSet<Direction> sides = EnumSet.noneOf(Direction.class);
+    }
 
     public TankTESR(BlockEntityRendererProvider.Context context) {
+    }
+
+    @Override
+    public State createRenderState() {
+        return new State();
+    }
+
+    @Override
+    public void extractRenderState(TankTileEntity tank, State state, float partialTicks, Vec3 camera, CrumblingOverlay overlay) {
+        BlockEntityRenderer.super.extractRenderState(tank, state, partialTicks, camera, overlay);
+        state.height = tank.getClientRenderHeight();
+        state.sprite = null;
+        state.sides.clear();
+        var fluid = tank.getClientRenderFluid();
+        if (fluid == Fluids.EMPTY || state.height <= 0) {
+            return;
+        }
+        var fluidState = fluid.defaultFluidState();
+        var model = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluidState);
+        state.sprite = model.stillMaterial().sprite();
+        var tint = model.tintSource();
+        state.color = tint == null ? -1 : tint.colorInWorld(tank.getBlockState(), Minecraft.getInstance().level, tank.getBlockPos());
+        for (Direction side : Direction.values()) {
+            if (!(tank.getLevel().getBlockEntity(tank.getBlockPos().relative(side)) instanceof TankTileEntity neighbor)
+                    || neighbor.getClientRenderFluid() != fluid || neighbor.getClientRenderHeight() < state.height) {
+                state.sides.add(side);
+            }
+        }
+    }
+
+    @Override
+    public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
+        if (state.sprite == null) {
+            return;
+        }
+        collector.submitCustomGeometry(pose, CustomRenderTypes.translucent(), (captured, vertices) -> {
+            PoseStack copy = new PoseStack();
+            copy.last().set(captured);
+            float inset = 0.015f;
+            var sides = state.sides;
+            RenderHelper.drawBoxUnit(copy, vertices, state.sprite,
+                    sides.contains(Direction.DOWN), sides.contains(Direction.UP),
+                    sides.contains(Direction.NORTH), sides.contains(Direction.SOUTH),
+                    sides.contains(Direction.WEST), sides.contains(Direction.EAST),
+                    inset, 1 - inset, inset, Math.max(inset, state.height - inset), inset, 1 - inset,
+                    RenderSettings.builder().color(state.color).brightness(state.lightCoords).build());
+        });
     }
 
     public static void register() {
         BlockEntityRenderers.register(TankModule.TYPE_TANK.get(), TankTESR::new);
     }
 
-    @Override
-    public void render(@Nonnull TankTileEntity tileTank, float partialTicks, @Nonnull PoseStack matrixStackIn, @Nonnull MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
-        renderInternal(tileTank, matrixStackIn, bufferIn, combinedLightIn);
+    public static void registerFluidModel() {
+        Material material = new Material(FluidLiquidCrystal.TEXTURE).withForceTranslucent(true);
+        BlockTintSource tint = state -> 0xffffdd00;
+        FluidRenderingRegistry.register(CoreModule.LIQUID_CRYSTAL.get(), new FluidModel.Unbaked(material, material, null, tint));
     }
-
-    public static void renderInternal(TankTileEntity tileTank, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn) {
-        BlockPos pos = tileTank.getBlockPos();
-        final Fluid fluidToRender = tileTank.getClientRenderFluid();
-
-        Set<Direction> dirs = Arrays.stream(OrientationTools.DIRECTION_VALUES).filter(dir -> {
-            if (dir == Direction.DOWN && tileTank.getClientRenderHeight() > 0.0001 && !(fluidToRender == Fluids.EMPTY) && ItemBlockRenderTypes.getRenderLayer(fluidToRender.defaultFluidState()) == RenderType.solid()) {
-                return false; //If there is a fluid being rendered, the bottom doesn't need to be checked if the fluid is opaque
-            }
-            BlockEntity tile = tileTank.getLevel().getBlockEntity(pos.relative(dir));
-            return !(tile instanceof TankTileEntity && ((TankTileEntity) tile).getClientRenderFluid() == fluidToRender);
-        }).collect(Collectors.toCollection(() -> EnumSet.noneOf(Direction.class)));
-
-        float scale = tileTank.getClientRenderHeight();
-        if (fluidToRender != Fluids.EMPTY) {
-            IClientFluidTypeExtensions attributes = IClientFluidTypeExtensions.of(fluidToRender);
-            int color = attributes.getTintColor(fluidToRender.defaultFluidState(), tileTank.getLevel(), tileTank.getBlockPos());
-            int luminosity = fluidToRender.getFluidType().getLightLevel();
-//            int block = LightTexture.block(combinedLightIn);
-            int packed = LightTexture.pack(Math.max(luminosity, combinedLightIn), 0);
-            render(matrixStackIn, bufferIn, fluidToRender, dirs, combinedLightIn, packed, scale, color);
-        }
-    }
-
-//    public static void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, Fluid renderFluid, float height, int brightness) {
-//        int color = 0;
-//        if (renderFluid != null) {
-//            color = renderFluid.getAttributes().getColor();
-//        }
-//        render(matrixStackIn, bufferIn, renderFluid, ITEM_DIRECTIONS, brightness, height, color);
-//    }
-
-    private static void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, Fluid renderFluid, Set<Direction> dirs, int combinedLightIn, int liquidBrightness, float scale, int color) {
-        matrixStackIn.pushPose();
-
-        renderModel(matrixStackIn, bufferIn.getBuffer(RenderType.translucent()), dirs, combinedLightIn);
-
-        if (renderFluid != null) {
-            for (RenderType renderType : RenderType.chunkBufferLayers()) {
-                if (ItemBlockRenderTypes.getRenderLayer(renderFluid.defaultFluidState()) == renderType) {
-                    renderFluid(scale, color, bufferIn.getBuffer(renderType), renderFluid, dirs, liquidBrightness, matrixStackIn);
-                }
-            }
-        }
-
-        matrixStackIn.popPose();
-    }
-
-    private static void renderModel(PoseStack matrixStack, VertexConsumer vertexBuilder, Set<Direction> dirs, int brightness) {
-        if (dirs.contains(Direction.UP)) {
-            TextureAtlasSprite tank_top = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(TANK_TOP);
-            RenderHelper.drawQuad(matrixStack, vertexBuilder, tank_top, Direction.UP, true, 0.1f, RenderSettings.builder().brightness(brightness).build());
-        }
-        if (dirs.contains(Direction.DOWN)) {
-            TextureAtlasSprite tank_bottom = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(TANK_BOTTOM);
-            RenderHelper.drawQuad(matrixStack, vertexBuilder, tank_bottom, Direction.DOWN, true, 0.1f, RenderSettings.builder().brightness(brightness).build());
-        }
-        TextureAtlasSprite tank_side = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(TANK_SIDE);
-        for (Direction dir : OrientationTools.HORIZONTAL_DIRECTION_VALUES) {
-            RenderHelper.drawQuad(matrixStack, vertexBuilder, tank_side, dir, true, 0.1f, RenderSettings.builder().brightness(brightness).build());
-        }
-    }
-
-    private static void renderFluid(float scale, int color, VertexConsumer vertexBuilder, Fluid fluidToRender, Set<Direction> dirs, int brightness, PoseStack matrixStack) {
-        if (scale > 0.0f) {
-            float offset = 0.015f;
-            ResourceLocation stillTexture = IClientFluidTypeExtensions.of(fluidToRender).getStillTexture();
-            TextureAtlasSprite fluid = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(stillTexture);
-
-            RenderSettings settings = RenderSettings.builder()
-                    .color(color)
-                    .brightness(brightness)
-                    .build();
-
-            RenderHelper.drawBoxUnit(matrixStack, vertexBuilder, fluid,
-                    false, true, dirs.contains(Direction.NORTH), dirs.contains(Direction.SOUTH), dirs.contains(Direction.WEST), dirs.contains(Direction.EAST),
-                    offset, 1 - offset, offset, scale - offset, offset, 1 - offset,
-                    settings);
-        }
-    }
-
 }

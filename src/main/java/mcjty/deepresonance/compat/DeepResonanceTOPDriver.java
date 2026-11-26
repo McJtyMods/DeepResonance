@@ -19,11 +19,11 @@ import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.ChatFormatting;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.fluids.FluidStack;
+import mcjty.lib.varia.FluidStack;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -34,11 +34,11 @@ public class DeepResonanceTOPDriver implements TOPDriver {
 
     public static final DeepResonanceTOPDriver DRIVER = new DeepResonanceTOPDriver();
 
-    private final Map<ResourceLocation, TOPDriver> drivers = new HashMap<>();
+    private final Map<Identifier, TOPDriver> drivers = new HashMap<>();
 
     @Override
     public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
-        ResourceLocation id = Tools.getId(blockState);
+        Identifier id = Tools.getId(blockState);
         if (!drivers.containsKey(id)) {
             if (blockState.getBlock() == GeneratorModule.GENERATOR_PART.block().get()) {
                 drivers.put(id, new GeneratorPartDriver());
@@ -138,7 +138,7 @@ public class DeepResonanceTOPDriver implements TOPDriver {
                     LiquidCrystalData d = blob.getData();
                     FluidStack stack = d.getFluidStack();
                     if (!stack.isEmpty()) {
-                        probeInfo.tankSimple(blob.getCapacity(), stack);
+                        probeInfo.tankSimple(blob.getCapacity(), new mcjty.theoneprobe.api.FluidStack(stack.variant(), stack.getAmount()));
                         if (stack.getFluid() == CoreModule.LIQUID_CRYSTAL.get()) {
                             DecimalFormat decimalFormat = new DecimalFormat("#.#");
                             decimalFormat.setRoundingMode(RoundingMode.DOWN);

@@ -106,12 +106,12 @@ public class GeneratorBlob implements IMultiblock {
 
     public static GeneratorBlob load(CompoundTag tagCompound) {
         return new GeneratorBlob()
-                .setGeneratorBlocks(tagCompound.getInt("refcount"))
-                .setCollectorBlocks(tagCompound.getInt("collectors"))
-                .setEnergy(tagCompound.getInt("energy"))
-                .setActive(tagCompound.getBoolean("active"))
-                .setStartupCounter(tagCompound.getInt("startup"))
-                .setShutdownCounter(tagCompound.getInt("shutdown"));
+                .setGeneratorBlocks(tagCompound.getIntOr("refcount", 0))
+                .setCollectorBlocks(tagCompound.getIntOr("collectors", 0))
+                .setEnergy(tagCompound.getIntOr("energy", 0))
+                .setActive(tagCompound.getBooleanOr("active", false))
+                .setStartupCounter(tagCompound.getIntOr("startup", 0))
+                .setShutdownCounter(tagCompound.getIntOr("shutdown", 0));
     }
 
     public static CompoundTag save(CompoundTag tagCompound, GeneratorBlob network) {

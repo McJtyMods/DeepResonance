@@ -1,12 +1,10 @@
 package mcjty.deepresonance.modules.machines.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.SmelterTileEntity;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
-import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.EnergyBar;
@@ -14,11 +12,11 @@ import mcjty.lib.gui.widgets.ImageLabel;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
 import mcjty.rftoolsbase.tools.ManualHelper;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.minecraft.resources.Identifier;
+import net.minecraft.client.gui.screens.MenuScreens;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -32,14 +30,13 @@ public class SmelterGui extends GenericGuiContainer<SmelterTileEntity, GenericCo
     private ImageLabel burningImage;
     private Label percentage;
 
-    private static final ResourceLocation iconLocation = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/smelter.png");
-    private static final ResourceLocation iconBurning = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/burning.png");
+    private static final Identifier iconLocation = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/smelter.png");
+    private static final Identifier iconBurning = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/burning.png");
 
     public SmelterGui(GenericContainer container, Inventory inventory, Component title) {
         super(container, inventory, title, ManualHelper.create("deepresonance:machines/smelter"));
+        setWindowDimensions(SMELTER_WIDTH, SMELTER_HEIGHT);
 
-        imageWidth = SMELTER_WIDTH;
-        imageHeight = SMELTER_HEIGHT;
     }
 
     @Override
@@ -68,7 +65,7 @@ public class SmelterGui extends GenericGuiContainer<SmelterTileEntity, GenericCo
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int x, int y) {
+    protected void renderBg(@Nonnull GuiGraphicsExtractor graphics, float partialTicks, int x, int y) {
         SmelterTileEntity be = getBE();
         int progress = be.getProgress();
         if (0 < progress && progress < 100) {
@@ -85,7 +82,7 @@ public class SmelterGui extends GenericGuiContainer<SmelterTileEntity, GenericCo
         super.renderBg(graphics, partialTicks, x, y);
     }
 
-    public static void register(RegisterMenuScreensEvent event) {
-        event.register(MachinesModule.SMELTER_CONTAINER.get(), SmelterGui::new);
+    public static void register() {
+        MenuScreens.register(MachinesModule.SMELTER_CONTAINER.get(), SmelterGui::new);
     }
 }

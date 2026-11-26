@@ -1,5 +1,6 @@
 package mcjty.deepresonance.modules.core.block;
 
+import net.minecraft.world.level.storage.ValueInput;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.data.Crystal;
 import mcjty.deepresonance.modules.core.data.ResonatingCrystalData;
@@ -7,10 +8,10 @@ import mcjty.deepresonance.modules.core.util.CrystalConfig;
 import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -131,9 +132,9 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider provider) {
+    public void onDataPacket(Connection net, ValueInput input) {
         boolean oldempty = isEmpty();
-        super.onDataPacket(net, packet, provider);
+        super.onDataPacket(net, input);
         boolean newempty = isEmpty();
         if (oldempty != newempty) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
@@ -142,7 +143,7 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
 
     @Override
     public void loadClientDataFromNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
-        setGlowing(tagCompound.getBoolean("glowing"));
+        setGlowing(tagCompound.getBooleanOr("glowing", false));
     }
 
     @Override
@@ -153,18 +154,18 @@ public class ResonatingCrystalTileEntity extends GenericTileEntity {
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder components) {
         super.collectImplicitComponents(components);
-        components.set(CoreModule.ITEM_RESONATING_CRYSTAL_DATA, getData(CoreModule.RESONATING_CRYSTAL_DATA));
-        components.set(CoreModule.ITEM_CRYSTAL_DATA, getData(CoreModule.CRYSTAL_DATA));
+        components.set(CoreModule.ITEM_RESONATING_CRYSTAL_DATA.get(), getData(CoreModule.RESONATING_CRYSTAL_DATA));
+        components.set(CoreModule.ITEM_CRYSTAL_DATA.get(), getData(CoreModule.CRYSTAL_DATA));
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        ResonatingCrystalData rcdata = input.get(CoreModule.ITEM_RESONATING_CRYSTAL_DATA);
+        ResonatingCrystalData rcdata = input.get(CoreModule.ITEM_RESONATING_CRYSTAL_DATA.get());
         if (rcdata != null) {
             setData(CoreModule.RESONATING_CRYSTAL_DATA, rcdata);
         }
-        Crystal cdata = input.get(CoreModule.ITEM_CRYSTAL_DATA);
+        Crystal cdata = input.get(CoreModule.ITEM_CRYSTAL_DATA.get());
         if (cdata != null) {
             setData(CoreModule.CRYSTAL_DATA, cdata);
         }

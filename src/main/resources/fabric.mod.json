@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "id": "deepresonance",
+  "version": "${version}",
+  "name": "DeepResonance",
+  "description": "Power generation based on resonating crystals.",
+  "authors": [
+    "Elec332",
+    "McJty"
+  ],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "mcjty.deepresonance.DeepResonance"
+    ],
+    "client": [
+      "mcjty.deepresonance.setup.ClientSetup"
+    ],
+    "fabric-datagen": [
+      "mcjty.deepresonance.datagen.FabricDataGen"
+    ],
+    "jei_mod_plugin": [
+      "mcjty.deepresonance.compat.jei.DeepResonanceJeiPlugin"
+    ],
+    "rftoolscontrol-opcodes": [
+      "mcjty.deepresonance.compat.rftoolscontrol.RFToolsControlSupport"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.3",
+    "minecraft": "~26.2",
+    "java": ">=25",
+    "fabric-api": ">=0.155.2+26.2",
+    "forgeconfigapiport": ">=26.2.1",
+    "mcjtylib": ">=26.2-10.0.3-fabric",
+    "rftoolsbase": ">=26.2-8.0.0-fabric"
+  },
+  "suggests": {
+    "theoneprobe": "*",
+    "jei": "*",
+    "rftoolscontrol": "*"
+  },
+  "accessWidener": "deepresonance.accesswidener",
+  "mixins": [
+    "deepresonance.mixins.json"
+  ]
+}

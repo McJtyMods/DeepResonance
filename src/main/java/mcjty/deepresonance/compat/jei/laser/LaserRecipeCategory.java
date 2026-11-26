@@ -16,9 +16,9 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -31,7 +31,7 @@ public class LaserRecipeCategory implements IRecipeCategory<LaserRecipeWrapper> 
     private final IDrawable slot;
     private final IDrawable icon;
 
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "laser");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "laser");
 
     public LaserRecipeCategory(IGuiHelper guiHelper) {
         this.guiHelper = guiHelper;
@@ -67,12 +67,12 @@ public class LaserRecipeCategory implements IRecipeCategory<LaserRecipeWrapper> 
     }
 
     @Override
-    public void draw(LaserRecipeWrapper recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(LaserRecipeWrapper recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
         slot.draw(graphics);
         background.draw(graphics);
         Font font = Minecraft.getInstance().font;
-        graphics.drawString(font, "Per " + LaserConfig.RCL_PER_CATALYST.get() + "mb RCL", 24, 0, 0xffffffff);
-        graphics.drawString(font, "and " + LaserConfig.CRYSTAL_LIQUID_PER_CATALYST.get() + "mb crystal", 24, 10, 0xffffffff);
+        graphics.text(font, "Per " + LaserConfig.RCL_PER_CATALYST.get() + "mb RCL", 24, 0, 0xffffffff);
+        graphics.text(font, "and " + LaserConfig.CRYSTAL_LIQUID_PER_CATALYST.get() + "mb crystal", 24, 10, 0xffffffff);
         recipe.drawInfo(graphics);
     }
 

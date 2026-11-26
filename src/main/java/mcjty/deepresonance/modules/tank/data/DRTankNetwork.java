@@ -6,11 +6,12 @@ import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.varia.OrientationTools;
 import mcjty.lib.worlddata.AbstractWorldData;
+import mcjty.deepresonance.util.ResonanceSavedData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
@@ -23,7 +24,7 @@ import java.util.function.Consumer;
 public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
 
     private static final String TANK_NETWORK_NAME = "DRTankNetwork";
-    public static final ResourceLocation TANK_NETWORK_ID = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "tank");
+    public static final Identifier TANK_NETWORK_ID = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "tank");
 
     private final MultiblockDriver<TankBlob> driver = MultiblockDriver.<TankBlob>builder()
             .loader(TankBlob::load)
@@ -88,7 +89,7 @@ public class DRTankNetwork extends AbstractWorldData<DRTankNetwork> {
     }
 
     public static DRTankNetwork getNetwork(Level world) {
-        return getData(world, DRTankNetwork::new, DRTankNetwork::new, TANK_NETWORK_NAME);
+        return ResonanceSavedData.get(world, "tank_network", TANK_NETWORK_NAME, DRTankNetwork::new, DRTankNetwork::new);
     }
 
     public TankBlob getBlob(int id) {

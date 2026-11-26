@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.machines.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.LaserTileEntity;
@@ -9,7 +8,6 @@ import mcjty.deepresonance.modules.machines.util.config.LaserConfig;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
-import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.layout.PositionalLayout;
@@ -17,12 +15,12 @@ import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
 import mcjty.rftoolsbase.tools.ManualHelper;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.minecraft.resources.Identifier;
+import net.minecraft.client.gui.screens.MenuScreens;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -39,13 +37,12 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
     private Label strengthBonus;
     private Label efficiencyBonus;
 
-    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/laser.png");
+    private static final Identifier GUI = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/laser.png");
 
     public LaserGui(GenericContainer container, Inventory inventory, Component title) {
         super(container, inventory, title, ManualHelper.create("deepresonance:machines/laser_lens"));
+        setWindowDimensions(LASER_WIDTH, LASER_HEIGHT);
 
-        imageWidth = LASER_WIDTH;
-        imageHeight = LASER_HEIGHT;
     }
 
     @Override
@@ -97,7 +94,7 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int x, int y) {
+    protected void renderBg(@Nonnull GuiGraphicsExtractor graphics, float partialTicks, int x, int y) {
         Slot slot = this.menu.getSlot(LaserTileEntity.SLOT_CATALYST);
         if (slot.hasItem()) {
             InfusingBonus bonus = LaserTileEntity.getInfusingBonus(slot.getItem());
@@ -134,7 +131,7 @@ public class LaserGui extends GenericGuiContainer<LaserTileEntity, GenericContai
         return new DecimalFormat("##.#").format(f);
     }
 
-    public static void register(RegisterMenuScreensEvent event) {
-        event.register(MachinesModule.LASER_CONTAINER.get(), LaserGui::new);
+    public static void register() {
+        MenuScreens.register(MachinesModule.LASER_CONTAINER.get(), LaserGui::new);
     }
 }

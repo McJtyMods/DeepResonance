@@ -1,5 +1,15 @@
 package mcjty.deepresonance.modules.machines.block;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import mcjty.deepresonance.modules.tank.util.TankTransfers;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import static mcjty.lib.setup.Registration.ITEM_INVENTORY;
+import static mcjty.lib.setup.Registration.ITEM_ENERGY;
+import net.minecraft.core.RegistryAccess;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.data.Crystal;
 import mcjty.deepresonance.modules.machines.MachinesModule;
@@ -19,7 +29,6 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
-import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -31,6 +40,7 @@ import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
@@ -41,10 +51,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import mcjty.lib.varia.Lazy;
+import mcjty.lib.varia.FluidStack;
 
 import javax.annotation.Nonnull;
 import java.util.function.Function;
@@ -109,8 +117,9 @@ public class LaserTileEntity extends TickingTileEntity {
         super(MachinesModule.TYPE_LASER.get(), pos, state);
     }
 
-    public static BaseBlock createBlock() {
+    public static BaseBlock createBlock(Block.Properties properties) {
         return new BaseBlock(new BlockBuilder()
+                .properties(properties)
                 .tileEntitySupplier(LaserTileEntity::new)
                 .manualEntry(ManualHelper.create("deepresonance:machines/laser_lens"))
                 .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))
@@ -195,13 +204,12 @@ public class LaserTileEntity extends TickingTileEntity {
         return InfusionBonusRegistry.getInfusionBonus(item);
     }
 
-
     private boolean validRCLTank(TankTileEntity tank) {
-        IFluidHandler h = level.getCapability(Capabilities.FluidHandler.BLOCK, tank.getBlockPos(), null);
+        Storage<FluidVariant> h = FluidStorage.SIDED.find(level, tank.getBlockPos(), null);
         if (h == null) {
             return false;
         }
-        return LiquidCrystalData.isLiquidCrystal(h.getFluidInTank(0).getFluid());
+        return LiquidCrystalData.isLiquidCrystal(TankTransfers.contents(h).getFluid());
     }
 
     private BlockPos findLens() {
@@ -227,7 +235,6 @@ public class LaserTileEntity extends TickingTileEntity {
         return shouldBeLens.relative(direction);
     }
 
-
     private void infuseLiquid(BlockPos tankCoordinate, InfusingBonus bonus) {
         // We consume stuff even if the tank does not have enough liquid. Player has to be careful
         items.decrStackSize(SLOT_CATALYST, 1);
@@ -240,11 +247,11 @@ public class LaserTileEntity extends TickingTileEntity {
         BlockEntity te = level.getBlockEntity(tankCoordinate);
         if (te instanceof TankTileEntity tank) {
             if (validRCLTank(tank)) {
-                IFluidHandler handler = level.getCapability(Capabilities.FluidHandler.BLOCK, tank.getBlockPos(), null);
+                Storage<FluidVariant> handler = FluidStorage.SIDED.find(level, tank.getBlockPos(), null);
                 if (handler != null) {
-                    FluidStack stack = handler.drain(1000 * mcjty.deepresonance.util.Constants.TANK_BUCKETS, IFluidHandler.FluidAction.SIMULATE);
+                    FluidStack stack = TankTransfers.simulateExtract(handler, 1000 * mcjty.deepresonance.util.Constants.TANK_BUCKETS);
                     if (!stack.isEmpty()) {
-                        stack = handler.drain(1000 * mcjty.deepresonance.util.Constants.TANK_BUCKETS, IFluidHandler.FluidAction.EXECUTE);
+                        stack = TankTransfers.extract(handler, 1000 * mcjty.deepresonance.util.Constants.TANK_BUCKETS);
                         LiquidCrystalData fluidData = LiquidCrystalData.fromStack(stack);
                         float factor = (float) LaserConfig.RCL_PER_CATALYST.get() / stack.getAmount();
                         float purity = bonus.purityModifier().modify(fluidData.getPurity(), fluidData.getQuality(), factor);
@@ -261,7 +268,7 @@ public class LaserTileEntity extends TickingTileEntity {
                             }
                         }
                         if (newStack.getAmount() > 0) {
-                            handler.fill(newStack, IFluidHandler.FluidAction.EXECUTE);
+                            TankTransfers.insert(handler, newStack);
                         }
                     }
                 }
@@ -290,7 +297,7 @@ public class LaserTileEntity extends TickingTileEntity {
     private void checkCrystal() {
         ItemStack stack = items.getStackInSlot(SLOT_CRYSTAL);
         if (!stack.isEmpty()) {
-            Crystal crystal = stack.getOrDefault(CoreModule.ITEM_CRYSTAL_DATA, Crystal.ZERO);
+            Crystal crystal = stack.getOrDefault(CoreModule.ITEM_CRYSTAL_DATA.get(), Crystal.ZERO);
             double strength = crystal.strength() / 100.0;
             LaserData data = getData(MachinesModule.LASER_DATA);
             int toAdd = (int) (LaserConfig.MIN_CRYSTAL_LIQUID_PER_CRYSTAL.get() + strength * (LaserConfig.MAX_CRYSTAL_LIQUID_PER_CRYSTAL.get() - LaserConfig.MIN_CRYSTAL_LIQUID_PER_CRYSTAL.get()));
@@ -304,28 +311,32 @@ public class LaserTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        progressCounter = tag.getInt("progress");
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        HolderLookup.Provider provider = input.lookup();
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        progressCounter = tag.getIntOr("progress", 0);
         energyStorage.load(tag, "energy", provider);
         items.load(tag, "items", provider);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
+        CompoundTag tag = new CompoundTag();
         tag.putInt("progress", progressCounter);
         energyStorage.save(tag, "energy", provider);
         items.save(tag, "items", provider);
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 
-
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        energyStorage.applyImplicitComponents(input.get(Registration.ITEM_ENERGY));
-        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
-        LaserData laserData = input.get(MachinesModule.ITEM_LASER_DATA);
+        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY.get()));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY.get()));
+        LaserData laserData = input.get(MachinesModule.ITEM_LASER_DATA.get());
         if  (laserData != null) {
             setData(MachinesModule.LASER_DATA, laserData);
         }
@@ -336,7 +347,7 @@ public class LaserTileEntity extends TickingTileEntity {
         super.collectImplicitComponents(builder);
         energyStorage.collectImplicitComponents(builder);
         items.collectImplicitComponents(builder);
-        builder.set(MachinesModule.ITEM_LASER_DATA, getData(MachinesModule.LASER_DATA));
+        builder.set(MachinesModule.ITEM_LASER_DATA.get(), getData(MachinesModule.LASER_DATA));
     }
 
     public int getMaxPower() {

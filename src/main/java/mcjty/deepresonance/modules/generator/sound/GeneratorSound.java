@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.Block;
 public class GeneratorSound extends AbstractTickableSoundInstance {
 
     public GeneratorSound(SoundEvent event, Level world, BlockPos pos) {
-        super(event, SoundSource.BLOCKS, world.random);
+        super(event, SoundSource.BLOCKS, world.getRandom());
         this.world = world;
         this.pos = pos;
         this.x = pos.getX();
@@ -32,7 +32,6 @@ public class GeneratorSound extends AbstractTickableSoundInstance {
     private final BlockPos pos;
     private final boolean loop;
     private final SoundEvent sound;
-
 
     @Override
     public void tick() {

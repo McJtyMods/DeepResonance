@@ -1,22 +1,11 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "P": {
-      "item": "deepresonance:resonating_plate"
-    },
-    "X": {
-      "tag": "c:ingots/gold"
-    },
-    "d": {
-      "item": "minecraft:diamond"
-    },
-    "m": {
-      "item": "deepresonance:machine_frame"
-    },
-    "q": {
-      "item": "minecraft:quartz"
-    }
+    "P": "deepresonance:resonating_plate",
+    "X": "#c:ingots/gold",
+    "d": "minecraft:diamond",
+    "m": "deepresonance:machine_frame",
+    "q": "minecraft:quartz"
   },
   "pattern": [
     "PdP",
@@ -24,7 +13,6 @@
     "XXX"
   ],
   "result": {
-    "count": 1,
     "id": "deepresonance:energy_collector"
   }
 }

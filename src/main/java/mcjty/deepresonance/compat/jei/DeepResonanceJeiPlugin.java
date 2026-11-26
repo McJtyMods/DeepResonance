@@ -11,14 +11,13 @@ import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.data.InfusionBonusRegistry;
 import mcjty.lib.varia.Tools;
 import mezz.jei.api.IModPlugin;
-import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -26,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@JeiPlugin
 public class DeepResonanceJeiPlugin implements IModPlugin {
 
     public static final RecipeType<LaserRecipeWrapper> LASER_RECIPE = RecipeType.create(DeepResonance.MODID, "laser", LaserRecipeWrapper.class);
@@ -35,8 +33,8 @@ public class DeepResonanceJeiPlugin implements IModPlugin {
 
     @Nonnull
     @Override
-    public ResourceLocation getPluginUid() {
-        return ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "jeiplugin");
+    public Identifier getPluginUid() {
+        return Identifier.fromNamespaceAndPath(DeepResonance.MODID, "jeiplugin");
     }
 
     @Override

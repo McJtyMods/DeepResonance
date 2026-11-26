@@ -2,7 +2,6 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
@@ -24,7 +23,6 @@
           "name": "deepresonance:valve"
         }
       ],
-      "name": "valve",
       "rolls": 1.0
     }
   ],

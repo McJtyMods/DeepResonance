@@ -2,7 +2,6 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
@@ -24,7 +23,6 @@
           "name": "deepresonance:resonating_crystal_generated_empty"
         }
       ],
-      "name": "resonating_crystal_generated_empty",
       "rolls": 1.0
     }
   ],

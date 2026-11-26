@@ -1,44 +1,16 @@
 package mcjty.deepresonance.modules.core.fluid;
 
 import mcjty.deepresonance.DeepResonance;
-import mcjty.deepresonance.modules.core.CoreModule;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.EmptyFluid;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.Nullable;
-
-import javax.annotation.Nonnull;
+import net.minecraft.world.level.material.FluidState;
 
 public class FluidLiquidCrystal extends EmptyFluid {
 
-    private static final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/rclfluid");
+    public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "block/rclfluid");
 
     @Override
-    @Nonnull
-    public FluidType getFluidType() {
-        return CoreModule.LIQUID_CRYSTAL_TYPE.get();
-    }
-
-    public static class ClientExtensions implements IClientFluidTypeExtensions {
-        @Override
-        public int getTintColor() {
-            return 0xffffdd00;
-        }
-
-        @Override
-        public ResourceLocation getStillTexture() {
-            return texture;
-        }
-
-        @Override
-        public @Nullable ResourceLocation getOverlayTexture() {
-            return texture;
-        }
-
-        @Override
-        public ResourceLocation getFlowingTexture() {
-            return texture;
-        }
+    public boolean isSource(FluidState state) {
+        return true;
     }
 }

@@ -1,3 +1,7 @@
+26.2-8.0.0-fabric:
+- Ported to Minecraft 26.2 on Fabric.
+- Added the operator-only /deepresonance testsetup command for purification, power generation, crystallization, and ore smelting stations.
+
 1.21-6.0.3:
 - Fixed furnace smelting of Resonating Ore into Resonating Plates
 
