@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:ore",
+  "size": 5,
+  "discard_chance_on_air_exposure": 0,
+  "targets": [
+    {
+      "target": {
+        "predicate_type": "minecraft:tag_match",
+        "tag": "minecraft:end_stones"
+      },
+      "state": "deepresonance:resonating_ore_end"
+    }
+  ]
+}

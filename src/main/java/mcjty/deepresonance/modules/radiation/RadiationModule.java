@@ -1,7 +1,6 @@
 package mcjty.deepresonance.modules.radiation;
 
 import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.deepresonance.modules.radiation.client.RadiationOverlayRenderer;
 import mcjty.deepresonance.modules.radiation.item.ItemRadiationSuit;
 import mcjty.deepresonance.modules.radiation.item.RadiationMonitorItem;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
@@ -21,11 +20,7 @@ import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.MapColor;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.registries.DeferredItem;
+import mcjty.lib.setup.DeferredItem;
 
 import java.util.List;
 
@@ -35,11 +30,11 @@ public class RadiationModule implements IModule {
 
     public static final RBlock<Block, BlockItem, BlockEntity> POISONED_DIRT = Registration.registerSimpleBlock(
             "poisoned_dirt",
-            () -> new Block(Block.Properties.of().mapColor(MapColor.DIRT).strength(0.5f).sound(SoundType.GRASS))
+            properties -> new Block(properties.mapColor(MapColor.DIRT).strength(0.5f).sound(SoundType.GRASS))
     );
     public static final RBlock<Block, BlockItem, BlockEntity> DENSE_GLASS = Registration.registerSimpleBlock(
             "dense_glass",
-            () -> new GrassBlock(Block.Properties.of()
+            properties -> new GrassBlock(properties
                     .strength(3.0f, 500.0f)
                     .requiresCorrectToolForDrops()
                     .noOcclusion()
@@ -47,35 +42,31 @@ public class RadiationModule implements IModule {
     );
     public static final RBlock<Block, BlockItem, BlockEntity> DENSE_OBSIDIAN = Registration.registerSimpleBlock(
             "dense_obsidian",
-            () -> new Block(Block.Properties.of().mapColor(MapColor.COLOR_BLACK)
+            properties -> new Block(properties.mapColor(MapColor.COLOR_BLACK)
                     .strength(50.0f, 2000.0f)
                     .requiresCorrectToolForDrops()
                     .sound(SoundType.STONE))
     );
-    public static final DeferredItem<RadiationMonitorItem> RADIATION_MONITOR = Registration.ITEMS.register("radiation_monitor", tab(() -> new RadiationMonitorItem(Registration.createStandardProperties().stacksTo(1))));
+    public static final DeferredItem<RadiationMonitorItem> RADIATION_MONITOR = Registration.ITEMS.register("radiation_monitor", tab(properties -> new RadiationMonitorItem(properties.stacksTo(1))));
 
-    public static final DeferredItem<Item> RADIATION_SUIT_HELMET = Registration.ITEMS.register("radiation_suit_helmet", tab(() -> new ItemRadiationSuit(EquipmentSlot.HEAD)));
-    public static final DeferredItem<Item> RADIATION_SUIT_CHESTPLATE = Registration.ITEMS.register("radiation_suit_chestplate", tab(() -> new ItemRadiationSuit(EquipmentSlot.CHEST)));
-    public static final DeferredItem<Item> RADIATION_SUIT_LEGGINGS = Registration.ITEMS.register("radiation_suit_leggings", tab(() -> new ItemRadiationSuit(EquipmentSlot.LEGS)));
-    public static final DeferredItem<Item> RADIATION_SUIT_BOOTS = Registration.ITEMS.register("radiation_suit_boots", tab(() -> new ItemRadiationSuit(EquipmentSlot.FEET)));
+    public static final DeferredItem<Item> RADIATION_SUIT_HELMET = Registration.ITEMS.register("radiation_suit_helmet", tab(properties -> new ItemRadiationSuit(EquipmentSlot.HEAD, properties)));
+    public static final DeferredItem<Item> RADIATION_SUIT_CHESTPLATE = Registration.ITEMS.register("radiation_suit_chestplate", tab(properties -> new ItemRadiationSuit(EquipmentSlot.CHEST, properties)));
+    public static final DeferredItem<Item> RADIATION_SUIT_LEGGINGS = Registration.ITEMS.register("radiation_suit_leggings", tab(properties -> new ItemRadiationSuit(EquipmentSlot.LEGS, properties)));
+    public static final DeferredItem<Item> RADIATION_SUIT_BOOTS = Registration.ITEMS.register("radiation_suit_boots", tab(properties -> new ItemRadiationSuit(EquipmentSlot.FEET, properties)));
 
     public RadiationModule() {
     }
 
     @Override
-    public void init(FMLCommonSetupEvent event) {
+    public void init() {
     }
 
     @Override
-    public void initClient(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            RadiationMonitorItem.initOverrides(RADIATION_MONITOR.get());
-        });
-        NeoForge.EVENT_BUS.addListener(RadiationOverlayRenderer::onRender);
+    public void initClient() {
     }
 
     @Override
-    public void initConfig(IEventBus bus) {
+    public void initConfig() {
         RadiationConfiguration.init();
     }
 
@@ -83,12 +74,14 @@ public class RadiationModule implements IModule {
     public void initDatagen(DataGen dataGen, HolderLookup.Provider registries) {
         dataGen.add(
                 Dob.blockBuilder(POISONED_DIRT)
+                        .blockTags(List.of(BlockTags.BLOCKS_MOTION_NO_LEAVES))
                         .simpleBlockState()
                         .parentedItem()
                         .simpleLoot()
                         .blockTags(List.of(BlockTags.MINEABLE_WITH_SHOVEL, BlockTags.NEEDS_IRON_TOOL)),
                 Dob.blockBuilder(DENSE_GLASS)
-                        .blockState(provider -> provider.simpleBlockC(RadiationModule.DENSE_GLASS.block().get(), modelBuilder -> modelBuilder.renderType("cutout")))
+                        .blockTags(List.of(BlockTags.BLOCKS_MOTION_NO_LEAVES))
+                        .simpleBlockState()
                         .parentedItem()
                         .simpleLoot()
                         .ironPickaxeTags()
@@ -97,6 +90,7 @@ public class RadiationModule implements IModule {
                                         .unlockedBy("has_spent_filter", DataGen.has(CoreModule.SPENT_FILTER_ITEM.get())),
                                 "fGf", "GOG", "fGf"),
                 Dob.blockBuilder(DENSE_OBSIDIAN)
+                        .blockTags(List.of(BlockTags.BLOCKS_MOTION_NO_LEAVES))
                         .simpleBlockState()
                         .parentedItem()
                         .simpleLoot()

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "deepresonance:filter_material"
+        "recipes": "deepresonance:filter_material"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

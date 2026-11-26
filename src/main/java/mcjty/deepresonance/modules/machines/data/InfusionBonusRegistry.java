@@ -1,7 +1,7 @@
 package mcjty.deepresonance.modules.machines.data;
 
 import mcjty.lib.varia.Tools;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class InfusionBonusRegistry {
 
-    private static Map<ResourceLocation, InfusingBonus> infusingBonusMap = null;
+    private static Map<Identifier, InfusingBonus> infusingBonusMap = null;
 
     public static final int COLOR_BLUE = 1;
     public static final int COLOR_RED = 2;
@@ -113,14 +113,14 @@ public class InfusionBonusRegistry {
                 new InfusingBonus.Modifier(1.0f, 30.0f),
                 InfusingBonus.Modifier.NONE,
                 new InfusingBonus.Modifier(1.0f, 40.0f)));
-        infusingBonusMap.put(ResourceLocation.fromNamespaceAndPath("rftoolsbase", "dimensionalshard"), new InfusingBonus(
+        infusingBonusMap.put(Identifier.fromNamespaceAndPath("rftoolsbase", "dimensionalshard"), new InfusingBonus(
                 COLOR_BLUE,
                 new InfusingBonus.Modifier(1.0f, 100.0f),
                 new InfusingBonus.Modifier(8.0f, 80.0f),
                 new InfusingBonus.Modifier(8.0f, 80.0f)));
     }
 
-    public static Map<ResourceLocation, InfusingBonus> getInfusingBonusMap() {
+    public static Map<Identifier, InfusingBonus> getInfusingBonusMap() {
         return infusingBonusMap;
     }
 

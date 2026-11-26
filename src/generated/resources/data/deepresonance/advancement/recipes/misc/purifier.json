@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "deepresonance:purifier"
+        "recipes": "deepresonance:purifier"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

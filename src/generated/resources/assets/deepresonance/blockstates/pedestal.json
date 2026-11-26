@@ -17,7 +17,7 @@
     },
     "facing=up": {
       "model": "deepresonance:block/pedestal",
-      "x": -90
+      "x": 270
     },
     "facing=west": {
       "model": "deepresonance:block/pedestal",

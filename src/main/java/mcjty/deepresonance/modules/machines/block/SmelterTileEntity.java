@@ -1,5 +1,14 @@
 package mcjty.deepresonance.modules.machines.block;
 
+import mcjty.deepresonance.modules.tank.util.TankTransfers;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import static mcjty.lib.setup.Registration.ITEM_INVENTORY;
+import static mcjty.lib.setup.Registration.ITEM_ENERGY;
+import net.minecraft.core.RegistryAccess;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.util.config.SmelterConfig;
 import mcjty.deepresonance.modules.tank.util.DualTankHook;
@@ -14,7 +23,6 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
-import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -24,6 +32,7 @@ import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
@@ -33,9 +42,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import mcjty.lib.varia.Lazy;
+import mcjty.lib.varia.FluidStack;
 
 import javax.annotation.Nonnull;
 import java.util.function.Function;
@@ -83,9 +91,10 @@ public class SmelterTileEntity extends TickingTileEntity {
         super(MachinesModule.TYPE_SMELTER.get(), pos, state);
     }
 
-    public static BaseBlock createBlock() {
+    public static BaseBlock createBlock(Block.Properties properties) {
         return new BaseBlock(
                 new BlockBuilder()
+                        .properties(properties)
                         .tileEntitySupplier(SmelterTileEntity::new)
                 .manualEntry(ManualHelper.create("deepresonance:machines/smelter"))
                         .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))
@@ -137,16 +146,15 @@ public class SmelterTileEntity extends TickingTileEntity {
         if (!tankHook.checkTankContents(Fluids.LAVA, null)) {
             return false;
         }
-        if (tankHook.getTank1().getFluidInTank(0).getAmount() < tankHook.getTank1().getTankCapacity(0) * 0.25) {
+        if (TankTransfers.contents(tankHook.getTank1()).getAmount() < TankTransfers.capacity(tankHook.getTank1()) * 0.25) {
             return false;
         }
         int fill = SmelterConfig.RCL_PER_ORE.get();
-        if (tankHook.getTank2().fill(LiquidCrystalData.makeLiquidCrystalStack(fill), IFluidHandler.FluidAction.SIMULATE) != fill) {
+        if (TankTransfers.canInsert(tankHook.getTank2(), LiquidCrystalData.makeLiquidCrystalStack(fill)) != fill) {
             return false;
         }
         return energyStorage.getEnergyStored() >= SmelterConfig.POWER_PER_ORE_TICK.get();
     }
-
 
     private boolean inputSlotValid() {
         return !items.getStackInSlot(SLOT).isEmpty() && TagTools.hasTag(items.getStackInSlot(SLOT).getItem(), DeepResonanceTags.RESONANT_ORE_ITEM);
@@ -158,9 +166,9 @@ public class SmelterTileEntity extends TickingTileEntity {
             return;
         }
 
-        IFluidHandler lavaTank = tankHook.getTank1();
+        Storage<FluidVariant> lavaTank = tankHook.getTank1();
 
-        float percentage = (float) lavaTank.getFluidInTank(0).getAmount() / lavaTank.getTankCapacity(0);
+        float percentage = (float) TankTransfers.contents(lavaTank).getAmount() / TankTransfers.capacity(lavaTank);
 
         if (percentage < 0.40f) {
             // Slower smelting progress and slightly reduced quality
@@ -178,7 +186,7 @@ public class SmelterTileEntity extends TickingTileEntity {
             finalPurity = 0.1f;
         }
 
-        lavaTank.drain(new FluidStack(Fluids.LAVA, SmelterConfig.LAVA_COST.get()), IFluidHandler.FluidAction.EXECUTE);
+        TankTransfers.extract(lavaTank, new FluidStack(Fluids.LAVA, SmelterConfig.LAVA_COST.get()));
 
         int processTimeConfig = SmelterConfig.PROCESS_TIME.get();
         processTimeLeft = (short) (processTimeConfig + (int) ((percentage - 0.5f) * processTimeConfig));
@@ -188,28 +196,33 @@ public class SmelterTileEntity extends TickingTileEntity {
     private void finishSmelting() {
         if (finalQuality > 0.0f) {
             FluidStack stack = LiquidCrystalData.makeLiquidCrystalStack(SmelterConfig.RCL_PER_ORE.get(), finalQuality, finalPurity, 0.1f, 0.1f);
-            tankHook.getTank2().fill(stack, IFluidHandler.FluidAction.EXECUTE);
+            TankTransfers.insert(tankHook.getTank2(), stack);
         }
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
+        CompoundTag tag = new CompoundTag();
         tag.putInt("processTime", processTime);
         tag.putInt("processTimeLeft", processTimeLeft);
         tag.putFloat("finalQuality", finalQuality);
         tag.putFloat("finalPurity", finalPurity);
         energyStorage.save(tag, "energy", provider);
         items.save(tag, "items", provider);
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        processTime = (short) tag.getInt("processTime");
-        processTimeLeft = (short) tag.getInt("processTimeLeft");
-        finalQuality = tag.getFloat("finalQuality");
-        finalPurity = tag.getFloat("finalPurity");
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        HolderLookup.Provider provider = input.lookup();
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        processTime = (short) tag.getIntOr("processTime", 0);
+        processTimeLeft = (short) tag.getIntOr("processTimeLeft", 0);
+        finalQuality = tag.getFloatOr("finalQuality", 0.0f);
+        finalPurity = tag.getFloatOr("finalPurity", 0.0f);
         energyStorage.load(tag, "energy", provider);
         items.load(tag,  "items", provider);
     }
@@ -231,10 +244,10 @@ public class SmelterTileEntity extends TickingTileEntity {
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        energyStorage.applyImplicitComponents(input.get(Registration.ITEM_ENERGY));
-        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
+        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY.get()));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY.get()));
     }
 
     @Override

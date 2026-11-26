@@ -1,6 +1,9 @@
 {
   "parent": "block/cube",
-  "loader": "neoforge:obj",
   "model": "deepresonance:models/block/crystal_generated.obj",
-  "flip_v": true
+  "flip_v": true,
+  "textures": {
+    "particle": "deepresonance:block/crystal"
+  },
+  "fabric:type": "deepresonance:obj"
 }

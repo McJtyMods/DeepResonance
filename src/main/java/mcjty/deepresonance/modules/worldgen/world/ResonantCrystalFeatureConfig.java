@@ -1,12 +1,12 @@
 package mcjty.deepresonance.modules.worldgen.world;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
-public class ResonantCrystalFeatureConfig implements FeatureConfiguration {
+public class ResonantCrystalFeatureConfig {
 
-    public static final Codec<ResonantCrystalFeatureConfig> CODEC = RecordCodecBuilder.create(instance ->
+    public static final MapCodec<ResonantCrystalFeatureConfig> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     Codec.FLOAT.fieldOf("strength").forGetter(ResonantCrystalFeatureConfig::getStrength),
                     Codec.FLOAT.fieldOf("power").forGetter(ResonantCrystalFeatureConfig::getPower),

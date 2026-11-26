@@ -1,5 +1,8 @@
 package mcjty.deepresonance.commands;
 
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.permissions.Permissions;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -10,7 +13,8 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.server.command.EnumArgument;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import java.util.Locale;
 
 import java.util.Random;
 
@@ -20,6 +24,7 @@ public class ModCommands {
         LiteralCommandNode<CommandSourceStack> commands = dispatcher.register(
                 Commands.literal(DeepResonance.MODID)
                         .then(registerCreateCrystal(dispatcher))
+                        .then(TestSetupCommand.register())
 //                        .then(registerReset(dispatcher))
 //                        .then(registerList(dispatcher))
 //                        .then(registerListKnown(dispatcher))
@@ -31,10 +36,21 @@ public class ModCommands {
 
     public static ArgumentBuilder<CommandSourceStack, ?> registerCreateCrystal(CommandDispatcher<CommandSourceStack> dispatcher) {
         return Commands.literal("create")
-                .requires(cs -> cs.hasPermission(2))
-                .then(Commands.argument("type", EnumArgument.enumArgument(CrystalHelper.CrystalOption.class))
+                .requires(cs -> cs.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+                .then(Commands.argument("type", StringArgumentType.word())
+                        .suggests((context, builder) -> {
+                            for (CrystalHelper.CrystalOption option : CrystalHelper.CrystalOption.values()) {
+                                builder.suggest(option.getSerializedName());
+                            }
+                            return builder.buildFuture();
+                        })
                         .executes(context -> {
-                            CrystalHelper.CrystalOption type = context.getArgument("type", CrystalHelper.CrystalOption.class);
+                            CrystalHelper.CrystalOption type;
+                            try {
+                                type = CrystalHelper.CrystalOption.valueOf(StringArgumentType.getString(context, "type").toUpperCase(Locale.ROOT));
+                            } catch (IllegalArgumentException exception) {
+                                throw new SimpleCommandExceptionType(Component.literal("Unknown resonating crystal type")).create();
+                            }
                             ServerPlayer player = context.getSource().getPlayerOrException();
                             Level world = player.level();
                             int x = (int) (player.getX() - .5);

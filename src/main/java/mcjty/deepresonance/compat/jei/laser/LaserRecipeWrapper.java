@@ -4,7 +4,7 @@ import mcjty.deepresonance.modules.machines.block.LaserTileEntity;
 import mcjty.deepresonance.modules.machines.data.InfusingBonus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 
 public class LaserRecipeWrapper {
@@ -19,7 +19,7 @@ public class LaserRecipeWrapper {
         return item;
     }
 
-    public void drawInfo(GuiGraphics graphics) {
+    public void drawInfo(GuiGraphicsExtractor graphics) {
         InfusingBonus bonus = LaserTileEntity.getInfusingBonus(item);
 
         renderStat(graphics, "Purity:", bonus.purityModifier(), 30);
@@ -27,13 +27,13 @@ public class LaserRecipeWrapper {
         renderStat(graphics, "Efficiency:", bonus.efficiencyModifier(), 50);
     }
 
-    private void renderStat(GuiGraphics graphics, String label, InfusingBonus.Modifier modifier, int y) {
+    private void renderStat(GuiGraphicsExtractor graphics, String label, InfusingBonus.Modifier modifier, int y) {
         Font fontRenderer = Minecraft.getInstance().font;
-        graphics.drawString(fontRenderer, label, 0, y, 0xffffffff);
+        graphics.text(fontRenderer, label, 0, y, 0xffffffff);
         float purityBonus = modifier.bonus();
-        graphics.drawString(fontRenderer, String.valueOf(purityBonus)+"%", 60, y,
+        graphics.text(fontRenderer, String.valueOf(purityBonus)+"%", 60, y,
                 purityBonus > 0 ? 0xff006600 : 0xffff0000);
-        graphics.drawString(fontRenderer, "(" + String.valueOf(modifier.maxOrMin()) + ")", 100, y,
+        graphics.text(fontRenderer, "(" + String.valueOf(modifier.maxOrMin()) + ")", 100, y,
                 0xff000000);
     }
 

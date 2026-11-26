@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "deepresonance:energy_collector"
+        "recipes": "deepresonance:energy_collector"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

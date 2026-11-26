@@ -1,5 +1,16 @@
 package mcjty.deepresonance.modules.machines.block;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import mcjty.deepresonance.modules.tank.util.TankTransfers;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.world.level.block.Block;
+import static mcjty.lib.setup.Registration.ITEM_INVENTORY;
+import static mcjty.lib.setup.Registration.ITEM_ENERGY;
+import net.minecraft.core.RegistryAccess;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.core.data.LCD;
@@ -15,7 +26,6 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
-import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -23,16 +33,15 @@ import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import mcjty.lib.varia.Lazy;
+import mcjty.lib.varia.FluidStack;
 
 import java.util.function.Function;
 
@@ -70,15 +79,16 @@ public class CrystallizerTileEntity extends TickingTileEntity {
 
     private int progress;   // Clientside only
     private LiquidCrystalData crystalData;
-    private IFluidHandler rclTank;
+    private Storage<FluidVariant> rclTank;
     private int tankCooldown = 0;
 
     public CrystallizerTileEntity(BlockPos pos, BlockState state) {
         super(MachinesModule.TYPE_CRYSTALIZER.get(), pos, state);
     }
 
-    public static BaseBlock createBlock() {
+    public static BaseBlock createBlock(Block.Properties properties) {
         return new BaseBlock(new BlockBuilder()
+                .properties(properties)
                 .tileEntitySupplier(CrystallizerTileEntity::new)
                 .manualEntry(ManualHelper.create("deepresonance:machines/crystallizer"))
                 .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))
@@ -104,7 +114,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
             drain = Math.min(drain, rclPerCrystal - crystalData.getAmount());
         }
         if (drain > 0) { //Config can change between ticks
-            FluidStack stack = rclTank.drain(drain, IFluidHandler.FluidAction.EXECUTE);
+            FluidStack stack = TankTransfers.extract(rclTank, drain);
             LiquidCrystalData data = LiquidCrystalData.fromStack(stack);
             if (crystalData == null) {
                 crystalData = data;
@@ -152,7 +162,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
             return false;
         }
 
-        FluidStack fluidStack = rclTank.drain(CrystallizerConfig.RCL_PER_TICK.get(), IFluidHandler.FluidAction.SIMULATE);
+        FluidStack fluidStack = TankTransfers.simulateExtract(rclTank, CrystallizerConfig.RCL_PER_TICK.get());
         if (fluidStack.isEmpty() || fluidStack.getAmount() < 1) {
             return false;
         }
@@ -166,7 +176,7 @@ public class CrystallizerTileEntity extends TickingTileEntity {
             tankCooldown = 21;
             BlockEntity tile = level.getBlockEntity(worldPosition.below());
             if (tile != null) {
-                rclTank = level.getCapability(Capabilities.FluidHandler.BLOCK, worldPosition.below(), null);
+                rclTank = FluidStorage.SIDED.find(level, worldPosition.below(), null);
                 return rclTank != null;
             }
         }
@@ -178,10 +188,12 @@ public class CrystallizerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        HolderLookup.Provider provider = input.lookup();
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
         if (tag.contains("amount") && tag.contains("lcd")) {
-            int amount = tag.getInt("amount");
+            int amount = tag.getIntOr("amount", 0);
             LCD lcd = LCD.CODEC.parse(NbtOps.INSTANCE, tag.get("lcd")).result().orElseThrow(() -> new IllegalStateException("Invalid LCD"));
             FluidStack stack = LiquidCrystalData.makeLiquidCrystalStack(amount, lcd);
             crystalData = LiquidCrystalData.fromStack(stack);
@@ -190,19 +202,22 @@ public class CrystallizerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
+        CompoundTag tag = new CompoundTag();
         if (crystalData != null) {
             tag.putInt("amount", crystalData.getAmount());
             LCD lcd = crystalData.getLCD();
             tag.put("lcd", LCD.CODEC.encodeStart(NbtOps.INSTANCE, lcd).result().orElseThrow(() -> new IllegalStateException("Invalid LCD")));
         }
         energyStorage.save(tag, "energy", provider);
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 
     @Override
     public void loadClientDataFromNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
-        progress = tagCompound.getInt("progress");
+        progress = tagCompound.getIntOr("progress", 0);
     }
 
     @Override
@@ -215,8 +230,8 @@ public class CrystallizerTileEntity extends TickingTileEntity {
     protected void collectImplicitComponents(DataComponentMap.Builder components) {
         super.collectImplicitComponents(components);
         if (crystalData != null) {
-            components.set(MachinesModule.ITEM_CRYSTALIZER_DATA, new CrystalizerData(crystalData.getAmount()));
-            components.set(CoreModule.ITEM_LCD_DATA, crystalData.getLCD());
+            components.set(MachinesModule.ITEM_CRYSTALIZER_DATA.get(), new CrystalizerData(crystalData.getAmount()));
+            components.set(CoreModule.ITEM_LCD_DATA.get(), crystalData.getLCD());
         }
 
         energyStorage.collectImplicitComponents(components);
@@ -224,16 +239,16 @@ public class CrystallizerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        CrystalizerData cdata = input.get(MachinesModule.ITEM_CRYSTALIZER_DATA);
-        LCD lcd = input.get(CoreModule.ITEM_LCD_DATA);
+        CrystalizerData cdata = input.get(MachinesModule.ITEM_CRYSTALIZER_DATA.get());
+        LCD lcd = input.get(CoreModule.ITEM_LCD_DATA.get());
         if (cdata != null && lcd != null) {
             FluidStack stack = LiquidCrystalData.makeLiquidCrystalStack(cdata.amount(), lcd);
             crystalData = LiquidCrystalData.fromStack(stack);
         }
-        energyStorage.applyImplicitComponents(input.get(Registration.ITEM_ENERGY));
-        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
+        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY.get()));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY.get()));
     }
 
     private static int getRclPerCrystal() {

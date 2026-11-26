@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "deepresonance:resonating_armor"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "deepresonance:resonating_armor"
+      }
+    ]
+  }
+}

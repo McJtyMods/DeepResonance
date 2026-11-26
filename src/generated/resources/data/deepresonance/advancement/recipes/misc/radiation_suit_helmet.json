@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "deepresonance:radiation_suit_helmet"
+        "recipes": "deepresonance:radiation_suit_helmet"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

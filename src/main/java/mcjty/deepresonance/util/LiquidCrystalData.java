@@ -1,10 +1,15 @@
 package mcjty.deepresonance.util;
 
+import net.minecraft.core.component.DataComponentPatch;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.data.LCD;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.fluids.FluidStack;
+import mcjty.lib.varia.FluidStack;
 
 import javax.annotation.Nonnull;
 
@@ -13,7 +18,7 @@ import javax.annotation.Nonnull;
  */
 public class LiquidCrystalData implements ILiquidCrystalData {
 
-    private final FluidStack referenceStack;
+    private FluidStack referenceStack;
 
     public static final LiquidCrystalData EMPTY = LiquidCrystalData.fromStack(FluidStack.EMPTY);
 
@@ -22,15 +27,12 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     }
 
     public static FluidStack makeLiquidCrystalStack(int amount, float quality, float purity, float strength, float efficiency) {
-        FluidStack fluidStack = new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), amount);
-        setStats(fluidStack, quality, purity, strength, efficiency);
-        return fluidStack;
+        return makeLiquidCrystalStack(amount, new LCD(quality, purity, strength, efficiency));
     }
 
     public static FluidStack makeLiquidCrystalStack(int amount, LCD lcd) {
-        FluidStack fluidStack = new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), amount);
-        fluidStack.set(CoreModule.ITEM_LCD_DATA, lcd);
-        return fluidStack;
+        var components = DataComponentPatch.builder().set(CoreModule.ITEM_LCD_DATA.get(), lcd).build();
+        return new FluidStack(FluidVariant.of(CoreModule.LIQUID_CRYSTAL.get(), components), amount);
     }
 
     public static FluidStack makeLiquidCrystalStack(int amount) {
@@ -40,6 +42,15 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     @Nonnull
     public static LiquidCrystalData fromStack(FluidStack stack) {
         return new LiquidCrystalData(stack);
+    }
+
+    public static FluidStack readStack(HolderLookup.Provider lookup, CompoundTag tag) {
+        return FluidStack.OPTIONAL_CODEC.parse(lookup.createSerializationContext(NbtOps.INSTANCE), tag)
+                .result().orElse(FluidStack.EMPTY);
+    }
+
+    public static CompoundTag writeStack(FluidStack stack, HolderLookup.Provider lookup) {
+        return (CompoundTag) FluidStack.OPTIONAL_CODEC.encodeStart(lookup.createSerializationContext(NbtOps.INSTANCE), stack).getOrThrow();
     }
 
     public static boolean isLiquidCrystal(Fluid fluid) {
@@ -79,84 +90,79 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     }
 
     private void setStats(double quality, double purity, double strength, double efficiency) {
-        setStats(referenceStack, quality, purity, strength, efficiency);
-    }
-
-    private static void setStats(FluidStack fluidStack, double quality, double purity, double strength, double efficiency) {
-        LCD lcd = new LCD(quality, purity, strength, efficiency);
-        fluidStack.set(CoreModule.ITEM_LCD_DATA, lcd);
+        referenceStack = makeLiquidCrystalStack(getAmount(), new LCD(quality, purity, strength, efficiency));
     }
 
     private double mixQuality(FluidStack other) {
         double f = (other.getAmount() / ((float) getAmount() + other.getAmount()));
-        double thisValue = referenceStack.getOrDefault(CoreModule.ITEM_LCD_DATA, LCD.ZERO).quality();
-        double otherValue = other.getOrDefault(CoreModule.ITEM_LCD_DATA, LCD.ZERO).quality();
+        double thisValue = getLCD().quality();
+        double otherValue = other.variant().getComponents().getOrDefault(CoreModule.ITEM_LCD_DATA.get(), LCD.ZERO).quality();
         return (1 - f) * thisValue + f * otherValue;
     }
 
     private double mixPurity(FluidStack other) {
         double f = (other.getAmount() / ((float) getAmount() + other.getAmount()));
-        double thisValue = referenceStack.getOrDefault(CoreModule.ITEM_LCD_DATA, LCD.ZERO).purity();
-        double otherValue = other.getOrDefault(CoreModule.ITEM_LCD_DATA, LCD.ZERO).purity();
+        double thisValue = getLCD().purity();
+        double otherValue = other.variant().getComponents().getOrDefault(CoreModule.ITEM_LCD_DATA.get(), LCD.ZERO).purity();
         return (1 - f) * thisValue + f * otherValue;
     }
 
     private double mixStrength(FluidStack other) {
         double f = (other.getAmount() / ((float) getAmount() + other.getAmount()));
-        double thisValue = referenceStack.getOrDefault(CoreModule.ITEM_LCD_DATA, LCD.ZERO).strength();
-        double otherValue = other.getOrDefault(CoreModule.ITEM_LCD_DATA, LCD.ZERO).strength();
+        double thisValue = getLCD().strength();
+        double otherValue = other.variant().getComponents().getOrDefault(CoreModule.ITEM_LCD_DATA.get(), LCD.ZERO).strength();
         return (1 - f) * thisValue + f * otherValue;
     }
 
     private double mixEfficiency(FluidStack other) {
         double f = (other.getAmount() / ((float) getAmount() + other.getAmount()));
-        double thisValue = referenceStack.getOrDefault(CoreModule.ITEM_LCD_DATA, LCD.ZERO).efficiency();
-        double otherValue = other.getOrDefault(CoreModule.ITEM_LCD_DATA, LCD.ZERO).efficiency();
+        double thisValue = getLCD().efficiency();
+        double otherValue = other.variant().getComponents().getOrDefault(CoreModule.ITEM_LCD_DATA.get(), LCD.ZERO).efficiency();
         return (1 - f) * thisValue + f * otherValue;
     }
 
     @Override
     public double getQuality() {
-        return referenceStack.getOrDefault(CoreModule.ITEM_LCD_DATA, LCD.ZERO).quality();
+        return getLCD().quality();
     }
 
     @Override
     public void setQuality(double quality) {
-        LCD lcd = referenceStack.getOrDefault(CoreModule.ITEM_LCD_DATA, LCD.ZERO);
-        referenceStack.set(CoreModule.ITEM_LCD_DATA, lcd.withQuality(quality));
+        LCD lcd = getLCD();
+        referenceStack = makeLiquidCrystalStack(getAmount(), lcd.withQuality(quality));
     }
 
     @Override
     public double getPurity() {
-        return referenceStack.getOrDefault(CoreModule.ITEM_LCD_DATA, LCD.ZERO).purity();
+        return getLCD().purity();
     }
 
     @Override
     public void setPurity(double purity) {
-        LCD lcd = referenceStack.getOrDefault(CoreModule.ITEM_LCD_DATA, LCD.ZERO);
-        referenceStack.set(CoreModule.ITEM_LCD_DATA, lcd.withPurity(purity));
+        LCD lcd = getLCD();
+        referenceStack = makeLiquidCrystalStack(getAmount(), lcd.withPurity(purity));
     }
 
     @Override
     public double getStrength() {
-        return referenceStack.getOrDefault(CoreModule.ITEM_LCD_DATA, LCD.ZERO).strength();
+        return getLCD().strength();
     }
 
     @Override
     public void setStrength(double strength) {
-        LCD lcd = referenceStack.getOrDefault(CoreModule.ITEM_LCD_DATA, LCD.ZERO);
-        referenceStack.set(CoreModule.ITEM_LCD_DATA, lcd.withStrength(strength));
+        LCD lcd = getLCD();
+        referenceStack = makeLiquidCrystalStack(getAmount(), lcd.withStrength(strength));
     }
 
     @Override
     public double getEfficiency() {
-        return referenceStack.getOrDefault(CoreModule.ITEM_LCD_DATA, LCD.ZERO).efficiency();
+        return getLCD().efficiency();
     }
 
     @Override
     public void setEfficiency(double efficiency) {
-        LCD lcd = referenceStack.getOrDefault(CoreModule.ITEM_LCD_DATA, LCD.ZERO);
-        referenceStack.set(CoreModule.ITEM_LCD_DATA, lcd.withEfficiency(efficiency));
+        LCD lcd = getLCD();
+        referenceStack = makeLiquidCrystalStack(getAmount(), lcd.withEfficiency(efficiency));
     }
 
     @Override
@@ -165,7 +171,7 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     }
 
     public LCD getLCD() {
-        return referenceStack.getOrDefault(CoreModule.ITEM_LCD_DATA, LCD.ZERO);
+        return referenceStack.variant().getComponents().getOrDefault(CoreModule.ITEM_LCD_DATA.get(), LCD.ZERO);
     }
 
     @Override

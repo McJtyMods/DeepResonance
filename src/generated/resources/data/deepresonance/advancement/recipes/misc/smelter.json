@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "deepresonance:smelter"
+        "recipes": "deepresonance:smelter"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

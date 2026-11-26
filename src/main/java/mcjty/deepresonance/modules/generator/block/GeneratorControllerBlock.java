@@ -15,8 +15,9 @@ import javax.annotation.Nonnull;
 
 public class GeneratorControllerBlock extends BaseBlock {
 
-    public GeneratorControllerBlock() {
+    public GeneratorControllerBlock(Properties properties) {
         super(new BlockBuilder()
+                .properties(properties)
                 .tileEntitySupplier(GeneratorControllerTileEntity::new)
                 .topDriver(DeepResonanceTOPDriver.DRIVER)
                 .manualEntry(ManualHelper.create("deepresonance:generator/generator"))

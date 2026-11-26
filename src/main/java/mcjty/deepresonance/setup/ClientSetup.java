@@ -1,38 +1,47 @@
 package mcjty.deepresonance.setup;
 
+import mcjty.deepresonance.modules.radiation.client.RadiationMonitorProperty;
+import mcjty.deepresonance.modules.radiation.client.RadiationOverlayRenderer;
+import mcjty.deepresonance.modules.radiation.network.PacketReturnRadiation;
+import mcjty.deepresonance.modules.tank.client.TankTESR;
+import mcjty.lib.network.PayloadContext;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import mcjty.deepresonance.DeepResonance;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-import java.util.List;
+public class ClientSetup implements ClientModInitializer {
 
-public class ClientSetup {
+    public static final Identifier REDHALO = rl("block/effects/redhalo");
+    public static final Identifier HALO = rl("block/effects/halo");
+    public static final Identifier LASERBEAM = rl("block/effects/laserbeam");
 
-    public static final ResourceLocation REDHALO = rl("block/effects/redhalo");
-    public static final ResourceLocation HALO = rl("block/effects/halo");
-    public static final ResourceLocation LASERBEAM = rl("block/effects/laserbeam");
-
-    public static final ResourceLocation[] LASERBEAMS = new ResourceLocation[]{
+    public static final Identifier[] LASERBEAMS = new Identifier[]{
             rl("block/effects/laserbeam1"),
             rl("block/effects/laserbeam2"),
             rl("block/effects/laserbeam3"),
             rl("block/effects/laserbeam4")
     };
 
-    public static final ResourceLocation BLUELASER = rl("block/effects/bluelaserbeam");
-    public static final ResourceLocation REDLASER = rl("block/effects/redlaserbeam");
-    public static final ResourceLocation GREENLASER = rl("block/effects/greenlaserbeam");
-    public static final ResourceLocation YELLOWLASER = rl("block/effects/yellowlaserbeam");
+    public static final Identifier BLUELASER = rl("block/effects/bluelaserbeam");
+    public static final Identifier REDLASER = rl("block/effects/redlaserbeam");
+    public static final Identifier GREENLASER = rl("block/effects/greenlaserbeam");
+    public static final Identifier YELLOWLASER = rl("block/effects/yellowlaserbeam");
 
-    public static void initClient() {
+    @Override
+    public void onInitializeClient() {
+        ObjModelLoader.register();
+        RadiationMonitorProperty.register();
+        TankTESR.registerFluidModel();
+        HudElementRegistry.addLast(rl("radiation"), RadiationOverlayRenderer::onRender);
+        ClientPlayNetworking.registerGlobalReceiver(PacketReturnRadiation.TYPE, (packet, context) ->
+                packet.handle(new PayloadContext(context.player(), context.client())));
+        DeepResonance.modules.initClient();
     }
 
-    public static List<ResourceLocation> onTextureStitch() {
-        return List.of(REDHALO, HALO, LASERBEAM, LASERBEAMS[0], LASERBEAMS[1], LASERBEAMS[2], LASERBEAMS[3],
-                BLUELASER, REDLASER, GREENLASER, YELLOWLASER);
-    }
-
-    private static ResourceLocation rl(String path) {
-        return ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, path);
+    private static Identifier rl(String path) {
+        return Identifier.fromNamespaceAndPath(DeepResonance.MODID, path);
     }
 
 }

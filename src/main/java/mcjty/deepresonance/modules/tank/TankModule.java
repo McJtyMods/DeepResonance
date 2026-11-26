@@ -6,6 +6,8 @@ import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.deepresonance.modules.tank.client.TankTESR;
 import mcjty.deepresonance.modules.tank.data.TankData;
 import mcjty.deepresonance.setup.Registration;
+import mcjty.deepresonance.DeepResonance;
+import net.minecraft.resources.Identifier;
 import mcjty.lib.blocks.RBlock;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
@@ -14,18 +16,21 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import mcjty.lib.setup.DeferredHolder;
+import net.minecraft.tags.BlockTags;
+import java.util.List;
 
 public class TankModule implements IModule {
+
+    public static final Identifier TANK_BOTTOM = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "block/tank_bottom");
+    public static final Identifier TANK_TOP = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "block/tank_top");
+    public static final Identifier TANK_SIDE = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "block/tank_side");
 
     public static final RBlock<TankBlock, BlockItem, TankTileEntity> TANK = Registration.registerBlockWithTile(
             "tank",
             TankTileEntity.class,
             TankBlock::new,
-            block -> new BlockItem(block.get(), Registration.createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             TankTileEntity::new
     );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TankTileEntity>> TYPE_TANK = TANK.be();
@@ -41,25 +46,26 @@ public class TankModule implements IModule {
     }
 
     @Override
-    public void init(FMLCommonSetupEvent event) {
+    public void init() {
     }
 
     @Override
-    public void initClient(FMLClientSetupEvent event) {
+    public void initClient() {
         TankTESR.register();
     }
 
     @Override
-    public void initConfig(IEventBus bus) {
+    public void initConfig() {
     }
 
     @Override
     public void initDatagen(DataGen dataGen, HolderLookup.Provider lookupProvider) {
         dataGen.add(
                 Dob.blockBuilder(TANK)
+                        .blockTags(List.of(BlockTags.BLOCKS_MOTION_NO_LEAVES))
                         .blockState(provider -> {
                             provider.simpleBlock(TANK.block().get(),
-                                    provider.models().cubeBottomTop("tank", TankTESR.TANK_SIDE, TankTESR.TANK_BOTTOM, TankTESR.TANK_TOP).renderType("translucent"));
+                                    provider.models().cubeBottomTop("tank", TANK_SIDE, TANK_BOTTOM, TANK_TOP));
                         })
                         .ironPickaxeTags()
                         .standardLoot(ITEM_TANK_DATA.get())

@@ -1,30 +1,28 @@
 package mcjty.deepresonance.setup;
 
-import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.radiation.network.PacketGetRadiationLevel;
 import mcjty.deepresonance.modules.radiation.network.PacketReturnRadiation;
+import mcjty.lib.network.Networking;
+import mcjty.lib.network.PayloadContext;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class DeepResonanceMessages {
 
-    public static void registerMessages(RegisterPayloadHandlersEvent event) {
-        final PayloadRegistrar registrar = event.registrar(DeepResonance.MODID)
-                .versioned("1.0")
-                .optional();
-        registrar.playToServer(PacketGetRadiationLevel.TYPE, PacketGetRadiationLevel.CODEC, PacketGetRadiationLevel::handle);
-        registrar.playToClient(PacketReturnRadiation.TYPE, PacketReturnRadiation.CODEC, PacketReturnRadiation::handle);
+    public static void registerMessages() {
+        PayloadTypeRegistry.serverboundPlay().register(PacketGetRadiationLevel.TYPE, PacketGetRadiationLevel.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(PacketReturnRadiation.TYPE, PacketReturnRadiation.CODEC);
+        ServerPlayNetworking.registerGlobalReceiver(PacketGetRadiationLevel.TYPE, (packet, context) ->
+                packet.handle(new PayloadContext(context.player(), context.server())));
     }
 
     public static <T extends CustomPacketPayload> void sendToPlayer(T packet, Player player) {
-        PacketDistributor.sendToPlayer((ServerPlayer)player, packet);
+        Networking.sendToPlayer(packet, player);
     }
 
     public static <T extends CustomPacketPayload> void sendToServer(T packet) {
-        PacketDistributor.sendToServer(packet);
+        Networking.sendToServer(packet);
     }
 }

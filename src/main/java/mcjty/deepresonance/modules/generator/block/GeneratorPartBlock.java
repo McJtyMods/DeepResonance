@@ -1,5 +1,8 @@
 package mcjty.deepresonance.modules.generator.block;
 
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.util.RandomSource;
 import mcjty.deepresonance.compat.DeepResonanceTOPDriver;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.GeneratorPartData;
@@ -12,7 +15,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -25,17 +27,22 @@ import static mcjty.lib.builder.TooltipBuilder.*;
 
 public class GeneratorPartBlock extends BaseBlock {
 
-    public GeneratorPartBlock() {
+    public GeneratorPartBlock(Properties properties) {
         super(new BlockBuilder()
+                .properties(properties)
                 .tileEntitySupplier(GeneratorPartTileEntity::new)
                 .topDriver(DeepResonanceTOPDriver.DRIVER)
                 .manualEntry(ManualHelper.create("deepresonance:generator/generator"))
                 .info(key("message.deepresonance.shiftmessage"))
                 .infoShift(header(), parameter("power", GeneratorPartBlock::getPowerString)));
+        registerDefaultState(defaultBlockState()
+                .setValue(BlockStateProperties.POWERED, false)
+                .setValue(BlockStateProperties.UP, false)
+                .setValue(BlockStateProperties.DOWN, false));
     }
 
     private static String getPowerString(ItemStack stack) {
-        GeneratorPartData data = stack.getOrDefault(GeneratorModule.ITEM_GENERATOR_PART_DATA, GeneratorPartData.DEFAULT);
+        GeneratorPartData data = stack.getOrDefault(GeneratorModule.ITEM_GENERATOR_PART_DATA.get(), GeneratorPartData.DEFAULT);
         return data.preservedEnergy() + "FE";
     }
 
@@ -51,14 +58,13 @@ public class GeneratorPartBlock extends BaseBlock {
         Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         return state.setValue(BlockStateProperties.UP, world.getBlockState(pos.above()).getBlock() == this)
-                .setValue(BlockStateProperties.DOWN, world.getBlockState(pos.below()).getBlock() == this)
-                .setValue(BlockStateProperties.POWERED, false);
+                .setValue(BlockStateProperties.DOWN, world.getBlockState(pos.below()).getBlock() == this);
     }
 
     @SuppressWarnings("deprecation")
     @Nonnull
     @Override
-    public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor world, @Nonnull BlockPos pos, @Nonnull BlockPos facingPos) {
+    public BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
         if (facing == Direction.UP) {
             return state.setValue(BlockStateProperties.UP, facingState.getBlock() == this);
         }
@@ -77,7 +83,7 @@ public class GeneratorPartBlock extends BaseBlock {
 //    @Override
 //    public void setPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nullable LivingEntity placer, @Nonnull ItemStack stack) {
 //        super.setPlacedBy(world, pos, state, placer, stack);
-//        if (!world.isClientSide) {
+//        if (!world.isClientSide()) {
 //
 //            TileEntity te = world.getBlockEntity(pos);
 //            if (te instanceof GeneratorPartTileEntity) {

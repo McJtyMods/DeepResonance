@@ -9,21 +9,21 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import mcjty.lib.network.PayloadContext;
 
 public record PacketGetRadiationLevel(GlobalPos coordinate) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "getradiationlevel");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "getradiationlevel");
     public static final CustomPacketPayload.Type<PacketGetRadiationLevel> TYPE = new Type<>(ID);
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketGetRadiationLevel> CODEC = StreamCodec.of(
             (buf, packet) -> {
-                buf.writeResourceLocation(packet.coordinate().dimension().location());
+                buf.writeIdentifier(packet.coordinate().dimension().identifier());
                 buf.writeBlockPos(packet.coordinate().pos());
             },
             buf -> {
-                ResourceKey<Level> id = LevelTools.getId(buf.readResourceLocation());
+                ResourceKey<Level> id = LevelTools.getId(buf.readIdentifier());
                 return new PacketGetRadiationLevel(GlobalPos.of(id, buf.readBlockPos()));
             }
     );
@@ -37,7 +37,7 @@ public record PacketGetRadiationLevel(GlobalPos coordinate) implements CustomPac
         return new PacketGetRadiationLevel(coordinate);
     }
 
-    public void handle(IPayloadContext ctx) {
+    public void handle(PayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Level world = ctx.player().level();
             float strength = RadiationMonitorItem.calculateRadiationStrength(world, coordinate);

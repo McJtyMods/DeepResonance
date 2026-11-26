@@ -2,17 +2,16 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
-          "functions": [
+          "modifier": [
             {
-              "function": "minecraft:copy_name",
+              "type": "minecraft:copy_name",
               "source": "block_entity"
             },
             {
-              "function": "minecraft:copy_components",
+              "type": "minecraft:copy_components",
               "include": [
                 "mcjtylib:item_energy",
                 "mcjtylib:item_inventory"
@@ -23,8 +22,7 @@
           "name": "deepresonance:pedestal"
         }
       ],
-      "name": "pedestal",
-      "rolls": 1.0
+      "rolls": 1
     }
   ],
   "random_sequence": "deepresonance:blocks/pedestal"

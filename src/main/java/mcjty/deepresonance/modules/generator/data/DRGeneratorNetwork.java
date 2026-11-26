@@ -4,9 +4,10 @@ import mcjty.deepresonance.DeepResonance;
 import mcjty.lib.multiblock.IMultiblockConnector;
 import mcjty.lib.multiblock.MultiblockDriver;
 import mcjty.lib.worlddata.AbstractWorldData;
+import mcjty.deepresonance.util.ResonanceSavedData;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -15,7 +16,7 @@ import javax.annotation.Nonnull;
 public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
 
     private static final String GENERATOR_NETWORK_NAME = "DRGeneratorNetwork";
-    public static final ResourceLocation GENERATOR_NETWORK_ID = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "generator");
+    public static final Identifier GENERATOR_NETWORK_ID = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "generator");
 
     private final MultiblockDriver<GeneratorBlob> driver = MultiblockDriver.<GeneratorBlob>builder()
             .loader(GeneratorBlob::load)
@@ -50,7 +51,7 @@ public class DRGeneratorNetwork extends AbstractWorldData<DRGeneratorNetwork> {
     }
 
     public static DRGeneratorNetwork getNetwork(Level world) {
-        return getData(world, DRGeneratorNetwork::new, DRGeneratorNetwork::new, GENERATOR_NETWORK_NAME);
+        return ResonanceSavedData.get(world, "generator_network", GENERATOR_NETWORK_NAME, DRGeneratorNetwork::new, DRGeneratorNetwork::new);
     }
 
     public GeneratorBlob getBlob(int id) {
