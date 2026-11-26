@@ -20,6 +20,7 @@ public class ModCommands {
         LiteralCommandNode<CommandSourceStack> commands = dispatcher.register(
                 Commands.literal(DeepResonance.MODID)
                         .then(registerCreateCrystal(dispatcher))
+                        .then(TestSetupCommand.register())
 //                        .then(registerReset(dispatcher))
 //                        .then(registerList(dispatcher))
 //                        .then(registerListKnown(dispatcher))

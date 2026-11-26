@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.generator.block;
 
-import com.google.common.collect.Sets;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
 import mcjty.deepresonance.modules.generator.data.GeneratorBlob;
@@ -28,7 +27,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import javax.annotation.Nonnull;
-import java.util.Set;
 
 public class GeneratorPartTileEntity extends TickingTileEntity implements IMultiblockConnector {
 
@@ -46,7 +44,14 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
 
     @Override
     public void tickServer() {
-        int energyStored = energyStorage.getEnergyStored();
+        GeneratorBlob network = getBlob();
+        boolean active = network != null && network.isActive();
+        BlockState state = getBlockState();
+        if (state.getValue(BlockStateProperties.POWERED) != active) {
+            level.setBlock(worldPosition, state.setValue(BlockStateProperties.POWERED, active), Block.UPDATE_CLIENTS);
+        }
+
+        int energyStored = network == null ? 0 : network.getEnergy();
         if (energyStored <= 0) {
             return;
         }
@@ -117,7 +122,9 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
                     preservedEnergy = 0;
                 }
                 setChanged();
-                removeBlockFromNetwork();
+                if (network != null) {
+                    removeBlockFromNetwork();
+                }
             }
 
             BlockState stateUp = world.getBlockState(pos.above());
@@ -178,27 +185,6 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
         GeneratorBlob network = getBlob();
         if (network != null && network.isActive() != active) {
             getDriver().modify(getMultiblockId(), holder -> holder.getMb().setActive(active));
-            Set<BlockPos> done = Sets.newHashSet();
-            activateBlocks(getBlockPos(), done, active);
-        }
-    }
-
-    private void activateBlocks(BlockPos c, Set<BlockPos> done, boolean active) {
-        done.add(c);
-
-        BlockState state = level.getBlockState(c);
-        if (state.getValue(BlockStateProperties.POWERED) != active) {
-            level.setBlock(c, state.setValue(BlockStateProperties.POWERED, active), Block.UPDATE_ALL);
-        }
-
-        for (Direction direction : OrientationTools.DIRECTION_VALUES) {
-            BlockPos newC = c.relative(direction);
-            if (!done.contains(newC)) {
-                Block block = level.getBlockState(newC).getBlock();
-                if (block == GeneratorModule.GENERATOR_PART_BLOCK.get()) {
-                    activateBlocks(newC, done, active);
-                }
-            }
         }
     }
 
@@ -211,6 +197,6 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
     @Override
     public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
-        blobId = tagCompound.getInt("networkId");
+        blobId = tagCompound.contains("networkId") ? tagCompound.getInt("networkId") : -1;
     }
 }

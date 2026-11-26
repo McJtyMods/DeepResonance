@@ -32,6 +32,10 @@ public class GeneratorPartBlock extends BaseBlock {
                 .manualEntry(ManualHelper.create("deepresonance:generator/generator"))
                 .info(key("message.deepresonance.shiftmessage"))
                 .infoShift(header(), parameter("power", GeneratorPartBlock::getPowerString)));
+        registerDefaultState(defaultBlockState()
+                .setValue(BlockStateProperties.POWERED, false)
+                .setValue(BlockStateProperties.UP, false)
+                .setValue(BlockStateProperties.DOWN, false));
     }
 
     private static String getPowerString(ItemStack stack) {
@@ -50,8 +54,7 @@ public class GeneratorPartBlock extends BaseBlock {
         Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         return state.setValue(BlockStateProperties.UP, world.getBlockState(pos.above()).getBlock() == this)
-                .setValue(BlockStateProperties.DOWN, world.getBlockState(pos.below()).getBlock() == this)
-                .setValue(BlockStateProperties.POWERED, false);
+                .setValue(BlockStateProperties.DOWN, world.getBlockState(pos.below()).getBlock() == this);
     }
 
     @SuppressWarnings("deprecation")

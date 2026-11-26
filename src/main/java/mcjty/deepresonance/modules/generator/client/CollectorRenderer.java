@@ -49,6 +49,18 @@ public class CollectorRenderer implements BlockEntityRenderer<EnergyCollectorTil
     }
 
     @Override
+    public boolean shouldRenderOffScreen(EnergyCollectorTileEntity tile) {
+        return true;
+    }
+
+    @Override
+    public boolean shouldRender(EnergyCollectorTileEntity tile, Vec3 cameraPosition) {
+        return (tile.areLasersActive() || tile.getLaserStartup() > 0)
+                && !tile.getCrystals().isEmpty()
+                && BlockEntityRenderer.super.shouldRender(tile, cameraPosition);
+    }
+
+    @Override
     public void render(@Nonnull EnergyCollectorTileEntity tileEntity, float partialTicks, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
         if (tileEntity.getCrystals().isEmpty() || (!tileEntity.areLasersActive() && tileEntity.getLaserStartup() <= 0)) {
             return;

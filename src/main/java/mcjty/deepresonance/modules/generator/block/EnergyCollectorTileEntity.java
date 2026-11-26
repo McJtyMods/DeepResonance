@@ -13,6 +13,7 @@ import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.Broadcaster;
 import mcjty.lib.varia.Logging;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -96,15 +97,19 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
         }
 
         if (active != lasersActive || startup != laserStartup) {
-            // Only when active changes and the lasert started recently do we check for new crystals.
-            boolean doFind = lasersActive != active || (laserStartup > (GeneratorConfig.STARTUP_TIME.get() - 5));
+            boolean findTargets = (active || startup > 0)
+                    && (lasersActive != active || laserStartup > GeneratorConfig.STARTUP_TIME.get() - 5);
+            if (lasersActive && !active) {
+                disableCrystalGlow();
+            }
             lasersActive = active;
             laserStartup = startup;
-            markDirtyClient();
-
-            if (doFind && te instanceof GeneratorPartTileEntity) {
+            if (network != null && findTargets) {
                 findCrystals(network);
+            } else if (!active && startup == 0) {
+                crystals.clear();
             }
+            markDirtyClient();
         }
     }
 
@@ -115,6 +120,16 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
                 crystal.setGlowing(false);
             }
         }
+    }
+
+    @Override
+    public AABB getRenderBoundingBox() {
+        BlockPos origin = getBlockPos();
+        AABB bounds = new AABB(origin);
+        for (BlockPos crystal : crystals) {
+            bounds = bounds.minmax(new AABB(origin.offset(crystal)));
+        }
+        return bounds.inflate(1);
     }
 
     public int getLaserStartup() {
@@ -212,6 +227,12 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
 
     @Override
     public void onReplaced(Level world, BlockPos pos, BlockState state, BlockState newstate) {
+        if (newstate.is(state.getBlock())) {
+            return;
+        }
+        if (lasersActive) {
+            disableCrystalGlow();
+        }
         BlockEntity te = world.getBlockEntity(pos.below());
         if (te instanceof GeneratorPartTileEntity) {
             int id = ((GeneratorPartTileEntity) te).getMultiblockId();
