@@ -97,15 +97,19 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
         }
 
         if (active != lasersActive || startup != laserStartup) {
-            // Only when active changes and the lasert started recently do we check for new crystals.
-            boolean doFind = lasersActive != active || (laserStartup > (GeneratorConfig.STARTUP_TIME.get() - 5));
+            boolean findTargets = (active || startup > 0)
+                    && (lasersActive != active || laserStartup > GeneratorConfig.STARTUP_TIME.get() - 5);
+            if (lasersActive && !active) {
+                disableCrystalGlow();
+            }
             lasersActive = active;
             laserStartup = startup;
-            markDirtyClient();
-
-            if (doFind && te instanceof GeneratorPartTileEntity) {
+            if (network != null && findTargets) {
                 findCrystals(network);
+            } else if (!active && startup == 0) {
+                crystals.clear();
             }
+            markDirtyClient();
         }
     }
 
@@ -213,6 +217,12 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
 
     @Override
     public void onReplaced(Level world, BlockPos pos, BlockState state, BlockState newstate) {
+        if (newstate.is(state.getBlock())) {
+            return;
+        }
+        if (lasersActive) {
+            disableCrystalGlow();
+        }
         BlockEntity te = world.getBlockEntity(pos.below());
         if (te instanceof GeneratorPartTileEntity) {
             int id = ((GeneratorPartTileEntity) te).getMultiblockId();

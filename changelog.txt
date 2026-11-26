@@ -1,3 +1,8 @@
+1.21-6.0.4:
+- Added the operator-only /deepresonance testsetup command for purification, power generation, crystallization, and ore smelting stations.
+- Fixed the laser grille showing terrain through adjacent solid blocks.
+- Fixed generator parts staying lit after the multiblock is split and collector beams disappearing when the collector is off screen.
+
 1.21-6.0.3:
 - Fixed furnace smelting of Resonating Ore into Resonating Plates
 

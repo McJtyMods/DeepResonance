@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
@@ -46,6 +47,28 @@ public class CollectorRenderer implements BlockEntityRenderer<EnergyCollectorTil
 
     public static void register() {
         BlockEntityRenderers.register(GeneratorModule.TYPE_ENERGY_COLLECTOR.get(), CollectorRenderer::new);
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(EnergyCollectorTileEntity tile) {
+        return true;
+    }
+
+    @Override
+    public boolean shouldRender(EnergyCollectorTileEntity tile, Vec3 cameraPosition) {
+        return (tile.areLasersActive() || tile.getLaserStartup() > 0)
+                && !tile.getCrystals().isEmpty()
+                && BlockEntityRenderer.super.shouldRender(tile, cameraPosition);
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(EnergyCollectorTileEntity tile) {
+        BlockPos origin = tile.getBlockPos();
+        AABB bounds = new AABB(origin);
+        for (BlockPos crystal : tile.getCrystals()) {
+            bounds = bounds.minmax(new AABB(origin.offset(crystal)));
+        }
+        return bounds.inflate(1);
     }
 
     @Override
