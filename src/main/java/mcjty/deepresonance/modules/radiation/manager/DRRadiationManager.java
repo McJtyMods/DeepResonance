@@ -5,8 +5,8 @@ import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.modules.radiation.util.RadiationShieldRegistry;
 import mcjty.lib.varia.LevelTools;
 import mcjty.lib.worlddata.AbstractWorldData;
+import mcjty.deepresonance.util.ResonanceSavedData;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -28,11 +28,11 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
     }
 
     public DRRadiationManager(CompoundTag tag) {
-        ListTag lst = tag.getList("radiation", Tag.TAG_COMPOUND);
+        ListTag lst = tag.getListOrEmpty("radiation");
         for (int i = 0; i < lst.size(); i++) {
-            CompoundTag tc = lst.getCompound(i);
-            ResourceKey<Level> type = LevelTools.getId(tc.getString("dim"));
-            GlobalPos coordinate = GlobalPos.of(type, new BlockPos(tc.getInt("sourceX"), tc.getInt("sourceY"), tc.getInt("sourceZ")));
+            CompoundTag tc = lst.getCompoundOrEmpty(i);
+            ResourceKey<Level> type = LevelTools.getId(tc.getStringOr("dim", ""));
+            GlobalPos coordinate = GlobalPos.of(type, new BlockPos(tc.getIntOr("sourceX", 0), tc.getIntOr("sourceY", 0), tc.getIntOr("sourceZ", 0)));
             RadiationSource value = new RadiationSource();
             value.readFromNBT(tc);
             sources.put(coordinate, value);
@@ -65,7 +65,7 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
     }
 
     public static DRRadiationManager getManager(Level world) {
-        return getData(world, DRRadiationManager::new, DRRadiationManager::new, RADIATION_MANAGER_NAME);
+        return ResonanceSavedData.get(world, "radiation_manager", RADIATION_MANAGER_NAME, DRRadiationManager::new, DRRadiationManager::new);
     }
 
     public RadiationSource getOrCreateRadiationSource(GlobalPos coordinate) {
@@ -95,7 +95,7 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
         ListTag lst = new ListTag();
         for (Map.Entry<GlobalPos, RadiationSource> entry : sources.entrySet()) {
             CompoundTag tc = new CompoundTag();
-            tc.putString("dim", entry.getKey().dimension().location().toString());
+            tc.putString("dim", entry.getKey().dimension().identifier().toString());
             tc.putInt("sourceX", entry.getKey().pos().getX());
             tc.putInt("sourceY", entry.getKey().pos().getY());
             tc.putInt("sourceZ", entry.getKey().pos().getZ());
@@ -111,7 +111,6 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
         private float maxStrength;              // Roughly an indication of the amount of ticks.
         private float strength;
         private QuadTree radiationTree;
-
 
         public float getRadius() {
             return radius;
@@ -179,9 +178,9 @@ public class DRRadiationManager extends AbstractWorldData<DRRadiationManager> {
         }
 
         public void readFromNBT(CompoundTag tagCompound) {
-            this.radius = tagCompound.getFloat("radius");
-            this.maxStrength = tagCompound.getFloat("maxStrength");
-            this.strength = tagCompound.getFloat("strength");
+            this.radius = tagCompound.getFloatOr("radius", 0.0f);
+            this.maxStrength = tagCompound.getFloatOr("maxStrength", 0.0f);
+            this.strength = tagCompound.getFloatOr("strength", 0.0f);
         }
     }
 }

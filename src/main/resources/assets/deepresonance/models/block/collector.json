@@ -2,5 +2,8 @@
   "parent": "block/cube",
   "loader": "neoforge:obj",
   "model": "deepresonance:models/block/collector.obj",
-  "flip_v": true
+  "flip_v": true,
+  "textures": {
+    "particle": "deepresonance:block/energy_collector"
+  }
 }

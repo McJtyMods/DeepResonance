@@ -1,5 +1,6 @@
 package mcjty.deepresonance.compat.rftoolscontrol;
 
+import mcjty.deepresonance.modules.tank.util.TankTransfers;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.machines.block.LaserTileEntity;
@@ -36,7 +37,7 @@ public class RFToolsControlSupport {
                 BlockEntity te = processor.getTileEntityAt(inv);
                 int purity = -1;
                 if (te instanceof TankTileEntity tank) {
-                    LiquidCrystalData lcd = LiquidCrystalData.fromStack(tank.getFluidHandler().getFluid());
+                    LiquidCrystalData lcd = LiquidCrystalData.fromStack(TankTransfers.contents(tank.getFluidHandler()));
                     purity = (int) (lcd.getPurity() * 100 + .5f);
                 }
                 program.setLastValue(Parameter.builder().type(PAR_INTEGER).value(ParameterValue.constant(purity)).build());
@@ -60,7 +61,7 @@ public class RFToolsControlSupport {
                 BlockEntity te = processor.getTileEntityAt(inv);
                 int purity = -1;
                 if (te instanceof TankTileEntity tank) {
-                    LiquidCrystalData lcd = LiquidCrystalData.fromStack(tank.getFluidHandler().getFluid());
+                    LiquidCrystalData lcd = LiquidCrystalData.fromStack(TankTransfers.contents(tank.getFluidHandler()));
                     purity = (int) (lcd.getStrength() * 100 + .5f);
                 }
                 program.setLastValue(Parameter.builder().type(PAR_INTEGER).value(ParameterValue.constant(purity)).build());
@@ -84,7 +85,7 @@ public class RFToolsControlSupport {
                 BlockEntity te = processor.getTileEntityAt(inv);
                 int purity = -1;
                 if (te instanceof TankTileEntity tank) {
-                    LiquidCrystalData lcd = LiquidCrystalData.fromStack(tank.getFluidHandler().getFluid());
+                    LiquidCrystalData lcd = LiquidCrystalData.fromStack(TankTransfers.contents(tank.getFluidHandler()));
                     purity = (int) (lcd.getEfficiency() * 100 + .5f);
                 }
                 program.setLastValue(Parameter.builder().type(PAR_INTEGER).value(ParameterValue.constant(purity)).build());
@@ -108,7 +109,7 @@ public class RFToolsControlSupport {
                 BlockEntity te = processor.getTileEntityAt(inv);
                 int purity = -1;
                 if (te instanceof TankTileEntity tank) {
-                    LiquidCrystalData lcd = LiquidCrystalData.fromStack(tank.getFluidHandler().getFluid());
+                    LiquidCrystalData lcd = LiquidCrystalData.fromStack(TankTransfers.contents(tank.getFluidHandler()));
                     purity = (int) (lcd.getQuality() * 100 + .5f);
                 }
                 program.setLastValue(Parameter.builder().type(PAR_INTEGER).value(ParameterValue.constant(purity)).build());

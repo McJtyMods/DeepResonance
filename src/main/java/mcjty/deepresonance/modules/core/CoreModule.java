@@ -1,5 +1,7 @@
 package mcjty.deepresonance.modules.core;
 
+import mcjty.deepresonance.modules.tank.client.TankTESR;
+import com.mojang.serialization.MapCodec;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.block.BlockResonatingPlate;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalBlock;
@@ -20,7 +22,7 @@ import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -34,7 +36,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -59,7 +60,7 @@ public class CoreModule implements IModule {
                     .networkSynchronized(LCD.STREAM_CODEC));
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Crystal>> CRYSTAL_DATA = Registration.ATTACHMENT_TYPES.register(
             "crystal", () -> AttachmentType.builder(() -> Crystal.DEFAULT)
-                    .serialize(Crystal.CODEC)
+                    .serialize(MapCodec.assumeMapUnsafe(Crystal.CODEC))
                     .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Crystal>> ITEM_CRYSTAL_DATA = Registration.COMPONENTS.registerComponentType(
             "crystal",
@@ -69,7 +70,7 @@ public class CoreModule implements IModule {
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<ResonatingCrystalData>> RESONATING_CRYSTAL_DATA = Registration.ATTACHMENT_TYPES.register(
             "resonating_crystal", () -> AttachmentType.builder(() -> ResonatingCrystalData.DEFAULT)
-                    .serialize(ResonatingCrystalData.CODEC)
+                    .serialize(MapCodec.assumeMapUnsafe(ResonatingCrystalData.CODEC))
                     .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResonatingCrystalData>> ITEM_RESONATING_CRYSTAL_DATA = Registration.COMPONENTS.registerComponentType(
             "resonating_crystal",
@@ -77,10 +78,9 @@ public class CoreModule implements IModule {
                     .persistent(ResonatingCrystalData.CODEC)
                     .networkSynchronized(ResonatingCrystalData.STREAM_CODEC));
 
-    private static final Block.Properties ORE_PROPERTIES = Block.Properties.of()
-            .sound(SoundType.STONE)
-            .requiresCorrectToolForDrops()
-            .strength(3, 5);
+    private static Block ore(Block.Properties properties) {
+        return new Block(properties.sound(SoundType.STONE).requiresCorrectToolForDrops().strength(3, 5));
+    }
 
     public static final Supplier<FluidType> LIQUID_CRYSTAL_TYPE = Registration.FLUID_TYPES.register("liquid_crystal_type",
             () -> new FluidType(FluidType.Properties.create()) {
@@ -94,67 +94,62 @@ public class CoreModule implements IModule {
 
     public static final RBlock<ResonatingCrystalBlock, BlockItem, BlockEntity> RESONATING_CRYSTAL_NATURAL = Registration.registerSimpleBlock(
             "resonating_crystal_natural",
-            () -> new ResonatingCrystalBlock(false, false)
+            properties -> new ResonatingCrystalBlock(properties, false, false)
     );
     public static final RBlock<ResonatingCrystalBlock, BlockItem, BlockEntity> RESONATING_CRYSTAL_NATURAL_EMPTY = Registration.registerSimpleBlock(
             "resonating_crystal_natural_empty",
-            () -> new ResonatingCrystalBlock(false, true)
+            properties -> new ResonatingCrystalBlock(properties, false, true)
     );
     public static final RBlock<ResonatingCrystalBlock, BlockItem, BlockEntity> RESONATING_CRYSTAL_GENERATED = Registration.registerSimpleBlock(
             "resonating_crystal_generated",
-            () -> new ResonatingCrystalBlock(true, false)
+            properties -> new ResonatingCrystalBlock(properties, true, false)
     );
     public static final RBlock<ResonatingCrystalBlock, BlockItem, BlockEntity> RESONATING_CRYSTAL_GENERATED_EMPTY = Registration.registerSimpleBlock(
             "resonating_crystal_generated_empty",
-            () -> new ResonatingCrystalBlock(true, true)
+            properties -> new ResonatingCrystalBlock(properties, true, true)
     );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ResonatingCrystalTileEntity>> TYPE_RESONATING_CRYSTAL = TILES.register("resonating_crystal", () -> BlockEntityType.Builder.of(ResonatingCrystalTileEntity::new,
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ResonatingCrystalTileEntity>> TYPE_RESONATING_CRYSTAL = TILES.register("resonating_crystal", () -> new BlockEntityType<>(ResonatingCrystalTileEntity::new,
                     RESONATING_CRYSTAL_GENERATED.block().get(), RESONATING_CRYSTAL_GENERATED_EMPTY.block().get(),
-                    RESONATING_CRYSTAL_NATURAL.block().get(), RESONATING_CRYSTAL_NATURAL_EMPTY.block().get())
-            .build(null));
+                    RESONATING_CRYSTAL_NATURAL.block().get(), RESONATING_CRYSTAL_NATURAL_EMPTY.block().get()));
 
     public static final RBlock<Block, BlockItem, BlockEntity> RESONATING_ORE_STONE = Registration.registerSimpleBlock(
             "resonating_ore_stone",
-            () -> new Block(ORE_PROPERTIES)
+            CoreModule::ore
     );
     public static final RBlock<Block, BlockItem, BlockEntity> RESONATING_ORE_DEEPSLATE = Registration.registerSimpleBlock(
             "resonating_ore_deepslate",
-            () -> new Block(ORE_PROPERTIES)
+            CoreModule::ore
     );
     public static final RBlock<Block, BlockItem, BlockEntity> RESONATING_ORE_NETHER = Registration.registerSimpleBlock(
             "resonating_ore_nether",
-            () -> new Block(ORE_PROPERTIES)
+            CoreModule::ore
     );
     public static final RBlock<Block, BlockItem, BlockEntity> RESONATING_ORE_END = Registration.registerSimpleBlock(
             "resonating_ore_end",
-            () -> new Block(ORE_PROPERTIES)
+            CoreModule::ore
     );
     public static final RBlock<BlockResonatingPlate, BlockItem, BlockEntity> RESONATING_PLATE_BLOCK = Registration.registerSimpleBlock(
             "resonating_plate_block",
-            () -> new BlockResonatingPlate(Block.Properties.of()
+            properties -> new BlockResonatingPlate(properties
                     .sound(SoundType.STONE)
                     .strength(3, 5)),
-            block -> new BlockItem(block.get(), Registration.createStandardProperties())
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix())
     );
 
-    public static final DeferredItem<Item> RESONATING_PLATE_ITEM = Registration.ITEMS.register("resonating_plate", tab(() -> new Item(Registration.createStandardProperties())));
-    public static final DeferredItem<Item> FILTER_MATERIAL_ITEM = Registration.ITEMS.register("filter_material", tab(() -> new Item(Registration.createStandardProperties())));
-    public static final DeferredItem<Item> SPENT_FILTER_ITEM = Registration.ITEMS.register("spent_filter_material", tab(() -> new Item(Registration.createStandardProperties())));
-    public static final DeferredItem<Item> LIQUID_INJECTOR_ITEM = Registration.ITEMS.register("liquid_injector", tab(() -> new ItemLiquidInjector(Registration.createStandardProperties())));
-    public static final DeferredItem<Item> MACHINE_FRAME_ITEM = Registration.ITEMS.register("machine_frame", tab(() -> new Item(Registration.createStandardProperties())));
+    public static final DeferredItem<Item> RESONATING_PLATE_ITEM = Registration.ITEMS.register("resonating_plate", tab(Item::new));
+    public static final DeferredItem<Item> FILTER_MATERIAL_ITEM = Registration.ITEMS.register("filter_material", tab(Item::new));
+    public static final DeferredItem<Item> SPENT_FILTER_ITEM = Registration.ITEMS.register("spent_filter_material", tab(Item::new));
+    public static final DeferredItem<Item> LIQUID_INJECTOR_ITEM = Registration.ITEMS.register("liquid_injector", tab(ItemLiquidInjector::new));
+    public static final DeferredItem<Item> MACHINE_FRAME_ITEM = Registration.ITEMS.register("machine_frame", tab(Item::new));
 
     public CoreModule(IEventBus bus, Dist dist) {
         if (dist.isClient()) {
-            bus.addListener(this::onClientExtensionRegistration);
+            bus.addListener(TankTESR::registerFluidModel);
         }
     }
 
     @Override
     public void init(FMLCommonSetupEvent event) {
-    }
-
-    public void onClientExtensionRegistration(RegisterClientExtensionsEvent event) {
-        event.registerFluidType(new FluidLiquidCrystal.ClientExtensions(), LIQUID_CRYSTAL_TYPE.get());
     }
 
     @Override
@@ -165,7 +160,7 @@ public class CoreModule implements IModule {
     @Override
     public void initConfig(IEventBus bus) {
         CrystalConfig.init();
-        ResonatingPlateBlockConfig.init(bus);
+        ResonatingPlateBlockConfig.init();
     }
 
     @Override
@@ -251,7 +246,7 @@ public class CoreModule implements IModule {
                 Dob.itemBuilder(SPENT_FILTER_ITEM)
                         .generatedItem("item/spent_filter_material"),
                 Dob.itemBuilder(MACHINE_FRAME_ITEM)
-                        .cubeAll(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/machine_side"))
+                        .cubeAll(Identifier.fromNamespaceAndPath(DeepResonance.MODID, "block/machine_side"))
                         .shaped(builder -> builder
                                         .define('g', Tags.Items.STONES)
                                         .define('P', RESONATING_PLATE_ITEM.get())

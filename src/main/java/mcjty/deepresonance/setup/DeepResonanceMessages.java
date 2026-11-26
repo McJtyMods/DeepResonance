@@ -1,5 +1,6 @@
 package mcjty.deepresonance.setup;
 
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.radiation.network.PacketGetRadiationLevel;
 import mcjty.deepresonance.modules.radiation.network.PacketReturnRadiation;
@@ -25,6 +26,6 @@ public class DeepResonanceMessages {
     }
 
     public static <T extends CustomPacketPayload> void sendToServer(T packet) {
-        PacketDistributor.sendToServer(packet);
+        ClientPacketDistributor.sendToServer(packet);
     }
 }

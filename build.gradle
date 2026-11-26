@@ -14,20 +14,23 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.1.4'
+    id 'net.neoforged.gradle.userdev' version '7.1.38'
 }
 
 apply plugin: 'com.hypherionmc.modutils.modpublisher'
 
-if (project.file('../gradletools.gradle').exists()) {
-    apply from: '../gradletools.gradle'
-} else {
-    apply from: 'https://raw.githubusercontent.com/McJtyMods/MultiWorkspace/1.21_neo/gradletools.gradle'
-}
+def sharedTools = [
+        providers.gradleProperty('gradletools_path').map { file(it) }.orNull,
+        rootProject.file('gradletools.gradle'),
+        file('../Multi_neo/gradletools.gradle'),
+        file('../gradletools.gradle'),
+        file('gradletools.gradle')
+].find { it != null && it.isFile() }
+apply from: sharedTools ?: 'https://raw.githubusercontent.com/McJtyMods/MultiWorkspace/26.2_neo/gradletools.gradle'
 
-group = "com.github.mcjty"
-archivesBaseName = "deepresonance"
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+group = 'com.github.mcjty'
+base.archivesName = 'deepresonance'
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 if (System.getenv('BUILD_NUMBER') != null) {
     version += "-${System.getenv('BUILD_NUMBER')}"
@@ -44,10 +47,22 @@ sourceSets.main.resources {
 dependencies {
     mc()
     jei()
-    patchouli()
     top()
     mcjtylib()
     rftoolsbase()
 }
 
 modpublisher(['the-one-probe'], ['mcjtylib', 'rftools-base'], ['the-one-probe'], ['mcjtylib', 'rftools-base'], [])
+
+
+if (providers.gradleProperty('deepResonanceTests').isPresent()) {
+    sourceSets.main.java.srcDir 'src/gameTest/java'
+    sourceSets.main.resources.srcDir 'src/gameTest/resources'
+    extensions.getByName('runs').named('gameTestServer') {
+        arguments.addAll '--test', 'deepresonance:*'
+    }
+}
+
+tasks.named('jar') {
+    exclude 'mcjty/deepresonance/ResonanceTest*.class', 'data/deepresonance/structure/station.nbt'
+}

@@ -13,7 +13,7 @@ public class ValveConfig {
         TICKS_PER_OPERATION = Config.SERVER_BUILDER.comment("The amount of ticks between a transfer operation")
                 .defineInRange("ticksPerOperation", 5, 1, 300);
         RCL_PER_OPERATION = Config.SERVER_BUILDER.comment("The amount of RCL to transfer in one operation")
-                .defineInRange("rclPerOperation", 1, 100, 10000);
+                .defineInRange("rclPerOperation", 1, 1, 10000);
         Config.SERVER_BUILDER.pop();
     }
 

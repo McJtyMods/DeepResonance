@@ -4,7 +4,6 @@ import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.rftoolsbase.tools.ManualHelper;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -25,9 +24,9 @@ public class LensBlock extends BaseBlock {
     private static final VoxelShape SHAPE_EAST = Shapes.box(.9, .2, .2, 1, .8, .8);
     private static final VoxelShape SHAPE_WEST = Shapes.box(0, .2, .2, .1, .8, .8);
 
-    public LensBlock() {
+    public LensBlock(Properties properties) {
         super(new BlockBuilder()
-                .properties(Block.Properties.of().strength(2.0F).sound(SoundType.METAL).noOcclusion().noCollission())
+                .properties(properties.strength(2.0F).sound(SoundType.METAL).noOcclusion().noCollision())
                 .manualEntry(ManualHelper.create("deepresonance:machines/laser_lens"))
                 .tileEntitySupplier(LensTileEntity::new));
     }

@@ -1,8 +1,8 @@
 package mcjty.deepresonance.setup;
 
+import java.util.function.BiFunction;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
-import mcjty.deepresonance.modules.radiation.item.ItemRadiationSuit;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RBlock;
 import mcjty.lib.blocks.RBlockRegistry;
@@ -48,7 +48,6 @@ public class Registration {
     public static final DeferredRegister.DataComponents COMPONENTS = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, DeepResonance.MODID);
 
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(BuiltInRegistries.FEATURE, DeepResonance.MODID);
-    public static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS = DeferredRegister.create(Registries.ARMOR_MATERIAL, DeepResonance.MODID);
 
     public static void register(IEventBus bus) {
         RBLOCKS.register(bus);
@@ -60,40 +59,30 @@ public class Registration {
         TILES.register(bus);
         SOUNDS.register(bus);
         FEATURES.register(bus);
-        ARMOR_MATERIALS.register(bus);
         TABS.register(bus);
         ATTACHMENT_TYPES.register(bus);
         COMPONENTS.register(bus);
-        ItemRadiationSuit.init();
     }
 
-    public static Item.Properties createStandardProperties() {
-        return DeepResonance.setup.defaultProperties();
-    }
-
-    public static <B extends Block> DeferredItem<BlockItem> fromBlock(DeferredBlock<B> block) {
-        return ITEMS.register(block.getId().getPath(), tab(() -> new BlockItem(block.get(), createStandardProperties())));
-    }
-
-    public static <B extends Block> RBlock<B, BlockItem, BlockEntity> registerSimpleBlock(String name, Supplier<B> blockSupplier) {
-        return registerSimpleBlock(name, blockSupplier, block -> new BlockItem(block.get(), createStandardProperties()));
+    public static <B extends Block> RBlock<B, BlockItem, BlockEntity> registerSimpleBlock(String name, Function<Block.Properties, B> blockFactory) {
+        return registerSimpleBlock(name, blockFactory, (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()));
     }
 
     public static <B extends Block, I extends BlockItem> RBlock<B, I, BlockEntity> registerSimpleBlock(String name,
-                                                                                                      Supplier<B> blockSupplier,
-                                                                                                      Function<Supplier<? extends Block>, I> itemFactory) {
-        DeferredBlock<B> block = BLOCKS.register(name, blockSupplier);
-        DeferredItem<I> item = ITEMS.register(name, tab(() -> itemFactory.apply(block)));
+                                                                                                      Function<Block.Properties, B> blockFactory,
+                                                                                                      BiFunction<Supplier<? extends Block>, Item.Properties, I> itemFactory) {
+        DeferredBlock<B> block = BLOCKS.register(name, blockFactory);
+        DeferredItem<I> item = ITEMS.register(name, tab(properties -> itemFactory.apply(block, properties)));
         return new RBlock<>(block, item, null);
     }
 
     public static <B extends BaseBlock, I extends BlockItem, E extends GenericTileEntity> RBlock<B, I, E> registerBlockWithTile(
             String name,
             Class<E> clazz,
-            Supplier<B> blockSupplier,
-            Function<Supplier<? extends Block>, I> itemFactory,
+            Function<Block.Properties, B> blockFactory,
+            BiFunction<Supplier<? extends Block>, Item.Properties, I> itemFactory,
             BlockEntityType.BlockEntitySupplier<E> tileSupplier) {
-        return RBLOCKS.registerBlock(name, clazz, blockSupplier, itemFactory, tileSupplier);
+        return RBLOCKS.registerBlock(name, clazz, blockFactory, itemFactory, tileSupplier);
     }
 
     public static Supplier<CreativeModeTab> TAB = TABS.register("deepresonance", () -> CreativeModeTab.builder()

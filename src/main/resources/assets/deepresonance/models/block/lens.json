@@ -2,5 +2,9 @@
   "parent": "block/cube",
   "loader": "neoforge:obj",
   "model": "deepresonance:models/block/lens.obj",
-  "flip_v": true
+  "flip_v": true,
+  "textures": {
+    "particle": "deepresonance:block/lens",
+    "lens_texture": "deepresonance:block/lens"
+  }
 }

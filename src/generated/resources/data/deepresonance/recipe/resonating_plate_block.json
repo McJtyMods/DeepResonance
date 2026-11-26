@@ -1,10 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "P": {
-      "item": "deepresonance:resonating_plate"
-    }
+    "P": "deepresonance:resonating_plate"
   },
   "pattern": [
     "PPP",
@@ -12,7 +9,6 @@
     "PPP"
   ],
   "result": {
-    "count": 1,
     "id": "deepresonance:resonating_plate_block"
   }
 }

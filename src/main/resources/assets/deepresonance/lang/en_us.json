@@ -61,5 +61,13 @@
   "message.deepresonance.generator_part.header": "Part of a generator multi-block. You can place these in any configuration.",
   "message.deepresonance.generator_part.power": "Power: ",
   "message.deepresonance.laser.header": "Place this laser so it faces a lens. It will infuse the liquid in the tank depending on the materials used.",
-  "message.deepresonance.laser.liquid": "Liquid: "
+  "message.deepresonance.laser.liquid": "Liquid: ",
+
+  "commands.deepresonance.testsetup.blocked": "The test setup area is obstructed at %s.",
+  "commands.deepresonance.testsetup.unavailable": "The test setup area is outside the buildable or loaded area at %s.",
+  "commands.deepresonance.testsetup.purification": "Purification station built. Turn on the three laser levers to treat the RCL in the lower tank.",
+  "commands.deepresonance.testsetup.generation": "Generator built. Enter the shielded room and turn on the controller lever to start it.",
+  "commands.deepresonance.testsetup.crystal": "Crystallization station built. Open the crystallizer to watch it form a crystal from the tank below.",
+  "commands.deepresonance.testsetup.smelter": "Smelter built. It uses lava from the lower tank to smelt resonating ore into RCL in the upper tank.",
+  "commands.deepresonance.testsetup.needs_power": "Connect an FE source to the powered machines to start them."
 }

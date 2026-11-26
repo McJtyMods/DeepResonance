@@ -1,5 +1,11 @@
 package mcjty.deepresonance.modules.machines.block;
 
+import mcjty.deepresonance.modules.tank.util.TankTransfers;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.data.ValveData;
@@ -22,7 +28,7 @@ import mcjty.lib.typed.Type;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
@@ -31,7 +37,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
 import java.util.function.Function;
@@ -69,9 +74,10 @@ public class ValveTileEntity extends TickingTileEntity {
         super(MachinesModule.TYPE_VALVE.get(), pos, state);
     }
 
-    public static BaseBlock createBlock() {
+    public static BaseBlock createBlock(Block.Properties properties) {
         return new BaseBlock(
                 new BlockBuilder()
+                        .properties(properties)
                         .tileEntitySupplier(ValveTileEntity::new)
                 .manualEntry(ManualHelper.create("deepresonance:machines/valve"))
                         .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))
@@ -112,40 +118,25 @@ public class ValveTileEntity extends TickingTileEntity {
             return;
         }
 
-        IFluidHandler top = tankHook.getTank1();
-        IFluidHandler bottom = tankHook.getTank2();
+        ResourceHandler<FluidResource> top = tankHook.getTank1();
+        ResourceHandler<FluidResource> bottom = tankHook.getTank2();
 
-        int rcl = ValveConfig.RCL_PER_OPERATION.get();
-        FluidStack fluidStack = top.drain(rcl, IFluidHandler.FluidAction.SIMULATE);
-        if (fluidStack.isEmpty()) {
+        int amount = ValveConfig.RCL_PER_OPERATION.get();
+        int maxMb = getMaxMb();
+        if (maxMb > 0) {
+            amount = Math.min(amount, maxMb - TankTransfers.contents(bottom).getAmount());
+        }
+        if (amount <= 0) {
             return;
         }
-        int amt = fluidStack.getAmount();
-        if (bottom.fill(LiquidCrystalData.makeLiquidCrystalStack(amt), IFluidHandler.FluidAction.SIMULATE) == amt) {
-            ILiquidCrystalData data = LiquidCrystalData.fromStack(fluidStack);
-            if (data.getPurity() < getMinPurity()) {
-                return;
-            }
-            if (data.getStrength() < getMinStrength()) {
-                return;
-            }
-            if (data.getEfficiency() < getMinEfficiency()) {
-                return;
-            }
-
-            int maxMb = getMaxMb();
-            if (maxMb > 0) {
-                // We have to check maximum volume
-                int fluidAmount = bottom.getFluidInTank(0).getAmount();
-                if (fluidAmount < maxMb) {
-                    int toDrain = Math.min(maxMb - fluidAmount, rcl);
-                    fluidStack = top.drain(toDrain, IFluidHandler.FluidAction.EXECUTE);
-                    bottom.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-                }
-            } else {
-                fluidStack = top.drain(rcl, IFluidHandler.FluidAction.EXECUTE);
-                bottom.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-            }
+        FluidStack stack = TankTransfers.simulateExtract(top, amount);
+        if (!LiquidCrystalData.isValidLiquidCrystalStack(stack)) {
+            return;
+        }
+        ILiquidCrystalData data = LiquidCrystalData.fromStack(stack);
+        if (data.getPurity() >= getMinPurity() && data.getStrength() >= getMinStrength()
+                && data.getEfficiency() >= getMinEfficiency()) {
+            TankTransfers.move(top, bottom, stack);
         }
     }
 
@@ -182,19 +173,22 @@ public class ValveTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
-        super.saveAdditional(tagCompound, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        CompoundTag tagCompound = new CompoundTag();
         tagCompound.putInt("progress", progress);
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tagCompound);
     }
 
     @Override
-    public void loadAdditional(CompoundTag tagCompound, HolderLookup.Provider provider) {
-        super.loadAdditional(tagCompound, provider);
-        progress = tagCompound.getInt("progress");
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tagCompound = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        progress = tagCompound.getIntOr("progress", 0);
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         ValveData valveData = input.get(MachinesModule.ITEM_VALVE_DATA);
         if  (valveData != null) {

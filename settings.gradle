@@ -8,5 +8,15 @@ pluginManagement {
 }
 
 plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.5.0'
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
+
+// Use matching sibling sources when this mod checkout is opened directly.
+['TheOneProbe', 'McJtyLib', 'RFToolsBase'].each { mod ->
+    def checkout = file("../${mod}_neo")
+    if (new File(checkout, 'build.gradle').isFile()) {
+        include mod
+        project(":${mod}").projectDir = checkout
+    }
 }

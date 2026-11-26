@@ -7,13 +7,12 @@ import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.TagTools;
-import mcjty.lib.varia.Tools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.effect.MobEffect;
@@ -49,7 +48,7 @@ public class RadiationTickEvent {
     @SubscribeEvent
     public void onTick(LevelTickEvent.Post evt) {
         Level level = evt.getLevel();
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         if (!Objects.equals(Level.OVERWORLD, level.dimension())) {
@@ -68,7 +67,6 @@ public class RadiationTickEvent {
             serverTick(level, doEffects);
         }
     }
-
 
 //    @SubscribeEvent
 //    public void onServerTick(TickEvent.ServerTickEvent evt) {
@@ -247,8 +245,8 @@ public class RadiationTickEvent {
     }
 
     private static Holder<MobEffect> getEffect(String name) {
-        ResourceLocation id = ResourceLocation.parse(name);
-        return BuiltInRegistries.MOB_EFFECT.getHolder(ResourceKey.create(Registries.MOB_EFFECT, id)).orElseThrow(() -> new IllegalStateException("Unknown effect: " + name));
+        Identifier id = Identifier.parse(name);
+        return BuiltInRegistries.MOB_EFFECT.get(ResourceKey.create(Registries.MOB_EFFECT, id)).orElseThrow(() -> new IllegalStateException("Unknown effect: " + name));
     }
 
     private void handleRadiationEffects(Level world, GlobalPos coordinate, DRRadiationManager.RadiationSource radiationSource) {
