@@ -1,5 +1,11 @@
 package mcjty.deepresonance.modules.generator.client;
 
+import mcjty.deepresonance.modules.core.client.ResonatingCrystalRenderer;
+import mcjty.lib.client.AbstractDynamicBakedModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer.CrumblingOverlay;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
@@ -7,32 +13,21 @@ import mcjty.deepresonance.modules.generator.block.EnergyCollectorTileEntity;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
 import mcjty.deepresonance.setup.ClientSetup;
 import mcjty.lib.client.CustomRenderTypes;
-import mcjty.lib.client.DelayedRenderer;
 import mcjty.lib.client.RenderHelper;
 import mcjty.lib.client.RenderSettings;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nonnull;
 import java.util.Random;
 import java.util.Set;
 
-public class CollectorRenderer implements BlockEntityRenderer<EnergyCollectorTileEntity> {
+public class CollectorRenderer implements BlockEntityRenderer<EnergyCollectorTileEntity, CollectorRenderer.State> {
 
-    private static final RenderSettings SETTINGS = RenderSettings.builder()
-            .color(255, 0, 0)
-            .renderType(CustomRenderTypes.TRANSLUCENT_LIGHTNING_NOLIGHTMAPS)
-            .width(.1f)
-            .alpha(200)
-            .build();
     private static final RenderSettings SETTINGS_LASER = RenderSettings.builder()
             .width(.1f)
             .alpha(128)
@@ -48,34 +43,62 @@ public class CollectorRenderer implements BlockEntityRenderer<EnergyCollectorTil
         BlockEntityRenderers.register(GeneratorModule.TYPE_ENERGY_COLLECTOR.get(), CollectorRenderer::new);
     }
 
+    public static class State extends BlockEntityRenderState {
+        Set<BlockPos> crystals = Set.of();
+        int startup;
+    }
+
     @Override
-    public void render(@Nonnull EnergyCollectorTileEntity tileEntity, float partialTicks, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
-        if (tileEntity.getCrystals().isEmpty() || (!tileEntity.areLasersActive() && tileEntity.getLaserStartup() <= 0)) {
-            return;
+    public boolean shouldRenderOffScreen() {
+        return true;
+    }
+
+    @Override
+    public boolean shouldRender(EnergyCollectorTileEntity tile, Vec3 cameraPosition) {
+        return (tile.areLasersActive() || tile.getLaserStartup() > 0)
+                && !tile.getCrystals().isEmpty()
+                && BlockEntityRenderer.super.shouldRender(tile, cameraPosition);
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(EnergyCollectorTileEntity tile) {
+        BlockPos origin = tile.getBlockPos();
+        AABB bounds = new AABB(origin);
+        for (BlockPos crystal : tile.getCrystals()) {
+            bounds = bounds.minmax(new AABB(origin.offset(crystal)));
         }
-
-        VertexConsumer buf = buffer.getBuffer(RenderType.TRANSLUCENT);
-        renderHalo(matrixStack, buf);
-        renderLasers(tileEntity.getBlockPos(), tileEntity.getLaserStartup(), tileEntity.getCrystals(), matrixStack, buf);
-//        DelayedRenderer.addRender(RenderType.translucent(), tileEntity.getBlockPos(), (stack, buf) -> {
-//            renderHalo(stack, buf);
-//            renderLasers(tileEntity.getBlockPos(), tileEntity.getLaserStartup(), tileEntity.getCrystals(), stack, buf);
-//        });
+        return bounds.inflate(1);
     }
 
-    private void renderHalo(PoseStack matrixStack, VertexConsumer buffer) {
-        RenderHelper.renderSplitBillboard(matrixStack, buffer, 1.0f, new Vec3(0, .25, 0), ClientSetup.HALO);
+    @Override
+    public State createRenderState() {
+        return new State();
     }
 
-    private void renderLasers(BlockPos pos, int laserStartup, Set<BlockPos> crystals, PoseStack matrixStack, VertexConsumer builder) {
+    @Override
+    public void extractRenderState(EnergyCollectorTileEntity tile, State state, float partialTicks, Vec3 camera, CrumblingOverlay overlay) {
+        BlockEntityRenderer.super.extractRenderState(tile, state, partialTicks, camera, overlay);
+        state.startup = tile.getLaserStartup();
+        state.crystals = tile.areLasersActive() || state.startup > 0 ? Set.copyOf(tile.getCrystals()) : Set.of();
+    }
+
+    @Override
+    public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
+        if (!state.crystals.isEmpty()) {
+            ResonatingCrystalRenderer.submitHalo(pose, collector, camera, ClientSetup.HALO, 0.75f, 1.0f);
+            Vec3 eye = camera.pos.subtract(Vec3.atLowerCornerOf(state.blockPos));
+            collector.submitCustomGeometry(pose, CustomRenderTypes.translucent(), (captured, vertices) -> {
+                PoseStack copy = new PoseStack();
+                copy.last().set(captured);
+                renderLasers(eye, state.startup, state.crystals, copy, vertices);
+            });
+        }
+    }
+
+    private void renderLasers(Vec3 player, int laserStartup, Set<BlockPos> crystals, PoseStack matrixStack, VertexConsumer builder) {
         double startupFactor = (double) laserStartup / GeneratorConfig.STARTUP_TIME.get();
         for (BlockPos destination : crystals) {
-            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(ClientSetup.LASERBEAMS[random.nextInt(4)]);
-
-            int tex = pos.getX();
-            int tey = pos.getY();
-            int tez = pos.getZ();
-            Vec3 player = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().add(-tex, -tey, -tez);
+            TextureAtlasSprite sprite = AbstractDynamicBakedModel.getTexture(ClientSetup.LASERBEAMS[random.nextInt(ClientSetup.LASERBEAMS.length)]);
 
             // Crystal coordinates are relative!
             Vec3 end = new Vec3(destination.getX() + .5, destination.getY() + .5, destination.getZ() + .5);

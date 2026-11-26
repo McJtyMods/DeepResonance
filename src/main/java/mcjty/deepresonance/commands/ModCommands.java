@@ -1,5 +1,6 @@
 package mcjty.deepresonance.commands;
 
+import net.minecraft.server.permissions.Permissions;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -20,6 +21,7 @@ public class ModCommands {
         LiteralCommandNode<CommandSourceStack> commands = dispatcher.register(
                 Commands.literal(DeepResonance.MODID)
                         .then(registerCreateCrystal(dispatcher))
+                        .then(TestSetupCommand.register())
 //                        .then(registerReset(dispatcher))
 //                        .then(registerList(dispatcher))
 //                        .then(registerListKnown(dispatcher))
@@ -31,7 +33,7 @@ public class ModCommands {
 
     public static ArgumentBuilder<CommandSourceStack, ?> registerCreateCrystal(CommandDispatcher<CommandSourceStack> dispatcher) {
         return Commands.literal("create")
-                .requires(cs -> cs.hasPermission(2))
+                .requires(cs -> cs.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
                 .then(Commands.argument("type", EnumArgument.enumArgument(CrystalHelper.CrystalOption.class))
                         .executes(context -> {
                             CrystalHelper.CrystalOption type = context.getArgument("type", CrystalHelper.CrystalOption.class);

@@ -1,5 +1,9 @@
 package mcjty.deepresonance.modules.generator.block;
 
+import net.minecraft.core.RegistryAccess;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalBlock;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
@@ -22,7 +26,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -64,7 +67,6 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
                 generatorNetwork.save();
             }
 
-
             int multiblockId = generator.getMultiblockId();
             network = generator.getBlob();
             if (network != null) {
@@ -97,15 +99,19 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
         }
 
         if (active != lasersActive || startup != laserStartup) {
-            // Only when active changes and the lasert started recently do we check for new crystals.
-            boolean doFind = lasersActive != active || (laserStartup > (GeneratorConfig.STARTUP_TIME.get() - 5));
+            boolean findTargets = (active || startup > 0)
+                    && (lasersActive != active || laserStartup > GeneratorConfig.STARTUP_TIME.get() - 5);
+            if (lasersActive && !active) {
+                disableCrystalGlow();
+            }
             lasersActive = active;
             laserStartup = startup;
-            markDirtyClient();
-
-            if (doFind && te instanceof GeneratorPartTileEntity) {
+            if (network != null && findTargets) {
                 findCrystals(network);
+            } else if (!active && startup == 0) {
+                crystals.clear();
             }
+            markDirtyClient();
         }
     }
 
@@ -213,6 +219,12 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
 
     @Override
     public void onReplaced(Level world, BlockPos pos, BlockState state, BlockState newstate) {
+        if (newstate.is(state.getBlock())) {
+            return;
+        }
+        if (lasersActive) {
+            disableCrystalGlow();
+        }
         BlockEntity te = world.getBlockEntity(pos.below());
         if (te instanceof GeneratorPartTileEntity) {
             int id = ((GeneratorPartTileEntity) te).getMultiblockId();
@@ -233,7 +245,7 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
         int yCoord = getBlockPos().getY();
         int zCoord = getBlockPos().getZ();
         for (int y = yCoord - CollectorConfig.MAX_VERTICAL_CRYSTAL_DISTANCE.get(); y <= yCoord + CollectorConfig.MAX_VERTICAL_CRYSTAL_DISTANCE.get() ; y++) {
-            if (y >= level.getMinBuildHeight() && y < level.getMaxBuildHeight()) {
+            if (y >= level.getMinY() && y <= level.getMaxY()) {
                 int maxhordist = CollectorConfig.MAX_HORIZONTAL_CRYSTAL_DISTANCE.get();
                 for (int x = xCoord - maxhordist; x <= xCoord + maxhordist; x++) {
                     for (int z = zCoord - maxhordist; z <= zCoord + maxhordist; z++) {
@@ -327,28 +339,32 @@ public class EnergyCollectorTileEntity extends TickingTileEntity {
         return maxSupportedRF;
     }
 
-
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
-        super.saveAdditional(tagCompound, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
+        CompoundTag tagCompound = new CompoundTag();
         saveClientDataToNBT(tagCompound, provider);
         tagCompound.putInt("networkId", blobId);
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tagCompound);
     }
 
     @Override
-    public void loadAdditional(CompoundTag tagCompound, HolderLookup.Provider provider) {
-        super.loadAdditional(tagCompound, provider);
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        HolderLookup.Provider provider = input.lookup();
+        CompoundTag tagCompound = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
         loadClientDataFromNBT(tagCompound, provider);
-        blobId = tagCompound.contains("networkId") ? tagCompound.getInt("networkId") : -1;
+        blobId = tagCompound.contains("networkId") ? tagCompound.getIntOr("networkId", 0) : -1;
     }
 
     @Override
     public void loadClientDataFromNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
-        lasersActive = tagCompound.getBoolean("lasersActive");
-        laserStartup = tagCompound.getInt("laserStartup");
-        byte[] crystalX = tagCompound.getByteArray("crystalsX");
-        byte[] crystalY = tagCompound.getByteArray("crystalsY");
-        byte[] crystalZ = tagCompound.getByteArray("crystalsZ");
+        lasersActive = tagCompound.getBooleanOr("lasersActive", false);
+        laserStartup = tagCompound.getIntOr("laserStartup", 0);
+        byte[] crystalX = tagCompound.getByteArray("crystalsX").orElseGet(() -> new byte[0]);
+        byte[] crystalY = tagCompound.getByteArray("crystalsY").orElseGet(() -> new byte[0]);
+        byte[] crystalZ = tagCompound.getByteArray("crystalsZ").orElseGet(() -> new byte[0]);
         crystals.clear();
         for (int i = 0 ; i < crystalX.length ; i++) {
             crystals.add(new BlockPos(crystalX[i], crystalY[i], crystalZ[i]));

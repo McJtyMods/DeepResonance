@@ -1,9 +1,9 @@
 package mcjty.deepresonance.modules.generator;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.generator.block.*;
-import mcjty.deepresonance.modules.generator.client.ClientSetup;
 import mcjty.deepresonance.modules.generator.client.CollectorRenderer;
 import mcjty.deepresonance.modules.generator.data.GeneratorPartData;
 import mcjty.deepresonance.modules.generator.util.CollectorConfig;
@@ -16,7 +16,7 @@ import mcjty.lib.modules.IModule;
 import mcjty.lib.varia.SoundTools;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Items;
@@ -39,7 +39,7 @@ public class GeneratorModule implements IModule {
             "energy_collector",
             EnergyCollectorTileEntity.class,
             EnergyCollectorBlock::new,
-            block -> new BlockItem(block.get(), Registration.createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             EnergyCollectorTileEntity::new
     );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnergyCollectorTileEntity>> TYPE_ENERGY_COLLECTOR = ENERGY_COLLECTOR.be();
@@ -48,7 +48,7 @@ public class GeneratorModule implements IModule {
             "generator_controller",
             GeneratorControllerTileEntity.class,
             GeneratorControllerBlock::new,
-            block -> new BlockItem(block.get(), Registration.createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             GeneratorControllerTileEntity::new
     );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GeneratorControllerTileEntity>> TYPE_GENERATOR_CONTROLLER = GENERATOR_CONTROLLER.be();
@@ -57,14 +57,14 @@ public class GeneratorModule implements IModule {
             "generator_part",
             GeneratorPartTileEntity.class,
             GeneratorPartBlock::new,
-            block -> new BlockItem(block.get(), Registration.createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             GeneratorPartTileEntity::new
     );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GeneratorPartTileEntity>> TYPE_GENERATOR_PART = GENERATOR_PART.be();
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<GeneratorPartData>> GENERATOR_PART_DATA = Registration.ATTACHMENT_TYPES.register(
             "generator_part", () -> AttachmentType.builder(() -> GeneratorPartData.DEFAULT)
-                    .serialize(GeneratorPartData.CODEC)
+                    .serialize(MapCodec.assumeMapUnsafe(GeneratorPartData.CODEC))
                     .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<GeneratorPartData>> ITEM_GENERATOR_PART_DATA = Registration.COMPONENTS.registerComponentType(
             "generator_part",
@@ -72,9 +72,9 @@ public class GeneratorModule implements IModule {
                     .persistent(GeneratorPartData.CODEC)
                     .networkSynchronized(GeneratorPartData.STREAM_CODEC));
 
-    public static final Supplier<SoundEvent> STARTUP_SOUND = Registration.SOUNDS.register("engine_start", () -> SoundTools.createSoundEvent(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "engine_start")));
-    public static final Supplier<SoundEvent> LOOP_SOUND = Registration.SOUNDS.register("engine_loop", () -> SoundTools.createSoundEvent(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "engine_loop")));
-    public static final Supplier<SoundEvent> SHUTDOWN_SOUND = Registration.SOUNDS.register("engine_shutdown", () -> SoundTools.createSoundEvent(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "engine_shutdown")));
+    public static final Supplier<SoundEvent> STARTUP_SOUND = Registration.SOUNDS.register("engine_start", () -> SoundTools.createSoundEvent(Identifier.fromNamespaceAndPath(DeepResonance.MODID, "engine_start")));
+    public static final Supplier<SoundEvent> LOOP_SOUND = Registration.SOUNDS.register("engine_loop", () -> SoundTools.createSoundEvent(Identifier.fromNamespaceAndPath(DeepResonance.MODID, "engine_loop")));
+    public static final Supplier<SoundEvent> SHUTDOWN_SOUND = Registration.SOUNDS.register("engine_shutdown", () -> SoundTools.createSoundEvent(Identifier.fromNamespaceAndPath(DeepResonance.MODID, "engine_shutdown")));
 
     @Override
     public void init(FMLCommonSetupEvent event) {
@@ -82,7 +82,6 @@ public class GeneratorModule implements IModule {
 
     @Override
     public void initClient(FMLClientSetupEvent event) {
-        ClientSetup.initClient();
         CollectorRenderer.register();
     }
 
@@ -107,7 +106,7 @@ public class GeneratorModule implements IModule {
                                         .unlockedBy("has_machine_frame", DataGen.has(CoreModule.MACHINE_FRAME_ITEM.get())),
                                 "XRX", "imi", "PRP"),
                 Dob.blockBuilder(ENERGY_COLLECTOR)
-                        .blockState(provider -> provider.simpleBlock(ENERGY_COLLECTOR.block().get(), provider.models().withExistingParent("energy_collector", ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "collector")).texture("collector_texture", "deepresonance:block/energy_collector")
+                        .blockState(provider -> provider.simpleBlock(ENERGY_COLLECTOR.block().get(), provider.models().withExistingParent("energy_collector", Identifier.fromNamespaceAndPath(DeepResonance.MODID, "collector")).texture("collector_texture", "deepresonance:block/energy_collector")
                                 .texture("particle", "deepresonance:block/energy_collector")))
                         .parentedItem()
                         .simpleLoot()
@@ -123,9 +122,9 @@ public class GeneratorModule implements IModule {
                         .blockState(provider -> {
                             provider.horizontalOrientedBlock(GeneratorModule.GENERATOR_CONTROLLER.block().get(), (state, builder) -> {
                                 if (state.getValue(BlockStateProperties.POWERED)) {
-                                    builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()), ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/generator_controller_on"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
+                                    builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()), Identifier.fromNamespaceAndPath(DeepResonance.MODID, "block/generator_controller_on"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
                                 } else {
-                                    builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()), ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/generator_controller"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
+                                    builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()), Identifier.fromNamespaceAndPath(DeepResonance.MODID, "block/generator_controller"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
                                 }
                             });
                         })

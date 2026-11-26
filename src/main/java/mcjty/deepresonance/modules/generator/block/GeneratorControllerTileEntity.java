@@ -1,5 +1,8 @@
 package mcjty.deepresonance.modules.generator.block;
 
+import com.mojang.serialization.MapCodec;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
 import mcjty.deepresonance.modules.generator.data.GeneratorBlob;
@@ -15,11 +18,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
-import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,11 +44,11 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider provider) {
+    public void onDataPacket(Connection net, ValueInput input) {
         boolean working = isPowered();
-        super.onDataPacket(net, packet, provider);
+        super.onDataPacket(net, input);
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             // If needed send a render update.
             if (isPowered() != working) {
                 BlockState state = getBlockState();
@@ -59,7 +60,7 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
     @Override
     public void setRemoved() {
         super.setRemoved();
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             stopSounds();
         }
     }
@@ -168,7 +169,6 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
         return DRGeneratorNetwork.getNetwork(level).getDriver();
     }
 
-
     private int getCollectorBlocks(int id, GeneratorBlob network, BlockPos p) {
         if (network.getCollectorBlocks() <= 0) {
             Set<BlockPos> positions = MultiblockSupport.findMultiblock(level, p, getDriver());
@@ -240,7 +240,6 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
         return true;
     }
 
-
     @Override
     public void setPowerInput(int powered) {
         boolean changed = powerLevel != powered;
@@ -260,21 +259,24 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
-        super.saveAdditional(tagCompound, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        CompoundTag tagCompound = new CompoundTag();
         tagCompound.putInt("startup", startup);
         tagCompound.putInt("shutdown", shutdown);
         tagCompound.putBoolean("active", active);
         tagCompound.putInt("playingSound", clientSound.ordinal());
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tagCompound);
     }
 
     @Override
-    public void loadAdditional(CompoundTag tagCompound, HolderLookup.Provider provider) {
-        super.loadAdditional(tagCompound, provider);
-        startup = tagCompound.getInt("startup");
-        shutdown = tagCompound.getInt("shutdown");
-        active = tagCompound.getBoolean("active");
-        clientSound = PlayingSound.values()[tagCompound.getInt("playingSound")];
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tagCompound = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        startup = tagCompound.getIntOr("startup", 0);
+        shutdown = tagCompound.getIntOr("shutdown", 0);
+        active = tagCompound.getBooleanOr("active", false);
+        clientSound = PlayingSound.values()[tagCompound.getIntOr("playingSound", 0)];
     }
 
     @Override
@@ -284,6 +286,6 @@ public class GeneratorControllerTileEntity extends TickingTileEntity {
 
     @Override
     public void loadClientDataFromNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
-        clientSound = PlayingSound.values()[tagCompound.getInt("playingSound")];
+        clientSound = PlayingSound.values()[tagCompound.getIntOr("playingSound", 0)];
     }
 }

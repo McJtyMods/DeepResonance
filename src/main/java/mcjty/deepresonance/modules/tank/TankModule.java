@@ -6,6 +6,8 @@ import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.deepresonance.modules.tank.client.TankTESR;
 import mcjty.deepresonance.modules.tank.data.TankData;
 import mcjty.deepresonance.setup.Registration;
+import mcjty.deepresonance.DeepResonance;
+import net.minecraft.resources.Identifier;
 import mcjty.lib.blocks.RBlock;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
@@ -21,11 +23,15 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class TankModule implements IModule {
 
+    public static final Identifier TANK_BOTTOM = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "block/tank_bottom");
+    public static final Identifier TANK_TOP = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "block/tank_top");
+    public static final Identifier TANK_SIDE = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "block/tank_side");
+
     public static final RBlock<TankBlock, BlockItem, TankTileEntity> TANK = Registration.registerBlockWithTile(
             "tank",
             TankTileEntity.class,
             TankBlock::new,
-            block -> new BlockItem(block.get(), Registration.createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             TankTileEntity::new
     );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TankTileEntity>> TYPE_TANK = TANK.be();
@@ -59,7 +65,7 @@ public class TankModule implements IModule {
                 Dob.blockBuilder(TANK)
                         .blockState(provider -> {
                             provider.simpleBlock(TANK.block().get(),
-                                    provider.models().cubeBottomTop("tank", TankTESR.TANK_SIDE, TankTESR.TANK_BOTTOM, TankTESR.TANK_TOP).renderType("translucent"));
+                                    provider.models().cubeBottomTop("tank", TANK_SIDE, TANK_BOTTOM, TANK_TOP));
                         })
                         .ironPickaxeTags()
                         .standardLoot(ITEM_TANK_DATA.get())

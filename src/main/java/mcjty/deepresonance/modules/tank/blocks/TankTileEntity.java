@@ -1,5 +1,12 @@
 package mcjty.deepresonance.modules.tank.blocks;
 
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import mcjty.deepresonance.modules.tank.util.TankTransfers;
+import net.minecraft.core.RegistryAccess;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.tank.data.DRTankHandler;
@@ -22,7 +29,7 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -35,8 +42,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 
 import javax.annotation.Nonnull;
 import java.text.DecimalFormat;
@@ -53,10 +59,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     private LiquidCrystalData clientRenderFluid = LiquidCrystalData.EMPTY;
     private float renderHeight; //Value from 0.0f to 1.0f
 
-    // Only used when the tank is broken and needs to be put back later
-//    private FluidStack preservedFluid = FluidStack.EMPTY;
-
-    private final DRTankHandler fluidHandler = createFluidHandler();
+    private final DRTankHandler fluidHandler = new DRTankHandler(this);
     @Cap(type = CapType.FLUIDS)
     private static final Function<TankTileEntity, DRTankHandler> FLUID_CAP = tile -> tile.fluidHandler;
 
@@ -80,8 +83,8 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     public int getComparatorValue() {
-        DRTankHandler handler = createFluidHandler();
-        float f = (float) handler.getFluidInTank(0).getAmount() / handler.getTankCapacity(0);
+        DRTankHandler handler = fluidHandler;
+        float f = (float) TankTransfers.contents(handler).getAmount() / TankTransfers.capacity(handler);
         return (int) (f * 15);
     }
 
@@ -97,20 +100,25 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     public DRTankHandler getFluidHandler() {
-        return createFluidHandler();
+        return fluidHandler;
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
-        super.saveAdditional(tagCompound, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
+        CompoundTag tagCompound = new CompoundTag();
         tagCompound.putInt("blobid", blobId);
         saveClientDataToNBT(tagCompound, provider);
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tagCompound);
     }
 
     @Override
-    public void loadAdditional(CompoundTag tagCompound, HolderLookup.Provider provider) {
-        super.loadAdditional(tagCompound, provider);
-        blobId = tagCompound.contains("blobid") ? tagCompound.getInt("blobid") : -1;
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        HolderLookup.Provider provider = input.lookup();
+        CompoundTag tagCompound = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        blobId = tagCompound.contains("blobid") ? tagCompound.getIntOr("blobid", 0) : -1;
         loadClientDataFromNBT(tagCompound, provider);
     }
 
@@ -118,22 +126,22 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     public void saveClientDataToNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
         tagCompound.putFloat("renderC", renderHeight);
         if (!clientRenderFluid.isEmpty()) {
-            CompoundTag tag = (CompoundTag) clientRenderFluid.getFluidStack().saveOptional(provider);
+            CompoundTag tag = LiquidCrystalData.writeStack(clientRenderFluid.getFluidStack(), provider);
             tagCompound.put("fluidC", tag);
         }
     }
 
     @Override
     public void loadClientDataFromNBT(CompoundTag tagCompound, HolderLookup.Provider provider) {
-        renderHeight = tagCompound.getFloat("renderC");
+        renderHeight = tagCompound.getFloatOr("renderC", 0.0f);
         if (tagCompound.contains("fluidC")) {
             Tag fluidTag = tagCompound.get("fluidC");
             if (StringTag.TYPE.equals(fluidTag.getType())) {
                 // For compatibility
-                Fluid fluid = Tools.getFluid(ResourceLocation.parse(fluidTag.getAsString()));
+                Fluid fluid = Tools.getFluid(Identifier.parse(fluidTag.asString().orElseThrow()));
                 clientRenderFluid = LiquidCrystalData.fromStack(new FluidStack(fluid, 1));
             } else {
-                FluidStack fluidStack = FluidStack.parseOptional(provider, (CompoundTag) fluidTag);
+                FluidStack fluidStack = LiquidCrystalData.readStack(provider, (CompoundTag) fluidTag);
                 clientRenderFluid = LiquidCrystalData.fromStack(fluidStack);
             }
         } else {
@@ -163,16 +171,16 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     @Override
     public InteractionResult onBlockActivated(BlockState state, Player player, InteractionHand hand, BlockHitResult result) {
         ItemStack itemInHand = player.getItemInHand(hand);
-        if (FluidUtil.getFluidHandler(itemInHand).isPresent()) {
-            if (!level.isClientSide) {
-                FluidUtil.interactWithFluidHandler(player, hand, getLevel(), result.getBlockPos(), result.getDirection());
+        if (itemInHand.getCapability(Capabilities.Fluid.ITEM, ItemAccess.forPlayerInteraction(player, hand)) != null) {
+            if (!level.isClientSide()) {
+                FluidUtil.interactWithFluidHandler(player, hand, result.getBlockPos(), fluidHandler, null);
             }
             return InteractionResult.SUCCESS;
         } else {
             // Show info about contained liquid
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 DecimalFormat decimalFormat = new DecimalFormat("#.#");
-                FluidStack fluid = createFluidHandler().getFluidInTank(0);
+                FluidStack fluid = TankTransfers.contents(fluidHandler);
                 if (fluid.isEmpty()) {
                     player.sendSystemMessage(ComponentFactory.literal("Tank is empty").withStyle(ChatFormatting.YELLOW));
                 } else {
@@ -205,7 +213,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
                     getDriver().modify(getMultiblockId(), holder -> {
                         FluidStack fluidStack = data.preservedLiquid();
                         if (!fluidStack.isEmpty()) {
-                            holder.getMb().fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
+                            holder.getMb().fill(fluidStack, true);
                             updateHeightsForClient();
                         }
                     });
@@ -289,7 +297,7 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return DRTankNetwork.TANK_NETWORK_ID;
     }
 
@@ -322,15 +330,9 @@ public class TankTileEntity extends GenericTileEntity implements IMultiblockConn
         return fluidHandler;
     }
 
-    @Nonnull
-    private DRTankHandler createFluidHandler() {
-        return new DRTankHandler(this) {
-            @Override
-            public void onUpdate() {
-                updateHeightsForClient();
-                setChanged();
-                DRTankNetwork.getNetwork(level).save();
-            }
-        };
+    public void onFluidChanged() {
+        updateHeightsForClient();
+        setChanged();
+        DRTankNetwork.getNetwork(level).save();
     }
 }

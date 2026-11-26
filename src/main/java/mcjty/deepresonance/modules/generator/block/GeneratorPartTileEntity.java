@@ -1,6 +1,8 @@
 package mcjty.deepresonance.modules.generator.block;
 
-import com.google.common.collect.Sets;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.generator.data.DRGeneratorNetwork;
 import mcjty.deepresonance.modules.generator.data.GeneratorBlob;
@@ -17,9 +19,8 @@ import mcjty.lib.varia.EnergyTools;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -28,8 +29,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-import javax.annotation.Nonnull;
-import java.util.Set;
 import java.util.function.Function;
 
 public class GeneratorPartTileEntity extends TickingTileEntity implements IMultiblockConnector {
@@ -46,7 +45,14 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
 
     @Override
     public void tickServer() {
-        int energyStored = energyStorage.getEnergyStored();
+        GeneratorBlob network = getBlob();
+        boolean active = network != null && network.isActive();
+        BlockState state = getBlockState();
+        if (state.getValue(BlockStateProperties.POWERED) != active) {
+            level.setBlock(worldPosition, state.setValue(BlockStateProperties.POWERED, active), Block.UPDATE_CLIENTS);
+        }
+
+        int energyStored = network == null ? 0 : network.getEnergy();
         if (energyStored <= 0) {
             return;
         }
@@ -103,7 +109,9 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
                     setData(GeneratorModule.GENERATOR_PART_DATA, new GeneratorPartData(0));
                 }
                 setChanged();
-                removeBlockFromNetwork();
+                if (network != null) {
+                    removeBlockFromNetwork();
+                }
             }
 
             BlockState stateUp = world.getBlockState(pos.above());
@@ -138,7 +146,7 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return DRGeneratorNetwork.GENERATOR_NETWORK_ID;
     }
 
@@ -159,44 +167,25 @@ public class GeneratorPartTileEntity extends TickingTileEntity implements IMulti
         return generatorNetwork.getOrCreateBlob(blobId);
     }
 
-
     public void activate(boolean active) {
         GeneratorBlob network = getBlob();
         if (network != null && network.isActive() != active) {
             getDriver().modify(getMultiblockId(), holder -> holder.getMb().setActive(active));
-            Set<BlockPos> done = Sets.newHashSet();
-            activateBlocks(getBlockPos(), done, active);
-        }
-    }
-
-    private void activateBlocks(BlockPos c, Set<BlockPos> done, boolean active) {
-        done.add(c);
-
-        BlockState state = level.getBlockState(c);
-        if (state.getValue(BlockStateProperties.POWERED) != active) {
-            level.setBlock(c, state.setValue(BlockStateProperties.POWERED, active), Block.UPDATE_ALL);
-        }
-
-        for (Direction direction : OrientationTools.DIRECTION_VALUES) {
-            BlockPos newC = c.relative(direction);
-            if (!done.contains(newC)) {
-                Block block = level.getBlockState(newC).getBlock();
-                if (block == GeneratorModule.GENERATOR_PART.block().get()) {
-                    activateBlocks(newC, done, active);
-                }
-            }
         }
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        blobId = tag.getInt("networkId");
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        blobId = tag.getIntOr("networkId", -1);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        CompoundTag tag = new CompoundTag();
         tag.putInt("networkId", blobId);
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 }

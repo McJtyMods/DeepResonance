@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "c": {
-      "tag": "minecraft:coals"
-    },
-    "g": {
-      "tag": "c:gravels"
-    },
-    "s": {
-      "tag": "minecraft:sand"
-    }
+    "c": "#minecraft:coals",
+    "g": "#c:gravels",
+    "s": "#minecraft:sand"
   },
   "pattern": [
     "gcg",

@@ -1,38 +1,28 @@
 package mcjty.deepresonance.setup;
 
 import mcjty.deepresonance.DeepResonance;
-import net.minecraft.resources.ResourceLocation;
-
-import java.util.List;
+import net.minecraft.resources.Identifier;
 
 public class ClientSetup {
 
-    public static final ResourceLocation REDHALO = rl("block/effects/redhalo");
-    public static final ResourceLocation HALO = rl("block/effects/halo");
-    public static final ResourceLocation LASERBEAM = rl("block/effects/laserbeam");
+    public static final Identifier REDHALO = rl("block/effects/redhalo");
+    public static final Identifier HALO = rl("block/effects/halo");
+    public static final Identifier LASERBEAM = rl("block/effects/laserbeam");
 
-    public static final ResourceLocation[] LASERBEAMS = new ResourceLocation[]{
+    public static final Identifier[] LASERBEAMS = new Identifier[]{
             rl("block/effects/laserbeam1"),
             rl("block/effects/laserbeam2"),
             rl("block/effects/laserbeam3"),
             rl("block/effects/laserbeam4")
     };
 
-    public static final ResourceLocation BLUELASER = rl("block/effects/bluelaserbeam");
-    public static final ResourceLocation REDLASER = rl("block/effects/redlaserbeam");
-    public static final ResourceLocation GREENLASER = rl("block/effects/greenlaserbeam");
-    public static final ResourceLocation YELLOWLASER = rl("block/effects/yellowlaserbeam");
+    public static final Identifier BLUELASER = rl("block/effects/bluelaserbeam");
+    public static final Identifier REDLASER = rl("block/effects/redlaserbeam");
+    public static final Identifier GREENLASER = rl("block/effects/greenlaserbeam");
+    public static final Identifier YELLOWLASER = rl("block/effects/yellowlaserbeam");
 
-    public static void initClient() {
-    }
-
-    public static List<ResourceLocation> onTextureStitch() {
-        return List.of(REDHALO, HALO, LASERBEAM, LASERBEAMS[0], LASERBEAMS[1], LASERBEAMS[2], LASERBEAMS[3],
-                BLUELASER, REDLASER, GREENLASER, YELLOWLASER);
-    }
-
-    private static ResourceLocation rl(String path) {
-        return ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, path);
+    private static Identifier rl(String path) {
+        return Identifier.fromNamespaceAndPath(DeepResonance.MODID, path);
     }
 
 }

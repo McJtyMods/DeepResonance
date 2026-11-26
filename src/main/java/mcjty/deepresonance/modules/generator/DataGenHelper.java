@@ -2,7 +2,7 @@ package mcjty.deepresonance.modules.generator;
 
 import mcjty.deepresonance.DeepResonance;
 import mcjty.lib.datagen.BaseBlockStateProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
@@ -25,11 +25,10 @@ public class DataGenHelper {
             if (state.getValue(BlockStateProperties.POWERED)) {
                 extra += "_on";
             }
-            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/generator_part_side" + extra);
+            Identifier id = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "block/generator_part_side" + extra);
             return provider.models().cube("generator_part" + extra, DEFAULT_BOTTOM, DEFAULT_TOP, id, id, id, id)
                     .texture("particle", id);
         });
     }
-
 
 }

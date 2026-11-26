@@ -33,7 +33,7 @@ public class PedestalModule implements IModule {
             "pedestal",
             PedestalTileEntity.class,
             PedestalTileEntity::createBlock,
-            block -> new BlockItem(block.get(), Registration.createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             PedestalTileEntity::new
     );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PedestalTileEntity>> TYPE_PEDESTAL = PEDESTAL.be();

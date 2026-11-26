@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "P": {
-      "item": "deepresonance:resonating_plate"
-    },
-    "i": {
-      "tag": "c:ingots/iron"
-    },
-    "m": {
-      "item": "deepresonance:machine_frame"
-    },
-    "x": {
-      "item": "minecraft:nether_brick"
-    }
+    "P": "deepresonance:resonating_plate",
+    "i": "#c:ingots/iron",
+    "m": "deepresonance:machine_frame",
+    "x": "minecraft:nether_brick"
   },
   "pattern": [
     "PPP",
@@ -21,7 +13,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "id": "deepresonance:purifier"
   }
 }

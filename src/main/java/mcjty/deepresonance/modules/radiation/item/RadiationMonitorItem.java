@@ -1,51 +1,36 @@
 package mcjty.deepresonance.modules.radiation.item;
 
+import net.minecraft.world.item.component.TooltipDisplay;
+import java.util.function.Consumer;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.radiation.manager.DRRadiationManager;
 import mcjty.deepresonance.modules.radiation.manager.QuadTree;
 import mcjty.deepresonance.modules.radiation.network.PacketGetRadiationLevel;
-import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.deepresonance.setup.DeepResonanceMessages;
 import mcjty.lib.varia.ComponentFactory;
 import mcjty.lib.varia.SafeClientTools;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Map;
 
 public class RadiationMonitorItem extends Item {
 
-    public static final ResourceLocation RADIATION_PROPERTY = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "radiation");
+    public static final Identifier RADIATION_PROPERTY = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "radiation");
 
     private static long lastTime = 0;
     public static float radiationStrength = 0.0f;
 
     public RadiationMonitorItem(Properties properties) {
         super(properties);
-    }
-
-    public static void initOverrides(RadiationMonitorItem item) {
-        ItemProperties.register(item, RADIATION_PROPERTY, (stack, world, livingEntity, seed) -> {
-            fetchRadiation(livingEntity);
-            int level = (int) ((10 * radiationStrength) / RadiationConfiguration.MAX_RADIATION_METER.get());
-            if (level < 0) {
-                level = 0;
-            } else if (level > 9) {
-                level = 9;
-            }
-            return level;
-        });
     }
 
     public static float calculateRadiationStrength(Level world, GlobalPos player) {
@@ -88,14 +73,13 @@ public class RadiationMonitorItem extends Item {
         }
     }
 
-
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> list, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
         fetchRadiation(SafeClientTools.getClientPlayer());
         if (radiationStrength <= 0.0f) {
-            list.add(ComponentFactory.literal("No radiation detected").withStyle(ChatFormatting.GREEN));
+            list.accept(ComponentFactory.literal("No radiation detected").withStyle(ChatFormatting.GREEN));
         } else {
-            list.add(ComponentFactory.literal("Radiation: " + (int)radiationStrength + "!").withStyle(ChatFormatting.RED));
+            list.accept(ComponentFactory.literal("Radiation: " + (int)radiationStrength + "!").withStyle(ChatFormatting.RED));
         }
     }
 

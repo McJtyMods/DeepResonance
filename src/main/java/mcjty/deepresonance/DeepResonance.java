@@ -1,9 +1,16 @@
 package mcjty.deepresonance;
 
+import net.minecraft.resources.Identifier;
+import java.util.Map;
+import mcjty.rftoolsbase.tools.ClientItemDefinitions;
+import mcjty.deepresonance.modules.radiation.client.RadiationOverlayRenderer;
+import mcjty.deepresonance.modules.radiation.client.RadiationMonitorProperty;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.generator.GeneratorModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.pedestal.PedestalModule;
+import mcjty.deepresonance.modules.radiation.DataGenHelper;
 import mcjty.deepresonance.modules.radiation.RadiationModule;
 import mcjty.deepresonance.modules.tank.TankModule;
 import mcjty.deepresonance.modules.worldgen.WorldGenModule;
@@ -21,7 +28,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 @Mod(DeepResonance.MODID)
 public class DeepResonance {
@@ -54,17 +61,23 @@ public class DeepResonance {
 
         if (dist.isClient()) {
             bus.addListener(modules::initClient);
+            bus.addListener(RadiationMonitorProperty::register);
+            bus.addListener((RegisterGuiLayersEvent event) -> event.registerAboveAll(
+                    Identifier.fromNamespaceAndPath(MODID, "radiation"), RadiationOverlayRenderer::onRender));
         }
     }
 
-    public static <T extends Item> Supplier<T> tab(Supplier<T> supplier) {
-        return instance.setup.tab(supplier);
+    public static <T extends Item> Function<Item.Properties, T> tab(Function<Item.Properties, T> factory) {
+        return properties -> setup.tab(() -> factory.apply(properties)).get();
     }
 
-    private void onDataGen(GatherDataEvent event) {
+    private void onDataGen(GatherDataEvent.Client event) {
         DataGen datagen = new DataGen(MODID, event);
         modules.datagen(datagen, event.getLookupProvider());
         datagen.generate();
+        var generator = event.getGenerator();
+        generator.addProvider(true, new ClientItemDefinitions(generator.getPackOutput(), MODID,
+                Map.of("radiation_monitor", DataGenHelper.monitorDefinition())));
     }
 
     private void setupModules(IEventBus bus, Dist dist) {

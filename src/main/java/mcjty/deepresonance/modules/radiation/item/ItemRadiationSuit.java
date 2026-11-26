@@ -1,52 +1,40 @@
 package mcjty.deepresonance.modules.radiation.item;
 
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAssets;
+import net.minecraft.tags.TagKey;
+import net.minecraft.resources.ResourceKey;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.api.armor.IRadiationArmor;
-import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
-import mcjty.deepresonance.setup.Registration;
 import mcjty.lib.items.GenericArmorItem;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.component.CustomData;
-import net.neoforged.neoforge.registries.DeferredHolder;
 
-import java.util.List;
 import java.util.Map;
 
 public class ItemRadiationSuit extends GenericArmorItem implements IRadiationArmor {
 
-    // To force class loading
-    public static void init() {
-
-    }
-
-    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> ARMOR_MATERIAL = Registration.ARMOR_MATERIALS.register("resonating_armor", () -> new ArmorMaterial(
-            Map.of(
-                    ArmorItem.Type.HELMET, 1,
-                    ArmorItem.Type.CHESTPLATE, 4,
-                    ArmorItem.Type.LEGGINGS, 5,
-                    ArmorItem.Type.BOOTS, 2,
-                    ArmorItem.Type.BODY, 0
-            ),
+    private static final ArmorMaterial ARMOR_MATERIAL = new ArmorMaterial(
+            33,
+            Map.of(ArmorType.HELMET, 1, ArmorType.CHESTPLATE, 4, ArmorType.LEGGINGS, 5, ArmorType.BOOTS, 2),
             12,
             SoundEvents.ARMOR_EQUIP_DIAMOND,
-            () -> Ingredient.of(CoreModule.RESONATING_PLATE_ITEM.get()),
-            List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "resonating_armor"))),
             0.5f,
-            0.0f
-    ));
+            0.0f,
+            TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(DeepResonance.MODID, "repairs_radiation_suit")),
+            ResourceKey.create(EquipmentAssets.ROOT_ID, Identifier.fromNamespaceAndPath(DeepResonance.MODID, "resonating_armor"))
+    );
 
-    public ItemRadiationSuit(EquipmentSlot slot) {
-        super(ARMOR_MATERIAL, slot, Registration.createStandardProperties());
+    public ItemRadiationSuit(EquipmentSlot slot, Properties properties) {
+        super(ARMOR_MATERIAL, slot, properties);
     }
 
     public static float getRadiationProtection(LivingEntity entity){
