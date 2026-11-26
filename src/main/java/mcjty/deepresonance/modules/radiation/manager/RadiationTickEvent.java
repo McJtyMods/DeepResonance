@@ -7,13 +7,12 @@ import mcjty.deepresonance.modules.radiation.util.RadiationConfiguration;
 import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.TagTools;
-import mcjty.lib.varia.Tools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.effect.MobEffect;
@@ -24,9 +23,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.common.SpecialPlantable;
-import net.neoforged.neoforge.event.tick.LevelTickEvent;
-import net.neoforged.bus.api.SubscribeEvent;
 
 import java.util.*;
 
@@ -46,10 +42,8 @@ public class RadiationTickEvent {
     public static Holder<MobEffect> poison;
     public static Holder<MobEffect> wither;
 
-    @SubscribeEvent
-    public void onTick(LevelTickEvent.Post evt) {
-        Level level = evt.getLevel();
-        if (level.isClientSide) {
+    public void onTick(Level level) {
+        if (level.isClientSide()) {
             return;
         }
         if (!Objects.equals(Level.OVERWORLD, level.dimension())) {
@@ -68,7 +62,6 @@ public class RadiationTickEvent {
             serverTick(level, doEffects);
         }
     }
-
 
 //    @SubscribeEvent
 //    public void onServerTick(TickEvent.ServerTickEvent evt) {
@@ -213,7 +206,7 @@ public class RadiationTickEvent {
                         if (random.nextFloat() < poisonBlockChance * str) {
                             world.setBlock(currentPos, RadiationModule.POISONED_DIRT.block().get().defaultBlockState(), Block.UPDATE_ALL);
                         }
-                    } else if (TagTools.hasTag(block, BlockTags.LEAVES) || block instanceof SpecialPlantable) {
+                    } else if (TagTools.hasTag(block, BlockTags.LEAVES) || TagTools.hasTag(block, BlockTags.MAINTAINS_FARMLAND)) {
                         if (random.nextFloat() < removeLeafChance * str) {
                             world.setBlock(currentPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
                         }
@@ -247,8 +240,8 @@ public class RadiationTickEvent {
     }
 
     private static Holder<MobEffect> getEffect(String name) {
-        ResourceLocation id = ResourceLocation.parse(name);
-        return BuiltInRegistries.MOB_EFFECT.getHolder(ResourceKey.create(Registries.MOB_EFFECT, id)).orElseThrow(() -> new IllegalStateException("Unknown effect: " + name));
+        Identifier id = Identifier.parse(name);
+        return BuiltInRegistries.MOB_EFFECT.get(ResourceKey.create(Registries.MOB_EFFECT, id)).orElseThrow(() -> new IllegalStateException("Unknown effect: " + name));
     }
 
     private void handleRadiationEffects(Level world, GlobalPos coordinate, DRRadiationManager.RadiationSource radiationSource) {

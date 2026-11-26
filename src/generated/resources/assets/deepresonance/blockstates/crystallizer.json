@@ -5,7 +5,8 @@
       "y": 90
     },
     "facing=north": {
-      "model": "deepresonance:block/crystallizer"
+      "model": "deepresonance:block/crystallizer",
+      "y": 0
     },
     "facing=south": {
       "model": "deepresonance:block/crystallizer",

@@ -1,5 +1,6 @@
 package mcjty.deepresonance.modules.core.util;
 
+import java.util.Locale;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.util.Constants;
@@ -78,7 +79,7 @@ public class CrystalHelper {
 
         @Override
         public String getSerializedName() {
-            return getSerializedName();
+            return name().toLowerCase(Locale.ROOT);
         }
     }
 }

@@ -1,5 +1,7 @@
 package mcjty.deepresonance.modules.pedestal.block;
 
+import mcjty.lib.varia.FakePlayerGetter;
+import static mcjty.lib.setup.Registration.ITEM_INVENTORY;
 import mcjty.deepresonance.compat.DeepResonanceTOPDriver;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalBlock;
@@ -16,7 +18,6 @@ import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.container.InventoryLocator;
-import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.TickingTileEntity;
@@ -25,8 +26,8 @@ import mcjty.lib.varia.SoundTools;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.BlockItem;
@@ -38,8 +39,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.util.FakePlayerFactory;
-import net.neoforged.neoforge.common.util.Lazy;
+import mcjty.lib.varia.Lazy;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -51,6 +51,8 @@ import static mcjty.lib.builder.TooltipBuilder.key;
 import static mcjty.lib.container.SlotDefinition.specific;
 
 public class PedestalTileEntity extends TickingTileEntity {
+
+    private final FakePlayerGetter fakePlayer = new FakePlayerGetter(this, "deepresonance_pedestal");
 
     public static final int SLOT_CRYSTAL = 0;
 
@@ -74,8 +76,9 @@ public class PedestalTileEntity extends TickingTileEntity {
         super(PedestalModule.TYPE_PEDESTAL.get(), pos, state);
     }
 
-    public static BaseBlock createBlock() {
+    public static BaseBlock createBlock(Block.Properties properties) {
         return new BaseBlock(new BlockBuilder()
+                .properties(properties)
                 .tileEntitySupplier(PedestalTileEntity::new)
                 .topDriver(DeepResonanceTOPDriver.DRIVER)
                 .infusable()
@@ -141,11 +144,11 @@ public class PedestalTileEntity extends TickingTileEntity {
         if (!crystalStack.isEmpty()) {
             if (crystalStack.getItem() instanceof BlockItem blockItem) {
                 BlockHitResult result = new BlockHitResult(Vec3.ZERO, Direction.UP, pos, false);
-                BlockPlaceContext context = new BlockPlaceContext(FakePlayerFactory.getMinecraft((ServerLevel) level),
+                BlockPlaceContext context = new BlockPlaceContext(fakePlayer.get(),
                         InteractionHand.MAIN_HAND, crystalStack, result);
                 blockItem.place(context);
                 ResonatingCrystalBlock b = CoreModule.RESONATING_CRYSTAL_GENERATED.block().get();
-                SoundTools.playSound(level, b.defaultBlockState().getSoundType(level, pos, null).getBreakSound(), worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), 1.0f, 1.0f);
+                SoundTools.playSound(level, b.defaultBlockState().getSoundType().getBreakSound(), worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), 1.0f, 1.0f);
 
                 if (findCollector()) {
                     BlockEntity tileEntity = level.getBlockEntity(new BlockPos(cachedLocator));
@@ -176,7 +179,7 @@ public class PedestalTileEntity extends TickingTileEntity {
             if (crystalState.getBlock() instanceof ResonatingCrystalBlock crystalBlock) {
                 ItemStack spentCrystal = new ItemStack(crystalBlock.getEmpty(), 1);
                 Crystal data = crystal.getData(CoreModule.CRYSTAL_DATA);
-                spentCrystal.set(CoreModule.ITEM_CRYSTAL_DATA, data);
+                spentCrystal.set(CoreModule.ITEM_CRYSTAL_DATA.get(), data);
                 inventoryLocator.ejectStack(level, worldPosition, spentCrystal, worldPosition, directions);
                 level.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
                 SoundTools.playSound(level, crystalState.getSoundType().getBreakSound(), p.getX(), p.getY(), p.getZ(), 1.0f, 1.0f);
@@ -217,9 +220,9 @@ public class PedestalTileEntity extends TickingTileEntity {
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY.get()));
     }
 
     @Override

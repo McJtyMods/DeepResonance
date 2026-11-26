@@ -12,68 +12,40 @@ import mcjty.deepresonance.setup.DeepResonanceMessages;
 import mcjty.deepresonance.setup.ModSetup;
 import mcjty.deepresonance.setup.Registration;
 import mcjty.deepresonance.util.DeepResonanceTags;
-import mcjty.lib.datagen.DataGen;
 import mcjty.lib.modules.Modules;
+import net.fabricmc.api.ModInitializer;
 import net.minecraft.world.item.Item;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.data.event.GatherDataEvent;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
 
-import java.util.function.Supplier;
+import java.util.function.Function;
 
-@Mod(DeepResonance.MODID)
-public class DeepResonance {
+public class DeepResonance implements ModInitializer {
 
     public static final String MODID = "deepresonance";
-
     public static final String SHIFT_MESSAGE = "message.deepresonance.shiftmessage";
 
-    public static DeepResonance instance;
-    public static ModSetup setup;
+    public static final ModSetup setup = new ModSetup();
+    public static final Modules modules = new Modules();
 
-    private final Modules modules = new Modules();
-
-    public DeepResonance(ModContainer mod, IEventBus bus, Dist dist) {
-        instance = this;
-        setup = new ModSetup();
-
+    @Override
+    public void onInitialize() {
         DeepResonanceTags.init();
-
-        setupModules(bus, dist);
-
-        Config.register(mod, bus, modules);
-        Registration.register(bus);
-
-        bus.addListener(setup::init);
-        bus.addListener(modules::init);
-        bus.addListener(this::onDataGen);
-        bus.addListener(setup.getBlockCapabilityRegistrar(Registration.RBLOCKS));
-        bus.addListener(DeepResonanceMessages::registerMessages);
-
-        if (dist.isClient()) {
-            bus.addListener(modules::initClient);
-        }
-    }
-
-    public static <T extends Item> Supplier<T> tab(Supplier<T> supplier) {
-        return instance.setup.tab(supplier);
-    }
-
-    private void onDataGen(GatherDataEvent event) {
-        DataGen datagen = new DataGen(MODID, event);
-        modules.datagen(datagen, event.getLookupProvider());
-        datagen.generate();
-    }
-
-    private void setupModules(IEventBus bus, Dist dist) {
-        modules.register(new CoreModule(bus, dist));
+        modules.register(new CoreModule());
         modules.register(new GeneratorModule());
-        modules.register(new MachinesModule(bus));
+        modules.register(new MachinesModule());
         modules.register(new RadiationModule());
         modules.register(new TankModule());
         modules.register(new WorldGenModule());
-        modules.register(new PedestalModule(bus));
+        modules.register(new PedestalModule());
+
+        Config.register(modules);
+        Registration.register();
+        DeepResonanceMessages.registerMessages();
+        setup.init();
+        modules.init();
+        setup.registerBlockCapabilities(Registration.RBLOCKS);
+    }
+
+    public static <T extends Item> Function<Item.Properties, T> tab(Function<Item.Properties, T> factory) {
+        return properties -> setup.tab(() -> factory.apply(properties)).get();
     }
 }

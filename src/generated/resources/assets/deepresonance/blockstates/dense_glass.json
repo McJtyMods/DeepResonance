@@ -1,6 +1,9 @@
 {
   "variants": {
-    "": {
+    "snowy=false": {
+      "model": "deepresonance:block/dense_glass"
+    },
+    "snowy=true": {
       "model": "deepresonance:block/dense_glass"
     }
   }

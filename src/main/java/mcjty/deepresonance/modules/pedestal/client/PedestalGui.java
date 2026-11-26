@@ -1,6 +1,5 @@
 package mcjty.deepresonance.modules.pedestal.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.pedestal.PedestalModule;
 import mcjty.deepresonance.modules.pedestal.block.PedestalTileEntity;
@@ -9,11 +8,11 @@ import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.Panel;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.minecraft.client.gui.screens.MenuScreens;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -23,13 +22,12 @@ public class PedestalGui extends GenericGuiContainer<PedestalTileEntity, Generic
     public static final int PEDESTAL_WIDTH = 180;
     public static final int PEDESTAL_HEIGHT = 152;
 
-    private static final ResourceLocation iconLocation = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/pedestal.png");
+    private static final Identifier iconLocation = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/pedestal.png");
 
     public PedestalGui(GenericContainer container, Inventory inventory, Component title) {
         super(container, inventory, title, PedestalModule.PEDESTAL.block().get().getManualEntry());
+        setWindowDimensions(PEDESTAL_WIDTH, PEDESTAL_HEIGHT);
 
-        imageWidth = PEDESTAL_WIDTH;
-        imageHeight = PEDESTAL_HEIGHT;
     }
 
     @Override
@@ -42,13 +40,12 @@ public class PedestalGui extends GenericGuiContainer<PedestalTileEntity, Generic
         window = new Window(this, toplevel);
     }
 
-
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int x, int y) {
+    protected void renderBg(@Nonnull GuiGraphicsExtractor graphics, float partialTicks, int x, int y) {
         drawWindow(graphics, partialTicks, x, y);
     }
 
-    public static void register(RegisterMenuScreensEvent event) {
-        event.register(PedestalModule.CONTAINER_PEDESTAL.get(), PedestalGui::new);
+    public static void register() {
+        MenuScreens.register(PedestalModule.CONTAINER_PEDESTAL.get(), PedestalGui::new);
     }
 }

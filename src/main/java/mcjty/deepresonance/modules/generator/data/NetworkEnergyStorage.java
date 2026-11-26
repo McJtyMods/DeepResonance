@@ -2,9 +2,10 @@ package mcjty.deepresonance.modules.generator.data;
 
 import mcjty.deepresonance.modules.generator.block.GeneratorPartTileEntity;
 import mcjty.deepresonance.modules.generator.util.GeneratorConfig;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import team.reborn.energy.api.EnergyStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
-public class NetworkEnergyStorage implements IEnergyStorage {
+public class NetworkEnergyStorage implements EnergyStorage {
 
     private final GeneratorPartTileEntity part;
 
@@ -13,12 +14,12 @@ public class NetworkEnergyStorage implements IEnergyStorage {
     }
 
     @Override
-    public int receiveEnergy(int maxReceive, boolean simulate) {
+    public long insert(long amount, TransactionContext transaction) {
         return 0;
     }
 
     @Override
-    public int extractEnergy(int maxExtract, boolean simulate) {
+    public long extract(long amount, TransactionContext transaction) {
         return 0;
     }
 
@@ -36,7 +37,6 @@ public class NetworkEnergyStorage implements IEnergyStorage {
         return 0;
     }
 
-    @Override
     public int getEnergyStored() {
         GeneratorBlob blob = part.getBlob();
         if (blob != null) {
@@ -46,7 +46,7 @@ public class NetworkEnergyStorage implements IEnergyStorage {
     }
 
     @Override
-    public int getMaxEnergyStored() {
+    public long getCapacity() {
         GeneratorBlob blob = part.getBlob();
         if (blob != null) {
             return blob.getGeneratorBlocks() * GeneratorConfig.POWER_STORAGE_PER_BLOCK.get();
@@ -55,12 +55,7 @@ public class NetworkEnergyStorage implements IEnergyStorage {
     }
 
     @Override
-    public boolean canExtract() {
-        return false;
-    }
-
-    @Override
-    public boolean canReceive() {
-        return false;
+    public long getAmount() {
+        return getEnergyStored();
     }
 }

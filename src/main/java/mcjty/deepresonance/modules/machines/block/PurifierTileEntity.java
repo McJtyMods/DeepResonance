@@ -1,5 +1,14 @@
 package mcjty.deepresonance.modules.machines.block;
 
+import mcjty.deepresonance.modules.tank.util.TankTransfers;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.world.level.block.Block;
+import static mcjty.lib.setup.Registration.ITEM_INVENTORY;
+import net.minecraft.core.RegistryAccess;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
@@ -15,7 +24,6 @@ import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.container.InventoryLocator;
-import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.TickingTileEntity;
@@ -24,14 +32,13 @@ import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import mcjty.lib.varia.Lazy;
 
 import javax.annotation.Nonnull;
 
@@ -73,9 +80,10 @@ public class PurifierTileEntity extends TickingTileEntity {
         super(MachinesModule.TYPE_PURIFIER.get(), pos, state);
     }
 
-    public static BaseBlock createBlock() {
+    public static BaseBlock createBlock(Block.Properties properties) {
         return new BaseBlock(
                 new BlockBuilder()
+                        .properties(properties)
                         .tileEntitySupplier(PurifierTileEntity::new)
                 .manualEntry(ManualHelper.create("deepresonance:machines/purifier"))
                         .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))
@@ -104,11 +112,11 @@ public class PurifierTileEntity extends TickingTileEntity {
             }
             timeToGo--;
         } else {
-            if (!LiquidCrystalData.isValidLiquidCrystalStack(tankHook.getTank1().drain(1, IFluidHandler.FluidAction.SIMULATE))) {
+            if (!LiquidCrystalData.isValidLiquidCrystalStack(TankTransfers.simulateExtract(tankHook.getTank1(), 1))) {
                 timeToGo = 20; //Wait 1 second before re-trying
                 return;
             }
-            processing = LiquidCrystalData.fromStack(tankHook.getTank1().drain(PurifierConfig.RCL_PER_PURIFY.get(), IFluidHandler.FluidAction.EXECUTE));
+            processing = LiquidCrystalData.fromStack(TankTransfers.extract(tankHook.getTank1(), PurifierConfig.RCL_PER_PURIFY.get()));
             timeToGo = PurifierConfig.TICKS_PER_PURIFY.get();
         }
         setChanged();
@@ -123,7 +131,7 @@ public class PurifierTileEntity extends TickingTileEntity {
             if (purify < 0) {
                 return;
             }
-            if (level.random.nextInt(purify) == 0) {
+            if (level.getRandom().nextInt(purify) == 0) {
                 consumeFilter();
             }
         }
@@ -141,30 +149,21 @@ public class PurifierTileEntity extends TickingTileEntity {
         if (!tankHook.tank2Present()) {
             return -1; //Wait
         }
-        IFluidHandler outputTank = tankHook.getTank2();
-        int tryAmount = outputTank.fill(fluidData.getFluidStack(), IFluidHandler.FluidAction.SIMULATE);
-        if (tryAmount != fluidData.getAmount()) {
-            return -1; //Wait
-        }
+        Storage<FluidVariant> outputTank = tankHook.getTank2();
         double purity = fluidData.getPurity();
         double maxPurityToAdd = PurifierConfig.ADDED_PURITY.get() / 100.0;
-        double addedPurity = maxPurityToAdd;
-        double maxPurity = (PurifierConfig.MAX_PURITY.get() + .1) / 100.0;
-        maxPurity *= fluidData.getQuality();
-        if (purity + addedPurity > maxPurity) {
-            addedPurity = maxPurity - purity;
-            if (addedPurity < 0.0001) {
-                outputTank.fill(fluidData.getFluidStack(), IFluidHandler.FluidAction.EXECUTE);
-                processing = null;
-                return 100000;
-            }
-        }
+        double maxPurity = (PurifierConfig.MAX_PURITY.get() + 0.1) / 100.0 * fluidData.getQuality();
+        double addedPurity = Math.min(maxPurityToAdd, Math.max(0, maxPurity - purity));
 
-        purity += addedPurity;
-        fluidData.setPurity(purity);
-        outputTank.fill(fluidData.getFluidStack(), IFluidHandler.FluidAction.EXECUTE);
+        var result = LiquidCrystalData.fromStack(fluidData.getFluidStack());
+        if (addedPurity >= 0.0001) {
+            result.setPurity(purity + addedPurity);
+        }
+        if (!TankTransfers.insertAll(outputTank, result.getFluidStack())) {
+            return -1;
+        }
         processing = null;
-        return (int) ((maxPurityToAdd - addedPurity) * 40 / maxPurityToAdd + 1);
+        return addedPurity < 0.0001 ? 100000 : (int) ((maxPurityToAdd - addedPurity) * 40 / maxPurityToAdd + 1);
     }
 
     private boolean hasFilter() {
@@ -172,29 +171,34 @@ public class PurifierTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
-        super.saveAdditional(tagCompound, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
+        CompoundTag tagCompound = new CompoundTag();
         tagCompound.putInt("timeToGo", timeToGo);
         if (processing != null) {
-            tagCompound.put("processing", processing.getFluidStack().saveOptional(provider));
+            tagCompound.put("processing", LiquidCrystalData.writeStack(processing.getFluidStack(), provider));
         }
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tagCompound);
     }
 
     @Override
-    public void loadAdditional(CompoundTag tagCompound, HolderLookup.Provider provider) {
-        super.loadAdditional(tagCompound, provider);
-        timeToGo = tagCompound.getInt("timeToGo");
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        HolderLookup.Provider provider = input.lookup();
+        CompoundTag tagCompound = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        timeToGo = tagCompound.getIntOr("timeToGo", 0);
         if (tagCompound.contains("processing")) {
-            processing = LiquidCrystalData.fromStack(FluidStack.parseOptional(provider, tagCompound.getCompound("processing")));
+            processing = LiquidCrystalData.fromStack(LiquidCrystalData.readStack(provider, tagCompound.getCompoundOrEmpty("processing")));
         } else {
             processing = null;
         }
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY.get()));
     }
 
     @Override

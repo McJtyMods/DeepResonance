@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "item": "minecraft:comparator"
-    },
-    "F": {
-      "item": "deepresonance:filter_material"
-    },
-    "G": {
-      "tag": "c:glass_blocks"
-    },
-    "m": {
-      "item": "deepresonance:machine_frame"
-    }
+    "C": "minecraft:comparator",
+    "F": "deepresonance:filter_material",
+    "G": "#c:glass_blocks",
+    "m": "deepresonance:machine_frame"
   },
   "pattern": [
     "GGG",
@@ -21,7 +13,6 @@
     "GCG"
   ],
   "result": {
-    "count": 1,
     "id": "deepresonance:valve"
   }
 }

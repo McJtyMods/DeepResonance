@@ -1,9 +1,9 @@
 package mcjty.deepresonance.setup;
 
+import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
+import static mcjty.deepresonance.DeepResonance.MODID;
 import mcjty.lib.modules.Modules;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
 
 public class Config {
@@ -16,15 +16,15 @@ public class Config {
     public static ModConfigSpec COMMON_CONFIG;
     public static ModConfigSpec CLIENT_CONFIG;
 
-    public static void register(ModContainer mod, IEventBus bus, Modules modules) {
-        modules.initConfig(bus);
+    public static void register(Modules modules) {
+        modules.initConfig();
 
         SERVER_CONFIG = SERVER_BUILDER.build();
         COMMON_CONFIG = COMMON_BUILDER.build();
         CLIENT_CONFIG = CLIENT_BUILDER.build();
 
-        mod.registerConfig(ModConfig.Type.CLIENT, CLIENT_CONFIG);
-        mod.registerConfig(ModConfig.Type.COMMON, COMMON_CONFIG);
-        mod.registerConfig(ModConfig.Type.SERVER, SERVER_CONFIG);
+        ConfigRegistry.INSTANCE.register(MODID, ModConfig.Type.CLIENT, CLIENT_CONFIG);
+        ConfigRegistry.INSTANCE.register(MODID, ModConfig.Type.COMMON, COMMON_CONFIG);
+        ConfigRegistry.INSTANCE.register(MODID, ModConfig.Type.SERVER, SERVER_CONFIG);
     }
 }

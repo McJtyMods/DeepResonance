@@ -14,26 +14,30 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.1.4'
+    id 'net.fabricmc.fabric-loom' version '1.17.17'
 }
 
 apply plugin: 'com.hypherionmc.modutils.modpublisher'
 
-if (project.file('../gradletools.gradle').exists()) {
-    apply from: '../gradletools.gradle'
-} else {
-    apply from: 'https://raw.githubusercontent.com/McJtyMods/MultiWorkspace/1.21_neo/gradletools.gradle'
-}
+def sharedTools = [
+        providers.gradleProperty('gradletools_path').map { file(it) }.orNull,
+        rootProject.file('gradletools.gradle'),
+        file('../Multi_fabric/gradletools.gradle'),
+        file('../gradletools.gradle'),
+        file('gradletools.gradle')
+].find { it != null && it.isFile() }
+apply from: sharedTools ?: 'https://raw.githubusercontent.com/McJtyMods/MultiWorkspace/26.1.2_fabric/gradletools.gradle'
 
-group = "com.github.mcjty"
-archivesBaseName = "deepresonance"
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+group = 'com.github.mcjty'
+base.archivesName = 'deepresonance-fabric'
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 if (System.getenv('BUILD_NUMBER') != null) {
     version += "-${System.getenv('BUILD_NUMBER')}"
 }
 
 repos()
+access()
 runs()
 jars()
 
@@ -43,11 +47,45 @@ sourceSets.main.resources {
 
 dependencies {
     mc()
+    config()
+    energy()
     jei()
-    patchouli()
+
     top()
     mcjtylib()
     rftoolsbase()
+    runtimeOnly "vazkii.patchouli:patchouli-fabric:26.1-94"
 }
 
-modpublisher(['the-one-probe'], ['mcjtylib', 'rftools-base'], ['the-one-probe'], ['mcjtylib', 'rftools-base'], [])
+modpublisher(['the-one-probe'], ['mcjtylib', 'rftools-base', 'fabric-api', 'forge-config-api-port'], ['the-one-probe'], ['mcjtylib', 'rftools-base', 'fabric-api', 'forge-config-api-port'], [])
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') { expand version: project.version }
+}
+
+
+def deepResonanceTests = providers.gradleProperty('deepResonanceTests').isPresent()
+processResources.inputs.property('deepResonanceTests', deepResonanceTests)
+if (deepResonanceTests) {
+    sourceSets.main.java.srcDir 'src/gameTest/java'
+    sourceSets.main.resources.srcDir 'src/gameTest/resources'
+    loom.runs {
+        gameTestServer {
+            server()
+            vmArg '-Dfabric-api.gametest'
+            runDir 'runs/gameTestServer'
+        }
+    }
+    processResources.doLast {
+        def metadata = new File(destinationDir, 'fabric.mod.json')
+        def json = new groovy.json.JsonSlurper().parse(metadata)
+        json.entrypoints['fabric-gametest'] = ['mcjty.deepresonance.ResonanceTestRegistration']
+        metadata.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(json))
+    }
+}
+
+tasks.named('jar') {
+    exclude 'mcjty/deepresonance/ResonanceTest*.class', 'data/deepresonance/structure/station.nbt'
+}
