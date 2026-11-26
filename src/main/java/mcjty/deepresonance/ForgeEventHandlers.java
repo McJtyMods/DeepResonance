@@ -1,5 +1,6 @@
 package mcjty.deepresonance;
 
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import mcjty.deepresonance.modules.radiation.manager.DRRadiationManager;
 import mcjty.deepresonance.modules.radiation.manager.QuadTree;
 import mcjty.deepresonance.modules.radiation.util.RadiationShieldRegistry;
@@ -15,9 +16,9 @@ import java.util.Map;
 public class ForgeEventHandlers {
 
     @SubscribeEvent
-    public void onBlockBreakEvent(BlockEvent.BreakEvent event) {
+    public void onBlockBreakEvent(BreakBlockEvent event) {
         Level world = event.getPlayer().level();
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             return;
         }
         float blocker = (float) RadiationShieldRegistry.getBlocker(event.getState());
@@ -55,7 +56,9 @@ public class ForgeEventHandlers {
             return;
         }
 
-        Level world = event.getEntity().level();
+        if (!(event.getLevel() instanceof Level world)) {
+            return;
+        }
         if (world.isClientSide()) {
             // Can normally not happen but in rare situations the PlaceEvent can get called client-side
             return;

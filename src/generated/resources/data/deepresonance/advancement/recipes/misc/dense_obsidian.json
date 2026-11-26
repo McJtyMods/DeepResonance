@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "deepresonance:dense_obsidian"
+        "recipes": "deepresonance:dense_obsidian"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

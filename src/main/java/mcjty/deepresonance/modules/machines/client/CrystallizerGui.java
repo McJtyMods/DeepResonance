@@ -1,22 +1,20 @@
 package mcjty.deepresonance.modules.machines.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.CrystallizerTileEntity;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
-import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
 import mcjty.rftoolsbase.tools.ManualHelper;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
@@ -27,16 +25,15 @@ public class CrystallizerGui extends GenericGuiContainer<CrystallizerTileEntity,
     public static final int CRYSTALIZER_WIDTH = 180;
     public static final int CRYSTALIZER_HEIGHT = 152;
 
-    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/crystallizer.png");
+    private static final Identifier GUI = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/crystallizer.png");
 
     private EnergyBar energyBar;
     private Label percentage;
 
     public CrystallizerGui(GenericContainer container, Inventory inventory, Component title) {
         super(container, inventory, title, ManualHelper.create("deepresonance:machines/crystallizer"));
+        setWindowDimensions(CRYSTALIZER_WIDTH, CRYSTALIZER_HEIGHT);
 
-        imageWidth = CRYSTALIZER_WIDTH;
-        imageHeight = CRYSTALIZER_HEIGHT;
     }
 
     @Override
@@ -65,7 +62,7 @@ public class CrystallizerGui extends GenericGuiContainer<CrystallizerTileEntity,
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int x, int y) {
+    protected void renderBg(@Nonnull GuiGraphicsExtractor graphics, float partialTicks, int x, int y) {
         CrystallizerTileEntity be = getBE();
         percentage.text(be.getProgress() + "%");
         updateEnergyBar(energyBar);

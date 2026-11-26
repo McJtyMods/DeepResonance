@@ -1,12 +1,13 @@
 package mcjty.deepresonance.modules.tank.util;
 
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import java.lang.ref.WeakReference;
 
@@ -26,8 +27,8 @@ public class DualTankHook {
     private boolean allowDuplicates;
     private int timeout;
     private int timeCounter;
-    private IFluidHandler tank1;
-    private IFluidHandler tank2;
+    private ResourceHandler<FluidResource> tank1;
+    private ResourceHandler<FluidResource> tank2;
 
     /**
      * Allows the 2 tanks to be the same tank (in case of multiblocks)
@@ -47,11 +48,11 @@ public class DualTankHook {
         return this;
     }
 
-    public IFluidHandler getTank1() {
+    public ResourceHandler<FluidResource> getTank1() {
         return tank1;
     }
 
-    public IFluidHandler getTank2() {
+    public ResourceHandler<FluidResource> getTank2() {
         return tank2;
     }
 
@@ -67,10 +68,10 @@ public class DualTankHook {
         if (!checkTanks()) {
             return false;
         }
-        if (fluid1 != null && getTank1().getFluidInTank(0).getFluid() != fluid1) {
+        if (fluid1 != null && TankTransfers.contents(getTank1()).getFluid() != fluid1) {
             return false;
         }
-        return fluid2 == null || getTank2().getFluidInTank(0).getFluid() == fluid2;
+        return fluid2 == null || TankTransfers.contents(getTank2()).getFluid() == fluid2;
     }
 
     public boolean checkTanks() {
@@ -89,7 +90,7 @@ public class DualTankHook {
             check = true;
             BlockEntity tile = world.getBlockEntity(pos.relative(dir1));
             if (tile != null) {
-                IFluidHandler f = world.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(dir1), Direction.DOWN);
+                ResourceHandler<FluidResource> f = world.getCapability(Capabilities.Fluid.BLOCK, pos.relative(dir1), Direction.DOWN);
                 if (f != null) {
                     tank1 = f;
                     if (!allowDuplicates && tank2Present() && getTank2().equals(getTank1())) {
@@ -112,7 +113,7 @@ public class DualTankHook {
             check = true;
             BlockEntity tile = world.getBlockEntity(pos.relative(dir2));
             if (tile != null) {
-                IFluidHandler f = world.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(dir2), Direction.UP);
+                ResourceHandler<FluidResource> f = world.getCapability(Capabilities.Fluid.BLOCK, pos.relative(dir2), Direction.UP);
                 if (f != null) {
                     tank2 = f;
                     if (!allowDuplicates && tank1Present() && getTank1().equals(getTank2())) {

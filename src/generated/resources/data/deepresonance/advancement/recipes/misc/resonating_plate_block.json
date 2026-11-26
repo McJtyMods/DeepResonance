@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "deepresonance:resonating_plate_block"
+        "recipes": "deepresonance:resonating_plate_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

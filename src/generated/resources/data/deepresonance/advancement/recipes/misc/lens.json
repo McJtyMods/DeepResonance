@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "deepresonance:lens"
+        "recipes": "deepresonance:lens"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

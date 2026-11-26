@@ -5,49 +5,57 @@ import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.block.CrystallizerTileEntity;
 import mcjty.lib.client.RenderHelper;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.core.BlockPos;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer.CrumblingOverlay;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nonnull;
+public class CrystallizerRenderer implements BlockEntityRenderer<CrystallizerTileEntity, CrystallizerRenderer.State> {
 
-public class CrystallizerRenderer implements BlockEntityRenderer<CrystallizerTileEntity> {
+    private ItemStack crystal;
 
-    private static final ItemStack stack = new ItemStack(CoreModule.RESONATING_CRYSTAL_GENERATED.block().get());
+    public static class State extends BlockEntityRenderState {
+        int progress;
+        float rotation;
+    }
 
     public CrystallizerRenderer(BlockEntityRendererProvider.Context context) {
     }
 
+    @Override
+    public State createRenderState() {
+        return new State();
+    }
+
+    @Override
+    public void extractRenderState(CrystallizerTileEntity tile, State state, float partialTicks, Vec3 camera, CrumblingOverlay overlay) {
+        BlockEntityRenderer.super.extractRenderState(tile, state, partialTicks, camera, overlay);
+        state.progress = tile.hasCrystal() ? 100 : tile.getProgress();
+        state.rotation = (Math.floorMod(tile.getLevel().getGameTime(), 120) + partialTicks) * 3;
+    }
+
+    @Override
+    public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
+        if (state.progress > 0) {
+            if (crystal == null) {
+                crystal = new ItemStack(CoreModule.RESONATING_CRYSTAL_GENERATED.item().get());
+            }
+            float scale = 0.75f + 0.45f * (state.progress / 100.0f);
+            pose.pushPose();
+            pose.translate(0.5, 0.35, 0.5);
+            RenderHelper.rotateYP(pose, state.rotation);
+            pose.scale(scale, scale, scale);
+            RenderHelper.renderItemGround(pose, collector, crystal, state.lightCoords, 0);
+            pose.popPose();
+        }
+    }
+
     public static void register() {
         BlockEntityRenderers.register(MachinesModule.TYPE_CRYSTALIZER.get(), CrystallizerRenderer::new);
-    }
-
-    @Override
-    public void render(@Nonnull CrystallizerTileEntity tile, float partialTicks, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-        int progress = tile.getProgress();
-        if (tile.hasCrystal()) {
-            progress = 100;
-        }
-        if (progress > 0) {
-            matrixStack.pushPose();
-            float scale = 0.75f + 0.45f * (progress / 100.0f);
-            float f = Math.floorMod(tile.getLevel().getGameTime(), 120);
-            matrixStack.translate(0.5, 0.35 + (0.00 * progress), 0.5);
-            RenderHelper.rotateYP(matrixStack, f * 3);
-            matrixStack.scale(scale, scale, scale);
-            RenderHelper.renderItemGround(matrixStack, buffer, RenderType.solid(), stack, RenderHelper.MAX_BRIGHTNESS / 2, combinedOverlay);
-            matrixStack.popPose();
-        }
-    }
-
-    @Override
-    public AABB getRenderBoundingBox(CrystallizerTileEntity be) {
-        BlockPos pos = be.getBlockPos();
-        return new AABB(pos.getX() - 10, pos.getY() - 10, pos.getZ() - 10, pos.getX() + 10, pos.getY() + 10, pos.getZ() + 10);
     }
 }

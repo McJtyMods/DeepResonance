@@ -24,7 +24,7 @@ public class Config {
         CLIENT_CONFIG = CLIENT_BUILDER.build();
 
         mod.registerConfig(ModConfig.Type.CLIENT, CLIENT_CONFIG);
-        mod.registerConfig(ModConfig.Type.COMMON, COMMON_CONFIG);
-        mod.registerConfig(ModConfig.Type.SERVER, SERVER_CONFIG);
+        mod.registerConfig(ModConfig.Type.LOCAL, COMMON_CONFIG, "deepresonance-common.toml");
+        mod.registerConfig(ModConfig.Type.SYNCED, SERVER_CONFIG, "deepresonance-server.toml");
     }
 }

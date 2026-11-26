@@ -8,20 +8,20 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.DeltaTracker;
 
 public class RadiationOverlayRenderer {
 
-    public static void onRender(CustomizeGuiOverlayEvent.BossEventProgress event) {
-//        if (event.isCancelable() || event.getOverlay() != VanillaGuiOverlay.BOSS_EVENT_PROGRESS.type()) {
-//            return;
-//        }
-
+    public static void onRender(GuiGraphicsExtractor graphics, DeltaTracker delta) {
         if (RadiationConfiguration.RADIATION_OVERLAY_X.get() < 0) {
             return;
         }
 
         Player player = Minecraft.getInstance().player;
+        if (player == null) {
+            return;
+        }
         ItemStack heldItem = player.getItemBySlot(EquipmentSlot.MAINHAND);
         if (heldItem.getItem() != RadiationModule.RADIATION_MONITOR.get()) {
             return;
@@ -32,12 +32,12 @@ public class RadiationOverlayRenderer {
         int radiation = (int) RadiationMonitorItem.radiationStrength;
         Font fontRenderer = Minecraft.getInstance().font;
         if (radiation > 0) {
-            event.getGuiGraphics().drawString(fontRenderer,
+            graphics.text(fontRenderer,
                     "Radiation: " + radiation,
                     RadiationConfiguration.RADIATION_OVERLAY_X.get(), RadiationConfiguration.RADIATION_OVERLAY_Y.get(),
                     RadiationConfiguration.RADIATION_OVERLAY_COLOR.get());
         } else {
-            event.getGuiGraphics().drawString(fontRenderer,
+            graphics.text(fontRenderer,
                     "No radiation detected",
                     RadiationConfiguration.RADIATION_OVERLAY_X.get(), RadiationConfiguration.RADIATION_OVERLAY_Y.get(),
                     RadiationConfiguration.RADIATION_OVERLAY_COLOR_NORADIATION.get());

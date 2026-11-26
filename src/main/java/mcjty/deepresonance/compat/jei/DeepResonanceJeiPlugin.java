@@ -18,7 +18,7 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -35,8 +35,8 @@ public class DeepResonanceJeiPlugin implements IModPlugin {
 
     @Nonnull
     @Override
-    public ResourceLocation getPluginUid() {
-        return ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "jeiplugin");
+    public Identifier getPluginUid() {
+        return Identifier.fromNamespaceAndPath(DeepResonance.MODID, "jeiplugin");
     }
 
     @Override

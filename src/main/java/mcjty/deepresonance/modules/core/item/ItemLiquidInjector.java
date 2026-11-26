@@ -1,5 +1,9 @@
 package mcjty.deepresonance.modules.core.item;
 
+import java.util.ArrayList;
+import mcjty.deepresonance.modules.tank.util.TankTransfers;
+import net.minecraft.world.item.component.TooltipDisplay;
+import java.util.function.Consumer;
 import mcjty.deepresonance.modules.tank.blocks.TankTileEntity;
 import mcjty.deepresonance.modules.tank.data.DRTankHandler;
 import mcjty.deepresonance.util.LiquidCrystalData;
@@ -17,10 +21,8 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 import static mcjty.lib.builder.TooltipBuilder.header;
@@ -32,26 +34,27 @@ public class ItemLiquidInjector extends Item implements ITooltipSettings {
             .info(key("message.deepresonance.shiftmessage"))
             .infoShift(header()));
 
-
     public ItemLiquidInjector(Properties properties) {
         super(properties.stacksTo(1));
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, Item.TooltipContext context, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flags) {
-        super.appendHoverText(stack, context, tooltip, flags);
-        tooltipBuilder.get().makeTooltip(Tools.getId(this), stack, tooltip, flags);
+    public void appendHoverText(@Nonnull ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, @Nonnull TooltipFlag flags) {
+        super.appendHoverText(stack, context, display, tooltip, flags);
+        List<Component> lines = new ArrayList<>();
+        tooltipBuilder.get().makeTooltip(Tools.getId(this), stack, lines, flags);
+        lines.forEach(tooltip);
     }
 
     @Nonnull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level world = context.getLevel();
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             BlockEntity tile = world.getBlockEntity(context.getClickedPos());
             if (tile instanceof TankTileEntity tank) {
                 DRTankHandler fluidHandler = tank.getInternalFluidHandler();
-                fluidHandler.fill(LiquidCrystalData.makeLiquidCrystalStack(100, 1.0f, 0.1f, 0.1f, 0.1f), IFluidHandler.FluidAction.EXECUTE);
+                TankTransfers.insert(fluidHandler, LiquidCrystalData.makeLiquidCrystalStack(100, 1.0f, 0.1f, 0.1f, 0.1f));
             } else if (context.getPlayer() != null) {
                 context.getPlayer().sendSystemMessage(ComponentFactory.translatable("message.deepresonance.no_tank").withStyle(ChatFormatting.YELLOW));
             }

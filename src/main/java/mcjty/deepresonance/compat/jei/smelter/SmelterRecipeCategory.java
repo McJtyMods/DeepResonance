@@ -1,6 +1,5 @@
 package mcjty.deepresonance.compat.jei.smelter;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.compat.jei.DeepResonanceJeiPlugin;
 import mcjty.deepresonance.modules.core.CoreModule;
@@ -8,7 +7,6 @@ import mcjty.deepresonance.modules.machines.MachinesModule;
 import mcjty.deepresonance.modules.machines.util.config.SmelterConfig;
 import mcjty.lib.varia.ComponentFactory;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -20,11 +18,10 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -37,13 +34,13 @@ public class SmelterRecipeCategory implements IRecipeCategory<SmelterRecipeWrapp
     private final IDrawable icon;
     private final IDrawable background;
 
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "smelter");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "smelter");
 
     public SmelterRecipeCategory(IGuiHelper guiHelper) {
         this.guiHelper = guiHelper;
         slot = guiHelper.getSlotDrawable();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(MachinesModule.SMELTER.block().get()));
-        arrow = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/guielements.png"),
+        arrow = guiHelper.createDrawable(Identifier.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/guielements.png"),
                 144, 0, 16, 16);
         background = guiHelper.createBlankDrawable(120, 60);
     }
@@ -76,13 +73,13 @@ public class SmelterRecipeCategory implements IRecipeCategory<SmelterRecipeWrapp
     }
 
     @Override
-    public void draw(SmelterRecipeWrapper recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(SmelterRecipeWrapper recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
         background.draw(graphics);
         slot.draw(graphics, 20, 32);
         arrow.draw(graphics, 46, 32);
         Font fontRenderer = Minecraft.getInstance().font;
-        graphics.drawString(fontRenderer, "Tank below between", 10, 0, 0xffffffff);
-        graphics.drawString(fontRenderer, "40% and 60% lava", 10, 10, 0xffffffff);
+        graphics.text(fontRenderer, "Tank below between", 10, 0, 0xffffffff);
+        graphics.text(fontRenderer, "40% and 60% lava", 10, 10, 0xffffffff);
     }
 
     @Override
@@ -95,8 +92,7 @@ public class SmelterRecipeCategory implements IRecipeCategory<SmelterRecipeWrapp
                                 new ItemStack(CoreModule.RESONATING_ORE_STONE.block().get())));
         builder.addSlot(RecipeIngredientRole.OUTPUT, 70, 25)
                 .setFluidRenderer(SmelterConfig.RCL_PER_ORE.get(), true, 30, 30)
-                .addIngredients(NeoForgeTypes.FLUID_STACK,
-                        List.of(new FluidStack(CoreModule.LIQUID_CRYSTAL.get(), SmelterConfig.RCL_PER_ORE.get())))
+                .addFluidStack(CoreModule.LIQUID_CRYSTAL.get(), SmelterConfig.RCL_PER_ORE.get())
                 .addRichTooltipCallback((view, tooltip) -> {
                     tooltip.add(ComponentFactory.literal("Purity: 10%").withStyle(ChatFormatting.GREEN));
                     tooltip.add(ComponentFactory.literal("Strength: 10%").withStyle(ChatFormatting.GREEN));

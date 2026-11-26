@@ -1,0 +1,75 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "entries": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "deepresonance:item/radiationmonitoritem1"
+        },
+        "threshold": 1
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "deepresonance:item/radiationmonitoritem2"
+        },
+        "threshold": 2
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "deepresonance:item/radiationmonitoritem3"
+        },
+        "threshold": 3
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "deepresonance:item/radiationmonitoritem4"
+        },
+        "threshold": 4
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "deepresonance:item/radiationmonitoritem5"
+        },
+        "threshold": 5
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "deepresonance:item/radiationmonitoritem6"
+        },
+        "threshold": 6
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "deepresonance:item/radiationmonitoritem7"
+        },
+        "threshold": 7
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "deepresonance:item/radiationmonitoritem8"
+        },
+        "threshold": 8
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "deepresonance:item/radiationmonitoritem9"
+        },
+        "threshold": 9
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "deepresonance:item/radiationmonitoritem0"
+    },
+    "property": "deepresonance:radiation"
+  }
+}

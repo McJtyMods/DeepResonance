@@ -1,5 +1,6 @@
 package mcjty.deepresonance.modules.pedestal.block;
 
+import static mcjty.lib.setup.Registration.ITEM_INVENTORY;
 import mcjty.deepresonance.compat.DeepResonanceTOPDriver;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalBlock;
@@ -16,7 +17,6 @@ import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.container.InventoryLocator;
-import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.TickingTileEntity;
@@ -25,6 +25,7 @@ import mcjty.lib.varia.SoundTools;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -74,8 +75,9 @@ public class PedestalTileEntity extends TickingTileEntity {
         super(PedestalModule.TYPE_PEDESTAL.get(), pos, state);
     }
 
-    public static BaseBlock createBlock() {
+    public static BaseBlock createBlock(Block.Properties properties) {
         return new BaseBlock(new BlockBuilder()
+                .properties(properties)
                 .tileEntitySupplier(PedestalTileEntity::new)
                 .topDriver(DeepResonanceTOPDriver.DRIVER)
                 .infusable()
@@ -148,7 +150,7 @@ public class PedestalTileEntity extends TickingTileEntity {
                 SoundTools.playSound(level, b.defaultBlockState().getSoundType(level, pos, null).getBreakSound(), worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), 1.0f, 1.0f);
 
                 if (findCollector()) {
-                    BlockEntity tileEntity = level.getBlockEntity(new BlockPos(cachedLocator));
+                    BlockEntity tileEntity = level.getBlockEntity(cachedLocator);
                     if (tileEntity instanceof EnergyCollectorTileEntity collector) {
                         collector.addCrystal(pos.getX(), pos.getY(), pos.getZ());
                     }
@@ -217,9 +219,9 @@ public class PedestalTileEntity extends TickingTileEntity {
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY));
     }
 
     @Override

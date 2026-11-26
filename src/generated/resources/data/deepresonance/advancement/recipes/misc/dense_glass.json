@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "deepresonance:dense_glass"
+        "recipes": "deepresonance:dense_glass"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

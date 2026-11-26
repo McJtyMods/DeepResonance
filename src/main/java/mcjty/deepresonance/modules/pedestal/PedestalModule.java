@@ -21,7 +21,9 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.tags.BlockTags;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import static mcjty.deepresonance.datagen.BlockStates.DEFAULT_BOTTOM;
@@ -33,7 +35,7 @@ public class PedestalModule implements IModule {
             "pedestal",
             PedestalTileEntity.class,
             PedestalTileEntity::createBlock,
-            block -> new BlockItem(block.get(), Registration.createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             PedestalTileEntity::new
     );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PedestalTileEntity>> TYPE_PEDESTAL = PEDESTAL.be();
@@ -63,6 +65,7 @@ public class PedestalModule implements IModule {
     public void initDatagen(DataGen dataGen, HolderLookup.Provider registries) {
         dataGen.add(
                 Dob.blockBuilder(PEDESTAL)
+                        .blockTags(List.of(BlockTags.BLOCKS_MOTION_NO_LEAVES))
                         .standardLoot()
                         .ironPickaxeTags()
                         .blockState(p -> p.orientedBlock(PEDESTAL.block().get(), p.frontBasedModel(p.name(PEDESTAL.block().get()), p.modLoc("block/pedestal"), DEFAULT_BOTTOM, DEFAULT_BOTTOM, DEFAULT_BOTTOM)))

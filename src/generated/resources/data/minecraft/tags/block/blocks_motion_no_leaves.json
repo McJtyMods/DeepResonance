@@ -1,0 +1,26 @@
+{
+  "values": [
+    "deepresonance:resonating_ore_deepslate",
+    "deepresonance:resonating_ore_end",
+    "deepresonance:resonating_ore_nether",
+    "deepresonance:resonating_ore_stone",
+    "deepresonance:resonating_plate_block",
+    "deepresonance:resonating_crystal_natural_empty",
+    "deepresonance:resonating_crystal_natural",
+    "deepresonance:resonating_crystal_generated_empty",
+    "deepresonance:resonating_crystal_generated",
+    "deepresonance:generator_part",
+    "deepresonance:energy_collector",
+    "deepresonance:generator_controller",
+    "deepresonance:valve",
+    "deepresonance:smelter",
+    "deepresonance:purifier",
+    "deepresonance:laser",
+    "deepresonance:crystallizer",
+    "deepresonance:poisoned_dirt",
+    "deepresonance:dense_glass",
+    "deepresonance:dense_obsidian",
+    "deepresonance:tank",
+    "deepresonance:pedestal"
+  ]
+}

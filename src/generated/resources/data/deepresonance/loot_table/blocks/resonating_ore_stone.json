@@ -2,7 +2,6 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
@@ -10,7 +9,7 @@
         }
       ],
       "name": "resonating_ore_stone",
-      "rolls": 1.0
+      "rolls": 1
     }
   ],
   "random_sequence": "deepresonance:blocks/resonating_ore_stone"

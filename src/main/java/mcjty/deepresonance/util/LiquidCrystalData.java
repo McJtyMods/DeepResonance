@@ -1,5 +1,8 @@
 package mcjty.deepresonance.util;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import mcjty.deepresonance.api.fluid.ILiquidCrystalData;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.data.LCD;
@@ -40,6 +43,15 @@ public class LiquidCrystalData implements ILiquidCrystalData {
     @Nonnull
     public static LiquidCrystalData fromStack(FluidStack stack) {
         return new LiquidCrystalData(stack);
+    }
+
+    public static FluidStack readStack(HolderLookup.Provider lookup, CompoundTag tag) {
+        return FluidStack.OPTIONAL_CODEC.parse(lookup.createSerializationContext(NbtOps.INSTANCE), tag)
+                .result().orElse(FluidStack.EMPTY);
+    }
+
+    public static CompoundTag writeStack(FluidStack stack, HolderLookup.Provider lookup) {
+        return (CompoundTag) FluidStack.OPTIONAL_CODEC.encodeStart(lookup.createSerializationContext(NbtOps.INSTANCE), stack).getOrThrow();
     }
 
     public static boolean isLiquidCrystal(Fluid fluid) {

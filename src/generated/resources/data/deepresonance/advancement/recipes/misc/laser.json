@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "deepresonance:laser"
+        "recipes": "deepresonance:laser"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

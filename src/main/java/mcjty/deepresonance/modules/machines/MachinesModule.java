@@ -1,5 +1,6 @@
 package mcjty.deepresonance.modules.machines;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.machines.block.*;
@@ -19,7 +20,7 @@ import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Items;
@@ -32,7 +33,9 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.tags.BlockTags;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import static mcjty.deepresonance.datagen.BlockStates.*;
@@ -44,7 +47,7 @@ public class MachinesModule implements IModule {
             "valve",
             ValveTileEntity.class,
             ValveTileEntity::createBlock,
-            block -> new BlockItem(block.get(), Registration.createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             ValveTileEntity::new
     );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ValveTileEntity>> TYPE_VALVE = VALVE.be();
@@ -54,7 +57,7 @@ public class MachinesModule implements IModule {
             "smelter",
             SmelterTileEntity.class,
             SmelterTileEntity::createBlock,
-            block -> new BlockItem(block.get(), Registration.createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             SmelterTileEntity::new
     );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SmelterTileEntity>> TYPE_SMELTER = SMELTER.be();
@@ -64,7 +67,7 @@ public class MachinesModule implements IModule {
             "purifier",
             PurifierTileEntity.class,
             PurifierTileEntity::createBlock,
-            block -> new BlockItem(block.get(), Registration.createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             PurifierTileEntity::new
     );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PurifierTileEntity>> TYPE_PURIFIER = PURIFIER.be();
@@ -74,7 +77,7 @@ public class MachinesModule implements IModule {
             "lens",
             LensTileEntity.class,
             LensBlock::new,
-            block -> new ItemLens((LensBlock) block.get(), Registration.createStandardProperties()),
+            (block, properties) -> new ItemLens((LensBlock) block.get(), properties.useBlockDescriptionPrefix()),
             LensTileEntity::new
     );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LensTileEntity>> TYPE_LENS = LENS.be();
@@ -83,7 +86,7 @@ public class MachinesModule implements IModule {
             "laser",
             LaserTileEntity.class,
             LaserTileEntity::createBlock,
-            block -> new BlockItem(block.get(), Registration.createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             LaserTileEntity::new
     );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LaserTileEntity>> TYPE_LASER = LASER.be();
@@ -93,7 +96,7 @@ public class MachinesModule implements IModule {
             "crystallizer",
             CrystallizerTileEntity.class,
             CrystallizerTileEntity::createBlock,
-            block -> new BlockItem(block.get(), Registration.createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             CrystallizerTileEntity::new
     );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrystallizerTileEntity>> TYPE_CRYSTALIZER = CRYSTALLIZER.be();
@@ -107,7 +110,7 @@ public class MachinesModule implements IModule {
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<LaserData>> LASER_DATA = Registration.ATTACHMENT_TYPES.register(
             "laser", () -> AttachmentType.builder(() -> LaserData.DEFAULT)
-                    .serialize(LaserData.CODEC)
+                    .serialize(MapCodec.assumeMapUnsafe(LaserData.CODEC))
                     .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<LaserData>> ITEM_LASER_DATA = Registration.COMPONENTS.registerComponentType(
             "laser",
@@ -117,7 +120,7 @@ public class MachinesModule implements IModule {
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<ValveData>> VALVE_DATA = Registration.ATTACHMENT_TYPES.register(
             "valve", () -> AttachmentType.builder(() -> ValveData.DEFAULT)
-                    .serialize(ValveData.CODEC)
+                    .serialize(MapCodec.assumeMapUnsafe(ValveData.CODEC))
                     .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ValveData>> ITEM_VALVE_DATA = Registration.COMPONENTS.registerComponentType(
             "valve",
@@ -161,10 +164,11 @@ public class MachinesModule implements IModule {
     public void initDatagen(DataGen dataGen, HolderLookup.Provider lookupProvider) {
         dataGen.add(
                 Dob.blockBuilder(VALVE)
+                        .blockTags(List.of(BlockTags.BLOCKS_MOTION_NO_LEAVES))
                         .ironPickaxeTags()
                         .parentedItem()
                         .standardLoot(ITEM_VALVE_DATA.get())
-                        .blockState(provider -> provider.simpleBlock(VALVE.block().get(), provider.models().cubeBottomTop(provider.name(VALVE.block().get()), ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/valve"), DEFAULT_BOTTOM, DEFAULT_TOP)))
+                        .blockState(provider -> provider.simpleBlock(VALVE.block().get(), provider.models().cubeBottomTop(provider.name(VALVE.block().get()), Identifier.fromNamespaceAndPath(DeepResonance.MODID, "block/valve"), DEFAULT_BOTTOM, DEFAULT_TOP)))
                         .shaped(builder -> builder
                                         .define('F', CoreModule.FILTER_MATERIAL_ITEM.get())
                                         .define('m', CoreModule.MACHINE_FRAME_ITEM.get())
@@ -172,14 +176,15 @@ public class MachinesModule implements IModule {
                                         .unlockedBy("has_machine_frame", DataGen.has(CoreModule.MACHINE_FRAME_ITEM.get())),
                                 "GGG", "FmF", "GCG"),
                 Dob.blockBuilder(SMELTER)
+                        .blockTags(List.of(BlockTags.BLOCKS_MOTION_NO_LEAVES))
                         .ironPickaxeTags()
                         .parentedItem()
                         .standardLoot()
                         .blockState(provider -> provider.horizontalOrientedBlock(SMELTER.block().get(), (state, builder) -> {
                             if (state.getValue(BlockStateProperties.POWERED)) {
-                                builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()) + "_active", ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/smelter_active"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
+                                builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()) + "_active", Identifier.fromNamespaceAndPath(DeepResonance.MODID, "block/smelter_active"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
                             } else {
-                                builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()), ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/smelter"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
+                                builder.modelFile(provider.frontBasedModel(provider.name(state.getBlock()), Identifier.fromNamespaceAndPath(DeepResonance.MODID, "block/smelter"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM));
                             }
                         }))
                         .shaped(builder -> builder
@@ -188,12 +193,13 @@ public class MachinesModule implements IModule {
                                         .unlockedBy("has_machine_frame", DataGen.has(CoreModule.MACHINE_FRAME_ITEM.get())),
                                 "FFF", "imi", "FFF"),
                 Dob.blockBuilder(PURIFIER)
+                        .blockTags(List.of(BlockTags.BLOCKS_MOTION_NO_LEAVES))
                         .ironPickaxeTags()
                         .parentedItem()
                         .standardLoot()
                         .blockState(provider -> provider.horizontalOrientedBlock(PURIFIER.block().get(),
                                 (state, builder) -> builder.modelFile(provider.frontBasedModel(
-                                        provider.name(state.getBlock()), ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "block/purifier"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM))))
+                                        provider.name(state.getBlock()), Identifier.fromNamespaceAndPath(DeepResonance.MODID, "block/purifier"), DEFAULT_SIDE, DEFAULT_TOP, DEFAULT_BOTTOM))))
                         .shaped(builder -> builder
                                         .define('P', CoreModule.RESONATING_PLATE_ITEM.get())
                                         .define('m', CoreModule.MACHINE_FRAME_ITEM.get())
@@ -206,7 +212,7 @@ public class MachinesModule implements IModule {
                         .parentedItem("block/lens_mc")
                         .blockState(provider -> {
                             provider.horizontalOrientedBlock(LENS.block().get(), provider.models()
-                                    .withExistingParent("lens_mc", ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "lens"))
+                                    .withExistingParent("lens_mc", Identifier.fromNamespaceAndPath(DeepResonance.MODID, "lens"))
                                     .texture("lens_texture", "deepresonance:block/lens")
                                     .texture("particle", "deepresonance:block/lens"));
 
@@ -217,6 +223,7 @@ public class MachinesModule implements IModule {
                                         .unlockedBy("has_pane", DataGen.has(Tags.Items.GLASS_PANES)),
                                 "gPg", "P P", "gPg"),
                 Dob.blockBuilder(LASER)
+                        .blockTags(List.of(BlockTags.BLOCKS_MOTION_NO_LEAVES))
                         .ironPickaxeTags()
                         .parentedItem()
                         .standardLoot(ITEM_LASER_DATA.get())
@@ -227,6 +234,7 @@ public class MachinesModule implements IModule {
                                         .unlockedBy("has_machine_frame", DataGen.has(CoreModule.MACHINE_FRAME_ITEM.get())),
                                 "GXG", "eme", "ddd"),
                 Dob.blockBuilder(CRYSTALLIZER)
+                        .blockTags(List.of(BlockTags.BLOCKS_MOTION_NO_LEAVES))
                         .ironPickaxeTags()
                         .parentedItem()
                         .standardLoot(ITEM_CRYSTALIZER_DATA.get(), CoreModule.ITEM_LCD_DATA.get())

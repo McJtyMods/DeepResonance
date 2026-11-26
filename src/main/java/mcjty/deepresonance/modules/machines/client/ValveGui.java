@@ -6,7 +6,6 @@ import mcjty.deepresonance.modules.machines.block.ValveTileEntity;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
-import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.layout.HorizontalLayout;
@@ -21,7 +20,7 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.RedstoneMode;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
@@ -34,8 +33,8 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
     public static final int VALVE_WIDTH = 180;
     public static final int VALVE_HEIGHT = 152;
 
-    private static final ResourceLocation iconLocation = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/valve.png");
-    private static final ResourceLocation iconGuiElements = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/guielements.png");
+    private static final Identifier iconLocation = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/valve.png");
+    private static final Identifier iconGuiElements = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "textures/gui/guielements.png");
 
     private TextField minPurity;
     private TextField minStrength;
@@ -44,9 +43,8 @@ public class ValveGui extends GenericGuiContainer<ValveTileEntity, GenericContai
 
     public ValveGui(GenericContainer container, Inventory inventory, Component title) {
         super(container, inventory, title, ManualHelper.create("deepresonance:machines/valve"));
+        setWindowDimensions(VALVE_WIDTH, VALVE_HEIGHT);
 
-        imageWidth = VALVE_WIDTH;
-        imageHeight = VALVE_HEIGHT;
     }
 
     private ImageChoiceLabel initRedstoneMode() {

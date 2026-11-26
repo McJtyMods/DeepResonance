@@ -18,8 +18,9 @@ public class EnergyCollectorBlock extends BaseBlock {
 
     private static final VoxelShape AABB = Shapes.box(0, 0, 0, 1, 5 / 16f, 1);
 
-    public EnergyCollectorBlock() {
+    public EnergyCollectorBlock(Properties properties) {
         super(new BlockBuilder()
+                .properties(properties)
                 .tileEntitySupplier(EnergyCollectorTileEntity::new)
                 .manualEntry(ManualHelper.create("deepresonance:generator/energy_collector"))
                 .info(TooltipBuilder.key("message.deepresonance.shiftmessage"))

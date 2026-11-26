@@ -2,21 +2,15 @@ package mcjty.deepresonance.modules.core.util;
 
 import mcjty.deepresonance.setup.Config;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
 
 public class ResonatingPlateBlockConfig {
 
     private static ModConfigSpec.IntValue RADIATION_STRENGTH;
-    private static int radiationStrength;
 
     public static ModConfigSpec.IntValue RADIATION_RADIUS;
     public static ModConfigSpec.IntValue RADIATION_TICKS;
 
-    public static void init(IEventBus bus) {
-        bus.addListener(ResonatingPlateBlockConfig::onConfigReload);
-
+    public static void init() {
         Config.SERVER_BUILDER.push("plate");
 
         RADIATION_STRENGTH = Config.SERVER_BUILDER.comment("Strength of radiation that a plate block gives when it has a redstone signal. 0 to disable")
@@ -30,12 +24,7 @@ public class ResonatingPlateBlockConfig {
     }
 
     public static int getRadiationStrength() {
-        return radiationStrength;
+        return Config.SERVER_CONFIG.isLoaded() ? RADIATION_STRENGTH.get() : RADIATION_STRENGTH.getDefault();
     }
 
-    public static void onConfigReload(ModConfigEvent.Reloading event) {
-        if (event.getConfig().getType() == ModConfig.Type.SERVER) {
-            radiationStrength = RADIATION_STRENGTH.get();
-        }
-    }
 }

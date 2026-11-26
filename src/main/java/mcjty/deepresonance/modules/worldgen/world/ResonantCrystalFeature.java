@@ -1,13 +1,13 @@
 package mcjty.deepresonance.modules.worldgen.world;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import mcjty.deepresonance.DeepResonance;
 import mcjty.deepresonance.modules.core.CoreModule;
 import mcjty.deepresonance.modules.core.block.ResonatingCrystalTileEntity;
 import mcjty.deepresonance.modules.worldgen.util.WorldGenConfiguration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
@@ -16,22 +16,31 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 
 import javax.annotation.Nonnull;
 
-public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig> {
+public class ResonantCrystalFeature implements Feature {
 
-    public static final ResourceLocation FEATURE_CRYSTAL_ID = ResourceLocation.fromNamespaceAndPath(DeepResonance.MODID, "resonant_crystal");
+    public static final Identifier FEATURE_CRYSTAL_ID = Identifier.fromNamespaceAndPath(DeepResonance.MODID, "resonant_crystal");
 
-    public ResonantCrystalFeature(Codec<ResonantCrystalFeatureConfig> codec) {
-        super(codec);
+    public static final MapCodec<ResonantCrystalFeature> CODEC = ResonantCrystalFeatureConfig.CODEC
+            .xmap(ResonantCrystalFeature::new, feature -> feature.config);
+
+    private final ResonantCrystalFeatureConfig config;
+
+    public ResonantCrystalFeature(ResonantCrystalFeatureConfig config) {
+        this.config = config;
     }
 
     @Override
-    public boolean place(FeaturePlaceContext<ResonantCrystalFeatureConfig> context) {
-        if (context.random().nextDouble() < WorldGenConfiguration.CRYSTAL_SPAWN_CHANCE.get()) {
-            return trySpawnCrystal(context.level(), context.chunkGenerator(), new ChunkPos(context.origin()), context.random(), context.config());
+    public MapCodec<ResonantCrystalFeature> codec() {
+        return CODEC;
+    }
+
+    @Override
+    public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {
+        if (random.nextDouble() < WorldGenConfiguration.CRYSTAL_SPAWN_CHANCE.get()) {
+            return trySpawnCrystal(level, generator, ChunkPos.containing(origin), random, config);
         }
         return false;
     }
@@ -46,10 +55,10 @@ public class ResonantCrystalFeature extends Feature<ResonantCrystalFeatureConfig
                 pos = new BlockPos(pos.getX(), y - 1, pos.getZ());
             }
             BlockPos.MutableBlockPos poz = pos.mutable();
-            while (poz.getY() > world.getMinBuildHeight() && !world.getBlockState(poz).isAir()) {
+            while (poz.getY() > world.getMinY() && !world.getBlockState(poz).isAir()) {
                 poz.move(Direction.DOWN);
             }
-            while (poz.getY() > world.getMinBuildHeight() && world.getBlockState(poz).isAir()) {
+            while (poz.getY() > world.getMinY() && world.getBlockState(poz).isAir()) {
                 poz.move(Direction.DOWN);
             }
             if (world.getBlockState(poz).isCollisionShapeFullBlock(world, poz)) {
